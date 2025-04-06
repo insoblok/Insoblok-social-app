@@ -52,6 +52,4 @@ lib/generated/
 .metadata
 pubspec.lock
 
-*.freezed.dart
-*.g.dart
 lib/utils/const.dart

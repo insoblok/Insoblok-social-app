@@ -1,4 +1,4 @@
-package com.example.aiavatar
+package insoblok.social.app
 
 import io.flutter.embedding.android.FlutterActivity
 

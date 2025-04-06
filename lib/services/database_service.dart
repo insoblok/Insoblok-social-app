@@ -19,7 +19,7 @@ class DBService with ListenableServiceMixin {
   }
 
   Future<String> getDBPath() async {
-    return join(await getDatabasesPath(), DBNAME);
+    return join(await getDatabasesPath(), kDBName);
   }
 
   Future<DBService> init() async {

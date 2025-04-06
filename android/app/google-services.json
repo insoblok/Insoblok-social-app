@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "811299369538",
+    "project_id": "insoblokai",
+    "storage_bucket": "insoblokai.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:811299369538:android:d5d8fed2c82d1f8114f3db",
+        "android_client_info": {
+          "package_name": "insoblok.social.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAN4xG1SxbgazfmqjxG84yX4Il1DV01Jxc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -41,6 +41,7 @@ dependencies:
   web3dart: any
   url_launcher: any
   http: any
+  firebase_analytics: any
 
 dev_dependencies:
   flutter_test:
