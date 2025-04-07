@@ -6,11 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart' as iaw;
 import 'package:flutter_localizations/flutter_localizations.dart';
 
-import 'package:aiavatar/generated/l10n.dart';
-import 'package:aiavatar/locator.dart';
-import 'package:aiavatar/pages/pages.dart';
-import 'package:aiavatar/routers/routers.dart';
-import 'package:aiavatar/services/services.dart';
+import 'package:insoblok/generated/l10n.dart';
+import 'package:insoblok/locator.dart';
+import 'package:insoblok/pages/pages.dart';
+import 'package:insoblok/routers/routers.dart';
+import 'package:insoblok/services/services.dart';
 
 class MyHttpOverrides extends HttpOverrides {
   @override
@@ -27,7 +27,7 @@ void main() async {
 
   setupLocator();
 
-  await DBHelper.service.init();
+  await FirebaseHelper.init();
   await AuthHelper.service.init();
 
   FlutterError.onError = (FlutterErrorDetails details) {
@@ -38,22 +38,22 @@ void main() async {
     await iaw.InAppWebViewController.setWebContentsDebuggingEnabled(kDebugMode);
   }
 
-  runApp(const AIAvatarApp());
+  runApp(const InSoBlokApp());
 }
 
 final Navigation _navigation = Navigation();
 
-class AIAvatarApp extends StatelessWidget {
-  const AIAvatarApp({super.key});
+class InSoBlokApp extends StatelessWidget {
+  const InSoBlokApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'AIAvatar',
+      title: 'InSoBlok',
       debugShowCheckedModeBanner: false,
       themeMode: ThemeMode.light,
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
         scaffoldBackgroundColor: Colors.white,
         useMaterial3: true,
         appBarTheme: AppBarTheme(

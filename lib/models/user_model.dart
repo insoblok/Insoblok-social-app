@@ -7,11 +7,14 @@ part 'user_model.g.dart';
 abstract class UserModel with _$UserModel {
   @JsonSerializable(fieldRename: FieldRename.snake)
   factory UserModel({
-    int? id,
-    String? address,
+    String? id,
+    String? walletAddress,
     String? avatar,
     String? firstName,
     String? lastName,
+    double? lat,
+    double? lon,
+    String? ipAddress,
   }) = _UserModel;
 
   factory UserModel.fromJson(Map<String, dynamic> json) =>

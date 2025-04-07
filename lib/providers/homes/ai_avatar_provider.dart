@@ -1,7 +1,7 @@
-import 'package:aiavatar/utils/utils.dart';
+import 'package:insoblok/utils/utils.dart';
 import 'package:flutter/material.dart';
 
-class AIAvatarProvider extends AIAvatarViewModel {
+class InSoBlokProvider extends InSoBlokViewModel {
   var _pageIndex = 0;
   int get pageIndex => _pageIndex;
   set pageIndex(int i) {

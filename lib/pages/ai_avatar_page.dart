@@ -1,11 +1,11 @@
-import 'package:aiavatar/providers/providers.dart';
+import 'package:insoblok/providers/providers.dart';
 import 'package:flutter/material.dart';
 
-import 'package:aiavatar/pages/pages.dart';
+import 'package:insoblok/pages/pages.dart';
 import 'package:stacked/stacked.dart';
 
-class AIAvatarPage extends StatelessWidget {
-  const AIAvatarPage({super.key});
+class InSoBlokPage extends StatelessWidget {
+  const InSoBlokPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -28,8 +28,8 @@ class AIAvatarPage extends StatelessWidget {
       Icon(Icons.account_circle),
     ];
 
-    return ViewModelBuilder<AIAvatarProvider>.reactive(
-      viewModelBuilder: () => AIAvatarProvider(),
+    return ViewModelBuilder<InSoBlokProvider>.reactive(
+      viewModelBuilder: () => InSoBlokProvider(),
       onViewModelReady: (viewModel) => viewModel.init(context),
       builder: (context, viewModel, _) {
         return PopScope(

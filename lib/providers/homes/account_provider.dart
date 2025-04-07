@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 
-import 'package:aiavatar/utils/utils.dart';
+import 'package:insoblok/utils/utils.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 const kScrappingUrl = 'https://genimg.ai/';
 
-class AccountProvider extends AIAvatarViewModel {
+class AccountProvider extends InSoBlokViewModel {
   var stateListener = ValueNotifier(AccountProviderState.init);
 
   late BuildContext _context;

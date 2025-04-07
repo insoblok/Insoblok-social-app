@@ -7,10 +7,10 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:stacked/stacked.dart';
 
-import 'package:aiavatar/providers/providers.dart';
-import 'package:aiavatar/services/services.dart';
-import 'package:aiavatar/utils/utils.dart';
-import 'package:aiavatar/widgets/widgets.dart';
+import 'package:insoblok/providers/providers.dart';
+import 'package:insoblok/services/services.dart';
+import 'package:insoblok/utils/utils.dart';
+import 'package:insoblok/widgets/widgets.dart';
 
 class AccountPage extends StatelessWidget {
   const AccountPage({super.key});

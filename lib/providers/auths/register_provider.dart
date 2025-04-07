@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 
 import 'package:fluttertoast/fluttertoast.dart';
 
-import 'package:aiavatar/models/models.dart';
-import 'package:aiavatar/routers/routers.dart';
-import 'package:aiavatar/services/services.dart';
-import 'package:aiavatar/utils/utils.dart';
+import 'package:insoblok/models/models.dart';
+import 'package:insoblok/routers/routers.dart';
+import 'package:insoblok/services/services.dart';
+import 'package:insoblok/utils/utils.dart';
 
-class RegisterProvider extends AIAvatarViewModel {
+class RegisterProvider extends InSoBlokViewModel {
   late BuildContext _context;
   BuildContext get context => _context;
   set context(BuildContext context) {

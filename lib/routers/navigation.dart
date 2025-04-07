@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:fluro/fluro.dart' as fluro;
 
-import 'package:aiavatar/pages/pages.dart';
+import 'package:insoblok/pages/pages.dart';
 
 const kRouterBase = '/';
 const kRouterRegister = '/register';
@@ -47,7 +47,7 @@ class Navigation {
     // * MainPage
     initRoute<List<dynamic>>(
       kRouterMain,
-      (props) => AIAvatarPage(),
+      (props) => InSoBlokPage(),
     );
 
     // * AccountPage

@@ -1,9 +1,9 @@
-import 'package:aiavatar/models/models.dart';
+import 'package:insoblok/models/models.dart';
 import 'package:flutter/material.dart';
 
-import 'package:aiavatar/routers/routers.dart';
-import 'package:aiavatar/services/services.dart';
-import 'package:aiavatar/utils/utils.dart';
+import 'package:insoblok/routers/routers.dart';
+import 'package:insoblok/services/services.dart';
+import 'package:insoblok/utils/utils.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
@@ -31,7 +31,7 @@ class LoginPage extends StatelessWidget {
               height: 40.0,
             ),
             Text(
-              'Welcome to AIAvatar!',
+              'Welcome to InSoBlok!',
               style: TextStyle(
                 fontSize: 28.0,
                 fontWeight: FontWeight.bold,
@@ -51,7 +51,7 @@ class LoginPage extends StatelessWidget {
 
                 var address = await AIHelpers.getDeviceIdentifier();
                 logger.d(address);
-                var user = AuthHelper.user ?? UserModel(address: address);
+                var user = AuthHelper.user ?? UserModel(walletAddress: address);
                 await AuthHelper.setUser(user);
                 if (user.firstName != null) {
                   Routers.goToMainPage(context);

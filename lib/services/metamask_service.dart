@@ -3,8 +3,8 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:walletconnect_dart/walletconnect_dart.dart';
 import 'package:web3dart/web3dart.dart';
 
-import 'package:aiavatar/services/services.dart';
-import 'package:aiavatar/utils/utils.dart';
+import 'package:insoblok/services/services.dart';
+import 'package:insoblok/utils/utils.dart';
 
 class MetaMaskService {
   late Client httpClient;
@@ -18,8 +18,8 @@ class MetaMaskService {
     connector = WalletConnect(
       bridge: 'https://bridge.walletconnect.org',
       clientMeta: const PeerMeta(
-        name: 'AIAvatar',
-        description: 'AIAvatar for image to ai image!',
+        name: 'InSoBlok',
+        description: 'InSoBlok for image to ai image!',
       ),
     );
 

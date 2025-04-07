@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:aiavatar/routers/routers.dart';
+import 'package:insoblok/routers/routers.dart';
 
 class Routers {
   static _pushToRoute(BuildContext context, String route, props) {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import 'package:aiavatar/services/services.dart';
-import 'package:aiavatar/utils/utils.dart';
+import 'package:insoblok/services/services.dart';
+import 'package:insoblok/utils/utils.dart';
 
 class UserAvatarView extends StatelessWidget {
   final void Function(int?)? onUpdateAvatar;

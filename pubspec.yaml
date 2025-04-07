@@ -1,4 +1,4 @@
-name: aiavatar
+name: insoblok
 description: "A new Flutter project."
 publish_to: "none"
 
@@ -27,6 +27,7 @@ dependencies:
   file_picker: any
   permission_handler: any
   fluttertoast: any
+  get_ip_address: any
 
   fluro: any
   sqflite: any
@@ -41,7 +42,11 @@ dependencies:
   web3dart: any
   url_launcher: any
   http: any
+
   firebase_analytics: any
+  firebase_database: any
+  firebase_storage: any
+  firebase_auth: any
 
 dev_dependencies:
   flutter_test:
