@@ -44,9 +44,10 @@ dependencies:
   http: any
 
   firebase_analytics: any
-  firebase_database: any
+  cloud_firestore: any
   firebase_storage: any
   firebase_auth: any
+  firebase_app_check: any
 
 dev_dependencies:
   flutter_test:

@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart' as iaw;
 import 'package:flutter_localizations/flutter_localizations.dart';
 
@@ -28,7 +29,9 @@ void main() async {
   setupLocator();
 
   await FirebaseHelper.init();
-  await AuthHelper.service.init();
+  FirebaseFirestore.instance.settings = const Settings(
+    persistenceEnabled: true,
+  );
 
   FlutterError.onError = (FlutterErrorDetails details) {
     logger.e('Error: $details');

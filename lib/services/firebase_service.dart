@@ -1,8 +1,9 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_database/firebase_database.dart';
 
 import 'package:insoblok/locator.dart';
 import 'package:insoblok/models/models.dart';
@@ -30,9 +31,9 @@ class FirebaseService {
   late final UserCredential _userCredential;
   UserCredential get userCredential => _userCredential;
 
-  late DatabaseReference _userRef;
-  late DatabaseReference _messageRef;
-  late DatabaseReference _roomRef;
+  late DocumentReference _userRef;
+  late DocumentReference _messageRef;
+  late DocumentReference _roomRef;
 
   Future<void> init() async {
     await _initAuth();
@@ -45,17 +46,13 @@ class FirebaseService {
         options: Platform.isAndroid ? android : ios,
       );
       FirebaseAuth.instanceFor(app: _app);
-      await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
-      _userCredential = await FirebaseAuth.instance.signInAnonymously();
-      logger.d("Signed in with temporary account.");
+      await FirebaseAppCheck.instance.activate(
+        androidProvider: AndroidProvider.playIntegrity,
+        appleProvider: AppleProvider.appAttest,
+        webProvider: ReCaptchaV3Provider('recaptcha-v3-site-key'),
+      );
     } on FirebaseAuthException catch (e) {
-      switch (e.code) {
-        case "operation-not-allowed":
-          logger.e("Anonymous auth hasn't been enabled for this project.");
-          break;
-        default:
-          logger.e("Unknown error.");
-      }
+      logger.e(e.message);
     } catch (e) {
       logger.e(e);
     }
@@ -63,9 +60,22 @@ class FirebaseService {
 
   Future<void> _initDatabase() async {
     try {
-      _userRef = FirebaseDatabase.instance.ref('user');
-      _messageRef = FirebaseDatabase.instance.ref('message');
-      _roomRef = FirebaseDatabase.instance.ref('room');
+      var fireStore = FirebaseFirestore.instance.collection('insoblokai');
+      _userRef = fireStore.doc('user');
+      _messageRef = fireStore.doc('message');
+      _roomRef = fireStore.doc('room');
+    } catch (e) {
+      logger.e(e);
+    }
+  }
+
+  Future<void> signInFirebase() async {
+    try {
+      var credential = await FirebaseAuth.instance.signInAnonymously();
+      _userCredential = credential;
+      logger.d("Signed in with temporary account.");
+    } on FirebaseAuthException catch (e) {
+      logger.e(e.message);
     } catch (e) {
       logger.e(e);
     }
@@ -73,9 +83,11 @@ class FirebaseService {
 
   Future<UserModel?> getUser(String uid) async {
     try {
-      final userSnapshot = await _userRef.child(uid).get();
-      if (userSnapshot.exists) {
-        return UserModel.fromJson(userSnapshot.value as Map<String, dynamic>);
+      final userSnapshot = await _userRef.collection(uid).get();
+      if (userSnapshot.docs.isNotEmpty) {
+        return UserModel.fromJson(
+          userSnapshot.docs.first as Map<String, dynamic>,
+        );
       }
     } on FirebaseAuthException catch (e) {
       logger.e(e.message);
@@ -83,6 +95,21 @@ class FirebaseService {
       logger.e(e.toString());
     }
     return null;
+  }
+
+  Future<bool> setUser(UserModel user) async {
+    try {
+      // var ref = _userRef.push();
+      // await _userRef.set(<String, dynamic>{
+      //   ref.key ?? user.id!: user.toJson(),
+      // });
+      return true;
+    } on FirebaseAuthException catch (e) {
+      logger.e(e.message);
+    } catch (e) {
+      logger.e(e.toString());
+    }
+    return false;
   }
 }
 
@@ -93,5 +120,8 @@ class FirebaseHelper {
 
   static UserCredential get userCredential => service.userCredential;
 
+  static Future<void> signInFirebase() => service.signInFirebase();
+
   static Future<UserModel?> getUser(String uid) => service.getUser(uid);
+  static Future<bool> setUser(UserModel user) => service.setUser(user);
 }

@@ -1,4 +1,7 @@
 {
     "title": "InSoBlok",
-    "description": "InSoBlok for Flutter Web Scrapping"
+    "description": "InSoBlok for Flutter Web Scrapping",
+    "login_title": "Welcome to InSoBlok!",
+    "login_button": "Login by MetaMask",
+    "zzz": ""
 }

@@ -23,35 +23,50 @@ class AuthService with ListenableServiceMixin {
     ]);
   }
 
-  Future<void> init() async {
-    var credential = FirebaseHelper.userCredential;
-    var uid = credential.user?.uid;
-    if (uid != null) {
-      final user = await FirebaseHelper.getUser(uid);
-      _userRx.value = user;
-    }
-  }
-
   Future<void> setUser(UserModel model) async {
     _userRx.value = model;
     notifyListeners();
   }
 
   Future<void> setSessionStatus({SessionStatus? session}) async {
-    // await DBHelper.setUser(model);
     _sessionStatusRx.value = session;
     notifyListeners();
+  }
+
+  Future<UserModel?> signIn() async {
+    try {
+      await FirebaseHelper.signInFirebase();
+      var credential = FirebaseHelper.userCredential;
+      var uid = credential.user?.uid;
+      if (uid != null) {
+        logger.d(uid);
+        var user = await FirebaseHelper.getUser(uid);
+        if (user == null) {
+          user = UserModel(id: uid);
+          var saved = await FirebaseHelper.setUser(user);
+          if (!saved) {
+            return null;
+          }
+        }
+        _userRx.value = user;
+        return user;
+      }
+    } catch (e) {
+      logger.e(e);
+    }
+    return null;
   }
 }
 
 class AuthHelper {
   static AuthService get service => locator<AuthService>();
 
+  static Future<void> setSessionStatus({SessionStatus? session}) =>
+      service.setSessionStatus(session: session);
+
   static UserModel? get user => service.user;
   static bool get isLoggedIn => service.isLoggedIn;
   static SessionStatus? get sessionStatus => service.sessionStatus;
 
   static Future<void> setUser(UserModel model) => service.setUser(model);
-  static Future<void> setSessionStatus({SessionStatus? session}) =>
-      service.setSessionStatus(session: session);
 }
