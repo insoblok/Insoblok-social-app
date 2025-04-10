@@ -51,7 +51,7 @@ class AuthService with ListenableServiceMixin {
             regdate: kFullDateTimeFormatter.format(DateTime.now().toUtc()),
             updateDate: kFullDateTimeFormatter.format(DateTime.now().toUtc()),
           );
-          user = await FirebaseHelper.addUser(user);
+          user = await FirebaseHelper.createUser(user);
           if (user == null) {
             return null;
           }

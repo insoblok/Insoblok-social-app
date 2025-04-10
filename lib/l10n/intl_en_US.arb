@@ -12,5 +12,9 @@
     "register_detail": "Please complete your information!",
     "register_confirm": "Confirm",
     "register_error_name": "Please input your name!",
+    "room_create_detail": "You have not any chatting uesr yet! Please try to create a new room first by clicking + button.",
+    "create_room": "Create Room",
+    "create_room_alert": "Successfully Create Room!",
+    "create_room_message": "have created a room",
     "zzz": ""
 }

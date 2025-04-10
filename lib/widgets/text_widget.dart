@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 class AITextField extends StatelessWidget {
   final String? initialValue;
   final String? hintText;
+  final double? height;
   final Widget? prefixIcon;
   final void Function(String)? onChanged;
   final void Function(PointerDownEvent)? onTapOutside;
@@ -13,6 +14,7 @@ class AITextField extends StatelessWidget {
   const AITextField({
     super.key,
     this.initialValue,
+    this.height,
     this.hintText,
     this.prefixIcon,
     this.onChanged,
@@ -24,20 +26,24 @@ class AITextField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return TextFormField(
-      initialValue: initialValue,
-      decoration: InputDecoration(
-        hintText: hintText,
-        prefixIcon: prefixIcon,
-        border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(32.0),
+    return SizedBox(
+      height: height ?? 48.0,
+      child: TextFormField(
+        initialValue: initialValue,
+        decoration: InputDecoration(
+          contentPadding: EdgeInsets.only(left: 24.0),
+          hintText: hintText,
+          prefixIcon: prefixIcon,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(32.0),
+          ),
         ),
+        onChanged: onChanged,
+        onTapOutside: onTapOutside,
+        onEditingComplete: onEditingComplete,
+        onFieldSubmitted: onFieldSubmitted,
+        onSaved: onSaved,
       ),
-      onChanged: onChanged,
-      onTapOutside: onTapOutside,
-      onEditingComplete: onEditingComplete,
-      onFieldSubmitted: onFieldSubmitted,
-      onSaved: onSaved,
     );
   }
 }

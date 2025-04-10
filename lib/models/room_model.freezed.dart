@@ -16,6 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$RoomModel {
   String? get id;
+  String? get relatedId;
   String? get senderId;
   String? get receiverId;
   String? get regDate;
@@ -40,6 +41,8 @@ mixin _$RoomModel {
         (other.runtimeType == runtimeType &&
             other is RoomModel &&
             (identical(other.id, id) || other.id == id) &&
+            (identical(other.relatedId, relatedId) ||
+                other.relatedId == relatedId) &&
             (identical(other.senderId, senderId) ||
                 other.senderId == senderId) &&
             (identical(other.receiverId, receiverId) ||
@@ -56,12 +59,12 @@ mixin _$RoomModel {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, senderId, receiverId,
-      regDate, updateDate, content, statusSender, statusReceiver);
+  int get hashCode => Object.hash(runtimeType, id, relatedId, senderId,
+      receiverId, regDate, updateDate, content, statusSender, statusReceiver);
 
   @override
   String toString() {
-    return 'RoomModel(id: $id, senderId: $senderId, receiverId: $receiverId, regDate: $regDate, updateDate: $updateDate, content: $content, statusSender: $statusSender, statusReceiver: $statusReceiver)';
+    return 'RoomModel(id: $id, relatedId: $relatedId, senderId: $senderId, receiverId: $receiverId, regDate: $regDate, updateDate: $updateDate, content: $content, statusSender: $statusSender, statusReceiver: $statusReceiver)';
   }
 }
 
@@ -72,6 +75,7 @@ abstract mixin class $RoomModelCopyWith<$Res> {
   @useResult
   $Res call(
       {String? id,
+      String? relatedId,
       String? senderId,
       String? receiverId,
       String? regDate,
@@ -94,6 +98,7 @@ class _$RoomModelCopyWithImpl<$Res> implements $RoomModelCopyWith<$Res> {
   @override
   $Res call({
     Object? id = freezed,
+    Object? relatedId = freezed,
     Object? senderId = freezed,
     Object? receiverId = freezed,
     Object? regDate = freezed,
@@ -106,6 +111,10 @@ class _$RoomModelCopyWithImpl<$Res> implements $RoomModelCopyWith<$Res> {
       id: freezed == id
           ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
+              as String?,
+      relatedId: freezed == relatedId
+          ? _self.relatedId
+          : relatedId // ignore: cast_nullable_to_non_nullable
               as String?,
       senderId: freezed == senderId
           ? _self.senderId
@@ -145,6 +154,7 @@ class _$RoomModelCopyWithImpl<$Res> implements $RoomModelCopyWith<$Res> {
 class _RoomModel implements RoomModel {
   _RoomModel(
       {this.id,
+      this.relatedId,
       this.senderId,
       this.receiverId,
       this.regDate,
@@ -157,6 +167,8 @@ class _RoomModel implements RoomModel {
 
   @override
   final String? id;
+  @override
+  final String? relatedId;
   @override
   final String? senderId;
   @override
@@ -193,6 +205,8 @@ class _RoomModel implements RoomModel {
         (other.runtimeType == runtimeType &&
             other is _RoomModel &&
             (identical(other.id, id) || other.id == id) &&
+            (identical(other.relatedId, relatedId) ||
+                other.relatedId == relatedId) &&
             (identical(other.senderId, senderId) ||
                 other.senderId == senderId) &&
             (identical(other.receiverId, receiverId) ||
@@ -209,12 +223,12 @@ class _RoomModel implements RoomModel {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, senderId, receiverId,
-      regDate, updateDate, content, statusSender, statusReceiver);
+  int get hashCode => Object.hash(runtimeType, id, relatedId, senderId,
+      receiverId, regDate, updateDate, content, statusSender, statusReceiver);
 
   @override
   String toString() {
-    return 'RoomModel(id: $id, senderId: $senderId, receiverId: $receiverId, regDate: $regDate, updateDate: $updateDate, content: $content, statusSender: $statusSender, statusReceiver: $statusReceiver)';
+    return 'RoomModel(id: $id, relatedId: $relatedId, senderId: $senderId, receiverId: $receiverId, regDate: $regDate, updateDate: $updateDate, content: $content, statusSender: $statusSender, statusReceiver: $statusReceiver)';
   }
 }
 
@@ -228,6 +242,7 @@ abstract mixin class _$RoomModelCopyWith<$Res>
   @useResult
   $Res call(
       {String? id,
+      String? relatedId,
       String? senderId,
       String? receiverId,
       String? regDate,
@@ -250,6 +265,7 @@ class __$RoomModelCopyWithImpl<$Res> implements _$RoomModelCopyWith<$Res> {
   @pragma('vm:prefer-inline')
   $Res call({
     Object? id = freezed,
+    Object? relatedId = freezed,
     Object? senderId = freezed,
     Object? receiverId = freezed,
     Object? regDate = freezed,
@@ -262,6 +278,10 @@ class __$RoomModelCopyWithImpl<$Res> implements _$RoomModelCopyWith<$Res> {
       id: freezed == id
           ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
+              as String?,
+      relatedId: freezed == relatedId
+          ? _self.relatedId
+          : relatedId // ignore: cast_nullable_to_non_nullable
               as String?,
       senderId: freezed == senderId
           ? _self.senderId

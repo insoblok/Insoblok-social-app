@@ -8,6 +8,7 @@ const kRouterBase = '/';
 const kRouterRegister = '/register';
 const kRouterMain = '/main';
 const kRouterAccount = '/account';
+const kRouterCreateRoom = '/create_room';
 
 class Navigation {
   final router = fluro.FluroRouter();
@@ -54,6 +55,12 @@ class Navigation {
     initRoute<List<dynamic>>(
       kRouterAccount,
       (props) => AccountPage(),
+    );
+
+    // * AccountPage
+    initRoute<List<dynamic>>(
+      kRouterCreateRoom,
+      (props) => CreateRoomPage(),
     );
   }
 }

@@ -22,4 +22,8 @@ class Routers {
   static goToAccountPage(BuildContext context) {
     return _pushToRoute(context, kRouterAccount, null);
   }
+
+  static goToCreateRoomPage(BuildContext context) {
+    return _pushToRoute(context, kRouterCreateRoom, null);
+  }
 }

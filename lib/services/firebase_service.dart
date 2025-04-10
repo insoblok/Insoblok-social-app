@@ -99,7 +99,7 @@ class FirebaseService {
     }
   }
 
-  Future<UserModel?> addUser(UserModel user) async {
+  Future<UserModel?> createUser(UserModel user) async {
     try {
       var value = await _userRef.add(user);
       var addUser = user.copyWith(id: value.id);
@@ -144,7 +144,7 @@ class FirebaseService {
     return false;
   }
 
-  Future<void> removeUser(UserModel user) async {
+  Future<void> deleteUser(UserModel user) async {
     try {
       await _userRef.doc(user.id).delete();
     } on FirebaseAuthException catch (e) {
@@ -154,8 +154,89 @@ class FirebaseService {
     }
   }
 
+  Stream<QuerySnapshot<UserModel>> getUserStream(String uid) {
+    return _userRef.queryBy(UserQuery.uid, value: uid).get().asStream();
+  }
+
+  Future<List<UserModel>> findUsersByKey(String key) async {
+    try {
+      List<UserModel> users = [];
+      var uidSnapshot = await _userRef.queryBy(UserQuery.uid, value: key).get();
+      users.addAll(uidSnapshot.docs.map((e) => e.data()));
+
+      var firstSnapshot =
+          await _userRef.queryBy(UserQuery.firstName, value: key).get();
+      users.addAll(firstSnapshot.docs.map((e) => e.data()));
+
+      var lastSnapshot =
+          await _userRef.queryBy(UserQuery.firstName, value: key).get();
+      users.addAll(lastSnapshot.docs.map((e) => e.data()));
+      return users.where((u) => u.uid != AuthHelper.user?.uid).toList();
+    } on FirebaseAuthException catch (e) {
+      logger.e(e.message);
+    } catch (e) {
+      logger.e(e.toString());
+    }
+    return [];
+  }
+
+  Future<RoomModel?> createRoom(RoomModel room) async {
+    try {
+      var value = await _roomRef.add(room.copyWith(
+        regDate: kFullDateTimeFormatter.format(
+          DateTime.now().toUtc(),
+        ),
+        updateDate: kFullDateTimeFormatter.format(
+          DateTime.now().toUtc(),
+        ),
+      ));
+      var addRoom = room.copyWith(id: value.id);
+      await updateRoom(addRoom);
+      return addRoom;
+    } on FirebaseAuthException catch (e) {
+      logger.e(e.message);
+    } catch (e) {
+      logger.e(e);
+    }
+    return null;
+  }
+
+  Future<List<RoomModel>> getRooms() async {
+    try {
+      var snapshot = await _roomRef
+          .where('related_id', arrayContains: AuthHelper.user?.uid)
+          .get();
+      return snapshot.docs.map((e) => e.data()).toList();
+    } on FirebaseAuthException catch (e) {
+      logger.e(e.message);
+    } catch (e) {
+      logger.e(e.toString());
+    }
+    return [];
+  }
+
+  Future<bool> updateRoom(RoomModel room) async {
+    try {
+      await _roomRef.doc(room.id).update(room
+          .copyWith(
+            updateDate: kFullDateTimeFormatter.format(
+              DateTime.now().toUtc(),
+            ),
+          )
+          .toJson());
+      return true;
+    } on FirebaseAuthException catch (e) {
+      logger.e(e.message);
+    } catch (e) {
+      logger.e(e);
+    }
+    return false;
+  }
+
   Stream<QuerySnapshot<RoomModel>> getRoomsStream() {
-    return _roomRef.snapshots();
+    return _roomRef
+        .where('related_id', arrayContains: AuthHelper.user?.uid)
+        .snapshots();
   }
 }
 
@@ -168,11 +249,20 @@ class FirebaseHelper {
 
   static Future<void> signInFirebase() => service.signInFirebase();
 
-  static Future<UserModel?> addUser(UserModel user) => service.addUser(user);
+  static Future<UserModel?> createUser(UserModel user) =>
+      service.createUser(user);
   static Future<UserModel?> getUser(String uid) => service.getUser(uid);
   static Future<bool> updateUser(UserModel user) => service.updateUser(user);
-  static Future<void> removeUser(UserModel user) => service.removeUser(user);
+  static Future<void> deleteUser(UserModel user) => service.deleteUser(user);
+  static Stream<QuerySnapshot<UserModel>> getUserStream(String uid) =>
+      service.getUserStream(uid);
+  static Future<List<UserModel>> findUsersByKey(String key) =>
+      service.findUsersByKey(key);
 
+  static Future<RoomModel?> createRoom(RoomModel room) =>
+      service.createRoom(room);
+  static Future<List<RoomModel>> getRooms() => service.getRooms();
+  static Future<bool> updateRoom(RoomModel room) => service.updateRoom(room);
   static Stream<QuerySnapshot<RoomModel>> getRoomsStream() =>
       service.getRoomsStream();
 }
@@ -190,33 +280,10 @@ extension on Query<UserModel> {
     String? value,
   }) {
     return switch (query) {
-      UserQuery.firstName => where('first_name', arrayContainsAny: [value]),
-      UserQuery.lastName => where('last_name', arrayContainsAny: [value]),
+      UserQuery.firstName => where('first_name', isEqualTo: value),
+      UserQuery.lastName => where('last_name', isEqualTo: value),
       UserQuery.uid => where('uid', isEqualTo: value),
       UserQuery.recent => orderBy('update_date', descending: true)
-    };
-  }
-}
-
-enum RoomQuery {
-  year,
-  likesAsc,
-  likesDesc,
-  rated,
-  sciFi,
-  fantasy,
-}
-
-extension on Query<RoomModel> {
-  Query<RoomModel> queryBy(RoomQuery query) {
-    return switch (query) {
-      RoomQuery.fantasy => where('genre', arrayContainsAny: ['fantasy']),
-      RoomQuery.sciFi => where('genre', arrayContainsAny: ['sci-fi']),
-      RoomQuery.likesAsc ||
-      RoomQuery.likesDesc =>
-        orderBy('likes', descending: query == RoomQuery.likesDesc),
-      RoomQuery.year => orderBy('year', descending: true),
-      RoomQuery.rated => orderBy('rated', descending: true)
     };
   }
 }

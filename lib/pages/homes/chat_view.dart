@@ -4,6 +4,9 @@ import 'package:stacked/stacked.dart';
 
 import 'package:insoblok/generated/l10n.dart';
 import 'package:insoblok/providers/providers.dart';
+import 'package:insoblok/routers/routers.dart';
+import 'package:insoblok/services/image_service.dart';
+import 'package:insoblok/utils/utils.dart';
 
 class ChatView extends StatelessWidget {
   const ChatView({super.key});
@@ -22,18 +25,53 @@ class ChatView extends StatelessWidget {
               pinned: true,
               actions: [
                 IconButton(
-                  onPressed: () {},
+                  onPressed: () => Routers.goToCreateRoomPage(context),
                   icon: Icon(Icons.add_circle),
                 ),
               ],
             ),
-            SliverList(
-              delegate: SliverChildListDelegate([
-                SizedBox(
-                  height: MediaQuery.of(context).padding.bottom,
-                ),
-              ]),
-            ),
+            viewModel.rooms.isEmpty
+                ? SliverFillRemaining(
+                    child: Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ClipOval(
+                            child: AIImage(
+                              AIImages.placehold,
+                              width: 160.0,
+                              height: 160.0,
+                            ),
+                          ),
+                          const SizedBox(height: 40.0),
+                          Text(
+                            S.current.create_room,
+                            style: TextStyle(
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 8.0),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 60.0,
+                            ),
+                            child: Text(
+                              S.current.room_create_detail,
+                              textAlign: TextAlign.center,
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                  )
+                : SliverList(
+                    delegate: SliverChildListDelegate([
+                      SizedBox(
+                        height: MediaQuery.of(context).padding.bottom,
+                      ),
+                    ]),
+                  ),
           ],
         );
       },
