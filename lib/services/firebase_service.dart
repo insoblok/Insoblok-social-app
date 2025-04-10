@@ -86,7 +86,6 @@ class FirebaseService {
     try {
       final userSnapshot = await _userRef.get();
       if (userSnapshot.exists) {
-        logger.d(userSnapshot.data());
         return UserModel.fromJson(
           (userSnapshot.data() as Map<String, dynamic>)[uid],
         );

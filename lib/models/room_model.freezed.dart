@@ -21,6 +21,7 @@ mixin _$RoomModel {
   String? get regDate;
   String? get updateDate;
   String? get content;
+  String? get uid;
 
   /// Create a copy of RoomModel
   /// with the given fields replaced by the non-null parameter values.
@@ -45,17 +46,18 @@ mixin _$RoomModel {
             (identical(other.regDate, regDate) || other.regDate == regDate) &&
             (identical(other.updateDate, updateDate) ||
                 other.updateDate == updateDate) &&
-            (identical(other.content, content) || other.content == content));
+            (identical(other.content, content) || other.content == content) &&
+            (identical(other.uid, uid) || other.uid == uid));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
-      runtimeType, id, senderId, receiverId, regDate, updateDate, content);
+      runtimeType, id, senderId, receiverId, regDate, updateDate, content, uid);
 
   @override
   String toString() {
-    return 'RoomModel(id: $id, senderId: $senderId, receiverId: $receiverId, regDate: $regDate, updateDate: $updateDate, content: $content)';
+    return 'RoomModel(id: $id, senderId: $senderId, receiverId: $receiverId, regDate: $regDate, updateDate: $updateDate, content: $content, uid: $uid)';
   }
 }
 
@@ -70,7 +72,8 @@ abstract mixin class $RoomModelCopyWith<$Res> {
       String? receiverId,
       String? regDate,
       String? updateDate,
-      String? content});
+      String? content,
+      String? uid});
 }
 
 /// @nodoc
@@ -91,6 +94,7 @@ class _$RoomModelCopyWithImpl<$Res> implements $RoomModelCopyWith<$Res> {
     Object? regDate = freezed,
     Object? updateDate = freezed,
     Object? content = freezed,
+    Object? uid = freezed,
   }) {
     return _then(_self.copyWith(
       id: freezed == id
@@ -117,6 +121,10 @@ class _$RoomModelCopyWithImpl<$Res> implements $RoomModelCopyWith<$Res> {
           ? _self.content
           : content // ignore: cast_nullable_to_non_nullable
               as String?,
+      uid: freezed == uid
+          ? _self.uid
+          : uid // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -131,7 +139,8 @@ class _RoomModel implements RoomModel {
       this.receiverId,
       this.regDate,
       this.updateDate,
-      this.content});
+      this.content,
+      this.uid});
   factory _RoomModel.fromJson(Map<String, dynamic> json) =>
       _$RoomModelFromJson(json);
 
@@ -147,6 +156,8 @@ class _RoomModel implements RoomModel {
   final String? updateDate;
   @override
   final String? content;
+  @override
+  final String? uid;
 
   /// Create a copy of RoomModel
   /// with the given fields replaced by the non-null parameter values.
@@ -176,17 +187,18 @@ class _RoomModel implements RoomModel {
             (identical(other.regDate, regDate) || other.regDate == regDate) &&
             (identical(other.updateDate, updateDate) ||
                 other.updateDate == updateDate) &&
-            (identical(other.content, content) || other.content == content));
+            (identical(other.content, content) || other.content == content) &&
+            (identical(other.uid, uid) || other.uid == uid));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
-      runtimeType, id, senderId, receiverId, regDate, updateDate, content);
+      runtimeType, id, senderId, receiverId, regDate, updateDate, content, uid);
 
   @override
   String toString() {
-    return 'RoomModel(id: $id, senderId: $senderId, receiverId: $receiverId, regDate: $regDate, updateDate: $updateDate, content: $content)';
+    return 'RoomModel(id: $id, senderId: $senderId, receiverId: $receiverId, regDate: $regDate, updateDate: $updateDate, content: $content, uid: $uid)';
   }
 }
 
@@ -204,7 +216,8 @@ abstract mixin class _$RoomModelCopyWith<$Res>
       String? receiverId,
       String? regDate,
       String? updateDate,
-      String? content});
+      String? content,
+      String? uid});
 }
 
 /// @nodoc
@@ -225,6 +238,7 @@ class __$RoomModelCopyWithImpl<$Res> implements _$RoomModelCopyWith<$Res> {
     Object? regDate = freezed,
     Object? updateDate = freezed,
     Object? content = freezed,
+    Object? uid = freezed,
   }) {
     return _then(_RoomModel(
       id: freezed == id
@@ -250,6 +264,10 @@ class __$RoomModelCopyWithImpl<$Res> implements _$RoomModelCopyWith<$Res> {
       content: freezed == content
           ? _self.content
           : content // ignore: cast_nullable_to_non_nullable
+              as String?,
+      uid: freezed == uid
+          ? _self.uid
+          : uid // ignore: cast_nullable_to_non_nullable
               as String?,
     ));
   }

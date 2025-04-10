@@ -1,8 +1,9 @@
-import 'package:insoblok/providers/providers.dart';
 import 'package:flutter/material.dart';
 
-import 'package:insoblok/pages/pages.dart';
 import 'package:stacked/stacked.dart';
+
+import 'package:insoblok/pages/pages.dart';
+import 'package:insoblok/providers/providers.dart';
 
 class InSoBlokPage extends StatelessWidget {
   const InSoBlokPage({super.key});
@@ -35,10 +36,6 @@ class InSoBlokPage extends StatelessWidget {
         return PopScope(
           canPop: false,
           child: Scaffold(
-            appBar: AppBar(
-              automaticallyImplyLeading: false,
-              title: Text(titles[viewModel.pageIndex]),
-            ),
             body: pages[viewModel.pageIndex],
             bottomNavigationBar: BottomNavigationBar(
               currentIndex: viewModel.pageIndex,
