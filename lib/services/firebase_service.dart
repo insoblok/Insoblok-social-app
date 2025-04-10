@@ -8,6 +8,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:insoblok/locator.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
+import 'package:insoblok/utils/utils.dart';
 
 class FirebaseService {
   static const FirebaseOptions android = FirebaseOptions(
@@ -83,10 +84,11 @@ class FirebaseService {
 
   Future<UserModel?> getUser(String uid) async {
     try {
-      final userSnapshot = await _userRef.collection(uid).get();
-      if (userSnapshot.docs.isNotEmpty) {
+      final userSnapshot = await _userRef.get();
+      if (userSnapshot.exists) {
+        logger.d(userSnapshot.data());
         return UserModel.fromJson(
-          userSnapshot.docs.first as Map<String, dynamic>,
+          (userSnapshot.data() as Map<String, dynamic>)[uid],
         );
       }
     } on FirebaseAuthException catch (e) {
@@ -99,15 +101,20 @@ class FirebaseService {
 
   Future<bool> setUser(UserModel user) async {
     try {
-      // var ref = _userRef.push();
-      // await _userRef.set(<String, dynamic>{
-      //   ref.key ?? user.id!: user.toJson(),
-      // });
+      await _userRef.set({
+        user.id!: user
+            .copyWith(
+              updateDate: kFullDateTimeFormatter.format(
+                DateTime.now().toUtc(),
+              ),
+            )
+            .toJson(),
+      });
       return true;
     } on FirebaseAuthException catch (e) {
       logger.e(e.message);
     } catch (e) {
-      logger.e(e.toString());
+      logger.e(e);
     }
     return false;
   }

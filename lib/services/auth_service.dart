@@ -5,6 +5,7 @@ import 'package:walletconnect_dart/walletconnect_dart.dart';
 import 'package:insoblok/locator.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
+import 'package:insoblok/utils/utils.dart';
 
 class AuthService with ListenableServiceMixin {
   final RxValue<UserModel?> _userRx = RxValue<UserModel?>(null);
@@ -24,7 +25,10 @@ class AuthService with ListenableServiceMixin {
   }
 
   Future<void> setUser(UserModel model) async {
-    _userRx.value = model;
+    var isUpdated = await FirebaseHelper.setUser(model);
+    if (isUpdated) {
+      _userRx.value = model;
+    }
     notifyListeners();
   }
 
@@ -42,7 +46,11 @@ class AuthService with ListenableServiceMixin {
         logger.d(uid);
         var user = await FirebaseHelper.getUser(uid);
         if (user == null) {
-          user = UserModel(id: uid);
+          user = UserModel(
+            id: uid,
+            regdate: kFullDateTimeFormatter.format(DateTime.now().toUtc()),
+            updateDate: kFullDateTimeFormatter.format(DateTime.now().toUtc()),
+          );
           var saved = await FirebaseHelper.setUser(user);
           if (!saved) {
             return null;

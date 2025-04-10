@@ -1,2 +1,3 @@
 export 'account_provider.dart';
-export 'ai_avatar_provider.dart';
+export 'chat_provider.dart';
+export 'profile_provider.dart';

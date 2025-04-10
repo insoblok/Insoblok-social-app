@@ -23,6 +23,8 @@ mixin _$UserModel {
   double? get lat;
   double? get lon;
   String? get ipAddress;
+  String? get regdate;
+  String? get updateDate;
 
   /// Create a copy of UserModel
   /// with the given fields replaced by the non-null parameter values.
@@ -50,17 +52,20 @@ mixin _$UserModel {
             (identical(other.lat, lat) || other.lat == lat) &&
             (identical(other.lon, lon) || other.lon == lon) &&
             (identical(other.ipAddress, ipAddress) ||
-                other.ipAddress == ipAddress));
+                other.ipAddress == ipAddress) &&
+            (identical(other.regdate, regdate) || other.regdate == regdate) &&
+            (identical(other.updateDate, updateDate) ||
+                other.updateDate == updateDate));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, id, walletAddress, avatar,
-      firstName, lastName, lat, lon, ipAddress);
+      firstName, lastName, lat, lon, ipAddress, regdate, updateDate);
 
   @override
   String toString() {
-    return 'UserModel(id: $id, walletAddress: $walletAddress, avatar: $avatar, firstName: $firstName, lastName: $lastName, lat: $lat, lon: $lon, ipAddress: $ipAddress)';
+    return 'UserModel(id: $id, walletAddress: $walletAddress, avatar: $avatar, firstName: $firstName, lastName: $lastName, lat: $lat, lon: $lon, ipAddress: $ipAddress, regdate: $regdate, updateDate: $updateDate)';
   }
 }
 
@@ -77,7 +82,9 @@ abstract mixin class $UserModelCopyWith<$Res> {
       String? lastName,
       double? lat,
       double? lon,
-      String? ipAddress});
+      String? ipAddress,
+      String? regdate,
+      String? updateDate});
 }
 
 /// @nodoc
@@ -100,6 +107,8 @@ class _$UserModelCopyWithImpl<$Res> implements $UserModelCopyWith<$Res> {
     Object? lat = freezed,
     Object? lon = freezed,
     Object? ipAddress = freezed,
+    Object? regdate = freezed,
+    Object? updateDate = freezed,
   }) {
     return _then(_self.copyWith(
       id: freezed == id
@@ -134,6 +143,14 @@ class _$UserModelCopyWithImpl<$Res> implements $UserModelCopyWith<$Res> {
           ? _self.ipAddress
           : ipAddress // ignore: cast_nullable_to_non_nullable
               as String?,
+      regdate: freezed == regdate
+          ? _self.regdate
+          : regdate // ignore: cast_nullable_to_non_nullable
+              as String?,
+      updateDate: freezed == updateDate
+          ? _self.updateDate
+          : updateDate // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -150,7 +167,9 @@ class _UserModel implements UserModel {
       this.lastName,
       this.lat,
       this.lon,
-      this.ipAddress});
+      this.ipAddress,
+      this.regdate,
+      this.updateDate});
   factory _UserModel.fromJson(Map<String, dynamic> json) =>
       _$UserModelFromJson(json);
 
@@ -170,6 +189,10 @@ class _UserModel implements UserModel {
   final double? lon;
   @override
   final String? ipAddress;
+  @override
+  final String? regdate;
+  @override
+  final String? updateDate;
 
   /// Create a copy of UserModel
   /// with the given fields replaced by the non-null parameter values.
@@ -202,17 +225,20 @@ class _UserModel implements UserModel {
             (identical(other.lat, lat) || other.lat == lat) &&
             (identical(other.lon, lon) || other.lon == lon) &&
             (identical(other.ipAddress, ipAddress) ||
-                other.ipAddress == ipAddress));
+                other.ipAddress == ipAddress) &&
+            (identical(other.regdate, regdate) || other.regdate == regdate) &&
+            (identical(other.updateDate, updateDate) ||
+                other.updateDate == updateDate));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(runtimeType, id, walletAddress, avatar,
-      firstName, lastName, lat, lon, ipAddress);
+      firstName, lastName, lat, lon, ipAddress, regdate, updateDate);
 
   @override
   String toString() {
-    return 'UserModel(id: $id, walletAddress: $walletAddress, avatar: $avatar, firstName: $firstName, lastName: $lastName, lat: $lat, lon: $lon, ipAddress: $ipAddress)';
+    return 'UserModel(id: $id, walletAddress: $walletAddress, avatar: $avatar, firstName: $firstName, lastName: $lastName, lat: $lat, lon: $lon, ipAddress: $ipAddress, regdate: $regdate, updateDate: $updateDate)';
   }
 }
 
@@ -232,7 +258,9 @@ abstract mixin class _$UserModelCopyWith<$Res>
       String? lastName,
       double? lat,
       double? lon,
-      String? ipAddress});
+      String? ipAddress,
+      String? regdate,
+      String? updateDate});
 }
 
 /// @nodoc
@@ -255,6 +283,8 @@ class __$UserModelCopyWithImpl<$Res> implements _$UserModelCopyWith<$Res> {
     Object? lat = freezed,
     Object? lon = freezed,
     Object? ipAddress = freezed,
+    Object? regdate = freezed,
+    Object? updateDate = freezed,
   }) {
     return _then(_UserModel(
       id: freezed == id
@@ -288,6 +318,14 @@ class __$UserModelCopyWithImpl<$Res> implements _$UserModelCopyWith<$Res> {
       ipAddress: freezed == ipAddress
           ? _self.ipAddress
           : ipAddress // ignore: cast_nullable_to_non_nullable
+              as String?,
+      regdate: freezed == regdate
+          ? _self.regdate
+          : regdate // ignore: cast_nullable_to_non_nullable
+              as String?,
+      updateDate: freezed == updateDate
+          ? _self.updateDate
+          : updateDate // ignore: cast_nullable_to_non_nullable
               as String?,
     ));
   }

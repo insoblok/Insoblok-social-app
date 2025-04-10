@@ -1,7 +1,12 @@
 {
     "title": "InSoBlok",
     "description": "InSoBlok for Flutter Web Scrapping",
+    "first_name": "First Name",
+    "last_name": "Last Name",
     "login_title": "Welcome to InSoBlok!",
     "login_button": "Login by MetaMask",
+    "register_detail": "Please complete your information!",
+    "register_confirm": "Confirm",
+    "register_error_name": "Please input your name!",
     "zzz": ""
 }

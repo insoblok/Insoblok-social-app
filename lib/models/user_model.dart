@@ -15,6 +15,8 @@ abstract class UserModel with _$UserModel {
     double? lat,
     double? lon,
     String? ipAddress,
+    String? regdate,
+    String? updateDate,
   }) = _UserModel;
 
   factory UserModel.fromJson(Map<String, dynamic> json) =>

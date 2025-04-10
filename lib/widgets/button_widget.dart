@@ -48,3 +48,53 @@ class OutlineButton extends StatelessWidget {
     );
   }
 }
+
+class TextFillButton extends StatelessWidget {
+  final double? width;
+  final double? height;
+  final String text;
+  final Color? color;
+  final bool isBusy;
+  final void Function()? onTap;
+
+  const TextFillButton({
+    super.key,
+    required this.text,
+    this.width,
+    this.height,
+    this.color,
+    this.isBusy = false,
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        width: width ?? double.infinity,
+        height: height ?? 52.0,
+        decoration: BoxDecoration(
+          color: color ?? AIColors.borderColor,
+          borderRadius: BorderRadius.circular(12.0),
+        ),
+        alignment: Alignment.center,
+        child: isBusy
+            ? Center(
+                child: Loader(
+                  color: Colors.white,
+                  size: 28.0,
+                ),
+              )
+            : Text(
+                text,
+                style: TextStyle(
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
+              ),
+      ),
+    );
+  }
+}
