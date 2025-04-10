@@ -8,6 +8,7 @@ abstract class UserModel with _$UserModel {
   @JsonSerializable(fieldRename: FieldRename.snake)
   factory UserModel({
     String? id,
+    String? uid,
     String? walletAddress,
     String? avatar,
     String? firstName,

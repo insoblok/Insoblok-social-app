@@ -21,7 +21,8 @@ mixin _$RoomModel {
   String? get regDate;
   String? get updateDate;
   String? get content;
-  String? get uid;
+  String? get statusSender;
+  String? get statusReceiver;
 
   /// Create a copy of RoomModel
   /// with the given fields replaced by the non-null parameter values.
@@ -47,17 +48,20 @@ mixin _$RoomModel {
             (identical(other.updateDate, updateDate) ||
                 other.updateDate == updateDate) &&
             (identical(other.content, content) || other.content == content) &&
-            (identical(other.uid, uid) || other.uid == uid));
+            (identical(other.statusSender, statusSender) ||
+                other.statusSender == statusSender) &&
+            (identical(other.statusReceiver, statusReceiver) ||
+                other.statusReceiver == statusReceiver));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, id, senderId, receiverId, regDate, updateDate, content, uid);
+  int get hashCode => Object.hash(runtimeType, id, senderId, receiverId,
+      regDate, updateDate, content, statusSender, statusReceiver);
 
   @override
   String toString() {
-    return 'RoomModel(id: $id, senderId: $senderId, receiverId: $receiverId, regDate: $regDate, updateDate: $updateDate, content: $content, uid: $uid)';
+    return 'RoomModel(id: $id, senderId: $senderId, receiverId: $receiverId, regDate: $regDate, updateDate: $updateDate, content: $content, statusSender: $statusSender, statusReceiver: $statusReceiver)';
   }
 }
 
@@ -73,7 +77,8 @@ abstract mixin class $RoomModelCopyWith<$Res> {
       String? regDate,
       String? updateDate,
       String? content,
-      String? uid});
+      String? statusSender,
+      String? statusReceiver});
 }
 
 /// @nodoc
@@ -94,7 +99,8 @@ class _$RoomModelCopyWithImpl<$Res> implements $RoomModelCopyWith<$Res> {
     Object? regDate = freezed,
     Object? updateDate = freezed,
     Object? content = freezed,
-    Object? uid = freezed,
+    Object? statusSender = freezed,
+    Object? statusReceiver = freezed,
   }) {
     return _then(_self.copyWith(
       id: freezed == id
@@ -121,9 +127,13 @@ class _$RoomModelCopyWithImpl<$Res> implements $RoomModelCopyWith<$Res> {
           ? _self.content
           : content // ignore: cast_nullable_to_non_nullable
               as String?,
-      uid: freezed == uid
-          ? _self.uid
-          : uid // ignore: cast_nullable_to_non_nullable
+      statusSender: freezed == statusSender
+          ? _self.statusSender
+          : statusSender // ignore: cast_nullable_to_non_nullable
+              as String?,
+      statusReceiver: freezed == statusReceiver
+          ? _self.statusReceiver
+          : statusReceiver // ignore: cast_nullable_to_non_nullable
               as String?,
     ));
   }
@@ -140,7 +150,8 @@ class _RoomModel implements RoomModel {
       this.regDate,
       this.updateDate,
       this.content,
-      this.uid});
+      this.statusSender,
+      this.statusReceiver});
   factory _RoomModel.fromJson(Map<String, dynamic> json) =>
       _$RoomModelFromJson(json);
 
@@ -157,7 +168,9 @@ class _RoomModel implements RoomModel {
   @override
   final String? content;
   @override
-  final String? uid;
+  final String? statusSender;
+  @override
+  final String? statusReceiver;
 
   /// Create a copy of RoomModel
   /// with the given fields replaced by the non-null parameter values.
@@ -188,17 +201,20 @@ class _RoomModel implements RoomModel {
             (identical(other.updateDate, updateDate) ||
                 other.updateDate == updateDate) &&
             (identical(other.content, content) || other.content == content) &&
-            (identical(other.uid, uid) || other.uid == uid));
+            (identical(other.statusSender, statusSender) ||
+                other.statusSender == statusSender) &&
+            (identical(other.statusReceiver, statusReceiver) ||
+                other.statusReceiver == statusReceiver));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType, id, senderId, receiverId, regDate, updateDate, content, uid);
+  int get hashCode => Object.hash(runtimeType, id, senderId, receiverId,
+      regDate, updateDate, content, statusSender, statusReceiver);
 
   @override
   String toString() {
-    return 'RoomModel(id: $id, senderId: $senderId, receiverId: $receiverId, regDate: $regDate, updateDate: $updateDate, content: $content, uid: $uid)';
+    return 'RoomModel(id: $id, senderId: $senderId, receiverId: $receiverId, regDate: $regDate, updateDate: $updateDate, content: $content, statusSender: $statusSender, statusReceiver: $statusReceiver)';
   }
 }
 
@@ -217,7 +233,8 @@ abstract mixin class _$RoomModelCopyWith<$Res>
       String? regDate,
       String? updateDate,
       String? content,
-      String? uid});
+      String? statusSender,
+      String? statusReceiver});
 }
 
 /// @nodoc
@@ -238,7 +255,8 @@ class __$RoomModelCopyWithImpl<$Res> implements _$RoomModelCopyWith<$Res> {
     Object? regDate = freezed,
     Object? updateDate = freezed,
     Object? content = freezed,
-    Object? uid = freezed,
+    Object? statusSender = freezed,
+    Object? statusReceiver = freezed,
   }) {
     return _then(_RoomModel(
       id: freezed == id
@@ -265,9 +283,13 @@ class __$RoomModelCopyWithImpl<$Res> implements _$RoomModelCopyWith<$Res> {
           ? _self.content
           : content // ignore: cast_nullable_to_non_nullable
               as String?,
-      uid: freezed == uid
-          ? _self.uid
-          : uid // ignore: cast_nullable_to_non_nullable
+      statusSender: freezed == statusSender
+          ? _self.statusSender
+          : statusSender // ignore: cast_nullable_to_non_nullable
+              as String?,
+      statusReceiver: freezed == statusReceiver
+          ? _self.statusReceiver
+          : statusReceiver // ignore: cast_nullable_to_non_nullable
               as String?,
     ));
   }

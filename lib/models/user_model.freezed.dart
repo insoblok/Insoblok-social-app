@@ -16,6 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$UserModel {
   String? get id;
+  String? get uid;
   String? get walletAddress;
   String? get avatar;
   String? get firstName;
@@ -42,6 +43,7 @@ mixin _$UserModel {
         (other.runtimeType == runtimeType &&
             other is UserModel &&
             (identical(other.id, id) || other.id == id) &&
+            (identical(other.uid, uid) || other.uid == uid) &&
             (identical(other.walletAddress, walletAddress) ||
                 other.walletAddress == walletAddress) &&
             (identical(other.avatar, avatar) || other.avatar == avatar) &&
@@ -60,12 +62,12 @@ mixin _$UserModel {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, walletAddress, avatar,
+  int get hashCode => Object.hash(runtimeType, id, uid, walletAddress, avatar,
       firstName, lastName, lat, lon, ipAddress, regdate, updateDate);
 
   @override
   String toString() {
-    return 'UserModel(id: $id, walletAddress: $walletAddress, avatar: $avatar, firstName: $firstName, lastName: $lastName, lat: $lat, lon: $lon, ipAddress: $ipAddress, regdate: $regdate, updateDate: $updateDate)';
+    return 'UserModel(id: $id, uid: $uid, walletAddress: $walletAddress, avatar: $avatar, firstName: $firstName, lastName: $lastName, lat: $lat, lon: $lon, ipAddress: $ipAddress, regdate: $regdate, updateDate: $updateDate)';
   }
 }
 
@@ -76,6 +78,7 @@ abstract mixin class $UserModelCopyWith<$Res> {
   @useResult
   $Res call(
       {String? id,
+      String? uid,
       String? walletAddress,
       String? avatar,
       String? firstName,
@@ -100,6 +103,7 @@ class _$UserModelCopyWithImpl<$Res> implements $UserModelCopyWith<$Res> {
   @override
   $Res call({
     Object? id = freezed,
+    Object? uid = freezed,
     Object? walletAddress = freezed,
     Object? avatar = freezed,
     Object? firstName = freezed,
@@ -114,6 +118,10 @@ class _$UserModelCopyWithImpl<$Res> implements $UserModelCopyWith<$Res> {
       id: freezed == id
           ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
+              as String?,
+      uid: freezed == uid
+          ? _self.uid
+          : uid // ignore: cast_nullable_to_non_nullable
               as String?,
       walletAddress: freezed == walletAddress
           ? _self.walletAddress
@@ -161,6 +169,7 @@ class _$UserModelCopyWithImpl<$Res> implements $UserModelCopyWith<$Res> {
 class _UserModel implements UserModel {
   _UserModel(
       {this.id,
+      this.uid,
       this.walletAddress,
       this.avatar,
       this.firstName,
@@ -175,6 +184,8 @@ class _UserModel implements UserModel {
 
   @override
   final String? id;
+  @override
+  final String? uid;
   @override
   final String? walletAddress;
   @override
@@ -215,6 +226,7 @@ class _UserModel implements UserModel {
         (other.runtimeType == runtimeType &&
             other is _UserModel &&
             (identical(other.id, id) || other.id == id) &&
+            (identical(other.uid, uid) || other.uid == uid) &&
             (identical(other.walletAddress, walletAddress) ||
                 other.walletAddress == walletAddress) &&
             (identical(other.avatar, avatar) || other.avatar == avatar) &&
@@ -233,12 +245,12 @@ class _UserModel implements UserModel {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, walletAddress, avatar,
+  int get hashCode => Object.hash(runtimeType, id, uid, walletAddress, avatar,
       firstName, lastName, lat, lon, ipAddress, regdate, updateDate);
 
   @override
   String toString() {
-    return 'UserModel(id: $id, walletAddress: $walletAddress, avatar: $avatar, firstName: $firstName, lastName: $lastName, lat: $lat, lon: $lon, ipAddress: $ipAddress, regdate: $regdate, updateDate: $updateDate)';
+    return 'UserModel(id: $id, uid: $uid, walletAddress: $walletAddress, avatar: $avatar, firstName: $firstName, lastName: $lastName, lat: $lat, lon: $lon, ipAddress: $ipAddress, regdate: $regdate, updateDate: $updateDate)';
   }
 }
 
@@ -252,6 +264,7 @@ abstract mixin class _$UserModelCopyWith<$Res>
   @useResult
   $Res call(
       {String? id,
+      String? uid,
       String? walletAddress,
       String? avatar,
       String? firstName,
@@ -276,6 +289,7 @@ class __$UserModelCopyWithImpl<$Res> implements _$UserModelCopyWith<$Res> {
   @pragma('vm:prefer-inline')
   $Res call({
     Object? id = freezed,
+    Object? uid = freezed,
     Object? walletAddress = freezed,
     Object? avatar = freezed,
     Object? firstName = freezed,
@@ -290,6 +304,10 @@ class __$UserModelCopyWithImpl<$Res> implements _$UserModelCopyWith<$Res> {
       id: freezed == id
           ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
+              as String?,
+      uid: freezed == uid
+          ? _self.uid
+          : uid // ignore: cast_nullable_to_non_nullable
               as String?,
       walletAddress: freezed == walletAddress
           ? _self.walletAddress

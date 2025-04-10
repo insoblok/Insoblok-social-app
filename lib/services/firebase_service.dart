@@ -32,9 +32,9 @@ class FirebaseService {
   late final UserCredential _userCredential;
   UserCredential get userCredential => _userCredential;
 
-  late DocumentReference _userRef;
-  late DocumentReference _messageRef;
-  late DocumentReference _roomRef;
+  late CollectionReference<UserModel> _userRef;
+  late CollectionReference<MessageModel> _messageRef;
+  late CollectionReference<RoomModel> _roomRef;
 
   Future<void> init() async {
     await _initAuth();
@@ -61,10 +61,27 @@ class FirebaseService {
 
   Future<void> _initDatabase() async {
     try {
-      var fireStore = FirebaseFirestore.instance.collection('insoblokai');
-      _userRef = fireStore.doc('user');
-      _messageRef = fireStore.doc('message');
-      _roomRef = fireStore.doc('room');
+      _userRef = FirebaseFirestore.instance
+          .collection('user')
+          .withConverter<UserModel>(
+            fromFirestore: (snapshot, _) =>
+                UserModel.fromJson(snapshot.data()!),
+            toFirestore: (user, _) => user.toJson(),
+          );
+      _messageRef = FirebaseFirestore.instance
+          .collection('message')
+          .withConverter<MessageModel>(
+            fromFirestore: (snapshot, _) =>
+                MessageModel.fromJson(snapshot.data()!),
+            toFirestore: (message, _) => message.toJson(),
+          );
+      _roomRef = FirebaseFirestore.instance
+          .collection('room')
+          .withConverter<RoomModel>(
+            fromFirestore: (snpashot, _) =>
+                RoomModel.fromJson(snpashot.data()!),
+            toFirestore: (room, _) => room.toJson(),
+          );
     } catch (e) {
       logger.e(e);
     }
@@ -82,14 +99,25 @@ class FirebaseService {
     }
   }
 
+  Future<UserModel?> addUser(UserModel user) async {
+    try {
+      var value = await _userRef.add(user);
+      var addUser = user.copyWith(id: value.id);
+      await updateUser(addUser);
+      return addUser;
+    } on FirebaseAuthException catch (e) {
+      logger.e(e.message);
+    } catch (e) {
+      logger.e(e);
+    }
+    return null;
+  }
+
   Future<UserModel?> getUser(String uid) async {
     try {
-      final userSnapshot = await _userRef.get();
-      if (userSnapshot.exists) {
-        return UserModel.fromJson(
-          (userSnapshot.data() as Map<String, dynamic>)[uid],
-        );
-      }
+      var userSnpashot =
+          await _userRef.queryBy(UserQuery.uid, value: uid).get();
+      return userSnpashot.docs.first.data();
     } on FirebaseAuthException catch (e) {
       logger.e(e.message);
     } catch (e) {
@@ -98,17 +126,15 @@ class FirebaseService {
     return null;
   }
 
-  Future<bool> setUser(UserModel user) async {
+  Future<bool> updateUser(UserModel user) async {
     try {
-      await _userRef.set({
-        user.id!: user
-            .copyWith(
-              updateDate: kFullDateTimeFormatter.format(
-                DateTime.now().toUtc(),
-              ),
-            )
-            .toJson(),
-      });
+      await _userRef.doc(user.id).update(user
+          .copyWith(
+            updateDate: kFullDateTimeFormatter.format(
+              DateTime.now().toUtc(),
+            ),
+          )
+          .toJson());
       return true;
     } on FirebaseAuthException catch (e) {
       logger.e(e.message);
@@ -116,6 +142,20 @@ class FirebaseService {
       logger.e(e);
     }
     return false;
+  }
+
+  Future<void> removeUser(UserModel user) async {
+    try {
+      await _userRef.doc(user.id).delete();
+    } on FirebaseAuthException catch (e) {
+      logger.e(e.message);
+    } catch (e) {
+      logger.e(e);
+    }
+  }
+
+  Stream<QuerySnapshot<RoomModel>> getRoomsStream() {
+    return _roomRef.snapshots();
   }
 }
 
@@ -128,6 +168,55 @@ class FirebaseHelper {
 
   static Future<void> signInFirebase() => service.signInFirebase();
 
+  static Future<UserModel?> addUser(UserModel user) => service.addUser(user);
   static Future<UserModel?> getUser(String uid) => service.getUser(uid);
-  static Future<bool> setUser(UserModel user) => service.setUser(user);
+  static Future<bool> updateUser(UserModel user) => service.updateUser(user);
+  static Future<void> removeUser(UserModel user) => service.removeUser(user);
+
+  static Stream<QuerySnapshot<RoomModel>> getRoomsStream() =>
+      service.getRoomsStream();
+}
+
+enum UserQuery {
+  firstName,
+  lastName,
+  uid,
+  recent,
+}
+
+extension on Query<UserModel> {
+  Query<UserModel> queryBy(
+    UserQuery query, {
+    String? value,
+  }) {
+    return switch (query) {
+      UserQuery.firstName => where('first_name', arrayContainsAny: [value]),
+      UserQuery.lastName => where('last_name', arrayContainsAny: [value]),
+      UserQuery.uid => where('uid', isEqualTo: value),
+      UserQuery.recent => orderBy('update_date', descending: true)
+    };
+  }
+}
+
+enum RoomQuery {
+  year,
+  likesAsc,
+  likesDesc,
+  rated,
+  sciFi,
+  fantasy,
+}
+
+extension on Query<RoomModel> {
+  Query<RoomModel> queryBy(RoomQuery query) {
+    return switch (query) {
+      RoomQuery.fantasy => where('genre', arrayContainsAny: ['fantasy']),
+      RoomQuery.sciFi => where('genre', arrayContainsAny: ['sci-fi']),
+      RoomQuery.likesAsc ||
+      RoomQuery.likesDesc =>
+        orderBy('likes', descending: query == RoomQuery.likesDesc),
+      RoomQuery.year => orderBy('year', descending: true),
+      RoomQuery.rated => orderBy('rated', descending: true)
+    };
+  }
 }

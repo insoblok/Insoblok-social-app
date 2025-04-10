@@ -13,7 +13,8 @@ _RoomModel _$RoomModelFromJson(Map<String, dynamic> json) => _RoomModel(
       regDate: json['reg_date'] as String?,
       updateDate: json['update_date'] as String?,
       content: json['content'] as String?,
-      uid: json['uid'] as String?,
+      statusSender: json['status_sender'] as String?,
+      statusReceiver: json['status_receiver'] as String?,
     );
 
 Map<String, dynamic> _$RoomModelToJson(_RoomModel instance) =>
@@ -24,5 +25,6 @@ Map<String, dynamic> _$RoomModelToJson(_RoomModel instance) =>
       'reg_date': instance.regDate,
       'update_date': instance.updateDate,
       'content': instance.content,
-      'uid': instance.uid,
+      'status_sender': instance.statusSender,
+      'status_receiver': instance.statusReceiver,
     };

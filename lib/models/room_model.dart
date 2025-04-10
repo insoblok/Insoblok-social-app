@@ -13,7 +13,8 @@ abstract class RoomModel with _$RoomModel {
     String? regDate,
     String? updateDate,
     String? content,
-    String? uid,
+    String? statusSender,
+    String? statusReceiver,
   }) = _RoomModel;
   factory RoomModel.fromJson(Map<String, dynamic> json) =>
       _$RoomModelFromJson(json);

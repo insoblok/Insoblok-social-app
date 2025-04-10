@@ -17,7 +17,6 @@ T _$identity<T>(T value) => value;
 mixin _$MessageModel {
   String? get id;
   String? get senderId;
-  String? get receiverId;
   String? get content;
   String? get url;
   String? get type;
@@ -43,8 +42,6 @@ mixin _$MessageModel {
             (identical(other.id, id) || other.id == id) &&
             (identical(other.senderId, senderId) ||
                 other.senderId == senderId) &&
-            (identical(other.receiverId, receiverId) ||
-                other.receiverId == receiverId) &&
             (identical(other.content, content) || other.content == content) &&
             (identical(other.url, url) || other.url == url) &&
             (identical(other.type, type) || other.type == type) &&
@@ -55,12 +52,12 @@ mixin _$MessageModel {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, senderId, receiverId,
-      content, url, type, regDate, updateDate);
+  int get hashCode => Object.hash(
+      runtimeType, id, senderId, content, url, type, regDate, updateDate);
 
   @override
   String toString() {
-    return 'MessageModel(id: $id, senderId: $senderId, receiverId: $receiverId, content: $content, url: $url, type: $type, regDate: $regDate, updateDate: $updateDate)';
+    return 'MessageModel(id: $id, senderId: $senderId, content: $content, url: $url, type: $type, regDate: $regDate, updateDate: $updateDate)';
   }
 }
 
@@ -73,7 +70,6 @@ abstract mixin class $MessageModelCopyWith<$Res> {
   $Res call(
       {String? id,
       String? senderId,
-      String? receiverId,
       String? content,
       String? url,
       String? type,
@@ -95,7 +91,6 @@ class _$MessageModelCopyWithImpl<$Res> implements $MessageModelCopyWith<$Res> {
   $Res call({
     Object? id = freezed,
     Object? senderId = freezed,
-    Object? receiverId = freezed,
     Object? content = freezed,
     Object? url = freezed,
     Object? type = freezed,
@@ -110,10 +105,6 @@ class _$MessageModelCopyWithImpl<$Res> implements $MessageModelCopyWith<$Res> {
       senderId: freezed == senderId
           ? _self.senderId
           : senderId // ignore: cast_nullable_to_non_nullable
-              as String?,
-      receiverId: freezed == receiverId
-          ? _self.receiverId
-          : receiverId // ignore: cast_nullable_to_non_nullable
               as String?,
       content: freezed == content
           ? _self.content
@@ -146,7 +137,6 @@ class _MessageModel implements MessageModel {
   _MessageModel(
       {this.id,
       this.senderId,
-      this.receiverId,
       this.content,
       this.url,
       this.type,
@@ -159,8 +149,6 @@ class _MessageModel implements MessageModel {
   final String? id;
   @override
   final String? senderId;
-  @override
-  final String? receiverId;
   @override
   final String? content;
   @override
@@ -195,8 +183,6 @@ class _MessageModel implements MessageModel {
             (identical(other.id, id) || other.id == id) &&
             (identical(other.senderId, senderId) ||
                 other.senderId == senderId) &&
-            (identical(other.receiverId, receiverId) ||
-                other.receiverId == receiverId) &&
             (identical(other.content, content) || other.content == content) &&
             (identical(other.url, url) || other.url == url) &&
             (identical(other.type, type) || other.type == type) &&
@@ -207,12 +193,12 @@ class _MessageModel implements MessageModel {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, senderId, receiverId,
-      content, url, type, regDate, updateDate);
+  int get hashCode => Object.hash(
+      runtimeType, id, senderId, content, url, type, regDate, updateDate);
 
   @override
   String toString() {
-    return 'MessageModel(id: $id, senderId: $senderId, receiverId: $receiverId, content: $content, url: $url, type: $type, regDate: $regDate, updateDate: $updateDate)';
+    return 'MessageModel(id: $id, senderId: $senderId, content: $content, url: $url, type: $type, regDate: $regDate, updateDate: $updateDate)';
   }
 }
 
@@ -227,7 +213,6 @@ abstract mixin class _$MessageModelCopyWith<$Res>
   $Res call(
       {String? id,
       String? senderId,
-      String? receiverId,
       String? content,
       String? url,
       String? type,
@@ -250,7 +235,6 @@ class __$MessageModelCopyWithImpl<$Res>
   $Res call({
     Object? id = freezed,
     Object? senderId = freezed,
-    Object? receiverId = freezed,
     Object? content = freezed,
     Object? url = freezed,
     Object? type = freezed,
@@ -265,10 +249,6 @@ class __$MessageModelCopyWithImpl<$Res>
       senderId: freezed == senderId
           ? _self.senderId
           : senderId // ignore: cast_nullable_to_non_nullable
-              as String?,
-      receiverId: freezed == receiverId
-          ? _self.receiverId
-          : receiverId // ignore: cast_nullable_to_non_nullable
               as String?,
       content: freezed == content
           ? _self.content

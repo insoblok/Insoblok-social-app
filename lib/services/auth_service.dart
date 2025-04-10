@@ -25,7 +25,7 @@ class AuthService with ListenableServiceMixin {
   }
 
   Future<void> setUser(UserModel model) async {
-    var isUpdated = await FirebaseHelper.setUser(model);
+    var isUpdated = await FirebaseHelper.updateUser(model);
     if (isUpdated) {
       _userRx.value = model;
     }
@@ -47,12 +47,12 @@ class AuthService with ListenableServiceMixin {
         var user = await FirebaseHelper.getUser(uid);
         if (user == null) {
           user = UserModel(
-            id: uid,
+            uid: uid,
             regdate: kFullDateTimeFormatter.format(DateTime.now().toUtc()),
             updateDate: kFullDateTimeFormatter.format(DateTime.now().toUtc()),
           );
-          var saved = await FirebaseHelper.setUser(user);
-          if (!saved) {
+          user = await FirebaseHelper.addUser(user);
+          if (user == null) {
             return null;
           }
         }

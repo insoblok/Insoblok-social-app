@@ -9,7 +9,6 @@ abstract class MessageModel with _$MessageModel {
   factory MessageModel({
     String? id,
     String? senderId,
-    String? receiverId,
     String? content,
     String? url,
     String? type,

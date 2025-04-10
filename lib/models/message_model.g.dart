@@ -10,7 +10,6 @@ _MessageModel _$MessageModelFromJson(Map<String, dynamic> json) =>
     _MessageModel(
       id: json['id'] as String?,
       senderId: json['sender_id'] as String?,
-      receiverId: json['receiver_id'] as String?,
       content: json['content'] as String?,
       url: json['url'] as String?,
       type: json['type'] as String?,
@@ -22,7 +21,6 @@ Map<String, dynamic> _$MessageModelToJson(_MessageModel instance) =>
     <String, dynamic>{
       'id': instance.id,
       'sender_id': instance.senderId,
-      'receiver_id': instance.receiverId,
       'content': instance.content,
       'url': instance.url,
       'type': instance.type,
