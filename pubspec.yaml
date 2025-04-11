@@ -48,6 +48,7 @@ dependencies:
   firebase_storage: any
   firebase_auth: any
   firebase_app_check: any
+  flutter_native_splash: ^2.4.6
 
   dio: any
   path_provider: any

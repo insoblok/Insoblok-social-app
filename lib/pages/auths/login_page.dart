@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:stacked/stacked.dart';
 
 import 'package:insoblok/generated/l10n.dart';
@@ -15,7 +16,10 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewModelBuilder<LoginProvider>.reactive(
       viewModelBuilder: () => LoginProvider(),
-      onViewModelReady: (viewModel) => viewModel.init(context),
+      onViewModelReady: (viewModel) {
+        FlutterNativeSplash.remove();
+        viewModel.init(context);
+      },
       builder: (context, viewModel, _) {
         return Scaffold(
           body: Container(
