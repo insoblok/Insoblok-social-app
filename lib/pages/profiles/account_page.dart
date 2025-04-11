@@ -4,7 +4,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:stacked/stacked.dart';
 
 import 'package:insoblok/providers/providers.dart';
@@ -148,17 +147,7 @@ class AccountPage extends StatelessWidget {
                                   ),
                                   const SizedBox(height: 50.0),
                                   InkWell(
-                                    onTap: () {
-                                      if (viewModel.aiImageUrl == null) {
-                                        Fluttertoast.showToast(
-                                          msg:
-                                              'We didn\'t get an AI image yet. Please try to create image',
-                                        );
-                                        return;
-                                      }
-                                      Navigator.of(context)
-                                          .pop(viewModel.aiImageUrl);
-                                    },
+                                    onTap: viewModel.onClickConfirm,
                                     child: Container(
                                       width: 280.0,
                                       height: 44.0,

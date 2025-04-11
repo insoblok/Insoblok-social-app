@@ -4,11 +4,14 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:dio/dio.dart';
 
 import 'package:insoblok/locator.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
+import 'package:path_provider/path_provider.dart';
 
 class FirebaseService {
   static const FirebaseOptions android = FirebaseOptions(
@@ -34,6 +37,8 @@ class FirebaseService {
 
   late CollectionReference<UserModel> _userRef;
   late CollectionReference<RoomModel> _roomRef;
+
+  late final FirebaseStorage _storage;
 
   Future<void> init() async {
     await _initAuth();
@@ -74,6 +79,8 @@ class FirebaseService {
                 RoomModel.fromJson(snpashot.data()!),
             toFirestore: (room, _) => room.toJson(),
           );
+
+      _storage = FirebaseStorage.instance;
     } catch (e) {
       logger.e(e);
     }
@@ -228,6 +235,66 @@ class FirebaseService {
   Stream<QuerySnapshot<RoomModel>> getRoomsStream() {
     return _roomRef.snapshots();
   }
+
+  Future<String?> uploadImage({
+    required String imageUrl,
+    String? uid,
+    String? folderName,
+  }) async {
+    try {
+      var tempDir = await getTemporaryDirectory();
+      String fullPath = "${tempDir.path}/${AuthHelper.user?.id}.jpg";
+      logger.d('full path $fullPath');
+
+      var dio = Dio();
+      var response = await dio.get(
+        imageUrl,
+        onReceiveProgress: (p, v) {
+          logger.d(p);
+          logger.d(v);
+        },
+        options: Options(
+            responseType: ResponseType.bytes,
+            followRedirects: false,
+            validateStatus: (status) {
+              return (status ?? 600) < 500;
+            }),
+      );
+      logger.d(response.headers);
+      File file = File(fullPath);
+      var raf = file.openSync(mode: FileMode.write);
+      raf.writeFromSync(response.data);
+      await raf.close();
+
+      final String fileName =
+          "${AuthHelper.user?.id}_${kFullFormatter.format(DateTime.now())}.jpg";
+      final String storagePath = folderName != null
+          ? 'users/${uid ?? AuthHelper.user?.uid}/$folderName/$fileName'
+          : 'users/${uid ?? AuthHelper.user?.uid}/$fileName';
+
+      final Reference storageRef = _storage.ref().child(storagePath);
+
+      // Upload the file
+      final UploadTask uploadTask = storageRef.putFile(file);
+      final TaskSnapshot snapshot = await uploadTask;
+
+      // Get download URL
+      final String downloadUrl = await snapshot.ref.getDownloadURL();
+      return downloadUrl;
+    } catch (e) {
+      logger.e('Error uploading image: $e');
+      return null;
+    }
+  }
+
+  Future<void> deleteImage(String imageUrl) async {
+    try {
+      final Reference ref = _storage.refFromURL(imageUrl);
+      await ref.delete();
+    } catch (e) {
+      logger.e('Error deleting image: $e');
+    }
+  }
 }
 
 class FirebaseHelper {
@@ -255,6 +322,20 @@ class FirebaseHelper {
   static Future<bool> updateRoom(RoomModel room) => service.updateRoom(room);
   static Stream<QuerySnapshot<RoomModel>> getRoomsStream() =>
       service.getRoomsStream();
+
+  static Future<String?> uploadImage({
+    required String imageUrl,
+    String? uid,
+    String? folderName,
+  }) =>
+      service.uploadImage(
+        imageUrl: imageUrl,
+        uid: uid,
+        folderName: folderName,
+      );
+
+  static Future<void> deleteImage(String imageUrl) =>
+      service.deleteImage(imageUrl);
 }
 
 enum UserQuery {
