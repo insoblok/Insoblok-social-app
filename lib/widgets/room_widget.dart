@@ -1,0 +1,116 @@
+import 'package:flutter/material.dart';
+import 'package:insoblok/services/services.dart';
+import 'package:insoblok/utils/utils.dart';
+
+import 'package:stacked/stacked.dart';
+
+import 'package:insoblok/models/models.dart';
+import 'package:insoblok/providers/providers.dart';
+
+class RoomItemView extends StatelessWidget {
+  final RoomModel room;
+  final Function(UserModel chatUser)? onTap;
+
+  const RoomItemView({
+    super.key,
+    required this.room,
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ViewModelBuilder<RoomProvider>.reactive(
+      viewModelBuilder: () => RoomProvider(),
+      onViewModelReady: (viewModel) => viewModel.init(context, model: room),
+      builder: (context, viewModel, _) {
+        if (viewModel.isBusy) {
+          return Container(
+            padding: const EdgeInsets.all(16.0),
+            decoration: BoxDecoration(
+              border: Border(
+                top: BorderSide(width: 0.5),
+              ),
+            ),
+          );
+        }
+        return InkWell(
+          onTap: () {
+            if (onTap != null) {
+              onTap!(viewModel.chatUser!);
+            }
+          },
+          child: Container(
+            padding: const EdgeInsets.all(16.0),
+            decoration: BoxDecoration(
+              border: Border(
+                top: BorderSide(width: 0.5),
+              ),
+            ),
+            child: Row(
+              children: [
+                ClipOval(
+                  child: AIImage(
+                    viewModel.chatUser?.avatar,
+                    width: 60.0,
+                    height: 60.0,
+                  ),
+                ),
+                const SizedBox(width: 12.0),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Text(
+                              '${viewModel.chatUser?.lastName} ${viewModel.chatUser?.firstName}',
+                              style: TextStyle(
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.w500,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              maxLines: 1,
+                            ),
+                          ),
+                          Text('${room.recentDate}')
+                        ],
+                      ),
+                      Text(
+                        '${room.content}',
+                        style: TextStyle(
+                          fontSize: 13.0,
+                          fontWeight: FontWeight.w300,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 8.0),
+                Icon(
+                  Icons.arrow_forward_ios,
+                  size: 16.0,
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+extension on RoomModel {
+  String? get recentDate {
+    try {
+      if (updateDate != null) {
+        var date = kFullDateTimeFormatter.parse(updateDate!);
+        return kDateMDFormatter.format(date);
+      }
+    } catch (e) {
+      logger.e(e);
+    }
+    return null;
+  }
+}

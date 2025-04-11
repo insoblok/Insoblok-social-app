@@ -20,11 +20,7 @@ class CreateRoomProvider extends InSoBlokViewModel {
     this.context = context;
   }
 
-  String _key = '';
-  String get key => _key;
-  set key(String k) {
-    _key = k;
-  }
+  String key = '';
 
   final List<UserModel> _users = [];
   List<UserModel> get users => _users;
@@ -98,7 +94,7 @@ class CreateRoomProvider extends InSoBlokViewModel {
                   ),
                   const SizedBox(height: 24.0),
                   Text(
-                    'Are you sure to chat with this user?',
+                    S.current.create_room_confirm,
                     style: TextStyle(
                       fontSize: 16.0,
                     ),

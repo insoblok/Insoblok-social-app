@@ -20,7 +20,11 @@ class ChatProvider extends InSoBlokViewModel {
 
     FirebaseHelper.getRoomsStream().listen((queryRooms) {
       _rooms.clear();
-      _rooms.addAll(queryRooms.docs.map((e) => e.data()));
+      _rooms.addAll(
+        queryRooms.docs.map((e) => e.data()).where((e) =>
+            e.senderId == AuthHelper.user?.uid ||
+            e.receiverId == AuthHelper.user?.uid),
+      );
       logger.d(_rooms.length);
       notifyListeners();
     });

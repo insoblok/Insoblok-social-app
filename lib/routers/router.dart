@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:insoblok/pages/pages.dart';
 import 'package:insoblok/routers/routers.dart';
 
 class Routers {
@@ -25,5 +26,9 @@ class Routers {
 
   static goToCreateRoomPage(BuildContext context) {
     return _pushToRoute(context, kRouterCreateRoom, null);
+  }
+
+  static goToMessagePage(BuildContext context, MessagePageData data) {
+    return _pushToRoute(context, kRouterMessage, data);
   }
 }

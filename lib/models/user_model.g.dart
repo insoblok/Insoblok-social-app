@@ -18,6 +18,7 @@ _UserModel _$UserModelFromJson(Map<String, dynamic> json) => _UserModel(
       ipAddress: json['ip_address'] as String?,
       regdate: json['regdate'] as String?,
       updateDate: json['update_date'] as String?,
+      status: json['status'] as String?,
     );
 
 Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
@@ -33,4 +34,5 @@ Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
       'ip_address': instance.ipAddress,
       'regdate': instance.regdate,
       'update_date': instance.updateDate,
+      'status': instance.status,
     };

@@ -9,6 +9,7 @@ const kRouterRegister = '/register';
 const kRouterMain = '/main';
 const kRouterAccount = '/account';
 const kRouterCreateRoom = '/create_room';
+const kRouterMessage = '/message';
 
 class Navigation {
   final router = fluro.FluroRouter();
@@ -34,33 +35,39 @@ class Navigation {
     }
 
     // * StartPage
-    initRoute<List<dynamic>>(
+    initRoute(
       kRouterBase,
       (props) => LoginPage(),
     );
 
     // * RegisterPage
-    initRoute<List<dynamic>>(
+    initRoute(
       kRouterRegister,
       (props) => RegisterPage(),
     );
 
     // * MainPage
-    initRoute<List<dynamic>>(
+    initRoute(
       kRouterMain,
       (props) => InSoBlokPage(),
     );
 
     // * AccountPage
-    initRoute<List<dynamic>>(
+    initRoute(
       kRouterAccount,
       (props) => AccountPage(),
     );
 
-    // * AccountPage
-    initRoute<List<dynamic>>(
+    // * CreateRoomPage
+    initRoute(
       kRouterCreateRoom,
       (props) => CreateRoomPage(),
+    );
+
+    // * MessagePage
+    initRoute<MessagePageData>(
+      kRouterMessage,
+      (props) => MessagePage(data: props!),
     );
   }
 }

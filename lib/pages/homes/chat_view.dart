@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 
 import 'package:insoblok/generated/l10n.dart';
+import 'package:insoblok/pages/pages.dart';
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/routers/routers.dart';
-import 'package:insoblok/services/image_service.dart';
+import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
+import 'package:insoblok/widgets/widgets.dart';
 
 class ChatView extends StatelessWidget {
   const ChatView({super.key});
@@ -67,6 +69,16 @@ class ChatView extends StatelessWidget {
                   )
                 : SliverList(
                     delegate: SliverChildListDelegate([
+                      const SizedBox(height: 24.0),
+                      ...viewModel.rooms.map((room) {
+                        return RoomItemView(
+                          room: room,
+                          onTap: (chatUser) => Routers.goToMessagePage(
+                            context,
+                            MessagePageData(room: room, chatUser: chatUser),
+                          ),
+                        );
+                      }),
                       SizedBox(
                         height: MediaQuery.of(context).padding.bottom,
                       ),

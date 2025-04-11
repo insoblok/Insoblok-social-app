@@ -16,5 +16,6 @@
     "create_room": "Create Room",
     "create_room_alert": "Successfully Create Room!",
     "create_room_message": "have created a room",
+    "create_room_confirm": "Are you sure want to chat with the selected user?",
     "zzz": ""
 }

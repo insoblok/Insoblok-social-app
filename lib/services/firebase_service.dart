@@ -234,9 +234,7 @@ class FirebaseService {
   }
 
   Stream<QuerySnapshot<RoomModel>> getRoomsStream() {
-    return _roomRef
-        .where('related_id', arrayContains: AuthHelper.user?.uid)
-        .snapshots();
+    return _roomRef.snapshots();
   }
 }
 
