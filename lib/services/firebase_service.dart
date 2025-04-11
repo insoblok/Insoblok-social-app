@@ -33,7 +33,6 @@ class FirebaseService {
   UserCredential get userCredential => _userCredential;
 
   late CollectionReference<UserModel> _userRef;
-  late CollectionReference<MessageModel> _messageRef;
   late CollectionReference<RoomModel> _roomRef;
 
   Future<void> init() async {
@@ -67,13 +66,6 @@ class FirebaseService {
             fromFirestore: (snapshot, _) =>
                 UserModel.fromJson(snapshot.data()!),
             toFirestore: (user, _) => user.toJson(),
-          );
-      _messageRef = FirebaseFirestore.instance
-          .collection('message')
-          .withConverter<MessageModel>(
-            fromFirestore: (snapshot, _) =>
-                MessageModel.fromJson(snapshot.data()!),
-            toFirestore: (message, _) => message.toJson(),
           );
       _roomRef = FirebaseFirestore.instance
           .collection('room')
@@ -154,8 +146,8 @@ class FirebaseService {
     }
   }
 
-  Stream<QuerySnapshot<UserModel>> getUserStream(String uid) {
-    return _userRef.queryBy(UserQuery.uid, value: uid).get().asStream();
+  Stream<DocumentSnapshot<UserModel>> getUserStream(String id) {
+    return _userRef.doc(id).snapshots();
   }
 
   Future<List<UserModel>> findUsersByKey(String key) async {
@@ -252,8 +244,8 @@ class FirebaseHelper {
   static Future<UserModel?> getUser(String uid) => service.getUser(uid);
   static Future<bool> updateUser(UserModel user) => service.updateUser(user);
   static Future<void> deleteUser(UserModel user) => service.deleteUser(user);
-  static Stream<QuerySnapshot<UserModel>> getUserStream(String uid) =>
-      service.getUserStream(uid);
+  static Stream<DocumentSnapshot<UserModel>> getUserStream(String id) =>
+      service.getUserStream(id);
   static Future<List<UserModel>> findUsersByKey(String key) =>
       service.findUsersByKey(key);
 

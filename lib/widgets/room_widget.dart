@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:insoblok/services/services.dart';
-import 'package:insoblok/utils/utils.dart';
 
 import 'package:stacked/stacked.dart';
 
@@ -48,12 +46,9 @@ class RoomItemView extends StatelessWidget {
             ),
             child: Row(
               children: [
-                ClipOval(
-                  child: AIImage(
-                    viewModel.chatUser?.avatar,
-                    width: 60.0,
-                    height: 60.0,
-                  ),
+                viewModel.chatUser!.avatarStatusView(
+                  width: 60.0,
+                  height: 60.0,
                 ),
                 const SizedBox(width: 12.0),
                 Expanded(
@@ -65,7 +60,7 @@ class RoomItemView extends StatelessWidget {
                         children: [
                           Expanded(
                             child: Text(
-                              '${viewModel.chatUser?.lastName} ${viewModel.chatUser?.firstName}',
+                              '${viewModel.chatUser?.fullName}',
                               style: TextStyle(
                                 fontSize: 16.0,
                                 fontWeight: FontWeight.w500,
@@ -98,19 +93,5 @@ class RoomItemView extends StatelessWidget {
         );
       },
     );
-  }
-}
-
-extension on RoomModel {
-  String? get recentDate {
-    try {
-      if (updateDate != null) {
-        var date = kFullDateTimeFormatter.parse(updateDate!);
-        return kDateMDFormatter.format(date);
-      }
-    } catch (e) {
-      logger.e(e);
-    }
-    return null;
   }
 }

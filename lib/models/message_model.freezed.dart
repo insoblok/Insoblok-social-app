@@ -16,12 +16,12 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$MessageModel {
   String? get id;
-  String? get senderId;
   String? get content;
+  String? get senderId;
+  String? get senderName;
+  String? get timestamp;
   String? get url;
-  String? get type;
-  String? get regDate;
-  String? get updateDate;
+  String? get isRead;
 
   /// Create a copy of MessageModel
   /// with the given fields replaced by the non-null parameter values.
@@ -31,33 +31,30 @@ mixin _$MessageModel {
       _$MessageModelCopyWithImpl<MessageModel>(
           this as MessageModel, _$identity);
 
-  /// Serializes this MessageModel to a JSON map.
-  Map<String, dynamic> toJson();
-
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is MessageModel &&
             (identical(other.id, id) || other.id == id) &&
+            (identical(other.content, content) || other.content == content) &&
             (identical(other.senderId, senderId) ||
                 other.senderId == senderId) &&
-            (identical(other.content, content) || other.content == content) &&
+            (identical(other.senderName, senderName) ||
+                other.senderName == senderName) &&
+            (identical(other.timestamp, timestamp) ||
+                other.timestamp == timestamp) &&
             (identical(other.url, url) || other.url == url) &&
-            (identical(other.type, type) || other.type == type) &&
-            (identical(other.regDate, regDate) || other.regDate == regDate) &&
-            (identical(other.updateDate, updateDate) ||
-                other.updateDate == updateDate));
+            (identical(other.isRead, isRead) || other.isRead == isRead));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
-      runtimeType, id, senderId, content, url, type, regDate, updateDate);
+      runtimeType, id, content, senderId, senderName, timestamp, url, isRead);
 
   @override
   String toString() {
-    return 'MessageModel(id: $id, senderId: $senderId, content: $content, url: $url, type: $type, regDate: $regDate, updateDate: $updateDate)';
+    return 'MessageModel(id: $id, content: $content, senderId: $senderId, senderName: $senderName, timestamp: $timestamp, url: $url, isRead: $isRead)';
   }
 }
 
@@ -69,12 +66,12 @@ abstract mixin class $MessageModelCopyWith<$Res> {
   @useResult
   $Res call(
       {String? id,
-      String? senderId,
       String? content,
+      String? senderId,
+      String? senderName,
+      String? timestamp,
       String? url,
-      String? type,
-      String? regDate,
-      String? updateDate});
+      String? isRead});
 }
 
 /// @nodoc
@@ -90,41 +87,41 @@ class _$MessageModelCopyWithImpl<$Res> implements $MessageModelCopyWith<$Res> {
   @override
   $Res call({
     Object? id = freezed,
-    Object? senderId = freezed,
     Object? content = freezed,
+    Object? senderId = freezed,
+    Object? senderName = freezed,
+    Object? timestamp = freezed,
     Object? url = freezed,
-    Object? type = freezed,
-    Object? regDate = freezed,
-    Object? updateDate = freezed,
+    Object? isRead = freezed,
   }) {
     return _then(_self.copyWith(
       id: freezed == id
           ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
               as String?,
+      content: freezed == content
+          ? _self.content
+          : content // ignore: cast_nullable_to_non_nullable
+              as String?,
       senderId: freezed == senderId
           ? _self.senderId
           : senderId // ignore: cast_nullable_to_non_nullable
               as String?,
-      content: freezed == content
-          ? _self.content
-          : content // ignore: cast_nullable_to_non_nullable
+      senderName: freezed == senderName
+          ? _self.senderName
+          : senderName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      timestamp: freezed == timestamp
+          ? _self.timestamp
+          : timestamp // ignore: cast_nullable_to_non_nullable
               as String?,
       url: freezed == url
           ? _self.url
           : url // ignore: cast_nullable_to_non_nullable
               as String?,
-      type: freezed == type
-          ? _self.type
-          : type // ignore: cast_nullable_to_non_nullable
-              as String?,
-      regDate: freezed == regDate
-          ? _self.regDate
-          : regDate // ignore: cast_nullable_to_non_nullable
-              as String?,
-      updateDate: freezed == updateDate
-          ? _self.updateDate
-          : updateDate // ignore: cast_nullable_to_non_nullable
+      isRead: freezed == isRead
+          ? _self.isRead
+          : isRead // ignore: cast_nullable_to_non_nullable
               as String?,
     ));
   }
@@ -136,29 +133,27 @@ class _$MessageModelCopyWithImpl<$Res> implements $MessageModelCopyWith<$Res> {
 class _MessageModel implements MessageModel {
   _MessageModel(
       {this.id,
-      this.senderId,
       this.content,
+      this.senderId,
+      this.senderName,
+      this.timestamp,
       this.url,
-      this.type,
-      this.regDate,
-      this.updateDate});
-  factory _MessageModel.fromJson(Map<String, dynamic> json) =>
-      _$MessageModelFromJson(json);
+      this.isRead});
 
   @override
   final String? id;
   @override
+  final String? content;
+  @override
   final String? senderId;
   @override
-  final String? content;
+  final String? senderName;
+  @override
+  final String? timestamp;
   @override
   final String? url;
   @override
-  final String? type;
-  @override
-  final String? regDate;
-  @override
-  final String? updateDate;
+  final String? isRead;
 
   /// Create a copy of MessageModel
   /// with the given fields replaced by the non-null parameter values.
@@ -169,36 +164,29 @@ class _MessageModel implements MessageModel {
       __$MessageModelCopyWithImpl<_MessageModel>(this, _$identity);
 
   @override
-  Map<String, dynamic> toJson() {
-    return _$MessageModelToJson(
-      this,
-    );
-  }
-
-  @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _MessageModel &&
             (identical(other.id, id) || other.id == id) &&
+            (identical(other.content, content) || other.content == content) &&
             (identical(other.senderId, senderId) ||
                 other.senderId == senderId) &&
-            (identical(other.content, content) || other.content == content) &&
+            (identical(other.senderName, senderName) ||
+                other.senderName == senderName) &&
+            (identical(other.timestamp, timestamp) ||
+                other.timestamp == timestamp) &&
             (identical(other.url, url) || other.url == url) &&
-            (identical(other.type, type) || other.type == type) &&
-            (identical(other.regDate, regDate) || other.regDate == regDate) &&
-            (identical(other.updateDate, updateDate) ||
-                other.updateDate == updateDate));
+            (identical(other.isRead, isRead) || other.isRead == isRead));
   }
 
-  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
-      runtimeType, id, senderId, content, url, type, regDate, updateDate);
+      runtimeType, id, content, senderId, senderName, timestamp, url, isRead);
 
   @override
   String toString() {
-    return 'MessageModel(id: $id, senderId: $senderId, content: $content, url: $url, type: $type, regDate: $regDate, updateDate: $updateDate)';
+    return 'MessageModel(id: $id, content: $content, senderId: $senderId, senderName: $senderName, timestamp: $timestamp, url: $url, isRead: $isRead)';
   }
 }
 
@@ -212,12 +200,12 @@ abstract mixin class _$MessageModelCopyWith<$Res>
   @useResult
   $Res call(
       {String? id,
-      String? senderId,
       String? content,
+      String? senderId,
+      String? senderName,
+      String? timestamp,
       String? url,
-      String? type,
-      String? regDate,
-      String? updateDate});
+      String? isRead});
 }
 
 /// @nodoc
@@ -234,41 +222,41 @@ class __$MessageModelCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   $Res call({
     Object? id = freezed,
-    Object? senderId = freezed,
     Object? content = freezed,
+    Object? senderId = freezed,
+    Object? senderName = freezed,
+    Object? timestamp = freezed,
     Object? url = freezed,
-    Object? type = freezed,
-    Object? regDate = freezed,
-    Object? updateDate = freezed,
+    Object? isRead = freezed,
   }) {
     return _then(_MessageModel(
       id: freezed == id
           ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
               as String?,
+      content: freezed == content
+          ? _self.content
+          : content // ignore: cast_nullable_to_non_nullable
+              as String?,
       senderId: freezed == senderId
           ? _self.senderId
           : senderId // ignore: cast_nullable_to_non_nullable
               as String?,
-      content: freezed == content
-          ? _self.content
-          : content // ignore: cast_nullable_to_non_nullable
+      senderName: freezed == senderName
+          ? _self.senderName
+          : senderName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      timestamp: freezed == timestamp
+          ? _self.timestamp
+          : timestamp // ignore: cast_nullable_to_non_nullable
               as String?,
       url: freezed == url
           ? _self.url
           : url // ignore: cast_nullable_to_non_nullable
               as String?,
-      type: freezed == type
-          ? _self.type
-          : type // ignore: cast_nullable_to_non_nullable
-              as String?,
-      regDate: freezed == regDate
-          ? _self.regDate
-          : regDate // ignore: cast_nullable_to_non_nullable
-              as String?,
-      updateDate: freezed == updateDate
-          ? _self.updateDate
-          : updateDate // ignore: cast_nullable_to_non_nullable
+      isRead: freezed == isRead
+          ? _self.isRead
+          : isRead // ignore: cast_nullable_to_non_nullable
               as String?,
     ));
   }

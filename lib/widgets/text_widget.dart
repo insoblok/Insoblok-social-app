@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 class AITextField extends StatelessWidget {
   final String? initialValue;
   final String? hintText;
+  final TextEditingController? controller;
   final double? height;
   final Widget? prefixIcon;
+  final bool autofocus;
   final void Function(String)? onChanged;
   final void Function(PointerDownEvent)? onTapOutside;
   final void Function()? onEditingComplete;
@@ -16,7 +18,9 @@ class AITextField extends StatelessWidget {
     this.initialValue,
     this.height,
     this.hintText,
+    this.controller,
     this.prefixIcon,
+    this.autofocus = false,
     this.onChanged,
     this.onTapOutside,
     this.onEditingComplete,
@@ -30,6 +34,8 @@ class AITextField extends StatelessWidget {
       height: height ?? 48.0,
       child: TextFormField(
         initialValue: initialValue,
+        controller: controller,
+        autofocus: autofocus,
         decoration: InputDecoration(
           contentPadding: EdgeInsets.only(left: 24.0),
           hintText: hintText,
@@ -43,6 +49,7 @@ class AITextField extends StatelessWidget {
         onEditingComplete: onEditingComplete,
         onFieldSubmitted: onFieldSubmitted,
         onSaved: onSaved,
+        maxLines: 1,
       ),
     );
   }

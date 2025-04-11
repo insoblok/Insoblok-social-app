@@ -64,11 +64,11 @@ class MetaMaskService {
     credentials = null;
   }
 
-  Future<String?> getWalletAddress() async {
-    if (credentials == null) return null;
-    final address = await credentials?.extractAddress();
-    return address?.hex;
-  }
+  // Future<String?> getWalletAddress() async {
+  //   if (credentials == null) return null;
+  //   final address = await credentials?.extractAddress();
+  //   return address?.hex;
+  // }
 
   Future<void> disconnect() async {
     await connector.killSession();
