@@ -19,6 +19,7 @@ dependencies:
   cached_network_image: any
   flutter_svg: any
   shimmer: any
+  animated_text_kit: any
 
   logger: any
   freezed_annotation: any
@@ -48,7 +49,6 @@ dependencies:
   firebase_storage: any
   firebase_auth: any
   firebase_app_check: any
-  flutter_native_splash: ^2.4.6
 
   dio: any
   path_provider: any

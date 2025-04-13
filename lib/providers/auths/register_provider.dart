@@ -56,7 +56,7 @@ class RegisterProvider extends InSoBlokViewModel {
     if (hasError) {
       Fluttertoast.showToast(msg: modelError.toString());
     } else {
-      Routers.goToMainPage(context);
+      Routers.goToLoginPage(context);
     }
   }
 }

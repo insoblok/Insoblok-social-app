@@ -5,6 +5,7 @@ import 'package:fluro/fluro.dart' as fluro;
 import 'package:insoblok/pages/pages.dart';
 
 const kRouterBase = '/';
+const kRouterLogin = '/login';
 const kRouterRegister = '/register';
 const kRouterMain = '/main';
 const kRouterAccount = '/account';
@@ -34,9 +35,9 @@ class Navigation {
       );
     }
 
-    // * StartPage
+    // * LoginPage
     initRoute(
-      kRouterBase,
+      kRouterLogin,
       (props) => LoginPage(),
     );
 

@@ -12,12 +12,16 @@ class Routers {
     return Navigator.pushReplacementNamed(context, route, arguments: props);
   }
 
+  static void goToLoginPage(BuildContext context) {
+    _pushReplacement(context, kRouterLogin, null);
+  }
+
   static void goToRegisterPage(BuildContext context) {
     _pushReplacement(context, kRouterRegister, null);
   }
 
   static void goToMainPage(BuildContext context) {
-    _pushToRoute(context, kRouterMain, null);
+    _pushReplacement(context, kRouterMain, null);
   }
 
   static goToAccountPage(BuildContext context) {
