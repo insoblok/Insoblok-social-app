@@ -48,15 +48,22 @@ class ProfileView extends ViewModelWidget<InSoBlokProvider> {
             ),
             child: Row(
               children: [
-                AIImage(Icons.account_circle),
+                AIImage(
+                  Icons.account_circle,
+                  color: Colors.white,
+                ),
                 const SizedBox(width: 24.0),
                 Text(
                   '${AuthHelper.user?.firstName} ${AuthHelper.user?.lastName} ',
+                  style: TextStyle(
+                    color: Colors.white,
+                  ),
                 ),
                 const Spacer(),
                 AIImage(
                   Icons.arrow_forward_ios,
                   height: 14.0,
+                  color: Colors.white,
                 ),
               ],
             ),

@@ -13,6 +13,7 @@ import 'package:insoblok/locator.dart';
 import 'package:insoblok/pages/pages.dart';
 import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
+import 'package:insoblok/utils/utils.dart';
 
 class MyHttpOverrides extends HttpOverrides {
   @override
@@ -61,10 +62,10 @@ class InSoBlokApp extends StatelessWidget {
       themeMode: ThemeMode.light,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
-        scaffoldBackgroundColor: Colors.white,
+        scaffoldBackgroundColor: AIColors.appScaffoldBackground,
         useMaterial3: true,
         appBarTheme: AppBarTheme(
-          backgroundColor: Colors.blueAccent,
+          backgroundColor: AIColors.appBar,
           iconTheme: IconThemeData(
             color: Colors.white,
           ),
@@ -75,10 +76,12 @@ class InSoBlokApp extends StatelessWidget {
           ),
         ),
         bottomNavigationBarTheme: BottomNavigationBarThemeData(
-          backgroundColor: Colors.blueAccent,
+          backgroundColor: AIColors.appBar,
           type: BottomNavigationBarType.fixed,
-          selectedItemColor: Colors.white,
-          unselectedItemColor: Colors.white.withAlpha(127),
+          selectedItemColor: AIColors.appSelectedText,
+          unselectedItemColor: AIColors.appUnselectedText,
+          showSelectedLabels: false,
+          showUnselectedLabels: false,
         ),
       ),
       initialRoute: kRouterBase,

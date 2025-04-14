@@ -51,6 +51,7 @@ class ChatView extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 18.0,
                               fontWeight: FontWeight.bold,
+                              color: Colors.white,
                             ),
                           ),
                           const SizedBox(height: 8.0),

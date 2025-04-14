@@ -103,7 +103,7 @@ class AccountPage extends StatelessWidget {
                             }
                             return Container(
                               width: double.infinity,
-                              color: Colors.white,
+                              color: AIColors.appScaffoldBackground,
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 58,
                               ),
@@ -143,7 +143,12 @@ class AccountPage extends StatelessWidget {
                                     alignment: Alignment.center,
                                     child: value == AccountProviderState.done
                                         ? AIImage(viewModel.aiImageUrl)
-                                        : Text('Created AI Image'),
+                                        : Text(
+                                            'Created AI Image',
+                                            style: TextStyle(
+                                              color: Colors.white,
+                                            ),
+                                          ),
                                   ),
                                   const SizedBox(height: 50.0),
                                   InkWell(
@@ -227,7 +232,7 @@ class AccountHeaderInitView extends ViewModelWidget<AccountProvider> {
   Widget build(BuildContext context, viewModel) {
     return Container(
       width: double.infinity,
-      color: Colors.white,
+      color: AIColors.appScaffoldBackground,
       padding: const EdgeInsets.symmetric(
         vertical: 50.0,
         horizontal: 58,
@@ -255,7 +260,7 @@ class AccountHeaderLoadedView extends ViewModelWidget<AccountProvider> {
         Container(
           width: double.infinity,
           height: 52.0,
-          color: Colors.white,
+          color: AIColors.appScaffoldBackground,
           padding: const EdgeInsets.symmetric(horizontal: 58.0),
           alignment: Alignment.bottomCenter,
           child: Container(
@@ -270,7 +275,7 @@ class AccountHeaderLoadedView extends ViewModelWidget<AccountProvider> {
               height: 184.0,
               width: 60.0,
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: AIColors.appScaffoldBackground,
                 border: Border(
                   right: BorderSide(
                     width: 2.0,
@@ -284,7 +289,7 @@ class AccountHeaderLoadedView extends ViewModelWidget<AccountProvider> {
               height: 184.0,
               width: 60.0,
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: AIColors.appScaffoldBackground,
                 border: Border(
                   left: BorderSide(
                     width: 2.0,
@@ -298,7 +303,7 @@ class AccountHeaderLoadedView extends ViewModelWidget<AccountProvider> {
         Container(
           width: double.infinity,
           height: 52.0,
-          color: Colors.white,
+          color: AIColors.appScaffoldBackground,
           padding: const EdgeInsets.symmetric(horizontal: 58.0),
           child: Column(
             children: [
@@ -325,7 +330,7 @@ class AccountHeaderReadyView extends ViewModelWidget<AccountProvider> {
 
     return Container(
       width: double.infinity,
-      color: Colors.white,
+      color: AIColors.appScaffoldBackground,
       padding: const EdgeInsets.symmetric(
         horizontal: 58,
       ),
@@ -373,7 +378,7 @@ class AccountBodyInitView extends ViewModelWidget<AccountProvider> {
   Widget build(BuildContext context, viewModel) {
     return Container(
       width: double.infinity,
-      color: Colors.white,
+      color: AIColors.appScaffoldBackground,
       padding: const EdgeInsets.symmetric(
         horizontal: 58,
       ),

@@ -45,12 +45,14 @@ class MessagePage extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 14.0,
                         fontWeight: FontWeight.bold,
+                        color: Colors.white,
                       ),
                     ),
                     Text(
                       viewModel.chatUser.status ?? '',
                       style: TextStyle(
                         fontSize: 12.0,
+                        color: Colors.white,
                       ),
                     ),
                   ],

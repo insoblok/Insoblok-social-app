@@ -41,7 +41,10 @@ class RoomItemView extends StatelessWidget {
             padding: const EdgeInsets.all(16.0),
             decoration: BoxDecoration(
               border: Border(
-                top: BorderSide(width: 0.5),
+                top: BorderSide(
+                  width: 0.5,
+                  color: Colors.white,
+                ),
               ),
             ),
             child: Row(
@@ -65,6 +68,7 @@ class RoomItemView extends StatelessWidget {
                                 fontSize: 16.0,
                                 fontWeight: FontWeight.w500,
                                 overflow: TextOverflow.ellipsis,
+                                color: Colors.white,
                               ),
                               maxLines: 1,
                             ),
@@ -77,6 +81,7 @@ class RoomItemView extends StatelessWidget {
                         style: TextStyle(
                           fontSize: 13.0,
                           fontWeight: FontWeight.w300,
+                          color: Colors.white,
                         ),
                       ),
                     ],
@@ -86,6 +91,7 @@ class RoomItemView extends StatelessWidget {
                 Icon(
                   Icons.arrow_forward_ios,
                   size: 16.0,
+                  color: Colors.white,
                 ),
               ],
             ),

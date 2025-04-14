@@ -32,17 +32,16 @@ class _LoginPageState extends State<LoginPage>
       vsync: this,
     );
 
-    // Fade animation (0.0 to 1.0)
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
         parent: _controller,
         curve: Curves.easeInOut,
       ),
     );
-    // Position animation (moves up)
+
     _positionAnimation = Tween<Offset>(
-      begin: Offset(0, 0.5), // Start 50% down from final position
-      end: Offset.zero, // End at original position
+      begin: Offset(0, 0.5),
+      end: Offset.zero,
     ).animate(
       CurvedAnimation(
         parent: _controller,
@@ -50,7 +49,7 @@ class _LoginPageState extends State<LoginPage>
       ),
     );
 
-    _controller.forward(); // Start the animation
+    _controller.forward();
   }
 
   @override

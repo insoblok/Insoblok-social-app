@@ -1,13 +1,13 @@
-import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 
+import 'package:chewie/chewie.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:video_player/video_player.dart';
 
 import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
-import 'package:video_player/video_player.dart';
 
 class LoginProvider extends InSoBlokViewModel {
   late BuildContext _context;

@@ -91,6 +91,7 @@ class CreateRoomPage extends StatelessWidget {
                                   style: TextStyle(
                                     fontSize: 16.0,
                                     fontWeight: FontWeight.w500,
+                                    color: Colors.white,
                                   ),
                                 ),
                                 Text(
@@ -98,6 +99,7 @@ class CreateRoomPage extends StatelessWidget {
                                   style: TextStyle(
                                     fontSize: 13.0,
                                     fontWeight: FontWeight.w300,
+                                    color: Colors.white,
                                   ),
                                 ),
                               ],
@@ -106,7 +108,7 @@ class CreateRoomPage extends StatelessWidget {
                           const SizedBox(width: 8.0),
                           Icon(
                             Icons.check_circle,
-                            color: AIColors.borderColor,
+                            color: Colors.white,
                           ),
                         ],
                       ),

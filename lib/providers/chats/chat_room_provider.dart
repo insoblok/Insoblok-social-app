@@ -97,6 +97,7 @@ class CreateRoomProvider extends InSoBlokViewModel {
                     S.current.create_room_confirm,
                     style: TextStyle(
                       fontSize: 16.0,
+                      color: Colors.white,
                     ),
                   ),
                   const SizedBox(height: 24.0),
