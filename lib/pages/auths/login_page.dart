@@ -15,6 +15,7 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewModelBuilder<LoginProvider>.reactive(
       viewModelBuilder: () => LoginProvider(),
+      onViewModelReady: (viewModel) => viewModel.init(context),
       onViewModelReady: (viewModel) {
         viewModel.init(context);
       },
