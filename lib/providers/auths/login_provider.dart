@@ -30,6 +30,12 @@ class LoginProvider extends InSoBlokViewModel {
     super.dispose();
   }
 
+  final _walletService = WalletService();
+  WalletService get walletservice => _walletService;
+
+  final _walletConnectService = WalletConnectService();
+  WalletConnectService get walletConnectService => _walletConnectService;
+
   Future<void> init(BuildContext context) async {
     this.context = context;
 
@@ -81,4 +87,47 @@ class LoginProvider extends InSoBlokViewModel {
       }
     }
   }
+
+  Future<void> _connectMetaMask() async {
+    // Implement MetaMask connection
+  }
+
+  // Future<void> _connectWalletConnect() async {
+  //   await _walletConnect.connect();
+  //   setState(() {
+  //     _address = _walletConnect.connector.session.accounts[0];
+  //   });
+  //   _updateBalance();
+  // }
+
+  // Future<void> _createNewWallet() async {
+  //   final mnemonic = await _walletService.generateMnemonic();
+  //   final privateKey = await _walletService.getPrivateKeyFromMnemonic(mnemonic);
+  //   final address = await _walletService.getPublicKey(privateKey);
+
+  //   setState(() {
+  //     _address = address.hex;
+  //   });
+  //   _updateBalance();
+  // }
+
+  // Future<void> _updateBalance() async {
+  //   if (_address == null) return;
+
+  //   final client =
+  //       EthereumClient('https://mainnet.infura.io/v3/YOUR_PROJECT_ID');
+  //   final balance = await client.getBalance(EthereumAddress.fromHex(_address!));
+  //   setState(() {
+  //     _balance = balance.getValueInUnit(EtherUnit.ether).toStringAsFixed(4);
+  //   });
+  //   client.dispose();
+  // }
+
+  // Future<void> _disconnect() async {
+  //   await _walletConnect.disconnect();
+  //   setState(() {
+  //     _address = null;
+  //     _balance = null;
+  //   });
+  // }
 }

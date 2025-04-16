@@ -4,3 +4,5 @@ export 'color.dart';
 export 'helper.dart';
 export 'const.dart';
 export 'date.dart';
+export 'ethereum_client.dart';
+export 'secure_storage.dart';
