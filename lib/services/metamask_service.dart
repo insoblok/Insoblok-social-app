@@ -1,77 +1,60 @@
-import 'package:http/http.dart';
 import 'package:url_launcher/url_launcher.dart';
-import 'package:walletconnect_dart/walletconnect_dart.dart';
-import 'package:web3dart/web3dart.dart';
-
-import 'package:insoblok/services/services.dart';
-import 'package:insoblok/utils/utils.dart';
 
 class MetaMaskService {
-  late Client httpClient;
-  late WalletConnect connector;
-  late EthereumWalletConnectProvider provider;
-  Credentials? credentials;
-  Web3Client? client;
+  static const String _metamaskUniversalLink = 'https://metamask.app.link';
+  static const String _dappUrl = 'https://yourdapp.com';
+  static const String _callbackScheme = 'insoblok';
 
-  Future<void> connect() async {
-    httpClient = Client();
-    connector = WalletConnect(
-      bridge: 'https://bridge.walletconnect.org',
-      clientMeta: const PeerMeta(
-        name: 'InSoBlok',
-        description: 'InSoBlok for image to ai image!',
-      ),
-    );
+  /// Checks if MetaMask is installed (web) or available (mobile)
+  static Future<bool> isAvailable() async {
+    return await _canLaunchMetaMaskMobile();
+  }
 
-    // Subscribe to events
-    connector.on('connect', (session) => _onConnect(session));
-    connector.on('session_update', (payload) => _onSessionUpdate(payload));
-    connector.on('disconnect', (session) => _onDisconnect());
+  /// Connects to MetaMask and returns the wallet address
+  static Future<String> connect() async {
+    return await _connectMobile();
+  }
 
-    // Create the provider
-    provider = EthereumWalletConnectProvider(connector);
+  /// Signs a message with MetaMask
+  static Future<String> signMessage(String message) async {
+    return await _signMessageMobile(message);
+  }
 
-    // Initialize the client
-    client =
-        Web3Client('https://mainnet.infura.io/v3/$kMetamaskApiKey', httpClient);
+  /// Gets the current wallet address
+  static Future<String> getWalletAddress() async {
+    // Get from local storage in mobile
+    return ''; // Implement storage retrieval
+  }
 
-    // Check if already connected
-    if (connector.connected) {
-      // credentials = await provider.getCredentials();
-      return;
-    } else {
-      await connector.createSession(
-        // connector.createSession(
-        chainId: 1, // Ethereum mainnet
-        onDisplayUri: (uri) async {
-          // Open MetaMask app with the URI
-          await launchUrl(
-              Uri.parse('metamask://wc?uri=${Uri.encodeComponent(uri)}'));
-        },
-      );
+  // Mobile-specific implementations
+  static Future<bool> _canLaunchMetaMaskMobile() async {
+    final url = Uri.parse('$_metamaskUniversalLink/connect');
+    return await canLaunchUrl(url);
+  }
+
+  static Future<String> _connectMobile() async {
+    final callbackUrl = '$_callbackScheme://metamask';
+    final url = Uri.parse(
+        '$_metamaskUniversalLink/connect?redirect=${Uri.encodeComponent('$_dappUrl?callback=${Uri.encodeComponent(callbackUrl)}')}');
+
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
+      // Handle the response via deep link
+      return ''; // Return actual address from deep link handler
     }
+    throw Exception('Could not launch MetaMask');
   }
 
-  void _onConnect(session) {
-    credentials = session.getCredentials();
-  }
+  static Future<String> _signMessageMobile(String message) async {
+    final callbackUrl = '$_callbackScheme://sign';
+    final url = Uri.parse(
+        '$_metamaskUniversalLink/sign?message=${Uri.encodeComponent(message)}&redirect=${Uri.encodeComponent('$_dappUrl?callback=${Uri.encodeComponent(callbackUrl)}')}');
 
-  void _onSessionUpdate(payload) {
-    logger.d(payload.toString());
-  }
-
-  void _onDisconnect() {
-    credentials = null;
-  }
-
-  // Future<String?> getWalletAddress() async {
-  //   if (credentials == null) return null;
-  //   final address = await credentials?.extractAddress();
-  //   return address?.hex;
-  // }
-
-  Future<void> disconnect() async {
-    await connector.killSession();
-    _onDisconnect();
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
+      // Handle the response via deep link
+      return ''; // Return actual signature from deep link handler
+    }
+    throw Exception('Could not launch MetaMask');
   }
 }

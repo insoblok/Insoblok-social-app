@@ -1,5 +1,6 @@
-import 'package:insoblok/services/services.dart';
 import 'package:walletconnect_dart/walletconnect_dart.dart';
+
+import 'package:insoblok/services/services.dart';
 
 class WalletConnectService {
   late WalletConnect _connector;
@@ -19,7 +20,7 @@ class WalletConnectService {
       chainId: 1,
       onDisplayUri: (uri) async {
         // Show QR code or deep link
-        print(uri);
+        logger.d(uri);
       },
     );
 
@@ -40,15 +41,15 @@ class WalletConnectService {
     logger.d('Disconnected: $session');
   }
 
-  Future<String> personalSign({
-    required String message,
-    required String address,
-  }) async {
-    return await _connector.signPersonalMessage(
-      message: message,
-      address: address,
-    );
-  }
+  // Future<String> personalSign({
+  //   required String message,
+  //   required String address,
+  // }) async {
+  //   return await _connector.signPersonalMessage(
+  //     message: message,
+  //     address: address,
+  //   );
+  // }
 
   Future<void> disconnect() async {
     await _connector.killSession();

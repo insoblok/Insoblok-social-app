@@ -30,12 +30,6 @@ class LoginProvider extends InSoBlokViewModel {
     super.dispose();
   }
 
-  final _walletService = WalletService();
-  WalletService get walletservice => _walletService;
-
-  final _walletConnectService = WalletConnectService();
-  WalletConnectService get walletConnectService => _walletConnectService;
-
   Future<void> init(BuildContext context) async {
     this.context = context;
 
@@ -68,6 +62,16 @@ class LoginProvider extends InSoBlokViewModel {
 
     await runBusyFuture(() async {
       try {
+        // var isValid = await MetaMaskService.isAvailable();
+        // if (isValid) {
+        //   await MetaMaskService.connect();
+
+        //   var address = await MetaMaskService.getWalletAddress();
+        //   logger.d(address);
+        // }
+        var service = WalletService();
+        await service.connectWithWalletConnect();
+
         await AuthHelper.service.signIn();
       } catch (e) {
         setError(e);
@@ -86,10 +90,6 @@ class LoginProvider extends InSoBlokViewModel {
         Routers.goToRegisterPage(context);
       }
     }
-  }
-
-  Future<void> _connectMetaMask() async {
-    // Implement MetaMask connection
   }
 
   // Future<void> _connectWalletConnect() async {

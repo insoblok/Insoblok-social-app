@@ -8,8 +8,7 @@ class Web3AuthService {
   Future<void> connectToMetaMask() async {
     InAppWebView(
       initialUrlRequest: URLRequest(
-        url:
-            Uri.parse('https://metamask.app.link/connect?redirect=insoblok://'),
+        url: WebUri('https://metamask.app.link/connect?redirect=insoblok://'),
       ),
       onWebViewCreated: (controller) {
         _webViewController = controller;

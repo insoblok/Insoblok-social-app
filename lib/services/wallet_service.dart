@@ -1,27 +1,85 @@
-import 'package:bip39/bip39.dart' as bip39;
-import 'package:web3dart/crypto.dart';
-import 'package:web3dart/web3dart.dart';
+import 'package:insoblok/services/services.dart';
+import 'package:insoblok/utils/utils.dart';
+
+import 'package:url_launcher/url_launcher.dart';
+import 'package:walletconnect_dart/walletconnect_dart.dart';
+
+import 'package:insoblok/providers/providers.dart';
 
 class WalletService {
-  Future<String> generateMnemonic() async {
-    return bip39.generateMnemonic();
+  final EthereumProvider _ethereum = EthereumProvider(kMetamaskApiUrl);
+  WalletConnect? _connector;
+
+  Future<void> connectWithMetaMask() async {
+    await _connectMetaMaskMobile();
   }
 
-  Future<EthPrivateKey> getPrivateKeyFromMnemonic(String mnemonic) async {
-    final seed = bip39.mnemonicToSeed(mnemonic);
-    final hdWallet = EthPrivateKey.fromHex(bytesToHex(seed.sublist(0, 32)));
-    return hdWallet;
+  Future<void> connectWithWalletConnect() async {
+    _connector = WalletConnect(
+      bridge: 'https://bridge.walletconnect.org',
+      clientMeta: const PeerMeta(
+        name: 'AIAvatar',
+        description: 'A decentralized Flutter application',
+        url: kMetamaskApiUrl,
+        icons: ['https://myflutterdapp.com/icon.png'],
+      ),
+    );
+
+    await _connector!.createSession(
+      chainId: 1,
+      onDisplayUri: (uri) async {
+        // Show QR code or deep link
+        final deepLink = 'wc://wc?uri=${Uri.encodeComponent(uri)}';
+        if (await canLaunch(deepLink)) {
+          await launch(deepLink);
+        } else {
+          // Show QR code
+        }
+      },
+    );
+
+    _connector!.on('connect', (session) => _onConnect(session));
+    _connector!.on('session_update', (payload) => _onSessionUpdate(payload));
+    _connector!.on('disconnect', (session) => _onDisconnect(session));
   }
 
-  Future<EthereumAddress> getPublicKey(EthPrivateKey privateKey) async {
-    return await privateKey.extractAddress();
+  void _onConnect(dynamic session) {
+    logger.d(session);
+    final address = session.accounts[0];
+    _ethereum.connectWithPrivateKey(''); // WalletConnect manages keys
   }
 
-  Future<String> signTransaction({
-    required EthPrivateKey privateKey,
-    required Transaction transaction,
-  }) async {
-    final signature = await privateKey.signTransaction(transaction);
-    return bytesToHex(signature);
+  void _onSessionUpdate(dynamic payload) {
+    logger.d(payload);
+  }
+
+  void _onDisconnect(dynamic payload) {
+    logger.d(payload);
+  }
+
+  Future<void> _connectMetaMaskMobile() async {
+    final url = 'https://metamask.app.link/connect?redirect=insoblock://';
+    if (await canLaunch(url)) {
+      await launch(url);
+    }
+  }
+
+  Future<String> signMessage(String message) async {
+    // if (_connector != null) {
+    //   return await _connector!.signPersonalMessage(
+    //     message: message,
+    //     address: _ethereum.address!.hex,
+    //   );
+    // } else {
+    //   throw Exception('No wallet connected');
+    // }
+    throw Exception('No wallet connected');
+  }
+
+  Future<void> disconnect() async {
+    if (_connector != null) {
+      await _connector!.killSession();
+    }
+    _ethereum.dispose();
   }
 }
