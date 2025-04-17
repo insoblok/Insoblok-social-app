@@ -1,13 +1,11 @@
-import 'package:insoblok/services/services.dart';
-import 'package:insoblok/utils/utils.dart';
-
 import 'package:url_launcher/url_launcher.dart';
 import 'package:walletconnect_dart/walletconnect_dart.dart';
 
-import 'package:insoblok/providers/providers.dart';
+import 'package:insoblok/services/services.dart';
+import 'package:insoblok/utils/utils.dart';
 
 class WalletService {
-  final EthereumProvider _ethereum = EthereumProvider(kMetamaskApiUrl);
+  final EthereumService _ethereum = EthereumService(kMetamaskApiUrl);
   WalletConnect? _connector;
 
   Future<void> connectWithMetaMask() async {
@@ -18,10 +16,12 @@ class WalletService {
     _connector = WalletConnect(
       bridge: 'https://bridge.walletconnect.org',
       clientMeta: const PeerMeta(
-        name: 'AIAvatar',
+        name: 'InSoBlok',
         description: 'A decentralized Flutter application',
-        url: kMetamaskApiUrl,
-        icons: ['https://myflutterdapp.com/icon.png'],
+        url: 'https://insoblokai.firebaseapp.com/',
+        icons: [
+          'https://insoblokai.firebaseapp.com/assets/inso_logo-BZ2uTUHI.webp'
+        ],
       ),
     );
 

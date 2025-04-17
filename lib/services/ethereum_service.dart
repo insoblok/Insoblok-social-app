@@ -1,13 +1,14 @@
 import 'package:http/http.dart';
+import 'package:insoblok/locator.dart';
 import 'package:web3dart/web3dart.dart';
 
-class EthereumProvider {
+class EthereumService {
   late Web3Client _client;
   Credentials? _credentials;
   EthereumAddress? _address;
   String _rpcUrl;
 
-  EthereumProvider(this._rpcUrl) {
+  EthereumService(this._rpcUrl) {
     _client = Web3Client(_rpcUrl, Client());
   }
 
@@ -67,4 +68,8 @@ class EthereumProvider {
   void dispose() {
     _client.dispose();
   }
+}
+
+class EthereumHelper {
+  static EthereumService get service => locator<EthereumService>();
 }

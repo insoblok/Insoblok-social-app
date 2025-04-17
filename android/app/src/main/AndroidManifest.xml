@@ -58,7 +58,7 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="insoblok.social.app"
+                    android:host="insoblokai.firebaseapp.com"
                     android:scheme="insoblok" />
             </intent-filter>
         </activity>
@@ -99,7 +99,7 @@
         <intent>
             <action android:name="android.intent.action.VIEW" />
             <category android:name="android.intent.category.BROWSABLE" />
-            <data android:scheme="metamask" android:host = "insoblok.social.app" />
+            <data android:scheme="metamask" android:host = "insoblokai.firebaseapp.com" />
         </intent>
     </queries>
 </manifest>

@@ -10,3 +10,4 @@ export 'contract_service.dart';
 export 'wallet_connect_service.dart';
 export 'web3_auth_service.dart';
 export 'token_service.dart';
+export 'ethereum_service.dart';

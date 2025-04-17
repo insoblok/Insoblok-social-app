@@ -46,6 +46,7 @@ dependencies:
   web3dart: any
   url_launcher: any
   http: any
+  bip39_mnemonic: any
   # uni_links3: any
   # web_socket_channel: any
   # shared_preferences: any
