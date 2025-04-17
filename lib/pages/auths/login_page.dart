@@ -188,27 +188,31 @@ class _LoginPageState extends State<LoginPage>
                       children: [
                         const SizedBox(width: 24.0),
                         Expanded(
-                          child: OutlineButton(
-                            isBusy: viewModel.isBusy,
-                            borderColor: AIColors.yellow,
-                            onTap: viewModel.login,
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                AIImage(
-                                  AIImages.imgMetamask,
-                                  width: 28.0,
-                                ),
-                                const SizedBox(width: 24.0),
-                                Text(
-                                  S.current.login_button,
-                                  style: TextStyle(
-                                    fontSize: 16.0,
-                                    fontWeight: FontWeight.bold,
-                                    color: AIColors.yellow,
+                          child: Container(
+                            color:
+                                AIColors.appScaffoldBackground.withAlpha(216),
+                            child: OutlineButton(
+                              isBusy: viewModel.isBusy,
+                              borderColor: AIColors.yellow,
+                              onTap: viewModel.login,
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  AIImage(
+                                    AIImages.imgMetamask,
+                                    width: 28.0,
                                   ),
-                                ),
-                              ],
+                                  const SizedBox(width: 24.0),
+                                  Text(
+                                    S.current.login_button,
+                                    style: TextStyle(
+                                      fontSize: 16.0,
+                                      fontWeight: FontWeight.bold,
+                                      color: AIColors.yellow,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ),

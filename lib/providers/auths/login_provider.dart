@@ -70,8 +70,8 @@ class LoginProvider extends InSoBlokViewModel {
         //   logger.d(address);
         // }
         var service = WalletService();
-        // await service.connectWithMetaMask();
-        await service.connectWithWalletConnect();
+        await service.connectWithMetaMask();
+        // await service.connectWithWalletConnect();
 
         await AuthHelper.service.signIn();
       } catch (e) {
