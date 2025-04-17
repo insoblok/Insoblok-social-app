@@ -69,9 +69,12 @@ class LoginProvider extends InSoBlokViewModel {
         //   var address = await MetaMaskService.getWalletAddress();
         //   logger.d(address);
         // }
-        var service = WalletService();
-        await service.connectWithMetaMask();
-        // await service.connectWithWalletConnect();
+        // var service = WalletService();
+        // await service.connectWithMetaMask();
+        // // await service.connectWithWalletConnect();
+
+        var service = EthereumHelper.service;
+        await service.connectWithPrivateKey(kMetamaskApiKey);
 
         await AuthHelper.service.signIn();
       } catch (e) {

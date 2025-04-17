@@ -41,7 +41,7 @@ class TokenService {
       contract: contract,
       function: transferFunction,
       parameters: [to, amount],
-      from: await privateKey.extractAddress(),
+      from: privateKey.address,
       gasPrice: gasPrice,
       maxGas: gasLimit.toInt(),
     );

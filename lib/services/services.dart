@@ -1,4 +1,3 @@
-export 'metamask_service.dart';
 export 'logger_service.dart';
 export 'permission_service.dart';
 export 'auth_service.dart';
@@ -7,7 +6,5 @@ export 'firebase_service.dart';
 export 'message_service.dart';
 export 'wallet_service.dart';
 export 'contract_service.dart';
-export 'wallet_connect_service.dart';
-export 'web3_auth_service.dart';
 export 'token_service.dart';
 export 'ethereum_service.dart';

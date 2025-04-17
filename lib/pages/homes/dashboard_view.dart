@@ -22,6 +22,7 @@ class DashboardView extends StatelessWidget {
               Expanded(
                 child: OutlineButton(
                   isBusy: viewModel.isBusy,
+                  onTap: () => viewModel.onClickTestDemo(),
                   borderColor: AIColors.yellow,
                   child: Text(
                     'Buy 0.1\$ ETH by Metamask',

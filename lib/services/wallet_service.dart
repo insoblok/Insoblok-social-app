@@ -5,7 +5,6 @@ import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 
 class WalletService {
-  final EthereumService _ethereum = EthereumService(kMetamaskApiUrl);
   WalletConnect? _connector;
 
   Future<void> connectWithMetaMask() async {
@@ -28,10 +27,9 @@ class WalletService {
     await _connector!.createSession(
       chainId: 1,
       onDisplayUri: (uri) async {
-        // Show QR code or deep link
         final deepLink = 'wc://wc?uri=${Uri.encodeComponent(uri)}';
-        if (await canLaunch(deepLink)) {
-          await launch(deepLink);
+        if (await canLaunchUrl(Uri.parse(deepLink))) {
+          await launchUrl(Uri.parse(deepLink));
         } else {
           // Show QR code
         }
@@ -46,7 +44,8 @@ class WalletService {
   void _onConnect(dynamic session) {
     logger.d(session);
     final address = session.accounts[0];
-    _ethereum.connectWithPrivateKey(''); // WalletConnect manages keys
+    logger.d(address);
+    EthereumHelper.service.connectWithPrivateKey(kMetamaskApiKey);
   }
 
   void _onSessionUpdate(dynamic payload) {
@@ -59,8 +58,8 @@ class WalletService {
 
   Future<void> _connectMetaMaskMobile() async {
     final url = 'https://metamask.app.link/connect?redirect=insoblock://';
-    if (await canLaunch(url)) {
-      await launch(url);
+    if (await canLaunchUrl(Uri.parse(url))) {
+      await launchUrl(Uri.parse(url));
     }
   }
 
@@ -80,6 +79,5 @@ class WalletService {
     if (_connector != null) {
       await _connector!.killSession();
     }
-    _ethereum.dispose();
   }
 }

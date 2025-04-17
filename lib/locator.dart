@@ -5,10 +5,9 @@ import 'package:insoblok/services/services.dart';
 GetIt locator = GetIt.I;
 
 void setupLocator() {
-  // locator.registerSingleton(DBService());
-  locator.registerSingleton(MetaMaskService());
   locator.registerSingleton(AuthService());
   locator.registerSingleton(FirebaseService());
+  locator.registerSingleton(EthereumService());
 
   // locator.registerFactory(() => UploadedImagesVM());
 }
