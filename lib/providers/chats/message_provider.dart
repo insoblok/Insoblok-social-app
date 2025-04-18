@@ -52,6 +52,13 @@ class MessageProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  String? _balance;
+  String? get balance => _balance;
+  set balance(String? s) {
+    _balance = s;
+    notifyListeners();
+  }
+
   var textController = TextEditingController();
   var scrollController = ScrollController();
 
@@ -62,6 +69,8 @@ class MessageProvider extends InSoBlokViewModel {
     this.context = context;
     room = data.room;
     chatUser = data.chatUser;
+
+    balance = await EthereumHelper.getBalance();
 
     messageService.getMessages(room.id!).listen((messages) {
       this.messages = messages;

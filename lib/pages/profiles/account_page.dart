@@ -104,6 +104,8 @@ class AccountPage extends StatelessWidget {
                             return Container(
                               width: double.infinity,
                               color: AIColors.appScaffoldBackground,
+                              // color:
+                              //     AIColors.appScaffoldBackground.withAlpha(128),
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 58,
                               ),

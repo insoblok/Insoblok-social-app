@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 
 import 'package:insoblok/generated/l10n.dart';
+import 'package:insoblok/models/models.dart';
 import 'package:insoblok/pages/pages.dart';
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/routers/routers.dart';
@@ -23,7 +24,17 @@ class ChatView extends StatelessWidget {
           slivers: [
             SliverAppBar(
               automaticallyImplyLeading: false,
-              title: Text(S.current.chat),
+              title: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text('${AuthHelper.user?.fullName}'),
+                  const SizedBox(width: 8.0),
+                  Text(
+                    '\$${viewModel.balance ?? '---'}',
+                    style: TextStyle(fontSize: 12.0),
+                  ),
+                ],
+              ),
               pinned: true,
               actions: [
                 IconButton(

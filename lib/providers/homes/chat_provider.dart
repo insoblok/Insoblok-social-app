@@ -15,8 +15,17 @@ class ChatProvider extends InSoBlokViewModel {
   final List<RoomModel> _rooms = [];
   List<RoomModel> get rooms => _rooms;
 
+  String? _balance;
+  String? get balance => _balance;
+  set balance(String? s) {
+    _balance = s;
+    notifyListeners();
+  }
+
   Future<void> init(BuildContext context) async {
     this.context = context;
+
+    balance = await EthereumHelper.getBalance();
 
     FirebaseHelper.getRoomsStream().listen((queryRooms) {
       _rooms.clear();

@@ -203,28 +203,30 @@ class _VideoContentState extends State<VideoContent> {
             _videoPlayerController.value.isInitialized
                 ? Chewie(controller: _chewieController)
                 : Center(
-                    child: Loader(),
+                    child: Loader(color: Colors.white),
                   ),
-            Align(
-              alignment: Alignment.center,
-              child: IconButton(
-                onPressed: () {
-                  if (isPlaying) {
-                    _videoPlayerController.pause();
-                  } else {
-                    _videoPlayerController.play();
-                  }
-                  setState(() {
-                    isPlaying = !isPlaying;
-                  });
-                },
-                icon: Icon(
-                  isPlaying ? Icons.pause_circle : Icons.play_circle,
-                  color: Colors.white,
-                  size: 32.0,
+            if (_videoPlayerController.value.isInitialized) ...{
+              Align(
+                alignment: Alignment.center,
+                child: IconButton(
+                  onPressed: () {
+                    if (isPlaying) {
+                      _videoPlayerController.pause();
+                    } else {
+                      _videoPlayerController.play();
+                    }
+                    setState(() {
+                      isPlaying = !isPlaying;
+                    });
+                  },
+                  icon: Icon(
+                    isPlaying ? Icons.pause_circle : Icons.play_circle,
+                    color: Colors.white,
+                    size: 32.0,
+                  ),
                 ),
               ),
-            ),
+            },
           ],
         ),
       ),
