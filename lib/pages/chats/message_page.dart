@@ -73,6 +73,7 @@ class MessagePage extends StatelessWidget {
             children: [
               Expanded(
                 child: ListView.separated(
+                  controller: viewModel.scrollController,
                   padding: const EdgeInsets.symmetric(
                     horizontal: 12.0,
                     vertical: 24.0,
@@ -168,7 +169,7 @@ class MessagePage extends StatelessWidget {
                             ),
                             child: AITextField(
                               hintText: 'Input a message...',
-                              controller: viewModel.controller,
+                              controller: viewModel.textController,
                               onChanged: (value) => viewModel.content = value,
                               onFieldSubmitted: (value) {},
                               onSaved: (value) {},

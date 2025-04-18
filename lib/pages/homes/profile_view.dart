@@ -29,10 +29,12 @@ class ProfileView extends ViewModelWidget<InSoBlokProvider> {
             onUpdateAvatar: (result) async {
               if (result == 0) {
                 var url = await Routers.goToAccountPage(context);
-                await AuthHelper.setUser(
-                  AuthHelper.user!.copyWith(avatar: url),
-                );
-                viewModel.notifyListeners();
+                if (url != null) {
+                  await AuthHelper.setUser(
+                    AuthHelper.user!.copyWith(avatar: url),
+                  );
+                  viewModel.notifyListeners();
+                }
               }
             },
           ),

@@ -1,9 +1,11 @@
+import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
+import 'package:video_player/video_player.dart';
 
 extension MessageModelExt on MessageModel {
   Widget item(
@@ -19,7 +21,9 @@ extension MessageModelExt on MessageModel {
       case MessageModelType.image:
         result = _imageContent();
       case MessageModelType.video:
-        result = Container();
+        result = VideoContent(
+          videoUrl: url ?? 'https://',
+        );
       case MessageModelType.audio:
         result = Container();
       case MessageModelType.paid:
@@ -125,6 +129,104 @@ extension MessageModelExt on MessageModel {
         url,
         width: 180.0,
         height: 135.0,
+      ),
+    );
+  }
+}
+
+class VideoContent extends StatefulWidget {
+  final String videoUrl;
+
+  const VideoContent({
+    super.key,
+    required this.videoUrl,
+  });
+
+  @override
+  State<VideoContent> createState() => _VideoContentState();
+}
+
+class _VideoContentState extends State<VideoContent> {
+  late VideoPlayerController _videoPlayerController;
+  late ChewieController _chewieController;
+
+  bool isPlaying = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _videoPlayerController = VideoPlayerController.networkUrl(
+      Uri.parse(widget.videoUrl),
+    );
+    _videoPlayerController.addListener(() {
+      if (_videoPlayerController.value.isCompleted) {
+        setState(() {
+          isPlaying = false;
+          _videoPlayerController.seekTo(Duration(milliseconds: 0));
+        });
+      }
+    });
+    _videoPlayerController.initialize().then((data) {
+      _chewieController = ChewieController(
+        videoPlayerController: _videoPlayerController,
+        aspectRatio: _videoPlayerController.value.aspectRatio,
+        showControls: false,
+        materialProgressColors: ChewieProgressColors(
+          playedColor: Colors.red,
+          handleColor: Colors.red,
+          backgroundColor: Colors.grey,
+          bufferedColor: Colors.lightGreen,
+        ),
+      );
+
+      setState(() {});
+    });
+  }
+
+  @override
+  void dispose() {
+    _videoPlayerController.dispose();
+    _chewieController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(6.0),
+      child: SizedBox(
+        width: 180.0,
+        height: 135.0,
+        child: Stack(
+          children: [
+            _videoPlayerController.value.isInitialized
+                ? Chewie(controller: _chewieController)
+                : Center(
+                    child: Loader(),
+                  ),
+            Align(
+              alignment: Alignment.center,
+              child: IconButton(
+                onPressed: () {
+                  if (isPlaying) {
+                    _videoPlayerController.pause();
+                  } else {
+                    _videoPlayerController.play();
+                  }
+                  setState(() {
+                    isPlaying = !isPlaying;
+                  });
+                },
+                icon: Icon(
+                  isPlaying ? Icons.pause_circle : Icons.play_circle,
+                  color: Colors.white,
+                  size: 32.0,
+                ),
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

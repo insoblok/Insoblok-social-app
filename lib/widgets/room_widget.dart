@@ -73,7 +73,12 @@ class RoomItemView extends StatelessWidget {
                               maxLines: 1,
                             ),
                           ),
-                          Text('${room.recentDate}')
+                          Text(
+                            '${room.recentDate}',
+                            style: TextStyle(
+                              color: Colors.white,
+                            ),
+                          )
                         ],
                       ),
                       Text(
