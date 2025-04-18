@@ -31,12 +31,16 @@ class EthereumService with ListenableServiceMixin {
   void init(String rpcUrl) async {
     _rpcUrlRx.value = rpcUrl;
     _clientRx.value = Web3Client(rpcUrl, Client());
+
+    notifyListeners();
   }
 
   Future<void> connectWithPrivateKey(String privateKey) async {
     _credentialsRx.value = EthPrivateKey.fromHex(privateKey);
     _addressRx.value = credentials?.address;
     logger.d(address);
+
+    notifyListeners();
   }
 
   Future<String?> getBalance() async {
@@ -86,6 +90,10 @@ class EthereumService with ListenableServiceMixin {
 
 class EthereumHelper {
   static EthereumService get service => locator<EthereumService>();
+
+  static Web3Client? get client => service.client;
+  static EthereumAddress? get address => service.address;
+  static Credentials? get credentials => service.credentials;
 
   static void init(String rpcUrl) => service.init(rpcUrl);
   static Future<void> connectWithPrivateKey(String privateKey) =>

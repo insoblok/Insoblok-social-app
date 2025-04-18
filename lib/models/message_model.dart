@@ -16,19 +16,13 @@ abstract class MessageModel with _$MessageModel {
     String? senderName,
     String? timestamp,
     String? url,
+    String? type,
     String? isRead,
   }) = _MessageModel;
 
   factory MessageModel.fromJson(Map<String, dynamic> json) {
     return _$MessageModelFromJson(json);
   }
-}
-
-enum MessageModelType {
-  text,
-  image,
-  video,
-  audio,
 }
 
 extension MessageModelExt on MessageModel {
@@ -42,5 +36,31 @@ extension MessageModelExt on MessageModel {
       logger.e(e);
     }
     return kDateHMFormatter.format(DateTime.now());
+  }
+}
+
+enum MessageModelType {
+  text,
+  image,
+  video,
+  audio,
+  paid,
+}
+
+extension MessageModelTypeExt on MessageModelType {
+  static MessageModelType fromString(String data) {
+    switch (data) {
+      case 'text':
+        return MessageModelType.text;
+      case 'image':
+        return MessageModelType.image;
+      case 'video':
+        return MessageModelType.video;
+      case 'audio':
+        return MessageModelType.audio;
+      case 'paid':
+        return MessageModelType.paid;
+    }
+    return MessageModelType.text;
   }
 }

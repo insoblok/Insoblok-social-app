@@ -21,6 +21,7 @@ mixin _$MessageModel {
   String? get senderName;
   String? get timestamp;
   String? get url;
+  String? get type;
   String? get isRead;
 
   /// Create a copy of MessageModel
@@ -45,16 +46,17 @@ mixin _$MessageModel {
             (identical(other.timestamp, timestamp) ||
                 other.timestamp == timestamp) &&
             (identical(other.url, url) || other.url == url) &&
+            (identical(other.type, type) || other.type == type) &&
             (identical(other.isRead, isRead) || other.isRead == isRead));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType, id, content, senderId, senderName, timestamp, url, isRead);
+  int get hashCode => Object.hash(runtimeType, id, content, senderId,
+      senderName, timestamp, url, type, isRead);
 
   @override
   String toString() {
-    return 'MessageModel(id: $id, content: $content, senderId: $senderId, senderName: $senderName, timestamp: $timestamp, url: $url, isRead: $isRead)';
+    return 'MessageModel(id: $id, content: $content, senderId: $senderId, senderName: $senderName, timestamp: $timestamp, url: $url, type: $type, isRead: $isRead)';
   }
 }
 
@@ -71,6 +73,7 @@ abstract mixin class $MessageModelCopyWith<$Res> {
       String? senderName,
       String? timestamp,
       String? url,
+      String? type,
       String? isRead});
 }
 
@@ -92,6 +95,7 @@ class _$MessageModelCopyWithImpl<$Res> implements $MessageModelCopyWith<$Res> {
     Object? senderName = freezed,
     Object? timestamp = freezed,
     Object? url = freezed,
+    Object? type = freezed,
     Object? isRead = freezed,
   }) {
     return _then(_self.copyWith(
@@ -119,6 +123,10 @@ class _$MessageModelCopyWithImpl<$Res> implements $MessageModelCopyWith<$Res> {
           ? _self.url
           : url // ignore: cast_nullable_to_non_nullable
               as String?,
+      type: freezed == type
+          ? _self.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as String?,
       isRead: freezed == isRead
           ? _self.isRead
           : isRead // ignore: cast_nullable_to_non_nullable
@@ -138,6 +146,7 @@ class _MessageModel implements MessageModel {
       this.senderName,
       this.timestamp,
       this.url,
+      this.type,
       this.isRead});
 
   @override
@@ -152,6 +161,8 @@ class _MessageModel implements MessageModel {
   final String? timestamp;
   @override
   final String? url;
+  @override
+  final String? type;
   @override
   final String? isRead;
 
@@ -177,16 +188,17 @@ class _MessageModel implements MessageModel {
             (identical(other.timestamp, timestamp) ||
                 other.timestamp == timestamp) &&
             (identical(other.url, url) || other.url == url) &&
+            (identical(other.type, type) || other.type == type) &&
             (identical(other.isRead, isRead) || other.isRead == isRead));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType, id, content, senderId, senderName, timestamp, url, isRead);
+  int get hashCode => Object.hash(runtimeType, id, content, senderId,
+      senderName, timestamp, url, type, isRead);
 
   @override
   String toString() {
-    return 'MessageModel(id: $id, content: $content, senderId: $senderId, senderName: $senderName, timestamp: $timestamp, url: $url, isRead: $isRead)';
+    return 'MessageModel(id: $id, content: $content, senderId: $senderId, senderName: $senderName, timestamp: $timestamp, url: $url, type: $type, isRead: $isRead)';
   }
 }
 
@@ -205,6 +217,7 @@ abstract mixin class _$MessageModelCopyWith<$Res>
       String? senderName,
       String? timestamp,
       String? url,
+      String? type,
       String? isRead});
 }
 
@@ -227,6 +240,7 @@ class __$MessageModelCopyWithImpl<$Res>
     Object? senderName = freezed,
     Object? timestamp = freezed,
     Object? url = freezed,
+    Object? type = freezed,
     Object? isRead = freezed,
   }) {
     return _then(_MessageModel(
@@ -253,6 +267,10 @@ class __$MessageModelCopyWithImpl<$Res>
       url: freezed == url
           ? _self.url
           : url // ignore: cast_nullable_to_non_nullable
+              as String?,
+      type: freezed == type
+          ? _self.type
+          : type // ignore: cast_nullable_to_non_nullable
               as String?,
       isRead: freezed == isRead
           ? _self.isRead

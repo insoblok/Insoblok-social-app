@@ -1,3 +1,6 @@
+import 'package:flutter/foundation.dart';
+
+import 'package:get_ip_address/get_ip_address.dart';
 import 'package:observable_ish/observable_ish.dart';
 import 'package:stacked/stacked.dart';
 import 'package:walletconnect_dart/walletconnect_dart.dart';
@@ -45,16 +48,29 @@ class AuthService with ListenableServiceMixin {
       if (uid != null) {
         logger.d(uid);
         var user = await FirebaseHelper.getUser(uid);
+
+        var ipAddress = IpAddress(type: RequestType.json);
+        var data = await ipAddress.getIpAddress();
+
         if (user == null) {
           user = UserModel(
             uid: uid,
+            walletAddress: EthereumHelper.address?.hex,
             regdate: kFullDateTimeFormatter.format(DateTime.now().toUtc()),
             updateDate: kFullDateTimeFormatter.format(DateTime.now().toUtc()),
+            ipAddress: kDebugMode ? kDefaultIpAddress : data['ip'],
           );
           user = await FirebaseHelper.createUser(user);
           if (user == null) {
             return null;
           }
+        } else {
+          user = user.copyWith(
+            walletAddress: EthereumHelper.address?.hex,
+            updateDate: kFullDateTimeFormatter.format(DateTime.now().toUtc()),
+            ipAddress: kDebugMode ? kDefaultIpAddress : data['ip'],
+          );
+          await FirebaseHelper.updateUser(user);
         }
         _userRx.value = user;
         return user;

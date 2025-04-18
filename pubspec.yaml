@@ -46,13 +46,6 @@ dependencies:
   web3dart: any
   url_launcher: any
   http: any
-  bip39_mnemonic: any
-  # uni_links3: any
-  # web_socket_channel: any
-  # shared_preferences: any
-  # flutter_secure_storage: any
-  # bip39: any
-  # eth_sig_util: any
 
   firebase_analytics: any
   cloud_firestore: any

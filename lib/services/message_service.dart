@@ -36,6 +36,7 @@ class MessageService {
       'sender_id': AuthHelper.user?.uid,
       'sender_name': AuthHelper.user?.fullName ?? 'Anonymous',
       'timestamp': kFullDateTimeFormatter.format(DateTime.now().toUtc()),
+      'type': 'text',
     });
   }
 
@@ -54,6 +55,64 @@ class MessageService {
       'sender_name': AuthHelper.user?.fullName ?? 'Anonymous',
       'timestamp': kFullDateTimeFormatter.format(DateTime.now().toUtc()),
       'url': imageUrl,
+      'type': 'image',
+    });
+  }
+
+  // Send an video message
+  Future<void> sendVideoMessage({
+    required String chatRoomId,
+    required String videoUrl,
+  }) async {
+    await _firestore
+        .collection('chatRooms')
+        .doc(chatRoomId)
+        .collection('messages')
+        .add({
+      'content': '[Video]',
+      'sender_id': AuthHelper.user?.uid,
+      'sender_name': AuthHelper.user?.fullName ?? 'Anonymous',
+      'timestamp': kFullDateTimeFormatter.format(DateTime.now().toUtc()),
+      'url': videoUrl,
+      'type': 'video',
+    });
+  }
+
+  // Send an audio message
+  Future<void> sendAudioMessage({
+    required String chatRoomId,
+    required String videoUrl,
+  }) async {
+    await _firestore
+        .collection('chatRooms')
+        .doc(chatRoomId)
+        .collection('messages')
+        .add({
+      'content': '[Audio]',
+      'sender_id': AuthHelper.user?.uid,
+      'sender_name': AuthHelper.user?.fullName ?? 'Anonymous',
+      'timestamp': kFullDateTimeFormatter.format(DateTime.now().toUtc()),
+      'url': videoUrl,
+      'type': 'audio',
+    });
+  }
+
+  // Send an audio message
+  Future<void> sendPaidMessage({
+    required String chatRoomId,
+    required String videoUrl,
+  }) async {
+    await _firestore
+        .collection('chatRooms')
+        .doc(chatRoomId)
+        .collection('messages')
+        .add({
+      'content': '[Paid]',
+      'sender_id': AuthHelper.user?.uid,
+      'sender_name': AuthHelper.user?.fullName ?? 'Anonymous',
+      'timestamp': kFullDateTimeFormatter.format(DateTime.now().toUtc()),
+      'url': videoUrl,
+      'type': 'paid',
     });
   }
 
