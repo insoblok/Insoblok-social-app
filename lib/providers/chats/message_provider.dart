@@ -5,12 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:chewie/chewie.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:insoblok/widgets/widgets.dart';
 import 'package:video_player/video_player.dart';
 
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/pages/pages.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
+import 'package:web3dart/web3dart.dart';
 
 class MessageProvider extends InSoBlokViewModel {
   late BuildContext _context;
@@ -198,9 +200,42 @@ class MessageProvider extends InSoBlokViewModel {
     }
   }
 
-  Future<void> onRecordAudio() async {}
+  Future<void> onRecordAudio() async {
+    Fluttertoast.showToast(msg: 'No support this feature yet!');
+  }
 
-  Future<void> onPaidEth() async {}
+  Future<void> onPaidEth() async {
+    if (isBusy) return;
+    clearErrors();
+
+    isAddPop = false;
+
+    var coin = await _showCoinOption();
+    if (coin != null) {
+      try {
+        await EthereumHelper.sendTransaction(
+          to: chatUser.walletAddress!,
+          amount: coin.amount!,
+          gasPrice: EtherAmount.fromInt(EtherUnit.szabo, 1),
+          gasLimit: 1,
+        );
+      } catch (e) {
+        logger.e(e);
+        setError(e);
+      } finally {
+        notifyListeners();
+      }
+
+      if (hasError) {
+        Fluttertoast.showToast(msg: modelError.toString());
+      } else {
+        await messageService.sendPaidMessage(
+          chatRoomId: room.id!,
+          coin: coin,
+        );
+      }
+    }
+  }
 
   Future<ImageSource?> _showMediaSource() async {
     return await showModalBottomSheet<ImageSource>(
@@ -343,6 +378,81 @@ class MessageProvider extends InSoBlokViewModel {
           },
         ) ??
         false;
+  }
+
+  Future<CoinModel?> _showCoinOption() async {
+    return await showDialog<CoinModel>(
+      context: context,
+      builder: (context) {
+        var coin = CoinModel(
+          icon: AIImages.icEthereumGold,
+          type: 'ETH',
+          amount: '1',
+          unit: 'szabo',
+        );
+        return Scaffold(
+          backgroundColor: Colors.transparent,
+          body: Center(
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 24.0),
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: AIColors.appBar,
+                borderRadius: BorderRadius.circular(12.0),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    children: [
+                      AIImage(
+                        coin.icon,
+                        width: 32.0,
+                        height: 32.0,
+                      ),
+                      const SizedBox(width: 8.0),
+                      Text(
+                        coin.type ?? 'ETH',
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const Spacer(),
+                      IconButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        icon: Icon(Icons.close, color: Colors.white),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16.0),
+                  Row(
+                    children: [
+                      Text(
+                        'Unit : szabo',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      const Spacer(),
+                      Text(
+                        'Amount : 1',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16.0),
+                  TextFillButton(
+                    text: 'Confirm',
+                    color: AIColors.appScaffoldBackground,
+                    onTap: () => Navigator.of(context).pop(coin),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
   }
 }
 

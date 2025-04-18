@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:insoblok/models/models.dart';
@@ -81,7 +83,7 @@ class MessageService {
   // Send an audio message
   Future<void> sendAudioMessage({
     required String chatRoomId,
-    required String videoUrl,
+    required String audioUrl,
   }) async {
     await _firestore
         .collection('chatRooms')
@@ -92,7 +94,7 @@ class MessageService {
       'sender_id': AuthHelper.user?.uid,
       'sender_name': AuthHelper.user?.fullName ?? 'Anonymous',
       'timestamp': kFullDateTimeFormatter.format(DateTime.now().toUtc()),
-      'url': videoUrl,
+      'url': audioUrl,
       'type': 'audio',
     });
   }
@@ -100,18 +102,17 @@ class MessageService {
   // Send an audio message
   Future<void> sendPaidMessage({
     required String chatRoomId,
-    required String videoUrl,
+    required CoinModel coin,
   }) async {
     await _firestore
         .collection('chatRooms')
         .doc(chatRoomId)
         .collection('messages')
         .add({
-      'content': '[Paid]',
+      'content': jsonEncode(coin.toJson()),
       'sender_id': AuthHelper.user?.uid,
       'sender_name': AuthHelper.user?.fullName ?? 'Anonymous',
       'timestamp': kFullDateTimeFormatter.format(DateTime.now().toUtc()),
-      'url': videoUrl,
       'type': 'paid',
     });
   }

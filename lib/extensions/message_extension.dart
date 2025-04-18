@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 
@@ -27,7 +29,7 @@ extension MessageModelExt on MessageModel {
       case MessageModelType.audio:
         result = Container();
       case MessageModelType.paid:
-        result = Container();
+        result = _paidContent();
     }
 
     return Align(
@@ -64,7 +66,21 @@ extension MessageModelExt on MessageModel {
                     : AIColors.appBar.withAlpha(204),
                 borderRadius: BorderRadius.circular(12),
               ),
-              child: result,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  result,
+                  SizedBox(height: 4),
+                  Text(
+                    messageTime,
+                    style: TextStyle(
+                      fontSize: 9,
+                      color: Colors.white70,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           if (isMe) ...{
@@ -85,40 +101,13 @@ extension MessageModelExt on MessageModel {
   Widget _textContent() {
     final isMe = senderId == AuthHelper.user?.uid;
 
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (!isMe)
-              Text(
-                '$senderName',
-                style: TextStyle(
-                  fontSize: 10.0,
-                  color: Colors.white,
-                ),
-              ),
-            Text(
-              '$content',
-              style: TextStyle(
-                fontSize: 13.0,
-                color: Colors.white,
-                fontWeight: isMe ? FontWeight.w400 : FontWeight.w500,
-              ),
-            ),
-          ],
-        ),
-        SizedBox(height: 4),
-        Text(
-          messageTime,
-          style: TextStyle(
-            fontSize: 9,
-            color: Colors.white70,
-          ),
-        ),
-      ],
+    return Text(
+      '$content',
+      style: TextStyle(
+        fontSize: 13.0,
+        color: Colors.white,
+        fontWeight: isMe ? FontWeight.w400 : FontWeight.w500,
+      ),
     );
   }
 
@@ -130,6 +119,63 @@ extension MessageModelExt on MessageModel {
         width: 180.0,
         height: 135.0,
       ),
+    );
+  }
+
+  Widget _paidContent() {
+    var coin = CoinModel.fromJson(jsonDecode(this.content ?? '{}'));
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          'Transaction',
+          style: TextStyle(
+            fontSize: 11.0,
+            color: Colors.white,
+          ),
+        ),
+        const SizedBox(height: 8.0),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            AIImage(
+              AIImages.icEthereumGold,
+              width: 36.0,
+              height: 36.0,
+            ),
+            const SizedBox(width: 8.0),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '${coin.amount} ${coin.type}',
+                  style: TextStyle(
+                    fontSize: 14.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
+                ),
+                Text(
+                  '0.0001 USD',
+                  style: TextStyle(
+                    fontSize: 11.0,
+                    color: Colors.white,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+        const SizedBox(height: 8.0),
+        Text(
+          'Paid',
+          style: TextStyle(
+            fontSize: 11.0,
+            fontWeight: FontWeight.bold,
+            color: Colors.white,
+          ),
+        ),
+      ],
     );
   }
 }

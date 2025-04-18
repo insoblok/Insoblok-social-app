@@ -7,4 +7,6 @@ class AIImages {
   static String imgBackSplash = 'assets/images/back_splash.jpg';
 
   static String imgMetamask = 'assets/images/metamask.svg';
+
+  static String icEthereumGold = 'assets/images/ic_ethereum_gold.png';
 }
