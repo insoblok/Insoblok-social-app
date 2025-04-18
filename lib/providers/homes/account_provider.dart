@@ -132,7 +132,7 @@ return null;
       );
       return;
     }
-    var url = await FirebaseHelper.uploadImage(imageUrl: aiImageUrl!);
+    var url = await FirebaseHelper.uploadImageFromUrl(imageUrl: aiImageUrl!);
     Navigator.of(context).pop(url);
   }
 

@@ -28,10 +28,10 @@ dependencies:
   freezed_annotation: any
   json_annotation: any
 
-  file_picker: any
   permission_handler: any
   fluttertoast: any
   get_ip_address: any
+  image_picker: any
 
   fluro: any
   sqflite: any

@@ -37,7 +37,7 @@ class AITextField extends StatelessWidget {
         controller: controller,
         autofocus: autofocus,
         decoration: InputDecoration(
-          contentPadding: EdgeInsets.only(left: 24.0),
+          contentPadding: EdgeInsets.symmetric(horizontal: 24.0),
           hintText: hintText,
           prefixIcon: prefixIcon,
           border: OutlineInputBorder(

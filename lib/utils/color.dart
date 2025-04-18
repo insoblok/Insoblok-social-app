@@ -6,6 +6,7 @@ class AIColors {
   static Color appAccent = Color(0xff4ba3e5);
   static Color appSelectedText = Color(0xff4ba3e5);
   static Color appUnselectedText = Color(0xff6f7e8c);
+  static Color primaryColor = Color(0xff1e2835);
 
   static Color transparent = Colors.transparent;
   static Color placeholdBackground = Color(0xEFEFEFFF);

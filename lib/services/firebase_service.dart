@@ -236,7 +236,7 @@ class FirebaseService {
     return _roomRef.snapshots();
   }
 
-  Future<String?> uploadImage({
+  Future<String?> uploadImageFromUrl({
     required String imageUrl,
     String? uid,
     String? folderName,
@@ -266,6 +266,33 @@ class FirebaseService {
       raf.writeFromSync(response.data);
       await raf.close();
 
+      final String fileName =
+          "${AuthHelper.user?.id}_${kFullFormatter.format(DateTime.now())}.jpg";
+      final String storagePath = folderName != null
+          ? 'users/${uid ?? AuthHelper.user?.uid}/$folderName/$fileName'
+          : 'users/${uid ?? AuthHelper.user?.uid}/$fileName';
+
+      final Reference storageRef = _storage.ref().child(storagePath);
+
+      // Upload the file
+      final UploadTask uploadTask = storageRef.putFile(file);
+      final TaskSnapshot snapshot = await uploadTask;
+
+      // Get download URL
+      final String downloadUrl = await snapshot.ref.getDownloadURL();
+      return downloadUrl;
+    } catch (e) {
+      logger.e('Error uploading image: $e');
+      return null;
+    }
+  }
+
+  Future<String?> uploadFile({
+    required File file,
+    String? uid,
+    String? folderName,
+  }) async {
+    try {
       final String fileName =
           "${AuthHelper.user?.id}_${kFullFormatter.format(DateTime.now())}.jpg";
       final String storagePath = folderName != null
@@ -323,13 +350,24 @@ class FirebaseHelper {
   static Stream<QuerySnapshot<RoomModel>> getRoomsStream() =>
       service.getRoomsStream();
 
-  static Future<String?> uploadImage({
+  static Future<String?> uploadImageFromUrl({
     required String imageUrl,
     String? uid,
     String? folderName,
   }) =>
-      service.uploadImage(
+      service.uploadImageFromUrl(
         imageUrl: imageUrl,
+        uid: uid,
+        folderName: folderName,
+      );
+
+  static Future<String?> uploadFile({
+    required File file,
+    String? uid,
+    String? folderName,
+  }) =>
+      service.uploadFile(
+        file: file,
         uid: uid,
         folderName: folderName,
       );

@@ -1,4 +1,8 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:image_picker/image_picker.dart';
 
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/pages/pages.dart';
@@ -35,6 +39,13 @@ class MessageProvider extends InSoBlokViewModel {
   set messages(List<MessageModel> data) {
     _messages.clear();
     _messages.addAll(data);
+    notifyListeners();
+  }
+
+  bool _isAddPop = false;
+  bool get isAddPop => _isAddPop;
+  set isAddPop(bool f) {
+    _isAddPop = f;
     notifyListeners();
   }
 
@@ -79,61 +90,122 @@ class MessageProvider extends InSoBlokViewModel {
     }
   }
 
-  Widget buildMessageItem(MessageModel message) {
-    final isMe = message.senderId == user?.uid;
+  final ImagePicker _picker = ImagePicker();
+  XFile? _selectedFile;
+  XFile? get selectedFile => _selectedFile;
+  set selectedFile(XFile? f) {
+    _selectedFile = f;
+    notifyListeners();
+  }
 
-    return Align(
-      alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
-      child: Container(
-        margin: EdgeInsets.symmetric(vertical: 4, horizontal: 8),
-        padding: EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: isMe
-              ? Theme.of(context).primaryColor.withAlpha(204)
-              : Colors.grey[300],
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            if (!isMe)
-              Text(
-                '${message.senderName}',
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: isMe ? Colors.white : Colors.black,
+  Future<void> onPickerImage() async {
+    if (isBusy) return;
+    clearErrors();
+
+    isAddPop = false;
+
+    var isAllowed = await PermissionService.requestGalleryPermission();
+    if (isAllowed ?? false) {
+      final image = await _picker.pickImage(source: ImageSource.gallery);
+      if (image != null) {
+        selectedFile = image;
+        var isSend = await _showPreview();
+        if (isSend) {
+          var imageUrl = await FirebaseHelper.uploadFile(
+            file: File(image.path),
+            folderName: 'message',
+          );
+          if (imageUrl != null) {
+            await messageService.sendImageMessage(
+              chatRoomId: room.id!,
+              imageUrl: imageUrl,
+            );
+          }
+        }
+      } else {
+        Fluttertoast.showToast(msg: 'No selected image!');
+      }
+    } else {
+      Fluttertoast.showToast(msg: 'Permission Denided!');
+    }
+  }
+
+  Future<void> onPickerVideo() async {}
+
+  Future<void> onRecordAudio() async {}
+
+  Future<void> onPaidEth() async {}
+
+  Future<bool> _showPreview({
+    bool isImage = true,
+  }) async {
+    return await showDialog<bool>(
+          context: context,
+          builder: (context) {
+            return Scaffold(
+              backgroundColor: Colors.transparent,
+              body: Center(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12.0),
+                  child: Container(
+                    color: AIColors.appBar,
+                    padding: const EdgeInsets.all(8),
+                    child: Stack(
+                      children: [
+                        AIImage(
+                          width: 240.0,
+                          height: 240.0,
+                          File(selectedFile!.path),
+                          fit: BoxFit.contain,
+                        ),
+                        Container(
+                          width: 240.0,
+                          height: 240.0,
+                          alignment: Alignment.centerRight,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              InkWell(
+                                onTap: () => Navigator.of(context).pop(),
+                                child: Container(
+                                  width: 36.0,
+                                  height: 36.0,
+                                  decoration: BoxDecoration(
+                                    color: AIColors.primaryColor.withAlpha(204),
+                                    borderRadius: BorderRadius.circular(18.0),
+                                  ),
+                                  child: Icon(
+                                    Icons.close,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                              InkWell(
+                                onTap: () => Navigator.of(context).pop(true),
+                                child: Container(
+                                  width: 36.0,
+                                  height: 36.0,
+                                  decoration: BoxDecoration(
+                                    color: AIColors.primaryColor.withAlpha(204),
+                                    borderRadius: BorderRadius.circular(18.0),
+                                  ),
+                                  child: Icon(
+                                    Icons.send,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
-            // if (message.url != null)
-            //   Padding(
-            //     padding: EdgeInsets.only(bottom: 8),
-            //     child: ClipRRect(
-            //       borderRadius: BorderRadius.circular(8),
-            //       child: Image.network(
-            //         message.imageUrl!,
-            //         width: 200,
-            //         height: 200,
-            //         fit: BoxFit.cover,
-            //       ),
-            //     ),
-            //   ),
-            Text(
-              '${message.content}',
-              style: TextStyle(
-                color: isMe ? Colors.white : Colors.black,
-              ),
-            ),
-            SizedBox(height: 4),
-            Text(
-              message.messageTime,
-              style: TextStyle(
-                fontSize: 10,
-                color: isMe ? Colors.white70 : Colors.black54,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+            );
+          },
+        ) ??
+        false;
   }
 }
