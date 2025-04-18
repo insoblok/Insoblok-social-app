@@ -43,25 +43,13 @@ class MessagePage extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        Text(
-                          viewModel.chatUser.fullName,
-                          style: TextStyle(
-                            fontSize: 14.0,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                        const SizedBox(width: 8.0),
-                        Text(
-                          '\$${viewModel.balance ?? ' ---'}',
-                          style: TextStyle(
-                            fontSize: 12.0,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
+                    Text(
+                      viewModel.chatUser.fullName,
+                      style: TextStyle(
+                        fontSize: 14.0,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                      ),
                     ),
                     Text(
                       viewModel.chatUser.status ?? '',
