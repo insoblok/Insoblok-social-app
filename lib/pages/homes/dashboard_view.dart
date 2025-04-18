@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 
 import 'package:insoblok/providers/providers.dart';
-import 'package:insoblok/utils/utils.dart';
-import 'package:insoblok/widgets/widgets.dart';
 
 class DashboardView extends StatelessWidget {
   const DashboardView({super.key});
@@ -44,39 +42,39 @@ class DashboardView extends StatelessWidget {
                 //   ),
                 // ),
                 // const SizedBox(height: 24.0),
-                AITextField(
-                  hintText: 'Ethereum Address',
-                  prefixIcon: Icon(Icons.account_balance_wallet),
-                  onChanged: (value) => viewModel.address = value,
-                ),
-                const SizedBox(height: 24.0),
-                AITextField(
-                  hintText: 'Ethereum Amount (wei)',
-                  prefixIcon: Icon(Icons.code_rounded),
-                  onChanged: (value) => viewModel.amount = value,
-                ),
-                const SizedBox(height: 40.0),
-                Row(
-                  children: [
-                    const SizedBox(width: 32.0),
-                    Expanded(
-                      child: OutlineButton(
-                        isBusy: viewModel.isBusy,
-                        onTap: () => viewModel.onClickTestDemo(),
-                        borderColor: AIColors.yellow,
-                        child: Text(
-                          'Buy ETH by Metamask',
-                          style: TextStyle(
-                            fontSize: 14.0,
-                            fontWeight: FontWeight.bold,
-                            color: AIColors.yellow,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(width: 32.0),
-                  ],
-                ),
+                // AITextField(
+                //   hintText: 'Ethereum Address',
+                //   prefixIcon: Icon(Icons.account_balance_wallet),
+                //   onChanged: (value) => viewModel.address = value,
+                // ),
+                // const SizedBox(height: 24.0),
+                // AITextField(
+                //   hintText: 'Ethereum Amount (wei)',
+                //   prefixIcon: Icon(Icons.code_rounded),
+                //   onChanged: (value) => viewModel.amount = value,
+                // ),
+                // const SizedBox(height: 40.0),
+                // Row(
+                //   children: [
+                //     const SizedBox(width: 32.0),
+                //     Expanded(
+                //       child: OutlineButton(
+                //         isBusy: viewModel.isBusy,
+                //         onTap: () => viewModel.onClickTestDemo(),
+                //         borderColor: AIColors.yellow,
+                //         child: Text(
+                //           'Buy ETH by Metamask',
+                //           style: TextStyle(
+                //             fontSize: 14.0,
+                //             fontWeight: FontWeight.bold,
+                //             color: AIColors.yellow,
+                //           ),
+                //         ),
+                //       ),
+                //     ),
+                //     const SizedBox(width: 32.0),
+                //   ],
+                // ),
               ],
             ),
           ),
