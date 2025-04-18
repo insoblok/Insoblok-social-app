@@ -148,7 +148,7 @@ extension MessageModelExt on MessageModel {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '${coin.amount} ${coin.type}',
+                  '${coin.amount} ${coin.unit?.toUpperCase()}',
                   style: TextStyle(
                     fontSize: 14.0,
                     fontWeight: FontWeight.bold,
@@ -156,7 +156,7 @@ extension MessageModelExt on MessageModel {
                   ),
                 ),
                 Text(
-                  '0.0001 USD',
+                  '0.0016 USD',
                   style: TextStyle(
                     fontSize: 11.0,
                     color: Colors.white,
