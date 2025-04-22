@@ -10,6 +10,20 @@ class StoryDetailProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  List<String> images = [
+    AIImages.imgBackDashboard,
+    AIImages.imgBackChat,
+    AIImages.imgBackLike,
+    AIImages.imgBackProfile,
+  ];
+
+  int _currentIndex = 0;
+  int get currentIndex => _currentIndex;
+  set currentIndex(int i) {
+    _currentIndex = i;
+    notifyListeners();
+  }
+
   Future<void> init(BuildContext context) async {
     this.context = context;
   }

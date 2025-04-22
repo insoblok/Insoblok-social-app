@@ -171,3 +171,120 @@ class UserInfoWidget extends StatelessWidget {
     );
   }
 }
+
+class AddActionCardView extends StatelessWidget {
+  final void Function()? onAdd;
+
+  const AddActionCardView({super.key, this.onAdd});
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onAdd,
+      child: Container(
+        margin: const EdgeInsets.only(right: 16.0),
+        padding: const EdgeInsets.all(12.0),
+        width: 80.0,
+        height: 120.0,
+        decoration: BoxDecoration(
+          color: AIColors.appScaffoldBackground,
+          borderRadius: BorderRadius.circular(8.0),
+          boxShadow: [
+            BoxShadow(
+              blurRadius: 5.0,
+              color: Colors.black26,
+              offset: Offset(1, 1),
+            ),
+            BoxShadow(
+              blurRadius: 5.0,
+              color: Colors.white24,
+              offset: Offset(-1, -1),
+            ),
+          ],
+        ),
+        child: Icon(Icons.add_circle_outline, color: Colors.white),
+      ),
+    );
+  }
+}
+
+class UserCardView extends StatelessWidget {
+  const UserCardView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(right: 16.0),
+      padding: const EdgeInsets.all(12.0),
+      width: 96.0,
+      height: 120.0,
+      decoration: BoxDecoration(
+        color: AIColors.appScaffoldBackground,
+        borderRadius: BorderRadius.circular(8.0),
+        boxShadow: [
+          BoxShadow(
+            blurRadius: 5.0,
+            color: Colors.black26,
+            offset: Offset(1, 1),
+          ),
+          BoxShadow(
+            blurRadius: 5.0,
+            color: Colors.white24,
+            offset: Offset(-1, -1),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(24.0),
+            child: AIImage('https://', width: 44.0, height: 44.0),
+          ),
+          const SizedBox(height: 8.0),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Kenta',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 12.0,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+              const SizedBox(width: 8.0),
+              AIImage(
+                Icons.message,
+                width: 18.0,
+                height: 18.0,
+                color: Colors.white,
+              ),
+            ],
+          ),
+          const SizedBox(height: 8.0),
+          Row(
+            children: [
+              AIImage(
+                Icons.favorite,
+                width: 12.0,
+                height: 12.0,
+                color: Colors.white,
+              ),
+              const SizedBox(width: 4.0),
+              Text('12', style: TextStyle(color: Colors.white, fontSize: 10.0)),
+              const SizedBox(width: 12.0),
+              AIImage(
+                Icons.hearing,
+                width: 12.0,
+                height: 12.0,
+                color: Colors.white,
+              ),
+              const SizedBox(width: 4.0),
+              Text('12', style: TextStyle(color: Colors.white, fontSize: 10.0)),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
