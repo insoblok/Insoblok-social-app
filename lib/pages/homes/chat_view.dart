@@ -45,57 +45,55 @@ class ChatView extends StatelessWidget {
             ),
             viewModel.rooms.isEmpty
                 ? SliverFillRemaining(
-                    child: Center(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          ClipOval(
-                            child: AIImage(
-                              AIImages.placehold,
-                              width: 160.0,
-                              height: 160.0,
-                            ),
+                  child: Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ClipOval(
+                          child: AIImage(
+                            AIImages.placehold,
+                            width: 160.0,
+                            height: 160.0,
                           ),
-                          const SizedBox(height: 40.0),
-                          Text(
-                            S.current.create_room,
-                            style: TextStyle(
-                              fontSize: 18.0,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
+                        ),
+                        const SizedBox(height: 40.0),
+                        Text(
+                          S.current.create_room,
+                          style: TextStyle(
+                            fontSize: 18.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
                           ),
-                          const SizedBox(height: 8.0),
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 60.0,
-                            ),
-                            child: Text(
-                              S.current.room_create_detail,
-                              textAlign: TextAlign.center,
-                            ),
-                          )
-                        ],
-                      ),
+                        ),
+                        const SizedBox(height: 8.0),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 60.0),
+                          child: Text(
+                            S.current.room_create_detail,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(color: Colors.white),
+                          ),
+                        ),
+                      ],
                     ),
-                  )
-                : SliverList(
-                    delegate: SliverChildListDelegate([
-                      const SizedBox(height: 24.0),
-                      ...viewModel.rooms.map((room) {
-                        return RoomItemView(
-                          room: room,
-                          onTap: (chatUser) => Routers.goToMessagePage(
-                            context,
-                            MessagePageData(room: room, chatUser: chatUser),
-                          ),
-                        );
-                      }),
-                      SizedBox(
-                        height: MediaQuery.of(context).padding.bottom,
-                      ),
-                    ]),
                   ),
+                )
+                : SliverList(
+                  delegate: SliverChildListDelegate([
+                    const SizedBox(height: 24.0),
+                    ...viewModel.rooms.map((room) {
+                      return RoomItemView(
+                        room: room,
+                        onTap:
+                            (chatUser) => Routers.goToMessagePage(
+                              context,
+                              MessagePageData(room: room, chatUser: chatUser),
+                            ),
+                      );
+                    }),
+                    SizedBox(height: MediaQuery.of(context).padding.bottom),
+                  ]),
+                ),
           ],
         );
       },

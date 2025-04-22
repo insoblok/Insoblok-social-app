@@ -9,11 +9,7 @@ class RoomItemView extends StatelessWidget {
   final RoomModel room;
   final Function(UserModel chatUser)? onTap;
 
-  const RoomItemView({
-    super.key,
-    required this.room,
-    this.onTap,
-  });
+  const RoomItemView({super.key, required this.room, this.onTap});
 
   @override
   Widget build(BuildContext context) {
@@ -25,9 +21,7 @@ class RoomItemView extends StatelessWidget {
           return Container(
             padding: const EdgeInsets.all(16.0),
             decoration: BoxDecoration(
-              border: Border(
-                top: BorderSide(width: 0.5),
-              ),
+              border: Border(top: BorderSide(width: 0.5, color: Colors.white)),
             ),
           );
         }
@@ -40,19 +34,11 @@ class RoomItemView extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.all(16.0),
             decoration: BoxDecoration(
-              border: Border(
-                top: BorderSide(
-                  width: 0.5,
-                  color: Colors.white,
-                ),
-              ),
+              border: Border(top: BorderSide(width: 0.5, color: Colors.white)),
             ),
             child: Row(
               children: [
-                viewModel.chatUser!.avatarStatusView(
-                  width: 60.0,
-                  height: 60.0,
-                ),
+                viewModel.chatUser!.avatarStatusView(width: 60.0, height: 60.0),
                 const SizedBox(width: 12.0),
                 Expanded(
                   child: Column(
@@ -75,10 +61,8 @@ class RoomItemView extends StatelessWidget {
                           ),
                           Text(
                             '${room.recentDate}',
-                            style: TextStyle(
-                              color: Colors.white,
-                            ),
-                          )
+                            style: TextStyle(color: Colors.white),
+                          ),
                         ],
                       ),
                       Text(
@@ -93,11 +77,7 @@ class RoomItemView extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(width: 8.0),
-                Icon(
-                  Icons.arrow_forward_ios,
-                  size: 16.0,
-                  color: Colors.white,
-                ),
+                Icon(Icons.arrow_forward_ios, size: 16.0, color: Colors.white),
               ],
             ),
           ),

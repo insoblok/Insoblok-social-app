@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:insoblok/models/models.dart';
 
 import 'package:stacked/stacked.dart';
 
@@ -13,18 +14,12 @@ class ProfileView extends ViewModelWidget<InSoBlokProvider> {
 
   @override
   Widget build(BuildContext context, viewModel) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 18.0,
-        vertical: 24.0,
-      ),
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 24.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const SizedBox(
-            width: double.infinity,
-            height: 24.0,
-          ),
+          const SizedBox(width: double.infinity, height: 24.0),
           UserAvatarView(
             onUpdateAvatar: (result) async {
               if (result == 0) {
@@ -39,41 +34,41 @@ class ProfileView extends ViewModelWidget<InSoBlokProvider> {
             },
           ),
           const SizedBox(height: 40.0),
-          Container(
-            width: double.infinity,
-            height: 52.0,
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            decoration: BoxDecoration(
-              border: Border(
-                top: BorderSide(color: AIColors.borderColor),
-              ),
-            ),
-            child: Row(
-              children: [
-                AIImage(
-                  Icons.account_circle,
-                  color: Colors.white,
-                ),
-                const SizedBox(width: 24.0),
-                Text(
-                  '${AuthHelper.user?.firstName} ${AuthHelper.user?.lastName} ',
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
-                ),
-                const Spacer(),
-                AIImage(
-                  Icons.arrow_forward_ios,
-                  height: 14.0,
-                  color: Colors.white,
-                ),
-              ],
-            ),
+          UserInfoWidget(
+            src: Icons.account_circle,
+            text: viewModel.user!.fullName,
+            onTap: () {},
           ),
-          Container(
-            height: 1,
-            color: AIColors.borderColor,
+          UserInfoWidget(
+            src: Icons.email,
+            text: 'kenta@insoblokai.io',
+            onTap: () {},
           ),
+          UserInfoWidget(
+            src: Icons.lock,
+            text: 'Change Password',
+            onTap: () {},
+          ),
+          Container(height: 1, color: AIColors.borderColor),
+          const SizedBox(height: 48.0),
+          UserInfoWidget(
+            src: Icons.dashboard,
+            text: 'My Stories',
+            onTap: () {},
+          ),
+          UserInfoWidget(src: Icons.favorite, text: 'My Likes', onTap: () {}),
+          UserInfoWidget(src: Icons.link, text: 'My Follows', onTap: () {}),
+          Container(height: 1, color: AIColors.borderColor),
+          const SizedBox(height: 48.0),
+          UserInfoWidget(src: Icons.wallet, text: 'My Wallet', onTap: () {}),
+          UserInfoWidget(
+            src: Icons.work_history_sharp,
+            text: 'Wallet History',
+            onTap: () {},
+          ),
+          UserInfoWidget(src: Icons.settings, text: 'Setting', onTap: () {}),
+          Container(height: 1, color: AIColors.borderColor),
+          SizedBox(height: 96.0),
         ],
       ),
     );

@@ -1,19 +1,17 @@
 import 'dart:convert';
 
-import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
+
+import 'package:chewie/chewie.dart';
+import 'package:video_player/video_player.dart';
 
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
-import 'package:video_player/video_player.dart';
 
 extension MessageModelExt on MessageModel {
-  Widget item(
-    BuildContext context, {
-    required UserModel chatUser,
-  }) {
+  Widget item(BuildContext context, {required UserModel chatUser}) {
     final isMe = senderId == AuthHelper.user?.uid;
     Widget result = Container();
     var type = MessageModelTypeExt.fromString(this.type ?? 'text');
@@ -23,9 +21,7 @@ extension MessageModelExt on MessageModel {
       case MessageModelType.image:
         result = _imageContent();
       case MessageModelType.video:
-        result = VideoContent(
-          videoUrl: url ?? 'https://',
-        );
+        result = VideoContent(videoUrl: url ?? 'https://');
       case MessageModelType.audio:
         result = Container();
       case MessageModelType.paid:
@@ -41,11 +37,7 @@ extension MessageModelExt on MessageModel {
           if (!isMe) ...{
             ClipRRect(
               borderRadius: BorderRadius.circular(8.0),
-              child: AIImage(
-                chatUser.avatar,
-                width: 32.0,
-                height: 32.0,
-              ),
+              child: AIImage(chatUser.avatar, width: 32.0, height: 32.0),
             ),
           },
           ClipPath(
@@ -61,9 +53,10 @@ extension MessageModelExt on MessageModel {
                 bottom: 8.0,
               ),
               decoration: BoxDecoration(
-                color: isMe
-                    ? AIColors.blue.withAlpha(204)
-                    : AIColors.appBar.withAlpha(204),
+                color:
+                    isMe
+                        ? AIColors.blue.withAlpha(204)
+                        : AIColors.appBar.withAlpha(204),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Column(
@@ -74,10 +67,7 @@ extension MessageModelExt on MessageModel {
                   SizedBox(height: 4),
                   Text(
                     messageTime,
-                    style: TextStyle(
-                      fontSize: 9,
-                      color: Colors.white70,
-                    ),
+                    style: TextStyle(fontSize: 9, color: Colors.white70),
                   ),
                 ],
               ),
@@ -114,35 +104,24 @@ extension MessageModelExt on MessageModel {
   Widget _imageContent() {
     return ClipRRect(
       borderRadius: BorderRadius.circular(6.0),
-      child: AIImage(
-        url,
-        width: 180.0,
-        height: 135.0,
-      ),
+      child: AIImage(url, width: 180.0, height: 135.0),
     );
   }
 
   Widget _paidContent() {
-    var coin = CoinModel.fromJson(jsonDecode(this.content ?? '{}'));
+    var coin = CoinModel.fromJson(jsonDecode(content ?? '{}'));
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
           'Transaction',
-          style: TextStyle(
-            fontSize: 11.0,
-            color: Colors.white,
-          ),
+          style: TextStyle(fontSize: 11.0, color: Colors.white),
         ),
         const SizedBox(height: 8.0),
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            AIImage(
-              AIImages.icEthereumGold,
-              width: 36.0,
-              height: 36.0,
-            ),
+            AIImage(AIImages.icEthereumGold, width: 36.0, height: 36.0),
             const SizedBox(width: 8.0),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -157,10 +136,7 @@ extension MessageModelExt on MessageModel {
                 ),
                 Text(
                   '0.0016 USD',
-                  style: TextStyle(
-                    fontSize: 11.0,
-                    color: Colors.white,
-                  ),
+                  style: TextStyle(fontSize: 11.0, color: Colors.white),
                 ),
               ],
             ),
@@ -183,10 +159,7 @@ extension MessageModelExt on MessageModel {
 class VideoContent extends StatefulWidget {
   final String videoUrl;
 
-  const VideoContent({
-    super.key,
-    required this.videoUrl,
-  });
+  const VideoContent({super.key, required this.videoUrl});
 
   @override
   State<VideoContent> createState() => _VideoContentState();
@@ -248,9 +221,7 @@ class _VideoContentState extends State<VideoContent> {
           children: [
             _videoPlayerController.value.isInitialized
                 ? Chewie(controller: _chewieController)
-                : Center(
-                    child: Loader(color: Colors.white),
-                  ),
+                : Center(child: Loader(color: Colors.white)),
             if (_videoPlayerController.value.isInitialized) ...{
               Align(
                 alignment: Alignment.center,

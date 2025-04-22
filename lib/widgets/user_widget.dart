@@ -5,10 +5,7 @@ import 'package:insoblok/utils/utils.dart';
 
 class UserAvatarView extends StatelessWidget {
   final void Function(int?)? onUpdateAvatar;
-  const UserAvatarView({
-    super.key,
-    this.onUpdateAvatar,
-  });
+  const UserAvatarView({super.key, this.onUpdateAvatar});
 
   @override
   Widget build(BuildContext context) {
@@ -21,10 +18,7 @@ class UserAvatarView extends StatelessWidget {
             width: 120.0,
             height: 120.0,
             decoration: BoxDecoration(
-              border: Border.all(
-                width: 2.0,
-                color: AIColors.blue,
-              ),
+              border: Border.all(width: 2.0, color: AIColors.blue),
               borderRadius: BorderRadius.circular(60.0),
             ),
             child: ClipRRect(
@@ -58,10 +52,7 @@ class UserAvatarView extends StatelessWidget {
                               onTap: () => Navigator.of(context).pop(0),
                               child: Row(
                                 children: [
-                                  AIImage(
-                                    Icons.air,
-                                    color: AIColors.blue,
-                                  ),
+                                  AIImage(Icons.air, color: AIColors.blue),
                                   const SizedBox(width: 12.0),
                                   Text(
                                     'Create to AI Avatar',
@@ -98,10 +89,7 @@ class UserAvatarView extends StatelessWidget {
                               onTap: () => Navigator.of(context).pop(1),
                               child: Row(
                                 children: [
-                                  AIImage(
-                                    Icons.camera,
-                                    color: AIColors.blue,
-                                  ),
+                                  AIImage(Icons.camera, color: AIColors.blue),
                                   const SizedBox(width: 12.0),
                                   Text(
                                     'From Image Gallery',
@@ -140,14 +128,45 @@ class UserAvatarView extends StatelessWidget {
                   color: AIColors.blue,
                   shape: BoxShape.circle,
                 ),
-                child: AIImage(
-                  Icons.camera,
-                  color: Colors.white,
-                ),
+                child: AIImage(Icons.camera, color: Colors.white),
               ),
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class UserInfoWidget extends StatelessWidget {
+  final dynamic src;
+  final String text;
+  final void Function()? onTap;
+
+  const UserInfoWidget({super.key, this.src, required this.text, this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      height: 52.0,
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      decoration: BoxDecoration(
+        border: Border(top: BorderSide(color: AIColors.borderColor)),
+      ),
+      child: InkWell(
+        onTap: onTap,
+        child: Row(
+          children: [
+            if (src != null) ...{
+              AIImage(src, color: Colors.white),
+              const SizedBox(width: 24.0),
+            },
+            Text(text, style: TextStyle(color: Colors.white)),
+            const Spacer(),
+            AIImage(Icons.arrow_forward_ios, height: 14.0, color: Colors.white),
+          ],
+        ),
       ),
     );
   }
