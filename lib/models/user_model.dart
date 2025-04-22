@@ -30,16 +30,9 @@ abstract class UserModel with _$UserModel {
 extension UserModelExt on UserModel {
   String get fullName => '$firstName $lastName';
 
-  Widget avatarStatusView({
-    double? width,
-    double? height,
-  }) {
+  Widget avatarStatusView({double? width, double? height}) {
     return ClipOval(
-      child: AIImage(
-        avatar,
-        width: width ?? 60.0,
-        height: height ?? 60.0,
-      ),
+      child: AIImage(avatar, width: width ?? 60.0, height: height ?? 60.0),
     );
   }
 }

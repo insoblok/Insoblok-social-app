@@ -62,7 +62,7 @@ class InSoBlokPage extends StatelessWidget {
                     ),
                     height: 54.0,
                     decoration: BoxDecoration(
-                      color: AIColors.appBar.withAlpha(128),
+                      color: AIColors.appBar,
                       borderRadius: BorderRadius.circular(28.0),
                     ),
                     child: Row(
@@ -88,18 +88,6 @@ class InSoBlokPage extends StatelessWidget {
                 ),
               ],
             ),
-            // bottomNavigationBar: BottomNavigationBar(
-            //   currentIndex: viewModel.pageIndex,
-            //   onTap: (value) => viewModel.pageIndex = value,
-            //   items: [
-            //     for (var i = 0; i < 4; i++) ...{
-            //       BottomNavigationBarItem(
-            //         icon: icons[i],
-            //         label: titles[i].toUpperCase(),
-            //       ),
-            //     },
-            //   ],
-            // ),
           ),
         );
       },

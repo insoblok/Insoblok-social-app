@@ -39,13 +39,7 @@ extension MessageModelExt on MessageModel {
   }
 }
 
-enum MessageModelType {
-  text,
-  image,
-  video,
-  audio,
-  paid,
-}
+enum MessageModelType { text, image, video, audio, paid }
 
 extension MessageModelTypeExt on MessageModelType {
   static MessageModelType fromString(String data) {

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:insoblok/models/models.dart';
 import 'package:insoblok/pages/pages.dart';
 import 'package:insoblok/routers/routers.dart';
 
@@ -34,5 +35,13 @@ class Routers {
 
   static goToMessagePage(BuildContext context, MessagePageData data) {
     return _pushToRoute(context, kRouterMessage, data);
+  }
+
+  static goToAddStoryPage(BuildContext context) {
+    return _pushToRoute(context, kRouterAddStory, null);
+  }
+
+  static goToStoryDetailPage(BuildContext context, StoryModel data) {
+    return _pushToRoute(context, kRouterStoryDetail, data);
   }
 }
