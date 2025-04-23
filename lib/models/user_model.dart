@@ -1,4 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:insoblok/services/services.dart';
 
 part 'user_model.freezed.dart';
 part 'user_model.g.dart';
@@ -7,13 +9,32 @@ part 'user_model.g.dart';
 abstract class UserModel with _$UserModel {
   @JsonSerializable(fieldRename: FieldRename.snake)
   factory UserModel({
-    int? id,
-    String? address,
+    String? id,
+    String? uid,
+    String? walletAddress,
     String? avatar,
     String? firstName,
     String? lastName,
+    double? lat,
+    double? lon,
+    String? ipAddress,
+    String? regdate,
+    String? updateDate,
+    String? status,
+    List<String>? likes,
+    List<String>? follows,
   }) = _UserModel;
 
   factory UserModel.fromJson(Map<String, dynamic> json) =>
       _$UserModelFromJson(json);
+}
+
+extension UserModelExt on UserModel {
+  String get fullName => '$firstName $lastName';
+
+  Widget avatarStatusView({double? width, double? height}) {
+    return ClipOval(
+      child: AIImage(avatar, width: width ?? 60.0, height: height ?? 60.0),
+    );
+  }
 }

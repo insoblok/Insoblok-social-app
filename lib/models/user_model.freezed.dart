@@ -15,11 +15,20 @@ T _$identity<T>(T value) => value;
 
 /// @nodoc
 mixin _$UserModel {
-  int? get id;
-  String? get address;
+  String? get id;
+  String? get uid;
+  String? get walletAddress;
   String? get avatar;
   String? get firstName;
   String? get lastName;
+  double? get lat;
+  double? get lon;
+  String? get ipAddress;
+  String? get regdate;
+  String? get updateDate;
+  String? get status;
+  List<String>? get likes;
+  List<String>? get follows;
 
   /// Create a copy of UserModel
   /// with the given fields replaced by the non-null parameter values.
@@ -37,22 +46,48 @@ mixin _$UserModel {
         (other.runtimeType == runtimeType &&
             other is UserModel &&
             (identical(other.id, id) || other.id == id) &&
-            (identical(other.address, address) || other.address == address) &&
+            (identical(other.uid, uid) || other.uid == uid) &&
+            (identical(other.walletAddress, walletAddress) ||
+                other.walletAddress == walletAddress) &&
             (identical(other.avatar, avatar) || other.avatar == avatar) &&
             (identical(other.firstName, firstName) ||
                 other.firstName == firstName) &&
             (identical(other.lastName, lastName) ||
-                other.lastName == lastName));
+                other.lastName == lastName) &&
+            (identical(other.lat, lat) || other.lat == lat) &&
+            (identical(other.lon, lon) || other.lon == lon) &&
+            (identical(other.ipAddress, ipAddress) ||
+                other.ipAddress == ipAddress) &&
+            (identical(other.regdate, regdate) || other.regdate == regdate) &&
+            (identical(other.updateDate, updateDate) ||
+                other.updateDate == updateDate) &&
+            (identical(other.status, status) || other.status == status) &&
+            const DeepCollectionEquality().equals(other.likes, likes) &&
+            const DeepCollectionEquality().equals(other.follows, follows));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, id, address, avatar, firstName, lastName);
+  int get hashCode => Object.hash(
+      runtimeType,
+      id,
+      uid,
+      walletAddress,
+      avatar,
+      firstName,
+      lastName,
+      lat,
+      lon,
+      ipAddress,
+      regdate,
+      updateDate,
+      status,
+      const DeepCollectionEquality().hash(likes),
+      const DeepCollectionEquality().hash(follows));
 
   @override
   String toString() {
-    return 'UserModel(id: $id, address: $address, avatar: $avatar, firstName: $firstName, lastName: $lastName)';
+    return 'UserModel(id: $id, uid: $uid, walletAddress: $walletAddress, avatar: $avatar, firstName: $firstName, lastName: $lastName, lat: $lat, lon: $lon, ipAddress: $ipAddress, regdate: $regdate, updateDate: $updateDate, status: $status, likes: $likes, follows: $follows)';
   }
 }
 
@@ -62,11 +97,20 @@ abstract mixin class $UserModelCopyWith<$Res> {
       _$UserModelCopyWithImpl;
   @useResult
   $Res call(
-      {int? id,
-      String? address,
+      {String? id,
+      String? uid,
+      String? walletAddress,
       String? avatar,
       String? firstName,
-      String? lastName});
+      String? lastName,
+      double? lat,
+      double? lon,
+      String? ipAddress,
+      String? regdate,
+      String? updateDate,
+      String? status,
+      List<String>? likes,
+      List<String>? follows});
 }
 
 /// @nodoc
@@ -82,19 +126,32 @@ class _$UserModelCopyWithImpl<$Res> implements $UserModelCopyWith<$Res> {
   @override
   $Res call({
     Object? id = freezed,
-    Object? address = freezed,
+    Object? uid = freezed,
+    Object? walletAddress = freezed,
     Object? avatar = freezed,
     Object? firstName = freezed,
     Object? lastName = freezed,
+    Object? lat = freezed,
+    Object? lon = freezed,
+    Object? ipAddress = freezed,
+    Object? regdate = freezed,
+    Object? updateDate = freezed,
+    Object? status = freezed,
+    Object? likes = freezed,
+    Object? follows = freezed,
   }) {
     return _then(_self.copyWith(
       id: freezed == id
           ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
-              as int?,
-      address: freezed == address
-          ? _self.address
-          : address // ignore: cast_nullable_to_non_nullable
+              as String?,
+      uid: freezed == uid
+          ? _self.uid
+          : uid // ignore: cast_nullable_to_non_nullable
+              as String?,
+      walletAddress: freezed == walletAddress
+          ? _self.walletAddress
+          : walletAddress // ignore: cast_nullable_to_non_nullable
               as String?,
       avatar: freezed == avatar
           ? _self.avatar
@@ -108,6 +165,38 @@ class _$UserModelCopyWithImpl<$Res> implements $UserModelCopyWith<$Res> {
           ? _self.lastName
           : lastName // ignore: cast_nullable_to_non_nullable
               as String?,
+      lat: freezed == lat
+          ? _self.lat
+          : lat // ignore: cast_nullable_to_non_nullable
+              as double?,
+      lon: freezed == lon
+          ? _self.lon
+          : lon // ignore: cast_nullable_to_non_nullable
+              as double?,
+      ipAddress: freezed == ipAddress
+          ? _self.ipAddress
+          : ipAddress // ignore: cast_nullable_to_non_nullable
+              as String?,
+      regdate: freezed == regdate
+          ? _self.regdate
+          : regdate // ignore: cast_nullable_to_non_nullable
+              as String?,
+      updateDate: freezed == updateDate
+          ? _self.updateDate
+          : updateDate // ignore: cast_nullable_to_non_nullable
+              as String?,
+      status: freezed == status
+          ? _self.status
+          : status // ignore: cast_nullable_to_non_nullable
+              as String?,
+      likes: freezed == likes
+          ? _self.likes
+          : likes // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
+      follows: freezed == follows
+          ? _self.follows
+          : follows // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
     ));
   }
 }
@@ -117,20 +206,68 @@ class _$UserModelCopyWithImpl<$Res> implements $UserModelCopyWith<$Res> {
 @JsonSerializable(fieldRename: FieldRename.snake)
 class _UserModel implements UserModel {
   _UserModel(
-      {this.id, this.address, this.avatar, this.firstName, this.lastName});
+      {this.id,
+      this.uid,
+      this.walletAddress,
+      this.avatar,
+      this.firstName,
+      this.lastName,
+      this.lat,
+      this.lon,
+      this.ipAddress,
+      this.regdate,
+      this.updateDate,
+      this.status,
+      final List<String>? likes,
+      final List<String>? follows})
+      : _likes = likes,
+        _follows = follows;
   factory _UserModel.fromJson(Map<String, dynamic> json) =>
       _$UserModelFromJson(json);
 
   @override
-  final int? id;
+  final String? id;
   @override
-  final String? address;
+  final String? uid;
+  @override
+  final String? walletAddress;
   @override
   final String? avatar;
   @override
   final String? firstName;
   @override
   final String? lastName;
+  @override
+  final double? lat;
+  @override
+  final double? lon;
+  @override
+  final String? ipAddress;
+  @override
+  final String? regdate;
+  @override
+  final String? updateDate;
+  @override
+  final String? status;
+  final List<String>? _likes;
+  @override
+  List<String>? get likes {
+    final value = _likes;
+    if (value == null) return null;
+    if (_likes is EqualUnmodifiableListView) return _likes;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
+
+  final List<String>? _follows;
+  @override
+  List<String>? get follows {
+    final value = _follows;
+    if (value == null) return null;
+    if (_follows is EqualUnmodifiableListView) return _follows;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
 
   /// Create a copy of UserModel
   /// with the given fields replaced by the non-null parameter values.
@@ -153,22 +290,48 @@ class _UserModel implements UserModel {
         (other.runtimeType == runtimeType &&
             other is _UserModel &&
             (identical(other.id, id) || other.id == id) &&
-            (identical(other.address, address) || other.address == address) &&
+            (identical(other.uid, uid) || other.uid == uid) &&
+            (identical(other.walletAddress, walletAddress) ||
+                other.walletAddress == walletAddress) &&
             (identical(other.avatar, avatar) || other.avatar == avatar) &&
             (identical(other.firstName, firstName) ||
                 other.firstName == firstName) &&
             (identical(other.lastName, lastName) ||
-                other.lastName == lastName));
+                other.lastName == lastName) &&
+            (identical(other.lat, lat) || other.lat == lat) &&
+            (identical(other.lon, lon) || other.lon == lon) &&
+            (identical(other.ipAddress, ipAddress) ||
+                other.ipAddress == ipAddress) &&
+            (identical(other.regdate, regdate) || other.regdate == regdate) &&
+            (identical(other.updateDate, updateDate) ||
+                other.updateDate == updateDate) &&
+            (identical(other.status, status) || other.status == status) &&
+            const DeepCollectionEquality().equals(other._likes, _likes) &&
+            const DeepCollectionEquality().equals(other._follows, _follows));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, id, address, avatar, firstName, lastName);
+  int get hashCode => Object.hash(
+      runtimeType,
+      id,
+      uid,
+      walletAddress,
+      avatar,
+      firstName,
+      lastName,
+      lat,
+      lon,
+      ipAddress,
+      regdate,
+      updateDate,
+      status,
+      const DeepCollectionEquality().hash(_likes),
+      const DeepCollectionEquality().hash(_follows));
 
   @override
   String toString() {
-    return 'UserModel(id: $id, address: $address, avatar: $avatar, firstName: $firstName, lastName: $lastName)';
+    return 'UserModel(id: $id, uid: $uid, walletAddress: $walletAddress, avatar: $avatar, firstName: $firstName, lastName: $lastName, lat: $lat, lon: $lon, ipAddress: $ipAddress, regdate: $regdate, updateDate: $updateDate, status: $status, likes: $likes, follows: $follows)';
   }
 }
 
@@ -181,11 +344,20 @@ abstract mixin class _$UserModelCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {int? id,
-      String? address,
+      {String? id,
+      String? uid,
+      String? walletAddress,
       String? avatar,
       String? firstName,
-      String? lastName});
+      String? lastName,
+      double? lat,
+      double? lon,
+      String? ipAddress,
+      String? regdate,
+      String? updateDate,
+      String? status,
+      List<String>? likes,
+      List<String>? follows});
 }
 
 /// @nodoc
@@ -201,19 +373,32 @@ class __$UserModelCopyWithImpl<$Res> implements _$UserModelCopyWith<$Res> {
   @pragma('vm:prefer-inline')
   $Res call({
     Object? id = freezed,
-    Object? address = freezed,
+    Object? uid = freezed,
+    Object? walletAddress = freezed,
     Object? avatar = freezed,
     Object? firstName = freezed,
     Object? lastName = freezed,
+    Object? lat = freezed,
+    Object? lon = freezed,
+    Object? ipAddress = freezed,
+    Object? regdate = freezed,
+    Object? updateDate = freezed,
+    Object? status = freezed,
+    Object? likes = freezed,
+    Object? follows = freezed,
   }) {
     return _then(_UserModel(
       id: freezed == id
           ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
-              as int?,
-      address: freezed == address
-          ? _self.address
-          : address // ignore: cast_nullable_to_non_nullable
+              as String?,
+      uid: freezed == uid
+          ? _self.uid
+          : uid // ignore: cast_nullable_to_non_nullable
+              as String?,
+      walletAddress: freezed == walletAddress
+          ? _self.walletAddress
+          : walletAddress // ignore: cast_nullable_to_non_nullable
               as String?,
       avatar: freezed == avatar
           ? _self.avatar
@@ -227,6 +412,38 @@ class __$UserModelCopyWithImpl<$Res> implements _$UserModelCopyWith<$Res> {
           ? _self.lastName
           : lastName // ignore: cast_nullable_to_non_nullable
               as String?,
+      lat: freezed == lat
+          ? _self.lat
+          : lat // ignore: cast_nullable_to_non_nullable
+              as double?,
+      lon: freezed == lon
+          ? _self.lon
+          : lon // ignore: cast_nullable_to_non_nullable
+              as double?,
+      ipAddress: freezed == ipAddress
+          ? _self.ipAddress
+          : ipAddress // ignore: cast_nullable_to_non_nullable
+              as String?,
+      regdate: freezed == regdate
+          ? _self.regdate
+          : regdate // ignore: cast_nullable_to_non_nullable
+              as String?,
+      updateDate: freezed == updateDate
+          ? _self.updateDate
+          : updateDate // ignore: cast_nullable_to_non_nullable
+              as String?,
+      status: freezed == status
+          ? _self.status
+          : status // ignore: cast_nullable_to_non_nullable
+              as String?,
+      likes: freezed == likes
+          ? _self._likes
+          : likes // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
+      follows: freezed == follows
+          ? _self._follows
+          : follows // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
     ));
   }
 }

@@ -2,12 +2,21 @@ import 'package:flutter/material.dart';
 
 import 'package:fluro/fluro.dart' as fluro;
 
-import 'package:aiavatar/pages/pages.dart';
+import 'package:insoblok/models/models.dart';
+import 'package:insoblok/pages/pages.dart';
 
 const kRouterBase = '/';
+const kRouterLogin = '/login';
 const kRouterRegister = '/register';
 const kRouterMain = '/main';
 const kRouterAccount = '/account';
+const kRouterCreateRoom = '/create_room';
+const kRouterMessage = '/message';
+
+const kRouterAddStory = '/add-story';
+const kRouterStoryDetail = '/story-detail';
+
+const kRouterQuillDescription = '/quill-description';
 
 class Navigation {
   final router = fluro.FluroRouter();
@@ -24,36 +33,50 @@ class Navigation {
     }) {
       router.define(
         route,
-        handler: fluro.Handler(handlerFunc: (BuildContext? context, _) {
-          final T? props = ModalRoute.of(context!)?.settings.arguments as T?;
-          return init(props);
-        }),
+        handler: fluro.Handler(
+          handlerFunc: (BuildContext? context, _) {
+            final T? props = ModalRoute.of(context!)?.settings.arguments as T?;
+            return init(props);
+          },
+        ),
         transitionType: transitionType ?? fluro.TransitionType.native,
       );
     }
 
-    // * StartPage
-    initRoute<List<dynamic>>(
-      kRouterBase,
-      (props) => LoginPage(),
-    );
+    // * LoginPage
+    initRoute(kRouterLogin, (props) => LoginPage());
 
     // * RegisterPage
-    initRoute<List<dynamic>>(
-      kRouterRegister,
-      (props) => RegisterPage(),
-    );
+    initRoute(kRouterRegister, (props) => RegisterPage());
 
     // * MainPage
-    initRoute<List<dynamic>>(
-      kRouterMain,
-      (props) => AIAvatarPage(),
-    );
+    initRoute(kRouterMain, (props) => InSoBlokPage());
 
     // * AccountPage
-    initRoute<List<dynamic>>(
-      kRouterAccount,
-      (props) => AccountPage(),
+    initRoute(kRouterAccount, (props) => AccountPage());
+
+    // * CreateRoomPage
+    initRoute(kRouterCreateRoom, (props) => CreateRoomPage());
+
+    // * MessagePage
+    initRoute<MessagePageData>(
+      kRouterMessage,
+      (props) => MessagePage(data: props!),
+    );
+
+    // * AddStoryPage
+    initRoute(kRouterAddStory, (props) => AddStoryPage());
+
+    // * StoryDetailPage
+    initRoute<StoryModel>(
+      kRouterStoryDetail,
+      (props) => StoryDetailPage(story: props!),
+    );
+
+    // * QuillDescriptionPage
+    initRoute<String>(
+      kRouterQuillDescription,
+      (props) => QuillDescriptionPage(originQuill: props),
     );
   }
 }

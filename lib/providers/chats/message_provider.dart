@@ -1,0 +1,434 @@
+import 'dart:io';
+
+import 'package:flutter/material.dart';
+
+import 'package:chewie/chewie.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:video_player/video_player.dart';
+import 'package:web3dart/web3dart.dart';
+
+import 'package:insoblok/models/models.dart';
+import 'package:insoblok/pages/pages.dart';
+import 'package:insoblok/services/services.dart';
+import 'package:insoblok/utils/utils.dart';
+import 'package:insoblok/widgets/widgets.dart';
+
+class MessageProvider extends InSoBlokViewModel {
+  late BuildContext _context;
+  BuildContext get context => _context;
+  set context(BuildContext context) {
+    _context = context;
+    notifyListeners();
+  }
+
+  late RoomModel _room;
+  RoomModel get room => _room;
+  set room(RoomModel model) {
+    _room = model;
+    notifyListeners();
+  }
+
+  late UserModel _chatUser;
+  UserModel get chatUser => _chatUser;
+  set chatUser(UserModel model) {
+    _chatUser = model;
+    notifyListeners();
+  }
+
+  final _messageService = MessageService();
+  MessageService get messageService => _messageService;
+
+  final List<MessageModel> _messages = [];
+  List<MessageModel> get messages => _messages;
+  set messages(List<MessageModel> data) {
+    _messages.clear();
+    _messages.addAll(data);
+    notifyListeners();
+  }
+
+  bool _isAddPop = false;
+  bool get isAddPop => _isAddPop;
+  set isAddPop(bool f) {
+    _isAddPop = f;
+    notifyListeners();
+  }
+
+  String? _balance;
+  String? get balance => _balance;
+  set balance(String? s) {
+    _balance = s;
+    notifyListeners();
+  }
+
+  var textController = TextEditingController();
+  var scrollController = ScrollController();
+  late MediaPickerService _mediaPickerService;
+
+  Future<void> init(
+    BuildContext context, {
+    required MessagePageData data,
+  }) async {
+    this.context = context;
+    room = data.room;
+    chatUser = data.chatUser;
+
+    balance = await EthereumHelper.getBalance();
+
+    messageService.getMessages(room.id!).listen((messages) {
+      this.messages = messages;
+    });
+
+    Future.delayed(const Duration(milliseconds: 200), () {
+      scrollController.jumpTo(scrollController.position.maxScrollExtent);
+    });
+
+    scrollController.addListener(() {
+      isAddPop = false;
+      FocusManager.instance.primaryFocus?.unfocus();
+    });
+
+    _mediaPickerService = MediaPickerService(context);
+  }
+
+  String? _content;
+  String? get content => _content;
+  set content(String? s) {
+    _content = s;
+    notifyListeners();
+  }
+
+  void sendMessage() async {
+    if (content?.isNotEmpty ?? false) {
+      try {
+        await messageService.sendMessage(chatRoomId: room.id!, text: content!);
+        // scrollToBottom();
+        textController.text = '';
+      } catch (e) {
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Failed to send message: $e')));
+      } finally {
+        notifyListeners();
+      }
+    }
+  }
+
+  XFile? _selectedFile;
+  XFile? get selectedFile => _selectedFile;
+  set selectedFile(XFile? f) {
+    _selectedFile = f;
+    notifyListeners();
+  }
+
+  Future<void> onPickerImage() async {
+    if (isBusy) return;
+    clearErrors();
+
+    isAddPop = false;
+
+    var image = await _mediaPickerService.onPickerSingleMedia(isImage: true);
+    if (image != null) {
+      selectedFile = image;
+      var isSend = await _showPreview(isImage: true);
+      if (isSend) {
+        var imageUrl = await FirebaseHelper.uploadFile(
+          file: File(image.path),
+          folderName: 'message',
+        );
+        if (imageUrl != null) {
+          await messageService.sendImageMessage(
+            chatRoomId: room.id!,
+            imageUrl: imageUrl,
+          );
+        }
+      }
+    }
+  }
+
+  Future<void> onPickerVideo() async {
+    if (isBusy) return;
+    clearErrors();
+
+    isAddPop = false;
+
+    var video = await _mediaPickerService.onPickerSingleMedia(isImage: false);
+    if (video != null) {
+      selectedFile = video;
+      var isSend = await _showPreview(isImage: false);
+      if (isSend) {
+        var videoUrl = await FirebaseHelper.uploadFile(
+          file: File(video.path),
+          folderName: 'message',
+        );
+        if (videoUrl != null) {
+          await messageService.sendVideoMessage(
+            chatRoomId: room.id!,
+            videoUrl: videoUrl,
+          );
+        }
+      }
+    }
+  }
+
+  Future<void> onRecordAudio() async {
+    Fluttertoast.showToast(msg: 'No support this feature yet!');
+  }
+
+  Future<void> onPaidEth() async {
+    if (isBusy) return;
+    clearErrors();
+
+    isAddPop = false;
+
+    var coin = await _showCoinOption();
+    if (coin != null) {
+      try {
+        await EthereumHelper.sendTransaction(
+          to: chatUser.walletAddress!,
+          amount: coin.amount!,
+          gasPrice: EtherAmount.fromInt(EtherUnit.szabo, 1),
+          gasLimit: 1,
+        );
+      } catch (e) {
+        logger.e(e);
+        setError(e);
+      } finally {
+        notifyListeners();
+      }
+
+      if (hasError) {
+        Fluttertoast.showToast(msg: modelError.toString());
+      } else {
+        await messageService.sendPaidMessage(chatRoomId: room.id!, coin: coin);
+      }
+    }
+  }
+
+  Future<bool> _showPreview({bool isImage = true}) async {
+    return await showDialog<bool>(
+          context: context,
+          builder: (context) {
+            return Scaffold(
+              backgroundColor: Colors.transparent,
+              body: Center(
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(12.0),
+                  child: Container(
+                    color: AIColors.darkBar,
+                    padding: const EdgeInsets.all(8),
+                    child: Stack(
+                      children: [
+                        isImage
+                            ? AIImage(
+                              width: 240.0,
+                              height: 240.0,
+                              File(selectedFile!.path),
+                              fit: BoxFit.contain,
+                            )
+                            : VideoPreview(path: selectedFile!.path),
+                        Container(
+                          width: 240.0,
+                          height: 240.0,
+                          alignment: Alignment.centerRight,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              InkWell(
+                                onTap: () => Navigator.of(context).pop(),
+                                child: Container(
+                                  width: 36.0,
+                                  height: 36.0,
+                                  decoration: BoxDecoration(
+                                    color: AIColors.darkPrimaryColor.withAlpha(
+                                      204,
+                                    ),
+                                    borderRadius: BorderRadius.circular(18.0),
+                                  ),
+                                  child: Icon(Icons.close, color: Colors.white),
+                                ),
+                              ),
+                              InkWell(
+                                onTap: () => Navigator.of(context).pop(true),
+                                child: Container(
+                                  width: 36.0,
+                                  height: 36.0,
+                                  decoration: BoxDecoration(
+                                    color: AIColors.darkPrimaryColor.withAlpha(
+                                      204,
+                                    ),
+                                    borderRadius: BorderRadius.circular(18.0),
+                                  ),
+                                  child: Icon(Icons.send, color: Colors.white),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            );
+          },
+        ) ??
+        false;
+  }
+
+  Future<CoinModel?> _showCoinOption() async {
+    return await showDialog<CoinModel>(
+      context: context,
+      builder: (context) {
+        var coin = CoinModel(
+          icon: AIImages.icEthereumGold,
+          type: 'ETH',
+          amount: '1',
+          unit: 'szabo',
+        );
+        return Scaffold(
+          backgroundColor: Colors.transparent,
+          body: Center(
+            child: Container(
+              margin: const EdgeInsets.symmetric(horizontal: 24.0),
+              padding: const EdgeInsets.all(24),
+              decoration: BoxDecoration(
+                color: AIColors.darkBar,
+                borderRadius: BorderRadius.circular(12.0),
+              ),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Row(
+                    children: [
+                      AIImage(coin.icon, width: 32.0, height: 32.0),
+                      const SizedBox(width: 8.0),
+                      Text(
+                        coin.type ?? 'ETH',
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                      const Spacer(),
+                      IconButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        icon: Icon(Icons.close, color: Colors.white),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 16.0),
+                  Row(
+                    children: [
+                      Text(
+                        'Unit : szabo',
+                        style: TextStyle(color: Colors.white),
+                      ),
+                      const Spacer(),
+                      Text('Amount : 1', style: TextStyle(color: Colors.white)),
+                    ],
+                  ),
+                  const SizedBox(height: 16.0),
+                  TextFillButton(
+                    text: 'Confirm',
+                    color: AIColors.darkScaffoldBackground,
+                    onTap: () => Navigator.of(context).pop(coin),
+                  ),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class VideoPreview extends StatefulWidget {
+  final String path;
+
+  const VideoPreview({super.key, required this.path});
+
+  @override
+  State<VideoPreview> createState() => _VideoPreviewState();
+}
+
+class _VideoPreviewState extends State<VideoPreview> {
+  late VideoPlayerController _videoPlayerController;
+  late ChewieController _chewieController;
+
+  bool isPlaying = false;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _videoPlayerController = VideoPlayerController.file(File(widget.path));
+    _videoPlayerController.addListener(() {
+      if (_videoPlayerController.value.isCompleted) {
+        setState(() {
+          isPlaying = false;
+          _videoPlayerController.seekTo(Duration(milliseconds: 0));
+        });
+      }
+    });
+    _videoPlayerController.initialize().then((data) {
+      _chewieController = ChewieController(
+        videoPlayerController: _videoPlayerController,
+        aspectRatio: _videoPlayerController.value.aspectRatio,
+        showControls: false,
+        materialProgressColors: ChewieProgressColors(
+          playedColor: Colors.red,
+          handleColor: Colors.red,
+          backgroundColor: Colors.grey,
+          bufferedColor: Colors.lightGreen,
+        ),
+      );
+
+      setState(() {});
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 240.0,
+      height: 240.0,
+      child: Stack(
+        children: [
+          _videoPlayerController.value.isInitialized
+              ? Chewie(controller: _chewieController)
+              : Center(child: Loader()),
+          Align(
+            alignment: Alignment.center,
+            child: IconButton(
+              onPressed: () {
+                if (isPlaying) {
+                  _videoPlayerController.pause();
+                } else {
+                  _videoPlayerController.play();
+                }
+                setState(() {
+                  isPlaying = !isPlaying;
+                });
+              },
+              icon: Icon(
+                isPlaying ? Icons.pause_circle : Icons.play_circle,
+                color: Colors.white,
+                size: 32.0,
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    _videoPlayerController.dispose();
+    _chewieController.dispose();
+    super.dispose();
+  }
+}

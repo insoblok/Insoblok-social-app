@@ -2,10 +2,11 @@ import 'package:flutter/material.dart';
 
 import 'package:stacked/stacked.dart';
 
-import 'package:aiavatar/providers/providers.dart';
-import 'package:aiavatar/services/services.dart';
-import 'package:aiavatar/utils/utils.dart';
-import 'package:aiavatar/widgets/widgets.dart';
+import 'package:insoblok/generated/l10n.dart';
+import 'package:insoblok/providers/providers.dart';
+import 'package:insoblok/services/services.dart';
+import 'package:insoblok/utils/utils.dart';
+import 'package:insoblok/widgets/widgets.dart';
 
 class RegisterPage extends StatelessWidget {
   const RegisterPage({super.key});
@@ -37,7 +38,7 @@ class RegisterPage extends StatelessWidget {
                   height: 40.0,
                 ),
                 Text(
-                  'Please complete your information!',
+                  S.current.register_detail,
                   style: TextStyle(
                     fontSize: 18.0,
                     fontWeight: FontWeight.bold,
@@ -45,37 +46,22 @@ class RegisterPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 48.0),
                 AITextField(
-                  initialValue: viewModel.user.firstName,
-                  hintText: 'First Name',
+                  hintText: S.current.first_name,
                   prefixIcon: Icon(Icons.account_circle),
                   onChanged: viewModel.updateFirstName,
                 ),
                 const SizedBox(height: 24.0),
                 AITextField(
-                  hintText: 'Last Name',
+                  hintText: S.current.last_name,
                   prefixIcon: Icon(Icons.account_circle),
                   onChanged: viewModel.updateLastName,
                 ),
                 const SizedBox(height: 40.0),
-                InkWell(
+                TextFillButton(
+                  text: S.current.register_confirm,
+                  color: AIColors.blue,
+                  isBusy: viewModel.isBusy,
                   onTap: viewModel.onClickConfirm,
-                  child: Container(
-                    width: double.infinity,
-                    height: 52.0,
-                    decoration: BoxDecoration(
-                      color: AIColors.blue,
-                      borderRadius: BorderRadius.circular(32.0),
-                    ),
-                    alignment: Alignment.center,
-                    child: Text(
-                      'Confirm',
-                      style: TextStyle(
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
                 ),
               ],
             ),

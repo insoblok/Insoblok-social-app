@@ -1,10 +1,14 @@
+import 'package:flutter/foundation.dart';
+
+import 'package:get_ip_address/get_ip_address.dart';
 import 'package:observable_ish/observable_ish.dart';
 import 'package:stacked/stacked.dart';
 import 'package:walletconnect_dart/walletconnect_dart.dart';
 
-import 'package:aiavatar/locator.dart';
-import 'package:aiavatar/models/models.dart';
-import 'package:aiavatar/services/services.dart';
+import 'package:insoblok/locator.dart';
+import 'package:insoblok/models/models.dart';
+import 'package:insoblok/services/services.dart';
+import 'package:insoblok/utils/utils.dart';
 
 class AuthService with ListenableServiceMixin {
   final RxValue<UserModel?> _userRx = RxValue<UserModel?>(null);
@@ -14,7 +18,7 @@ class AuthService with ListenableServiceMixin {
       RxValue<SessionStatus?>(null);
   SessionStatus? get sessionStatus => _sessionStatusRx.value;
 
-  bool get isLoggedIn => user?.address != null;
+  bool get isLoggedIn => user?.walletAddress != null;
 
   AuthService() {
     listenToReactiveValues([
@@ -23,32 +27,70 @@ class AuthService with ListenableServiceMixin {
     ]);
   }
 
-  Future<void> init() async {
-    var user = await DBHelper.user;
-    _userRx.value = user;
-  }
-
   Future<void> setUser(UserModel model) async {
-    await DBHelper.setUser(model);
-    _userRx.value = model;
+    var isUpdated = await FirebaseHelper.updateUser(model);
+    if (isUpdated) {
+      _userRx.value = model;
+    }
     notifyListeners();
   }
 
   Future<void> setSessionStatus({SessionStatus? session}) async {
-    // await DBHelper.setUser(model);
     _sessionStatusRx.value = session;
     notifyListeners();
+  }
+
+  Future<UserModel?> signIn() async {
+    try {
+      await FirebaseHelper.signInFirebase();
+      var credential = FirebaseHelper.userCredential;
+      var uid = credential.user?.uid;
+      if (uid != null) {
+        logger.d(uid);
+        var user = await FirebaseHelper.getUser(uid);
+
+        var ipAddress = IpAddress(type: RequestType.json);
+        var data = await ipAddress.getIpAddress();
+
+        if (user == null) {
+          user = UserModel(
+            uid: uid,
+            walletAddress: EthereumHelper.address?.hex,
+            regdate: kFullDateTimeFormatter.format(DateTime.now().toUtc()),
+            updateDate: kFullDateTimeFormatter.format(DateTime.now().toUtc()),
+            ipAddress: kDebugMode ? kDefaultIpAddress : data['ip'],
+          );
+          user = await FirebaseHelper.createUser(user);
+          if (user == null) {
+            return null;
+          }
+        } else {
+          user = user.copyWith(
+            walletAddress: EthereumHelper.address?.hex,
+            updateDate: kFullDateTimeFormatter.format(DateTime.now().toUtc()),
+            ipAddress: kDebugMode ? kDefaultIpAddress : data['ip'],
+          );
+          await FirebaseHelper.updateUser(user);
+        }
+        _userRx.value = user;
+        return user;
+      }
+    } catch (e) {
+      logger.e(e);
+    }
+    return null;
   }
 }
 
 class AuthHelper {
   static AuthService get service => locator<AuthService>();
 
+  static Future<void> setSessionStatus({SessionStatus? session}) =>
+      service.setSessionStatus(session: session);
+
   static UserModel? get user => service.user;
   static bool get isLoggedIn => service.isLoggedIn;
   static SessionStatus? get sessionStatus => service.sessionStatus;
 
   static Future<void> setUser(UserModel model) => service.setUser(model);
-  static Future<void> setSessionStatus({SessionStatus? session}) =>
-      service.setSessionStatus(session: session);
 }

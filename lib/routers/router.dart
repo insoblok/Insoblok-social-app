@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
-import 'package:aiavatar/routers/routers.dart';
+import 'package:insoblok/models/models.dart';
+import 'package:insoblok/pages/pages.dart';
+import 'package:insoblok/routers/routers.dart';
 
 class Routers {
   static _pushToRoute(BuildContext context, String route, props) {
@@ -11,15 +13,39 @@ class Routers {
     return Navigator.pushReplacementNamed(context, route, arguments: props);
   }
 
+  static void goToLoginPage(BuildContext context) {
+    _pushReplacement(context, kRouterLogin, null);
+  }
+
   static void goToRegisterPage(BuildContext context) {
     _pushReplacement(context, kRouterRegister, null);
   }
 
   static void goToMainPage(BuildContext context) {
-    _pushToRoute(context, kRouterMain, null);
+    _pushReplacement(context, kRouterMain, null);
   }
 
   static goToAccountPage(BuildContext context) {
     return _pushToRoute(context, kRouterAccount, null);
+  }
+
+  static goToCreateRoomPage(BuildContext context) {
+    return _pushToRoute(context, kRouterCreateRoom, null);
+  }
+
+  static goToMessagePage(BuildContext context, MessagePageData data) {
+    return _pushToRoute(context, kRouterMessage, data);
+  }
+
+  static goToAddStoryPage(BuildContext context) {
+    return _pushToRoute(context, kRouterAddStory, null);
+  }
+
+  static goToStoryDetailPage(BuildContext context, StoryModel data) {
+    return _pushToRoute(context, kRouterStoryDetail, data);
+  }
+
+  static goToQuillDescriptionPage(BuildContext context, {String? origin}) {
+    return _pushToRoute(context, kRouterQuillDescription, origin);
   }
 }

@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 
 import 'package:fluttertoast/fluttertoast.dart';
 
-import 'package:aiavatar/models/models.dart';
-import 'package:aiavatar/routers/routers.dart';
-import 'package:aiavatar/services/services.dart';
-import 'package:aiavatar/utils/utils.dart';
+import 'package:insoblok/generated/l10n.dart';
+import 'package:insoblok/models/models.dart';
+import 'package:insoblok/routers/routers.dart';
+import 'package:insoblok/services/services.dart';
+import 'package:insoblok/utils/utils.dart';
 
-class RegisterProvider extends AIAvatarViewModel {
+class RegisterProvider extends InSoBlokViewModel {
   late BuildContext _context;
   BuildContext get context => _context;
   set context(BuildContext context) {
@@ -16,15 +17,15 @@ class RegisterProvider extends AIAvatarViewModel {
   }
 
   late UserModel _user;
-  UserModel get user => _user;
-  set user(UserModel u) {
+
+  Future<void> setUser(UserModel u) async {
     _user = u;
     notifyListeners();
   }
 
   Future<void> init(BuildContext context) async {
     this.context = context;
-    user = AuthHelper.user!;
+    _user = AuthHelper.user!;
   }
 
   void updateFirstName(String name) {
@@ -38,11 +39,24 @@ class RegisterProvider extends AIAvatarViewModel {
   }
 
   Future<void> onClickConfirm() async {
-    if ((user.firstName?.isEmpty ?? true) || (user.lastName?.isEmpty ?? true)) {
-      Fluttertoast.showToast(msg: 'Please input your name!');
+    if ((_user.firstName?.isEmpty ?? true) ||
+        (_user.lastName?.isEmpty ?? true)) {
+      Fluttertoast.showToast(msg: S.current.register_error_name);
       return;
     }
-    await AuthHelper.setUser(user);
-    Routers.goToMainPage(context);
+    await runBusyFuture(() async {
+      try {
+        await AuthHelper.setUser(_user);
+      } catch (e) {
+        setError(e);
+      } finally {
+        notifyListeners();
+      }
+    }());
+    if (hasError) {
+      Fluttertoast.showToast(msg: modelError.toString());
+    } else {
+      Routers.goToLoginPage(context);
+    }
   }
 }

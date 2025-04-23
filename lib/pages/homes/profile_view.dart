@@ -1,70 +1,74 @@
 import 'package:flutter/material.dart';
+import 'package:insoblok/models/models.dart';
 
 import 'package:stacked/stacked.dart';
 
-import 'package:aiavatar/providers/providers.dart';
-import 'package:aiavatar/routers/routers.dart';
-import 'package:aiavatar/services/services.dart';
-import 'package:aiavatar/utils/utils.dart';
-import 'package:aiavatar/widgets/widgets.dart';
+import 'package:insoblok/providers/providers.dart';
+import 'package:insoblok/routers/routers.dart';
+import 'package:insoblok/services/services.dart';
+import 'package:insoblok/utils/utils.dart';
+import 'package:insoblok/widgets/widgets.dart';
 
-class ProfileView extends ViewModelWidget<AIAvatarProvider> {
+class ProfileView extends ViewModelWidget<InSoBlokProvider> {
   const ProfileView({super.key});
 
   @override
   Widget build(BuildContext context, viewModel) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: 18.0,
-        vertical: 24.0,
-      ),
+    return SingleChildScrollView(
+      padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 24.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const SizedBox(
-            width: double.infinity,
-            height: 24.0,
-          ),
+          const SizedBox(width: double.infinity, height: 24.0),
           UserAvatarView(
             onUpdateAvatar: (result) async {
               if (result == 0) {
                 var url = await Routers.goToAccountPage(context);
-                await AuthHelper.setUser(
-                  AuthHelper.user!.copyWith(avatar: url),
-                );
-                viewModel.notifyListeners();
+                if (url != null) {
+                  await AuthHelper.setUser(
+                    AuthHelper.user!.copyWith(avatar: url),
+                  );
+                  viewModel.notifyListeners();
+                }
               }
             },
           ),
           const SizedBox(height: 40.0),
-          Container(
-            width: double.infinity,
-            height: 52.0,
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            decoration: BoxDecoration(
-              border: Border(
-                top: BorderSide(color: AIColors.borderColor),
-              ),
-            ),
-            child: Row(
-              children: [
-                AIImage(Icons.account_circle),
-                const SizedBox(width: 24.0),
-                Text(
-                  '${AuthHelper.user?.firstName} ${AuthHelper.user?.lastName} ',
-                ),
-                const Spacer(),
-                AIImage(
-                  Icons.arrow_forward_ios,
-                  height: 14.0,
-                ),
-              ],
-            ),
+          UserInfoWidget(
+            src: Icons.account_circle,
+            text: viewModel.user!.fullName,
+            onTap: () {},
           ),
-          Container(
-            height: 1,
-            color: AIColors.borderColor,
+          UserInfoWidget(
+            src: Icons.email,
+            text: 'kenta@insoblokai.io',
+            onTap: () {},
           ),
+          UserInfoWidget(
+            src: Icons.lock,
+            text: 'Change Password',
+            onTap: () {},
+          ),
+          Container(height: 1, color: AIColors.borderColor),
+          const SizedBox(height: 48.0),
+          UserInfoWidget(
+            src: Icons.dashboard,
+            text: 'My Stories',
+            onTap: () {},
+          ),
+          UserInfoWidget(src: Icons.favorite, text: 'My Likes', onTap: () {}),
+          UserInfoWidget(src: Icons.link, text: 'My Follows', onTap: () {}),
+          Container(height: 1, color: AIColors.borderColor),
+          const SizedBox(height: 48.0),
+          UserInfoWidget(src: Icons.wallet, text: 'My Wallet', onTap: () {}),
+          UserInfoWidget(
+            src: Icons.work_history_sharp,
+            text: 'Wallet History',
+            onTap: () {},
+          ),
+          UserInfoWidget(src: Icons.settings, text: 'Setting', onTap: () {}),
+          Container(height: 1, color: AIColors.borderColor),
+          SizedBox(height: 96.0),
         ],
       ),
     );

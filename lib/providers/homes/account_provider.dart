@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:insoblok/services/services.dart';
 
-import 'package:aiavatar/utils/utils.dart';
+import 'package:insoblok/utils/utils.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 const kScrappingUrl = 'https://genimg.ai/';
 
-class AccountProvider extends AIAvatarViewModel {
+class AccountProvider extends InSoBlokViewModel {
   var stateListener = ValueNotifier(AccountProviderState.init);
 
   late BuildContext _context;
@@ -122,6 +123,17 @@ return null;
       await Future.delayed(const Duration(milliseconds: 1000));
       getAIImageData();
     }
+  }
+
+  Future<void> onClickConfirm() async {
+    if (aiImageUrl == null) {
+      Fluttertoast.showToast(
+        msg: 'We didn\'t get an AI image yet. Please try to create image',
+      );
+      return;
+    }
+    var url = await FirebaseHelper.uploadImageFromUrl(imageUrl: aiImageUrl!);
+    Navigator.of(context).pop(url);
   }
 
   @override

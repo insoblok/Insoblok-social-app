@@ -1,98 +1,228 @@
-import 'package:aiavatar/models/models.dart';
 import 'package:flutter/material.dart';
 
-import 'package:aiavatar/routers/routers.dart';
-import 'package:aiavatar/services/services.dart';
-import 'package:aiavatar/utils/utils.dart';
+import 'package:animated_text_kit/animated_text_kit.dart';
+import 'package:chewie/chewie.dart';
+import 'package:stacked/stacked.dart';
 
-class LoginPage extends StatelessWidget {
+import 'package:insoblok/generated/l10n.dart';
+import 'package:insoblok/providers/providers.dart';
+import 'package:insoblok/services/services.dart';
+import 'package:insoblok/utils/utils.dart';
+import 'package:insoblok/widgets/widgets.dart';
+
+class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
 
   @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+  late Animation<double> _fadeAnimation;
+  late Animation<Offset> _positionAnimation;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = AnimationController(
+      duration: const Duration(seconds: 1),
+      vsync: this,
+    );
+
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
+
+    _positionAnimation = Tween<Offset>(
+      begin: Offset(0, 0.5),
+      end: Offset.zero,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
+
+    _controller.forward();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 18.0,
-          vertical: 80.0,
-        ),
-        child: Column(
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(60.0),
-              child: AIImage(
-                AIImages.logo,
-                width: 120.0,
-                height: 120.0,
-              ),
-            ),
-            const SizedBox(
-              width: double.infinity,
-              height: 40.0,
-            ),
-            Text(
-              'Welcome to AIAvatar!',
-              style: TextStyle(
-                fontSize: 28.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 80.0),
-            InkWell(
-              onTap: () async {
-                try {
-                  var metamask = MetaMaskService();
-                  metamask.connect();
-                } catch (e) {
-                  logger.e(e);
-                }
-
-                await Future.delayed(const Duration(seconds: 5));
-
-                var address = await AIHelpers.getDeviceIdentifier();
-                logger.d(address);
-                var user = AuthHelper.user ?? UserModel(address: address);
-                await AuthHelper.setUser(user);
-                if (user.firstName != null) {
-                  Routers.goToMainPage(context);
-                } else {
-                  Routers.goToRegisterPage(context);
-                }
-              },
-              child: Container(
-                width: 320.0,
-                height: 52.0,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(12.0),
-                  border: Border.all(
-                    width: 2.0,
-                    color: AIColors.yellow,
+    return ViewModelBuilder<LoginProvider>.reactive(
+      viewModelBuilder: () => LoginProvider(),
+      onViewModelReady: (viewModel) => viewModel.init(context),
+      builder: (context, viewModel, _) {
+        return Scaffold(
+          body: Stack(
+            children: [
+              viewModel.videoPlayerController.value.isInitialized
+                  ? LayoutBuilder(
+                    builder: (context, constraints) {
+                      return SizedBox(
+                        height: constraints.maxHeight,
+                        child: AspectRatio(
+                          aspectRatio:
+                              viewModel.videoPlayerController.value.aspectRatio,
+                          child: FittedBox(
+                            fit: BoxFit.cover,
+                            child: SizedBox(
+                              width:
+                                  viewModel
+                                      .videoPlayerController
+                                      .value
+                                      .size
+                                      .width,
+                              height:
+                                  viewModel
+                                      .videoPlayerController
+                                      .value
+                                      .size
+                                      .height,
+                              child: Chewie(
+                                controller: viewModel.chewieController,
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  )
+                  : AIImage(
+                    AIImages.imgBackSplash,
+                    width: double.infinity,
+                    height: double.infinity,
+                    fit: BoxFit.cover,
                   ),
-                ),
-                alignment: Alignment.center,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
+              Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    AIImage(
-                      AIImages.imgMetamask,
-                      width: 28.0,
+                    SizedBox(
+                      height: MediaQuery.of(context).viewInsets.top + 16.0,
                     ),
-                    const SizedBox(width: 24.0),
-                    Text(
-                      'Login by MetaMask',
-                      style: TextStyle(
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.bold,
-                        color: AIColors.yellow,
+                    const SizedBox(width: 16.0),
+                    Row(
+                      children: [
+                        AIImage(
+                          AIImages.logoInsoblok,
+                          width: 48.0,
+                          height: 48.0,
+                        ),
+                        const SizedBox(width: 16.0),
+                        Text(
+                          S.current.title.toUpperCase(),
+                          style: TextStyle(
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 80.0),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        AnimatedTextKit(
+                          totalRepeatCount: 1,
+                          animatedTexts: [
+                            TyperAnimatedText(
+                              'First Layer 1 SocialFi &',
+                              textStyle: TextStyle(
+                                fontSize: 32.0,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                        AnimatedTextKit(
+                          totalRepeatCount: 1,
+                          animatedTexts: [
+                            TyperAnimatedText(
+                              'Influencer Commerce',
+                              textStyle: TextStyle(
+                                fontSize: 32.0,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                        AnimatedTextKit(
+                          totalRepeatCount: 1,
+                          animatedTexts: [
+                            TyperAnimatedText(
+                              'Platform',
+                              textStyle: TextStyle(
+                                fontSize: 32.0,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 24.0),
+                    SlideTransition(
+                      position: _positionAnimation,
+                      child: FadeTransition(
+                        opacity: _fadeAnimation,
+                        child: Text(
+                          'Powering Influencer Commerce, P2P Payments, Dynamic Soveringity ,User Driven Ecosytem',
+                          style: TextStyle(fontSize: 18.0, color: Colors.white),
+                        ),
                       ),
+                    ),
+                    const SizedBox(height: 80.0),
+                    Row(
+                      children: [
+                        const SizedBox(width: 24.0),
+                        Expanded(
+                          child: Container(
+                            color: AIColors.darkScaffoldBackground.withAlpha(
+                              216,
+                            ),
+                            child: OutlineButton(
+                              isBusy: viewModel.isBusy,
+                              borderColor: AIColors.yellow,
+                              onTap: viewModel.login,
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  AIImage(AIImages.imgMetamask, width: 28.0),
+                                  const SizedBox(width: 24.0),
+                                  Text(
+                                    S.current.login_button,
+                                    style: TextStyle(
+                                      fontSize: 16.0,
+                                      fontWeight: FontWeight.bold,
+                                      color: AIColors.yellow,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 24.0),
+                      ],
                     ),
                   ],
                 ),
               ),
-            ),
-          ],
-        ),
-      ),
+            ],
+          ),
+        );
+      },
     );
   }
 }
