@@ -87,5 +87,6 @@ class AppSettingHelper {
   static AppSettingService get service => locator<AppSettingService>();
 
   static ThemeMode get themeMode => service.themeMode;
-  static ThemeData get theme => service.theme;
+  static ThemeData get lightTheme => service.lightTheme;
+  static ThemeData get darkTheme => service.darkTheme;
 }

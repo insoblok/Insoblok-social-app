@@ -6,7 +6,7 @@ class AIColors {
   static Color darkAccent = Color(0xff1aa3f2); //26 163 242
   static Color darkSelectedText = Color(0xff1aa3f2); //26 163 242
   static Color darkUnselectedText = Color(0xff8293a3); //130 147 163
-  static Color darkPrimaryColor = Color(0xff1c2836);
+  static Color darkPrimaryColor = Color.fromARGB(255, 139, 172, 211);
   static Color darkTransparentBackground = Colors.black38;
   static Color darkTextColor = Color(0xffffffff);
   static Color darkIconColor = Color(0xffffffff);

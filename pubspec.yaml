@@ -24,6 +24,8 @@ dependencies:
   video_player: any
   chewie: any
   carousel_slider: any
+  flutter_quill: any
+  flutter_quill_extensions: any
 
   logger: any
   freezed_annotation: any

@@ -20,7 +20,7 @@ class AddStoryProvider extends InSoBlokViewModel {
 
   Future<void> init(BuildContext context) async {
     this.context = context;
-    provider = Provider.of<UploadMediaProvider>(context, listen: false);
+    provider = context.read<UploadMediaProvider>();
   }
 
   Future<void> onClickAddMediaButton() async {
@@ -29,7 +29,7 @@ class AddStoryProvider extends InSoBlokViewModel {
 
     await runBusyFuture(() async {
       try {
-        provider.addMedias(context);
+        await provider.addMedias(context);
       } catch (e) {
         setError(e);
         logger.e(e);

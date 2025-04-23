@@ -7,6 +7,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart' as iaw;
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
+import 'package:flutter_quill/flutter_quill.dart';
+import 'package:provider/provider.dart';
 
 import 'package:insoblok/generated/l10n.dart';
 import 'package:insoblok/locator.dart';
@@ -15,7 +17,6 @@ import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
-import 'package:provider/provider.dart';
 
 class MyHttpOverrides extends HttpOverrides {
   @override
@@ -59,13 +60,16 @@ class InSoBlokApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context) => UploadMediaProvider()),
+        ChangeNotifierProvider(
+          create: (context) => UploadMediaProvider()..init(context),
+        ),
       ],
       child: MaterialApp(
         title: 'InSoBlok',
         debugShowCheckedModeBanner: false,
         themeMode: AppSettingHelper.themeMode,
-        theme: AppSettingHelper.theme,
+        theme: AppSettingHelper.lightTheme,
+        darkTheme: AppSettingHelper.darkTheme,
         initialRoute: kRouterBase,
         onGenerateRoute: _navigation.router.generator,
         home: LoginPage(),
@@ -74,6 +78,7 @@ class InSoBlokApp extends StatelessWidget {
           GlobalMaterialLocalizations.delegate,
           GlobalWidgetsLocalizations.delegate,
           GlobalCupertinoLocalizations.delegate,
+          FlutterQuillLocalizations.delegate,
         ],
         supportedLocales: S.delegate.supportedLocales,
       ),

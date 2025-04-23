@@ -36,13 +36,12 @@ class AITextField extends StatelessWidget {
         initialValue: initialValue,
         controller: controller,
         autofocus: autofocus,
+        style: Theme.of(context).textTheme.labelMedium,
         decoration: InputDecoration(
           contentPadding: EdgeInsets.symmetric(horizontal: 24.0),
           hintText: hintText,
           prefixIcon: prefixIcon,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(32.0),
-          ),
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
         ),
         onChanged: onChanged,
         onTapOutside: onTapOutside,
