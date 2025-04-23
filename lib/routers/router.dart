@@ -44,4 +44,8 @@ class Routers {
   static goToStoryDetailPage(BuildContext context, StoryModel data) {
     return _pushToRoute(context, kRouterStoryDetail, data);
   }
+
+  static goToQuillDescriptionPage(BuildContext context, {String? origin}) {
+    return _pushToRoute(context, kRouterQuillDescription, origin);
+  }
 }

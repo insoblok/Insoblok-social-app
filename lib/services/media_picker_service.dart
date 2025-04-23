@@ -106,22 +106,22 @@ class MediaPickerService {
     );
   }
 
-  Future<List<XFile>> onMultiImagePicker() async {
+  Future<List<XFile>> onMultiImagePicker({int? limit}) async {
     List<XFile> result = [];
     var isAllowed = await PermissionService.requestGalleryPermission();
     if (isAllowed == true) {
-      result = await _picker.pickMultiImage();
+      result = await _picker.pickMultiImage(limit: limit);
     } else {
       Fluttertoast.showToast(msg: 'Permission Denided!');
     }
     return result;
   }
 
-  Future<List<XFile>> onMultiMediaPicker() async {
+  Future<List<XFile>> onMultiMediaPicker({int? limit}) async {
     List<XFile> result = [];
     var isAllowed = await PermissionService.requestGalleryPermission();
     if (isAllowed == true) {
-      result = await _picker.pickMultipleMedia();
+      result = await _picker.pickMultipleMedia(limit: limit);
     } else {
       Fluttertoast.showToast(msg: 'Permission Denided!');
     }

@@ -22,6 +22,7 @@ class AppSettingService with ListenableServiceMixin {
   ThemeData get theme => themeMode == ThemeMode.light ? lightTheme : darkTheme;
 
   ThemeData get lightTheme => ThemeData(
+    fontFamily: 'Geist',
     colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
     scaffoldBackgroundColor: AIColors.darkScaffoldBackground,
     useMaterial3: true,
@@ -38,6 +39,7 @@ class AppSettingService with ListenableServiceMixin {
   );
 
   ThemeData get darkTheme => ThemeData(
+    fontFamily: 'Geist',
     colorScheme: ColorScheme.fromSeed(seedColor: AIColors.darkPrimaryColor),
     scaffoldBackgroundColor: AIColors.darkScaffoldBackground,
     useMaterial3: true,
@@ -51,6 +53,7 @@ class AppSettingService with ListenableServiceMixin {
       ),
     ),
     textTheme: TextTheme(
+      displayMedium: TextStyle(fontSize: 16.0, color: AIColors.darkTextColor),
       displaySmall: TextStyle(
         fontSize: 10.0,
         fontWeight: FontWeight.w300,

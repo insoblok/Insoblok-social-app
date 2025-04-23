@@ -33,7 +33,9 @@ class UploadMediaProvider extends InSoBlokViewModel {
     String? title,
     int? maxImages,
   }) async {
-    var files = await _mediaPicker.onMultiMediaPicker();
+    var files = await _mediaPicker.onMultiMediaPicker(
+      limit: (9 - _medias.length),
+    );
     if (files.isEmpty) {
       Fluttertoast.showToast(msg: 'No selected media!');
     } else {
@@ -45,9 +47,11 @@ class UploadMediaProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  void removeImage(UploadMediaItem image) {
-    _medias.remove(image);
-    notifyListeners();
+  void removeMedia(UploadMediaItem media) {
+    if (!media.isUploaded && !media.isUploaded) {
+      _medias.remove(media);
+      notifyListeners();
+    }
   }
 
   Future<List<MediaStoryModel>> uploadMedias() async {
@@ -85,6 +89,8 @@ class UploadMediaProvider extends InSoBlokViewModel {
       //   type: image.imageType,
       //   onSentProgress: (int sent, int total) {},
       // );
+
+      await Future.delayed(const Duration(milliseconds: 1500));
 
       media.isUploaded = true;
     } catch (e) {

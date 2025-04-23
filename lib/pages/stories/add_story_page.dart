@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:flutter_quill/flutter_quill.dart';
 import 'package:stacked/stacked.dart';
 
 import 'package:insoblok/providers/providers.dart';
@@ -17,6 +18,7 @@ class AddStoryPage extends StatelessWidget {
       builder: (context, viewModel, _) {
         return Scaffold(
           body: CustomScrollView(
+            controller: viewModel.scrollController,
             slivers: [
               SliverAppBar(
                 title: Text('Add Story'),
@@ -40,7 +42,7 @@ class AddStoryPage extends StatelessWidget {
                       padding: const EdgeInsets.only(left: 8.0),
                       child: Text(
                         'Title of Story',
-                        style: Theme.of(context).textTheme.headlineMedium,
+                        style: Theme.of(context).textTheme.headlineLarge,
                       ),
                     ),
                     const SizedBox(height: 12.0),
@@ -49,28 +51,59 @@ class AddStoryPage extends StatelessWidget {
                       hintText: 'Input Feed Title...',
                       onChanged: (value) {},
                     ),
-                    const SizedBox(height: 24.0),
+                    const SizedBox(height: 40.0),
                     Padding(
                       padding: const EdgeInsets.only(left: 8.0),
-                      child: Text(
-                        'Description of Story',
-                        style: Theme.of(context).textTheme.headlineMedium,
+                      child: Row(
+                        children: [
+                          Text(
+                            'Description of Story',
+                            style: Theme.of(context).textTheme.headlineLarge,
+                          ),
+                          const Spacer(),
+                          IconButton(
+                            onPressed: viewModel.updateDescription,
+                            icon: Icon(Icons.edit_note),
+                          ),
+                        ],
                       ),
                     ),
-                    const SizedBox(height: 24.0),
-                    InkWell(
-                      onTap: viewModel.onClickAddMediaButton,
-                      child: Container(
-                        height: 60.0,
-                        decoration: kCardDecoration,
-                        alignment: Alignment.center,
-                        child: Text(
-                          '+ Add Medias',
-                          style: Theme.of(context).textTheme.headlineLarge,
-                        ),
+                    const SizedBox(height: 12.0),
+                    Container(
+                      height: 240.0,
+                      decoration: kCardDecoration,
+                      padding: const EdgeInsets.all(16.0),
+                      child: QuillEditor(
+                        focusNode: viewModel.focusNode,
+                        scrollController: viewModel.quillScrollController,
+                        controller: viewModel.quillController,
                       ),
                     ),
-                    UploadMediaWidget(),
+                    const SizedBox(height: 40.0),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 8.0),
+                      child: Row(
+                        children: [
+                          Text(
+                            'Galleries of Story',
+                            style: Theme.of(context).textTheme.headlineLarge,
+                          ),
+                          const Spacer(),
+                          IconButton(
+                            onPressed: viewModel.onClickAddMediaButton,
+                            icon: Icon(Icons.add_a_photo),
+                          ),
+                        ],
+                      ),
+                    ),
+                    UploadMediaWidget(
+                      controller: viewModel.scrollController,
+                      onRefresh: () {
+                        viewModel.notifyListeners();
+                      },
+                    ),
+                    const SizedBox(height: 40.0),
+                    TextFillButton(text: 'Upload Story', color: AIColors.blue),
                   ]),
                 ),
               ),

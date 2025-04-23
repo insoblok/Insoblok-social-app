@@ -16,6 +16,8 @@ const kRouterMessage = '/message';
 const kRouterAddStory = '/add-story';
 const kRouterStoryDetail = '/story-detail';
 
+const kRouterQuillDescription = '/quill-description';
+
 class Navigation {
   final router = fluro.FluroRouter();
 
@@ -69,6 +71,12 @@ class Navigation {
     initRoute<StoryModel>(
       kRouterStoryDetail,
       (props) => StoryDetailPage(story: props!),
+    );
+
+    // * QuillDescriptionPage
+    initRoute<String>(
+      kRouterQuillDescription,
+      (props) => QuillDescriptionPage(originQuill: props),
     );
   }
 }
