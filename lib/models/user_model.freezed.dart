@@ -27,6 +27,8 @@ mixin _$UserModel {
   String? get regdate;
   String? get updateDate;
   String? get status;
+  List<String>? get likes;
+  List<String>? get follows;
 
   /// Create a copy of UserModel
   /// with the given fields replaced by the non-null parameter values.
@@ -59,17 +61,33 @@ mixin _$UserModel {
             (identical(other.regdate, regdate) || other.regdate == regdate) &&
             (identical(other.updateDate, updateDate) ||
                 other.updateDate == updateDate) &&
-            (identical(other.status, status) || other.status == status));
+            (identical(other.status, status) || other.status == status) &&
+            const DeepCollectionEquality().equals(other.likes, likes) &&
+            const DeepCollectionEquality().equals(other.follows, follows));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, uid, walletAddress, avatar,
-      firstName, lastName, lat, lon, ipAddress, regdate, updateDate, status);
+  int get hashCode => Object.hash(
+      runtimeType,
+      id,
+      uid,
+      walletAddress,
+      avatar,
+      firstName,
+      lastName,
+      lat,
+      lon,
+      ipAddress,
+      regdate,
+      updateDate,
+      status,
+      const DeepCollectionEquality().hash(likes),
+      const DeepCollectionEquality().hash(follows));
 
   @override
   String toString() {
-    return 'UserModel(id: $id, uid: $uid, walletAddress: $walletAddress, avatar: $avatar, firstName: $firstName, lastName: $lastName, lat: $lat, lon: $lon, ipAddress: $ipAddress, regdate: $regdate, updateDate: $updateDate, status: $status)';
+    return 'UserModel(id: $id, uid: $uid, walletAddress: $walletAddress, avatar: $avatar, firstName: $firstName, lastName: $lastName, lat: $lat, lon: $lon, ipAddress: $ipAddress, regdate: $regdate, updateDate: $updateDate, status: $status, likes: $likes, follows: $follows)';
   }
 }
 
@@ -90,7 +108,9 @@ abstract mixin class $UserModelCopyWith<$Res> {
       String? ipAddress,
       String? regdate,
       String? updateDate,
-      String? status});
+      String? status,
+      List<String>? likes,
+      List<String>? follows});
 }
 
 /// @nodoc
@@ -117,6 +137,8 @@ class _$UserModelCopyWithImpl<$Res> implements $UserModelCopyWith<$Res> {
     Object? regdate = freezed,
     Object? updateDate = freezed,
     Object? status = freezed,
+    Object? likes = freezed,
+    Object? follows = freezed,
   }) {
     return _then(_self.copyWith(
       id: freezed == id
@@ -167,6 +189,14 @@ class _$UserModelCopyWithImpl<$Res> implements $UserModelCopyWith<$Res> {
           ? _self.status
           : status // ignore: cast_nullable_to_non_nullable
               as String?,
+      likes: freezed == likes
+          ? _self.likes
+          : likes // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
+      follows: freezed == follows
+          ? _self.follows
+          : follows // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
     ));
   }
 }
@@ -187,7 +217,11 @@ class _UserModel implements UserModel {
       this.ipAddress,
       this.regdate,
       this.updateDate,
-      this.status});
+      this.status,
+      final List<String>? likes,
+      final List<String>? follows})
+      : _likes = likes,
+        _follows = follows;
   factory _UserModel.fromJson(Map<String, dynamic> json) =>
       _$UserModelFromJson(json);
 
@@ -215,6 +249,25 @@ class _UserModel implements UserModel {
   final String? updateDate;
   @override
   final String? status;
+  final List<String>? _likes;
+  @override
+  List<String>? get likes {
+    final value = _likes;
+    if (value == null) return null;
+    if (_likes is EqualUnmodifiableListView) return _likes;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
+
+  final List<String>? _follows;
+  @override
+  List<String>? get follows {
+    final value = _follows;
+    if (value == null) return null;
+    if (_follows is EqualUnmodifiableListView) return _follows;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
 
   /// Create a copy of UserModel
   /// with the given fields replaced by the non-null parameter values.
@@ -252,17 +305,33 @@ class _UserModel implements UserModel {
             (identical(other.regdate, regdate) || other.regdate == regdate) &&
             (identical(other.updateDate, updateDate) ||
                 other.updateDate == updateDate) &&
-            (identical(other.status, status) || other.status == status));
+            (identical(other.status, status) || other.status == status) &&
+            const DeepCollectionEquality().equals(other._likes, _likes) &&
+            const DeepCollectionEquality().equals(other._follows, _follows));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, uid, walletAddress, avatar,
-      firstName, lastName, lat, lon, ipAddress, regdate, updateDate, status);
+  int get hashCode => Object.hash(
+      runtimeType,
+      id,
+      uid,
+      walletAddress,
+      avatar,
+      firstName,
+      lastName,
+      lat,
+      lon,
+      ipAddress,
+      regdate,
+      updateDate,
+      status,
+      const DeepCollectionEquality().hash(_likes),
+      const DeepCollectionEquality().hash(_follows));
 
   @override
   String toString() {
-    return 'UserModel(id: $id, uid: $uid, walletAddress: $walletAddress, avatar: $avatar, firstName: $firstName, lastName: $lastName, lat: $lat, lon: $lon, ipAddress: $ipAddress, regdate: $regdate, updateDate: $updateDate, status: $status)';
+    return 'UserModel(id: $id, uid: $uid, walletAddress: $walletAddress, avatar: $avatar, firstName: $firstName, lastName: $lastName, lat: $lat, lon: $lon, ipAddress: $ipAddress, regdate: $regdate, updateDate: $updateDate, status: $status, likes: $likes, follows: $follows)';
   }
 }
 
@@ -286,7 +355,9 @@ abstract mixin class _$UserModelCopyWith<$Res>
       String? ipAddress,
       String? regdate,
       String? updateDate,
-      String? status});
+      String? status,
+      List<String>? likes,
+      List<String>? follows});
 }
 
 /// @nodoc
@@ -313,6 +384,8 @@ class __$UserModelCopyWithImpl<$Res> implements _$UserModelCopyWith<$Res> {
     Object? regdate = freezed,
     Object? updateDate = freezed,
     Object? status = freezed,
+    Object? likes = freezed,
+    Object? follows = freezed,
   }) {
     return _then(_UserModel(
       id: freezed == id
@@ -363,6 +436,14 @@ class __$UserModelCopyWithImpl<$Res> implements _$UserModelCopyWith<$Res> {
           ? _self.status
           : status // ignore: cast_nullable_to_non_nullable
               as String?,
+      likes: freezed == likes
+          ? _self._likes
+          : likes // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
+      follows: freezed == follows
+          ? _self._follows
+          : follows // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
     ));
   }
 }

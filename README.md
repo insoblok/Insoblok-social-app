@@ -7,3 +7,16 @@ flutter pub upgrade --major-versions
 
 
 Built for AI-Driven Autonomous Commerce, Scalable Microtransactions & Decentralized Monetization. 
+
+await runBusyFuture(() async {
+    try {} catch (e) {
+    setError(e);
+    logger.e(e);
+    } finally {
+    notifyListeners();
+    }
+}());
+
+if (hasError) {
+    Fluttertoast.showToast(msg: modelError.toString());
+} else {}

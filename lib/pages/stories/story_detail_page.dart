@@ -213,18 +213,7 @@ class StoryDetailPage extends StatelessWidget {
                           decoration: BoxDecoration(
                             color: AIColors.darkScaffoldBackground,
                             borderRadius: BorderRadius.circular(16.0),
-                            boxShadow: [
-                              BoxShadow(
-                                blurRadius: 5.0,
-                                color: Colors.black26,
-                                offset: Offset(2, 2),
-                              ),
-                              BoxShadow(
-                                blurRadius: 5.0,
-                                color: Colors.white24,
-                                offset: Offset(-2, -2),
-                              ),
-                            ],
+                            boxShadow: kContainerDarkShadow,
                           ),
                         ),
                       },

@@ -19,6 +19,10 @@ _UserModel _$UserModelFromJson(Map<String, dynamic> json) => _UserModel(
       regdate: json['regdate'] as String?,
       updateDate: json['update_date'] as String?,
       status: json['status'] as String?,
+      likes:
+          (json['likes'] as List<dynamic>?)?.map((e) => e as String).toList(),
+      follows:
+          (json['follows'] as List<dynamic>?)?.map((e) => e as String).toList(),
     );
 
 Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
@@ -35,4 +39,6 @@ Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
       'regdate': instance.regdate,
       'update_date': instance.updateDate,
       'status': instance.status,
+      'likes': instance.likes,
+      'follows': instance.follows,
     };

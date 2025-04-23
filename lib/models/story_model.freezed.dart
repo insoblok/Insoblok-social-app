@@ -544,6 +544,7 @@ mixin _$StoryCommentModel {
   String? get uid;
   String? get content;
   String? get timestamp;
+  List<MediaStoryModel>? get medias;
 
   /// Create a copy of StoryCommentModel
   /// with the given fields replaced by the non-null parameter values.
@@ -564,16 +565,18 @@ mixin _$StoryCommentModel {
             (identical(other.uid, uid) || other.uid == uid) &&
             (identical(other.content, content) || other.content == content) &&
             (identical(other.timestamp, timestamp) ||
-                other.timestamp == timestamp));
+                other.timestamp == timestamp) &&
+            const DeepCollectionEquality().equals(other.medias, medias));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, uid, content, timestamp);
+  int get hashCode => Object.hash(runtimeType, uid, content, timestamp,
+      const DeepCollectionEquality().hash(medias));
 
   @override
   String toString() {
-    return 'StoryCommentModel(uid: $uid, content: $content, timestamp: $timestamp)';
+    return 'StoryCommentModel(uid: $uid, content: $content, timestamp: $timestamp, medias: $medias)';
   }
 }
 
@@ -583,7 +586,11 @@ abstract mixin class $StoryCommentModelCopyWith<$Res> {
           StoryCommentModel value, $Res Function(StoryCommentModel) _then) =
       _$StoryCommentModelCopyWithImpl;
   @useResult
-  $Res call({String? uid, String? content, String? timestamp});
+  $Res call(
+      {String? uid,
+      String? content,
+      String? timestamp,
+      List<MediaStoryModel>? medias});
 }
 
 /// @nodoc
@@ -602,6 +609,7 @@ class _$StoryCommentModelCopyWithImpl<$Res>
     Object? uid = freezed,
     Object? content = freezed,
     Object? timestamp = freezed,
+    Object? medias = freezed,
   }) {
     return _then(_self.copyWith(
       uid: freezed == uid
@@ -616,6 +624,10 @@ class _$StoryCommentModelCopyWithImpl<$Res>
           ? _self.timestamp
           : timestamp // ignore: cast_nullable_to_non_nullable
               as String?,
+      medias: freezed == medias
+          ? _self.medias
+          : medias // ignore: cast_nullable_to_non_nullable
+              as List<MediaStoryModel>?,
     ));
   }
 }
@@ -624,7 +636,12 @@ class _$StoryCommentModelCopyWithImpl<$Res>
 
 @JsonSerializable(fieldRename: FieldRename.snake)
 class _StoryCommentModel implements StoryCommentModel {
-  _StoryCommentModel({this.uid, this.content, this.timestamp});
+  _StoryCommentModel(
+      {this.uid,
+      this.content,
+      this.timestamp,
+      final List<MediaStoryModel>? medias})
+      : _medias = medias;
   factory _StoryCommentModel.fromJson(Map<String, dynamic> json) =>
       _$StoryCommentModelFromJson(json);
 
@@ -634,6 +651,15 @@ class _StoryCommentModel implements StoryCommentModel {
   final String? content;
   @override
   final String? timestamp;
+  final List<MediaStoryModel>? _medias;
+  @override
+  List<MediaStoryModel>? get medias {
+    final value = _medias;
+    if (value == null) return null;
+    if (_medias is EqualUnmodifiableListView) return _medias;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
 
   /// Create a copy of StoryCommentModel
   /// with the given fields replaced by the non-null parameter values.
@@ -658,16 +684,18 @@ class _StoryCommentModel implements StoryCommentModel {
             (identical(other.uid, uid) || other.uid == uid) &&
             (identical(other.content, content) || other.content == content) &&
             (identical(other.timestamp, timestamp) ||
-                other.timestamp == timestamp));
+                other.timestamp == timestamp) &&
+            const DeepCollectionEquality().equals(other._medias, _medias));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, uid, content, timestamp);
+  int get hashCode => Object.hash(runtimeType, uid, content, timestamp,
+      const DeepCollectionEquality().hash(_medias));
 
   @override
   String toString() {
-    return 'StoryCommentModel(uid: $uid, content: $content, timestamp: $timestamp)';
+    return 'StoryCommentModel(uid: $uid, content: $content, timestamp: $timestamp, medias: $medias)';
   }
 }
 
@@ -679,7 +707,11 @@ abstract mixin class _$StoryCommentModelCopyWith<$Res>
       __$StoryCommentModelCopyWithImpl;
   @override
   @useResult
-  $Res call({String? uid, String? content, String? timestamp});
+  $Res call(
+      {String? uid,
+      String? content,
+      String? timestamp,
+      List<MediaStoryModel>? medias});
 }
 
 /// @nodoc
@@ -698,6 +730,7 @@ class __$StoryCommentModelCopyWithImpl<$Res>
     Object? uid = freezed,
     Object? content = freezed,
     Object? timestamp = freezed,
+    Object? medias = freezed,
   }) {
     return _then(_StoryCommentModel(
       uid: freezed == uid
@@ -712,6 +745,10 @@ class __$StoryCommentModelCopyWithImpl<$Res>
           ? _self.timestamp
           : timestamp // ignore: cast_nullable_to_non_nullable
               as String?,
+      medias: freezed == medias
+          ? _self._medias
+          : medias // ignore: cast_nullable_to_non_nullable
+              as List<MediaStoryModel>?,
     ));
   }
 }

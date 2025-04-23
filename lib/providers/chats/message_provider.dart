@@ -5,14 +5,14 @@ import 'package:flutter/material.dart';
 import 'package:chewie/chewie.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:insoblok/widgets/widgets.dart';
 import 'package:video_player/video_player.dart';
+import 'package:web3dart/web3dart.dart';
 
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/pages/pages.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
-import 'package:web3dart/web3dart.dart';
+import 'package:insoblok/widgets/widgets.dart';
 
 class MessageProvider extends InSoBlokViewModel {
   late BuildContext _context;
@@ -63,6 +63,7 @@ class MessageProvider extends InSoBlokViewModel {
 
   var textController = TextEditingController();
   var scrollController = ScrollController();
+  late MediaPickerService _mediaPickerService;
 
   Future<void> init(
     BuildContext context, {
@@ -86,6 +87,8 @@ class MessageProvider extends InSoBlokViewModel {
       isAddPop = false;
       FocusManager.instance.primaryFocus?.unfocus();
     });
+
+    _mediaPickerService = MediaPickerService(context);
   }
 
   String? _content;
@@ -111,7 +114,6 @@ class MessageProvider extends InSoBlokViewModel {
     }
   }
 
-  final ImagePicker _picker = ImagePicker();
   XFile? _selectedFile;
   XFile? get selectedFile => _selectedFile;
   set selectedFile(XFile? f) {
@@ -125,36 +127,21 @@ class MessageProvider extends InSoBlokViewModel {
 
     isAddPop = false;
 
-    var mediaSource = await _showMediaSource();
-    if (mediaSource != null) {
-      var isAllowed = false;
-      isAllowed =
-          mediaSource == ImageSource.gallery
-              ? ((await PermissionService.requestGalleryPermission()) ?? false)
-              : ((await PermissionService.requestCameraPermission()) ?? false);
-
-      if (isAllowed) {
-        final image = await _picker.pickImage(source: mediaSource);
-        if (image != null) {
-          selectedFile = image;
-          var isSend = await _showPreview(isImage: true);
-          if (isSend) {
-            var imageUrl = await FirebaseHelper.uploadFile(
-              file: File(image.path),
-              folderName: 'message',
-            );
-            if (imageUrl != null) {
-              await messageService.sendImageMessage(
-                chatRoomId: room.id!,
-                imageUrl: imageUrl,
-              );
-            }
-          }
-        } else {
-          Fluttertoast.showToast(msg: 'No selected image!');
+    var image = await _mediaPickerService.onPickerSingleMedia(isImage: true);
+    if (image != null) {
+      selectedFile = image;
+      var isSend = await _showPreview(isImage: true);
+      if (isSend) {
+        var imageUrl = await FirebaseHelper.uploadFile(
+          file: File(image.path),
+          folderName: 'message',
+        );
+        if (imageUrl != null) {
+          await messageService.sendImageMessage(
+            chatRoomId: room.id!,
+            imageUrl: imageUrl,
+          );
         }
-      } else {
-        Fluttertoast.showToast(msg: 'Permission Denided!');
       }
     }
   }
@@ -165,36 +152,21 @@ class MessageProvider extends InSoBlokViewModel {
 
     isAddPop = false;
 
-    var mediaSource = await _showMediaSource();
-    if (mediaSource != null) {
-      var isAllowed = false;
-      isAllowed =
-          mediaSource == ImageSource.gallery
-              ? ((await PermissionService.requestGalleryPermission()) ?? false)
-              : ((await PermissionService.requestCameraPermission()) ?? false);
-
-      if (isAllowed) {
-        final video = await _picker.pickVideo(source: mediaSource);
-        if (video != null) {
-          selectedFile = video;
-          var isSend = await _showPreview(isImage: false);
-          if (isSend) {
-            var videoUrl = await FirebaseHelper.uploadFile(
-              file: File(video.path),
-              folderName: 'message',
-            );
-            if (videoUrl != null) {
-              await messageService.sendVideoMessage(
-                chatRoomId: room.id!,
-                videoUrl: videoUrl,
-              );
-            }
-          }
-        } else {
-          Fluttertoast.showToast(msg: 'No selected video!');
+    var video = await _mediaPickerService.onPickerSingleMedia(isImage: false);
+    if (video != null) {
+      selectedFile = video;
+      var isSend = await _showPreview(isImage: false);
+      if (isSend) {
+        var videoUrl = await FirebaseHelper.uploadFile(
+          file: File(video.path),
+          folderName: 'message',
+        );
+        if (videoUrl != null) {
+          await messageService.sendVideoMessage(
+            chatRoomId: room.id!,
+            videoUrl: videoUrl,
+          );
         }
-      } else {
-        Fluttertoast.showToast(msg: 'Permission Denided!');
       }
     }
   }
@@ -231,66 +203,6 @@ class MessageProvider extends InSoBlokViewModel {
         await messageService.sendPaidMessage(chatRoomId: room.id!, coin: coin);
       }
     }
-  }
-
-  Future<ImageSource?> _showMediaSource() async {
-    return await showModalBottomSheet<ImageSource>(
-      context: context,
-      builder: (context) {
-        return SafeArea(
-          child: Container(
-            width: double.infinity,
-            color: AIColors.darkScaffoldBackground,
-            padding: const EdgeInsets.symmetric(
-              horizontal: 18.0,
-              vertical: 24.0,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                InkWell(
-                  onTap: () => Navigator.of(context).pop(ImageSource.gallery),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      AIImage(Icons.air, color: AIColors.blue),
-                      const SizedBox(width: 12.0),
-                      Text(
-                        'From Gallery',
-                        style: TextStyle(
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.bold,
-                          color: AIColors.blue,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 24.0),
-                InkWell(
-                  onTap: () => Navigator.of(context).pop(ImageSource.camera),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      AIImage(Icons.camera, color: AIColors.blue),
-                      const SizedBox(width: 12.0),
-                      Text(
-                        'From Camera',
-                        style: TextStyle(
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.bold,
-                          color: AIColors.blue,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
   }
 
   Future<bool> _showPreview({bool isImage = true}) async {

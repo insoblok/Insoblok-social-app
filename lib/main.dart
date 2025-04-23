@@ -11,9 +11,11 @@ import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:insoblok/generated/l10n.dart';
 import 'package:insoblok/locator.dart';
 import 'package:insoblok/pages/pages.dart';
+import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
+import 'package:provider/provider.dart';
 
 class MyHttpOverrides extends HttpOverrides {
   @override
@@ -55,21 +57,26 @@ class InSoBlokApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'InSoBlok',
-      debugShowCheckedModeBanner: false,
-      themeMode: AppSettingHelper.themeMode,
-      theme: AppSettingHelper.theme,
-      initialRoute: kRouterBase,
-      onGenerateRoute: _navigation.router.generator,
-      home: LoginPage(),
-      localizationsDelegates: const [
-        S.delegate,
-        GlobalMaterialLocalizations.delegate,
-        GlobalWidgetsLocalizations.delegate,
-        GlobalCupertinoLocalizations.delegate,
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context) => UploadMediaProvider()),
       ],
-      supportedLocales: S.delegate.supportedLocales,
+      child: MaterialApp(
+        title: 'InSoBlok',
+        debugShowCheckedModeBanner: false,
+        themeMode: AppSettingHelper.themeMode,
+        theme: AppSettingHelper.theme,
+        initialRoute: kRouterBase,
+        onGenerateRoute: _navigation.router.generator,
+        home: LoginPage(),
+        localizationsDelegates: const [
+          S.delegate,
+          GlobalMaterialLocalizations.delegate,
+          GlobalWidgetsLocalizations.delegate,
+          GlobalCupertinoLocalizations.delegate,
+        ],
+        supportedLocales: S.delegate.supportedLocales,
+      ),
     );
   }
 }

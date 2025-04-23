@@ -36,14 +36,10 @@ class OutlineButton extends StatelessWidget {
           ),
         ),
         alignment: Alignment.center,
-        child: isBusy
-            ? Center(
-                child: Loader(
-                  color: borderColor,
-                  size: 28.0,
-                ),
-              )
-            : child,
+        child:
+            isBusy
+                ? Center(child: Loader(color: borderColor, size: 28.0))
+                : child,
       ),
     );
   }
@@ -79,22 +75,58 @@ class TextFillButton extends StatelessWidget {
           borderRadius: BorderRadius.circular(12.0),
         ),
         alignment: Alignment.center,
-        child: isBusy
-            ? Center(
-                child: Loader(
-                  color: Colors.white,
-                  size: 28.0,
+        child:
+            isBusy
+                ? Center(child: Loader(color: Colors.white, size: 28.0))
+                : Text(
+                  text,
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                  ),
                 ),
-              )
-            : Text(
-                text,
-                style: TextStyle(
-                  fontSize: 16.0,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                ),
-              ),
       ),
+    );
+  }
+}
+
+class PageableIndicator extends StatelessWidget {
+  final int pageLength;
+  final int? index;
+
+  const PageableIndicator({
+    super.key,
+    required this.pageLength,
+    this.index = 0,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Container(
+          margin: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 8.0),
+          width: 8.0,
+          height: 8.0,
+          decoration: BoxDecoration(
+            color: AIColors.white,
+            shape: BoxShape.circle,
+          ),
+        ),
+        for (var i = 0; i < 3; i++) ...{
+          Container(
+            margin: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 8.0),
+            width: 8.0,
+            height: 8.0,
+            decoration: BoxDecoration(
+              border: Border.all(color: AIColors.white),
+              shape: BoxShape.circle,
+            ),
+          ),
+        },
+      ],
     );
   }
 }

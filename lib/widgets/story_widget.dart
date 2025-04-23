@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
+import 'package:insoblok/widgets/widgets.dart';
 
 class StoryListCell extends StatelessWidget {
   final StoryModel story;
@@ -77,37 +78,7 @@ class StoryListCell extends StatelessWidget {
                     ),
                     Align(
                       alignment: Alignment.bottomCenter,
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                            margin: const EdgeInsets.symmetric(
-                              horizontal: 2.0,
-                              vertical: 8.0,
-                            ),
-                            width: 8.0,
-                            height: 8.0,
-                            decoration: BoxDecoration(
-                              color: AIColors.white,
-                              shape: BoxShape.circle,
-                            ),
-                          ),
-                          for (var i = 0; i < 3; i++) ...{
-                            Container(
-                              margin: const EdgeInsets.symmetric(
-                                horizontal: 2.0,
-                                vertical: 8.0,
-                              ),
-                              width: 8.0,
-                              height: 8.0,
-                              decoration: BoxDecoration(
-                                border: Border.all(color: AIColors.white),
-                                shape: BoxShape.circle,
-                              ),
-                            ),
-                          },
-                        ],
-                      ),
+                      child: PageableIndicator(pageLength: 4),
                     ),
                   ],
                 ),

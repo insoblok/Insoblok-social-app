@@ -21,6 +21,8 @@ abstract class UserModel with _$UserModel {
     String? regdate,
     String? updateDate,
     String? status,
+    List<String>? likes,
+    List<String>? follows,
   }) = _UserModel;
 
   factory UserModel.fromJson(Map<String, dynamic> json) =>

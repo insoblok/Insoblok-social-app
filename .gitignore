@@ -52,5 +52,6 @@ android/app/.cxx/
 lib/generated/
 .metadata
 pubspec.lock
+README.md
 
 lib/utils/const.dart

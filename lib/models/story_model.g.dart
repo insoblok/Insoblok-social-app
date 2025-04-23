@@ -56,6 +56,9 @@ _StoryCommentModel _$StoryCommentModelFromJson(Map<String, dynamic> json) =>
       uid: json['uid'] as String?,
       content: json['content'] as String?,
       timestamp: json['timestamp'] as String?,
+      medias: (json['medias'] as List<dynamic>?)
+          ?.map((e) => MediaStoryModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$StoryCommentModelToJson(_StoryCommentModel instance) =>
@@ -63,4 +66,5 @@ Map<String, dynamic> _$StoryCommentModelToJson(_StoryCommentModel instance) =>
       'uid': instance.uid,
       'content': instance.content,
       'timestamp': instance.timestamp,
+      'medias': instance.medias,
     };

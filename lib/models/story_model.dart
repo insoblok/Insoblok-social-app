@@ -33,8 +33,12 @@ abstract class MediaStoryModel with _$MediaStoryModel {
 @freezed
 abstract class StoryCommentModel with _$StoryCommentModel {
   @JsonSerializable(fieldRename: FieldRename.snake)
-  factory StoryCommentModel({String? uid, String? content, String? timestamp}) =
-      _StoryCommentModel;
+  factory StoryCommentModel({
+    String? uid,
+    String? content,
+    String? timestamp,
+    List<MediaStoryModel>? medias,
+  }) = _StoryCommentModel;
   factory StoryCommentModel.fromJson(Map<String, dynamic> json) =>
       _$StoryCommentModelFromJson(json);
 }
