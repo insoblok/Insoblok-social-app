@@ -1,5 +1,5 @@
 # insoblok-flutter
-InSoBlok for Flutter (Image to AI Image)
+InSoBlok Social App (Image to AI Image)
 
 adb connect localhost:5555
 dart run build_runner build --delete-conflicting-outputs
