@@ -7,40 +7,60 @@ part of 'story_model.dart';
 // **************************************************************************
 
 _StoryModel _$StoryModelFromJson(Map<String, dynamic> json) => _StoryModel(
-      id: json['id'] as String?,
       uid: json['uid'] as String?,
       title: json['title'] as String?,
       text: json['text'] as String?,
       regdate: json['regdate'] as String?,
       status: json['status'] as String?,
+      timestamp: json['timestamp'] as String?,
       medias: (json['medias'] as List<dynamic>?)
           ?.map((e) => MediaStoryModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      likes:
+          (json['likes'] as List<dynamic>?)?.map((e) => e as String).toList(),
+      follows:
+          (json['follows'] as List<dynamic>?)?.map((e) => e as String).toList(),
+      comments: (json['comments'] as List<dynamic>?)
+          ?.map((e) => StoryCommentModel.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 
 Map<String, dynamic> _$StoryModelToJson(_StoryModel instance) =>
     <String, dynamic>{
-      'id': instance.id,
       'uid': instance.uid,
       'title': instance.title,
       'text': instance.text,
       'regdate': instance.regdate,
       'status': instance.status,
+      'timestamp': instance.timestamp,
       'medias': instance.medias,
+      'likes': instance.likes,
+      'follows': instance.follows,
+      'comments': instance.comments,
     };
 
 _MediaStoryModel _$MediaStoryModelFromJson(Map<String, dynamic> json) =>
     _MediaStoryModel(
-      id: json['id'] as String?,
       link: json['link'] as String?,
       type: json['type'] as String?,
-      regdate: json['regdate'] as String?,
     );
 
 Map<String, dynamic> _$MediaStoryModelToJson(_MediaStoryModel instance) =>
     <String, dynamic>{
-      'id': instance.id,
       'link': instance.link,
       'type': instance.type,
-      'regdate': instance.regdate,
+    };
+
+_StoryCommentModel _$StoryCommentModelFromJson(Map<String, dynamic> json) =>
+    _StoryCommentModel(
+      uid: json['uid'] as String?,
+      content: json['content'] as String?,
+      timestamp: json['timestamp'] as String?,
+    );
+
+Map<String, dynamic> _$StoryCommentModelToJson(_StoryCommentModel instance) =>
+    <String, dynamic>{
+      'uid': instance.uid,
+      'content': instance.content,
+      'timestamp': instance.timestamp,
     };

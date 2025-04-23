@@ -17,9 +17,7 @@ class AccountPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Account Setting'),
-      ),
+      appBar: AppBar(title: Text('Account Setting')),
       body: ViewModelBuilder<AccountProvider>.reactive(
         viewModelBuilder: () => AccountProvider(),
         onViewModelReady: (viewModel) => viewModel.init(context),
@@ -28,9 +26,7 @@ class AccountPage extends StatelessWidget {
             children: [
               InAppWebView(
                 key: GlobalKey(),
-                initialUrlRequest: URLRequest(
-                  url: WebUri(kScrappingUrl),
-                ),
+                initialUrlRequest: URLRequest(url: WebUri(kScrappingUrl)),
                 initialSettings: InAppWebViewSettings(
                   isInspectable: kDebugMode,
                   useOnLoadResource: true,
@@ -103,7 +99,7 @@ class AccountPage extends StatelessWidget {
                             }
                             return Container(
                               width: double.infinity,
-                              color: AIColors.appScaffoldBackground,
+                              color: AIColors.darkScaffoldBackground,
                               // color:
                               //     AIColors.appScaffoldBackground.withAlpha(128),
                               padding: const EdgeInsets.symmetric(
@@ -117,8 +113,9 @@ class AccountPage extends StatelessWidget {
                                       width: 280.0,
                                       height: 44.0,
                                       decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(12.0),
+                                        borderRadius: BorderRadius.circular(
+                                          12.0,
+                                        ),
                                         color: AIColors.blue,
                                       ),
                                       alignment: Alignment.center,
@@ -143,14 +140,15 @@ class AccountPage extends StatelessWidget {
                                       ),
                                     ),
                                     alignment: Alignment.center,
-                                    child: value == AccountProviderState.done
-                                        ? AIImage(viewModel.aiImageUrl)
-                                        : Text(
-                                            'Created AI Image',
-                                            style: TextStyle(
-                                              color: Colors.white,
+                                    child:
+                                        value == AccountProviderState.done
+                                            ? AIImage(viewModel.aiImageUrl)
+                                            : Text(
+                                              'Created AI Image',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                              ),
                                             ),
-                                          ),
                                   ),
                                   const SizedBox(height: 50.0),
                                   InkWell(
@@ -159,8 +157,9 @@ class AccountPage extends StatelessWidget {
                                       width: 280.0,
                                       height: 44.0,
                                       decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(12.0),
+                                        borderRadius: BorderRadius.circular(
+                                          12.0,
+                                        ),
                                         color: Colors.red,
                                       ),
                                       alignment: Alignment.center,
@@ -189,33 +188,33 @@ class AccountPage extends StatelessWidget {
                 builder: (context, value, _) {
                   return value == AccountProviderState.creating
                       ? Align(
-                          child: Container(
-                            width: double.infinity,
-                            height: double.infinity,
-                            color: Colors.black38,
-                            alignment: Alignment.center,
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Loader(),
-                                Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 24.0,
-                                    horizontal: 60.0,
-                                  ),
-                                  child: Text(
-                                    'Your image will be ready in nearly 60 seconds. Thank you for your patience!',
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.w500,
-                                    ),
+                        child: Container(
+                          width: double.infinity,
+                          height: double.infinity,
+                          color: Colors.black38,
+                          alignment: Alignment.center,
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Loader(),
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 24.0,
+                                  horizontal: 60.0,
+                                ),
+                                child: Text(
+                                  'Your image will be ready in nearly 60 seconds. Thank you for your patience!',
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                    fontWeight: FontWeight.w500,
                                   ),
                                 ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-                        )
+                        ),
+                      )
                       : Container();
                 },
               ),
@@ -234,11 +233,8 @@ class AccountHeaderInitView extends ViewModelWidget<AccountProvider> {
   Widget build(BuildContext context, viewModel) {
     return Container(
       width: double.infinity,
-      color: AIColors.appScaffoldBackground,
-      padding: const EdgeInsets.symmetric(
-        vertical: 50.0,
-        horizontal: 58,
-      ),
+      color: AIColors.darkScaffoldBackground,
+      padding: const EdgeInsets.symmetric(vertical: 50.0, horizontal: 58),
       child: ShimmerContainer(
         child: Container(
           width: double.infinity,
@@ -251,9 +247,7 @@ class AccountHeaderInitView extends ViewModelWidget<AccountProvider> {
 }
 
 class AccountHeaderLoadedView extends ViewModelWidget<AccountProvider> {
-  const AccountHeaderLoadedView({
-    super.key,
-  });
+  const AccountHeaderLoadedView({super.key});
 
   @override
   Widget build(BuildContext context, viewModel) {
@@ -262,7 +256,7 @@ class AccountHeaderLoadedView extends ViewModelWidget<AccountProvider> {
         Container(
           width: double.infinity,
           height: 52.0,
-          color: AIColors.appScaffoldBackground,
+          color: AIColors.darkScaffoldBackground,
           padding: const EdgeInsets.symmetric(horizontal: 58.0),
           alignment: Alignment.bottomCenter,
           child: Container(
@@ -277,12 +271,9 @@ class AccountHeaderLoadedView extends ViewModelWidget<AccountProvider> {
               height: 184.0,
               width: 60.0,
               decoration: BoxDecoration(
-                color: AIColors.appScaffoldBackground,
+                color: AIColors.darkScaffoldBackground,
                 border: Border(
-                  right: BorderSide(
-                    width: 2.0,
-                    color: AIColors.borderColor,
-                  ),
+                  right: BorderSide(width: 2.0, color: AIColors.borderColor),
                 ),
               ),
             ),
@@ -291,12 +282,9 @@ class AccountHeaderLoadedView extends ViewModelWidget<AccountProvider> {
               height: 184.0,
               width: 60.0,
               decoration: BoxDecoration(
-                color: AIColors.appScaffoldBackground,
+                color: AIColors.darkScaffoldBackground,
                 border: Border(
-                  left: BorderSide(
-                    width: 2.0,
-                    color: AIColors.borderColor,
-                  ),
+                  left: BorderSide(width: 2.0, color: AIColors.borderColor),
                 ),
               ),
             ),
@@ -305,7 +293,7 @@ class AccountHeaderLoadedView extends ViewModelWidget<AccountProvider> {
         Container(
           width: double.infinity,
           height: 52.0,
-          color: AIColors.appScaffoldBackground,
+          color: AIColors.darkScaffoldBackground,
           padding: const EdgeInsets.symmetric(horizontal: 58.0),
           child: Column(
             children: [
@@ -332,10 +320,8 @@ class AccountHeaderReadyView extends ViewModelWidget<AccountProvider> {
 
     return Container(
       width: double.infinity,
-      color: AIColors.appScaffoldBackground,
-      padding: const EdgeInsets.symmetric(
-        horizontal: 58,
-      ),
+      color: AIColors.darkScaffoldBackground,
+      padding: const EdgeInsets.symmetric(horizontal: 58),
       child: Column(
         children: [
           Container(
@@ -361,10 +347,7 @@ class AccountHeaderReadyView extends ViewModelWidget<AccountProvider> {
             decoration: BoxDecoration(
               border: Border.all(width: 2.0, color: AIColors.borderColor),
             ),
-            child: AIImage(
-              bytes,
-              fit: BoxFit.contain,
-            ),
+            child: AIImage(bytes, fit: BoxFit.contain),
           ),
           const SizedBox(height: 50.0),
         ],
@@ -380,10 +363,8 @@ class AccountBodyInitView extends ViewModelWidget<AccountProvider> {
   Widget build(BuildContext context, viewModel) {
     return Container(
       width: double.infinity,
-      color: AIColors.appScaffoldBackground,
-      padding: const EdgeInsets.symmetric(
-        horizontal: 58,
-      ),
+      color: AIColors.darkScaffoldBackground,
+      padding: const EdgeInsets.symmetric(horizontal: 58),
       child: Column(
         children: [
           ShimmerContainer(

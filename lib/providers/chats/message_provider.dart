@@ -98,16 +98,13 @@ class MessageProvider extends InSoBlokViewModel {
   void sendMessage() async {
     if (content?.isNotEmpty ?? false) {
       try {
-        await messageService.sendMessage(
-          chatRoomId: room.id!,
-          text: content!,
-        );
+        await messageService.sendMessage(chatRoomId: room.id!, text: content!);
         // scrollToBottom();
         textController.text = '';
       } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to send message: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Failed to send message: $e')));
       } finally {
         notifyListeners();
       }
@@ -131,9 +128,10 @@ class MessageProvider extends InSoBlokViewModel {
     var mediaSource = await _showMediaSource();
     if (mediaSource != null) {
       var isAllowed = false;
-      isAllowed = mediaSource == ImageSource.gallery
-          ? ((await PermissionService.requestGalleryPermission()) ?? false)
-          : ((await PermissionService.requestCameraPermission()) ?? false);
+      isAllowed =
+          mediaSource == ImageSource.gallery
+              ? ((await PermissionService.requestGalleryPermission()) ?? false)
+              : ((await PermissionService.requestCameraPermission()) ?? false);
 
       if (isAllowed) {
         final image = await _picker.pickImage(source: mediaSource);
@@ -170,9 +168,10 @@ class MessageProvider extends InSoBlokViewModel {
     var mediaSource = await _showMediaSource();
     if (mediaSource != null) {
       var isAllowed = false;
-      isAllowed = mediaSource == ImageSource.gallery
-          ? ((await PermissionService.requestGalleryPermission()) ?? false)
-          : ((await PermissionService.requestCameraPermission()) ?? false);
+      isAllowed =
+          mediaSource == ImageSource.gallery
+              ? ((await PermissionService.requestGalleryPermission()) ?? false)
+              : ((await PermissionService.requestCameraPermission()) ?? false);
 
       if (isAllowed) {
         final video = await _picker.pickVideo(source: mediaSource);
@@ -229,10 +228,7 @@ class MessageProvider extends InSoBlokViewModel {
       if (hasError) {
         Fluttertoast.showToast(msg: modelError.toString());
       } else {
-        await messageService.sendPaidMessage(
-          chatRoomId: room.id!,
-          coin: coin,
-        );
+        await messageService.sendPaidMessage(chatRoomId: room.id!, coin: coin);
       }
     }
   }
@@ -244,7 +240,7 @@ class MessageProvider extends InSoBlokViewModel {
         return SafeArea(
           child: Container(
             width: double.infinity,
-            color: AIColors.appScaffoldBackground,
+            color: AIColors.darkScaffoldBackground,
             padding: const EdgeInsets.symmetric(
               horizontal: 18.0,
               vertical: 24.0,
@@ -257,10 +253,7 @@ class MessageProvider extends InSoBlokViewModel {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      AIImage(
-                        Icons.air,
-                        color: AIColors.blue,
-                      ),
+                      AIImage(Icons.air, color: AIColors.blue),
                       const SizedBox(width: 12.0),
                       Text(
                         'From Gallery',
@@ -279,10 +272,7 @@ class MessageProvider extends InSoBlokViewModel {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      AIImage(
-                        Icons.camera,
-                        color: AIColors.blue,
-                      ),
+                      AIImage(Icons.camera, color: AIColors.blue),
                       const SizedBox(width: 12.0),
                       Text(
                         'From Camera',
@@ -303,9 +293,7 @@ class MessageProvider extends InSoBlokViewModel {
     );
   }
 
-  Future<bool> _showPreview({
-    bool isImage = true,
-  }) async {
+  Future<bool> _showPreview({bool isImage = true}) async {
     return await showDialog<bool>(
           context: context,
           builder: (context) {
@@ -315,20 +303,18 @@ class MessageProvider extends InSoBlokViewModel {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12.0),
                   child: Container(
-                    color: AIColors.appBar,
+                    color: AIColors.darkBar,
                     padding: const EdgeInsets.all(8),
                     child: Stack(
                       children: [
                         isImage
                             ? AIImage(
-                                width: 240.0,
-                                height: 240.0,
-                                File(selectedFile!.path),
-                                fit: BoxFit.contain,
-                              )
-                            : VideoPreview(
-                                path: selectedFile!.path,
-                              ),
+                              width: 240.0,
+                              height: 240.0,
+                              File(selectedFile!.path),
+                              fit: BoxFit.contain,
+                            )
+                            : VideoPreview(path: selectedFile!.path),
                         Container(
                           width: 240.0,
                           height: 240.0,
@@ -342,13 +328,12 @@ class MessageProvider extends InSoBlokViewModel {
                                   width: 36.0,
                                   height: 36.0,
                                   decoration: BoxDecoration(
-                                    color: AIColors.primaryColor.withAlpha(204),
+                                    color: AIColors.darkPrimaryColor.withAlpha(
+                                      204,
+                                    ),
                                     borderRadius: BorderRadius.circular(18.0),
                                   ),
-                                  child: Icon(
-                                    Icons.close,
-                                    color: Colors.white,
-                                  ),
+                                  child: Icon(Icons.close, color: Colors.white),
                                 ),
                               ),
                               InkWell(
@@ -357,13 +342,12 @@ class MessageProvider extends InSoBlokViewModel {
                                   width: 36.0,
                                   height: 36.0,
                                   decoration: BoxDecoration(
-                                    color: AIColors.primaryColor.withAlpha(204),
+                                    color: AIColors.darkPrimaryColor.withAlpha(
+                                      204,
+                                    ),
                                     borderRadius: BorderRadius.circular(18.0),
                                   ),
-                                  child: Icon(
-                                    Icons.send,
-                                    color: Colors.white,
-                                  ),
+                                  child: Icon(Icons.send, color: Colors.white),
                                 ),
                               ),
                             ],
@@ -397,7 +381,7 @@ class MessageProvider extends InSoBlokViewModel {
               margin: const EdgeInsets.symmetric(horizontal: 24.0),
               padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
-                color: AIColors.appBar,
+                color: AIColors.darkBar,
                 borderRadius: BorderRadius.circular(12.0),
               ),
               child: Column(
@@ -405,11 +389,7 @@ class MessageProvider extends InSoBlokViewModel {
                 children: [
                   Row(
                     children: [
-                      AIImage(
-                        coin.icon,
-                        width: 32.0,
-                        height: 32.0,
-                      ),
+                      AIImage(coin.icon, width: 32.0, height: 32.0),
                       const SizedBox(width: 8.0),
                       Text(
                         coin.type ?? 'ETH',
@@ -434,16 +414,13 @@ class MessageProvider extends InSoBlokViewModel {
                         style: TextStyle(color: Colors.white),
                       ),
                       const Spacer(),
-                      Text(
-                        'Amount : 1',
-                        style: TextStyle(color: Colors.white),
-                      ),
+                      Text('Amount : 1', style: TextStyle(color: Colors.white)),
                     ],
                   ),
                   const SizedBox(height: 16.0),
                   TextFillButton(
                     text: 'Confirm',
-                    color: AIColors.appScaffoldBackground,
+                    color: AIColors.darkScaffoldBackground,
                     onTap: () => Navigator.of(context).pop(coin),
                   ),
                 ],
@@ -459,10 +436,7 @@ class MessageProvider extends InSoBlokViewModel {
 class VideoPreview extends StatefulWidget {
   final String path;
 
-  const VideoPreview({
-    super.key,
-    required this.path,
-  });
+  const VideoPreview({super.key, required this.path});
 
   @override
   State<VideoPreview> createState() => _VideoPreviewState();
@@ -478,9 +452,7 @@ class _VideoPreviewState extends State<VideoPreview> {
   void initState() {
     super.initState();
 
-    _videoPlayerController = VideoPlayerController.file(
-      File(widget.path),
-    );
+    _videoPlayerController = VideoPlayerController.file(File(widget.path));
     _videoPlayerController.addListener(() {
       if (_videoPlayerController.value.isCompleted) {
         setState(() {
@@ -515,9 +487,7 @@ class _VideoPreviewState extends State<VideoPreview> {
         children: [
           _videoPlayerController.value.isInitialized
               ? Chewie(controller: _chewieController)
-              : Center(
-                  child: Loader(),
-                ),
+              : Center(child: Loader()),
           Align(
             alignment: Alignment.center,
             child: IconButton(

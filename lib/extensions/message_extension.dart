@@ -56,7 +56,7 @@ extension MessageModelExt on MessageModel {
                 color:
                     isMe
                         ? AIColors.blue.withAlpha(204)
-                        : AIColors.appBar.withAlpha(204),
+                        : AIColors.darkBar.withAlpha(204),
                 borderRadius: BorderRadius.circular(12),
               ),
               child: Column(

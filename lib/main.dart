@@ -42,9 +42,7 @@ void main() async {
   );
 
   if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
-    await iaw.InAppWebViewController.setWebContentsDebuggingEnabled(
-      kDebugMode,
-    );
+    await iaw.InAppWebViewController.setWebContentsDebuggingEnabled(kDebugMode);
   }
 
   runApp(const InSoBlokApp());
@@ -60,31 +58,8 @@ class InSoBlokApp extends StatelessWidget {
     return MaterialApp(
       title: 'InSoBlok',
       debugShowCheckedModeBanner: false,
-      themeMode: ThemeMode.light,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
-        scaffoldBackgroundColor: AIColors.appScaffoldBackground,
-        useMaterial3: true,
-        appBarTheme: AppBarTheme(
-          backgroundColor: AIColors.appBar,
-          iconTheme: IconThemeData(
-            color: Colors.white,
-          ),
-          titleTextStyle: TextStyle(
-            color: Colors.white,
-            fontSize: 20.0,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        bottomNavigationBarTheme: BottomNavigationBarThemeData(
-          backgroundColor: AIColors.appBar,
-          type: BottomNavigationBarType.fixed,
-          selectedItemColor: AIColors.appSelectedText,
-          unselectedItemColor: AIColors.appUnselectedText,
-          showSelectedLabels: false,
-          showUnselectedLabels: false,
-        ),
-      ),
+      themeMode: AppSettingHelper.themeMode,
+      theme: AppSettingHelper.theme,
       initialRoute: kRouterBase,
       onGenerateRoute: _navigation.router.generator,
       home: LoginPage(),

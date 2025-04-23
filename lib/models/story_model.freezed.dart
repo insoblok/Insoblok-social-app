@@ -15,13 +15,16 @@ T _$identity<T>(T value) => value;
 
 /// @nodoc
 mixin _$StoryModel {
-  String? get id;
   String? get uid;
   String? get title;
   String? get text;
   String? get regdate;
   String? get status;
+  String? get timestamp;
   List<MediaStoryModel>? get medias;
+  List<String>? get likes;
+  List<String>? get follows;
+  List<StoryCommentModel>? get comments;
 
   /// Create a copy of StoryModel
   /// with the given fields replaced by the non-null parameter values.
@@ -38,23 +41,37 @@ mixin _$StoryModel {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is StoryModel &&
-            (identical(other.id, id) || other.id == id) &&
             (identical(other.uid, uid) || other.uid == uid) &&
             (identical(other.title, title) || other.title == title) &&
             (identical(other.text, text) || other.text == text) &&
             (identical(other.regdate, regdate) || other.regdate == regdate) &&
             (identical(other.status, status) || other.status == status) &&
-            const DeepCollectionEquality().equals(other.medias, medias));
+            (identical(other.timestamp, timestamp) ||
+                other.timestamp == timestamp) &&
+            const DeepCollectionEquality().equals(other.medias, medias) &&
+            const DeepCollectionEquality().equals(other.likes, likes) &&
+            const DeepCollectionEquality().equals(other.follows, follows) &&
+            const DeepCollectionEquality().equals(other.comments, comments));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, uid, title, text, regdate,
-      status, const DeepCollectionEquality().hash(medias));
+  int get hashCode => Object.hash(
+      runtimeType,
+      uid,
+      title,
+      text,
+      regdate,
+      status,
+      timestamp,
+      const DeepCollectionEquality().hash(medias),
+      const DeepCollectionEquality().hash(likes),
+      const DeepCollectionEquality().hash(follows),
+      const DeepCollectionEquality().hash(comments));
 
   @override
   String toString() {
-    return 'StoryModel(id: $id, uid: $uid, title: $title, text: $text, regdate: $regdate, status: $status, medias: $medias)';
+    return 'StoryModel(uid: $uid, title: $title, text: $text, regdate: $regdate, status: $status, timestamp: $timestamp, medias: $medias, likes: $likes, follows: $follows, comments: $comments)';
   }
 }
 
@@ -65,13 +82,16 @@ abstract mixin class $StoryModelCopyWith<$Res> {
       _$StoryModelCopyWithImpl;
   @useResult
   $Res call(
-      {String? id,
-      String? uid,
+      {String? uid,
       String? title,
       String? text,
       String? regdate,
       String? status,
-      List<MediaStoryModel>? medias});
+      String? timestamp,
+      List<MediaStoryModel>? medias,
+      List<String>? likes,
+      List<String>? follows,
+      List<StoryCommentModel>? comments});
 }
 
 /// @nodoc
@@ -86,19 +106,18 @@ class _$StoryModelCopyWithImpl<$Res> implements $StoryModelCopyWith<$Res> {
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = freezed,
     Object? uid = freezed,
     Object? title = freezed,
     Object? text = freezed,
     Object? regdate = freezed,
     Object? status = freezed,
+    Object? timestamp = freezed,
     Object? medias = freezed,
+    Object? likes = freezed,
+    Object? follows = freezed,
+    Object? comments = freezed,
   }) {
     return _then(_self.copyWith(
-      id: freezed == id
-          ? _self.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as String?,
       uid: freezed == uid
           ? _self.uid
           : uid // ignore: cast_nullable_to_non_nullable
@@ -119,10 +138,26 @@ class _$StoryModelCopyWithImpl<$Res> implements $StoryModelCopyWith<$Res> {
           ? _self.status
           : status // ignore: cast_nullable_to_non_nullable
               as String?,
+      timestamp: freezed == timestamp
+          ? _self.timestamp
+          : timestamp // ignore: cast_nullable_to_non_nullable
+              as String?,
       medias: freezed == medias
           ? _self.medias
           : medias // ignore: cast_nullable_to_non_nullable
               as List<MediaStoryModel>?,
+      likes: freezed == likes
+          ? _self.likes
+          : likes // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
+      follows: freezed == follows
+          ? _self.follows
+          : follows // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
+      comments: freezed == comments
+          ? _self.comments
+          : comments // ignore: cast_nullable_to_non_nullable
+              as List<StoryCommentModel>?,
     ));
   }
 }
@@ -132,19 +167,23 @@ class _$StoryModelCopyWithImpl<$Res> implements $StoryModelCopyWith<$Res> {
 @JsonSerializable(fieldRename: FieldRename.snake)
 class _StoryModel implements StoryModel {
   _StoryModel(
-      {this.id,
-      this.uid,
+      {this.uid,
       this.title,
       this.text,
       this.regdate,
       this.status,
-      final List<MediaStoryModel>? medias})
-      : _medias = medias;
+      this.timestamp,
+      final List<MediaStoryModel>? medias,
+      final List<String>? likes,
+      final List<String>? follows,
+      final List<StoryCommentModel>? comments})
+      : _medias = medias,
+        _likes = likes,
+        _follows = follows,
+        _comments = comments;
   factory _StoryModel.fromJson(Map<String, dynamic> json) =>
       _$StoryModelFromJson(json);
 
-  @override
-  final String? id;
   @override
   final String? uid;
   @override
@@ -155,12 +194,44 @@ class _StoryModel implements StoryModel {
   final String? regdate;
   @override
   final String? status;
+  @override
+  final String? timestamp;
   final List<MediaStoryModel>? _medias;
   @override
   List<MediaStoryModel>? get medias {
     final value = _medias;
     if (value == null) return null;
     if (_medias is EqualUnmodifiableListView) return _medias;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
+
+  final List<String>? _likes;
+  @override
+  List<String>? get likes {
+    final value = _likes;
+    if (value == null) return null;
+    if (_likes is EqualUnmodifiableListView) return _likes;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
+
+  final List<String>? _follows;
+  @override
+  List<String>? get follows {
+    final value = _follows;
+    if (value == null) return null;
+    if (_follows is EqualUnmodifiableListView) return _follows;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
+
+  final List<StoryCommentModel>? _comments;
+  @override
+  List<StoryCommentModel>? get comments {
+    final value = _comments;
+    if (value == null) return null;
+    if (_comments is EqualUnmodifiableListView) return _comments;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(value);
   }
@@ -185,23 +256,37 @@ class _StoryModel implements StoryModel {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _StoryModel &&
-            (identical(other.id, id) || other.id == id) &&
             (identical(other.uid, uid) || other.uid == uid) &&
             (identical(other.title, title) || other.title == title) &&
             (identical(other.text, text) || other.text == text) &&
             (identical(other.regdate, regdate) || other.regdate == regdate) &&
             (identical(other.status, status) || other.status == status) &&
-            const DeepCollectionEquality().equals(other._medias, _medias));
+            (identical(other.timestamp, timestamp) ||
+                other.timestamp == timestamp) &&
+            const DeepCollectionEquality().equals(other._medias, _medias) &&
+            const DeepCollectionEquality().equals(other._likes, _likes) &&
+            const DeepCollectionEquality().equals(other._follows, _follows) &&
+            const DeepCollectionEquality().equals(other._comments, _comments));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, uid, title, text, regdate,
-      status, const DeepCollectionEquality().hash(_medias));
+  int get hashCode => Object.hash(
+      runtimeType,
+      uid,
+      title,
+      text,
+      regdate,
+      status,
+      timestamp,
+      const DeepCollectionEquality().hash(_medias),
+      const DeepCollectionEquality().hash(_likes),
+      const DeepCollectionEquality().hash(_follows),
+      const DeepCollectionEquality().hash(_comments));
 
   @override
   String toString() {
-    return 'StoryModel(id: $id, uid: $uid, title: $title, text: $text, regdate: $regdate, status: $status, medias: $medias)';
+    return 'StoryModel(uid: $uid, title: $title, text: $text, regdate: $regdate, status: $status, timestamp: $timestamp, medias: $medias, likes: $likes, follows: $follows, comments: $comments)';
   }
 }
 
@@ -214,13 +299,16 @@ abstract mixin class _$StoryModelCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String? id,
-      String? uid,
+      {String? uid,
       String? title,
       String? text,
       String? regdate,
       String? status,
-      List<MediaStoryModel>? medias});
+      String? timestamp,
+      List<MediaStoryModel>? medias,
+      List<String>? likes,
+      List<String>? follows,
+      List<StoryCommentModel>? comments});
 }
 
 /// @nodoc
@@ -235,19 +323,18 @@ class __$StoryModelCopyWithImpl<$Res> implements _$StoryModelCopyWith<$Res> {
   @override
   @pragma('vm:prefer-inline')
   $Res call({
-    Object? id = freezed,
     Object? uid = freezed,
     Object? title = freezed,
     Object? text = freezed,
     Object? regdate = freezed,
     Object? status = freezed,
+    Object? timestamp = freezed,
     Object? medias = freezed,
+    Object? likes = freezed,
+    Object? follows = freezed,
+    Object? comments = freezed,
   }) {
     return _then(_StoryModel(
-      id: freezed == id
-          ? _self.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as String?,
       uid: freezed == uid
           ? _self.uid
           : uid // ignore: cast_nullable_to_non_nullable
@@ -268,20 +355,34 @@ class __$StoryModelCopyWithImpl<$Res> implements _$StoryModelCopyWith<$Res> {
           ? _self.status
           : status // ignore: cast_nullable_to_non_nullable
               as String?,
+      timestamp: freezed == timestamp
+          ? _self.timestamp
+          : timestamp // ignore: cast_nullable_to_non_nullable
+              as String?,
       medias: freezed == medias
           ? _self._medias
           : medias // ignore: cast_nullable_to_non_nullable
               as List<MediaStoryModel>?,
+      likes: freezed == likes
+          ? _self._likes
+          : likes // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
+      follows: freezed == follows
+          ? _self._follows
+          : follows // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
+      comments: freezed == comments
+          ? _self._comments
+          : comments // ignore: cast_nullable_to_non_nullable
+              as List<StoryCommentModel>?,
     ));
   }
 }
 
 /// @nodoc
 mixin _$MediaStoryModel {
-  String? get id;
   String? get link;
   String? get type;
-  String? get regdate;
 
   /// Create a copy of MediaStoryModel
   /// with the given fields replaced by the non-null parameter values.
@@ -299,19 +400,17 @@ mixin _$MediaStoryModel {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is MediaStoryModel &&
-            (identical(other.id, id) || other.id == id) &&
             (identical(other.link, link) || other.link == link) &&
-            (identical(other.type, type) || other.type == type) &&
-            (identical(other.regdate, regdate) || other.regdate == regdate));
+            (identical(other.type, type) || other.type == type));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, link, type, regdate);
+  int get hashCode => Object.hash(runtimeType, link, type);
 
   @override
   String toString() {
-    return 'MediaStoryModel(id: $id, link: $link, type: $type, regdate: $regdate)';
+    return 'MediaStoryModel(link: $link, type: $type)';
   }
 }
 
@@ -321,7 +420,7 @@ abstract mixin class $MediaStoryModelCopyWith<$Res> {
           MediaStoryModel value, $Res Function(MediaStoryModel) _then) =
       _$MediaStoryModelCopyWithImpl;
   @useResult
-  $Res call({String? id, String? link, String? type, String? regdate});
+  $Res call({String? link, String? type});
 }
 
 /// @nodoc
@@ -337,16 +436,10 @@ class _$MediaStoryModelCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? id = freezed,
     Object? link = freezed,
     Object? type = freezed,
-    Object? regdate = freezed,
   }) {
     return _then(_self.copyWith(
-      id: freezed == id
-          ? _self.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as String?,
       link: freezed == link
           ? _self.link
           : link // ignore: cast_nullable_to_non_nullable
@@ -354,10 +447,6 @@ class _$MediaStoryModelCopyWithImpl<$Res>
       type: freezed == type
           ? _self.type
           : type // ignore: cast_nullable_to_non_nullable
-              as String?,
-      regdate: freezed == regdate
-          ? _self.regdate
-          : regdate // ignore: cast_nullable_to_non_nullable
               as String?,
     ));
   }
@@ -367,18 +456,14 @@ class _$MediaStoryModelCopyWithImpl<$Res>
 
 @JsonSerializable(fieldRename: FieldRename.snake)
 class _MediaStoryModel implements MediaStoryModel {
-  _MediaStoryModel({this.id, this.link, this.type, this.regdate});
+  _MediaStoryModel({this.link, this.type});
   factory _MediaStoryModel.fromJson(Map<String, dynamic> json) =>
       _$MediaStoryModelFromJson(json);
 
   @override
-  final String? id;
-  @override
   final String? link;
   @override
   final String? type;
-  @override
-  final String? regdate;
 
   /// Create a copy of MediaStoryModel
   /// with the given fields replaced by the non-null parameter values.
@@ -400,19 +485,17 @@ class _MediaStoryModel implements MediaStoryModel {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _MediaStoryModel &&
-            (identical(other.id, id) || other.id == id) &&
             (identical(other.link, link) || other.link == link) &&
-            (identical(other.type, type) || other.type == type) &&
-            (identical(other.regdate, regdate) || other.regdate == regdate));
+            (identical(other.type, type) || other.type == type));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, link, type, regdate);
+  int get hashCode => Object.hash(runtimeType, link, type);
 
   @override
   String toString() {
-    return 'MediaStoryModel(id: $id, link: $link, type: $type, regdate: $regdate)';
+    return 'MediaStoryModel(link: $link, type: $type)';
   }
 }
 
@@ -424,7 +507,7 @@ abstract mixin class _$MediaStoryModelCopyWith<$Res>
       __$MediaStoryModelCopyWithImpl;
   @override
   @useResult
-  $Res call({String? id, String? link, String? type, String? regdate});
+  $Res call({String? link, String? type});
 }
 
 /// @nodoc
@@ -440,16 +523,10 @@ class __$MediaStoryModelCopyWithImpl<$Res>
   @override
   @pragma('vm:prefer-inline')
   $Res call({
-    Object? id = freezed,
     Object? link = freezed,
     Object? type = freezed,
-    Object? regdate = freezed,
   }) {
     return _then(_MediaStoryModel(
-      id: freezed == id
-          ? _self.id
-          : id // ignore: cast_nullable_to_non_nullable
-              as String?,
       link: freezed == link
           ? _self.link
           : link // ignore: cast_nullable_to_non_nullable
@@ -458,9 +535,182 @@ class __$MediaStoryModelCopyWithImpl<$Res>
           ? _self.type
           : type // ignore: cast_nullable_to_non_nullable
               as String?,
-      regdate: freezed == regdate
-          ? _self.regdate
-          : regdate // ignore: cast_nullable_to_non_nullable
+    ));
+  }
+}
+
+/// @nodoc
+mixin _$StoryCommentModel {
+  String? get uid;
+  String? get content;
+  String? get timestamp;
+
+  /// Create a copy of StoryCommentModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $StoryCommentModelCopyWith<StoryCommentModel> get copyWith =>
+      _$StoryCommentModelCopyWithImpl<StoryCommentModel>(
+          this as StoryCommentModel, _$identity);
+
+  /// Serializes this StoryCommentModel to a JSON map.
+  Map<String, dynamic> toJson();
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is StoryCommentModel &&
+            (identical(other.uid, uid) || other.uid == uid) &&
+            (identical(other.content, content) || other.content == content) &&
+            (identical(other.timestamp, timestamp) ||
+                other.timestamp == timestamp));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, uid, content, timestamp);
+
+  @override
+  String toString() {
+    return 'StoryCommentModel(uid: $uid, content: $content, timestamp: $timestamp)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $StoryCommentModelCopyWith<$Res> {
+  factory $StoryCommentModelCopyWith(
+          StoryCommentModel value, $Res Function(StoryCommentModel) _then) =
+      _$StoryCommentModelCopyWithImpl;
+  @useResult
+  $Res call({String? uid, String? content, String? timestamp});
+}
+
+/// @nodoc
+class _$StoryCommentModelCopyWithImpl<$Res>
+    implements $StoryCommentModelCopyWith<$Res> {
+  _$StoryCommentModelCopyWithImpl(this._self, this._then);
+
+  final StoryCommentModel _self;
+  final $Res Function(StoryCommentModel) _then;
+
+  /// Create a copy of StoryCommentModel
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? uid = freezed,
+    Object? content = freezed,
+    Object? timestamp = freezed,
+  }) {
+    return _then(_self.copyWith(
+      uid: freezed == uid
+          ? _self.uid
+          : uid // ignore: cast_nullable_to_non_nullable
+              as String?,
+      content: freezed == content
+          ? _self.content
+          : content // ignore: cast_nullable_to_non_nullable
+              as String?,
+      timestamp: freezed == timestamp
+          ? _self.timestamp
+          : timestamp // ignore: cast_nullable_to_non_nullable
+              as String?,
+    ));
+  }
+}
+
+/// @nodoc
+
+@JsonSerializable(fieldRename: FieldRename.snake)
+class _StoryCommentModel implements StoryCommentModel {
+  _StoryCommentModel({this.uid, this.content, this.timestamp});
+  factory _StoryCommentModel.fromJson(Map<String, dynamic> json) =>
+      _$StoryCommentModelFromJson(json);
+
+  @override
+  final String? uid;
+  @override
+  final String? content;
+  @override
+  final String? timestamp;
+
+  /// Create a copy of StoryCommentModel
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$StoryCommentModelCopyWith<_StoryCommentModel> get copyWith =>
+      __$StoryCommentModelCopyWithImpl<_StoryCommentModel>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$StoryCommentModelToJson(
+      this,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _StoryCommentModel &&
+            (identical(other.uid, uid) || other.uid == uid) &&
+            (identical(other.content, content) || other.content == content) &&
+            (identical(other.timestamp, timestamp) ||
+                other.timestamp == timestamp));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, uid, content, timestamp);
+
+  @override
+  String toString() {
+    return 'StoryCommentModel(uid: $uid, content: $content, timestamp: $timestamp)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$StoryCommentModelCopyWith<$Res>
+    implements $StoryCommentModelCopyWith<$Res> {
+  factory _$StoryCommentModelCopyWith(
+          _StoryCommentModel value, $Res Function(_StoryCommentModel) _then) =
+      __$StoryCommentModelCopyWithImpl;
+  @override
+  @useResult
+  $Res call({String? uid, String? content, String? timestamp});
+}
+
+/// @nodoc
+class __$StoryCommentModelCopyWithImpl<$Res>
+    implements _$StoryCommentModelCopyWith<$Res> {
+  __$StoryCommentModelCopyWithImpl(this._self, this._then);
+
+  final _StoryCommentModel _self;
+  final $Res Function(_StoryCommentModel) _then;
+
+  /// Create a copy of StoryCommentModel
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? uid = freezed,
+    Object? content = freezed,
+    Object? timestamp = freezed,
+  }) {
+    return _then(_StoryCommentModel(
+      uid: freezed == uid
+          ? _self.uid
+          : uid // ignore: cast_nullable_to_non_nullable
+              as String?,
+      content: freezed == content
+          ? _self.content
+          : content // ignore: cast_nullable_to_non_nullable
+              as String?,
+      timestamp: freezed == timestamp
+          ? _self.timestamp
+          : timestamp // ignore: cast_nullable_to_non_nullable
               as String?,
     ));
   }

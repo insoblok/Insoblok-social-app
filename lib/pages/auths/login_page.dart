@@ -32,22 +32,15 @@ class _LoginPageState extends State<LoginPage>
       vsync: this,
     );
 
-    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: Curves.easeInOut,
-      ),
-    );
+    _fadeAnimation = Tween<double>(
+      begin: 0.0,
+      end: 1.0,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
     _positionAnimation = Tween<Offset>(
       begin: Offset(0, 0.5),
       end: Offset.zero,
-    ).animate(
-      CurvedAnimation(
-        parent: _controller,
-        curve: Curves.easeOut,
-      ),
-    );
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
 
     _controller.forward();
   }
@@ -69,33 +62,42 @@ class _LoginPageState extends State<LoginPage>
             children: [
               viewModel.videoPlayerController.value.isInitialized
                   ? LayoutBuilder(
-                      builder: (context, constraints) {
-                        return SizedBox(
-                          height: constraints.maxHeight,
-                          child: AspectRatio(
-                            aspectRatio: viewModel
-                                .videoPlayerController.value.aspectRatio,
-                            child: FittedBox(
-                              fit: BoxFit.cover,
-                              child: SizedBox(
-                                width: viewModel
-                                    .videoPlayerController.value.size.width,
-                                height: viewModel
-                                    .videoPlayerController.value.size.height,
-                                child: Chewie(
-                                    controller: viewModel.chewieController),
+                    builder: (context, constraints) {
+                      return SizedBox(
+                        height: constraints.maxHeight,
+                        child: AspectRatio(
+                          aspectRatio:
+                              viewModel.videoPlayerController.value.aspectRatio,
+                          child: FittedBox(
+                            fit: BoxFit.cover,
+                            child: SizedBox(
+                              width:
+                                  viewModel
+                                      .videoPlayerController
+                                      .value
+                                      .size
+                                      .width,
+                              height:
+                                  viewModel
+                                      .videoPlayerController
+                                      .value
+                                      .size
+                                      .height,
+                              child: Chewie(
+                                controller: viewModel.chewieController,
                               ),
                             ),
                           ),
-                        );
-                      },
-                    )
+                        ),
+                      );
+                    },
+                  )
                   : AIImage(
-                      AIImages.imgBackSplash,
-                      width: double.infinity,
-                      height: double.infinity,
-                      fit: BoxFit.cover,
-                    ),
+                    AIImages.imgBackSplash,
+                    width: double.infinity,
+                    height: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
               Padding(
                 padding: const EdgeInsets.all(24.0),
                 child: Column(
@@ -176,10 +178,7 @@ class _LoginPageState extends State<LoginPage>
                         opacity: _fadeAnimation,
                         child: Text(
                           'Powering Influencer Commerce, P2P Payments, Dynamic Soveringity ,User Driven Ecosytem',
-                          style: TextStyle(
-                            fontSize: 18.0,
-                            color: Colors.white,
-                          ),
+                          style: TextStyle(fontSize: 18.0, color: Colors.white),
                         ),
                       ),
                     ),
@@ -189,8 +188,9 @@ class _LoginPageState extends State<LoginPage>
                         const SizedBox(width: 24.0),
                         Expanded(
                           child: Container(
-                            color:
-                                AIColors.appScaffoldBackground.withAlpha(216),
+                            color: AIColors.darkScaffoldBackground.withAlpha(
+                              216,
+                            ),
                             child: OutlineButton(
                               isBusy: viewModel.isBusy,
                               borderColor: AIColors.yellow,
@@ -198,10 +198,7 @@ class _LoginPageState extends State<LoginPage>
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  AIImage(
-                                    AIImages.imgMetamask,
-                                    width: 28.0,
-                                  ),
+                                  AIImage(AIImages.imgMetamask, width: 28.0),
                                   const SizedBox(width: 24.0),
                                   Text(
                                     S.current.login_button,

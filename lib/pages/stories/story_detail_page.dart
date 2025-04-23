@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 
 import 'package:carousel_slider/carousel_slider.dart';
-import 'package:insoblok/widgets/widgets.dart';
 import 'package:stacked/stacked.dart';
 
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
+import 'package:insoblok/widgets/widgets.dart';
 
 class StoryDetailPage extends StatelessWidget {
   final StoryModel story;
@@ -211,7 +211,7 @@ class StoryDetailPage extends StatelessWidget {
                           width: double.infinity,
                           height: 120.0,
                           decoration: BoxDecoration(
-                            color: AIColors.appScaffoldBackground,
+                            color: AIColors.darkScaffoldBackground,
                             borderRadius: BorderRadius.circular(16.0),
                             boxShadow: [
                               BoxShadow(

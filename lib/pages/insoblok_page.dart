@@ -62,7 +62,7 @@ class InSoBlokPage extends StatelessWidget {
                     ),
                     height: 54.0,
                     decoration: BoxDecoration(
-                      color: AIColors.appBar,
+                      color: AIColors.darkBar,
                       borderRadius: BorderRadius.circular(28.0),
                     ),
                     child: Row(
@@ -77,8 +77,8 @@ class InSoBlokPage extends StatelessWidget {
                               height: 28.0,
                               color:
                                   viewModel.pageIndex == i
-                                      ? AIColors.appSelectedText
-                                      : AIColors.appUnselectedText,
+                                      ? AIColors.darkSelectedText
+                                      : AIColors.darkUnselectedText,
                             ),
                           ),
                         },

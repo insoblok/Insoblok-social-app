@@ -40,7 +40,7 @@ class UserAvatarView extends StatelessWidget {
                     return SafeArea(
                       child: Container(
                         width: double.infinity,
-                        color: AIColors.appScaffoldBackground,
+                        color: AIColors.darkScaffoldBackground,
                         padding: const EdgeInsets.symmetric(
                           horizontal: 18.0,
                           vertical: 24.0,
@@ -187,7 +187,7 @@ class AddActionCardView extends StatelessWidget {
         width: 80.0,
         height: 120.0,
         decoration: BoxDecoration(
-          color: AIColors.appScaffoldBackground,
+          color: AIColors.darkScaffoldBackground,
           borderRadius: BorderRadius.circular(8.0),
           boxShadow: [
             BoxShadow(
@@ -219,7 +219,7 @@ class UserCardView extends StatelessWidget {
       width: 96.0,
       height: 120.0,
       decoration: BoxDecoration(
-        color: AIColors.appScaffoldBackground,
+        color: AIColors.darkScaffoldBackground,
         borderRadius: BorderRadius.circular(8.0),
         boxShadow: [
           BoxShadow(

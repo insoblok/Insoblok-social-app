@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:insoblok/models/models.dart';
 
+import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 
@@ -16,7 +16,7 @@ class StoryListCell extends StatelessWidget {
       margin: const EdgeInsets.only(top: 24.0, right: 24.0, left: 24.0),
       width: double.infinity,
       decoration: BoxDecoration(
-        color: AIColors.appScaffoldBackground,
+        color: AIColors.darkScaffoldBackground,
         borderRadius: BorderRadius.circular(16.0),
       ),
       child: InkWell(
@@ -41,7 +41,7 @@ class StoryListCell extends StatelessWidget {
                         vertical: 8.0,
                         horizontal: 12.0,
                       ),
-                      color: Colors.black38,
+                      color: AIColors.darkTransparentBackground,
                       child: Row(
                         children: [
                           ClipRRect(
@@ -58,30 +58,19 @@ class StoryListCell extends StatelessWidget {
                             children: [
                               Text(
                                 'Name of Owner',
-                                style: TextStyle(
-                                  fontSize: 12.0,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
-                                ),
+                                style:
+                                    Theme.of(context).textTheme.headlineSmall,
                               ),
                               Text(
                                 '2025-4-22 20:15',
-                                style: TextStyle(
-                                  fontSize: 10.0,
-                                  fontWeight: FontWeight.w300,
-                                  color: Colors.white,
-                                ),
+                                style: Theme.of(context).textTheme.displaySmall,
                               ),
                             ],
                           ),
                           const Spacer(),
                           Text(
                             '1 / 4',
-                            style: TextStyle(
-                              fontSize: 12.0,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                            ),
+                            style: Theme.of(context).textTheme.headlineSmall,
                           ),
                         ],
                       ),
@@ -99,7 +88,7 @@ class StoryListCell extends StatelessWidget {
                             width: 8.0,
                             height: 8.0,
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: AIColors.white,
                               shape: BoxShape.circle,
                             ),
                           ),
@@ -112,7 +101,7 @@ class StoryListCell extends StatelessWidget {
                               width: 8.0,
                               height: 8.0,
                               decoration: BoxDecoration(
-                                border: Border.all(color: Colors.white),
+                                border: Border.all(color: AIColors.white),
                                 shape: BoxShape.circle,
                               ),
                             ),
@@ -130,19 +119,11 @@ class StoryListCell extends StatelessWidget {
                   children: [
                     Text(
                       'My Story Title!!',
-                      style: TextStyle(
-                        fontSize: 15.0,
-                        fontWeight: FontWeight.w500,
-                        color: Colors.white,
-                      ),
+                      style: Theme.of(context).textTheme.headlineMedium,
                     ),
                     Text(
                       'Find & Download Free Graphic Resources for Text Story Template Vectors, Stock Photos & PSD files. ✓ Free for commercial use ✓ High Quality Images.. ✓ Free for commercial use ✓ High Quality Images.',
-                      style: TextStyle(
-                        fontSize: 12.0,
-                        fontWeight: FontWeight.w300,
-                        color: Colors.white,
-                      ),
+                      style: Theme.of(context).textTheme.bodyMedium,
                       maxLines: 3,
                       overflow: TextOverflow.ellipsis,
                     ),
@@ -153,51 +134,42 @@ class StoryListCell extends StatelessWidget {
                         Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            AIImage(
-                              Icons.favorite,
-                              color: Colors.white,
-                              width: 18.0,
-                              height: 18.0,
-                            ),
+                            AIImage(Icons.favorite, width: 18.0, height: 18.0),
                             const SizedBox(width: 4.0),
-                            Text('32', style: TextStyle(color: Colors.white)),
+                            Text(
+                              '32',
+                              style: Theme.of(context).textTheme.labelMedium,
+                            ),
                           ],
                         ),
                         const SizedBox(width: 24.0),
                         Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            AIImage(
-                              Icons.hearing,
-                              color: Colors.white,
-                              width: 18.0,
-                              height: 18.0,
-                            ),
+                            AIImage(Icons.hearing, width: 18.0, height: 18.0),
                             const SizedBox(width: 4.0),
-                            Text('47', style: TextStyle(color: Colors.white)),
+                            Text(
+                              '47',
+                              style: Theme.of(context).textTheme.labelMedium,
+                            ),
                           ],
                         ),
                         const SizedBox(width: 24.0),
                         Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [
-                            AIImage(
-                              Icons.comment,
-                              color: Colors.white,
-                              width: 18.0,
-                              height: 18.0,
-                            ),
+                            AIImage(Icons.comment, width: 18.0, height: 18.0),
                             const SizedBox(width: 4.0),
-                            Text('19', style: TextStyle(color: Colors.white)),
+                            Text(
+                              '19',
+                              style: Theme.of(context).textTheme.labelMedium,
+                            ),
                           ],
                         ),
                         const Spacer(),
                         Text(
                           'More Detail >',
-                          style: TextStyle(
-                            fontSize: 12.0,
-                            color: AIColors.yellow,
-                          ),
+                          style: Theme.of(context).textTheme.labelSmall,
                         ),
                       ],
                     ),

@@ -8,3 +8,5 @@ export 'wallet_service.dart';
 export 'contract_service.dart';
 export 'token_service.dart';
 export 'ethereum_service.dart';
+export 'story_service.dart';
+export 'app_sertting_service.dart';

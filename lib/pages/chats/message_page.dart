@@ -97,7 +97,7 @@ class MessagePage extends StatelessWidget {
                       Container(
                         height:
                             viewModel.isAddPop ? 66.0 + kAddPopHeight : 66.0,
-                        color: AIColors.appBar,
+                        color: AIColors.darkBar,
                         alignment: Alignment.center,
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
