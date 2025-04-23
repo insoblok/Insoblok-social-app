@@ -2,12 +2,13 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 
-import 'package:flutter_quill/flutter_quill.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:insoblok/routers/routers.dart';
 import 'package:provider/provider.dart';
+import 'package:vsc_quill_delta_to_html/vsc_quill_delta_to_html.dart';
 
+import 'package:insoblok/models/models.dart';
 import 'package:insoblok/providers/providers.dart';
+import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 
@@ -19,33 +20,47 @@ class AddStoryProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  late QuillController quillController;
-  var focusNode = FocusNode();
-  var quillScrollController = ScrollController();
   var scrollController = ScrollController();
   late UploadMediaProvider provider;
 
   Future<void> init(BuildContext context) async {
     this.context = context;
     provider = context.read<UploadMediaProvider>();
+  }
 
-    quillController = () {
-      return QuillController.basic(
-        config: QuillControllerConfig(
-          clipboardConfig: QuillClipboardConfig(enableExternalRichPaste: true),
-        ),
-      );
-    }();
+  String _title = '';
+  String get title => _title;
+  set title(String s) {
+    _title = s;
+    notifyListeners();
+  }
 
-    focusNode.canRequestFocus = false;
+  String _quillDescription = '';
+  String get quillDescription => _quillDescription;
+  set quillDescription(String s) {
+    _quillDescription = s;
+    notifyListeners();
+  }
+
+  List<Map<String, dynamic>> _quillData = [];
+  List<Map<String, dynamic>> get quillData => _quillData;
+  set quillData(List<Map<String, dynamic>> data) {
+    _quillData = data;
+    notifyListeners();
   }
 
   Future<void> updateDescription() async {
-    final String json = jsonEncode(quillController.document.toDelta().toJson());
-    var desc = await Routers.goToQuillDescriptionPage(context, origin: json);
+    var desc = await Routers.goToQuillDescriptionPage(
+      context,
+      origin: jsonEncode(quillData),
+    );
     if (desc != null) {
-      logger.d(desc);
-      quillController.document = Document.fromJson(jsonDecode(desc));
+      quillData = desc;
+      final converter = QuillDeltaToHtmlConverter(
+        desc,
+        ConverterOptions.forEmail(),
+      );
+      quillDescription = converter.convert();
       notifyListeners();
     }
   }
@@ -70,11 +85,53 @@ class AddStoryProvider extends InSoBlokViewModel {
     } else {}
   }
 
+  String _txtUploadButton = 'Post Story';
+  String get txtUploadButton => _txtUploadButton;
+  set txtUploadButton(String s) {
+    _txtUploadButton = s;
+    notifyListeners();
+  }
+
+  final _storyService = StoryService();
+  StoryService get storyService => _storyService;
+
+  Future<void> onClickUploadButton() async {
+    if (isBusy) return;
+    clearErrors();
+
+    await runBusyFuture(() async {
+      try {
+        txtUploadButton = 'Uploading Media(s)...';
+        var medias = await provider.uploadMedias();
+        txtUploadButton = 'Adding to Server...';
+        var story = StoryModel(
+          title: title,
+          text: quillDescription,
+          medias: medias,
+        );
+        await storyService.postStory(story: story);
+      } catch (e) {
+        setError(e);
+        logger.e(e);
+      } finally {
+        notifyListeners();
+      }
+    }());
+
+    if (hasError) {
+      Fluttertoast.showToast(msg: modelError.toString());
+    } else {
+      Fluttertoast.showToast(
+        msg: 'Successfully your post! Your feed is in list now!',
+      );
+      Navigator.of(context).pop(true);
+    }
+  }
+
   @override
   void dispose() {
-    quillController.dispose();
-    quillScrollController.dispose();
-    focusNode.dispose();
+    scrollController.dispose();
+    provider.reset();
 
     super.dispose();
   }

@@ -32,6 +32,7 @@ class UploadMediaWidget extends StatelessWidget {
       itemBuilder: (context, index) {
         var media = viewModel.medias[index];
         return Container(
+          key: GlobalKey(debugLabel: 'media-$index'),
           decoration: kCardDecoration,
           child: ClipRRect(
             borderRadius: BorderRadius.circular(16.0),
@@ -72,7 +73,7 @@ class UploadMediaWidget extends StatelessWidget {
                               )
                               : media.isUploading
                               ? Loader(
-                                size: 22.0,
+                                size: 20.0,
                                 color: AIColors.red,
                                 strokeWidth: 0.5,
                               )

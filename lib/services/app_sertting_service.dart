@@ -53,7 +53,7 @@ class AppSettingService with ListenableServiceMixin {
       ),
     ),
     textTheme: TextTheme(
-      displayMedium: TextStyle(fontSize: 16.0, color: AIColors.darkTextColor),
+      displayMedium: TextStyle(fontSize: 14.0, color: AIColors.darkTextColor),
       displaySmall: TextStyle(
         fontSize: 10.0,
         fontWeight: FontWeight.w300,

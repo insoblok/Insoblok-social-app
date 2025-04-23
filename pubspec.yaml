@@ -25,6 +25,8 @@ dependencies:
   chewie: any
   carousel_slider: any
   flutter_quill: any
+  vsc_quill_delta_to_html: any
+  flutter_html: any
 
   logger: any
   freezed_annotation: any

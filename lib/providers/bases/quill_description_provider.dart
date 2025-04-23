@@ -49,7 +49,7 @@ class QuillDescriptionProvider extends InSoBlokViewModel {
       return;
     }
 
-    final String json = jsonEncode(quillController.document.toDelta().toJson());
+    final json = quillController.document.toDelta().toJson();
     Navigator.of(context).pop(json);
   }
 

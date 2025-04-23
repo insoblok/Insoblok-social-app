@@ -20,6 +20,7 @@ class AIColors {
   static Color shadowDarkColor = Colors.black26;
 
   static Color white = Colors.white;
+  static Color grey = Colors.grey;
   static Color blue = Colors.blueAccent;
   static Color red = Color(0xffe61c1b); // 230 28 27
   static Color yellow = const Color.fromARGB(255, 214, 195, 18);
