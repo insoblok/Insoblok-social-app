@@ -22,10 +22,10 @@ class AIHelpers {
     return deviceIdentifier;
   }
 
-  static Widget htmlRender(String? data) => Html(
+  static Widget htmlRender(String? data, {FontSize? fontSize}) => Html(
     data: data,
     shrinkWrap: true,
-    style: {'p': Style(fontSize: FontSize.large)},
+    style: {'p': Style(fontSize: fontSize ?? FontSize.large)},
     onLinkTap: (url, attributes, element) {
       logger.d(url);
       if (url != null) {

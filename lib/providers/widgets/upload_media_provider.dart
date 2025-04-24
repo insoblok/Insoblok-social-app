@@ -62,12 +62,14 @@ class UploadMediaProvider extends InSoBlokViewModel {
       var url = await uploadMedia(media: media);
 
       if (url != null) {
-        var type = media.file?.mimeType;
+        var type = media.file!.path;
 
         var model = MediaStoryModel(
           link: url,
           type:
-              (type == 'png' || type == 'jpg' || type == 'jpeg')
+              ((type.endsWith('png')) ||
+                      type.endsWith('jpg') ||
+                      type.endsWith('jpeg'))
                   ? 'image'
                   : 'video',
         );

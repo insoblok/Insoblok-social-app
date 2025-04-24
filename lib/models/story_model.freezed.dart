@@ -15,6 +15,7 @@ T _$identity<T>(T value) => value;
 
 /// @nodoc
 mixin _$StoryModel {
+  String? get id;
   String? get uid;
   String? get title;
   String? get text;
@@ -41,6 +42,7 @@ mixin _$StoryModel {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is StoryModel &&
+            (identical(other.id, id) || other.id == id) &&
             (identical(other.uid, uid) || other.uid == uid) &&
             (identical(other.title, title) || other.title == title) &&
             (identical(other.text, text) || other.text == text) &&
@@ -58,6 +60,7 @@ mixin _$StoryModel {
   @override
   int get hashCode => Object.hash(
       runtimeType,
+      id,
       uid,
       title,
       text,
@@ -71,7 +74,7 @@ mixin _$StoryModel {
 
   @override
   String toString() {
-    return 'StoryModel(uid: $uid, title: $title, text: $text, regdate: $regdate, status: $status, timestamp: $timestamp, medias: $medias, likes: $likes, follows: $follows, comments: $comments)';
+    return 'StoryModel(id: $id, uid: $uid, title: $title, text: $text, regdate: $regdate, status: $status, timestamp: $timestamp, medias: $medias, likes: $likes, follows: $follows, comments: $comments)';
   }
 }
 
@@ -82,7 +85,8 @@ abstract mixin class $StoryModelCopyWith<$Res> {
       _$StoryModelCopyWithImpl;
   @useResult
   $Res call(
-      {String? uid,
+      {String? id,
+      String? uid,
       String? title,
       String? text,
       String? regdate,
@@ -106,6 +110,7 @@ class _$StoryModelCopyWithImpl<$Res> implements $StoryModelCopyWith<$Res> {
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = freezed,
     Object? uid = freezed,
     Object? title = freezed,
     Object? text = freezed,
@@ -118,6 +123,10 @@ class _$StoryModelCopyWithImpl<$Res> implements $StoryModelCopyWith<$Res> {
     Object? comments = freezed,
   }) {
     return _then(_self.copyWith(
+      id: freezed == id
+          ? _self.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String?,
       uid: freezed == uid
           ? _self.uid
           : uid // ignore: cast_nullable_to_non_nullable
@@ -167,7 +176,8 @@ class _$StoryModelCopyWithImpl<$Res> implements $StoryModelCopyWith<$Res> {
 @JsonSerializable(fieldRename: FieldRename.snake)
 class _StoryModel implements StoryModel {
   _StoryModel(
-      {this.uid,
+      {this.id,
+      this.uid,
       this.title,
       this.text,
       this.regdate,
@@ -184,6 +194,8 @@ class _StoryModel implements StoryModel {
   factory _StoryModel.fromJson(Map<String, dynamic> json) =>
       _$StoryModelFromJson(json);
 
+  @override
+  final String? id;
   @override
   final String? uid;
   @override
@@ -256,6 +268,7 @@ class _StoryModel implements StoryModel {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _StoryModel &&
+            (identical(other.id, id) || other.id == id) &&
             (identical(other.uid, uid) || other.uid == uid) &&
             (identical(other.title, title) || other.title == title) &&
             (identical(other.text, text) || other.text == text) &&
@@ -273,6 +286,7 @@ class _StoryModel implements StoryModel {
   @override
   int get hashCode => Object.hash(
       runtimeType,
+      id,
       uid,
       title,
       text,
@@ -286,7 +300,7 @@ class _StoryModel implements StoryModel {
 
   @override
   String toString() {
-    return 'StoryModel(uid: $uid, title: $title, text: $text, regdate: $regdate, status: $status, timestamp: $timestamp, medias: $medias, likes: $likes, follows: $follows, comments: $comments)';
+    return 'StoryModel(id: $id, uid: $uid, title: $title, text: $text, regdate: $regdate, status: $status, timestamp: $timestamp, medias: $medias, likes: $likes, follows: $follows, comments: $comments)';
   }
 }
 
@@ -299,7 +313,8 @@ abstract mixin class _$StoryModelCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String? uid,
+      {String? id,
+      String? uid,
       String? title,
       String? text,
       String? regdate,
@@ -323,6 +338,7 @@ class __$StoryModelCopyWithImpl<$Res> implements _$StoryModelCopyWith<$Res> {
   @override
   @pragma('vm:prefer-inline')
   $Res call({
+    Object? id = freezed,
     Object? uid = freezed,
     Object? title = freezed,
     Object? text = freezed,
@@ -335,6 +351,10 @@ class __$StoryModelCopyWithImpl<$Res> implements _$StoryModelCopyWith<$Res> {
     Object? comments = freezed,
   }) {
     return _then(_StoryModel(
+      id: freezed == id
+          ? _self.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String?,
       uid: freezed == uid
           ? _self.uid
           : uid // ignore: cast_nullable_to_non_nullable
@@ -749,6 +769,153 @@ class __$StoryCommentModelCopyWithImpl<$Res>
           ? _self._medias
           : medias // ignore: cast_nullable_to_non_nullable
               as List<MediaStoryModel>?,
+    ));
+  }
+}
+
+/// @nodoc
+mixin _$UpdatedStoryModel {
+  String? get timestamp;
+
+  /// Create a copy of UpdatedStoryModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $UpdatedStoryModelCopyWith<UpdatedStoryModel> get copyWith =>
+      _$UpdatedStoryModelCopyWithImpl<UpdatedStoryModel>(
+          this as UpdatedStoryModel, _$identity);
+
+  /// Serializes this UpdatedStoryModel to a JSON map.
+  Map<String, dynamic> toJson();
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is UpdatedStoryModel &&
+            (identical(other.timestamp, timestamp) ||
+                other.timestamp == timestamp));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, timestamp);
+
+  @override
+  String toString() {
+    return 'UpdatedStoryModel(timestamp: $timestamp)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $UpdatedStoryModelCopyWith<$Res> {
+  factory $UpdatedStoryModelCopyWith(
+          UpdatedStoryModel value, $Res Function(UpdatedStoryModel) _then) =
+      _$UpdatedStoryModelCopyWithImpl;
+  @useResult
+  $Res call({String? timestamp});
+}
+
+/// @nodoc
+class _$UpdatedStoryModelCopyWithImpl<$Res>
+    implements $UpdatedStoryModelCopyWith<$Res> {
+  _$UpdatedStoryModelCopyWithImpl(this._self, this._then);
+
+  final UpdatedStoryModel _self;
+  final $Res Function(UpdatedStoryModel) _then;
+
+  /// Create a copy of UpdatedStoryModel
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? timestamp = freezed,
+  }) {
+    return _then(_self.copyWith(
+      timestamp: freezed == timestamp
+          ? _self.timestamp
+          : timestamp // ignore: cast_nullable_to_non_nullable
+              as String?,
+    ));
+  }
+}
+
+/// @nodoc
+
+@JsonSerializable(fieldRename: FieldRename.snake)
+class _UpdatedStoryModel implements UpdatedStoryModel {
+  _UpdatedStoryModel({this.timestamp});
+  factory _UpdatedStoryModel.fromJson(Map<String, dynamic> json) =>
+      _$UpdatedStoryModelFromJson(json);
+
+  @override
+  final String? timestamp;
+
+  /// Create a copy of UpdatedStoryModel
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$UpdatedStoryModelCopyWith<_UpdatedStoryModel> get copyWith =>
+      __$UpdatedStoryModelCopyWithImpl<_UpdatedStoryModel>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$UpdatedStoryModelToJson(
+      this,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _UpdatedStoryModel &&
+            (identical(other.timestamp, timestamp) ||
+                other.timestamp == timestamp));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, timestamp);
+
+  @override
+  String toString() {
+    return 'UpdatedStoryModel(timestamp: $timestamp)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$UpdatedStoryModelCopyWith<$Res>
+    implements $UpdatedStoryModelCopyWith<$Res> {
+  factory _$UpdatedStoryModelCopyWith(
+          _UpdatedStoryModel value, $Res Function(_UpdatedStoryModel) _then) =
+      __$UpdatedStoryModelCopyWithImpl;
+  @override
+  @useResult
+  $Res call({String? timestamp});
+}
+
+/// @nodoc
+class __$UpdatedStoryModelCopyWithImpl<$Res>
+    implements _$UpdatedStoryModelCopyWith<$Res> {
+  __$UpdatedStoryModelCopyWithImpl(this._self, this._then);
+
+  final _UpdatedStoryModel _self;
+  final $Res Function(_UpdatedStoryModel) _then;
+
+  /// Create a copy of UpdatedStoryModel
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? timestamp = freezed,
+  }) {
+    return _then(_UpdatedStoryModel(
+      timestamp: freezed == timestamp
+          ? _self.timestamp
+          : timestamp // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }

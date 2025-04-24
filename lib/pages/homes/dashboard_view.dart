@@ -37,14 +37,11 @@ class DashboardView extends StatelessWidget {
                 ),
                 SliverList(
                   delegate: SliverChildListDelegate([
-                    for (var i = 0; i < 10; i++) ...{
+                    for (var story in viewModel.stories) ...{
                       StoryListCell(
-                        story: StoryModel(),
+                        story: story,
                         onTap:
-                            () => Routers.goToStoryDetailPage(
-                              context,
-                              StoryModel(),
-                            ),
+                            () => Routers.goToStoryDetailPage(context, story),
                       ),
                     },
                     const SizedBox(height: 96.0),
@@ -55,10 +52,7 @@ class DashboardView extends StatelessWidget {
             Align(
               alignment: Alignment.bottomRight,
               child: InkWell(
-                onTap: () async {
-                  var isAdd = await Routers.goToAddStoryPage(context);
-                  if (isAdd) {}
-                },
+                onTap: () => Routers.goToAddStoryPage(context),
                 child: Container(
                   width: 54.0,
                   height: 54.0,

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:insoblok/services/image_service.dart';
 
+import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 
 class OutlineButton extends StatelessWidget {
@@ -106,22 +106,16 @@ class PageableIndicator extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Container(
-          margin: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 8.0),
-          width: 8.0,
-          height: 8.0,
-          decoration: BoxDecoration(
-            color: AIColors.white,
-            shape: BoxShape.circle,
-          ),
-        ),
-        for (var i = 0; i < 3; i++) ...{
+        for (var i = 0; i < pageLength; i++) ...{
           Container(
             margin: const EdgeInsets.symmetric(horizontal: 2.0, vertical: 8.0),
             width: 8.0,
             height: 8.0,
             decoration: BoxDecoration(
-              border: Border.all(color: AIColors.white),
+              color: i == index ? AIColors.white : null,
+              border: Border.all(
+                color: i == index ? Colors.transparent : AIColors.white,
+              ),
               shape: BoxShape.circle,
             ),
           ),

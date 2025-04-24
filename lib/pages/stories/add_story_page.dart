@@ -19,7 +19,17 @@ class AddStoryPage extends StatelessWidget {
           body: CustomScrollView(
             controller: viewModel.scrollController,
             slivers: [
-              SliverAppBar(title: Text('Add Story'), pinned: true),
+              SliverAppBar(
+                title: Text('Add Story'),
+                pinned: true,
+                leading: IconButton(
+                  onPressed: () {
+                    viewModel.provider.reset();
+                    Navigator.of(context).pop();
+                  },
+                  icon: Icon(Icons.arrow_back),
+                ),
+              ),
               SliverPadding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 16.0,

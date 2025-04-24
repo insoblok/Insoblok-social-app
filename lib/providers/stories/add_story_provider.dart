@@ -107,12 +107,11 @@ class AddStoryProvider extends InSoBlokViewModel {
         var story = StoryModel(
           title: title,
           text: quillDescription,
-          medias: medias,
-        );
+        ).copyWith(medias: medias);
         await storyService.postStory(story: story);
-      } catch (e) {
+      } catch (e, s) {
         setError(e);
-        logger.e(e);
+        logger.e(e, stackTrace: s);
       } finally {
         notifyListeners();
       }
@@ -124,6 +123,7 @@ class AddStoryProvider extends InSoBlokViewModel {
       Fluttertoast.showToast(
         msg: 'Successfully your post! Your feed is in list now!',
       );
+      provider.reset();
       Navigator.of(context).pop(true);
     }
   }
@@ -131,8 +131,6 @@ class AddStoryProvider extends InSoBlokViewModel {
   @override
   void dispose() {
     scrollController.dispose();
-    provider.reset();
-
     super.dispose();
   }
 }

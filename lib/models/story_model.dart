@@ -7,6 +7,7 @@ part 'story_model.g.dart';
 abstract class StoryModel with _$StoryModel {
   @JsonSerializable(fieldRename: FieldRename.snake)
   factory StoryModel({
+    String? id,
     String? uid,
     String? title,
     String? text,
@@ -18,6 +19,7 @@ abstract class StoryModel with _$StoryModel {
     List<String>? follows,
     List<StoryCommentModel>? comments,
   }) = _StoryModel;
+
   factory StoryModel.fromJson(Map<String, dynamic> json) =>
       _$StoryModelFromJson(json);
 }
@@ -26,6 +28,7 @@ abstract class StoryModel with _$StoryModel {
 abstract class MediaStoryModel with _$MediaStoryModel {
   @JsonSerializable(fieldRename: FieldRename.snake)
   factory MediaStoryModel({String? link, String? type}) = _MediaStoryModel;
+
   factory MediaStoryModel.fromJson(Map<String, dynamic> json) =>
       _$MediaStoryModelFromJson(json);
 }
@@ -39,6 +42,16 @@ abstract class StoryCommentModel with _$StoryCommentModel {
     String? timestamp,
     List<MediaStoryModel>? medias,
   }) = _StoryCommentModel;
+
   factory StoryCommentModel.fromJson(Map<String, dynamic> json) =>
       _$StoryCommentModelFromJson(json);
+}
+
+@freezed
+abstract class UpdatedStoryModel with _$UpdatedStoryModel {
+  @JsonSerializable(fieldRename: FieldRename.snake)
+  factory UpdatedStoryModel({String? timestamp}) = _UpdatedStoryModel;
+
+  factory UpdatedStoryModel.fromJson(Map<String, dynamic> json) =>
+      _$UpdatedStoryModelFromJson(json);
 }
