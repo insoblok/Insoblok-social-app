@@ -70,6 +70,11 @@ class StoryProvider extends InSoBlokViewModel {
     if (isBusy) return;
     clearErrors();
 
+    if (story.uid == user?.uid) {
+      Fluttertoast.showToast(msg: 'You can\'t like to your feed!');
+      return;
+    }
+
     isLiking = true;
     var likes = List<String>.from(story.likes ?? []);
     await runBusyFuture(() async {
@@ -114,6 +119,11 @@ class StoryProvider extends InSoBlokViewModel {
   Future<void> updateFollow() async {
     if (isBusy) return;
     clearErrors();
+
+    if (story.uid == user?.uid) {
+      Fluttertoast.showToast(msg: 'You can\'t follow to your feed!');
+      return;
+    }
 
     isFollowing = true;
     var follows = List<String>.from(story.follows ?? []);

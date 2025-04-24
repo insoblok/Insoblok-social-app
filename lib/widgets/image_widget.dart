@@ -64,40 +64,49 @@ class _StoryCarouselViewState extends State<StoryCarouselView> {
     return ValueListenableBuilder(
       valueListenable: indexListener,
       builder: (context, value, _) {
-        return Stack(
-          children: [
-            CarouselSlider.builder(
-              itemCount: widget.story.medias!.length,
-              options: CarouselOptions(
-                viewportFraction: 1.0,
-                enlargeCenterPage: false,
-                aspectRatio: 3 / 2,
-                height: widget.height,
-                onPageChanged: (index, reason) {
-                  indexListener.value = index;
-                  if (widget.onChangePage != null) {
-                    widget.onChangePage!(index);
-                  }
+        return SizedBox(
+          height: widget.height,
+          child: Stack(
+            children: [
+              CarouselSlider.builder(
+                itemCount: widget.story.medias!.length,
+                options: CarouselOptions(
+                  viewportFraction: 1.0,
+                  enlargeCenterPage: false,
+                  aspectRatio: 3 / 2,
+                  height: widget.height,
+                  onPageChanged: (index, reason) {
+                    indexListener.value = index;
+                    if (widget.onChangePage != null) {
+                      widget.onChangePage!(index);
+                    }
+                  },
+                ),
+                itemBuilder: (context, index, realIdx) {
+                  var media = medias[index];
+                  return Container(
+                    width: double.infinity,
+                    height: widget.height,
+                    decoration: BoxDecoration(
+                      color: AIColors.grey,
+                      borderRadius: BorderRadius.circular(6),
+                    ),
+                    child: MediaCarouselCell(
+                      media: media,
+                      height: widget.height,
+                    ),
+                  );
                 },
               ),
-              itemBuilder: (context, index, realIdx) {
-                var media = medias[index];
-                return Container(
-                  width: double.infinity,
-                  height: widget.height,
-                  decoration: BoxDecoration(
-                    color: AIColors.grey,
-                    borderRadius: BorderRadius.circular(6),
-                  ),
-                  child: MediaCarouselCell(media: media, height: widget.height),
-                );
-              },
-            ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: PageableIndicator(pageLength: medias.length, index: value),
-            ),
-          ],
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: PageableIndicator(
+                  pageLength: medias.length,
+                  index: value,
+                ),
+              ),
+            ],
+          ),
         );
       },
     );

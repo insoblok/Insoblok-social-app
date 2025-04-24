@@ -147,7 +147,7 @@ class StoryListActionView extends ViewModelWidget<StoryProvider> {
               ),
               const SizedBox(width: 4.0),
               Text(
-                '${story.likes?.length ?? '--'}',
+                (story.likes?.length ?? 0).socialValue,
                 style: Theme.of(context).textTheme.labelMedium,
               ),
             ],
@@ -165,7 +165,7 @@ class StoryListActionView extends ViewModelWidget<StoryProvider> {
               ),
               const SizedBox(width: 4.0),
               Text(
-                '${story.follows?.length ?? '--'}',
+                (story.follows?.length ?? 0).socialValue,
                 style: Theme.of(context).textTheme.labelMedium,
               ),
             ],
@@ -180,7 +180,7 @@ class StoryListActionView extends ViewModelWidget<StoryProvider> {
               AIImage(Icons.comment, width: 18.0, height: 18.0),
               const SizedBox(width: 4.0),
               Text(
-                '${story.comments?.length ?? '--'}',
+                (story.comments?.length ?? 0).socialValue,
                 style: Theme.of(context).textTheme.labelMedium,
               ),
             ],

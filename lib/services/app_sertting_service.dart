@@ -48,7 +48,7 @@ class AppSettingService with ListenableServiceMixin {
       iconTheme: IconThemeData(color: AIColors.darkTextColor),
       titleTextStyle: TextStyle(
         color: AIColors.darkTextColor,
-        fontSize: 20.0,
+        fontSize: 18.0,
         fontWeight: FontWeight.w500,
       ),
     ),
@@ -79,6 +79,7 @@ class AppSettingService with ListenableServiceMixin {
         fontWeight: FontWeight.w300,
         color: AIColors.darkTextColor,
       ),
+      labelLarge: TextStyle(color: AIColors.darkTextColor, fontSize: 16.0),
       labelMedium: TextStyle(color: AIColors.darkTextColor),
       labelSmall: TextStyle(fontSize: 12.0, color: AIColors.yellow),
     ),

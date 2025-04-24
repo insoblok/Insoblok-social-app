@@ -30,7 +30,11 @@ abstract class UserModel with _$UserModel {
 }
 
 extension UserModelExt on UserModel {
-  String get fullName => '$firstName $lastName';
+  String get fullName {
+    var f = (firstName ?? '--').trim();
+    var l = (lastName ?? '--').trim();
+    return '${f[0].toUpperCase()}${f.substring(1)} ${l[0].toUpperCase()}${l.substring(1)}';
+  }
 
   Widget avatarStatusView({double? width, double? height}) {
     return ClipOval(
