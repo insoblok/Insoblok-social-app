@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:stacked/stacked.dart';
 
-import 'package:insoblok/models/models.dart';
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
@@ -37,18 +36,46 @@ class DashboardView extends StatelessWidget {
                 ),
                 SliverList(
                   delegate: SliverChildListDelegate([
-                    for (var story in viewModel.stories) ...{
-                      StoryListCell(
-                        story: story,
-                        onTap:
-                            () => Routers.goToStoryDetailPage(context, story),
-                      ),
-                    },
+                    ...viewModel.stories.map((story) {
+                      return StoryListCell(story: story);
+                    }),
                     const SizedBox(height: 96.0),
                   ]),
                 ),
               ],
             ),
+            if (viewModel.isUpdated)
+              Padding(
+                padding: EdgeInsets.only(
+                  top:
+                      MediaQuery.of(context).viewInsets.top +
+                      40.0 +
+                      kToolbarHeight,
+                ),
+                child: Row(
+                  children: [
+                    const Spacer(),
+                    InkWell(
+                      onTap: viewModel.fetchData,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 6.0,
+                          vertical: 2.0,
+                        ),
+                        decoration: BoxDecoration(
+                          color: AIColors.blue,
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                        child: Text(
+                          'New Posts',
+                          style: TextStyle(fontSize: 12.0),
+                        ),
+                      ),
+                    ),
+                    const Spacer(),
+                  ],
+                ),
+              ),
             Align(
               alignment: Alignment.bottomRight,
               child: InkWell(

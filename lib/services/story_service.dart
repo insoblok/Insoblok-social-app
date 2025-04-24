@@ -31,6 +31,14 @@ class StoryService {
     return result;
   }
 
+  // Get stories updated
+  Stream<UpdatedStoryModel> getStoryUpdated() {
+    return _firestore.collection('story').doc('updated').snapshots().map((doc) {
+      logger.d(doc.data());
+      return UpdatedStoryModel.fromJson(doc.data()!);
+    });
+  }
+
   // Post a story
   Future<void> postStory({required StoryModel story}) async {
     await _firestore
@@ -51,11 +59,80 @@ class StoryService {
     });
   }
 
-  // Get updated
-  Stream<UpdatedStoryModel> getStoryUpdated() {
-    return _firestore.collection('story').doc('updated').snapshots().map((doc) {
-      logger.d(doc.data());
-      return UpdatedStoryModel.fromJson(doc.data()!);
-    });
+  // Update like of story
+  Future<void> updateLikeStory({
+    required StoryModel story,
+    required UserModel? user,
+  }) async {
+    await _firestore
+        .collection('story')
+        .doc(story.id)
+        .update(
+          story
+              .copyWith(
+                regdate: kFullDateTimeFormatter.format(DateTime.now().toUtc()),
+              )
+              .toMap(),
+        );
+    if (user != null) {
+      var isUpdated = false;
+      var likes = List<String>.from(user.likes ?? []);
+      if (story.isLike()) {
+        if (!user.isLike()) {
+          likes.add(AuthHelper.user!.uid!);
+          isUpdated = true;
+        }
+      }
+      if (isUpdated) {
+        user = user.copyWith(likes: likes);
+        await FirebaseHelper.updateUser(user);
+      }
+    }
+  }
+
+  // Update follow of story
+  Future<void> updateFollowStory({
+    required StoryModel story,
+    required UserModel? user,
+  }) async {
+    await _firestore
+        .collection('story')
+        .doc(story.id)
+        .update(
+          story
+              .copyWith(
+                regdate: kFullDateTimeFormatter.format(DateTime.now().toUtc()),
+              )
+              .toMap(),
+        );
+
+    if (user != null) {
+      var isUpdated = false;
+      var follows = List<String>.from(user.follows ?? []);
+      if (story.isFollow()) {
+        if (!user.isFollow()) {
+          follows.add(AuthHelper.user!.uid!);
+          isUpdated = true;
+        }
+      }
+      if (isUpdated) {
+        user = user.copyWith(follows: follows);
+        await FirebaseHelper.updateUser(user);
+      }
+    }
+  }
+
+  // Add comment of story
+  Future<void> addComment({required StoryModel story}) async {
+    await _firestore
+        .collection('story')
+        .doc(story.id)
+        .update(
+          story
+              .copyWith(
+                regdate: kFullDateTimeFormatter.format(DateTime.now().toUtc()),
+              )
+              .toMap(),
+        );
   }
 }

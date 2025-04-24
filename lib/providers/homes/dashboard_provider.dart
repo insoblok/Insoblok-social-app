@@ -42,19 +42,17 @@ class DashboardProvider extends InSoBlokViewModel {
     clearErrors();
 
     _stories.clear();
-    await runBusyFuture(() async {
-      try {
-        var ss = await storyService.getStories();
-        logger.d(ss.length);
-        _stories.addAll(ss);
-        isUpdated = false;
-      } catch (e) {
-        setError(e);
-        logger.e(e);
-      } finally {
-        notifyListeners();
-      }
-    }());
+    try {
+      var ss = await storyService.getStories();
+      logger.d(ss.length);
+      _stories.addAll(ss);
+      isUpdated = false;
+    } catch (e) {
+      setError(e);
+      logger.e(e);
+    } finally {
+      notifyListeners();
+    }
 
     if (hasError) {
       Fluttertoast.showToast(msg: modelError.toString());
