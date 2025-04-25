@@ -4,14 +4,16 @@ class AIImages {
   static String logo = 'assets/images/logo.png';
   static String placehold = 'assets/images/placehold.png';
 
-  static String imgBackSplash = 'assets/images/back_splash.jpg';
-  static String imgBackDashboard = 'assets/images/back_dashboard.jpg';
-  static String imgBackChat = 'assets/images/back_chat.jpg';
-  static String imgBackLike = 'assets/images/back_like.jpg';
-  static String imgBackProfile = 'assets/images/back_profile.jpg';
-  static String imgBackMessage = 'assets/images/back_message.jpg';
-
   static String imgMetamask = 'assets/images/metamask.svg';
 
   static String icEthereumGold = 'assets/images/ic_ethereum_gold.png';
+
+  static String icBottomHomeFill = 'assets/icons/ic_home_fill.svg';
+  static String icBottomHome = 'assets/icons/ic_home.svg';
+  static String icBottomSearchFill = 'assets/icons/ic_search_fill.svg';
+  static String icBottomSearch = 'assets/icons/ic_search.svg';
+  static String icBottomNotiFill = 'assets/icons/ic_notifications_fill.svg';
+  static String icBottomNoti = 'assets/icons/ic_notifications.svg';
+  static String icBottomMessageFill = 'assets/icons/ic_message_fill.svg';
+  static String icBottomMessage = 'assets/icons/ic_message.svg';
 }

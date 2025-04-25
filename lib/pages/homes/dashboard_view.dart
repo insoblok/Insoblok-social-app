@@ -36,7 +36,7 @@ class DashboardView extends StatelessWidget {
                 ),
                 SliverList(
                   delegate: SliverChildListDelegate([
-                    ...viewModel.stories.map((story) {
+                    ...viewModel.stories.reversed.map((story) {
                       return StoryListCell(story: story);
                     }),
                     const SizedBox(height: 96.0),

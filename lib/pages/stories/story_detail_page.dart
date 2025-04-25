@@ -276,9 +276,39 @@ class StoryDetailSocialView extends ViewModelWidget<StoryDetailProvider> {
             ],
           ),
           const SizedBox(height: 16.0),
-          StoryLikeListView(),
+          if (viewModel.tabIndex == 0) StoryLikeListView(),
+          if (viewModel.tabIndex == 1) StoryFollowListView(),
+          if (viewModel.tabIndex == 2) StoryCommentListView(),
         ],
       ),
+    );
+  }
+}
+
+class StoryActionCover extends StatelessWidget {
+  final Widget child;
+
+  const StoryActionCover({super.key, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
+      width: double.infinity,
+      height: 72.0,
+      padding: const EdgeInsets.all(4.0),
+      decoration: BoxDecoration(
+        color: AIColors.darkBar,
+        border: Border.all(color: AIColors.yellow, width: 0.5),
+        borderRadius: BorderRadius.only(
+          topLeft: Radius.circular(36.0),
+          bottomLeft: Radius.circular(36.0),
+          topRight: Radius.circular(12.0),
+          bottomRight: Radius.circular(12.0),
+        ),
+      ),
+      alignment: Alignment.centerLeft,
+      child: child,
     );
   }
 }
@@ -292,33 +322,193 @@ class StoryLikeListView extends ViewModelWidget<StoryDetailProvider> {
     return Column(
       children: [
         for (var i = 0; i < min(3, likes.length); i++) ...{
-          Builder(
-            builder: (context) {
-              return Container(
-                margin: const EdgeInsets.symmetric(
-                  horizontal: 8.0,
-                  vertical: 8.0,
-                ),
-                width: double.infinity,
-                height: 72.0,
-                decoration: BoxDecoration(
-                  color: AIColors.darkBar,
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.circular(36.0),
-                    bottomLeft: Radius.circular(36.0),
-                    topRight: Radius.circular(12.0),
-                    bottomRight: Radius.circular(12.0),
-                  ),
+          FutureBuilder<UserModel?>(
+            future: FirebaseHelper.getUser(likes[i]),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Container();
+              }
+              var user = snapshot.data;
+              if (user == null) {
+                return Container();
+              }
+              return StoryActionCover(
+                child: Row(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(32.0),
+                      child: AIImage(user.avatar, width: 64.0, height: 64.0),
+                    ),
+                    const SizedBox(width: 12.0),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            user.fullName,
+                            style: Theme.of(context).textTheme.labelLarge,
+                          ),
+                          const SizedBox(height: 4.0),
+                          Text(user.regdate!),
+                        ],
+                      ),
+                    ),
+                    Icon(Icons.favorite, size: 18.0),
+                    const SizedBox(width: 4.0),
+                    Text((user.likes?.length ?? 0).socialValue),
+                    const SizedBox(width: 16.0),
+                    Icon(Icons.arrow_forward_ios, size: 14.0),
+                    const SizedBox(width: 8.0),
+                  ],
                 ),
               );
             },
           ),
         },
-        const SizedBox(height: 24.0),
-        Text(
-          'View All'.toUpperCase(),
-          style: Theme.of(context).textTheme.labelSmall,
-        ),
+        if (likes.length > 3) ...{
+          const SizedBox(height: 24.0),
+          Text(
+            'View All'.toUpperCase(),
+            style: Theme.of(context).textTheme.labelSmall,
+          ),
+        },
+      ],
+    );
+  }
+}
+
+class StoryFollowListView extends ViewModelWidget<StoryDetailProvider> {
+  const StoryFollowListView({super.key});
+
+  @override
+  Widget build(BuildContext context, viewModel) {
+    var follows = viewModel.story.follows ?? [];
+    return Column(
+      children: [
+        for (var i = 0; i < min(3, follows.length); i++) ...{
+          FutureBuilder<UserModel?>(
+            future: FirebaseHelper.getUser(follows[i]),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Container();
+              }
+              var user = snapshot.data;
+              if (user == null) {
+                return Container();
+              }
+              return StoryActionCover(
+                child: Row(
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(32.0),
+                      child: AIImage(user.avatar, width: 64.0, height: 64.0),
+                    ),
+                    const SizedBox(width: 12.0),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            user.fullName,
+                            style: Theme.of(context).textTheme.labelLarge,
+                          ),
+                          const SizedBox(height: 4.0),
+                          Text(user.regdate!),
+                        ],
+                      ),
+                    ),
+                    Icon(Icons.hearing, size: 18.0),
+                    const SizedBox(width: 4.0),
+                    Text((user.follows?.length ?? 0).socialValue),
+                    const SizedBox(width: 16.0),
+                    Icon(Icons.arrow_forward_ios, size: 14.0),
+                    const SizedBox(width: 8.0),
+                  ],
+                ),
+              );
+            },
+          ),
+        },
+        if (follows.length > 3) ...{
+          const SizedBox(height: 24.0),
+          Text(
+            'View All'.toUpperCase(),
+            style: Theme.of(context).textTheme.labelSmall,
+          ),
+        },
+      ],
+    );
+  }
+}
+
+class StoryCommentListView extends ViewModelWidget<StoryDetailProvider> {
+  const StoryCommentListView({super.key});
+
+  @override
+  Widget build(BuildContext context, viewModel) {
+    var comments = viewModel.story.comments ?? [];
+    return Column(
+      children: [
+        for (var i = 0; i < min(3, comments.length); i++) ...{
+          FutureBuilder<UserModel?>(
+            future: FirebaseHelper.getUser(comments[i].uid!),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return Container();
+              }
+              var user = snapshot.data;
+              if (user == null) {
+                return Container();
+              }
+              return Container(
+                margin: const EdgeInsets.symmetric(
+                  horizontal: 8.0,
+                  vertical: 8.0,
+                ),
+                padding: const EdgeInsets.only(top: 8.0, left: 8.0, right: 8.0),
+                decoration: BoxDecoration(
+                  border: Border.all(color: AIColors.yellow, width: 0.5),
+                  borderRadius: BorderRadius.circular(12.0),
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    ClipRRect(
+                      borderRadius: BorderRadius.circular(32.0),
+                      child: AIImage(user.avatar, width: 64.0, height: 64.0),
+                    ),
+                    const SizedBox(width: 12.0),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            user.fullName,
+                            style: Theme.of(context).textTheme.labelLarge,
+                          ),
+                          AIHelpers.htmlRender(
+                            comments[i].content,
+                            fontSize: FontSize.small,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        },
+        if (comments.length > 3) ...{
+          const SizedBox(height: 24.0),
+          Text(
+            'View All'.toUpperCase(),
+            style: Theme.of(context).textTheme.labelSmall,
+          ),
+        },
       ],
     );
   }

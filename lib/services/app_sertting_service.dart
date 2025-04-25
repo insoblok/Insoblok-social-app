@@ -22,7 +22,7 @@ class AppSettingService with ListenableServiceMixin {
   ThemeData get theme => themeMode == ThemeMode.light ? lightTheme : darkTheme;
 
   ThemeData get lightTheme => ThemeData(
-    fontFamily: 'Geist',
+    fontFamily: 'SFProText',
     colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
     scaffoldBackgroundColor: AIColors.darkScaffoldBackground,
     useMaterial3: true,
@@ -39,30 +39,118 @@ class AppSettingService with ListenableServiceMixin {
   );
 
   ThemeData get darkTheme => ThemeData(
-    fontFamily: 'Geist',
-    colorScheme: ColorScheme.fromSeed(seedColor: AIColors.darkPrimaryColor),
-    scaffoldBackgroundColor: AIColors.darkScaffoldBackground,
+    fontFamily: 'SFProText',
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: AIColors.blue,
+      primary: AIColors.black,
+      onPrimary: AIColors.white,
+      secondary: AIColors.white,
+      onSecondary: AIColors.black,
+      primaryContainer: AIColors.darkBackground,
+      onPrimaryContainer: AIColors.lightBackground,
+    ),
+    scaffoldBackgroundColor: AIColors.darkBackground,
     useMaterial3: true,
     appBarTheme: AppBarTheme(
-      backgroundColor: AIColors.darkBar,
-      iconTheme: IconThemeData(color: AIColors.darkTextColor),
+      backgroundColor: AIColors.darkBackground,
+      iconTheme: IconThemeData(color: AIColors.darkIconColor),
       titleTextStyle: TextStyle(
         color: AIColors.darkTextColor,
-        fontSize: 18.0,
-        fontWeight: FontWeight.w500,
+        fontSize: 17.0,
+        fontWeight: FontWeight.w800,
+        letterSpacing: -0.3,
       ),
     ),
+    bottomNavigationBarTheme: BottomNavigationBarThemeData(
+      backgroundColor: AIColors.darkBackground,
+      selectedIconTheme: IconThemeData(size: 22.0, color: AIColors.blue),
+      unselectedIconTheme: IconThemeData(size: 22.0, color: AIColors.grey),
+      selectedItemColor: AIColors.blue,
+      unselectedItemColor: AIColors.grey,
+      showSelectedLabels: false,
+      showUnselectedLabels: false,
+    ),
     textTheme: TextTheme(
-      displayMedium: TextStyle(fontSize: 14.0, color: AIColors.darkTextColor),
+      titleLarge: TextStyle(
+        color: AIColors.darkTextColor,
+        fontSize: 22.0,
+        fontWeight: FontWeight.w800,
+        letterSpacing: 0.15,
+      ),
+      titleMedium: TextStyle(
+        color: AIColors.darkTextColor,
+        fontSize: 19.0,
+        fontWeight: FontWeight.w800,
+        letterSpacing: -0.3,
+      ),
+      titleSmall: TextStyle(
+        color: AIColors.darkTextColor,
+        fontSize: 17.0,
+        fontWeight: FontWeight.w800,
+        letterSpacing: -0.3,
+      ),
+
+      bodyLarge: TextStyle(
+        fontSize: 17.0,
+        color: AIColors.darkTextColor,
+        fontWeight: FontWeight.w700,
+        letterSpacing: -0.1,
+      ),
+      bodyMedium: TextStyle(
+        fontSize: 16.0,
+        color: AIColors.darkTextColor,
+        fontWeight: FontWeight.w600,
+        letterSpacing: -0.3,
+      ),
+      bodySmall: TextStyle(
+        fontSize: 16.0,
+        color: AIColors.darkTextColor,
+        fontWeight: FontWeight.w400,
+        letterSpacing: -0.3,
+      ),
+
+      labelLarge: TextStyle(
+        fontSize: 16.0,
+        color: AIColors.greyTextColor,
+        fontWeight: FontWeight.w400,
+        letterSpacing: -0.3,
+      ),
+      labelMedium: TextStyle(
+        fontSize: 14.0,
+        color: AIColors.greyTextColor,
+        fontWeight: FontWeight.w400,
+        letterSpacing: -0.15,
+      ),
+      labelSmall: TextStyle(
+        fontSize: 12.0,
+        color: AIColors.greyTextColor,
+        fontWeight: FontWeight.w400,
+        letterSpacing: -0.3,
+      ),
+
+      displayLarge: TextStyle(
+        fontSize: 19.0,
+        color: AIColors.darkTextColor,
+        fontWeight: FontWeight.w700,
+        letterSpacing: -0.1,
+      ),
+      displayMedium: TextStyle(
+        fontSize: 18.0,
+        color: AIColors.darkTextColor,
+        fontWeight: FontWeight.w400,
+        letterSpacing: -0.1,
+      ),
       displaySmall: TextStyle(
         fontSize: 10.0,
+        color: AIColors.darkTextColor,
         fontWeight: FontWeight.w300,
-        color: AIColors.darkTextColor,
       ),
+
       headlineLarge: TextStyle(
-        fontSize: 18.0,
-        fontWeight: FontWeight.bold,
+        fontSize: 19.0,
         color: AIColors.darkTextColor,
+        fontWeight: FontWeight.w700,
+        letterSpacing: -0.1,
       ),
       headlineMedium: TextStyle(
         fontSize: 15.0,
@@ -74,14 +162,6 @@ class AppSettingService with ListenableServiceMixin {
         fontWeight: FontWeight.bold,
         color: AIColors.darkTextColor,
       ),
-      bodyMedium: TextStyle(
-        fontSize: 12.0,
-        fontWeight: FontWeight.w300,
-        color: AIColors.darkTextColor,
-      ),
-      labelLarge: TextStyle(color: AIColors.darkTextColor, fontSize: 16.0),
-      labelMedium: TextStyle(color: AIColors.darkTextColor),
-      labelSmall: TextStyle(fontSize: 12.0, color: AIColors.yellow),
     ),
     iconTheme: IconThemeData(color: AIColors.darkIconColor),
   );

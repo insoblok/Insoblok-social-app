@@ -36,28 +36,28 @@ class StoryListCell extends StatelessWidget {
               borderRadius: BorderRadius.circular(16.0),
               child: Column(
                 children: [
-                  SizedBox(
-                    height: 240.0,
-                    child: Stack(
-                      children: [
-                        StoryCarouselView(
-                          story: story,
-                          height: 240.0,
-                          onChangePage: (index) => viewModel.pageIndex = index,
-                        ),
-                        if (medias.isNotEmpty)
-                          StoryListUserView(
-                            background: AIColors.darkTransparentBackground,
+                  if (medias.isNotEmpty)
+                    SizedBox(
+                      height: 240.0,
+                      child: Stack(
+                        children: [
+                          StoryCarouselView(
+                            story: story,
+                            height: 240.0,
+                            onChangePage:
+                                (index) => viewModel.pageIndex = index,
                           ),
-                      ],
+
+                          StoryListUserView(),
+                        ],
+                      ),
                     ),
-                  ),
                   Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        if (medias.isEmpty) StoryListUserView(),
+                        if (medias.isEmpty) StoryListUserView(hasMedia: false),
                         Text(
                           story.title ?? '---',
                           style: Theme.of(context).textTheme.headlineMedium,
@@ -81,9 +81,9 @@ class StoryListCell extends StatelessWidget {
 }
 
 class StoryListUserView extends ViewModelWidget<StoryProvider> {
-  final Color? background;
+  final bool hasMedia;
 
-  const StoryListUserView({super.key, this.background});
+  const StoryListUserView({super.key, this.hasMedia = true});
 
   @override
   Widget build(BuildContext context, viewModel) {
@@ -93,9 +93,12 @@ class StoryListUserView extends ViewModelWidget<StoryProvider> {
       return Container();
     }
     return Container(
-      height: 54.0,
-      padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0),
-      color: background,
+      height: hasMedia ? 54.0 : null,
+      padding:
+          hasMedia
+              ? const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0)
+              : const EdgeInsets.only(bottom: 12.0),
+      color: hasMedia ? AIColors.darkTransparentBackground : null,
       child: Row(
         children: [
           ClipRRect(
@@ -105,6 +108,7 @@ class StoryListUserView extends ViewModelWidget<StoryProvider> {
           const SizedBox(width: 8.0),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
             children: [
               Text(
                 user.fullName,
@@ -116,11 +120,13 @@ class StoryListUserView extends ViewModelWidget<StoryProvider> {
               ),
             ],
           ),
-          const Spacer(),
-          Text(
-            '${viewModel.pageIndex + 1} / ${(story.medias ?? []).length}',
-            style: Theme.of(context).textTheme.displayMedium,
-          ),
+          if (hasMedia) ...{
+            const Spacer(),
+            Text(
+              '${viewModel.pageIndex + 1} / ${(story.medias ?? []).length}',
+              style: Theme.of(context).textTheme.displayMedium,
+            ),
+          },
         ],
       ),
     );
