@@ -14,7 +14,7 @@ class InSoBlokPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var pages = [DashboardView(), FavoriteView(), ProfileView(), ChatView()];
+    var pages = [DashboardView(), SearchView(), NotificationView(), ChatView()];
     var titles = ['Home', 'Trends', 'Notifications', 'Messages'];
     var selectedIcon = [
       AIImages.icBottomHomeFill,

@@ -26,6 +26,7 @@ class AIImages {
   static String icShare = 'assets/icons/ic_upload.svg';
   static String icAddLogo = 'assets/icons/ic_add_logo.svg';
   static String icCircleMore = 'assets/icons/ic_more_circle.svg';
+  static String icSetting = 'assets/icons/ic_setting.svg';
 
   static String icMenuProfile = 'assets/icons/ic_user.svg';
   static String icMenuLists = 'assets/icons/ic_list.svg';

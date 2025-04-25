@@ -22,7 +22,6 @@ class DashboardView extends StatelessWidget {
             CustomScrollView(
               slivers: [
                 SliverAppBar(
-                  automaticallyImplyLeading: false,
                   leading: AppLeadingView(),
                   title: AIImage(
                     AIImages.logoInsoblok,
