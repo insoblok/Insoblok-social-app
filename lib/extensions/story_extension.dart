@@ -1,5 +1,6 @@
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
+import 'package:insoblok/utils/utils.dart';
 
 extension StoryModelExt on StoryModel {
   Map<String, dynamic> toMap() {
@@ -26,6 +27,11 @@ extension StoryModelExt on StoryModel {
   bool isFollow() {
     var follow = follows ?? [];
     return follow.contains(AuthHelper.user!.uid);
+  }
+
+  String get shownDate {
+    var date = kFullDateTimeFormatter.parse(regdate!, true);
+    return kDateMDYFormatter.format(date.toLocal());
   }
 }
 

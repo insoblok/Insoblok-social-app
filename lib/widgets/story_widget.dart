@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:flutter_html/flutter_html.dart';
 import 'package:stacked/stacked.dart';
 
 import 'package:insoblok/extensions/extensions.dart';
@@ -24,197 +23,187 @@ class StoryListCell extends StatelessWidget {
       onViewModelReady: (viewModel) => viewModel.init(context, model: story),
       builder: (context, viewModel, _) {
         return Container(
-          margin: const EdgeInsets.only(top: 24.0, right: 24.0, left: 24.0),
-          width: double.infinity,
+          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
           decoration: BoxDecoration(
-            color: AIColors.darkScaffoldBackground,
-            borderRadius: BorderRadius.circular(16.0),
+            border: Border(
+              top: BorderSide(color: AIColors.speraterColor, width: 0.33),
+            ),
           ),
           child: InkWell(
             onTap: () => Routers.goToStoryDetailPage(context, story),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(16.0),
-              child: Column(
-                children: [
-                  if (medias.isNotEmpty)
-                    SizedBox(
-                      height: 240.0,
-                      child: Stack(
-                        children: [
-                          StoryCarouselView(
-                            story: story,
-                            height: 240.0,
-                            onChangePage:
-                                (index) => viewModel.pageIndex = index,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Container(
+                      width: 55.0,
+                      alignment: Alignment.centerRight,
+                      child: AIImage(
+                        AIImages.icFavoriteFill,
+                        color: AIColors.grey,
+                        width: 12.0,
+                        height: 12.0,
+                      ),
+                    ),
+                    const SizedBox(width: 8.0),
+                    Expanded(
+                      child: Text(
+                        'Kieron Dotson and Zack John liked',
+                        style: Theme.of(context).textTheme.labelMedium,
+                      ),
+                    ),
+                  ],
+                ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ClipRRect(
+                          borderRadius: BorderRadius.circular(30.0),
+                          child: AIImage(
+                            viewModel.owner?.avatar,
+                            width: 55.0,
+                            height: 55.0,
                           ),
-
-                          StoryListUserView(),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(width: 8.0),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text.rich(
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: viewModel.owner?.fullName ?? '---',
+                                  style: Theme.of(context).textTheme.bodyMedium,
+                                ),
+                                TextSpan(
+                                  text:
+                                      ' @${viewModel.owner?.fullName.replaceAll(' ', '')} • ${story.shownDate}',
+                                  style: Theme.of(context).textTheme.labelLarge,
+                                ),
+                              ],
+                            ),
+                          ),
+                          AIHelpers.htmlRender(story.text),
+                          if (medias.isNotEmpty) ...{
+                            const SizedBox(height: 8.0),
+                            Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  width: 0.33,
+                                  color: AIColors.speraterColor,
+                                ),
+                                borderRadius: BorderRadius.circular(12.0),
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(12.0),
+                                child: AspectRatio(
+                                  aspectRatio: 1.91,
+                                  child: StoryCarouselView(
+                                    story: story,
+                                    onChangePage:
+                                        (index) => viewModel.pageIndex = index,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          },
+                          const SizedBox(height: 8.0),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: InkWell(
+                                  onTap: viewModel.addComment,
+                                  child: Row(
+                                    children: [
+                                      AIImage(AIImages.icCommit, height: 14.0),
+                                      const SizedBox(width: 4.0),
+                                      Text(
+                                        (story.comments?.length ?? 0)
+                                            .socialValue,
+                                        style:
+                                            Theme.of(
+                                              context,
+                                            ).textTheme.labelSmall,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: InkWell(
+                                  onTap: viewModel.updateFollow,
+                                  child: Row(
+                                    children: [
+                                      AIImage(
+                                        AIImages.icRetwitter,
+                                        height: 14.0,
+                                      ),
+                                      const SizedBox(width: 4.0),
+                                      Text(
+                                        (story.follows?.length ?? 0)
+                                            .socialValue,
+                                        style:
+                                            Theme.of(
+                                              context,
+                                            ).textTheme.labelSmall,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: InkWell(
+                                  onTap: viewModel.updateLike,
+                                  child: Row(
+                                    children: [
+                                      AIImage(
+                                        story.isLike()
+                                            ? AIImages.icFavoriteFill
+                                            : AIImages.icFavorite,
+                                        height: 14.0,
+                                      ),
+                                      const SizedBox(width: 4.0),
+                                      Text(
+                                        (story.likes?.length ?? 0).socialValue,
+                                        style:
+                                            Theme.of(
+                                              context,
+                                            ).textTheme.labelSmall,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: Row(
+                                  children: [
+                                    AIImage(AIImages.icShare, height: 14.0),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
                         ],
                       ),
                     ),
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        if (medias.isEmpty) StoryListUserView(hasMedia: false),
-                        Text(
-                          story.title ?? '---',
-                          style: Theme.of(context).textTheme.headlineMedium,
-                        ),
-                        AIHelpers.htmlRender(
-                          story.text,
-                          fontSize: FontSize.medium,
-                        ),
-                        StoryListActionView(),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+                  ],
+                ),
+              ],
             ),
           ),
         );
       },
     );
-  }
-}
-
-class StoryListUserView extends ViewModelWidget<StoryProvider> {
-  final bool hasMedia;
-
-  const StoryListUserView({super.key, this.hasMedia = true});
-
-  @override
-  Widget build(BuildContext context, viewModel) {
-    var user = viewModel.owner;
-    var story = viewModel.story;
-    if (user == null) {
-      return Container();
-    }
-    return Container(
-      height: hasMedia ? 54.0 : null,
-      padding:
-          hasMedia
-              ? const EdgeInsets.symmetric(vertical: 8.0, horizontal: 12.0)
-              : const EdgeInsets.only(bottom: 12.0),
-      color: hasMedia ? AIColors.darkTransparentBackground : null,
-      child: Row(
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(20.0),
-            child: AIImage(user.avatar, width: 32.0, height: 32.0),
-          ),
-          const SizedBox(width: 8.0),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                user.fullName,
-                style: Theme.of(context).textTheme.headlineSmall,
-              ),
-              Text(
-                '${story.regdate}',
-                style: Theme.of(context).textTheme.displaySmall,
-              ),
-            ],
-          ),
-          if (hasMedia) ...{
-            const Spacer(),
-            Text(
-              '${viewModel.pageIndex + 1} / ${(story.medias ?? []).length}',
-              style: Theme.of(context).textTheme.displayMedium,
-            ),
-          },
-        ],
-      ),
-    );
-  }
-}
-
-class StoryListActionView extends ViewModelWidget<StoryProvider> {
-  const StoryListActionView({super.key});
-
-  @override
-  Widget build(BuildContext context, viewModel) {
-    var story = viewModel.story;
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        InkWell(
-          onTap: viewModel.updateLike,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              StoryActionIcon(
-                isLoading: viewModel.isLiking,
-                src: story.isLike() ? Icons.favorite : Icons.favorite_border,
-              ),
-              const SizedBox(width: 4.0),
-              Text(
-                (story.likes?.length ?? 0).socialValue,
-                style: Theme.of(context).textTheme.labelMedium,
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(width: 24.0),
-        InkWell(
-          onTap: viewModel.updateFollow,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              StoryActionIcon(
-                isLoading: viewModel.isFollowing,
-                src: story.isFollow() ? Icons.hearing : Icons.hearing_disabled,
-              ),
-              const SizedBox(width: 4.0),
-              Text(
-                (story.follows?.length ?? 0).socialValue,
-                style: Theme.of(context).textTheme.labelMedium,
-              ),
-            ],
-          ),
-        ),
-        const SizedBox(width: 24.0),
-        InkWell(
-          onTap: viewModel.addComment,
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              AIImage(Icons.comment, width: 18.0, height: 18.0),
-              const SizedBox(width: 4.0),
-              Text(
-                (story.comments?.length ?? 0).socialValue,
-                style: Theme.of(context).textTheme.labelMedium,
-              ),
-            ],
-          ),
-        ),
-        const Spacer(),
-        Text('More Detail >', style: Theme.of(context).textTheme.labelSmall),
-      ],
-    );
-  }
-}
-
-class StoryActionIcon extends StatelessWidget {
-  final dynamic src;
-  final bool isLoading;
-  final double size;
-
-  const StoryActionIcon({
-    super.key,
-    required this.src,
-    this.size = 18.0,
-    this.isLoading = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return isLoading
-        ? Loader(size: size, color: AIColors.red, strokeWidth: 0.75)
-        : AIImage(src, width: size, height: size);
   }
 }

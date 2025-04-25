@@ -166,9 +166,10 @@ class StoryProvider extends InSoBlokViewModel {
     await runBusyFuture(() async {
       try {
         var desc = await Routers.goToQuillDescriptionPage(context);
-        if (desc != null) {
+        logger.d(desc);
+        if ((desc as List<Map<String, dynamic>>?)?.isNotEmpty ?? false) {
           final converter = QuillDeltaToHtmlConverter(
-            desc,
+            desc!,
             ConverterOptions.forEmail(),
           );
           var content = converter.convert();
@@ -182,6 +183,8 @@ class StoryProvider extends InSoBlokViewModel {
           await storyService.addComment(
             story: story.copyWith(comments: comments),
           );
+        } else {
+          setError('Your comment is empty!');
         }
       } catch (e) {
         setError(e);

@@ -29,6 +29,8 @@ class AIColors {
 
   static Color lightGreyBackground = Color(0xFFE7ECF0);
 
+  static Color speraterColor = Color(0xFFCED5DC);
+
   static Color white = Color(0xFFFFFFFF);
   static Color black = Color(0xFF141619);
   static Color grey = Color(0xFF687684);
@@ -36,4 +38,5 @@ class AIColors {
   static Color pink = Color(0xFF4C6EEB);
   static Color purple = Color(0xFF724DBD);
   static Color red = Color(0xFFCE395F);
+  static Color green = Color(0xFF59BC6C);
 }

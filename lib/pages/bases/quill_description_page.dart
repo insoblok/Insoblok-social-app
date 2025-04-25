@@ -19,7 +19,7 @@ class QuillDescriptionPage extends StatelessWidget {
       builder: (context, viewModel, _) {
         return Scaffold(
           appBar: AppBar(
-            title: Text('Feed Description'),
+            title: Text('Add Description'),
             actions: [
               IconButton(
                 icon: const Icon(Icons.check),

@@ -25,7 +25,20 @@ class AIHelpers {
   static Widget htmlRender(String? data, {FontSize? fontSize}) => Html(
     data: data,
     shrinkWrap: true,
-    style: {'p': Style(fontSize: fontSize ?? FontSize.large)},
+    style: {
+      'body': Style(margin: Margins.all(0), padding: HtmlPaddings.all(0)),
+      'p': Style(
+        margin: Margins.all(0),
+        fontSize: fontSize ?? FontSize(16.0),
+        fontWeight: FontWeight.w400,
+        letterSpacing: -0.3,
+      ),
+      'a': Style(
+        fontSize: fontSize ?? FontSize(16.0),
+        fontWeight: FontWeight.w400,
+        letterSpacing: -0.3,
+      ),
+    },
     onLinkTap: (url, attributes, element) {
       logger.d(url);
       if (url != null) {

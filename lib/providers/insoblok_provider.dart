@@ -19,4 +19,16 @@ class InSoBlokProvider extends InSoBlokViewModel {
   Future<void> init(BuildContext context) async {
     this.context = context;
   }
+
+  Future<void> onClickMenuAvatar() async {
+    Navigator.of(context).pop();
+  }
+
+  Future<void> onClickMenuMore() async {
+    Navigator.of(context).pop();
+  }
+
+  Future<void> onClickMenuItem(int index) async {
+    Navigator.of(context).pop();
+  }
 }

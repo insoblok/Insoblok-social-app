@@ -124,3 +124,23 @@ class PageableIndicator extends StatelessWidget {
     );
   }
 }
+
+class MenuButtonCover extends StatelessWidget {
+  final Widget child;
+  final void Function()? onTap;
+
+  const MenuButtonCover({super.key, required this.child, this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        height: 56.0,
+        padding: const EdgeInsets.symmetric(horizontal: 24.0),
+        alignment: Alignment.centerLeft,
+        child: child,
+      ),
+    );
+  }
+}

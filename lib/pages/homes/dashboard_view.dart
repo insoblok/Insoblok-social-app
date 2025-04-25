@@ -22,15 +22,23 @@ class DashboardView extends StatelessWidget {
             CustomScrollView(
               slivers: [
                 SliverAppBar(
-                  backgroundColor: AIColors.darkBar,
                   automaticallyImplyLeading: false,
-                  title: Text('Stories'),
+                  leading: AppLeadingView(),
+                  title: AIImage(
+                    AIImages.logoInsoblok,
+                    width: 32.0,
+                    height: 32.0,
+                  ),
+                  centerTitle: true,
                   pinned: true,
                   actions: [
-                    IconButton(onPressed: () {}, icon: Icon(Icons.search)),
                     IconButton(
                       onPressed: () {},
-                      icon: Icon(Icons.filter_alt_rounded),
+                      icon: AIImage(
+                        AIImages.icTopEffect,
+                        width: 24.0,
+                        height: 24.0,
+                      ),
                     ),
                   ],
                 ),
@@ -39,7 +47,7 @@ class DashboardView extends StatelessWidget {
                     ...viewModel.stories.reversed.map((story) {
                       return StoryListCell(story: story);
                     }),
-                    const SizedBox(height: 96.0),
+                    const SizedBox(height: 20),
                   ]),
                 ),
               ],
@@ -81,18 +89,18 @@ class DashboardView extends StatelessWidget {
               child: InkWell(
                 onTap: () => Routers.goToAddStoryPage(context),
                 child: Container(
-                  width: 54.0,
-                  height: 54.0,
-                  padding: const EdgeInsets.all(12.0),
+                  width: 56.0,
+                  height: 56.0,
                   margin: EdgeInsets.only(
-                    bottom: MediaQuery.of(context).viewInsets.bottom + 96.0,
+                    bottom: MediaQuery.of(context).viewInsets.bottom + 24.0,
                     right: 24.0,
                   ),
+                  alignment: Alignment.center,
                   decoration: BoxDecoration(
                     color: AIColors.blue,
                     borderRadius: BorderRadius.circular(28.0),
                   ),
-                  child: AIImage(Icons.add, width: 28.0, height: 28.0),
+                  child: AIImage(AIImages.icAddLogo, width: 22.0, height: 22.0),
                 ),
               ),
             ),

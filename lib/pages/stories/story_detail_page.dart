@@ -28,7 +28,6 @@ class StoryDetailPage extends StatelessWidget {
             child: Column(
               children: [
                 StoryDetailHeaderView(),
-                StoryDetailContentView(),
                 const Divider(),
                 StoryDetailSocialView(),
               ],
@@ -135,100 +134,6 @@ class StoryDetailHeaderView extends ViewModelWidget<StoryDetailProvider> {
                 ],
               ),
             ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class StoryDetailContentView extends ViewModelWidget<StoryDetailProvider> {
-  const StoryDetailContentView({super.key});
-
-  @override
-  Widget build(BuildContext context, viewModel) {
-    var story = viewModel.story;
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            story.title ?? '---',
-            style: Theme.of(context).textTheme.headlineLarge,
-          ),
-          Text(
-            story.regdate ?? '---',
-            style: Theme.of(context).textTheme.displaySmall,
-          ),
-          AIHelpers.htmlRender(story.text, fontSize: FontSize.medium),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              InkWell(
-                onTap: viewModel.updateLike,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    StoryActionIcon(
-                      isLoading: viewModel.isLiking,
-                      size: 20.0,
-                      src:
-                          story.isLike()
-                              ? Icons.favorite
-                              : Icons.favorite_border,
-                    ),
-                    const SizedBox(width: 8.0),
-                    Text(
-                      (story.likes?.length ?? 0).socialValue,
-                      style: Theme.of(context).textTheme.labelLarge,
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 24.0),
-              InkWell(
-                onTap: viewModel.updateFollow,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    StoryActionIcon(
-                      isLoading: viewModel.isFollowing,
-                      size: 20.0,
-                      src:
-                          story.isFollow()
-                              ? Icons.hearing
-                              : Icons.hearing_disabled,
-                    ),
-                    const SizedBox(width: 8.0),
-                    Text(
-                      (story.follows?.length ?? 0).socialValue,
-                      style: Theme.of(context).textTheme.labelLarge,
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(width: 24.0),
-              InkWell(
-                onTap: viewModel.addComment,
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    AIImage(Icons.comment, width: 20.0, height: 20.0),
-                    const SizedBox(width: 8.0),
-                    Text(
-                      (story.comments?.length ?? 0).socialValue,
-                      style: Theme.of(context).textTheme.labelLarge,
-                    ),
-                  ],
-                ),
-              ),
-              const Spacer(),
-              InkWell(
-                onTap: viewModel.shareFeed,
-                child: Icon(Icons.share, size: 20.0),
-              ),
-            ],
           ),
         ],
       ),

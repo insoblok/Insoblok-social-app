@@ -288,3 +288,20 @@ class UserCardView extends StatelessWidget {
     );
   }
 }
+
+class AppLeadingView extends StatelessWidget {
+  const AppLeadingView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: InkWell(
+        onTap: () => Scaffold.of(context).openDrawer(),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(16.0),
+          child: AIImage(AuthHelper.user?.avatar, width: 32.0, height: 32.0),
+        ),
+      ),
+    );
+  }
+}

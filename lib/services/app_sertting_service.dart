@@ -53,6 +53,7 @@ class AppSettingService with ListenableServiceMixin {
     useMaterial3: true,
     appBarTheme: AppBarTheme(
       backgroundColor: AIColors.darkBackground,
+      toolbarHeight: 45.0,
       iconTheme: IconThemeData(color: AIColors.darkIconColor),
       titleTextStyle: TextStyle(
         color: AIColors.darkTextColor,
@@ -63,12 +64,11 @@ class AppSettingService with ListenableServiceMixin {
     ),
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
       backgroundColor: AIColors.darkBackground,
-      selectedIconTheme: IconThemeData(size: 22.0, color: AIColors.blue),
-      unselectedIconTheme: IconThemeData(size: 22.0, color: AIColors.grey),
       selectedItemColor: AIColors.blue,
       unselectedItemColor: AIColors.grey,
       showSelectedLabels: false,
       showUnselectedLabels: false,
+      type: BottomNavigationBarType.fixed,
     ),
     textTheme: TextTheme(
       titleLarge: TextStyle(
@@ -99,13 +99,13 @@ class AppSettingService with ListenableServiceMixin {
       bodyMedium: TextStyle(
         fontSize: 16.0,
         color: AIColors.darkTextColor,
-        fontWeight: FontWeight.w600,
+        fontWeight: FontWeight.w700,
         letterSpacing: -0.3,
       ),
       bodySmall: TextStyle(
         fontSize: 16.0,
         color: AIColors.darkTextColor,
-        fontWeight: FontWeight.w400,
+        fontWeight: FontWeight.w500,
         letterSpacing: -0.3,
       ),
 
