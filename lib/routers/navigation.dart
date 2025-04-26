@@ -10,8 +10,10 @@ const kRouterLogin = '/login';
 const kRouterRegister = '/register';
 const kRouterMain = '/main';
 const kRouterAccount = '/account';
-const kRouterCreateRoom = '/create_room';
+
+const kRouterCreateRoom = '/create-room';
 const kRouterMessage = '/message';
+const kRouterMessageSetting = '/message-setting';
 
 const kRouterAddStory = '/add-story';
 const kRouterStoryDetail = '/story-detail';
@@ -63,6 +65,9 @@ class Navigation {
       kRouterMessage,
       (props) => MessagePage(data: props!),
     );
+
+    // * MessageSettingPage
+    initRoute(kRouterMessageSetting, (props) => MessageSettingPage());
 
     // * AddStoryPage
     initRoute(kRouterAddStory, (props) => AddStoryPage());

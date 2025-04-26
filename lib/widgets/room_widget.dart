@@ -4,6 +4,7 @@ import 'package:stacked/stacked.dart';
 
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/providers/providers.dart';
+import 'package:insoblok/utils/utils.dart';
 
 class RoomItemView extends StatelessWidget {
   final RoomModel room;
@@ -18,12 +19,7 @@ class RoomItemView extends StatelessWidget {
       onViewModelReady: (viewModel) => viewModel.init(context, model: room),
       builder: (context, viewModel, _) {
         if (viewModel.isBusy) {
-          return Container(
-            padding: const EdgeInsets.all(16.0),
-            decoration: BoxDecoration(
-              border: Border(top: BorderSide(width: 0.5, color: Colors.white)),
-            ),
-          );
+          return Container();
         }
         return InkWell(
           onTap: () {
@@ -36,6 +32,11 @@ class RoomItemView extends StatelessWidget {
             padding: const EdgeInsets.symmetric(
               horizontal: 20.0,
               vertical: 12.0,
+            ),
+            decoration: BoxDecoration(
+              border: Border(
+                top: BorderSide(color: AIColors.speraterColor, width: 0.33),
+              ),
             ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,

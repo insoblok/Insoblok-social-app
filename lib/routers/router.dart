@@ -37,6 +37,10 @@ class Routers {
     return _pushToRoute(context, kRouterMessage, data);
   }
 
+  static goToMessageSettingPage(BuildContext context) {
+    return _pushToRoute(context, kRouterMessageSetting, null);
+  }
+
   static goToAddStoryPage(BuildContext context) {
     return _pushToRoute(context, kRouterAddStory, null);
   }

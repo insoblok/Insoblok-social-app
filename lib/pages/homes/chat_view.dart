@@ -33,7 +33,7 @@ class ChatView extends StatelessWidget {
                   title: Text('Messages'),
                   actions: [
                     IconButton(
-                      onPressed: () {},
+                      onPressed: () => Routers.goToMessageSettingPage(context),
                       icon: AIImage(
                         AIImages.icSetting,
                         width: 24.0,
@@ -115,7 +115,6 @@ class ChatView extends StatelessWidget {
                     )
                     : SliverList(
                       delegate: SliverChildListDelegate([
-                        const SizedBox(height: 24.0),
                         ...viewModel.rooms.map((room) {
                           return RoomItemView(
                             room: room,
