@@ -24,8 +24,8 @@ class NotificationView extends StatelessWidget {
                   pinned: true,
                   floating: false,
                   elevation: 1.0,
-                  leading: AppLeadingView(),
                   centerTitle: true,
+                  leading: AppLeadingView(),
                   title: Text('Notifications'),
                   actions: [
                     IconButton(

@@ -144,3 +144,31 @@ class MenuButtonCover extends StatelessWidget {
     );
   }
 }
+
+class CustomFloatingButton extends StatelessWidget {
+  final dynamic src;
+  final void Function()? onTap;
+
+  const CustomFloatingButton({super.key, required this.src, this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        width: 56.0,
+        height: 56.0,
+        margin: EdgeInsets.only(
+          bottom: MediaQuery.of(context).viewInsets.bottom + 24.0,
+          right: 24.0,
+        ),
+        alignment: Alignment.center,
+        decoration: BoxDecoration(
+          color: AIColors.blue,
+          borderRadius: BorderRadius.circular(28.0),
+        ),
+        child: AIImage(src, width: 22.0, height: 22.0),
+      ),
+    );
+  }
+}

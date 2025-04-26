@@ -32,52 +32,50 @@ class RoomItemView extends StatelessWidget {
             }
           },
           child: Container(
-            padding: const EdgeInsets.all(16.0),
-            decoration: BoxDecoration(
-              border: Border(top: BorderSide(width: 0.5, color: Colors.white)),
+            height: 80.0,
+            padding: const EdgeInsets.symmetric(
+              horizontal: 20.0,
+              vertical: 12.0,
             ),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                viewModel.chatUser!.avatarStatusView(width: 60.0, height: 60.0),
+                viewModel.chatUser!.avatarStatusView(width: 55.0, height: 55.0),
                 const SizedBox(width: 12.0),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              '${viewModel.chatUser?.fullName}',
-                              style: TextStyle(
-                                fontSize: 16.0,
-                                fontWeight: FontWeight.w500,
-                                overflow: TextOverflow.ellipsis,
-                                color: Colors.white,
-                              ),
-                              maxLines: 1,
+                      Text.rich(
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        TextSpan(
+                          children: [
+                            TextSpan(
+                              text: viewModel.chatUser?.fullName ?? '---',
+                              style: Theme.of(context).textTheme.bodyMedium,
                             ),
-                          ),
-                          Text(
-                            '${room.recentDate}',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ],
+                            TextSpan(
+                              text:
+                                  ' @${viewModel.chatUser?.fullName.replaceAll(' ', '')}',
+                              style: Theme.of(context).textTheme.labelLarge,
+                            ),
+                          ],
+                        ),
                       ),
                       Text(
                         '${room.content}',
-                        style: TextStyle(
-                          fontSize: 13.0,
-                          fontWeight: FontWeight.w300,
-                          color: Colors.white,
-                        ),
+                        style: Theme.of(context).textTheme.labelLarge,
                       ),
                     ],
                   ),
                 ),
                 const SizedBox(width: 8.0),
-                Icon(Icons.arrow_forward_ios, size: 16.0, color: Colors.white),
+                Text(
+                  '${room.recentDate}',
+                  style: Theme.of(context).textTheme.labelLarge,
+                ),
               ],
             ),
           ),

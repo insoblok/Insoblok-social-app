@@ -20,6 +20,7 @@ class DashboardView extends StatelessWidget {
         return Stack(
           children: [
             CustomScrollView(
+              physics: BouncingScrollPhysics(),
               slivers: [
                 SliverAppBar(
                   leading: AppLeadingView(),
@@ -85,22 +86,9 @@ class DashboardView extends StatelessWidget {
               ),
             Align(
               alignment: Alignment.bottomRight,
-              child: InkWell(
+              child: CustomFloatingButton(
                 onTap: () => Routers.goToAddStoryPage(context),
-                child: Container(
-                  width: 56.0,
-                  height: 56.0,
-                  margin: EdgeInsets.only(
-                    bottom: MediaQuery.of(context).viewInsets.bottom + 24.0,
-                    right: 24.0,
-                  ),
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: AIColors.blue,
-                    borderRadius: BorderRadius.circular(28.0),
-                  ),
-                  child: AIImage(AIImages.icAddLogo, width: 22.0, height: 22.0),
-                ),
+                src: AIImages.icAddLogo,
               ),
             ),
           ],

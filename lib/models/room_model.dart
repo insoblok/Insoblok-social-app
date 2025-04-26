@@ -30,7 +30,7 @@ extension RoomModelExt on RoomModel {
     try {
       if (updateDate != null) {
         var date = kFullDateTimeFormatter.parse(updateDate!);
-        return kDateMDFormatter.format(date);
+        return kDateMDYFormatter.format(date);
       }
     } catch (e) {
       logger.e(e);
