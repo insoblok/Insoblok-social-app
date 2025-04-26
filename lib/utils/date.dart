@@ -7,3 +7,4 @@ var kDateMDFormatter = DateFormat('MM-dd');
 var kDateHMFormatter = DateFormat('HH:mm');
 
 var kDateMDYFormatter = DateFormat('MM/dd/yy');
+var kDateHMMDYFormatter = DateFormat('HH:mm • MM/dd/yy');

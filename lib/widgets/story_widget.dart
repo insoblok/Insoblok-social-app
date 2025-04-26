@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:insoblok/pages/pages.dart';
 
 import 'package:stacked/stacked.dart';
 
@@ -37,7 +38,7 @@ class StoryListCell extends StatelessWidget {
                 Row(
                   children: [
                     Container(
-                      width: 55.0,
+                      width: kStoryDetailAvatarSize,
                       alignment: Alignment.centerRight,
                       child: AIImage(
                         AIImages.icFavoriteFill,
@@ -65,8 +66,8 @@ class StoryListCell extends StatelessWidget {
                           borderRadius: BorderRadius.circular(30.0),
                           child: AIImage(
                             viewModel.owner?.avatar,
-                            width: 55.0,
-                            height: 55.0,
+                            width: kStoryDetailAvatarSize,
+                            height: kStoryDetailAvatarSize,
                           ),
                         ),
                       ],
@@ -88,7 +89,7 @@ class StoryListCell extends StatelessWidget {
                                 ),
                                 TextSpan(
                                   text:
-                                      ' @${viewModel.owner?.fullName.replaceAll(' ', '')} • ${story.shownDate}',
+                                      ' @${viewModel.owner?.nickId} • ${story.shownDate}',
                                   style: Theme.of(context).textTheme.labelLarge,
                                 ),
                               ],
@@ -202,6 +203,77 @@ class StoryListCell extends StatelessWidget {
               ],
             ),
           ),
+        );
+      },
+    );
+  }
+}
+
+class StoryDetailCommentCell extends StatelessWidget {
+  final StoryCommentModel comment;
+  final bool isLast;
+
+  const StoryDetailCommentCell({
+    super.key,
+    required this.comment,
+    this.isLast = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<UserModel?>(
+      future: FirebaseHelper.getUser(comment.uid!),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Container();
+        }
+        var user = snapshot.data;
+        return Stack(
+          children: [
+            Container(
+              margin: const EdgeInsets.only(left: kStoryDetailAvatarSize / 2.0),
+              padding: const EdgeInsets.only(
+                left: kStoryDetailAvatarSize / 2.0 + 8.0,
+              ),
+              width: double.infinity,
+              decoration: BoxDecoration(
+                border: Border(
+                  left: BorderSide(width: 0.33, color: AIColors.speraterColor),
+                ),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text.rich(
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    TextSpan(
+                      children: [
+                        TextSpan(
+                          text: user?.fullName ?? '---',
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
+                        TextSpan(
+                          text: ' @${user?.nickId}',
+                          style: Theme.of(context).textTheme.labelLarge,
+                        ),
+                      ],
+                    ),
+                  ),
+                  AIHelpers.htmlRender(comment.content),
+                  const SizedBox(height: 8.0),
+                ],
+              ),
+            ),
+            ClipRRect(
+              borderRadius: BorderRadius.circular(kStoryDetailAvatarSize / 2.0),
+              child: AIImage(
+                user?.avatar,
+                width: kStoryDetailAvatarSize,
+                height: kStoryDetailAvatarSize,
+              ),
+            ),
+          ],
         );
       },
     );

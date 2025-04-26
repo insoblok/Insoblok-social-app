@@ -72,8 +72,8 @@ class InSoBlokPage extends StatelessWidget {
                                     borderRadius: BorderRadius.circular(28),
                                     child: AIImage(
                                       viewModel.user?.avatar,
-                                      width: 55.0,
-                                      height: 55.0,
+                                      width: kStoryDetailAvatarSize,
+                                      height: kStoryDetailAvatarSize,
                                     ),
                                   ),
                                 ),

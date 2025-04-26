@@ -33,6 +33,11 @@ extension StoryModelExt on StoryModel {
     var date = kFullDateTimeFormatter.parse(regdate!, true);
     return kDateMDYFormatter.format(date.toLocal());
   }
+
+  String get shownHMDate {
+    var date = kFullDateTimeFormatter.parse(regdate!, true);
+    return kDateHMMDYFormatter.format(date.toLocal());
+  }
 }
 
 extension StoryCommentModelExt on StoryCommentModel {

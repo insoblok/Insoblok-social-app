@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:insoblok/pages/pages.dart';
 
 import 'package:stacked/stacked.dart';
 
@@ -41,7 +42,10 @@ class RoomItemView extends StatelessWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                viewModel.chatUser!.avatarStatusView(width: 55.0, height: 55.0),
+                viewModel.chatUser!.avatarStatusView(
+                  width: kStoryDetailAvatarSize,
+                  height: kStoryDetailAvatarSize,
+                ),
                 const SizedBox(width: 12.0),
                 Expanded(
                   child: Column(
@@ -58,8 +62,7 @@ class RoomItemView extends StatelessWidget {
                               style: Theme.of(context).textTheme.bodyMedium,
                             ),
                             TextSpan(
-                              text:
-                                  ' @${viewModel.chatUser?.fullName.replaceAll(' ', '')}',
+                              text: ' @${viewModel.chatUser?.nickId}',
                               style: Theme.of(context).textTheme.labelLarge,
                             ),
                           ],

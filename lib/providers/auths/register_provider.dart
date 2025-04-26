@@ -46,7 +46,11 @@ class RegisterProvider extends InSoBlokViewModel {
     }
     await runBusyFuture(() async {
       try {
-        await AuthHelper.setUser(_user);
+        await AuthHelper.setUser(
+          _user.copyWith(
+            nickId: _user.fullName.replaceAll(' ', '').toLowerCase(),
+          ),
+        );
       } catch (e) {
         setError(e);
       } finally {

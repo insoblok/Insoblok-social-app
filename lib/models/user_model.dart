@@ -15,6 +15,7 @@ abstract class UserModel with _$UserModel {
     String? avatar,
     String? firstName,
     String? lastName,
+    String? nickId,
     double? lat,
     double? lon,
     String? ipAddress,

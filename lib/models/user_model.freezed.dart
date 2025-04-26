@@ -21,6 +21,7 @@ mixin _$UserModel {
   String? get avatar;
   String? get firstName;
   String? get lastName;
+  String? get nickId;
   double? get lat;
   double? get lon;
   String? get ipAddress;
@@ -54,6 +55,7 @@ mixin _$UserModel {
                 other.firstName == firstName) &&
             (identical(other.lastName, lastName) ||
                 other.lastName == lastName) &&
+            (identical(other.nickId, nickId) || other.nickId == nickId) &&
             (identical(other.lat, lat) || other.lat == lat) &&
             (identical(other.lon, lon) || other.lon == lon) &&
             (identical(other.ipAddress, ipAddress) ||
@@ -76,6 +78,7 @@ mixin _$UserModel {
       avatar,
       firstName,
       lastName,
+      nickId,
       lat,
       lon,
       ipAddress,
@@ -87,7 +90,7 @@ mixin _$UserModel {
 
   @override
   String toString() {
-    return 'UserModel(id: $id, uid: $uid, walletAddress: $walletAddress, avatar: $avatar, firstName: $firstName, lastName: $lastName, lat: $lat, lon: $lon, ipAddress: $ipAddress, regdate: $regdate, updateDate: $updateDate, status: $status, likes: $likes, follows: $follows)';
+    return 'UserModel(id: $id, uid: $uid, walletAddress: $walletAddress, avatar: $avatar, firstName: $firstName, lastName: $lastName, nickId: $nickId, lat: $lat, lon: $lon, ipAddress: $ipAddress, regdate: $regdate, updateDate: $updateDate, status: $status, likes: $likes, follows: $follows)';
   }
 }
 
@@ -103,6 +106,7 @@ abstract mixin class $UserModelCopyWith<$Res> {
       String? avatar,
       String? firstName,
       String? lastName,
+      String? nickId,
       double? lat,
       double? lon,
       String? ipAddress,
@@ -131,6 +135,7 @@ class _$UserModelCopyWithImpl<$Res> implements $UserModelCopyWith<$Res> {
     Object? avatar = freezed,
     Object? firstName = freezed,
     Object? lastName = freezed,
+    Object? nickId = freezed,
     Object? lat = freezed,
     Object? lon = freezed,
     Object? ipAddress = freezed,
@@ -164,6 +169,10 @@ class _$UserModelCopyWithImpl<$Res> implements $UserModelCopyWith<$Res> {
       lastName: freezed == lastName
           ? _self.lastName
           : lastName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      nickId: freezed == nickId
+          ? _self.nickId
+          : nickId // ignore: cast_nullable_to_non_nullable
               as String?,
       lat: freezed == lat
           ? _self.lat
@@ -212,6 +221,7 @@ class _UserModel implements UserModel {
       this.avatar,
       this.firstName,
       this.lastName,
+      this.nickId,
       this.lat,
       this.lon,
       this.ipAddress,
@@ -237,6 +247,8 @@ class _UserModel implements UserModel {
   final String? firstName;
   @override
   final String? lastName;
+  @override
+  final String? nickId;
   @override
   final double? lat;
   @override
@@ -298,6 +310,7 @@ class _UserModel implements UserModel {
                 other.firstName == firstName) &&
             (identical(other.lastName, lastName) ||
                 other.lastName == lastName) &&
+            (identical(other.nickId, nickId) || other.nickId == nickId) &&
             (identical(other.lat, lat) || other.lat == lat) &&
             (identical(other.lon, lon) || other.lon == lon) &&
             (identical(other.ipAddress, ipAddress) ||
@@ -320,6 +333,7 @@ class _UserModel implements UserModel {
       avatar,
       firstName,
       lastName,
+      nickId,
       lat,
       lon,
       ipAddress,
@@ -331,7 +345,7 @@ class _UserModel implements UserModel {
 
   @override
   String toString() {
-    return 'UserModel(id: $id, uid: $uid, walletAddress: $walletAddress, avatar: $avatar, firstName: $firstName, lastName: $lastName, lat: $lat, lon: $lon, ipAddress: $ipAddress, regdate: $regdate, updateDate: $updateDate, status: $status, likes: $likes, follows: $follows)';
+    return 'UserModel(id: $id, uid: $uid, walletAddress: $walletAddress, avatar: $avatar, firstName: $firstName, lastName: $lastName, nickId: $nickId, lat: $lat, lon: $lon, ipAddress: $ipAddress, regdate: $regdate, updateDate: $updateDate, status: $status, likes: $likes, follows: $follows)';
   }
 }
 
@@ -350,6 +364,7 @@ abstract mixin class _$UserModelCopyWith<$Res>
       String? avatar,
       String? firstName,
       String? lastName,
+      String? nickId,
       double? lat,
       double? lon,
       String? ipAddress,
@@ -378,6 +393,7 @@ class __$UserModelCopyWithImpl<$Res> implements _$UserModelCopyWith<$Res> {
     Object? avatar = freezed,
     Object? firstName = freezed,
     Object? lastName = freezed,
+    Object? nickId = freezed,
     Object? lat = freezed,
     Object? lon = freezed,
     Object? ipAddress = freezed,
@@ -411,6 +427,10 @@ class __$UserModelCopyWithImpl<$Res> implements _$UserModelCopyWith<$Res> {
       lastName: freezed == lastName
           ? _self.lastName
           : lastName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      nickId: freezed == nickId
+          ? _self.nickId
+          : nickId // ignore: cast_nullable_to_non_nullable
               as String?,
       lat: freezed == lat
           ? _self.lat

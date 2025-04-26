@@ -164,6 +164,9 @@ class AppSettingService with ListenableServiceMixin {
       ),
     ),
     iconTheme: IconThemeData(color: AIColors.darkIconColor),
+    floatingActionButtonTheme: FloatingActionButtonThemeData(
+      backgroundColor: AIColors.blue,
+    ),
   );
 }
 

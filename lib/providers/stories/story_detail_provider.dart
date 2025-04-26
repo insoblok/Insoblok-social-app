@@ -182,6 +182,8 @@ class StoryDetailProvider extends InSoBlokViewModel {
           await storyService.addComment(
             story: story.copyWith(comments: comments),
           );
+
+          Fluttertoast.showToast(msg: 'Successfully add your comment!');
         }
       } catch (e) {
         setError(e);
@@ -193,8 +195,6 @@ class StoryDetailProvider extends InSoBlokViewModel {
 
     if (hasError) {
       Fluttertoast.showToast(msg: modelError.toString());
-    } else {
-      Fluttertoast.showToast(msg: 'Successfully add your comment!');
     }
   }
 
