@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:stacked/stacked.dart';
 
-import 'package:insoblok/models/models.dart';
+import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';

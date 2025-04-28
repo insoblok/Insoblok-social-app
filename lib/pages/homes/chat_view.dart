@@ -24,12 +24,11 @@ class ChatView extends StatelessWidget {
             CustomScrollView(
               physics: BouncingScrollPhysics(),
               slivers: [
-                SliverAppBar(
+                AISliverAppbar(
+                  context,
                   leading: AppLeadingView(),
                   pinned: true,
                   floating: false,
-                  centerTitle: true,
-                  elevation: 1.0,
                   title: Text('Messages'),
                   actions: [
                     IconButton(
@@ -41,37 +40,28 @@ class ChatView extends StatelessWidget {
                       ),
                     ),
                   ],
-                  expandedHeight: 45.0 + 45.0 + 10.0,
-                  flexibleSpace: FlexibleSpaceBar(
-                    collapseMode: CollapseMode.none,
-                    background: Container(
-                      margin: EdgeInsets.only(top: 45 + 32.0),
-                      height: 45.0,
+                  extendWidget: Center(
+                    child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Center(
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                          height: 32.0,
-                          decoration: BoxDecoration(
-                            color: AIColors.darkGreyBackground,
-                            borderRadius: BorderRadius.circular(16.0),
+                      height: 32.0,
+                      decoration: BoxDecoration(
+                        color: AIColors.darkGreyBackground,
+                        borderRadius: BorderRadius.circular(16.0),
+                      ),
+                      alignment: Alignment.center,
+                      child: Row(
+                        children: [
+                          AIImage(
+                            AIImages.icBottomSearch,
+                            width: 14.0,
+                            height: 14.0,
                           ),
-                          alignment: Alignment.center,
-                          child: Row(
-                            children: [
-                              AIImage(
-                                AIImages.icBottomSearch,
-                                width: 14.0,
-                                height: 14.0,
-                              ),
-                              const SizedBox(width: 6.0),
-                              Text(
-                                'Search for people and groups',
-                                style: Theme.of(context).textTheme.labelLarge,
-                              ),
-                            ],
+                          const SizedBox(width: 6.0),
+                          Text(
+                            'Search for people and groups',
+                            style: Theme.of(context).textTheme.labelLarge,
                           ),
-                        ),
+                        ],
                       ),
                     ),
                   ),

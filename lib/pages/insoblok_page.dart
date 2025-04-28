@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 
 import 'package:insoblok/extensions/extensions.dart';
-import 'package:insoblok/models/models.dart';
 import 'package:insoblok/pages/pages.dart';
 import 'package:insoblok/providers/providers.dart';
+import 'package:insoblok/routers/router.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
@@ -186,7 +186,13 @@ class InSoBlokPage extends StatelessWidget {
             body: pages[viewModel.pageIndex],
             bottomNavigationBar: BottomNavigationBar(
               currentIndex: viewModel.pageIndex,
-              onTap: (value) => viewModel.pageIndex = value,
+              onTap: (value) {
+                if (value == 4) {
+                  Routers.goToAccountPage(context);
+                } else {
+                  viewModel.pageIndex = value;
+                }
+              },
               items: [
                 for (var i = 0; i < selectedIcon.length; i++) ...{
                   BottomNavigationBarItem(

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
@@ -17,11 +18,14 @@ class MessageService {
         .collection('messages')
         .orderBy('timestamp', descending: false)
         .snapshots()
-        .map((snapshot) => snapshot.docs.map((doc) {
-              var data = doc.data();
-              data['id'] = doc.id;
-              return MessageModel.fromJson(data);
-            }).toList());
+        .map(
+          (snapshot) =>
+              snapshot.docs.map((doc) {
+                var data = doc.data();
+                data['id'] = doc.id;
+                return MessageModel.fromJson(data);
+              }).toList(),
+        );
   }
 
   // Send a text message
@@ -34,12 +38,12 @@ class MessageService {
         .doc(chatRoomId)
         .collection('messages')
         .add({
-      'content': text,
-      'sender_id': AuthHelper.user?.uid,
-      'sender_name': AuthHelper.user?.fullName ?? 'Anonymous',
-      'timestamp': kFullDateTimeFormatter.format(DateTime.now().toUtc()),
-      'type': 'text',
-    });
+          'content': text,
+          'sender_id': AuthHelper.user?.uid,
+          'sender_name': AuthHelper.user?.fullName ?? 'Anonymous',
+          'timestamp': kFullDateTimeFormatter.format(DateTime.now().toUtc()),
+          'type': 'text',
+        });
   }
 
   // Send an image message
@@ -52,13 +56,13 @@ class MessageService {
         .doc(chatRoomId)
         .collection('messages')
         .add({
-      'content': '[Image]',
-      'sender_id': AuthHelper.user?.uid,
-      'sender_name': AuthHelper.user?.fullName ?? 'Anonymous',
-      'timestamp': kFullDateTimeFormatter.format(DateTime.now().toUtc()),
-      'url': imageUrl,
-      'type': 'image',
-    });
+          'content': '[Image]',
+          'sender_id': AuthHelper.user?.uid,
+          'sender_name': AuthHelper.user?.fullName ?? 'Anonymous',
+          'timestamp': kFullDateTimeFormatter.format(DateTime.now().toUtc()),
+          'url': imageUrl,
+          'type': 'image',
+        });
   }
 
   // Send an video message
@@ -71,13 +75,13 @@ class MessageService {
         .doc(chatRoomId)
         .collection('messages')
         .add({
-      'content': '[Video]',
-      'sender_id': AuthHelper.user?.uid,
-      'sender_name': AuthHelper.user?.fullName ?? 'Anonymous',
-      'timestamp': kFullDateTimeFormatter.format(DateTime.now().toUtc()),
-      'url': videoUrl,
-      'type': 'video',
-    });
+          'content': '[Video]',
+          'sender_id': AuthHelper.user?.uid,
+          'sender_name': AuthHelper.user?.fullName ?? 'Anonymous',
+          'timestamp': kFullDateTimeFormatter.format(DateTime.now().toUtc()),
+          'url': videoUrl,
+          'type': 'video',
+        });
   }
 
   // Send an audio message
@@ -90,13 +94,13 @@ class MessageService {
         .doc(chatRoomId)
         .collection('messages')
         .add({
-      'content': '[Audio]',
-      'sender_id': AuthHelper.user?.uid,
-      'sender_name': AuthHelper.user?.fullName ?? 'Anonymous',
-      'timestamp': kFullDateTimeFormatter.format(DateTime.now().toUtc()),
-      'url': audioUrl,
-      'type': 'audio',
-    });
+          'content': '[Audio]',
+          'sender_id': AuthHelper.user?.uid,
+          'sender_name': AuthHelper.user?.fullName ?? 'Anonymous',
+          'timestamp': kFullDateTimeFormatter.format(DateTime.now().toUtc()),
+          'url': audioUrl,
+          'type': 'audio',
+        });
   }
 
   // Send an audio message
@@ -109,12 +113,12 @@ class MessageService {
         .doc(chatRoomId)
         .collection('messages')
         .add({
-      'content': jsonEncode(coin.toJson()),
-      'sender_id': AuthHelper.user?.uid,
-      'sender_name': AuthHelper.user?.fullName ?? 'Anonymous',
-      'timestamp': kFullDateTimeFormatter.format(DateTime.now().toUtc()),
-      'type': 'paid',
-    });
+          'content': jsonEncode(coin.toJson()),
+          'sender_id': AuthHelper.user?.uid,
+          'sender_name': AuthHelper.user?.fullName ?? 'Anonymous',
+          'timestamp': kFullDateTimeFormatter.format(DateTime.now().toUtc()),
+          'type': 'paid',
+        });
   }
 
   Future<void> setTyping(String chatRoomId, bool isTyping) async {
@@ -132,13 +136,14 @@ class MessageService {
   }
 
   Future<void> markMessagesAsRead(String chatRoomId) async {
-    final messages = await _firestore
-        .collection('chatRooms')
-        .doc(chatRoomId)
-        .collection('messages')
-        .where('sender_id', isNotEqualTo: AuthHelper.user?.uid)
-        .where('is_read', isEqualTo: false)
-        .get();
+    final messages =
+        await _firestore
+            .collection('chatRooms')
+            .doc(chatRoomId)
+            .collection('messages')
+            .where('sender_id', isNotEqualTo: AuthHelper.user?.uid)
+            .where('is_read', isEqualTo: false)
+            .get();
 
     final batch = _firestore.batch();
     for (final doc in messages.docs) {

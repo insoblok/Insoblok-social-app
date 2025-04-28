@@ -21,6 +21,9 @@ mixin _$UserModel {
   String? get avatar;
   String? get firstName;
   String? get lastName;
+  String? get website;
+  String? get desc;
+  String? get discovery;
   String? get nickId;
   double? get lat;
   double? get lon;
@@ -55,6 +58,10 @@ mixin _$UserModel {
                 other.firstName == firstName) &&
             (identical(other.lastName, lastName) ||
                 other.lastName == lastName) &&
+            (identical(other.website, website) || other.website == website) &&
+            (identical(other.desc, desc) || other.desc == desc) &&
+            (identical(other.discovery, discovery) ||
+                other.discovery == discovery) &&
             (identical(other.nickId, nickId) || other.nickId == nickId) &&
             (identical(other.lat, lat) || other.lat == lat) &&
             (identical(other.lon, lon) || other.lon == lon) &&
@@ -78,6 +85,9 @@ mixin _$UserModel {
       avatar,
       firstName,
       lastName,
+      website,
+      desc,
+      discovery,
       nickId,
       lat,
       lon,
@@ -90,7 +100,7 @@ mixin _$UserModel {
 
   @override
   String toString() {
-    return 'UserModel(id: $id, uid: $uid, walletAddress: $walletAddress, avatar: $avatar, firstName: $firstName, lastName: $lastName, nickId: $nickId, lat: $lat, lon: $lon, ipAddress: $ipAddress, regdate: $regdate, updateDate: $updateDate, status: $status, likes: $likes, follows: $follows)';
+    return 'UserModel(id: $id, uid: $uid, walletAddress: $walletAddress, avatar: $avatar, firstName: $firstName, lastName: $lastName, website: $website, desc: $desc, discovery: $discovery, nickId: $nickId, lat: $lat, lon: $lon, ipAddress: $ipAddress, regdate: $regdate, updateDate: $updateDate, status: $status, likes: $likes, follows: $follows)';
   }
 }
 
@@ -106,6 +116,9 @@ abstract mixin class $UserModelCopyWith<$Res> {
       String? avatar,
       String? firstName,
       String? lastName,
+      String? website,
+      String? desc,
+      String? discovery,
       String? nickId,
       double? lat,
       double? lon,
@@ -135,6 +148,9 @@ class _$UserModelCopyWithImpl<$Res> implements $UserModelCopyWith<$Res> {
     Object? avatar = freezed,
     Object? firstName = freezed,
     Object? lastName = freezed,
+    Object? website = freezed,
+    Object? desc = freezed,
+    Object? discovery = freezed,
     Object? nickId = freezed,
     Object? lat = freezed,
     Object? lon = freezed,
@@ -169,6 +185,18 @@ class _$UserModelCopyWithImpl<$Res> implements $UserModelCopyWith<$Res> {
       lastName: freezed == lastName
           ? _self.lastName
           : lastName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      website: freezed == website
+          ? _self.website
+          : website // ignore: cast_nullable_to_non_nullable
+              as String?,
+      desc: freezed == desc
+          ? _self.desc
+          : desc // ignore: cast_nullable_to_non_nullable
+              as String?,
+      discovery: freezed == discovery
+          ? _self.discovery
+          : discovery // ignore: cast_nullable_to_non_nullable
               as String?,
       nickId: freezed == nickId
           ? _self.nickId
@@ -221,6 +249,9 @@ class _UserModel implements UserModel {
       this.avatar,
       this.firstName,
       this.lastName,
+      this.website,
+      this.desc,
+      this.discovery,
       this.nickId,
       this.lat,
       this.lon,
@@ -247,6 +278,12 @@ class _UserModel implements UserModel {
   final String? firstName;
   @override
   final String? lastName;
+  @override
+  final String? website;
+  @override
+  final String? desc;
+  @override
+  final String? discovery;
   @override
   final String? nickId;
   @override
@@ -310,6 +347,10 @@ class _UserModel implements UserModel {
                 other.firstName == firstName) &&
             (identical(other.lastName, lastName) ||
                 other.lastName == lastName) &&
+            (identical(other.website, website) || other.website == website) &&
+            (identical(other.desc, desc) || other.desc == desc) &&
+            (identical(other.discovery, discovery) ||
+                other.discovery == discovery) &&
             (identical(other.nickId, nickId) || other.nickId == nickId) &&
             (identical(other.lat, lat) || other.lat == lat) &&
             (identical(other.lon, lon) || other.lon == lon) &&
@@ -333,6 +374,9 @@ class _UserModel implements UserModel {
       avatar,
       firstName,
       lastName,
+      website,
+      desc,
+      discovery,
       nickId,
       lat,
       lon,
@@ -345,7 +389,7 @@ class _UserModel implements UserModel {
 
   @override
   String toString() {
-    return 'UserModel(id: $id, uid: $uid, walletAddress: $walletAddress, avatar: $avatar, firstName: $firstName, lastName: $lastName, nickId: $nickId, lat: $lat, lon: $lon, ipAddress: $ipAddress, regdate: $regdate, updateDate: $updateDate, status: $status, likes: $likes, follows: $follows)';
+    return 'UserModel(id: $id, uid: $uid, walletAddress: $walletAddress, avatar: $avatar, firstName: $firstName, lastName: $lastName, website: $website, desc: $desc, discovery: $discovery, nickId: $nickId, lat: $lat, lon: $lon, ipAddress: $ipAddress, regdate: $regdate, updateDate: $updateDate, status: $status, likes: $likes, follows: $follows)';
   }
 }
 
@@ -364,6 +408,9 @@ abstract mixin class _$UserModelCopyWith<$Res>
       String? avatar,
       String? firstName,
       String? lastName,
+      String? website,
+      String? desc,
+      String? discovery,
       String? nickId,
       double? lat,
       double? lon,
@@ -393,6 +440,9 @@ class __$UserModelCopyWithImpl<$Res> implements _$UserModelCopyWith<$Res> {
     Object? avatar = freezed,
     Object? firstName = freezed,
     Object? lastName = freezed,
+    Object? website = freezed,
+    Object? desc = freezed,
+    Object? discovery = freezed,
     Object? nickId = freezed,
     Object? lat = freezed,
     Object? lon = freezed,
@@ -427,6 +477,18 @@ class __$UserModelCopyWithImpl<$Res> implements _$UserModelCopyWith<$Res> {
       lastName: freezed == lastName
           ? _self.lastName
           : lastName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      website: freezed == website
+          ? _self.website
+          : website // ignore: cast_nullable_to_non_nullable
+              as String?,
+      desc: freezed == desc
+          ? _self.desc
+          : desc // ignore: cast_nullable_to_non_nullable
+              as String?,
+      discovery: freezed == discovery
+          ? _self.discovery
+          : discovery // ignore: cast_nullable_to_non_nullable
               as String?,
       nickId: freezed == nickId
           ? _self.nickId

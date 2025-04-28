@@ -42,4 +42,7 @@ class AIImages {
   static String icMenuUnion = 'assets/icons/ic_union.svg';
   static String icMenuQrCode = 'assets/icons/ic_qrcode.svg';
   static String icAddMessage = 'assets/icons/ic_message_new.svg';
+  static String icLink = 'assets/icons/ic_link.svg';
+  static String icCalendar = 'assets/icons/ic_calendar.svg';
+  static String icLocation = 'assets/icons/ic_location.svg';
 }

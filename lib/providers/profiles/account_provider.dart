@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:insoblok/models/models.dart';
+import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 
 class AccountProvider extends InSoBlokViewModel {
@@ -18,8 +19,15 @@ class AccountProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  int _pageIndex = 0;
+  int get pageIndex => _pageIndex;
+  set pageIndex(int i) {
+    _pageIndex = i;
+    notifyListeners();
+  }
+
   Future<void> init(BuildContext context, {UserModel? model}) async {
     this.context = context;
-    accountUser = model;
+    accountUser = model ?? AuthHelper.user;
   }
 }
