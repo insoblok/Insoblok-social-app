@@ -8,7 +8,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 
 const kScrappingUrl = 'https://genimg.ai/';
 
-class AccountProvider extends InSoBlokViewModel {
+class AvatarProvider extends InSoBlokViewModel {
   var stateListener = ValueNotifier(AccountProviderState.init);
 
   late BuildContext _context;
@@ -28,21 +28,25 @@ class AccountProvider extends InSoBlokViewModel {
     webViewController?.scrollTo(x: 0, y: 800);
 
     // Inject CSS to disable scrolling
-    await webViewController?.injectCSSCode(source: """
+    await webViewController?.injectCSSCode(
+      source: """
       html, body {
         overflow: hidden !important;
         overscroll-behavior: none !important;
       }
-    """);
+    """,
+    );
 
     // Additional JavaScript to prevent touch events
-    await webViewController?.evaluateJavascript(source: """
+    await webViewController?.evaluateJavascript(
+      source: """
       document.addEventListener('touchmove', function(e) {
         e.preventDefault();
       }, { passive: false });
       
       document.documentElement.style.overscrollBehavior = 'none';
-    """);
+    """,
+    );
 
     stateListener.value = AccountProviderState.loaded;
     getOrgImageData();
@@ -143,10 +147,4 @@ return null;
   }
 }
 
-enum AccountProviderState {
-  init,
-  loaded,
-  ready,
-  creating,
-  done,
-}
+enum AccountProviderState { init, loaded, ready, creating, done }

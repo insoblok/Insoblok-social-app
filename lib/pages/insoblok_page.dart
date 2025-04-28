@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:insoblok/extensions/extensions.dart';
 
 import 'package:stacked/stacked.dart';
 
@@ -84,7 +85,7 @@ class InSoBlokPage extends StatelessWidget {
                                       Theme.of(context).textTheme.displayLarge,
                                 ),
                                 Text(
-                                  '@${viewModel.user?.fullName}',
+                                  '@${viewModel.user?.nickId}',
                                   style: Theme.of(context).textTheme.labelLarge,
                                 ),
                               ],
@@ -100,15 +101,18 @@ class InSoBlokPage extends StatelessWidget {
                           TextSpan(
                             children: [
                               TextSpan(
-                                text: '216',
+                                text:
+                                    (AuthHelper.user?.likes?.length ?? 0)
+                                        .socialValue,
                                 style: Theme.of(context).textTheme.bodySmall,
                               ),
                               TextSpan(
-                                text: ' Following  ',
+                                text: ' Likes  ',
                                 style: Theme.of(context).textTheme.labelLarge,
                               ),
                               TextSpan(
-                                text: '  117',
+                                text:
+                                    '  ${(AuthHelper.user?.follows?.length ?? 0).socialValue}',
                                 style: Theme.of(context).textTheme.bodySmall,
                               ),
                               TextSpan(
