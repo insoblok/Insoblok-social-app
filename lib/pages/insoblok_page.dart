@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:insoblok/extensions/extensions.dart';
 
 import 'package:stacked/stacked.dart';
 
+import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/pages/pages.dart';
 import 'package:insoblok/providers/providers.dart';
@@ -15,20 +15,27 @@ class InSoBlokPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var pages = [DashboardView(), SearchView(), NotificationView(), ChatView()];
-    var titles = ['Home', 'Trends', 'Notifications', 'Messages'];
+    var titles = ['Home', 'LookBook', 'Market', 'Messages', 'User'];
+    var pages = [
+      DashboardView(),
+      LookbookView(),
+      MarketView(),
+      ChatView(),
+      ProfileView(),
+    ];
     var selectedIcon = [
       AIImages.icBottomHomeFill,
-      AIImages.icBottomSearchFill,
-      AIImages.icBottomNotiFill,
+      AIImages.icBottomLookFill,
+      AIImages.icBottomMarketFill,
       AIImages.icBottomMessageFill,
+      AIImages.icBottomUserFill,
     ];
-
     var unselectedIcon = [
       AIImages.icBottomHome,
-      AIImages.icBottomSearch,
-      AIImages.icBottomNoti,
+      AIImages.icBottomLook,
+      AIImages.icBottomMarket,
       AIImages.icBottomMessage,
+      AIImages.icBottomUser,
     ];
 
     var menuTitles = ['Profile', 'Lists', 'Topics', 'Bookmarks', 'Moments'];
@@ -181,7 +188,7 @@ class InSoBlokPage extends StatelessWidget {
               currentIndex: viewModel.pageIndex,
               onTap: (value) => viewModel.pageIndex = value,
               items: [
-                for (var i = 0; i < 4; i++) ...{
+                for (var i = 0; i < selectedIcon.length; i++) ...{
                   BottomNavigationBarItem(
                     icon: AIImage(
                       viewModel.pageIndex == i

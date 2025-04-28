@@ -8,13 +8,13 @@ import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
 
-class DashboardView extends StatelessWidget {
-  const DashboardView({super.key});
+class LookbookView extends StatelessWidget {
+  const LookbookView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return ViewModelBuilder<DashboardProvider>.reactive(
-      viewModelBuilder: () => DashboardProvider(),
+    return ViewModelBuilder<LookbookProvider>.reactive(
+      viewModelBuilder: () => LookbookProvider(),
       onViewModelReady: (viewModel) => viewModel.init(context),
       builder: (context, viewModel, _) {
         return Stack(
@@ -24,7 +24,7 @@ class DashboardView extends StatelessWidget {
               slivers: [
                 SliverAppBar(
                   leading: AppLeadingView(),
-                  title: Text('Home'),
+                  title: Text('LookBook'),
                   centerTitle: true,
                   pinned: true,
                   actions: [

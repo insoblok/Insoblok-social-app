@@ -11,12 +11,18 @@ class AIImages {
 
   static String icBottomHomeFill = 'assets/icons/ic_home_fill.svg';
   static String icBottomHome = 'assets/icons/ic_home.svg';
+  static String icBottomLookFill = 'assets/icons/ic_effect_2_fill.svg';
+  static String icBottomLook = 'assets/icons/ic_effect_2.svg';
   static String icBottomSearchFill = 'assets/icons/ic_search_fill.svg';
   static String icBottomSearch = 'assets/icons/ic_search.svg';
+  static String icBottomMarketFill = 'assets/icons/ic_chart_hoz_fill.svg';
+  static String icBottomMarket = 'assets/icons/ic_chart_hoz.svg';
   static String icBottomNotiFill = 'assets/icons/ic_notifications_fill.svg';
   static String icBottomNoti = 'assets/icons/ic_notifications.svg';
   static String icBottomMessageFill = 'assets/icons/ic_message_fill.svg';
   static String icBottomMessage = 'assets/icons/ic_message.svg';
+  static String icBottomUserFill = 'assets/icons/ic_user_fill.svg';
+  static String icBottomUser = 'assets/icons/ic_user.svg';
 
   static String icTopEffect = 'assets/icons/ic_effect_2.svg';
   static String icFavoriteFill = 'assets/icons/ic_favourite_fill.svg';

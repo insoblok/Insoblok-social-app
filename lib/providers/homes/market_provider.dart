@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:insoblok/utils/utils.dart';
 
-class ProfileProvider extends InSoBlokViewModel {
+class MarketProvider extends InSoBlokViewModel {
   late BuildContext _context;
   BuildContext get context => _context;
   set context(BuildContext context) {
