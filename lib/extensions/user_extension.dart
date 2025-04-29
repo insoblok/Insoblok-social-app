@@ -27,10 +27,20 @@ extension UserModelExt on UserModel {
     );
   }
 
+  String get sinceStr {
+    try {
+      var date = kFullDateTimeFormatter.parse(regdate!, true);
+      return kDateMMMMYYFormatter.format(date);
+    } catch (e) {
+      logger.e(e);
+    }
+    return '---';
+  }
+
   List<Map<String, String>> get linkInfo => [
     if (website != null)
       {'type': 'website', 'title': website!, 'icon': AIImages.icLink},
-    {'type': 'since', 'title': regdate!, 'icon': AIImages.icCalendar},
+    {'type': 'since', 'title': 'Joined $sinceStr', 'icon': AIImages.icCalendar},
     {'type': 'location', 'title': 'United State', 'icon': AIImages.icLocation},
   ];
 }

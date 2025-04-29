@@ -78,7 +78,7 @@ class RoomItemView extends StatelessWidget {
                 ),
                 const SizedBox(width: 8.0),
                 Text(
-                  '${room.recentDate}',
+                  '${room.updateDate?.timeago}',
                   style: Theme.of(context).textTheme.labelLarge,
                 ),
               ],

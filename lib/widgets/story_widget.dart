@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:insoblok/pages/pages.dart';
 
 import 'package:stacked/stacked.dart';
 
 import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
+import 'package:insoblok/pages/pages.dart';
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
@@ -62,8 +62,7 @@ class StoryListCell extends StatelessWidget {
                     Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(30.0),
+                        ClipOval(
                           child: AIImage(
                             viewModel.owner?.avatar,
                             width: kStoryDetailAvatarSize,
@@ -89,7 +88,7 @@ class StoryListCell extends StatelessWidget {
                                 ),
                                 TextSpan(
                                   text:
-                                      ' @${viewModel.owner?.nickId} • ${story.shownDate}',
+                                      ' @${viewModel.owner?.nickId} • ${story.timestamp?.timeago}',
                                   style: Theme.of(context).textTheme.labelLarge,
                                 ),
                               ],
@@ -244,29 +243,38 @@ class StoryDetailCommentCell extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text.rich(
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    TextSpan(
-                      children: [
-                        TextSpan(
-                          text: user?.fullName ?? '---',
-                          style: Theme.of(context).textTheme.bodyMedium,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: Text.rich(
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                          TextSpan(
+                            children: [
+                              TextSpan(
+                                text: user?.fullName ?? '---',
+                                style: Theme.of(context).textTheme.bodyMedium,
+                              ),
+                              TextSpan(
+                                text: ' @${user?.nickId}',
+                                style: Theme.of(context).textTheme.labelLarge,
+                              ),
+                            ],
+                          ),
                         ),
-                        TextSpan(
-                          text: ' @${user?.nickId}',
-                          style: Theme.of(context).textTheme.labelLarge,
-                        ),
-                      ],
-                    ),
+                      ),
+                      Text(
+                        comment.timestamp?.timeago ?? '---',
+                        style: Theme.of(context).textTheme.labelSmall,
+                      ),
+                    ],
                   ),
                   AIHelpers.htmlRender(comment.content),
                   const SizedBox(height: 8.0),
                 ],
               ),
             ),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(kStoryDetailAvatarSize / 2.0),
+            ClipOval(
               child: AIImage(
                 user?.avatar,
                 width: kStoryDetailAvatarSize,

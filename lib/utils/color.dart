@@ -25,7 +25,9 @@ class AIColors {
   static Color greyTextColor = Color(0xFF687684);
 
   static Color darkTextColor = Color(0xffffffff);
+  static Color lightTextColor = Color(0xFF141619);
   static Color darkIconColor = Color(0xffffffff);
+  static Color lightIconColor = Color(0xFF141619);
 
   static Color darkGreyBackground = Color.fromARGB(255, 40, 42, 44);
   static Color lightGreyBackground = Color(0xFFE7ECF0);

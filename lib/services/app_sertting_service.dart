@@ -23,19 +23,133 @@ class AppSettingService with ListenableServiceMixin {
 
   ThemeData get lightTheme => ThemeData(
     fontFamily: 'SFProText',
-    colorScheme: ColorScheme.fromSeed(seedColor: Colors.blueAccent),
-    scaffoldBackgroundColor: AIColors.darkScaffoldBackground,
+    colorScheme: ColorScheme.fromSeed(
+      seedColor: AIColors.blue,
+      primary: AIColors.white,
+      onPrimary: AIColors.black,
+      secondary: AIColors.black,
+      onSecondary: AIColors.white,
+      primaryContainer: AIColors.lightBackground,
+      onPrimaryContainer: AIColors.lightBackground,
+    ),
+    scaffoldBackgroundColor: AIColors.lightBackground,
     useMaterial3: true,
     appBarTheme: AppBarTheme(
-      backgroundColor: AIColors.darkBar,
-      iconTheme: IconThemeData(color: Colors.white),
+      backgroundColor: AIColors.lightBackground,
+      toolbarHeight: 45.0,
+      iconTheme: IconThemeData(color: AIColors.lightIconColor),
       titleTextStyle: TextStyle(
-        color: Colors.white,
-        fontSize: 20.0,
-        fontWeight: FontWeight.w500,
+        color: AIColors.lightTextColor,
+        fontSize: 17.0,
+        fontWeight: FontWeight.w800,
+        letterSpacing: -0.3,
       ),
     ),
-    textTheme: TextTheme(),
+    bottomNavigationBarTheme: BottomNavigationBarThemeData(
+      backgroundColor: AIColors.lightBackground,
+      selectedItemColor: AIColors.blue,
+      unselectedItemColor: AIColors.grey,
+      showSelectedLabels: false,
+      showUnselectedLabels: false,
+      type: BottomNavigationBarType.fixed,
+    ),
+    textTheme: TextTheme(
+      titleLarge: TextStyle(
+        color: AIColors.lightTextColor,
+        fontSize: 22.0,
+        fontWeight: FontWeight.w800,
+        letterSpacing: 0.15,
+      ),
+      titleMedium: TextStyle(
+        color: AIColors.lightTextColor,
+        fontSize: 19.0,
+        fontWeight: FontWeight.w800,
+        letterSpacing: -0.3,
+      ),
+      titleSmall: TextStyle(
+        color: AIColors.lightTextColor,
+        fontSize: 17.0,
+        fontWeight: FontWeight.w800,
+        letterSpacing: -0.3,
+      ),
+
+      bodyLarge: TextStyle(
+        fontSize: 17.0,
+        color: AIColors.lightTextColor,
+        fontWeight: FontWeight.w700,
+        letterSpacing: -0.1,
+      ),
+      bodyMedium: TextStyle(
+        fontSize: 16.0,
+        color: AIColors.lightTextColor,
+        fontWeight: FontWeight.w700,
+        letterSpacing: -0.3,
+      ),
+      bodySmall: TextStyle(
+        fontSize: 16.0,
+        color: AIColors.lightTextColor,
+        fontWeight: FontWeight.w500,
+        letterSpacing: -0.3,
+      ),
+
+      labelLarge: TextStyle(
+        fontSize: 16.0,
+        color: AIColors.greyTextColor,
+        fontWeight: FontWeight.w400,
+        letterSpacing: -0.3,
+      ),
+      labelMedium: TextStyle(
+        fontSize: 14.0,
+        color: AIColors.greyTextColor,
+        fontWeight: FontWeight.w400,
+        letterSpacing: -0.15,
+      ),
+      labelSmall: TextStyle(
+        fontSize: 12.0,
+        color: AIColors.greyTextColor,
+        fontWeight: FontWeight.w400,
+        letterSpacing: -0.3,
+      ),
+
+      displayLarge: TextStyle(
+        fontSize: 19.0,
+        color: AIColors.lightTextColor,
+        fontWeight: FontWeight.w700,
+        letterSpacing: -0.1,
+      ),
+      displayMedium: TextStyle(
+        fontSize: 18.0,
+        color: AIColors.lightTextColor,
+        fontWeight: FontWeight.w400,
+        letterSpacing: -0.1,
+      ),
+      displaySmall: TextStyle(
+        fontSize: 10.0,
+        color: AIColors.lightTextColor,
+        fontWeight: FontWeight.w300,
+      ),
+
+      headlineLarge: TextStyle(
+        fontSize: 19.0,
+        color: AIColors.lightTextColor,
+        fontWeight: FontWeight.w700,
+        letterSpacing: -0.1,
+      ),
+      headlineMedium: TextStyle(
+        fontSize: 15.0,
+        fontWeight: FontWeight.bold,
+        color: AIColors.lightTextColor,
+      ),
+      headlineSmall: TextStyle(
+        fontSize: 12.0,
+        fontWeight: FontWeight.bold,
+        color: AIColors.lightTextColor,
+      ),
+    ),
+    iconTheme: IconThemeData(color: AIColors.lightIconColor),
+    floatingActionButtonTheme: FloatingActionButtonThemeData(
+      backgroundColor: AIColors.blue,
+    ),
   );
 
   ThemeData get darkTheme => ThemeData(

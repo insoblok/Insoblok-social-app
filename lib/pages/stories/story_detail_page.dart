@@ -65,10 +65,7 @@ class StoryDetailPage extends StatelessWidget {
                       children: [
                         Row(
                           children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(
-                                kStoryDetailAvatarSize / 2.0,
-                              ),
+                            ClipOval(
                               child: AIImage(
                                 viewModel.owner?.avatar,
                                 width: kStoryDetailAvatarSize,
@@ -112,8 +109,7 @@ class StoryDetailPage extends StatelessWidget {
                             aspectRatio: 1.91,
                             child: StoryCarouselView(
                               story: story,
-                              onChangePage:
-                                  (index) => viewModel.pageIndex = index,
+                              onChangePage: (index) {},
                             ),
                           ),
                         ),
@@ -189,7 +185,8 @@ class StoryDetailPage extends StatelessWidget {
                 ),
               ),
               const Divider(thickness: 0.33, height: 32.0),
-              for (var comment in (story.comments ?? [])) ...{
+              for (var comment
+                  in (story.comments?.reversed.toList() ?? [])) ...{
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: StoryDetailCommentCell(
@@ -200,10 +197,6 @@ class StoryDetailPage extends StatelessWidget {
               },
               SizedBox(height: MediaQuery.of(context).padding.bottom + 24.0),
             ],
-          ),
-          floatingActionButton: FloatingActionButton(
-            onPressed: viewModel.addComment,
-            child: Icon(Icons.add_comment),
           ),
         );
       },

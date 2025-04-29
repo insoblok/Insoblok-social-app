@@ -8,3 +8,6 @@ var kDateHMFormatter = DateFormat('HH:mm');
 
 var kDateMDYFormatter = DateFormat('MM/dd/yy');
 var kDateHMMDYFormatter = DateFormat('HH:mm • MM/dd/yy');
+
+var kDateMMMMYYFormatter = DateFormat('MMMM yyyy');
+var kDateWeekFormatter = DateFormat('EEE');

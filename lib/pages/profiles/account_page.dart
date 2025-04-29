@@ -48,7 +48,7 @@ class AccountPage extends StatelessWidget {
                             decoration: BoxDecoration(
                               border: Border.all(
                                 width: 2.0,
-                                color: AIColors.yellow,
+                                color: AIColors.blue,
                               ),
                               borderRadius: BorderRadius.circular(
                                 kAccountAvatarSize / 2.0,
@@ -70,7 +70,10 @@ class AccountPage extends StatelessWidget {
                             ),
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color: AIColors.darkTransparentBackground,
+                              color:
+                                  AppSettingHelper.themeMode == ThemeMode.light
+                                      ? AIColors.lightTransparentBackground
+                                      : AIColors.darkTransparentBackground,
                             ),
                             child: Icon(Icons.arrow_back, size: 18.0),
                           ),
@@ -85,7 +88,7 @@ class AccountPage extends StatelessWidget {
                               alignment: Alignment.center,
                               decoration: BoxDecoration(
                                 border: Border.all(
-                                  color: AIColors.yellow,
+                                  color: AIColors.blue,
                                   width: 1.0,
                                 ),
                                 borderRadius: BorderRadius.circular(16.0),
@@ -93,7 +96,7 @@ class AccountPage extends StatelessWidget {
                               child: Text(
                                 'Edit Profile',
                                 style: Theme.of(context).textTheme.labelSmall!
-                                    .copyWith(color: AIColors.yellow),
+                                    .copyWith(color: AIColors.blue),
                               ),
                             ),
                           ),
@@ -117,12 +120,16 @@ class AccountPage extends StatelessWidget {
                           '@${viewModel.accountUser?.nickId}',
                           style: Theme.of(context).textTheme.labelLarge,
                         ),
-                        const SizedBox(height: 8.0),
+                        const SizedBox(height: 16.0),
                         Text(
-                          'Digital Goodies Team - Web & Mobile UI/UX development; Graphics; Illustrations',
-                          style: Theme.of(context).textTheme.bodySmall,
+                          viewModel.accountUser?.desc ??
+                              'You can input your profile description if you didn\'t set that yet!. That will be shown to other and will make more user experience of InSoBlokAI.',
+                          style:
+                              viewModel.accountUser?.desc == null
+                                  ? Theme.of(context).textTheme.labelMedium
+                                  : Theme.of(context).textTheme.bodySmall,
                         ),
-                        const SizedBox(height: 8.0),
+                        const SizedBox(height: 16.0),
                         Wrap(
                           spacing: 12.0,
                           runSpacing: 4.0,
@@ -150,6 +157,32 @@ class AccountPage extends StatelessWidget {
                                   ],
                                 );
                               }).toList(),
+                        ),
+                        const SizedBox(height: 16.0),
+                        Text.rich(
+                          TextSpan(
+                            children: [
+                              TextSpan(
+                                text:
+                                    (viewModel.accountUser?.likes?.length ?? 0)
+                                        .socialValue,
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                              TextSpan(
+                                text: ' Likes  ',
+                                style: Theme.of(context).textTheme.labelLarge,
+                              ),
+                              TextSpan(
+                                text:
+                                    '  ${(viewModel.accountUser?.follows?.length ?? 0).socialValue}',
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                              TextSpan(
+                                text: ' Followers',
+                                style: Theme.of(context).textTheme.labelLarge,
+                              ),
+                            ],
+                          ),
                         ),
                       ],
                     ),

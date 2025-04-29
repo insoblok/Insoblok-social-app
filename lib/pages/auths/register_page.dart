@@ -25,24 +25,13 @@ class RegisterPage extends StatelessWidget {
             ),
             child: Column(
               children: [
-                ClipRRect(
-                  borderRadius: BorderRadius.circular(60.0),
-                  child: AIImage(
-                    AIImages.logo,
-                    width: 120.0,
-                    height: 120.0,
-                  ),
+                ClipOval(
+                  child: AIImage(AIImages.logo, width: 120.0, height: 120.0),
                 ),
-                const SizedBox(
-                  width: double.infinity,
-                  height: 40.0,
-                ),
+                const SizedBox(width: double.infinity, height: 40.0),
                 Text(
                   S.current.register_detail,
-                  style: TextStyle(
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
                 ),
                 const SizedBox(height: 48.0),
                 AITextField(

@@ -76,8 +76,7 @@ class InSoBlokPage extends StatelessWidget {
                               children: [
                                 InkWell(
                                   onTap: viewModel.onClickMenuAvatar,
-                                  child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(28),
+                                  child: ClipOval(
                                     child: AIImage(
                                       viewModel.user?.avatar,
                                       width: kStoryDetailAvatarSize,

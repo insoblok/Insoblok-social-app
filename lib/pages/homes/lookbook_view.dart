@@ -31,7 +31,7 @@ class LookbookView extends StatelessWidget {
                     IconButton(
                       onPressed: () {},
                       icon: AIImage(
-                        AIImages.icTopEffect,
+                        AIImages.icSetting,
                         width: 24.0,
                         height: 24.0,
                       ),
