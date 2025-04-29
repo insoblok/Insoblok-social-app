@@ -1,3 +1,6 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:stacked/stacked.dart';
@@ -23,7 +26,16 @@ class StoryDetailPage extends StatelessWidget {
       onViewModelReady: (viewModel) => viewModel.init(context, model: story),
       builder: (context, viewModel, _) {
         return Scaffold(
-          appBar: AppBar(title: Text(story.title ?? '')),
+          appBar: AppBar(
+            title: Text(viewModel.story.title ?? ''),
+            leading: IconButton(
+              onPressed: () => Navigator.of(context).pop(viewModel.story),
+              icon:
+                  Platform.isIOS
+                      ? Icon(Icons.arrow_back_ios)
+                      : Icon(Icons.arrow_back),
+            ),
+          ),
           body: ListView(
             children: [
               Container(
@@ -39,27 +51,28 @@ class StoryDetailPage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      children: [
-                        Container(
-                          width: kStoryDetailAvatarSize,
-                          alignment: Alignment.centerRight,
-                          child: AIImage(
-                            AIImages.icFavoriteFill,
-                            color: AIColors.grey,
-                            width: 12.0,
-                            height: 12.0,
+                    if (kDebugMode)
+                      Row(
+                        children: [
+                          Container(
+                            width: kStoryDetailAvatarSize,
+                            alignment: Alignment.centerRight,
+                            child: AIImage(
+                              AIImages.icFavoriteFill,
+                              color: AIColors.grey,
+                              width: 12.0,
+                              height: 12.0,
+                            ),
                           ),
-                        ),
-                        const SizedBox(width: 8.0),
-                        Expanded(
-                          child: Text(
-                            'Kieron Dotson and Zack John liked',
-                            style: Theme.of(context).textTheme.labelMedium,
+                          const SizedBox(width: 8.0),
+                          Expanded(
+                            child: Text(
+                              'Kieron Dotson and Zack John liked',
+                              style: Theme.of(context).textTheme.labelMedium,
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
+                        ],
+                      ),
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -92,8 +105,8 @@ class StoryDetailPage extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 24.0),
-                    AIHelpers.htmlRender(story.text),
-                    if ((story.medias ?? []).isNotEmpty) ...{
+                    AIHelpers.htmlRender(viewModel.story.text),
+                    if ((viewModel.story.medias ?? []).isNotEmpty) ...{
                       const SizedBox(height: 8.0),
                       Container(
                         decoration: BoxDecoration(
@@ -109,6 +122,7 @@ class StoryDetailPage extends StatelessWidget {
                             aspectRatio: 1.91,
                             child: StoryCarouselView(
                               story: story,
+                              height: double.infinity,
                               onChangePage: (index) {},
                             ),
                           ),
@@ -117,15 +131,19 @@ class StoryDetailPage extends StatelessWidget {
                     },
                     const SizedBox(height: 16.0),
                     Text(
-                      story.shownHMDate,
+                      viewModel.story.shownHMDate,
                       style: Theme.of(context).textTheme.labelLarge,
                     ),
-                    const Divider(thickness: 0.33, height: 32.0),
+                    Divider(
+                      thickness: 0.33,
+                      height: 32.0,
+                      color: AIColors.speraterColor,
+                    ),
                     Text.rich(
                       TextSpan(
                         children: [
                           TextSpan(
-                            text: '${(story.likes ?? []).length}',
+                            text: '${(viewModel.story.likes ?? []).length}',
                             style: Theme.of(context).textTheme.bodySmall,
                           ),
                           TextSpan(
@@ -133,7 +151,7 @@ class StoryDetailPage extends StatelessWidget {
                             style: Theme.of(context).textTheme.labelLarge,
                           ),
                           TextSpan(
-                            text: '${(story.follows ?? []).length}',
+                            text: '${(viewModel.story.follows ?? []).length}',
                             style: Theme.of(context).textTheme.bodySmall,
                           ),
                           TextSpan(
@@ -143,12 +161,16 @@ class StoryDetailPage extends StatelessWidget {
                         ],
                       ),
                     ),
-                    const Divider(thickness: 0.33, height: 32.0),
+                    Divider(
+                      thickness: 0.33,
+                      height: 32.0,
+                      color: AIColors.speraterColor,
+                    ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         InkWell(
-                          onTap: () {},
+                          onTap: viewModel.addComment,
                           child: AIImage(
                             AIImages.icCommit,
                             width: 20.0,
@@ -156,23 +178,29 @@ class StoryDetailPage extends StatelessWidget {
                           ),
                         ),
                         InkWell(
-                          onTap: () {},
+                          onTap: viewModel.updateFollow,
                           child: AIImage(
                             AIImages.icRetwitter,
                             width: 20.0,
                             height: 20.0,
+                            color:
+                                viewModel.story.isFollow()
+                                    ? AIColors.green
+                                    : null,
                           ),
                         ),
                         InkWell(
-                          onTap: () {},
+                          onTap: viewModel.updateLike,
                           child: AIImage(
-                            AIImages.icFavorite,
+                            viewModel.story.isLike()
+                                ? AIImages.icFavoriteFill
+                                : AIImages.icFavorite,
                             width: 20.0,
                             height: 20.0,
                           ),
                         ),
                         InkWell(
-                          onTap: () {},
+                          onTap: viewModel.shareFeed,
                           child: AIImage(
                             AIImages.icShare,
                             width: 20.0,
@@ -184,14 +212,18 @@ class StoryDetailPage extends StatelessWidget {
                   ],
                 ),
               ),
-              const Divider(thickness: 0.33, height: 32.0),
+              Divider(
+                thickness: 0.33,
+                height: 32.0,
+                color: AIColors.speraterColor,
+              ),
               for (var comment
-                  in (story.comments?.reversed.toList() ?? [])) ...{
+                  in (viewModel.story.comments?.reversed.toList() ?? [])) ...{
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: StoryDetailCommentCell(
                     comment: comment,
-                    isLast: (story.comments ?? []).length == comment,
+                    isLast: (viewModel.story.comments ?? []).length == comment,
                   ),
                 ),
               },

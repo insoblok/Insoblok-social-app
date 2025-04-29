@@ -25,7 +25,7 @@ class AppSettingService with ListenableServiceMixin {
     fontFamily: 'SFProText',
     colorScheme: ColorScheme.fromSeed(
       seedColor: AIColors.blue,
-      primary: AIColors.white,
+      primary: AIColors.blue,
       onPrimary: AIColors.black,
       secondary: AIColors.black,
       onSecondary: AIColors.white,
@@ -156,7 +156,7 @@ class AppSettingService with ListenableServiceMixin {
     fontFamily: 'SFProText',
     colorScheme: ColorScheme.fromSeed(
       seedColor: AIColors.blue,
-      primary: AIColors.black,
+      primary: AIColors.blue,
       onPrimary: AIColors.white,
       secondary: AIColors.white,
       onSecondary: AIColors.black,
@@ -282,6 +282,21 @@ class AppSettingService with ListenableServiceMixin {
       backgroundColor: AIColors.blue,
     ),
   );
+
+  Color get greyBackground =>
+      themeMode == ThemeMode.light
+          ? AIColors.lightGreyBackground
+          : AIColors.darkGreyBackground;
+
+  Color get transparentBackground =>
+      themeMode == ThemeMode.light
+          ? AIColors.lightTransparentBackground
+          : AIColors.darkTransparentBackground;
+
+  Color get background =>
+      themeMode == ThemeMode.light
+          ? AIColors.lightBackground
+          : AIColors.darkBackground;
 }
 
 class AppSettingHelper {
@@ -292,4 +307,8 @@ class AppSettingHelper {
   static ThemeData get darkTheme => service.darkTheme;
 
   static void setTheme(ThemeMode model) => service.setTheme(model);
+
+  static Color get greyBackground => service.greyBackground;
+  static Color get transparentBackground => service.transparentBackground;
+  static Color get background => service.background;
 }

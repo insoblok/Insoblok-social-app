@@ -70,10 +70,7 @@ class AccountPage extends StatelessWidget {
                             ),
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
-                              color:
-                                  AppSettingHelper.themeMode == ThemeMode.light
-                                      ? AIColors.lightTransparentBackground
-                                      : AIColors.darkTransparentBackground,
+                              color: AppSettingHelper.transparentBackground,
                             ),
                             child: Icon(Icons.arrow_back, size: 18.0),
                           ),

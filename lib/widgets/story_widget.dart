@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:stacked/stacked.dart';
@@ -6,7 +7,6 @@ import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/pages/pages.dart';
 import 'package:insoblok/providers/providers.dart';
-import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
@@ -18,11 +18,11 @@ class StoryListCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var medias = story.medias ?? [];
     return ViewModelBuilder<StoryProvider>.reactive(
       viewModelBuilder: () => StoryProvider(),
       onViewModelReady: (viewModel) => viewModel.init(context, model: story),
       builder: (context, viewModel, _) {
+        var medias = viewModel.story.medias ?? [];
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
           decoration: BoxDecoration(
@@ -31,31 +31,32 @@ class StoryListCell extends StatelessWidget {
             ),
           ),
           child: InkWell(
-            onTap: () => Routers.goToStoryDetailPage(context, story),
+            onTap: viewModel.goToDetailPage,
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  children: [
-                    Container(
-                      width: kStoryDetailAvatarSize,
-                      alignment: Alignment.centerRight,
-                      child: AIImage(
-                        AIImages.icFavoriteFill,
-                        color: AIColors.grey,
-                        width: 12.0,
-                        height: 12.0,
+                if (kDebugMode)
+                  Row(
+                    children: [
+                      Container(
+                        width: kStoryDetailAvatarSize,
+                        alignment: Alignment.centerRight,
+                        child: AIImage(
+                          AIImages.icFavoriteFill,
+                          color: AIColors.grey,
+                          width: 12.0,
+                          height: 12.0,
+                        ),
                       ),
-                    ),
-                    const SizedBox(width: 8.0),
-                    Expanded(
-                      child: Text(
-                        'Kieron Dotson and Zack John liked',
-                        style: Theme.of(context).textTheme.labelMedium,
+                      const SizedBox(width: 8.0),
+                      Expanded(
+                        child: Text(
+                          'Kieron Dotson and Zack John liked',
+                          style: Theme.of(context).textTheme.labelMedium,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
+                    ],
+                  ),
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -88,13 +89,13 @@ class StoryListCell extends StatelessWidget {
                                 ),
                                 TextSpan(
                                   text:
-                                      ' @${viewModel.owner?.nickId} • ${story.timestamp?.timeago}',
+                                      ' @${viewModel.owner?.nickId} • ${viewModel.story.timestamp?.timeago}',
                                   style: Theme.of(context).textTheme.labelLarge,
                                 ),
                               ],
                             ),
                           ),
-                          AIHelpers.htmlRender(story.text),
+                          AIHelpers.htmlRender(viewModel.story.text),
                           if (medias.isNotEmpty) ...{
                             const SizedBox(height: 8.0),
                             Container(
@@ -129,7 +130,7 @@ class StoryListCell extends StatelessWidget {
                                       AIImage(AIImages.icCommit, height: 14.0),
                                       const SizedBox(width: 4.0),
                                       Text(
-                                        (story.comments?.length ?? 0)
+                                        (viewModel.story.comments?.length ?? 0)
                                             .socialValue,
                                         style:
                                             Theme.of(
@@ -151,7 +152,7 @@ class StoryListCell extends StatelessWidget {
                                       ),
                                       const SizedBox(width: 4.0),
                                       Text(
-                                        (story.follows?.length ?? 0)
+                                        (viewModel.story.follows?.length ?? 0)
                                             .socialValue,
                                         style:
                                             Theme.of(
@@ -168,14 +169,15 @@ class StoryListCell extends StatelessWidget {
                                   child: Row(
                                     children: [
                                       AIImage(
-                                        story.isLike()
+                                        viewModel.story.isLike()
                                             ? AIImages.icFavoriteFill
                                             : AIImages.icFavorite,
                                         height: 14.0,
                                       ),
                                       const SizedBox(width: 4.0),
                                       Text(
-                                        (story.likes?.length ?? 0).socialValue,
+                                        (viewModel.story.likes?.length ?? 0)
+                                            .socialValue,
                                         style:
                                             Theme.of(
                                               context,
@@ -202,86 +204,6 @@ class StoryListCell extends StatelessWidget {
               ],
             ),
           ),
-        );
-      },
-    );
-  }
-}
-
-class StoryDetailCommentCell extends StatelessWidget {
-  final StoryCommentModel comment;
-  final bool isLast;
-
-  const StoryDetailCommentCell({
-    super.key,
-    required this.comment,
-    this.isLast = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return FutureBuilder<UserModel?>(
-      future: FirebaseHelper.getUser(comment.uid!),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Container();
-        }
-        var user = snapshot.data;
-        return Stack(
-          children: [
-            Container(
-              margin: const EdgeInsets.only(left: kStoryDetailAvatarSize / 2.0),
-              padding: const EdgeInsets.only(
-                left: kStoryDetailAvatarSize / 2.0 + 8.0,
-              ),
-              width: double.infinity,
-              decoration: BoxDecoration(
-                border: Border(
-                  left: BorderSide(width: 0.33, color: AIColors.speraterColor),
-                ),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Expanded(
-                        child: Text.rich(
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          TextSpan(
-                            children: [
-                              TextSpan(
-                                text: user?.fullName ?? '---',
-                                style: Theme.of(context).textTheme.bodyMedium,
-                              ),
-                              TextSpan(
-                                text: ' @${user?.nickId}',
-                                style: Theme.of(context).textTheme.labelLarge,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Text(
-                        comment.timestamp?.timeago ?? '---',
-                        style: Theme.of(context).textTheme.labelSmall,
-                      ),
-                    ],
-                  ),
-                  AIHelpers.htmlRender(comment.content),
-                  const SizedBox(height: 8.0),
-                ],
-              ),
-            ),
-            ClipOval(
-              child: AIImage(
-                user?.avatar,
-                width: kStoryDetailAvatarSize,
-                height: kStoryDetailAvatarSize,
-              ),
-            ),
-          ],
         );
       },
     );

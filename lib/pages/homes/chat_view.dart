@@ -47,10 +47,7 @@ class ChatView extends StatelessWidget {
                       vertical: 4.0,
                     ),
                     decoration: BoxDecoration(
-                      color:
-                          AppSettingHelper.themeMode == ThemeMode.light
-                              ? AIColors.lightGreyBackground
-                              : AIColors.darkGreyBackground,
+                      color: AppSettingHelper.greyBackground,
                       borderRadius: BorderRadius.circular(16.0),
                     ),
                     alignment: Alignment.center,

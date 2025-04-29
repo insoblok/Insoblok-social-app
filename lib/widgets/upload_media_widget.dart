@@ -59,10 +59,7 @@ class UploadMediaWidget extends StatelessWidget {
                       height: 28.0,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color:
-                            AppSettingHelper.themeMode == ThemeMode.dark
-                                ? AIColors.darkTransparentBackground
-                                : AIColors.lightTransparentBackground,
+                        color: AppSettingHelper.transparentBackground,
                       ),
                       child:
                           media.isUploaded

@@ -179,9 +179,8 @@ class StoryDetailProvider extends InSoBlokViewModel {
           );
           var comments = List<StoryCommentModel>.from(story.comments ?? []);
           comments.add(comment);
-          await storyService.addComment(
-            story: story.copyWith(comments: comments),
-          );
+          story = story.copyWith(comments: comments);
+          await storyService.addComment(story: story);
 
           Fluttertoast.showToast(msg: 'Successfully add your comment!');
         }

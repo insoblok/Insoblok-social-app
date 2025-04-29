@@ -17,10 +17,7 @@ List<BoxShadow> kContainerDarkShadow = [
 ];
 
 BoxDecoration kCardDecoration = BoxDecoration(
-  color:
-      AppSettingHelper.themeMode == ThemeMode.light
-          ? AIColors.lightBackground
-          : AIColors.darkBackground,
+  color: AppSettingHelper.background,
   borderRadius: BorderRadius.circular(16.0),
   border: Border.all(width: 0.33, color: AIColors.blue),
 );

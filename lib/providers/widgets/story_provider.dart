@@ -56,6 +56,14 @@ class StoryProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  Future<void> goToDetailPage() async {
+    var data = await Routers.goToStoryDetailPage(context, story);
+    if (data != null) {
+      story = data;
+      notifyListeners();
+    }
+  }
+
   final _storyService = StoryService();
   StoryService get storyService => _storyService;
 
@@ -180,9 +188,10 @@ class StoryProvider extends InSoBlokViewModel {
           );
           var comments = List<StoryCommentModel>.from(story.comments ?? []);
           comments.add(comment);
-          await storyService.addComment(
-            story: story.copyWith(comments: comments),
-          );
+          story = story.copyWith(comments: comments);
+          await storyService.addComment(story: story);
+
+          Fluttertoast.showToast(msg: 'Successfully add your comment!');
         } else {
           setError('Your comment is empty!');
         }
@@ -196,8 +205,6 @@ class StoryProvider extends InSoBlokViewModel {
 
     if (hasError) {
       Fluttertoast.showToast(msg: modelError.toString());
-    } else {
-      Fluttertoast.showToast(msg: 'Successfully add your comment!');
     }
   }
 }
