@@ -23,3 +23,11 @@ await runBusyFuture(() async {
 if (hasError) {
     Fluttertoast.showToast(msg: modelError.toString());
 } else {}
+
+npm install -g firebase-tools
+firebase login
+firebase init functions
+
+firebase login
+firebase logout
+firebase deploy --only functions

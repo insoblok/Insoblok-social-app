@@ -55,3 +55,8 @@ pubspec.lock
 README.md
 
 lib/utils/const.dart
+
+.firebaserc
+firebase.json
+functions/.eslintrc.js
+functions/package-lock.json
