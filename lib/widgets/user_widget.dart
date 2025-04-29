@@ -21,8 +21,7 @@ class UserAvatarView extends StatelessWidget {
               border: Border.all(width: 2.0, color: AIColors.blue),
               borderRadius: BorderRadius.circular(60.0),
             ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(60.0),
+            child: ClipOval(
               child: AIImage(
                 width: double.infinity,
                 height: double.infinity,
@@ -236,10 +235,7 @@ class UserCardView extends StatelessWidget {
       ),
       child: Column(
         children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(24.0),
-            child: AIImage('https://', width: 44.0, height: 44.0),
-          ),
+          ClipOval(child: AIImage('https://', width: 44.0, height: 44.0)),
           const SizedBox(height: 8.0),
           Row(
             mainAxisSize: MainAxisSize.min,
@@ -284,6 +280,22 @@ class UserCardView extends StatelessWidget {
             ],
           ),
         ],
+      ),
+    );
+  }
+}
+
+class AppLeadingView extends StatelessWidget {
+  const AppLeadingView({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: InkWell(
+        onTap: () => Scaffold.of(context).openDrawer(),
+        child: ClipOval(
+          child: AIImage(AuthHelper.user?.avatar, width: 32.0, height: 32.0),
+        ),
       ),
     );
   }

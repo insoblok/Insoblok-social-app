@@ -6,3 +6,5 @@ export 'models/models.dart';
 export 'stories/stories.dart';
 export 'widgets/widgets.dart';
 export 'bases/bases.dart';
+export 'profiles/profiles.dart';
+export 'app_provider.dart';

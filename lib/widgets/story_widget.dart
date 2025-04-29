@@ -1,156 +1,211 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import 'package:stacked/stacked.dart';
+
+import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
+import 'package:insoblok/pages/pages.dart';
+import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
 
 class StoryListCell extends StatelessWidget {
   final StoryModel story;
-  final void Function()? onTap;
 
-  const StoryListCell({super.key, required this.story, this.onTap});
+  const StoryListCell({super.key, required this.story});
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(top: 24.0, right: 24.0, left: 24.0),
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: AIColors.darkScaffoldBackground,
-        borderRadius: BorderRadius.circular(16.0),
-      ),
-      child: InkWell(
-        onTap: onTap,
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(16.0),
-          child: Column(
-            children: [
-              SizedBox(
-                height: 240.0,
-                child: Stack(
-                  children: [
-                    AIImage(
-                      AIImages.imgBackProfile,
-                      height: double.infinity,
-                      width: double.infinity,
-                      fit: BoxFit.cover,
-                    ),
-                    Container(
-                      height: 54.0,
-                      padding: const EdgeInsets.symmetric(
-                        vertical: 8.0,
-                        horizontal: 12.0,
+    return ViewModelBuilder<StoryProvider>.reactive(
+      viewModelBuilder: () => StoryProvider(),
+      onViewModelReady: (viewModel) => viewModel.init(context, model: story),
+      builder: (context, viewModel, _) {
+        var medias = viewModel.story.medias ?? [];
+        return Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
+          decoration: BoxDecoration(
+            border: Border(
+              top: BorderSide(color: AIColors.speraterColor, width: 0.33),
+            ),
+          ),
+          child: InkWell(
+            onTap: viewModel.goToDetailPage,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (kDebugMode)
+                  Row(
+                    children: [
+                      Container(
+                        width: kStoryDetailAvatarSize,
+                        alignment: Alignment.centerRight,
+                        child: AIImage(
+                          AIImages.icFavoriteFill,
+                          color: AIColors.grey,
+                          width: 12.0,
+                          height: 12.0,
+                        ),
                       ),
-                      color: AIColors.darkTransparentBackground,
-                      child: Row(
+                      const SizedBox(width: 8.0),
+                      Expanded(
+                        child: Text(
+                          'Kieron Dotson and Zack John liked',
+                          style: Theme.of(context).textTheme.labelMedium,
+                        ),
+                      ),
+                    ],
+                  ),
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ClipOval(
+                          child: AIImage(
+                            viewModel.owner?.avatar,
+                            width: kStoryDetailAvatarSize,
+                            height: kStoryDetailAvatarSize,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(width: 8.0),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(20.0),
-                            child: AIImage(
-                              AIImages.placehold,
-                              width: 32.0,
-                              height: 32.0,
+                          Text.rich(
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                            TextSpan(
+                              children: [
+                                TextSpan(
+                                  text: viewModel.owner?.fullName ?? '---',
+                                  style: Theme.of(context).textTheme.bodyMedium,
+                                ),
+                                TextSpan(
+                                  text:
+                                      ' @${viewModel.owner?.nickId} • ${viewModel.story.timestamp?.timeago}',
+                                  style: Theme.of(context).textTheme.labelLarge,
+                                ),
+                              ],
                             ),
                           ),
-                          const SizedBox(width: 8.0),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Name of Owner',
-                                style:
-                                    Theme.of(context).textTheme.headlineSmall,
+                          AIHelpers.htmlRender(viewModel.story.text),
+                          if (medias.isNotEmpty) ...{
+                            const SizedBox(height: 8.0),
+                            Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  width: 0.33,
+                                  color: AIColors.speraterColor,
+                                ),
+                                borderRadius: BorderRadius.circular(12.0),
                               ),
-                              Text(
-                                '2025-4-22 20:15',
-                                style: Theme.of(context).textTheme.displaySmall,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(12.0),
+                                child: AspectRatio(
+                                  aspectRatio: 1.91,
+                                  child: StoryCarouselView(
+                                    story: story,
+                                    onChangePage:
+                                        (index) => viewModel.pageIndex = index,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          },
+                          const SizedBox(height: 8.0),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: InkWell(
+                                  onTap: viewModel.addComment,
+                                  child: Row(
+                                    children: [
+                                      AIImage(AIImages.icCommit, height: 14.0),
+                                      const SizedBox(width: 4.0),
+                                      Text(
+                                        (viewModel.story.comments?.length ?? 0)
+                                            .socialValue,
+                                        style:
+                                            Theme.of(
+                                              context,
+                                            ).textTheme.labelSmall,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: InkWell(
+                                  onTap: viewModel.updateFollow,
+                                  child: Row(
+                                    children: [
+                                      AIImage(
+                                        AIImages.icRetwitter,
+                                        height: 14.0,
+                                      ),
+                                      const SizedBox(width: 4.0),
+                                      Text(
+                                        (viewModel.story.follows?.length ?? 0)
+                                            .socialValue,
+                                        style:
+                                            Theme.of(
+                                              context,
+                                            ).textTheme.labelSmall,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: InkWell(
+                                  onTap: viewModel.updateLike,
+                                  child: Row(
+                                    children: [
+                                      AIImage(
+                                        viewModel.story.isLike()
+                                            ? AIImages.icFavoriteFill
+                                            : AIImages.icFavorite,
+                                        height: 14.0,
+                                      ),
+                                      const SizedBox(width: 4.0),
+                                      Text(
+                                        (viewModel.story.likes?.length ?? 0)
+                                            .socialValue,
+                                        style:
+                                            Theme.of(
+                                              context,
+                                            ).textTheme.labelSmall,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: Row(
+                                  children: [
+                                    AIImage(AIImages.icShare, height: 14.0),
+                                  ],
+                                ),
                               ),
                             ],
-                          ),
-                          const Spacer(),
-                          Text(
-                            '1 / 4',
-                            style: Theme.of(context).textTheme.headlineSmall,
                           ),
                         ],
                       ),
                     ),
-                    Align(
-                      alignment: Alignment.bottomCenter,
-                      child: PageableIndicator(pageLength: 4),
-                    ),
                   ],
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'My Story Title!!',
-                      style: Theme.of(context).textTheme.headlineMedium,
-                    ),
-                    Text(
-                      'Find & Download Free Graphic Resources for Text Story Template Vectors, Stock Photos & PSD files. ✓ Free for commercial use ✓ High Quality Images.. ✓ Free for commercial use ✓ High Quality Images.',
-                      style: Theme.of(context).textTheme.bodyMedium,
-                      maxLines: 3,
-                      overflow: TextOverflow.ellipsis,
-                    ),
-                    const SizedBox(height: 12.0),
-                    Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            AIImage(Icons.favorite, width: 18.0, height: 18.0),
-                            const SizedBox(width: 4.0),
-                            Text(
-                              '32',
-                              style: Theme.of(context).textTheme.labelMedium,
-                            ),
-                          ],
-                        ),
-                        const SizedBox(width: 24.0),
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            AIImage(Icons.hearing, width: 18.0, height: 18.0),
-                            const SizedBox(width: 4.0),
-                            Text(
-                              '47',
-                              style: Theme.of(context).textTheme.labelMedium,
-                            ),
-                          ],
-                        ),
-                        const SizedBox(width: 24.0),
-                        Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            AIImage(Icons.comment, width: 18.0, height: 18.0),
-                            const SizedBox(width: 4.0),
-                            Text(
-                              '19',
-                              style: Theme.of(context).textTheme.labelMedium,
-                            ),
-                          ],
-                        ),
-                        const Spacer(),
-                        Text(
-                          'More Detail >',
-                          style: Theme.of(context).textTheme.labelSmall,
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }

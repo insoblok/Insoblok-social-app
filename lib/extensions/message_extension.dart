@@ -205,8 +205,10 @@ class _VideoContentState extends State<VideoContent> {
 
   @override
   void dispose() {
-    _videoPlayerController.dispose();
-    _chewieController.dispose();
+    if (_videoPlayerController.value.isInitialized) {
+      _videoPlayerController.dispose();
+      _chewieController.dispose();
+    }
     super.dispose();
   }
 

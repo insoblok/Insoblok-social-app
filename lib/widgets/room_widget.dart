@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 
 import 'package:stacked/stacked.dart';
 
+import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
+import 'package:insoblok/pages/pages.dart';
 import 'package:insoblok/providers/providers.dart';
+import 'package:insoblok/utils/utils.dart';
 
 class RoomItemView extends StatelessWidget {
   final RoomModel room;
@@ -18,12 +21,7 @@ class RoomItemView extends StatelessWidget {
       onViewModelReady: (viewModel) => viewModel.init(context, model: room),
       builder: (context, viewModel, _) {
         if (viewModel.isBusy) {
-          return Container(
-            padding: const EdgeInsets.all(16.0),
-            decoration: BoxDecoration(
-              border: Border(top: BorderSide(width: 0.5, color: Colors.white)),
-            ),
-          );
+          return Container();
         }
         return InkWell(
           onTap: () {
@@ -32,52 +30,57 @@ class RoomItemView extends StatelessWidget {
             }
           },
           child: Container(
-            padding: const EdgeInsets.all(16.0),
+            height: 80.0,
+            padding: const EdgeInsets.symmetric(
+              horizontal: 20.0,
+              vertical: 12.0,
+            ),
             decoration: BoxDecoration(
-              border: Border(top: BorderSide(width: 0.5, color: Colors.white)),
+              border: Border(
+                top: BorderSide(color: AIColors.speraterColor, width: 0.33),
+              ),
             ),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                viewModel.chatUser!.avatarStatusView(width: 60.0, height: 60.0),
+                viewModel.chatUser!.avatarStatusView(
+                  width: kStoryDetailAvatarSize,
+                  height: kStoryDetailAvatarSize,
+                ),
                 const SizedBox(width: 12.0),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              '${viewModel.chatUser?.fullName}',
-                              style: TextStyle(
-                                fontSize: 16.0,
-                                fontWeight: FontWeight.w500,
-                                overflow: TextOverflow.ellipsis,
-                                color: Colors.white,
-                              ),
-                              maxLines: 1,
+                      Text.rich(
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        TextSpan(
+                          children: [
+                            TextSpan(
+                              text: viewModel.chatUser?.fullName ?? '---',
+                              style: Theme.of(context).textTheme.bodyMedium,
                             ),
-                          ),
-                          Text(
-                            '${room.recentDate}',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                        ],
+                            TextSpan(
+                              text: ' @${viewModel.chatUser?.nickId}',
+                              style: Theme.of(context).textTheme.labelLarge,
+                            ),
+                          ],
+                        ),
                       ),
                       Text(
                         '${room.content}',
-                        style: TextStyle(
-                          fontSize: 13.0,
-                          fontWeight: FontWeight.w300,
-                          color: Colors.white,
-                        ),
+                        style: Theme.of(context).textTheme.labelLarge,
                       ),
                     ],
                   ),
                 ),
                 const SizedBox(width: 8.0),
-                Icon(Icons.arrow_forward_ios, size: 16.0, color: Colors.white),
+                Text(
+                  '${room.updateDate?.timeago}',
+                  style: Theme.of(context).textTheme.labelLarge,
+                ),
               ],
             ),
           ),

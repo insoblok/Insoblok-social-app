@@ -25,8 +25,28 @@ class Routers {
     _pushReplacement(context, kRouterMain, null);
   }
 
-  static goToAccountPage(BuildContext context) {
-    return _pushToRoute(context, kRouterAccount, null);
+  static goToAccountPage(BuildContext context, {UserModel? user}) {
+    return _pushToRoute(context, kRouterAccount, user);
+  }
+
+  static goToAccountAvatarPage(BuildContext context) {
+    return _pushToRoute(context, kRouterAccountAvatar, null);
+  }
+
+  static goToAccountListPage(BuildContext context) {
+    return _pushToRoute(context, kRouterAccountList, null);
+  }
+
+  static goToAccountTopicPage(BuildContext context) {
+    return _pushToRoute(context, kRouterAccountTopic, null);
+  }
+
+  static goToAccountBookmarkPage(BuildContext context) {
+    return _pushToRoute(context, kRouterAccountBookmark, null);
+  }
+
+  static goToAccountMomentPage(BuildContext context) {
+    return _pushToRoute(context, kRouterAccountMoment, null);
   }
 
   static goToCreateRoomPage(BuildContext context) {
@@ -35,6 +55,10 @@ class Routers {
 
   static goToMessagePage(BuildContext context, MessagePageData data) {
     return _pushToRoute(context, kRouterMessage, data);
+  }
+
+  static goToMessageSettingPage(BuildContext context) {
+    return _pushToRoute(context, kRouterMessageSetting, null);
   }
 
   static goToAddStoryPage(BuildContext context) {
@@ -47,5 +71,13 @@ class Routers {
 
   static goToQuillDescriptionPage(BuildContext context, {String? origin}) {
     return _pushToRoute(context, kRouterQuillDescription, origin);
+  }
+
+  static goToSettingPrivacyPage(BuildContext context) {
+    return _pushToRoute(context, kRouterSettingPrivacy, null);
+  }
+
+  static goToHelpCenterPage(BuildContext context) {
+    return _pushToRoute(context, kRouterHelpCenter, null);
   }
 }

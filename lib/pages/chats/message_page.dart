@@ -1,7 +1,4 @@
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
-import 'package:insoblok/services/services.dart';
 
 import 'package:stacked/stacked.dart';
 
@@ -60,143 +57,117 @@ class MessagePage extends StatelessWidget {
               IconButton(onPressed: () {}, icon: Icon(Icons.more_horiz)),
             ],
           ),
-          body: Stack(
+          body: Column(
             children: [
-              AIImage(
-                AIImages.imgBackChat,
-                width: double.infinity,
-                height: double.infinity,
-                fit: BoxFit.cover,
+              Expanded(
+                child: ListView.separated(
+                  controller: viewModel.scrollController,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12.0,
+                    vertical: 24.0,
+                  ),
+                  itemBuilder: (context, index) {
+                    var message = viewModel.messages[index];
+                    return message.item(context, chatUser: viewModel.chatUser);
+                  },
+                  separatorBuilder:
+                      (context, index) => const SizedBox(height: 8.0),
+                  itemCount: viewModel.messages.length,
+                ),
               ),
               Container(
-                color: Colors.black54,
-                child: BackdropFilter(
-                  filter: ImageFilter.blur(sigmaX: 12.0, sigmaY: 12.0),
-                  blendMode: BlendMode.srcOver,
-                  child: Column(
-                    children: [
-                      Expanded(
-                        child: ListView.separated(
-                          controller: viewModel.scrollController,
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12.0,
-                            vertical: 24.0,
-                          ),
-                          itemBuilder: (context, index) {
-                            var message = viewModel.messages[index];
-                            return message.item(
-                              context,
-                              chatUser: viewModel.chatUser,
-                            );
-                          },
-                          separatorBuilder:
-                              (context, index) => const SizedBox(height: 8.0),
-                          itemCount: viewModel.messages.length,
-                        ),
-                      ),
+                height: viewModel.isAddPop ? 66.0 + kAddPopHeight : 66.0,
+                color: AIColors.darkBar,
+                alignment: Alignment.center,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (viewModel.isAddPop) ...{
                       Container(
-                        height:
-                            viewModel.isAddPop ? 66.0 + kAddPopHeight : 66.0,
-                        color: AIColors.darkBar,
                         alignment: Alignment.center,
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
+                        height: kAddPopHeight,
+                        child: Row(
                           children: [
-                            if (viewModel.isAddPop) ...{
-                              Container(
-                                alignment: Alignment.center,
-                                height: kAddPopHeight,
-                                child: Row(
-                                  children: [
-                                    Expanded(
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceEvenly,
-                                        children: [
-                                          IconButton(
-                                            onPressed: viewModel.onPickerImage,
-                                            icon: Icon(
-                                              Icons.photo,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                          IconButton(
-                                            onPressed: viewModel.onPickerVideo,
-                                            icon: Icon(
-                                              Icons.camera_alt,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                          IconButton(
-                                            onPressed: viewModel.onRecordAudio,
-                                            icon: Icon(
-                                              Icons.voicemail,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                          IconButton(
-                                            onPressed: viewModel.onPaidEth,
-                                            icon: Icon(
-                                              Icons.wallet,
-                                              color: Colors.white,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    IconButton(
-                                      onPressed:
-                                          () => viewModel.isAddPop = false,
-                                      icon: Icon(
-                                        Icons.close,
-                                        color: Colors.white,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            },
-                            Row(
-                              children: [
-                                IconButton(
-                                  onPressed: () => viewModel.isAddPop = true,
-                                  icon: Icon(
-                                    Icons.add_circle_outline,
-                                    color: Colors.white,
-                                    size: 32.0,
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Container(
-                                    decoration: BoxDecoration(
+                            Expanded(
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  IconButton(
+                                    onPressed: viewModel.onPickerImage,
+                                    icon: Icon(
+                                      Icons.photo,
                                       color: Colors.white,
-                                      borderRadius: BorderRadius.circular(32.0),
-                                    ),
-                                    child: AITextField(
-                                      hintText: 'Input a message...',
-                                      controller: viewModel.textController,
-                                      onChanged:
-                                          (value) => viewModel.content = value,
-                                      onFieldSubmitted: (value) {},
-                                      onSaved: (value) {},
                                     ),
                                   ),
-                                ),
-                                IconButton(
-                                  onPressed: viewModel.sendMessage,
-                                  icon: Icon(
-                                    Icons.send,
-                                    color: Colors.white,
-                                    size: 32.0,
+                                  IconButton(
+                                    onPressed: viewModel.onPickerVideo,
+                                    icon: Icon(
+                                      Icons.camera_alt,
+                                      color: Colors.white,
+                                    ),
                                   ),
-                                ),
-                              ],
+                                  IconButton(
+                                    onPressed: viewModel.onRecordAudio,
+                                    icon: Icon(
+                                      Icons.voicemail,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                  IconButton(
+                                    onPressed: viewModel.onPaidEth,
+                                    icon: Icon(
+                                      Icons.wallet,
+                                      color: Colors.white,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            IconButton(
+                              onPressed: () => viewModel.isAddPop = false,
+                              icon: Icon(Icons.close, color: Colors.white),
                             ),
                           ],
                         ),
                       ),
-                    ],
-                  ),
+                    },
+                    Row(
+                      children: [
+                        IconButton(
+                          onPressed: () => viewModel.isAddPop = true,
+                          icon: Icon(
+                            Icons.add_circle_outline,
+                            color: Colors.white,
+                            size: 32.0,
+                          ),
+                        ),
+                        Expanded(
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(32.0),
+                            ),
+                            child: AITextField(
+                              hintText: 'Input a message...',
+                              controller: viewModel.textController,
+                              onChanged: (value) => viewModel.content = value,
+                              onFieldSubmitted: (value) {},
+                              onSaved: (value) {},
+                            ),
+                          ),
+                        ),
+                        IconButton(
+                          onPressed: viewModel.sendMessage,
+                          icon: Icon(
+                            Icons.send,
+                            color: Colors.white,
+                            size: 32.0,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
               ),
             ],

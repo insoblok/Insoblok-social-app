@@ -9,6 +9,7 @@ import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:provider/provider.dart';
+import 'package:stacked/stacked.dart';
 
 import 'package:insoblok/generated/l10n.dart';
 import 'package:insoblok/locator.dart';
@@ -61,26 +62,35 @@ class InSoBlokApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         ChangeNotifierProvider(
+          create: (context) => AppProvider()..init(context),
+        ),
+        ChangeNotifierProvider(
           create: (context) => UploadMediaProvider()..init(context),
         ),
       ],
-      child: MaterialApp(
-        title: 'InSoBlok',
-        debugShowCheckedModeBanner: false,
-        themeMode: AppSettingHelper.themeMode,
-        theme: AppSettingHelper.lightTheme,
-        darkTheme: AppSettingHelper.darkTheme,
-        initialRoute: kRouterBase,
-        onGenerateRoute: _navigation.router.generator,
-        home: LoginPage(),
-        localizationsDelegates: const [
-          S.delegate,
-          GlobalMaterialLocalizations.delegate,
-          GlobalWidgetsLocalizations.delegate,
-          GlobalCupertinoLocalizations.delegate,
-          FlutterQuillLocalizations.delegate,
-        ],
-        supportedLocales: S.delegate.supportedLocales,
+      child: ViewModelBuilder<AppProvider>.reactive(
+        viewModelBuilder: () => AppProvider(),
+        onViewModelReady: (viewModel) => viewModel.init(context),
+        builder: (context, viewModel, _) {
+          return MaterialApp(
+            title: 'InSoBlok',
+            debugShowCheckedModeBanner: false,
+            themeMode: AppSettingHelper.themeMode,
+            theme: AppSettingHelper.lightTheme,
+            darkTheme: AppSettingHelper.darkTheme,
+            initialRoute: kRouterBase,
+            onGenerateRoute: _navigation.router.generator,
+            home: LoginPage(),
+            localizationsDelegates: const [
+              S.delegate,
+              GlobalMaterialLocalizations.delegate,
+              GlobalWidgetsLocalizations.delegate,
+              GlobalCupertinoLocalizations.delegate,
+              FlutterQuillLocalizations.delegate,
+            ],
+            supportedLocales: S.delegate.supportedLocales,
+          );
+        },
       ),
     );
   }

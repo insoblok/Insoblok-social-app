@@ -32,6 +32,7 @@ class UploadMediaWidget extends StatelessWidget {
       itemBuilder: (context, index) {
         var media = viewModel.medias[index];
         return Container(
+          key: GlobalKey(debugLabel: 'media-$index'),
           decoration: kCardDecoration,
           child: ClipRRect(
             borderRadius: BorderRadius.circular(16.0),
@@ -58,10 +59,7 @@ class UploadMediaWidget extends StatelessWidget {
                       height: 28.0,
                       decoration: BoxDecoration(
                         shape: BoxShape.circle,
-                        color:
-                            AppSettingHelper.themeMode == ThemeMode.dark
-                                ? AIColors.darkTransparentBackground
-                                : AIColors.lightTransparentBackground,
+                        color: AppSettingHelper.transparentBackground,
                       ),
                       child:
                           media.isUploaded
@@ -72,7 +70,7 @@ class UploadMediaWidget extends StatelessWidget {
                               )
                               : media.isUploading
                               ? Loader(
-                                size: 22.0,
+                                size: 20.0,
                                 color: AIColors.red,
                                 strokeWidth: 0.5,
                               )

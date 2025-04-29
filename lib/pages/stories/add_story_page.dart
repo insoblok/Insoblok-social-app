@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:flutter_quill/flutter_quill.dart';
 import 'package:stacked/stacked.dart';
 
 import 'package:insoblok/providers/providers.dart';
@@ -26,7 +25,7 @@ class AddStoryPage extends StatelessWidget {
                 leading: IconButton(
                   onPressed: () {
                     viewModel.provider.reset();
-                    Navigator.of(context).pop(false);
+                    Navigator.of(context).pop();
                   },
                   icon: Icon(Icons.arrow_back),
                 ),
@@ -42,41 +41,52 @@ class AddStoryPage extends StatelessWidget {
                       padding: const EdgeInsets.only(left: 8.0),
                       child: Text(
                         'Title of Story',
-                        style: Theme.of(context).textTheme.headlineLarge,
+                        style: Theme.of(context).textTheme.labelMedium,
                       ),
                     ),
                     const SizedBox(height: 12.0),
                     AITextField(
                       prefixIcon: Icon(Icons.title),
                       hintText: 'Input Feed Title...',
-                      onChanged: (value) {},
+                      onChanged: (value) => viewModel.title = value,
                     ),
                     const SizedBox(height: 40.0),
                     Padding(
                       padding: const EdgeInsets.only(left: 8.0),
-                      child: Row(
-                        children: [
-                          Text(
-                            'Description of Story',
-                            style: Theme.of(context).textTheme.headlineLarge,
-                          ),
-                          const Spacer(),
-                          IconButton(
-                            onPressed: viewModel.updateDescription,
-                            icon: Icon(Icons.edit_note),
-                          ),
-                        ],
+                      child: Text(
+                        'Description of Story',
+                        style: Theme.of(context).textTheme.labelMedium,
                       ),
                     ),
                     const SizedBox(height: 12.0),
                     Container(
-                      height: 240.0,
                       decoration: kCardDecoration,
-                      padding: const EdgeInsets.all(16.0),
-                      child: QuillEditor(
-                        focusNode: viewModel.focusNode,
-                        scrollController: viewModel.quillScrollController,
-                        controller: viewModel.quillController,
+                      padding: const EdgeInsets.all(12.0),
+                      child: InkWell(
+                        onTap: viewModel.updateDescription,
+                        child:
+                            viewModel.quillDescription.isEmpty
+                                ? Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    vertical: 8.0,
+                                  ),
+                                  child: Column(
+                                    children: [
+                                      Icon(Icons.description, size: 40.0),
+                                      const SizedBox(height: 12.0),
+                                      Text(
+                                        'Add Description',
+                                        style:
+                                            Theme.of(
+                                              context,
+                                            ).textTheme.displayMedium,
+                                      ),
+                                    ],
+                                  ),
+                                )
+                                : AIHelpers.htmlRender(
+                                  viewModel.quillDescription,
+                                ),
                       ),
                     ),
                     const SizedBox(height: 40.0),
@@ -86,7 +96,7 @@ class AddStoryPage extends StatelessWidget {
                         children: [
                           Text(
                             'Galleries of Story',
-                            style: Theme.of(context).textTheme.headlineLarge,
+                            style: Theme.of(context).textTheme.labelMedium,
                           ),
                           const Spacer(),
                           IconButton(
@@ -103,7 +113,11 @@ class AddStoryPage extends StatelessWidget {
                       },
                     ),
                     const SizedBox(height: 40.0),
-                    TextFillButton(text: 'Upload Story', color: AIColors.blue),
+                    TextFillButton(
+                      text: viewModel.txtUploadButton,
+                      color: viewModel.isBusy ? AIColors.grey : AIColors.blue,
+                      onTap: viewModel.onClickUploadButton,
+                    ),
                   ]),
                 ),
               ),

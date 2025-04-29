@@ -1,13 +1,18 @@
+import 'dart:io';
+
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import 'package:carousel_slider/carousel_slider.dart';
 import 'package:stacked/stacked.dart';
 
+import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
+
+const kStoryDetailAvatarSize = 55.0;
 
 class StoryDetailPage extends StatelessWidget {
   final StoryModel story;
@@ -18,354 +23,215 @@ class StoryDetailPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewModelBuilder<StoryDetailProvider>.reactive(
       viewModelBuilder: () => StoryDetailProvider(),
-      onViewModelReady: (viewModel) => viewModel.init(context),
+      onViewModelReady: (viewModel) => viewModel.init(context, model: story),
       builder: (context, viewModel, _) {
         return Scaffold(
-          body: SingleChildScrollView(
-            child: Column(
-              children: [
-                StoryHeaderView(),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16.0,
-                    vertical: 24.0,
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              'My Story Title!!',
-                              style: TextStyle(
-                                fontSize: 18.0,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                          Text(
-                            '2025-4-22 20:15',
-                            style: TextStyle(
-                              fontSize: 10.0,
-                              fontWeight: FontWeight.w300,
-                              color: Colors.white,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 8.0),
-                      Text(
-                        'Find & Download Free Graphic Resources for Text Story Template Vectors, Stock Photos & PSD files. ✓ Free for commercial use ✓ High Quality Images.. ✓ Free for commercial use ✓ High Quality Images.',
-                        style: TextStyle(
-                          fontSize: 14.0,
-                          fontWeight: FontWeight.w300,
-                          color: Colors.white,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16.0,
-                    vertical: 24.0,
-                  ),
-                  decoration: BoxDecoration(
-                    border: Border(
-                      top: BorderSide(color: Colors.white, width: 0.5),
-                    ),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              'Favorites (32 Users)',
-                              style: TextStyle(
-                                fontSize: 18.0,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                          Text(
-                            'View All >',
-                            style: TextStyle(
-                              fontSize: 12.0,
-                              color: AIColors.yellow,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 16.0),
-                      SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 8.0,
-                          horizontal: 2.0,
-                        ),
-                        child: Row(
-                          children: [
-                            AddActionCardView(onAdd: () {}),
-                            for (var i = 0; i < 10; i++) ...{UserCardView()},
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16.0,
-                    vertical: 24.0,
-                  ),
-                  decoration: BoxDecoration(
-                    border: Border(
-                      top: BorderSide(color: Colors.white, width: 0.5),
-                    ),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              'Follow (47 Users)',
-                              style: TextStyle(
-                                fontSize: 18.0,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                          Text(
-                            'View All >',
-                            style: TextStyle(
-                              fontSize: 12.0,
-                              color: AIColors.yellow,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 16.0),
-                      SingleChildScrollView(
-                        scrollDirection: Axis.horizontal,
-                        padding: const EdgeInsets.symmetric(
-                          vertical: 8.0,
-                          horizontal: 2.0,
-                        ),
-                        child: Row(
-                          children: [
-                            AddActionCardView(onAdd: () {}),
-                            for (var i = 0; i < 10; i++) ...{UserCardView()},
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 16.0,
-                    vertical: 24.0,
-                  ),
-                  decoration: BoxDecoration(
-                    border: Border(
-                      top: BorderSide(color: Colors.white, width: 0.5),
-                    ),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Text(
-                              'Comment (19 Users)',
-                              style: TextStyle(
-                                fontSize: 18.0,
-                                fontWeight: FontWeight.w500,
-                                color: Colors.white,
-                              ),
-                            ),
-                          ),
-                          Text(
-                            'View All >',
-                            style: TextStyle(
-                              fontSize: 12.0,
-                              color: AIColors.yellow,
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 8.0),
-                      for (var i = 0; i < 3; i++) ...{
-                        const SizedBox(height: 16.0),
-                        Container(
-                          padding: const EdgeInsets.all(12.0),
-                          width: double.infinity,
-                          height: 120.0,
-                          decoration: BoxDecoration(
-                            color: AIColors.darkScaffoldBackground,
-                            borderRadius: BorderRadius.circular(16.0),
-                            boxShadow: kContainerDarkShadow,
-                          ),
-                        ),
-                      },
-                    ],
-                  ),
-                ),
-              ],
+          appBar: AppBar(
+            title: Text(viewModel.story.title ?? ''),
+            leading: IconButton(
+              onPressed: () => Navigator.of(context).pop(viewModel.story),
+              icon:
+                  Platform.isIOS
+                      ? Icon(Icons.arrow_back_ios)
+                      : Icon(Icons.arrow_back),
             ),
+          ),
+          body: ListView(
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20.0,
+                  vertical: 8.0,
+                ),
+                decoration: BoxDecoration(
+                  border: Border(
+                    top: BorderSide(color: AIColors.speraterColor, width: 0.33),
+                  ),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (kDebugMode)
+                      Row(
+                        children: [
+                          Container(
+                            width: kStoryDetailAvatarSize,
+                            alignment: Alignment.centerRight,
+                            child: AIImage(
+                              AIImages.icFavoriteFill,
+                              color: AIColors.grey,
+                              width: 12.0,
+                              height: 12.0,
+                            ),
+                          ),
+                          const SizedBox(width: 8.0),
+                          Expanded(
+                            child: Text(
+                              'Kieron Dotson and Zack John liked',
+                              style: Theme.of(context).textTheme.labelMedium,
+                            ),
+                          ),
+                        ],
+                      ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Row(
+                          children: [
+                            ClipOval(
+                              child: AIImage(
+                                viewModel.owner?.avatar,
+                                width: kStoryDetailAvatarSize,
+                                height: kStoryDetailAvatarSize,
+                              ),
+                            ),
+                            const SizedBox(width: 8.0),
+                            Column(
+                              mainAxisSize: MainAxisSize.min,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  viewModel.owner?.fullName ?? '---',
+                                  style: Theme.of(context).textTheme.bodyMedium,
+                                ),
+                                Text(
+                                  '@${viewModel.owner?.nickId}',
+                                  style: Theme.of(context).textTheme.labelLarge,
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 24.0),
+                    AIHelpers.htmlRender(viewModel.story.text),
+                    if ((viewModel.story.medias ?? []).isNotEmpty) ...{
+                      const SizedBox(height: 8.0),
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            width: 0.33,
+                            color: AIColors.speraterColor,
+                          ),
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(12.0),
+                          child: AspectRatio(
+                            aspectRatio: 1.91,
+                            child: StoryCarouselView(
+                              story: story,
+                              height: double.infinity,
+                              onChangePage: (index) {},
+                            ),
+                          ),
+                        ),
+                      ),
+                    },
+                    const SizedBox(height: 16.0),
+                    Text(
+                      viewModel.story.shownHMDate,
+                      style: Theme.of(context).textTheme.labelLarge,
+                    ),
+                    Divider(
+                      thickness: 0.33,
+                      height: 32.0,
+                      color: AIColors.speraterColor,
+                    ),
+                    Text.rich(
+                      TextSpan(
+                        children: [
+                          TextSpan(
+                            text: '${(viewModel.story.likes ?? []).length}',
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                          TextSpan(
+                            text: ' Likes  ',
+                            style: Theme.of(context).textTheme.labelLarge,
+                          ),
+                          TextSpan(
+                            text: '${(viewModel.story.follows ?? []).length}',
+                            style: Theme.of(context).textTheme.bodySmall,
+                          ),
+                          TextSpan(
+                            text: ' Followers',
+                            style: Theme.of(context).textTheme.labelLarge,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Divider(
+                      thickness: 0.33,
+                      height: 32.0,
+                      color: AIColors.speraterColor,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        InkWell(
+                          onTap: viewModel.addComment,
+                          child: AIImage(
+                            AIImages.icCommit,
+                            width: 20.0,
+                            height: 20.0,
+                          ),
+                        ),
+                        InkWell(
+                          onTap: viewModel.updateFollow,
+                          child: AIImage(
+                            AIImages.icRetwitter,
+                            width: 20.0,
+                            height: 20.0,
+                            color:
+                                viewModel.story.isFollow()
+                                    ? AIColors.green
+                                    : null,
+                          ),
+                        ),
+                        InkWell(
+                          onTap: viewModel.updateLike,
+                          child: AIImage(
+                            viewModel.story.isLike()
+                                ? AIImages.icFavoriteFill
+                                : AIImages.icFavorite,
+                            width: 20.0,
+                            height: 20.0,
+                          ),
+                        ),
+                        InkWell(
+                          onTap: viewModel.shareFeed,
+                          child: AIImage(
+                            AIImages.icShare,
+                            width: 20.0,
+                            height: 20.0,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              Divider(
+                thickness: 0.33,
+                height: 32.0,
+                color: AIColors.speraterColor,
+              ),
+              for (var comment
+                  in (viewModel.story.comments?.reversed.toList() ?? [])) ...{
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  child: StoryDetailCommentCell(
+                    comment: comment,
+                    isLast: (viewModel.story.comments ?? []).length == comment,
+                  ),
+                ),
+              },
+              SizedBox(height: MediaQuery.of(context).padding.bottom + 24.0),
+            ],
           ),
         );
       },
-    );
-  }
-}
-
-class StoryHeaderView extends ViewModelWidget<StoryDetailProvider> {
-  const StoryHeaderView({super.key});
-
-  @override
-  Widget build(BuildContext context, viewModel) {
-    return SizedBox(
-      height: 300.0,
-      child: Stack(
-        children: [
-          CarouselSlider.builder(
-            itemCount: viewModel.images.length,
-            options: CarouselOptions(
-              viewportFraction: 1.0,
-              enlargeCenterPage: false,
-              aspectRatio: 3 / 2,
-              height: 300.0,
-              onPageChanged: (index, reason) {
-                viewModel.currentIndex = index;
-              },
-            ),
-            itemBuilder: (context, index, realIdx) {
-              return Container(
-                width: double.infinity,
-                height: 300.0,
-                decoration: BoxDecoration(
-                  color: AIColors.yellow,
-                  borderRadius: BorderRadius.circular(6),
-                ),
-                child: AIImage(
-                  viewModel.images[index],
-                  width: double.infinity,
-                  fit: BoxFit.cover,
-                ),
-              );
-            },
-          ),
-          InkWell(
-            onTap: () => Navigator.of(context).pop(),
-            child: Container(
-              margin: EdgeInsets.only(
-                top: MediaQuery.of(context).padding.top + 24.0,
-                left: 24.0,
-              ),
-              width: 48.0,
-              height: 48.0,
-              decoration: BoxDecoration(
-                color: Colors.black54,
-                shape: BoxShape.circle,
-              ),
-              child: AIImage(Icons.arrow_back, color: Colors.white),
-            ),
-          ),
-          Align(
-            alignment: Alignment.topRight,
-            child: Container(
-              margin: EdgeInsets.only(
-                top: MediaQuery.of(context).padding.top + 24.0,
-                right: 24.0,
-              ),
-              padding: const EdgeInsets.symmetric(
-                horizontal: 8.0,
-                vertical: 4.0,
-              ),
-              decoration: BoxDecoration(
-                color: Colors.black54,
-                borderRadius: BorderRadius.circular(8.0),
-              ),
-              child: Text(
-                '${viewModel.currentIndex + 1} / ${viewModel.images.length}',
-                style: TextStyle(color: Colors.white),
-              ),
-            ),
-          ),
-          Align(
-            alignment: Alignment.bottomCenter,
-            child: Container(
-              width: double.infinity,
-              height: 60.0,
-              color: Colors.black54,
-              padding: const EdgeInsets.symmetric(horizontal: 24.0),
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      AIImage(
-                        Icons.favorite,
-                        color: Colors.white,
-                        width: 18.0,
-                        height: 18.0,
-                      ),
-                      const SizedBox(width: 4.0),
-                      Text('32', style: TextStyle(color: Colors.white)),
-                    ],
-                  ),
-                  const SizedBox(width: 24.0),
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      AIImage(
-                        Icons.hearing,
-                        color: Colors.white,
-                        width: 18.0,
-                        height: 18.0,
-                      ),
-                      const SizedBox(width: 4.0),
-                      Text('47', style: TextStyle(color: Colors.white)),
-                    ],
-                  ),
-                  const SizedBox(width: 24.0),
-                  Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      AIImage(
-                        Icons.comment,
-                        color: Colors.white,
-                        width: 18.0,
-                        height: 18.0,
-                      ),
-                      const SizedBox(width: 4.0),
-                      Text('19', style: TextStyle(color: Colors.white)),
-                    ],
-                  ),
-                  const Spacer(),
-                  AIImage(
-                    Icons.share,
-                    color: Colors.white,
-                    width: 18.0,
-                    height: 18.0,
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ],
-      ),
     );
   }
 }

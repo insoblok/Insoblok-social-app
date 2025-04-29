@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import 'package:fluttertoast/fluttertoast.dart';
@@ -24,8 +26,7 @@ class UploadMediaProvider extends InSoBlokViewModel {
     _mediaPicker = MediaPickerService(context);
   }
 
-  List<UploadMediaItem> _medias = [];
-  List<UploadMediaItem> get medias => _medias;
+  List<UploadMediaItem> medias = [];
 
   // * PICK IMAGES FROM GALLERY
   Future<void> addMedias(
@@ -34,39 +35,41 @@ class UploadMediaProvider extends InSoBlokViewModel {
     int? maxImages,
   }) async {
     var files = await _mediaPicker.onMultiMediaPicker(
-      limit: (9 - _medias.length),
+      limit: (9 - medias.length),
     );
     if (files.isEmpty) {
       Fluttertoast.showToast(msg: 'No selected media!');
     } else {
-      _medias.addAll(
+      medias.addAll(
         files.map((asset) => UploadMediaItem(file: asset)).toList(),
       );
     }
-    logger.d(_medias.length);
+    logger.d(medias.length);
     notifyListeners();
   }
 
   void removeMedia(UploadMediaItem media) {
     if (!media.isUploaded && !media.isUploaded) {
-      _medias.remove(media);
+      medias.remove(media);
       notifyListeners();
     }
   }
 
   Future<List<MediaStoryModel>> uploadMedias() async {
     List<MediaStoryModel> result = [];
-    for (var media in _medias) {
+    for (var media in medias) {
       if (media.isUploaded) continue;
       var url = await uploadMedia(media: media);
 
       if (url != null) {
-        var type = media.file?.mimeType;
+        var type = media.file!.path;
 
         var model = MediaStoryModel(
           link: url,
           type:
-              (type == 'png' || type == 'jpg' || type == 'jpeg')
+              ((type.endsWith('png')) ||
+                      type.endsWith('jpg') ||
+                      type.endsWith('jpeg'))
                   ? 'image'
                   : 'video',
         );
@@ -79,20 +82,16 @@ class UploadMediaProvider extends InSoBlokViewModel {
   // UPLOAD IMAGE
   Future<String?> uploadMedia({required UploadMediaItem media}) async {
     media.isUploading = true;
+    notifyListeners();
     try {
-      // await NetworkHelpers.uploadImage(
-      //   venueId: venueId,
-      //   eventId: eventId,
-      //   reviewId: reviewId,
-      //   listingId: listingId,
-      //   image: image.compressedImage,
-      //   type: image.imageType,
-      //   onSentProgress: (int sent, int total) {},
-      // );
-
-      await Future.delayed(const Duration(milliseconds: 1500));
-
+      var mediaUrl = await FirebaseHelper.uploadFile(
+        file: File(media.file!.path),
+        folderName: 'story',
+      );
       media.isUploaded = true;
+      notifyListeners();
+
+      return mediaUrl;
     } catch (e) {
       logger.e(e);
     } finally {
@@ -103,7 +102,7 @@ class UploadMediaProvider extends InSoBlokViewModel {
   }
 
   void reset() {
-    _medias = [];
+    medias.clear();
     setError(null);
   }
 

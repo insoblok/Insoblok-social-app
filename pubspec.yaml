@@ -25,6 +25,8 @@ dependencies:
   chewie: any
   carousel_slider: any
   flutter_quill: any
+  vsc_quill_delta_to_html: any
+  flutter_html: any
 
   logger: any
   freezed_annotation: any
@@ -48,6 +50,7 @@ dependencies:
   web3dart: any
   url_launcher: any
   http: any
+  share_plus: any
 
   firebase_analytics: any
   cloud_firestore: any
@@ -74,30 +77,25 @@ flutter:
 
   assets:
     - assets/images/
+    - assets/icons/
     - assets/videos/
     - assets/fonts/
 
   fonts:
-    - family: Geist
+    - family: SFProText
       fonts:
-        - asset: assets/fonts/Geist-Thin.ttf
-          weight: 100
-        - asset: assets/fonts/Geist-ExtraLight.ttf
+        - asset: assets/fonts/SF-Pro-Text-Light.otf
           weight: 200
-        - asset: assets/fonts/Geist-Light.ttf
+        - asset: assets/fonts/SF-Pro-Text-Regular.otf
           weight: 300
-        - asset: assets/fonts/Geist-Regular.ttf
+        - asset: assets/fonts/SF-Pro-Text-Medium.otf
           weight: 400
-        - asset: assets/fonts/Geist-Medium.ttf
+        - asset: assets/fonts/SF-Pro-Text-Semibold.otf
           weight: 500
-        - asset: assets/fonts/Geist-SemiBold.ttf
+        - asset: assets/fonts/SF-Pro-Text-Bold.otf
           weight: 600
-        - asset: assets/fonts/Geist-Bold.ttf
-          weight: 700
-        - asset: assets/fonts/Geist-ExtraBold.ttf
-          weight: 900
-        - asset: assets/fonts/Geist-Black.ttf
-          weight: 900
+        - asset: assets/fonts/SF-Pro-Text-Heavy.otf
+          weight: 800
 
 flutter_intl:
   main_locale: en_US

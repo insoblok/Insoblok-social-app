@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:insoblok/models/models.dart';
 
 import 'package:stacked/stacked.dart';
 
+import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
@@ -23,7 +23,7 @@ class ProfileView extends ViewModelWidget<InSoBlokProvider> {
           UserAvatarView(
             onUpdateAvatar: (result) async {
               if (result == 0) {
-                var url = await Routers.goToAccountPage(context);
+                var url = await Routers.goToAccountAvatarPage(context);
                 if (url != null) {
                   await AuthHelper.setUser(
                     AuthHelper.user!.copyWith(avatar: url),
