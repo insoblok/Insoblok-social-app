@@ -290,4 +290,6 @@ class AppSettingHelper {
   static ThemeMode get themeMode => service.themeMode;
   static ThemeData get lightTheme => service.lightTheme;
   static ThemeData get darkTheme => service.darkTheme;
+
+  static void setTheme(ThemeMode model) => service.setTheme(model);
 }

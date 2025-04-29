@@ -72,7 +72,10 @@ class LookbookView extends StatelessWidget {
                         ),
                         child: Text(
                           'New Posts',
-                          style: TextStyle(fontSize: 12.0),
+                          style: TextStyle(
+                            fontSize: 12.0,
+                            color: Theme.of(context).colorScheme.primary,
+                          ),
                         ),
                       ),
                     ),

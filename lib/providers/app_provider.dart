@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:insoblok/services/app_sertting_service.dart';
 
 import 'package:insoblok/utils/utils.dart';
 
@@ -12,5 +13,14 @@ class AppProvider extends InSoBlokViewModel {
 
   Future<void> init(BuildContext context) async {
     this.context = context;
+  }
+
+  void updateTheme() {
+    AppSettingHelper.setTheme(
+      AppSettingHelper.themeMode == ThemeMode.light
+          ? ThemeMode.dark
+          : ThemeMode.light,
+    );
+    notifyListeners();
   }
 }

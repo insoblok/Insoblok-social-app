@@ -24,6 +24,7 @@ class MarketView extends StatelessWidget {
               pinned: true,
               actions: [],
             ),
+            SliverList(delegate: SliverChildListDelegate([])),
           ],
         );
       },

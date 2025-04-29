@@ -136,35 +136,37 @@ class _MediaCarouselCellState extends State<MediaCarouselCell> {
   void initState() {
     super.initState();
 
-    _videoPlayerController = VideoPlayerController.networkUrl(
-      Uri.parse(widget.media.link!),
-    );
-
-    _videoPlayerController.addListener(() {
-      if (_videoPlayerController.value.isCompleted) {
-        setState(() {
-          isPlaying = false;
-          _videoPlayerController.seekTo(Duration(milliseconds: 0));
-        });
-      }
-    });
-
-    _videoPlayerController.initialize().then((value) {
-      _chewieController = ChewieController(
-        videoPlayerController: _videoPlayerController,
-        autoPlay: true,
-        looping: false,
-        aspectRatio: _videoPlayerController.value.aspectRatio,
-        showControls: false,
-        materialProgressColors: ChewieProgressColors(
-          playedColor: Colors.red,
-          handleColor: Colors.red,
-          backgroundColor: Colors.grey,
-          bufferedColor: Colors.lightGreen,
-        ),
+    if (widget.media.type == 'video') {
+      _videoPlayerController = VideoPlayerController.networkUrl(
+        Uri.parse(widget.media.link!),
       );
-      setState(() {});
-    });
+
+      _videoPlayerController.addListener(() {
+        if (_videoPlayerController.value.isCompleted) {
+          setState(() {
+            isPlaying = false;
+            _videoPlayerController.seekTo(Duration(milliseconds: 0));
+          });
+        }
+      });
+
+      _videoPlayerController.initialize().then((value) {
+        _chewieController = ChewieController(
+          videoPlayerController: _videoPlayerController,
+          autoPlay: true,
+          looping: false,
+          aspectRatio: _videoPlayerController.value.aspectRatio,
+          showControls: false,
+          materialProgressColors: ChewieProgressColors(
+            playedColor: Colors.red,
+            handleColor: Colors.red,
+            backgroundColor: Colors.grey,
+            bufferedColor: Colors.lightGreen,
+          ),
+        );
+        setState(() {});
+      });
+    }
   }
 
   @override
@@ -235,8 +237,10 @@ class _MediaCarouselCellState extends State<MediaCarouselCell> {
 
   @override
   void dispose() {
-    _videoPlayerController.dispose();
-    _chewieController.dispose();
+    if (widget.media.type == 'video') {
+      _videoPlayerController.dispose();
+      _chewieController.dispose();
+    }
     super.dispose();
   }
 }

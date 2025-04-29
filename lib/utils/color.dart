@@ -9,6 +9,7 @@ class AIColors {
   static Color darkPrimaryColor = Color.fromARGB(255, 139, 172, 211);
   static Color darkTransparentBackground = Colors.black54;
 
+  static Color lightScaffoldBackground = Color(0xff1c2836);
   static Color lightTransparentBackground = Colors.white38;
 
   static Color transparent = Colors.transparent;
