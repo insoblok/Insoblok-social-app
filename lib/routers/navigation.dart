@@ -12,7 +12,7 @@ const kRouterMain = '/main';
 
 const kRouterAccount = '/account';
 const kRouterAccountAvatar = '/account-avatar';
-const kRouterAccountList = '/account-list';
+const kRouterAccountPost = '/account-post';
 const kRouterAccountTopic = '/account-topic';
 const kRouterAccountBookmark = '/account-bookmark';
 const kRouterAccountMoment = '/account-moment';
@@ -25,8 +25,9 @@ const kRouterAddStory = '/add-story';
 const kRouterStoryDetail = '/story-detail';
 
 const kRouterQuillDescription = '/quill-description';
-const kRouterSettingPrivacy = '/setting-privacy';
+const kRouterPrivacy = '/privacy-police';
 const kRouterHelpCenter = '/help-center';
+const kRouterSetting = '/setting';
 
 class Navigation {
   final router = fluro.FluroRouter();
@@ -69,7 +70,7 @@ class Navigation {
     initRoute(kRouterAccountAvatar, (props) => AvatarPage());
 
     // * AccountListPage
-    initRoute(kRouterAccountList, (props) => ListPage());
+    initRoute(kRouterAccountPost, (props) => PostsPage());
 
     // * AccountTopicPage
     initRoute(kRouterAccountTopic, (props) => TopicPage());
@@ -107,8 +108,11 @@ class Navigation {
       (props) => QuillDescriptionPage(originQuill: props),
     );
 
-    // * SettingPrivacyPage
-    initRoute(kRouterSettingPrivacy, (props) => SettingPage());
+    // * SettingPage
+    initRoute(kRouterSetting, (props) => SettingPage());
+
+    // * PrivacyPage
+    initRoute(kRouterPrivacy, (props) => PrivacyPage());
 
     // * HelpCenterPage
     initRoute(kRouterHelpCenter, (props) => HelpPage());

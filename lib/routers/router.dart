@@ -34,7 +34,7 @@ class Routers {
   }
 
   static goToAccountListPage(BuildContext context) {
-    return _pushToRoute(context, kRouterAccountList, null);
+    return _pushToRoute(context, kRouterAccountPost, null);
   }
 
   static goToAccountTopicPage(BuildContext context) {
@@ -73,8 +73,12 @@ class Routers {
     return _pushToRoute(context, kRouterQuillDescription, origin);
   }
 
-  static goToSettingPrivacyPage(BuildContext context) {
-    return _pushToRoute(context, kRouterSettingPrivacy, null);
+  static goToSettingPage(BuildContext context) {
+    return _pushToRoute(context, kRouterSetting, null);
+  }
+
+  static goToPrivacyPage(BuildContext context) {
+    return _pushToRoute(context, kRouterPrivacy, null);
   }
 
   static goToHelpCenterPage(BuildContext context) {

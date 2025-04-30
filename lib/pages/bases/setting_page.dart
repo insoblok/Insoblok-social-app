@@ -13,7 +13,10 @@ class SettingPage extends StatelessWidget {
       viewModelBuilder: () => SettingProvider(),
       onViewModelReady: (viewModel) => viewModel.init(context),
       builder: (context, viewModel, _) {
-        return Scaffold();
+        return Scaffold(
+          appBar: AppBar(title: Text('InSoBlokAI Setting'), centerTitle: true),
+          body: ListView(),
+        );
       },
     );
   }

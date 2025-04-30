@@ -13,7 +13,9 @@ class BookmarkPage extends StatelessWidget {
       viewModelBuilder: () => BookmarkProvider(),
       onViewModelReady: (viewModel) => viewModel.init(context),
       builder: (context, viewModel, _) {
-        return Scaffold();
+        return Scaffold(
+          appBar: AppBar(title: Text('My Follows'), centerTitle: true),
+        );
       },
     );
   }

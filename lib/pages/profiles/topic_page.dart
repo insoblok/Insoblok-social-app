@@ -13,7 +13,9 @@ class TopicPage extends StatelessWidget {
       viewModelBuilder: () => TopicProvider(),
       onViewModelReady: (viewModel) => viewModel.init(context),
       builder: (context, viewModel, _) {
-        return Scaffold();
+        return Scaffold(
+          appBar: AppBar(title: Text('My Likes'), centerTitle: true),
+        );
       },
     );
   }

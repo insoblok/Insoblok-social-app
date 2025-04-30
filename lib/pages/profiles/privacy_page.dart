@@ -4,13 +4,13 @@ import 'package:stacked/stacked.dart';
 
 import 'package:insoblok/providers/providers.dart';
 
-class ListPage extends StatelessWidget {
-  const ListPage({super.key});
+class PrivacyPage extends StatelessWidget {
+  const PrivacyPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return ViewModelBuilder<ListProvider>.reactive(
-      viewModelBuilder: () => ListProvider(),
+    return ViewModelBuilder<PrivacyProvider>.reactive(
+      viewModelBuilder: () => PrivacyProvider(),
       onViewModelReady: (viewModel) => viewModel.init(context),
       builder: (context, viewModel, _) {
         return Scaffold();

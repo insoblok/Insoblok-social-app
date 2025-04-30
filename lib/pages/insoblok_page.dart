@@ -98,7 +98,7 @@ class InSoBlokPage extends StatelessWidget {
                             ),
                             InkWell(
                               onTap: viewModel.onClickMenuMore,
-                              child: AIImage(AIImages.icCircleMore),
+                              child: AIImage(AIImages.icSetting),
                             ),
                           ],
                         ),
@@ -151,7 +151,7 @@ class InSoBlokPage extends StatelessWidget {
                   MenuButtonCover(
                     onTap: () => viewModel.onClickMenuItem(5),
                     child: Text(
-                      'Settings and privacy',
+                      'Privacy and Police',
                       style: Theme.of(context).textTheme.displayMedium,
                     ),
                   ),
