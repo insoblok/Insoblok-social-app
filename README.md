@@ -31,3 +31,5 @@ firebase init functions
 firebase login
 firebase logout
 firebase deploy --only functions
+
+gcloud projects add-iam-policy-binding insoblokai  --member="user:kenta@insoblokai.io"   --role="roles/iam.serviceAccountUser"

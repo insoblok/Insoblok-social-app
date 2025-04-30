@@ -42,3 +42,36 @@ class AISliverAppbar extends SliverAppBar {
                  : null,
        );
 }
+
+class AIPersistentHeader extends SliverPersistentHeaderDelegate {
+  final Widget child;
+  final double maxSize;
+  final double minSize;
+  final dynamic dynamicValue;
+
+  AIPersistentHeader({
+    required this.child,
+    required this.maxSize,
+    required this.minSize,
+    this.dynamicValue,
+  });
+
+  @override
+  double get maxExtent => maxSize;
+
+  @override
+  double get minExtent => minSize;
+
+  @override
+  Widget build(BuildContext context, shrinkOffset, overlapsContent) {
+    return child;
+  }
+
+  @override
+  bool shouldRebuild(AIPersistentHeader oldDelegate) {
+    if (oldDelegate.maxSize == 0) return false;
+    if (oldDelegate.maxExtent != maxSize) return true;
+    if (oldDelegate.dynamicValue != dynamicValue) return true;
+    return false;
+  }
+}
