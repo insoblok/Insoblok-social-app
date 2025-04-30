@@ -51,6 +51,19 @@ class AccountPage extends StatelessWidget {
                       StoryListCell(story: story),
                     },
                   },
+                  if (viewModel.pageIndex == 1) ...{
+                    for (var uid in (viewModel.accountUser?.likes ?? [])) ...{
+                      UserRelatedView(uid: uid),
+                    },
+                  },
+                  if (viewModel.pageIndex == 2) ...{
+                    for (var uid in (viewModel.accountUser?.follows ?? [])) ...{
+                      UserRelatedView(uid: uid),
+                    },
+                  },
+                  SizedBox(
+                    height: MediaQuery.of(context).padding.bottom + 40.0,
+                  ),
                 ]),
               ),
             ],

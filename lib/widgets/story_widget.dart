@@ -188,10 +188,17 @@ class StoryListCell extends StatelessWidget {
                                 ),
                               ),
                               Expanded(
-                                child: Row(
-                                  children: [
-                                    AIImage(AIImages.icShare, height: 14.0),
-                                  ],
+                                child: InkWell(
+                                  onTap:
+                                      () => AIHelpers.shareStory(
+                                        context,
+                                        story: story,
+                                      ),
+                                  child: Row(
+                                    children: [
+                                      AIImage(AIImages.icShare, height: 14.0),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ],

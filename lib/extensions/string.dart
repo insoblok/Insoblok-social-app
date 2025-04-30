@@ -17,4 +17,14 @@ extension StringExt on String {
     }
     return '---';
   }
+
+  String get mdyFormatter {
+    try {
+      var date = kFullDateTimeFormatter.parse(this, true).toLocal();
+      return kDateMDYFormatter.format(date);
+    } catch (e) {
+      logger.e(e);
+    }
+    return '---';
+  }
 }

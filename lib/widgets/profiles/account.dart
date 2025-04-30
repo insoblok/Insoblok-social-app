@@ -112,7 +112,7 @@ class AccountFloatingView extends ViewModelWidget<AccountProvider> {
           const SizedBox(height: 12.0),
           Text(
             viewModel.accountUser?.desc ??
-                'You can input your profile description if you didn\'t set that yet!. That will be shown to other and will make more user experience of InSoBlokAI.',
+                'User can input your profile description if you didn\'t set that yet!. That will be shown to other and will make more user experience of InSoBlokAI.',
             style:
                 viewModel.accountUser?.desc == null
                     ? Theme.of(context).textTheme.labelMedium
