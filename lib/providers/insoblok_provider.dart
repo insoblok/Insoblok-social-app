@@ -60,8 +60,10 @@ class InSoBlokProvider extends InSoBlokViewModel {
         Routers.goToAccountMomentPage(context);
         break;
       case 5:
+        Routers.goToPrivacyPage(context);
         break;
       case 6:
+        Routers.goToHelpCenterPage(context);
         break;
       case 7:
         _appProvider.updateTheme();

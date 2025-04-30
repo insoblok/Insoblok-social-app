@@ -151,7 +151,7 @@ class InSoBlokPage extends StatelessWidget {
                   MenuButtonCover(
                     onTap: () => viewModel.onClickMenuItem(5),
                     child: Text(
-                      'Privacy and Police',
+                      'Privacy and Policy',
                       style: Theme.of(context).textTheme.displayMedium,
                     ),
                   ),

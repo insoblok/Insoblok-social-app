@@ -297,6 +297,11 @@ class AppSettingService with ListenableServiceMixin {
       themeMode == ThemeMode.light
           ? AIColors.lightBackground
           : AIColors.darkBackground;
+
+  Color get textColor =>
+      themeMode == ThemeMode.light
+          ? AIColors.lightTextColor
+          : AIColors.darkTextColor;
 }
 
 class AppSettingHelper {
@@ -311,4 +316,5 @@ class AppSettingHelper {
   static Color get greyBackground => service.greyBackground;
   static Color get transparentBackground => service.transparentBackground;
   static Color get background => service.background;
+  static Color get textColor => service.textColor;
 }
