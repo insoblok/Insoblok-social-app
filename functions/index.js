@@ -14,13 +14,14 @@ exports.scheduledFunction = functions.pubsub
     .onRun((context) => {
       console.log("This will run every 3 hours!");
       axios.get(url)
-          .then((data) => {
-            console.log(data);
-            admin.firestore().collection("perigonNews").add({
-              ...data,
-              receivedAt: admin.firestore.FieldValue.serverTimestamp(),
-              processed: false,
-            });
+          .then( async (data) => {
+            for (let i = 0; i < data["articles"].length; i++) {
+              const article = data["articles"][i];
+              console.log(article);
+              await admin.firestore().collection("perigon").add({
+                article,
+              });
+            }
           })
           .catch((error) => {
             console.log(error);

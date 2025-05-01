@@ -11,3 +11,4 @@ export 'ethereum_service.dart';
 export 'story_service.dart';
 export 'app_sertting_service.dart';
 export 'media_picker_service.dart';
+export 'news_service.dart';

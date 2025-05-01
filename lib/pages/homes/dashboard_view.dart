@@ -6,16 +6,6 @@ import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
 
-const kDashbordPageTitles = [
-  'US Government',
-  'Tech',
-  'Finance',
-  'Left-leaning',
-  'Sports',
-  'Right-leaning',
-  'Most popular',
-];
-
 class DashboardView extends StatelessWidget {
   const DashboardView({super.key});
 
@@ -72,16 +62,8 @@ class DashboardView extends StatelessWidget {
             ),
             SliverList(
               delegate: SliverChildListDelegate([
-                for (var i = 0; i < 10; i++) ...{
-                  Container(
-                    margin: const EdgeInsets.symmetric(
-                      horizontal: 20.0,
-                      vertical: 8.0,
-                    ),
-                    width: double.infinity,
-                    height: 135.0,
-                    color: Colors.red,
-                  ),
+                for (var news in viewModel.showns) ...{
+                  NewsListCell(news: news),
                 },
               ]),
             ),

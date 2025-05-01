@@ -31,4 +31,15 @@ extension StringExt on String {
   bool get isEmailValid => RegExp(
     r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
   ).hasMatch(this);
+
+  String get newsTimeago {
+    try {
+      var date = DateTime.parse(this);
+      var dateStr = kFullDateTimeFormatter.format(date);
+      return dateStr.timeago;
+    } catch (e) {
+      logger.e(e);
+    }
+    return '---';
+  }
 }

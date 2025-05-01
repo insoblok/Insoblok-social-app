@@ -80,6 +80,7 @@ flutter:
     - assets/icons/
     - assets/videos/
     - assets/fonts/
+    - assets/data/
 
   fonts:
     - family: SFProText
