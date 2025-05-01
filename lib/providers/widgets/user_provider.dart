@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:insoblok/models/models.dart';
+import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 
@@ -36,5 +37,12 @@ class UserProvider extends InSoBlokViewModel {
     } finally {
       notifyListeners();
     }
+  }
+
+  Future<void> goToDetailPage() async {
+    if (isBusy) return;
+    clearErrors();
+
+    await Routers.goToAccountPage(context, user: owner);
   }
 }

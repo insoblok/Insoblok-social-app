@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 
 import 'package:insoblok/providers/providers.dart';
+import 'package:insoblok/widgets/widgets.dart';
 
 class TopicPage extends StatelessWidget {
   const TopicPage({super.key});
@@ -15,6 +16,17 @@ class TopicPage extends StatelessWidget {
       builder: (context, viewModel, _) {
         return Scaffold(
           appBar: AppBar(title: Text('My Likes'), centerTitle: true),
+          body: ListView.separated(
+            physics: BouncingScrollPhysics(),
+            itemBuilder: (context, i) {
+              var story = viewModel.stories[i];
+              return StoryListCell(story: story);
+            },
+            separatorBuilder: (context, i) {
+              return Container();
+            },
+            itemCount: viewModel.stories.length,
+          ),
         );
       },
     );

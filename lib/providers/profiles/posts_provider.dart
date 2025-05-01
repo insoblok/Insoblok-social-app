@@ -6,7 +6,7 @@ import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 
-class BookmarkProvider extends InSoBlokViewModel {
+class PostProvider extends InSoBlokViewModel {
   late BuildContext _context;
   BuildContext get context => _context;
   set context(BuildContext context) {
@@ -31,7 +31,7 @@ class BookmarkProvider extends InSoBlokViewModel {
 
     await runBusyFuture(() async {
       try {
-        var s = await storyService.getStoriesByFollow(user!.uid!);
+        var s = await storyService.getStoriesByUid(user!.uid!);
         if (s.isNotEmpty) {
           stories.clear();
           stories.addAll(s);

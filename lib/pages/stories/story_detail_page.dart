@@ -28,6 +28,7 @@ class StoryDetailPage extends StatelessWidget {
         return Scaffold(
           appBar: AppBar(
             title: Text(viewModel.story.title ?? ''),
+            centerTitle: true,
             leading: IconButton(
               onPressed: () => Navigator.of(context).pop(viewModel.story),
               icon:

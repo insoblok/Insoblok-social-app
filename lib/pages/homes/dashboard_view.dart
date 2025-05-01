@@ -6,7 +6,15 @@ import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
 
-const kDashbordPageTitles = ['For you', 'Following', 'Popular'];
+const kDashbordPageTitles = [
+  'US Government',
+  'Tech',
+  'Finance',
+  'Left-leaning',
+  'Sports',
+  'Right-leaning',
+  'Most popular',
+];
 
 class DashboardView extends StatelessWidget {
   const DashboardView({super.key});
@@ -26,11 +34,14 @@ class DashboardView extends StatelessWidget {
               floating: true,
               leading: AppLeadingView(),
               title: Text('Home'),
-              extendWidget: Row(
-                children: [
-                  for (var i = 0; i < kDashbordPageTitles.length; i++) ...{
-                    Expanded(
-                      child: Container(
+              extendWidget: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  spacing: 8.0,
+                  children: [
+                    for (var i = 0; i < kDashbordPageTitles.length; i++) ...{
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         decoration: BoxDecoration(
                           border:
                               viewModel.pageIndex == i
@@ -45,12 +56,18 @@ class DashboardView extends StatelessWidget {
                         alignment: Alignment.center,
                         child: InkWell(
                           onTap: () => viewModel.pageIndex = i,
-                          child: Text(kDashbordPageTitles[i]),
+                          child: Text(
+                            kDashbordPageTitles[i],
+                            style:
+                                viewModel.pageIndex == i
+                                    ? Theme.of(context).textTheme.bodySmall
+                                    : Theme.of(context).textTheme.labelLarge,
+                          ),
                         ),
                       ),
-                    ),
-                  },
-                ],
+                    },
+                  ],
+                ),
               ),
             ),
             SliverList(

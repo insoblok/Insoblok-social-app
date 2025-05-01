@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+
+import 'package:stacked/stacked.dart';
+
 import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/pages/pages.dart';
 import 'package:insoblok/providers/providers.dart';
-
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
-import 'package:stacked/stacked.dart';
 
 class UserAvatarView extends StatelessWidget {
   final void Function(int?)? onUpdateAvatar;
@@ -210,7 +211,7 @@ class UserRelatedView extends StatelessWidget {
             ),
           ),
           child: InkWell(
-            // onTap: viewModel.goToDetailPage,
+            onTap: viewModel.goToDetailPage,
             child: Column(
               children: [
                 Row(
