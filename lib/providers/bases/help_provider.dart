@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:flutter_email_sender/flutter_email_sender.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:insoblok/extensions/extensions.dart';
@@ -59,17 +58,7 @@ class HelpProvider extends InSoBlokViewModel {
 
     await runBusyFuture(() async {
       try {
-        final Email emailSender = Email(
-          body: message,
-          subject: 'Help Center',
-          recipients: [email],
-          cc: [kRecevierEmail],
-          // cc: ['cc@example.com'],
-          // bcc: ['bcc@example.com'],
-          // attachmentPaths: ['/path/to/attachment.zip'],
-          isHTML: false,
-        );
-        await FlutterEmailSender.send(emailSender);
+        await AIHelpers.sendEmail(subject: 'Help Center', body: message);
       } catch (e) {
         setError(e);
         logger.e(e);

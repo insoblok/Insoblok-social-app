@@ -51,7 +51,6 @@ dependencies:
   url_launcher: any
   http: any
   share_plus: any
-  flutter_email_sender: any
 
   firebase_analytics: any
   cloud_firestore: any
