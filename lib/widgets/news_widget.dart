@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
+import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 
@@ -19,97 +20,100 @@ class NewsListCell extends StatelessWidget {
           top: BorderSide(color: AIColors.speraterColor, width: 0.33),
         ),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              border: Border.all(width: 0.33, color: AIColors.speraterColor),
-              borderRadius: BorderRadius.circular(12.0),
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(12.0),
-              child: AspectRatio(
-                aspectRatio: 1.91,
-                child: AIImage(
-                  news.imageUrl,
-                  width: double.infinity,
-                  height: double.infinity,
+      child: InkWell(
+        onTap: () => Routers.goToNewsDetailPage(context, news),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Container(
+              decoration: BoxDecoration(
+                border: Border.all(width: 0.33, color: AIColors.speraterColor),
+                borderRadius: BorderRadius.circular(12.0),
+              ),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(12.0),
+                child: AspectRatio(
+                  aspectRatio: 1.91,
+                  child: AIImage(
+                    news.imageUrl,
+                    width: double.infinity,
+                    height: double.infinity,
+                  ),
                 ),
               ),
             ),
-          ),
-          const SizedBox(height: 8.0),
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: Text(
-                  news.title ?? '---',
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
+            const SizedBox(height: 8.0),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Expanded(
+                  child: Text(
+                    news.title ?? '---',
+                    maxLines: 2,
+                    overflow: TextOverflow.ellipsis,
+                  ),
                 ),
-              ),
-              const SizedBox(width: 12.0),
-              Text(
-                news.addDate?.newsTimeago ?? '---',
-                style: Theme.of(context).textTheme.labelMedium,
-              ),
-            ],
-          ),
-          if (news.categories?.isNotEmpty ?? false) ...{
-            const SizedBox(height: 8.0),
-            Wrap(
-              spacing: 8.0,
-              children: [
-                for (var category in (news.categories ?? [])) ...{
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8.0,
-                      vertical: 2.0,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColor,
-                      borderRadius: BorderRadius.circular(24.0),
-                    ),
-                    child: Text(
-                      category['name'],
-                      style: Theme.of(context).textTheme.headlineSmall,
-                    ),
-                  ),
-                },
+                const SizedBox(width: 12.0),
+                Text(
+                  news.addDate?.newsTimeago ?? '---',
+                  style: Theme.of(context).textTheme.labelMedium,
+                ),
               ],
             ),
-          },
-          if (news.topics?.isNotEmpty ?? false) ...{
-            const SizedBox(height: 8.0),
-            Wrap(
-              spacing: 8.0,
-              children: [
-                for (var topic in (news.topics ?? [])) ...{
-                  Text(
-                    '#${topic['name']}',
-                    style: Theme.of(context).textTheme.bodySmall,
-                  ),
-                },
-              ],
-            ),
-          },
-          const SizedBox(height: 8.0),
-          Text(
-            news.description ?? '---',
-            style: Theme.of(context).textTheme.bodySmall,
-            maxLines: 3,
-          ),
-          if (news.shortSummary?.isNotEmpty ?? false) ...{
+            if (news.categories?.isNotEmpty ?? false) ...{
+              const SizedBox(height: 8.0),
+              Wrap(
+                spacing: 8.0,
+                children: [
+                  for (var category in (news.categories ?? [])) ...{
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8.0,
+                        vertical: 2.0,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).primaryColor,
+                        borderRadius: BorderRadius.circular(24.0),
+                      ),
+                      child: Text(
+                        category['name'],
+                        style: Theme.of(context).textTheme.headlineSmall,
+                      ),
+                    ),
+                  },
+                ],
+              ),
+            },
+            if (news.topics?.isNotEmpty ?? false) ...{
+              const SizedBox(height: 8.0),
+              Wrap(
+                spacing: 8.0,
+                children: [
+                  for (var topic in (news.topics ?? [])) ...{
+                    Text(
+                      '#${topic['name']}',
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  },
+                ],
+              ),
+            },
             const SizedBox(height: 8.0),
             Text(
-              news.shortSummary ?? '---',
-              style: Theme.of(context).textTheme.labelMedium,
+              news.description ?? '---',
+              style: Theme.of(context).textTheme.bodySmall,
               maxLines: 3,
             ),
-          },
-        ],
+            if (news.shortSummary?.isNotEmpty ?? false) ...{
+              const SizedBox(height: 8.0),
+              Text(
+                news.shortSummary ?? '---',
+                style: Theme.of(context).textTheme.labelMedium,
+                maxLines: 3,
+              ),
+            },
+          ],
+        ),
       ),
     );
   }

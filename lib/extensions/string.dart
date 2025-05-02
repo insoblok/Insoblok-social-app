@@ -34,12 +34,16 @@ extension StringExt on String {
 
   String get newsTimeago {
     try {
-      var date = DateTime.parse(this);
-      var dateStr = kFullDateTimeFormatter.format(date);
+      var date = DateTime.parse(this).toLocal();
+      var dateStr = kFullDateTimeFormatter.format(date.toUtc());
       return dateStr.timeago;
     } catch (e) {
       logger.e(e);
     }
     return '---';
+  }
+
+  String get pageSpeedThumbnail {
+    return 'https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${Uri.encodeComponent(this)}&screenshot=true';
   }
 }

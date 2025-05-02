@@ -172,3 +172,27 @@ class CustomFloatingButton extends StatelessWidget {
     );
   }
 }
+
+class CustomCircleBackButton extends StatelessWidget {
+  const CustomCircleBackButton({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () => Navigator.of(context).pop(),
+      child: Container(
+        width: 36.0,
+        height: 36.0,
+        margin: EdgeInsets.only(
+          left: 20.0,
+          top: MediaQuery.of(context).padding.top + 12.0,
+        ),
+        decoration: BoxDecoration(
+          shape: BoxShape.circle,
+          color: AppSettingHelper.transparentBackground,
+        ),
+        child: Icon(Icons.arrow_back, size: 18.0),
+      ),
+    );
+  }
+}

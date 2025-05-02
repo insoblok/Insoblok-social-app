@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:insoblok/widgets/widgets.dart';
 
 import 'package:stacked/stacked.dart';
 
@@ -38,22 +39,7 @@ class AccountPresentHeaderView extends ViewModelWidget<AccountProvider> {
                 child: ClipOval(child: AIImage(viewModel.accountUser?.avatar)),
               ),
             ),
-            InkWell(
-              onTap: () => Navigator.of(context).pop(),
-              child: Container(
-                width: 36.0,
-                height: 36.0,
-                margin: EdgeInsets.only(
-                  left: 20.0,
-                  top: MediaQuery.of(context).padding.top + 12.0,
-                ),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppSettingHelper.transparentBackground,
-                ),
-                child: Icon(Icons.arrow_back, size: 18.0),
-              ),
-            ),
+            CustomCircleBackButton(),
             Align(
               alignment: Alignment.topRight,
               child: InkWell(

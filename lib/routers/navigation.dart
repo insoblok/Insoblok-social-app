@@ -23,6 +23,7 @@ const kRouterMessageSetting = '/message-setting';
 
 const kRouterAddStory = '/add-story';
 const kRouterStoryDetail = '/story-detail';
+const kRouterNewsDetail = '/news-detail';
 
 const kRouterQuillDescription = '/quill-description';
 const kRouterPrivacy = '/privacy-police';
@@ -100,6 +101,12 @@ class Navigation {
     initRoute<StoryModel>(
       kRouterStoryDetail,
       (props) => StoryDetailPage(story: props!),
+    );
+
+    // * NewsDetailPage
+    initRoute<NewsModel>(
+      kRouterNewsDetail,
+      (props) => NewsDetailPage(news: props!),
     );
 
     // * QuillDescriptionPage

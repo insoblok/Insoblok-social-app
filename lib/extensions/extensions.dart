@@ -3,3 +3,4 @@ export 'story_extension.dart';
 export 'user_extension.dart';
 export 'int.dart';
 export 'string.dart';
+export 'news_extension.dart';

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:insoblok/services/image_service.dart';
 
 import 'package:stacked/stacked.dart';
 
@@ -60,13 +61,37 @@ class DashboardView extends StatelessWidget {
                 ),
               ),
             ),
-            SliverList(
-              delegate: SliverChildListDelegate([
-                for (var news in viewModel.showns) ...{
-                  NewsListCell(news: news),
-                },
-              ]),
-            ),
+            if (viewModel.showns.isEmpty) ...{
+              SliverFillRemaining(
+                child: Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      ClipOval(
+                        child: AIImage(
+                          AIImages.placehold,
+                          width: 150.0,
+                          height: 150.0,
+                        ),
+                      ),
+                      const SizedBox(height: 40.0),
+                      Text(
+                        'News data seems to be not exsited. After\nsome time, Please try again!',
+                        textAlign: TextAlign.center,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            } else ...{
+              SliverList(
+                delegate: SliverChildListDelegate([
+                  for (var news in viewModel.showns) ...{
+                    NewsListCell(news: news),
+                  },
+                ]),
+              ),
+            },
           ],
         );
       },

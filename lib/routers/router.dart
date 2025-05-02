@@ -69,6 +69,10 @@ class Routers {
     return _pushToRoute(context, kRouterStoryDetail, data);
   }
 
+  static goToNewsDetailPage(BuildContext context, NewsModel data) {
+    return _pushToRoute(context, kRouterNewsDetail, data);
+  }
+
   static goToQuillDescriptionPage(BuildContext context, {String? origin}) {
     return _pushToRoute(context, kRouterQuillDescription, origin);
   }
