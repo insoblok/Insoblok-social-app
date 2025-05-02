@@ -5,3 +5,4 @@ export 'topic_provider.dart';
 export 'bookmark_provider.dart';
 export 'moment_provider.dart';
 export 'privacy_provider.dart';
+export 'update_profile_provider.dart';

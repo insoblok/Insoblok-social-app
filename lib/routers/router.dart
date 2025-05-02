@@ -29,6 +29,10 @@ class Routers {
     return _pushToRoute(context, kRouterAccount, user);
   }
 
+  static goToAccountUpdatePage(BuildContext context) {
+    return _pushToRoute(context, kRouterAccountUpdate, null);
+  }
+
   static goToAccountAvatarPage(BuildContext context) {
     return _pushToRoute(context, kRouterAccountAvatar, null);
   }

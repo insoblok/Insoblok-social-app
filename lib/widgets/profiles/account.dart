@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:insoblok/widgets/widgets.dart';
 
 import 'package:stacked/stacked.dart';
 
@@ -8,6 +7,7 @@ import 'package:insoblok/pages/pages.dart';
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
+import 'package:insoblok/widgets/widgets.dart';
 
 class AccountPresentHeaderView extends ViewModelWidget<AccountProvider> {
   const AccountPresentHeaderView({super.key});
@@ -43,7 +43,7 @@ class AccountPresentHeaderView extends ViewModelWidget<AccountProvider> {
             Align(
               alignment: Alignment.topRight,
               child: InkWell(
-                onTap: () => Navigator.of(context).pop(),
+                onTap: viewModel.onClickMoreButton,
                 child: Container(
                   width: 36.0,
                   height: 36.0,
@@ -196,6 +196,213 @@ class AccountFloatingHeaderView extends ViewModelWidget<AccountProvider> {
           ),
         },
       ],
+    );
+  }
+}
+
+class AccountPublicInfoView extends ViewModelWidget<UpdateProfileProvider> {
+  const AccountPublicInfoView({super.key});
+
+  @override
+  Widget build(BuildContext context, viewModel) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
+      child: Column(
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(
+                width: 90.0,
+                height: 90.0,
+                child: Stack(
+                  children: [
+                    ClipOval(
+                      child: AIImage(
+                        viewModel.user?.avatar,
+                        width: double.infinity,
+                        height: double.infinity,
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.bottomRight,
+                      child: Container(
+                        width: 32.0,
+                        height: 32.0,
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).primaryColor,
+                          shape: BoxShape.circle,
+                        ),
+                        child: Center(child: Icon(Icons.edit, size: 18.0)),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(width: 16.0),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(viewModel.user?.fullName ?? ''),
+                        Container(
+                          width: 32.0,
+                          height: 32.0,
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).primaryColor,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Center(child: Icon(Icons.edit, size: 18.0)),
+                        ),
+                      ],
+                    ),
+                    Text(
+                      '#${viewModel.user?.nickId}',
+                      style: Theme.of(context).textTheme.labelMedium,
+                    ),
+                    Text(
+                      viewModel.user?.desc ??
+                          'User can input your profile description if you didn\'t set that yet!. That will be shown to other and will make more user experience of InSoBlokAI.',
+                      style:
+                          viewModel.user?.desc == null
+                              ? Theme.of(context).textTheme.labelMedium
+                              : Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class AccountPrivateInfoView extends ViewModelWidget<UpdateProfileProvider> {
+  const AccountPrivateInfoView({super.key});
+
+  @override
+  Widget build(BuildContext context, viewModel) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(child: Text('Private Information')),
+              Container(
+                width: 32.0,
+                height: 32.0,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).primaryColor,
+                  shape: BoxShape.circle,
+                ),
+                child: Center(child: Icon(Icons.edit, size: 18.0)),
+              ),
+            ],
+          ),
+
+          AccountPrivateInfoCover(
+            leading: AIImages.icBottomMessage,
+            title: 'user@insoblockai.io',
+          ),
+          AccountPrivateInfoCover(
+            leading: AIImages.icBottomLook,
+            title: 'Update your password',
+          ),
+          AccountPrivateInfoCover(
+            leading: AIImages.icLocation,
+            title: 'Your City',
+          ),
+          AccountPrivateInfoCover(
+            leading: AIImages.icLocation,
+            title: 'Your Country',
+          ),
+          AccountPrivateInfoCover(
+            leading: AIImages.icLocation,
+            title: 'Connect to Wallet',
+          ),
+          Container(
+            height: 180.0,
+            margin: const EdgeInsets.only(top: 24.0),
+            padding: const EdgeInsets.symmetric(horizontal: 22.0),
+            decoration: BoxDecoration(
+              border: Border.all(
+                width: 0.33,
+                color: Theme.of(context).primaryColor,
+              ),
+              borderRadius: BorderRadius.circular(24.0),
+            ),
+            child:
+                (viewModel.user?.discovery == null)
+                    ? Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          AIImage(AIImages.icImage, height: 32.0),
+                          const SizedBox(height: 12.0),
+                          Text(
+                            '+ Discovery image',
+                            style: Theme.of(context).textTheme.labelLarge,
+                          ),
+                        ],
+                      ),
+                    )
+                    : AIImage(
+                      viewModel.user?.discovery,
+                      width: double.infinity,
+                      height: double.infinity,
+                    ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class AccountPrivateInfoCover extends StatelessWidget {
+  final dynamic leading;
+  final String title;
+  final void Function()? onEdit;
+
+  const AccountPrivateInfoCover({
+    super.key,
+    required this.leading,
+    required this.title,
+    this.onEdit,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.only(top: 24.0),
+      padding: const EdgeInsets.symmetric(horizontal: 22.0),
+      height: 48.0,
+      decoration: BoxDecoration(
+        border: Border.all(width: 0.33, color: Theme.of(context).primaryColor),
+        borderRadius: BorderRadius.circular(24.0),
+      ),
+      child: Row(
+        children: [
+          AIImage(
+            leading,
+            color: Theme.of(context).primaryColor,
+            width: 18.0,
+            height: 18.0,
+          ),
+          const SizedBox(width: 16.0),
+          Expanded(
+            child: Text(title, style: Theme.of(context).textTheme.labelLarge),
+          ),
+        ],
+      ),
     );
   }
 }

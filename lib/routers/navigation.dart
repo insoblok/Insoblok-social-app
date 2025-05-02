@@ -11,6 +11,7 @@ const kRouterRegister = '/register';
 const kRouterMain = '/main';
 
 const kRouterAccount = '/account';
+const kRouterAccountUpdate = '/account-update';
 const kRouterAccountAvatar = '/account-avatar';
 const kRouterAccountPost = '/account-post';
 const kRouterAccountTopic = '/account-topic';
@@ -66,6 +67,9 @@ class Navigation {
 
     // * AccountPage
     initRoute<UserModel>(kRouterAccount, (props) => AccountPage(user: props));
+
+    // * UpdateAccountPage
+    initRoute(kRouterAccountUpdate, (props) => UpdateProfilePage());
 
     // * AccountAvatarPage
     initRoute(kRouterAccountAvatar, (props) => AvatarPage());
