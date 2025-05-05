@@ -1,17 +1,17 @@
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:dio/dio.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:dio/dio.dart';
+import 'package:path_provider/path_provider.dart';
 
 import 'package:insoblok/locator.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
-import 'package:path_provider/path_provider.dart';
 
 class FirebaseService {
   static const FirebaseOptions android = FirebaseOptions(
@@ -68,15 +68,15 @@ class FirebaseService {
       _userRef = FirebaseFirestore.instance
           .collection('user')
           .withConverter<UserModel>(
-            fromFirestore: (snapshot, _) =>
-                UserModel.fromJson(snapshot.data()!),
+            fromFirestore:
+                (snapshot, _) => UserModel.fromJson(snapshot.data()!),
             toFirestore: (user, _) => user.toJson(),
           );
       _roomRef = FirebaseFirestore.instance
           .collection('room')
           .withConverter<RoomModel>(
-            fromFirestore: (snpashot, _) =>
-                RoomModel.fromJson(snpashot.data()!),
+            fromFirestore:
+                (snpashot, _) => RoomModel.fromJson(snpashot.data()!),
             toFirestore: (room, _) => room.toJson(),
           );
 
@@ -127,13 +127,17 @@ class FirebaseService {
 
   Future<bool> updateUser(UserModel user) async {
     try {
-      await _userRef.doc(user.id).update(user
-          .copyWith(
-            updateDate: kFullDateTimeFormatter.format(
-              DateTime.now().toUtc(),
-            ),
-          )
-          .toJson());
+      await _userRef
+          .doc(user.id)
+          .update(
+            user
+                .copyWith(
+                  updateDate: kFullDateTimeFormatter.format(
+                    DateTime.now().toUtc(),
+                  ),
+                )
+                .toJson(),
+          );
       return true;
     } on FirebaseAuthException catch (e) {
       logger.e(e.message);
@@ -150,6 +154,38 @@ class FirebaseService {
       logger.e(e.message);
     } catch (e) {
       logger.e(e);
+    }
+  }
+
+  Future<void> convertAnonymousToPermanent({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      final user = FirebaseAuth.instance.currentUser;
+
+      if (user == null || !user.isAnonymous) {
+        throw Exception('No anonymous user to upgrade');
+      }
+
+      final credential = EmailAuthProvider.credential(
+        email: email,
+        password: password,
+      );
+
+      final userCredential = await user.linkWithCredential(credential);
+      _userCredential = userCredential;
+    } on FirebaseAuthException catch (e) {
+      if (e.code == 'provider-already-linked') {
+        final credential = EmailAuthProvider.credential(
+          email: email,
+          password: password,
+        );
+        _userCredential = await FirebaseAuth.instance.signInWithCredential(
+          credential,
+        );
+      }
+      rethrow;
     }
   }
 
@@ -181,14 +217,12 @@ class FirebaseService {
 
   Future<RoomModel?> createRoom(RoomModel room) async {
     try {
-      var value = await _roomRef.add(room.copyWith(
-        regDate: kFullDateTimeFormatter.format(
-          DateTime.now().toUtc(),
+      var value = await _roomRef.add(
+        room.copyWith(
+          regDate: kFullDateTimeFormatter.format(DateTime.now().toUtc()),
+          updateDate: kFullDateTimeFormatter.format(DateTime.now().toUtc()),
         ),
-        updateDate: kFullDateTimeFormatter.format(
-          DateTime.now().toUtc(),
-        ),
-      ));
+      );
       var addRoom = room.copyWith(id: value.id);
       await updateRoom(addRoom);
       return addRoom;
@@ -202,9 +236,10 @@ class FirebaseService {
 
   Future<List<RoomModel>> getRooms() async {
     try {
-      var snapshot = await _roomRef
-          .where('related_id', arrayContains: AuthHelper.user?.uid)
-          .get();
+      var snapshot =
+          await _roomRef
+              .where('related_id', arrayContains: AuthHelper.user?.uid)
+              .get();
       return snapshot.docs.map((e) => e.data()).toList();
     } on FirebaseAuthException catch (e) {
       logger.e(e.message);
@@ -216,13 +251,17 @@ class FirebaseService {
 
   Future<bool> updateRoom(RoomModel room) async {
     try {
-      await _roomRef.doc(room.id).update(room
-          .copyWith(
-            updateDate: kFullDateTimeFormatter.format(
-              DateTime.now().toUtc(),
-            ),
-          )
-          .toJson());
+      await _roomRef
+          .doc(room.id)
+          .update(
+            room
+                .copyWith(
+                  updateDate: kFullDateTimeFormatter.format(
+                    DateTime.now().toUtc(),
+                  ),
+                )
+                .toJson(),
+          );
       return true;
     } on FirebaseAuthException catch (e) {
       logger.e(e.message);
@@ -254,11 +293,12 @@ class FirebaseService {
           logger.d(v);
         },
         options: Options(
-            responseType: ResponseType.bytes,
-            followRedirects: false,
-            validateStatus: (status) {
-              return (status ?? 600) < 500;
-            }),
+          responseType: ResponseType.bytes,
+          followRedirects: false,
+          validateStatus: (status) {
+            return (status ?? 600) < 500;
+          },
+        ),
       );
       logger.d(response.headers);
       File file = File(fullPath);
@@ -268,9 +308,10 @@ class FirebaseService {
 
       final String fileName =
           "${AuthHelper.user?.id}_${kFullFormatter.format(DateTime.now())}.jpg";
-      final String storagePath = folderName != null
-          ? 'users/${uid ?? AuthHelper.user?.uid}/$folderName/$fileName'
-          : 'users/${uid ?? AuthHelper.user?.uid}/$fileName';
+      final String storagePath =
+          folderName != null
+              ? 'users/${uid ?? AuthHelper.user?.uid}/$folderName/$fileName'
+              : 'users/${uid ?? AuthHelper.user?.uid}/$fileName';
 
       final Reference storageRef = _storage.ref().child(storagePath);
 
@@ -295,9 +336,10 @@ class FirebaseService {
     try {
       final String fileName =
           "${AuthHelper.user?.id}_${kFullFormatter.format(DateTime.now())}.jpg";
-      final String storagePath = folderName != null
-          ? 'users/${uid ?? AuthHelper.user?.uid}/$folderName/$fileName'
-          : 'users/${uid ?? AuthHelper.user?.uid}/$fileName';
+      final String storagePath =
+          folderName != null
+              ? 'users/${uid ?? AuthHelper.user?.uid}/$folderName/$fileName'
+              : 'users/${uid ?? AuthHelper.user?.uid}/$fileName';
 
       final Reference storageRef = _storage.ref().child(storagePath);
 
@@ -338,6 +380,10 @@ class FirebaseHelper {
   static Future<UserModel?> getUser(String uid) => service.getUser(uid);
   static Future<bool> updateUser(UserModel user) => service.updateUser(user);
   static Future<void> deleteUser(UserModel user) => service.deleteUser(user);
+  static Future<void> convertAnonymousToPermanent({
+    required String email,
+    required String password,
+  }) => service.convertAnonymousToPermanent(email: email, password: password);
   static Stream<DocumentSnapshot<UserModel>> getUserStream(String id) =>
       service.getUserStream(id);
   static Future<List<UserModel>> findUsersByKey(String key) =>
@@ -354,45 +400,31 @@ class FirebaseHelper {
     required String imageUrl,
     String? uid,
     String? folderName,
-  }) =>
-      service.uploadImageFromUrl(
-        imageUrl: imageUrl,
-        uid: uid,
-        folderName: folderName,
-      );
+  }) => service.uploadImageFromUrl(
+    imageUrl: imageUrl,
+    uid: uid,
+    folderName: folderName,
+  );
 
   static Future<String?> uploadFile({
     required File file,
     String? uid,
     String? folderName,
-  }) =>
-      service.uploadFile(
-        file: file,
-        uid: uid,
-        folderName: folderName,
-      );
+  }) => service.uploadFile(file: file, uid: uid, folderName: folderName);
 
   static Future<void> deleteImage(String imageUrl) =>
       service.deleteImage(imageUrl);
 }
 
-enum UserQuery {
-  firstName,
-  lastName,
-  uid,
-  recent,
-}
+enum UserQuery { firstName, lastName, uid, recent }
 
 extension on Query<UserModel> {
-  Query<UserModel> queryBy(
-    UserQuery query, {
-    String? value,
-  }) {
+  Query<UserModel> queryBy(UserQuery query, {String? value}) {
     return switch (query) {
       UserQuery.firstName => where('first_name', isEqualTo: value),
       UserQuery.lastName => where('last_name', isEqualTo: value),
       UserQuery.uid => where('uid', isEqualTo: value),
-      UserQuery.recent => orderBy('update_date', descending: true)
+      UserQuery.recent => orderBy('update_date', descending: true),
     };
   }
 }

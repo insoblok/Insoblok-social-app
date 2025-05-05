@@ -102,9 +102,15 @@ class UpdateProfileProvider extends InSoBlokViewModel {
 
     await runBusyFuture(() async {
       try {
+        if (user?.email?.isEmpty ?? true) {
+          await FirebaseHelper.convertAnonymousToPermanent(
+            email: account.email ?? '',
+            password: account.password ?? '',
+          );
+        }
         var isUpdated = await FirebaseHelper.updateUser(account);
         if (isUpdated) {
-          Fluttertoast.showToast(msg: 'Successfully updated user avatar!');
+          Fluttertoast.showToast(msg: 'Successfully updated user profile!');
           Navigator.of(context).pop(true);
         } else {
           setError('Something get wrong! Please try again later');

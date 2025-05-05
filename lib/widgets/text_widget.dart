@@ -63,6 +63,7 @@ class AINoBorderTextField extends StatelessWidget {
   final double? height;
   final Widget? prefixIcon;
   final bool autofocus;
+  final bool readOnly;
   final void Function(String)? onChanged;
   final void Function(PointerDownEvent)? onTapOutside;
   final void Function()? onEditingComplete;
@@ -79,6 +80,7 @@ class AINoBorderTextField extends StatelessWidget {
     this.controller,
     this.prefixIcon,
     this.autofocus = false,
+    this.readOnly = false,
     this.onChanged,
     this.onTapOutside,
     this.onEditingComplete,
@@ -97,6 +99,7 @@ class AINoBorderTextField extends StatelessWidget {
         controller: controller,
         autofocus: autofocus,
         style: Theme.of(context).textTheme.bodySmall,
+        readOnly: readOnly,
         decoration: InputDecoration(
           contentPadding: EdgeInsets.symmetric(horizontal: 24.0),
           hintText: hintText,

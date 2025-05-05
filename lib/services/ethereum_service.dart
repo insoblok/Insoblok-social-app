@@ -20,12 +20,7 @@ class EthereumService with ListenableServiceMixin {
   String? get rpcUrl => _rpcUrlRx.value;
 
   EthereumService() {
-    listenToReactiveValues([
-      _clientRx,
-      _credentialsRx,
-      _addressRx,
-      _rpcUrlRx,
-    ]);
+    listenToReactiveValues([_clientRx, _credentialsRx, _addressRx, _rpcUrlRx]);
   }
 
   void init(String rpcUrl) async {
@@ -59,10 +54,7 @@ class EthereumService with ListenableServiceMixin {
 
     final tx = Transaction(
       to: EthereumAddress.fromHex(to),
-      value: EtherAmount.fromBase10String(
-        EtherUnit.ether,
-        amount,
-      ),
+      value: EtherAmount.fromBase10String(EtherUnit.ether, amount),
       gasPrice: gasPrice ?? await client?.getGasPrice(),
       maxGas: gasLimit ?? 21000,
     );
@@ -76,8 +68,10 @@ class EthereumService with ListenableServiceMixin {
     required ContractAbi abi,
     required List<dynamic> params,
   }) async {
-    final contract =
-        DeployedContract(abi, EthereumAddress.fromHex(contractAddress));
+    final contract = DeployedContract(
+      abi,
+      EthereumAddress.fromHex(contractAddress),
+    );
     final function = contract.function(functionName);
 
     return await client?.call(
@@ -104,23 +98,21 @@ class EthereumHelper {
     required String amount,
     EtherAmount? gasPrice,
     int? gasLimit,
-  }) =>
-      service.sendTransaction(
-        to: to,
-        amount: amount,
-        gasPrice: gasPrice,
-        gasLimit: gasLimit,
-      );
+  }) => service.sendTransaction(
+    to: to,
+    amount: amount,
+    gasPrice: gasPrice,
+    gasLimit: gasLimit,
+  );
   static Future<dynamic> callContract({
     required String contractAddress,
     required String functionName,
     required ContractAbi abi,
     required List<dynamic> params,
-  }) =>
-      service.callContract(
-        contractAddress: contractAddress,
-        functionName: functionName,
-        abi: abi,
-        params: params,
-      );
+  }) => service.callContract(
+    contractAddress: contractAddress,
+    functionName: functionName,
+    abi: abi,
+    params: params,
+  );
 }

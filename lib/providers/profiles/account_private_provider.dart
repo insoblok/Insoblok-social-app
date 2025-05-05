@@ -3,6 +3,9 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:insoblok/extensions/extensions.dart';
+
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
@@ -37,15 +40,37 @@ class AccountPrivateProvider extends InSoBlokViewModel {
     );
     final data = await json.decode(response);
     _countries.addAll((data as List).map((d) => UserCountryModel.fromJson(d)));
+
+    if (account.country?.isNotEmpty ?? false) {
+      var c = countries.firstWhere((e) => e.name == account.country);
+      country = c;
+    }
+
+    notifyListeners();
+  }
+
+  String _email = '';
+  String get email => _email;
+  set email(String s) {
+    _email = s;
     notifyListeners();
   }
 
   void updateEmail(String s) {
-    account = account.copyWith(email: s);
+    if (account.email?.isEmpty ?? true) {
+      email = s;
+    }
+  }
+
+  String _password = '';
+  String get password => _password;
+  set password(String s) {
+    _password = s;
+    notifyListeners();
   }
 
   void updatePassword(String s) {
-    account = account.copyWith(password: s);
+    password = s;
   }
 
   String _confirmedPassword = '';
@@ -63,13 +88,39 @@ class AccountPrivateProvider extends InSoBlokViewModel {
     account = account.copyWith(city: s);
   }
 
-  void updateCountry(String s) {
-    account = account.copyWith(country: s);
+  UserCountryModel? _country;
+  UserCountryModel? get country => _country;
+  set country(UserCountryModel? model) {
+    _country = model;
+    notifyListeners();
   }
 
+  void updateCountry(UserCountryModel? s) {
+    country = s;
+  }
+
+  void updateWallet(String s) {}
+
   void onClickUpdateProfile() {
+    if (account.email?.isEmpty ?? true) {
+      if (!(email.isEmailValid)) {
+        Fluttertoast.showToast(msg: 'No matched email!');
+        return;
+      }
+      if (password != confirmedPassword) {
+        Fluttertoast.showToast(msg: 'No matched password!');
+        return;
+      }
+    }
+
     if (isBusy) return;
     clearErrors();
+
+    account = account.copyWith(
+      country: country?.name,
+      email: email,
+      password: password,
+    );
 
     Navigator.of(context).pop(account);
   }
