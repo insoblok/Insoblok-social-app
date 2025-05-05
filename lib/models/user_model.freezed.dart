@@ -21,6 +21,10 @@ mixin _$UserModel {
   String? get avatar;
   String? get firstName;
   String? get lastName;
+  String? get email;
+  String? get password;
+  String? get city;
+  String? get country;
   String? get website;
   String? get desc;
   String? get discovery;
@@ -58,6 +62,11 @@ mixin _$UserModel {
                 other.firstName == firstName) &&
             (identical(other.lastName, lastName) ||
                 other.lastName == lastName) &&
+            (identical(other.email, email) || other.email == email) &&
+            (identical(other.password, password) ||
+                other.password == password) &&
+            (identical(other.city, city) || other.city == city) &&
+            (identical(other.country, country) || other.country == country) &&
             (identical(other.website, website) || other.website == website) &&
             (identical(other.desc, desc) || other.desc == desc) &&
             (identical(other.discovery, discovery) ||
@@ -77,30 +86,35 @@ mixin _$UserModel {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      id,
-      uid,
-      walletAddress,
-      avatar,
-      firstName,
-      lastName,
-      website,
-      desc,
-      discovery,
-      nickId,
-      lat,
-      lon,
-      ipAddress,
-      regdate,
-      updateDate,
-      status,
-      const DeepCollectionEquality().hash(likes),
-      const DeepCollectionEquality().hash(follows));
+  int get hashCode => Object.hashAll([
+        runtimeType,
+        id,
+        uid,
+        walletAddress,
+        avatar,
+        firstName,
+        lastName,
+        email,
+        password,
+        city,
+        country,
+        website,
+        desc,
+        discovery,
+        nickId,
+        lat,
+        lon,
+        ipAddress,
+        regdate,
+        updateDate,
+        status,
+        const DeepCollectionEquality().hash(likes),
+        const DeepCollectionEquality().hash(follows)
+      ]);
 
   @override
   String toString() {
-    return 'UserModel(id: $id, uid: $uid, walletAddress: $walletAddress, avatar: $avatar, firstName: $firstName, lastName: $lastName, website: $website, desc: $desc, discovery: $discovery, nickId: $nickId, lat: $lat, lon: $lon, ipAddress: $ipAddress, regdate: $regdate, updateDate: $updateDate, status: $status, likes: $likes, follows: $follows)';
+    return 'UserModel(id: $id, uid: $uid, walletAddress: $walletAddress, avatar: $avatar, firstName: $firstName, lastName: $lastName, email: $email, password: $password, city: $city, country: $country, website: $website, desc: $desc, discovery: $discovery, nickId: $nickId, lat: $lat, lon: $lon, ipAddress: $ipAddress, regdate: $regdate, updateDate: $updateDate, status: $status, likes: $likes, follows: $follows)';
   }
 }
 
@@ -116,6 +130,10 @@ abstract mixin class $UserModelCopyWith<$Res> {
       String? avatar,
       String? firstName,
       String? lastName,
+      String? email,
+      String? password,
+      String? city,
+      String? country,
       String? website,
       String? desc,
       String? discovery,
@@ -148,6 +166,10 @@ class _$UserModelCopyWithImpl<$Res> implements $UserModelCopyWith<$Res> {
     Object? avatar = freezed,
     Object? firstName = freezed,
     Object? lastName = freezed,
+    Object? email = freezed,
+    Object? password = freezed,
+    Object? city = freezed,
+    Object? country = freezed,
     Object? website = freezed,
     Object? desc = freezed,
     Object? discovery = freezed,
@@ -185,6 +207,22 @@ class _$UserModelCopyWithImpl<$Res> implements $UserModelCopyWith<$Res> {
       lastName: freezed == lastName
           ? _self.lastName
           : lastName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      email: freezed == email
+          ? _self.email
+          : email // ignore: cast_nullable_to_non_nullable
+              as String?,
+      password: freezed == password
+          ? _self.password
+          : password // ignore: cast_nullable_to_non_nullable
+              as String?,
+      city: freezed == city
+          ? _self.city
+          : city // ignore: cast_nullable_to_non_nullable
+              as String?,
+      country: freezed == country
+          ? _self.country
+          : country // ignore: cast_nullable_to_non_nullable
               as String?,
       website: freezed == website
           ? _self.website
@@ -249,6 +287,10 @@ class _UserModel implements UserModel {
       this.avatar,
       this.firstName,
       this.lastName,
+      this.email,
+      this.password,
+      this.city,
+      this.country,
       this.website,
       this.desc,
       this.discovery,
@@ -278,6 +320,14 @@ class _UserModel implements UserModel {
   final String? firstName;
   @override
   final String? lastName;
+  @override
+  final String? email;
+  @override
+  final String? password;
+  @override
+  final String? city;
+  @override
+  final String? country;
   @override
   final String? website;
   @override
@@ -347,6 +397,11 @@ class _UserModel implements UserModel {
                 other.firstName == firstName) &&
             (identical(other.lastName, lastName) ||
                 other.lastName == lastName) &&
+            (identical(other.email, email) || other.email == email) &&
+            (identical(other.password, password) ||
+                other.password == password) &&
+            (identical(other.city, city) || other.city == city) &&
+            (identical(other.country, country) || other.country == country) &&
             (identical(other.website, website) || other.website == website) &&
             (identical(other.desc, desc) || other.desc == desc) &&
             (identical(other.discovery, discovery) ||
@@ -366,30 +421,35 @@ class _UserModel implements UserModel {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(
-      runtimeType,
-      id,
-      uid,
-      walletAddress,
-      avatar,
-      firstName,
-      lastName,
-      website,
-      desc,
-      discovery,
-      nickId,
-      lat,
-      lon,
-      ipAddress,
-      regdate,
-      updateDate,
-      status,
-      const DeepCollectionEquality().hash(_likes),
-      const DeepCollectionEquality().hash(_follows));
+  int get hashCode => Object.hashAll([
+        runtimeType,
+        id,
+        uid,
+        walletAddress,
+        avatar,
+        firstName,
+        lastName,
+        email,
+        password,
+        city,
+        country,
+        website,
+        desc,
+        discovery,
+        nickId,
+        lat,
+        lon,
+        ipAddress,
+        regdate,
+        updateDate,
+        status,
+        const DeepCollectionEquality().hash(_likes),
+        const DeepCollectionEquality().hash(_follows)
+      ]);
 
   @override
   String toString() {
-    return 'UserModel(id: $id, uid: $uid, walletAddress: $walletAddress, avatar: $avatar, firstName: $firstName, lastName: $lastName, website: $website, desc: $desc, discovery: $discovery, nickId: $nickId, lat: $lat, lon: $lon, ipAddress: $ipAddress, regdate: $regdate, updateDate: $updateDate, status: $status, likes: $likes, follows: $follows)';
+    return 'UserModel(id: $id, uid: $uid, walletAddress: $walletAddress, avatar: $avatar, firstName: $firstName, lastName: $lastName, email: $email, password: $password, city: $city, country: $country, website: $website, desc: $desc, discovery: $discovery, nickId: $nickId, lat: $lat, lon: $lon, ipAddress: $ipAddress, regdate: $regdate, updateDate: $updateDate, status: $status, likes: $likes, follows: $follows)';
   }
 }
 
@@ -408,6 +468,10 @@ abstract mixin class _$UserModelCopyWith<$Res>
       String? avatar,
       String? firstName,
       String? lastName,
+      String? email,
+      String? password,
+      String? city,
+      String? country,
       String? website,
       String? desc,
       String? discovery,
@@ -440,6 +504,10 @@ class __$UserModelCopyWithImpl<$Res> implements _$UserModelCopyWith<$Res> {
     Object? avatar = freezed,
     Object? firstName = freezed,
     Object? lastName = freezed,
+    Object? email = freezed,
+    Object? password = freezed,
+    Object? city = freezed,
+    Object? country = freezed,
     Object? website = freezed,
     Object? desc = freezed,
     Object? discovery = freezed,
@@ -477,6 +545,22 @@ class __$UserModelCopyWithImpl<$Res> implements _$UserModelCopyWith<$Res> {
       lastName: freezed == lastName
           ? _self.lastName
           : lastName // ignore: cast_nullable_to_non_nullable
+              as String?,
+      email: freezed == email
+          ? _self.email
+          : email // ignore: cast_nullable_to_non_nullable
+              as String?,
+      password: freezed == password
+          ? _self.password
+          : password // ignore: cast_nullable_to_non_nullable
+              as String?,
+      city: freezed == city
+          ? _self.city
+          : city // ignore: cast_nullable_to_non_nullable
+              as String?,
+      country: freezed == country
+          ? _self.country
+          : country // ignore: cast_nullable_to_non_nullable
               as String?,
       website: freezed == website
           ? _self.website
@@ -526,6 +610,166 @@ class __$UserModelCopyWithImpl<$Res> implements _$UserModelCopyWith<$Res> {
           ? _self._follows
           : follows // ignore: cast_nullable_to_non_nullable
               as List<String>?,
+    ));
+  }
+}
+
+/// @nodoc
+mixin _$UserCountryModel {
+  String? get name;
+  String? get code;
+
+  /// Create a copy of UserCountryModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $UserCountryModelCopyWith<UserCountryModel> get copyWith =>
+      _$UserCountryModelCopyWithImpl<UserCountryModel>(
+          this as UserCountryModel, _$identity);
+
+  /// Serializes this UserCountryModel to a JSON map.
+  Map<String, dynamic> toJson();
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is UserCountryModel &&
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.code, code) || other.code == code));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, name, code);
+
+  @override
+  String toString() {
+    return 'UserCountryModel(name: $name, code: $code)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $UserCountryModelCopyWith<$Res> {
+  factory $UserCountryModelCopyWith(
+          UserCountryModel value, $Res Function(UserCountryModel) _then) =
+      _$UserCountryModelCopyWithImpl;
+  @useResult
+  $Res call({String? name, String? code});
+}
+
+/// @nodoc
+class _$UserCountryModelCopyWithImpl<$Res>
+    implements $UserCountryModelCopyWith<$Res> {
+  _$UserCountryModelCopyWithImpl(this._self, this._then);
+
+  final UserCountryModel _self;
+  final $Res Function(UserCountryModel) _then;
+
+  /// Create a copy of UserCountryModel
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? name = freezed,
+    Object? code = freezed,
+  }) {
+    return _then(_self.copyWith(
+      name: freezed == name
+          ? _self.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String?,
+      code: freezed == code
+          ? _self.code
+          : code // ignore: cast_nullable_to_non_nullable
+              as String?,
+    ));
+  }
+}
+
+/// @nodoc
+
+@JsonSerializable(fieldRename: FieldRename.snake)
+class _UserCountryModel implements UserCountryModel {
+  _UserCountryModel({this.name, this.code});
+  factory _UserCountryModel.fromJson(Map<String, dynamic> json) =>
+      _$UserCountryModelFromJson(json);
+
+  @override
+  final String? name;
+  @override
+  final String? code;
+
+  /// Create a copy of UserCountryModel
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$UserCountryModelCopyWith<_UserCountryModel> get copyWith =>
+      __$UserCountryModelCopyWithImpl<_UserCountryModel>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$UserCountryModelToJson(
+      this,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _UserCountryModel &&
+            (identical(other.name, name) || other.name == name) &&
+            (identical(other.code, code) || other.code == code));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, name, code);
+
+  @override
+  String toString() {
+    return 'UserCountryModel(name: $name, code: $code)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$UserCountryModelCopyWith<$Res>
+    implements $UserCountryModelCopyWith<$Res> {
+  factory _$UserCountryModelCopyWith(
+          _UserCountryModel value, $Res Function(_UserCountryModel) _then) =
+      __$UserCountryModelCopyWithImpl;
+  @override
+  @useResult
+  $Res call({String? name, String? code});
+}
+
+/// @nodoc
+class __$UserCountryModelCopyWithImpl<$Res>
+    implements _$UserCountryModelCopyWith<$Res> {
+  __$UserCountryModelCopyWithImpl(this._self, this._then);
+
+  final _UserCountryModel _self;
+  final $Res Function(_UserCountryModel) _then;
+
+  /// Create a copy of UserCountryModel
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? name = freezed,
+    Object? code = freezed,
+  }) {
+    return _then(_UserCountryModel(
+      name: freezed == name
+          ? _self.name
+          : name // ignore: cast_nullable_to_non_nullable
+              as String?,
+      code: freezed == code
+          ? _self.code
+          : code // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }

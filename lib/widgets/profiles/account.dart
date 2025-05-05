@@ -219,7 +219,7 @@ class AccountPublicInfoView extends ViewModelWidget<UpdateProfileProvider> {
                   children: [
                     ClipOval(
                       child: AIImage(
-                        viewModel.user?.avatar,
+                        viewModel.account.avatar,
                         width: double.infinity,
                         height: double.infinity,
                       ),
@@ -252,29 +252,34 @@ class AccountPublicInfoView extends ViewModelWidget<UpdateProfileProvider> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(viewModel.user?.fullName ?? ''),
-                        Container(
-                          width: 32.0,
-                          height: 32.0,
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).primaryColor,
-                            shape: BoxShape.circle,
+                        Text(viewModel.account.fullName),
+                        InkWell(
+                          onTap: viewModel.onUpdatedPublic,
+                          child: Container(
+                            width: 32.0,
+                            height: 32.0,
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).primaryColor,
+                              shape: BoxShape.circle,
+                            ),
+                            child: Center(child: Icon(Icons.edit, size: 18.0)),
                           ),
-                          child: Center(child: Icon(Icons.edit, size: 18.0)),
                         ),
                       ],
                     ),
                     Text(
-                      '#${viewModel.user?.nickId}',
+                      '#${viewModel.account.nickId}',
                       style: Theme.of(context).textTheme.labelMedium,
                     ),
-                    Text(
-                      viewModel.user?.desc ??
-                          'User can input your profile description if you didn\'t set that yet!. That will be shown to other and will make more user experience of InSoBlokAI.',
-                      style:
-                          viewModel.user?.desc == null
-                              ? Theme.of(context).textTheme.labelMedium
-                              : Theme.of(context).textTheme.bodySmall,
+                    SizedBox(
+                      height: 90.0,
+                      child:
+                          viewModel.account.desc != null
+                              ? AIHelpers.htmlRender(viewModel.account.desc)
+                              : Text(
+                                'User can input your profile description if you didn\'t set that yet!. That will be shown to other and will make more user experience of InSoBlokAI.',
+                                style: Theme.of(context).textTheme.labelMedium,
+                              ),
                     ),
                   ],
                 ),
@@ -300,25 +305,24 @@ class AccountPrivateInfoView extends ViewModelWidget<UpdateProfileProvider> {
           Row(
             children: [
               Expanded(child: Text('Private Information')),
-              Container(
-                width: 32.0,
-                height: 32.0,
-                decoration: BoxDecoration(
-                  color: Theme.of(context).primaryColor,
-                  shape: BoxShape.circle,
+              InkWell(
+                onTap: viewModel.onUpdatedPrivate,
+                child: Container(
+                  width: 32.0,
+                  height: 32.0,
+                  decoration: BoxDecoration(
+                    color: Theme.of(context).primaryColor,
+                    shape: BoxShape.circle,
+                  ),
+                  child: Center(child: Icon(Icons.edit, size: 18.0)),
                 ),
-                child: Center(child: Icon(Icons.edit, size: 18.0)),
               ),
             ],
           ),
 
           AccountPrivateInfoCover(
             leading: AIImages.icBottomMessage,
-            title: 'user@insoblockai.io',
-          ),
-          AccountPrivateInfoCover(
-            leading: AIImages.icBottomLook,
-            title: 'Update your password',
+            title: viewModel.account.fullName,
           ),
           AccountPrivateInfoCover(
             leading: AIImages.icLocation,
@@ -344,7 +348,7 @@ class AccountPrivateInfoView extends ViewModelWidget<UpdateProfileProvider> {
               borderRadius: BorderRadius.circular(24.0),
             ),
             child:
-                (viewModel.user?.discovery == null)
+                (viewModel.account.discovery == null)
                     ? Center(
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
@@ -359,7 +363,7 @@ class AccountPrivateInfoView extends ViewModelWidget<UpdateProfileProvider> {
                       ),
                     )
                     : AIImage(
-                      viewModel.user?.discovery,
+                      viewModel.account.discovery,
                       width: double.infinity,
                       height: double.infinity,
                     ),

@@ -6,6 +6,7 @@ part 'news_model.g.dart';
 @freezed
 abstract class NewsModel with _$NewsModel {
   factory NewsModel({
+    String? id,
     String? url,
     String? authorsByline,
     String? articleId,

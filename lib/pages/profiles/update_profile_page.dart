@@ -30,6 +30,8 @@ class UpdateProfilePage extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.all(24.0),
                 child: TextFillButton(
+                  onTap: viewModel.onClickUpdated,
+                  isBusy: viewModel.isBusy,
                   text: 'Update Profile',
                   color: Theme.of(context).primaryColor,
                 ),

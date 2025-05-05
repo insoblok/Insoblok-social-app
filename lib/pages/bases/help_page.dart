@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 
 import 'package:insoblok/providers/providers.dart';
+import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
 
 class HelpPage extends StatelessWidget {
@@ -34,13 +35,7 @@ class HelpPage extends StatelessWidget {
               ),
               const SizedBox(height: 8.0),
               Container(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    width: 0.33,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                  borderRadius: BorderRadius.circular(24.0),
-                ),
+                decoration: kNoBorderDecoration,
                 child: AINoBorderTextField(
                   hintText: 'Emter your name',
                   onChanged: (value) => viewModel.name = value,
@@ -53,13 +48,7 @@ class HelpPage extends StatelessWidget {
               ),
               const SizedBox(height: 8.0),
               Container(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    width: 0.33,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                  borderRadius: BorderRadius.circular(24.0),
-                ),
+                decoration: kNoBorderDecoration,
                 child: AINoBorderTextField(
                   hintText: 'Enter your email',
                   onChanged: (value) => viewModel.email = value,
@@ -74,13 +63,7 @@ class HelpPage extends StatelessWidget {
               Container(
                 height: 144.0,
                 padding: const EdgeInsets.symmetric(vertical: 12.0),
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    width: 0.33,
-                    color: Theme.of(context).colorScheme.primary,
-                  ),
-                  borderRadius: BorderRadius.circular(24.0),
-                ),
+                decoration: kNoBorderDecoration,
                 child: AINoBorderTextField(
                   minLines: 5,
                   maxLines: 5,

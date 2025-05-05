@@ -15,6 +15,7 @@ T _$identity<T>(T value) => value;
 
 /// @nodoc
 mixin _$NewsModel {
+  String? get id;
   String? get url;
   String? get authorsByline;
   String? get articleId;
@@ -60,6 +61,7 @@ mixin _$NewsModel {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is NewsModel &&
+            (identical(other.id, id) || other.id == id) &&
             (identical(other.url, url) || other.url == url) &&
             (identical(other.authorsByline, authorsByline) ||
                 other.authorsByline == authorsByline) &&
@@ -105,6 +107,7 @@ mixin _$NewsModel {
   @override
   int get hashCode => Object.hashAll([
         runtimeType,
+        id,
         url,
         authorsByline,
         articleId,
@@ -138,7 +141,7 @@ mixin _$NewsModel {
 
   @override
   String toString() {
-    return 'NewsModel(url: $url, authorsByline: $authorsByline, articleId: $articleId, clusterId: $clusterId, source: $source, imageUrl: $imageUrl, country: $country, language: $language, pubDate: $pubDate, addDate: $addDate, refreshDate: $refreshDate, score: $score, title: $title, description: $description, content: $content, medium: $medium, links: $links, labels: $labels, claim: $claim, verdict: $verdict, keywords: $keywords, topics: $topics, categories: $categories, taxonomies: $taxonomies, entities: $entities, companies: $companies, sentiment: $sentiment, summary: $summary, shortSummary: $shortSummary)';
+    return 'NewsModel(id: $id, url: $url, authorsByline: $authorsByline, articleId: $articleId, clusterId: $clusterId, source: $source, imageUrl: $imageUrl, country: $country, language: $language, pubDate: $pubDate, addDate: $addDate, refreshDate: $refreshDate, score: $score, title: $title, description: $description, content: $content, medium: $medium, links: $links, labels: $labels, claim: $claim, verdict: $verdict, keywords: $keywords, topics: $topics, categories: $categories, taxonomies: $taxonomies, entities: $entities, companies: $companies, sentiment: $sentiment, summary: $summary, shortSummary: $shortSummary)';
   }
 }
 
@@ -148,7 +151,8 @@ abstract mixin class $NewsModelCopyWith<$Res> {
       _$NewsModelCopyWithImpl;
   @useResult
   $Res call(
-      {String? url,
+      {String? id,
+      String? url,
       String? authorsByline,
       String? articleId,
       String? clusterId,
@@ -193,6 +197,7 @@ class _$NewsModelCopyWithImpl<$Res> implements $NewsModelCopyWith<$Res> {
   @pragma('vm:prefer-inline')
   @override
   $Res call({
+    Object? id = freezed,
     Object? url = freezed,
     Object? authorsByline = freezed,
     Object? articleId = freezed,
@@ -224,6 +229,10 @@ class _$NewsModelCopyWithImpl<$Res> implements $NewsModelCopyWith<$Res> {
     Object? shortSummary = freezed,
   }) {
     return _then(_self.copyWith(
+      id: freezed == id
+          ? _self.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String?,
       url: freezed == url
           ? _self.url
           : url // ignore: cast_nullable_to_non_nullable
@@ -362,7 +371,8 @@ class _$NewsModelCopyWithImpl<$Res> implements $NewsModelCopyWith<$Res> {
 @JsonSerializable()
 class _NewsModel implements NewsModel {
   _NewsModel(
-      {this.url,
+      {this.id,
+      this.url,
       this.authorsByline,
       this.articleId,
       this.clusterId,
@@ -403,6 +413,8 @@ class _NewsModel implements NewsModel {
   factory _NewsModel.fromJson(Map<String, dynamic> json) =>
       _$NewsModelFromJson(json);
 
+  @override
+  final String? id;
   @override
   final String? url;
   @override
@@ -554,6 +566,7 @@ class _NewsModel implements NewsModel {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _NewsModel &&
+            (identical(other.id, id) || other.id == id) &&
             (identical(other.url, url) || other.url == url) &&
             (identical(other.authorsByline, authorsByline) ||
                 other.authorsByline == authorsByline) &&
@@ -601,6 +614,7 @@ class _NewsModel implements NewsModel {
   @override
   int get hashCode => Object.hashAll([
         runtimeType,
+        id,
         url,
         authorsByline,
         articleId,
@@ -634,7 +648,7 @@ class _NewsModel implements NewsModel {
 
   @override
   String toString() {
-    return 'NewsModel(url: $url, authorsByline: $authorsByline, articleId: $articleId, clusterId: $clusterId, source: $source, imageUrl: $imageUrl, country: $country, language: $language, pubDate: $pubDate, addDate: $addDate, refreshDate: $refreshDate, score: $score, title: $title, description: $description, content: $content, medium: $medium, links: $links, labels: $labels, claim: $claim, verdict: $verdict, keywords: $keywords, topics: $topics, categories: $categories, taxonomies: $taxonomies, entities: $entities, companies: $companies, sentiment: $sentiment, summary: $summary, shortSummary: $shortSummary)';
+    return 'NewsModel(id: $id, url: $url, authorsByline: $authorsByline, articleId: $articleId, clusterId: $clusterId, source: $source, imageUrl: $imageUrl, country: $country, language: $language, pubDate: $pubDate, addDate: $addDate, refreshDate: $refreshDate, score: $score, title: $title, description: $description, content: $content, medium: $medium, links: $links, labels: $labels, claim: $claim, verdict: $verdict, keywords: $keywords, topics: $topics, categories: $categories, taxonomies: $taxonomies, entities: $entities, companies: $companies, sentiment: $sentiment, summary: $summary, shortSummary: $shortSummary)';
   }
 }
 
@@ -647,7 +661,8 @@ abstract mixin class _$NewsModelCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String? url,
+      {String? id,
+      String? url,
       String? authorsByline,
       String? articleId,
       String? clusterId,
@@ -693,6 +708,7 @@ class __$NewsModelCopyWithImpl<$Res> implements _$NewsModelCopyWith<$Res> {
   @override
   @pragma('vm:prefer-inline')
   $Res call({
+    Object? id = freezed,
     Object? url = freezed,
     Object? authorsByline = freezed,
     Object? articleId = freezed,
@@ -724,6 +740,10 @@ class __$NewsModelCopyWithImpl<$Res> implements _$NewsModelCopyWith<$Res> {
     Object? shortSummary = freezed,
   }) {
     return _then(_NewsModel(
+      id: freezed == id
+          ? _self.id
+          : id // ignore: cast_nullable_to_non_nullable
+              as String?,
       url: freezed == url
           ? _self.url
           : url // ignore: cast_nullable_to_non_nullable

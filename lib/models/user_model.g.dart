@@ -13,6 +13,10 @@ _UserModel _$UserModelFromJson(Map<String, dynamic> json) => _UserModel(
       avatar: json['avatar'] as String?,
       firstName: json['first_name'] as String?,
       lastName: json['last_name'] as String?,
+      email: json['email'] as String?,
+      password: json['password'] as String?,
+      city: json['city'] as String?,
+      country: json['country'] as String?,
       website: json['website'] as String?,
       desc: json['desc'] as String?,
       discovery: json['discovery'] as String?,
@@ -37,6 +41,10 @@ Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
       'avatar': instance.avatar,
       'first_name': instance.firstName,
       'last_name': instance.lastName,
+      'email': instance.email,
+      'password': instance.password,
+      'city': instance.city,
+      'country': instance.country,
       'website': instance.website,
       'desc': instance.desc,
       'discovery': instance.discovery,
@@ -49,4 +57,16 @@ Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
       'status': instance.status,
       'likes': instance.likes,
       'follows': instance.follows,
+    };
+
+_UserCountryModel _$UserCountryModelFromJson(Map<String, dynamic> json) =>
+    _UserCountryModel(
+      name: json['name'] as String?,
+      code: json['code'] as String?,
+    );
+
+Map<String, dynamic> _$UserCountryModelToJson(_UserCountryModel instance) =>
+    <String, dynamic>{
+      'name': instance.name,
+      'code': instance.code,
     };

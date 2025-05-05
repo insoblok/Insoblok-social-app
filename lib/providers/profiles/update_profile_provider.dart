@@ -105,6 +105,7 @@ class UpdateProfileProvider extends InSoBlokViewModel {
         var isUpdated = await FirebaseHelper.updateUser(account);
         if (isUpdated) {
           Fluttertoast.showToast(msg: 'Successfully updated user avatar!');
+          Navigator.of(context).pop(true);
         } else {
           setError('Something get wrong! Please try again later');
         }
@@ -118,6 +119,6 @@ class UpdateProfileProvider extends InSoBlokViewModel {
 
     if (hasError) {
       Fluttertoast.showToast(msg: modelError.toString());
-    } else {}
+    }
   }
 }

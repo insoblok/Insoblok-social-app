@@ -7,6 +7,7 @@ part of 'news_model.dart';
 // **************************************************************************
 
 _NewsModel _$NewsModelFromJson(Map<String, dynamic> json) => _NewsModel(
+      id: json['id'] as String?,
       url: json['url'] as String?,
       authorsByline: json['authorsByline'] as String?,
       articleId: json['articleId'] as String?,
@@ -57,6 +58,7 @@ _NewsModel _$NewsModelFromJson(Map<String, dynamic> json) => _NewsModel(
 
 Map<String, dynamic> _$NewsModelToJson(_NewsModel instance) =>
     <String, dynamic>{
+      'id': instance.id,
       'url': instance.url,
       'authorsByline': instance.authorsByline,
       'articleId': instance.articleId,
