@@ -226,14 +226,17 @@ class AccountPublicInfoView extends ViewModelWidget<UpdateProfileProvider> {
                     ),
                     Align(
                       alignment: Alignment.bottomRight,
-                      child: Container(
-                        width: 32.0,
-                        height: 32.0,
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).primaryColor,
-                          shape: BoxShape.circle,
+                      child: InkWell(
+                        onTap: viewModel.onUpdatedAvatar,
+                        child: Container(
+                          width: 32.0,
+                          height: 32.0,
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).primaryColor,
+                            shape: BoxShape.circle,
+                          ),
+                          child: Center(child: Icon(Icons.edit, size: 18.0)),
                         ),
-                        child: Center(child: Icon(Icons.edit, size: 18.0)),
                       ),
                     ),
                   ],

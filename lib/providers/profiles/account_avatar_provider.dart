@@ -25,7 +25,7 @@ class AvatarProvider extends InSoBlokViewModel {
   }
 
   Future<void> setWebview() async {
-    webViewController?.scrollTo(x: 0, y: 800);
+    webViewController?.scrollTo(x: 0, y: 650);
 
     // Inject CSS to disable scrolling
     await webViewController?.injectCSSCode(

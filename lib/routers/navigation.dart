@@ -13,6 +13,8 @@ const kRouterMain = '/main';
 const kRouterAccount = '/account';
 const kRouterAccountUpdate = '/account-update';
 const kRouterAccountAvatar = '/account-avatar';
+const kRouterAccountPublic = '/account-public';
+const kRouterAccountPrivate = '/account-private';
 const kRouterAccountPost = '/account-post';
 const kRouterAccountTopic = '/account-topic';
 const kRouterAccountBookmark = '/account-bookmark';
@@ -72,7 +74,13 @@ class Navigation {
     initRoute(kRouterAccountUpdate, (props) => UpdateProfilePage());
 
     // * AccountAvatarPage
-    initRoute(kRouterAccountAvatar, (props) => AvatarPage());
+    initRoute(kRouterAccountAvatar, (props) => AccountAvatarPage());
+
+    // * AccountPublicPage
+    initRoute(kRouterAccountPublic, (props) => AccountPublicPage());
+
+    // * AccountPrivatePage
+    initRoute(kRouterAccountPrivate, (props) => AccountPrivatePage());
 
     // * AccountListPage
     initRoute(kRouterAccountPost, (props) => PostsPage());
