@@ -23,3 +23,14 @@ await runBusyFuture(() async {
 if (hasError) {
     Fluttertoast.showToast(msg: modelError.toString());
 } else {}
+
+npm install -g firebase-tools
+firebase login
+firebase init functions
+
+firebase login
+firebase logout
+npx eslint index.js --fix
+firebase deploy --only functions
+
+gcloud projects add-iam-policy-binding insoblokai  --member="user:kenta@insoblokai.io"   --role="roles/iam.serviceAccountUser"

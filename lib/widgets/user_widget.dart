@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 
+import 'package:stacked/stacked.dart';
+
+import 'package:insoblok/extensions/extensions.dart';
+import 'package:insoblok/pages/pages.dart';
+import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 
@@ -171,120 +176,6 @@ class UserInfoWidget extends StatelessWidget {
   }
 }
 
-class AddActionCardView extends StatelessWidget {
-  final void Function()? onAdd;
-
-  const AddActionCardView({super.key, this.onAdd});
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onAdd,
-      child: Container(
-        margin: const EdgeInsets.only(right: 16.0),
-        padding: const EdgeInsets.all(12.0),
-        width: 80.0,
-        height: 120.0,
-        decoration: BoxDecoration(
-          color: AIColors.darkScaffoldBackground,
-          borderRadius: BorderRadius.circular(8.0),
-          boxShadow: [
-            BoxShadow(
-              blurRadius: 5.0,
-              color: Colors.black26,
-              offset: Offset(1, 1),
-            ),
-            BoxShadow(
-              blurRadius: 5.0,
-              color: Colors.white24,
-              offset: Offset(-1, -1),
-            ),
-          ],
-        ),
-        child: Icon(Icons.add_circle_outline, color: Colors.white),
-      ),
-    );
-  }
-}
-
-class UserCardView extends StatelessWidget {
-  const UserCardView({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(right: 16.0),
-      padding: const EdgeInsets.all(12.0),
-      width: 96.0,
-      height: 120.0,
-      decoration: BoxDecoration(
-        color: AIColors.darkScaffoldBackground,
-        borderRadius: BorderRadius.circular(8.0),
-        boxShadow: [
-          BoxShadow(
-            blurRadius: 5.0,
-            color: Colors.black26,
-            offset: Offset(1, 1),
-          ),
-          BoxShadow(
-            blurRadius: 5.0,
-            color: Colors.white24,
-            offset: Offset(-1, -1),
-          ),
-        ],
-      ),
-      child: Column(
-        children: [
-          ClipOval(child: AIImage('https://', width: 44.0, height: 44.0)),
-          const SizedBox(height: 8.0),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'Kenta',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 12.0,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              const SizedBox(width: 8.0),
-              AIImage(
-                Icons.message,
-                width: 18.0,
-                height: 18.0,
-                color: Colors.white,
-              ),
-            ],
-          ),
-          const SizedBox(height: 8.0),
-          Row(
-            children: [
-              AIImage(
-                Icons.favorite,
-                width: 12.0,
-                height: 12.0,
-                color: Colors.white,
-              ),
-              const SizedBox(width: 4.0),
-              Text('12', style: TextStyle(color: Colors.white, fontSize: 10.0)),
-              const SizedBox(width: 12.0),
-              AIImage(
-                Icons.hearing,
-                width: 12.0,
-                height: 12.0,
-                color: Colors.white,
-              ),
-              const SizedBox(width: 4.0),
-              Text('12', style: TextStyle(color: Colors.white, fontSize: 10.0)),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class AppLeadingView extends StatelessWidget {
   const AppLeadingView({super.key});
 
@@ -297,6 +188,111 @@ class AppLeadingView extends StatelessWidget {
           child: AIImage(AuthHelper.user?.avatar, width: 32.0, height: 32.0),
         ),
       ),
+    );
+  }
+}
+
+class UserRelatedView extends StatelessWidget {
+  final String uid;
+
+  const UserRelatedView({super.key, required this.uid});
+
+  @override
+  Widget build(BuildContext context) {
+    return ViewModelBuilder<UserProvider>.reactive(
+      viewModelBuilder: () => UserProvider(),
+      onViewModelReady: (viewModel) => viewModel.init(context, uid: uid),
+      builder: (context, viewModel, _) {
+        return Container(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
+          decoration: BoxDecoration(
+            border: Border(
+              top: BorderSide(color: AIColors.speraterColor, width: 0.33),
+            ),
+          ),
+          child: InkWell(
+            onTap: viewModel.goToDetailPage,
+            child: Column(
+              children: [
+                Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        ClipOval(
+                          child: AIImage(
+                            viewModel.owner?.avatar,
+                            width: kStoryDetailAvatarSize,
+                            height: kStoryDetailAvatarSize,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(width: 12.0),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text(
+                            viewModel.owner?.fullName ?? '---',
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                          Text(
+                            '@${viewModel.owner?.nickId} • ${viewModel.owner?.regdate?.mdyFormatter}',
+                            style: Theme.of(context).textTheme.labelLarge,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12.0),
+                Text(
+                  viewModel.owner?.desc ??
+                      'User can input your profile description if you didn\'t set that yet!. That will be shown to other and will make more user experience of InSoBlokAI.',
+                  style:
+                      viewModel.owner?.desc == null
+                          ? Theme.of(context).textTheme.labelMedium
+                          : Theme.of(context).textTheme.bodySmall,
+                ),
+                const SizedBox(height: 12.0),
+                Row(
+                  children: [
+                    Row(
+                      children: [
+                        AIImage(AIImages.icRetwitter, height: 14.0),
+                        const SizedBox(width: 4.0),
+                        Text(
+                          (viewModel.owner?.follows?.length ?? 0).socialValue,
+                          style: Theme.of(context).textTheme.labelSmall,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(width: 40.0),
+                    Row(
+                      children: [
+                        AIImage(
+                          viewModel.owner?.isLike() ?? false
+                              ? AIImages.icFavoriteFill
+                              : AIImages.icFavorite,
+                          height: 14.0,
+                        ),
+                        const SizedBox(width: 4.0),
+                        Text(
+                          (viewModel.owner?.likes?.length ?? 0).socialValue,
+                          style: Theme.of(context).textTheme.labelSmall,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }

@@ -29,12 +29,24 @@ class Routers {
     return _pushToRoute(context, kRouterAccount, user);
   }
 
+  static goToAccountUpdatePage(BuildContext context) {
+    return _pushToRoute(context, kRouterAccountUpdate, null);
+  }
+
   static goToAccountAvatarPage(BuildContext context) {
     return _pushToRoute(context, kRouterAccountAvatar, null);
   }
 
+  static goToAccountPublicPage(BuildContext context) {
+    return _pushToRoute(context, kRouterAccountPublic, null);
+  }
+
+  static goToAccountPrivatePage(BuildContext context) {
+    return _pushToRoute(context, kRouterAccountPrivate, null);
+  }
+
   static goToAccountListPage(BuildContext context) {
-    return _pushToRoute(context, kRouterAccountList, null);
+    return _pushToRoute(context, kRouterAccountPost, null);
   }
 
   static goToAccountTopicPage(BuildContext context) {
@@ -69,12 +81,20 @@ class Routers {
     return _pushToRoute(context, kRouterStoryDetail, data);
   }
 
+  static goToNewsDetailPage(BuildContext context, NewsModel data) {
+    return _pushToRoute(context, kRouterNewsDetail, data);
+  }
+
   static goToQuillDescriptionPage(BuildContext context, {String? origin}) {
     return _pushToRoute(context, kRouterQuillDescription, origin);
   }
 
-  static goToSettingPrivacyPage(BuildContext context) {
-    return _pushToRoute(context, kRouterSettingPrivacy, null);
+  static goToSettingPage(BuildContext context) {
+    return _pushToRoute(context, kRouterSetting, null);
+  }
+
+  static goToPrivacyPage(BuildContext context) {
+    return _pushToRoute(context, kRouterPrivacy, null);
   }
 
   static goToHelpCenterPage(BuildContext context) {

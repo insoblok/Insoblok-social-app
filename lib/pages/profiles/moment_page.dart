@@ -13,7 +13,9 @@ class MomentPage extends StatelessWidget {
       viewModelBuilder: () => MomentProvider(),
       onViewModelReady: (viewModel) => viewModel.init(context),
       builder: (context, viewModel, _) {
-        return Scaffold();
+        return Scaffold(
+          appBar: AppBar(title: Text('Moments'), centerTitle: true),
+        );
       },
     );
   }

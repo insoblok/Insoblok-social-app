@@ -31,6 +31,78 @@ class StoryService {
     return result;
   }
 
+  // Get stories by uid
+  Future<List<StoryModel>> getStoriesByUid(String uid) async {
+    List<StoryModel> result = [];
+    var storiesSnapshot =
+        await _firestore
+            .collection('story')
+            .where('uid', isEqualTo: uid)
+            .orderBy('timestamp', descending: false)
+            .get();
+    for (var doc in storiesSnapshot.docs) {
+      try {
+        var json = doc.data();
+        json['id'] = doc.id;
+        var story = StoryModel.fromJson(json);
+        if (story.uid != null) {
+          result.add(story);
+        }
+      } on FirebaseException catch (e) {
+        logger.e(e.message);
+      }
+    }
+    return result;
+  }
+
+  // Get stories by like
+  Future<List<StoryModel>> getStoriesByLike(String uid) async {
+    List<StoryModel> result = [];
+    var storiesSnapshot =
+        await _firestore
+            .collection('story')
+            .where('likes', arrayContains: uid)
+            .orderBy('timestamp', descending: false)
+            .get();
+    for (var doc in storiesSnapshot.docs) {
+      try {
+        var json = doc.data();
+        json['id'] = doc.id;
+        var story = StoryModel.fromJson(json);
+        if (story.uid != null) {
+          result.add(story);
+        }
+      } on FirebaseException catch (e) {
+        logger.e(e.message);
+      }
+    }
+    return result;
+  }
+
+  // Get stories by follow
+  Future<List<StoryModel>> getStoriesByFollow(String uid) async {
+    List<StoryModel> result = [];
+    var storiesSnapshot =
+        await _firestore
+            .collection('story')
+            .where('follows', arrayContains: uid)
+            .orderBy('timestamp', descending: false)
+            .get();
+    for (var doc in storiesSnapshot.docs) {
+      try {
+        var json = doc.data();
+        json['id'] = doc.id;
+        var story = StoryModel.fromJson(json);
+        if (story.uid != null) {
+          result.add(story);
+        }
+      } on FirebaseException catch (e) {
+        logger.e(e.message);
+      }
+    }
+    return result;
+  }
+
   // Get stories updated
   Stream<UpdatedStoryModel> getStoryUpdated() {
     return _firestore.collection('story').doc('updated').snapshots().map((doc) {

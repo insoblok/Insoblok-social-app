@@ -1,10 +1,10 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:insoblok/utils/utils.dart';
 
 import 'package:stacked/stacked.dart';
 
 import 'package:insoblok/providers/providers.dart';
+import 'package:insoblok/utils/utils.dart';
 
 class MessageSettingPage extends StatelessWidget {
   const MessageSettingPage({super.key});
@@ -18,6 +18,7 @@ class MessageSettingPage extends StatelessWidget {
         return Scaffold(
           appBar: AppBar(
             title: Text('Messages Settings'),
+            centerTitle: true,
             actions: [IconButton(onPressed: () {}, icon: Text('Done'))],
           ),
           body: Column(

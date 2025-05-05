@@ -38,12 +38,12 @@ class InSoBlokPage extends StatelessWidget {
       AIImages.icBottomUser,
     ];
 
-    var menuTitles = ['Profile', 'Lists', 'Topics', 'Bookmarks', 'Moments'];
+    var menuTitles = ['Profile', 'My Posts', 'Likes', 'Follows', 'Moments'];
     var menuIcons = [
       AIImages.icMenuProfile,
       AIImages.icMenuLists,
-      AIImages.icMenuTopics,
       AIImages.icMenuBookmarks,
+      AIImages.icMenuTopics,
       AIImages.icMenuMoments,
     ];
 
@@ -98,7 +98,7 @@ class InSoBlokPage extends StatelessWidget {
                             ),
                             InkWell(
                               onTap: viewModel.onClickMenuMore,
-                              child: AIImage(AIImages.icCircleMore),
+                              child: AIImage(AIImages.icSetting),
                             ),
                           ],
                         ),
@@ -151,7 +151,7 @@ class InSoBlokPage extends StatelessWidget {
                   MenuButtonCover(
                     onTap: () => viewModel.onClickMenuItem(5),
                     child: Text(
-                      'Settings and privacy',
+                      'Privacy and Policy',
                       style: Theme.of(context).textTheme.displayMedium,
                     ),
                   ),

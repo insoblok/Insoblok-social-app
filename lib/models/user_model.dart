@@ -13,6 +13,10 @@ abstract class UserModel with _$UserModel {
     String? avatar,
     String? firstName,
     String? lastName,
+    String? email,
+    String? password,
+    String? city,
+    String? country,
     String? website,
     String? desc,
     String? discovery,
@@ -29,4 +33,12 @@ abstract class UserModel with _$UserModel {
 
   factory UserModel.fromJson(Map<String, dynamic> json) =>
       _$UserModelFromJson(json);
+}
+
+@freezed
+abstract class UserCountryModel with _$UserCountryModel {
+  @JsonSerializable(fieldRename: FieldRename.snake)
+  factory UserCountryModel({String? name, String? code}) = _UserCountryModel;
+  factory UserCountryModel.fromJson(Map<String, dynamic> json) =>
+      _$UserCountryModelFromJson(json);
 }

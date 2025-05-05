@@ -33,10 +33,11 @@ class AIImages {
   static String icAddLogo = 'assets/icons/ic_add_logo.svg';
   static String icCircleMore = 'assets/icons/ic_more_circle.svg';
   static String icSetting = 'assets/icons/ic_setting.svg';
+  static String icImage = 'assets/icons/ic_image.svg';
 
   static String icMenuProfile = 'assets/icons/ic_user.svg';
   static String icMenuLists = 'assets/icons/ic_list.svg';
-  static String icMenuTopics = 'assets/icons/ic_topics.svg';
+  static String icMenuTopics = 'assets/icons/ic_retweet.svg';
   static String icMenuBookmarks = 'assets/icons/ic_bookmarks.svg';
   static String icMenuMoments = 'assets/icons/ic_light.svg';
   static String icMenuUnion = 'assets/icons/ic_union.svg';

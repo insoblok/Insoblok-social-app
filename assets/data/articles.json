@@ -1,0 +1,1768 @@
+[
+    {
+        "url": "https://www.theglobeandmail.com/investing/markets/stocks/GM-N/pressreleases/32155931/general-motors-gm-sounds-the-alarm-on-massive-recall-amid-engine-defect-concerns/",
+        "authorsByline": "Unknown",
+        "articleId": "b2d3a6f3757b4520a27cfb894b15c9d9",
+        "clusterId": "78139c01b18b4062b434a9782545afe9",
+        "source": {
+            "domain": "theglobeandmail.com",
+            "paywall": true,
+            "location": {
+                "country": "ca",
+                "city": "Toronto",
+                "coordinates": {
+                    "lat": 43.6534817,
+                    "lon": -79.3839347
+                }
+            }
+        },
+        "imageUrl": "https://www.theglobeandmail.com/pf/resources/assets/meta/twitter-summary-240x240.png?d=692",
+        "country": "ca",
+        "language": "en",
+        "pubDate": "2025-05-01T11:35:06+00:00",
+        "addDate": "2025-05-01T11:52:49.630678+00:00",
+        "refreshDate": "2025-05-01T11:52:49.630680+00:00",
+        "score": 141.47061,
+        "title": "General Motors (GM) Sounds the Alarm on Massive Recall amid Engine Defect Concerns",
+        "description": "Detailed price information for General Motors Company (GM-N) from The Globe and Mail including charting and trades.",
+        "content": "General Motors (GM) has announced a global recall of about 721,000 SUVs and trucks due to potential engine defects that could lead to a loss of power and increase the risk of accidents. This recall, a... [2551 symbols]",
+        "medium": "Article",
+        "links": [
+            "https://www.tipranks.com/stocks/gm/forecast?utm_source=theglobeandmail.com&utm_medium=referral",
+            "https://www.tipranks.com/glossary/d/disclaimer-disclosure",
+            "https://www.tipranks.com/lp/value-newsletter?llf=rss&utm_source=theglobeandmail.com&utm_medium=referral",
+            "https://www.tipranks.com/stocks/gm?utm_source=theglobeandmail.com&utm_medium=referral",
+            "https://www.tipranks.com/glossary/c/contact-editor"
+        ],
+        "labels": [
+            {
+                "name": "Press Release"
+            }
+        ],
+        "matchedAuthors": [],
+        "claim": "",
+        "verdict": "",
+        "keywords": [
+            {
+                "name": "GM stock",
+                "weight": 0.09959295
+            },
+            {
+                "name": "engine failures",
+                "weight": 0.099503115
+            },
+            {
+                "name": "Engine Defect Concerns",
+                "weight": 0.09910191
+            },
+            {
+                "name": "potential engine defects",
+                "weight": 0.09757284
+            },
+            {
+                "name": "thicker engine oil",
+                "weight": 0.093845196
+            },
+            {
+                "name": "engine damage",
+                "weight": 0.091436274
+            },
+            {
+                "name": "GM",
+                "weight": 0.08533126
+            },
+            {
+                "name": "affected vehicles",
+                "weight": 0.07978062
+            },
+            {
+                "name": "vehicles",
+                "weight": 0.070203714
+            },
+            {
+                "name": "Massive Recall",
+                "weight": 0.070159055
+            }
+        ],
+        "topics": [
+            {
+                "name": "Markets"
+            }
+        ],
+        "categories": [
+            {
+                "name": "Finance"
+            },
+            {
+                "name": "Auto"
+            }
+        ],
+        "taxonomies": [
+            {
+                "name": "/News/Business News/Company News",
+                "score": 0.9912109375
+            },
+            {
+                "name": "/Business & Industrial/Automotive Industry",
+                "score": 0.80517578125
+            },
+            {
+                "name": "/Autos & Vehicles/Motor Vehicles (By Type)/Hybrid & Alternative Vehicles",
+                "score": 0.383056640625
+            }
+        ],
+        "entities": [
+            {
+                "data": "General Motors",
+                "type": "ORG",
+                "mentions": 3
+            },
+            {
+                "data": "GM",
+                "type": "ORG",
+                "mentions": 12
+            },
+            {
+                "data": "the National Highway Traffic Safety Administration",
+                "type": "ORG",
+                "mentions": 1
+            },
+            {
+                "data": "NHTSA",
+                "type": "ORG",
+                "mentions": 3
+            },
+            {
+                "data": "Cadillac",
+                "type": "ORG",
+                "mentions": 1
+            },
+            {
+                "data": "Chevrolet",
+                "type": "ORG",
+                "mentions": 3
+            },
+            {
+                "data": "TipRanks",
+                "type": "ORG",
+                "mentions": 1
+            },
+            {
+                "data": "Sells",
+                "type": "ORG",
+                "mentions": 1
+            },
+            {
+                "data": "SUVs",
+                "type": "PRODUCT",
+                "mentions": 1
+            },
+            {
+                "data": "6.2L V8",
+                "type": "PRODUCT",
+                "mentions": 1
+            },
+            {
+                "data": "Silverado",
+                "type": "PRODUCT",
+                "mentions": 1
+            },
+            {
+                "data": "GMC Sierra",
+                "type": "PRODUCT",
+                "mentions": 1
+            }
+        ],
+        "companies": [
+            {
+                "id": "afe1ace29bd04674864b1b6abefc1dbe",
+                "name": "General Motors Company",
+                "domains": [
+                    "gm.com"
+                ],
+                "symbols": [
+                    "8GM.DE",
+                    "GM",
+                    "GM.SW"
+                ]
+            }
+        ],
+        "sentiment": {
+            "positive": 0.059631348,
+            "negative": 0.6503906,
+            "neutral": 0.29003906
+        },
+        "summary": "General Motors (GM) has announced a global recall of about 721,000 SUVs and trucks due to potential engine defects that could lead to a loss of power and increase the risk of accidents. The affected vehicles are Cadillac, Chevrolet, and GMC models spanning 2021 through 2024. The recall follows over 28,000 complaints related to engine failures, including 12 reported crashes, 12 injuries, and 42 fires potentially linked to this issue. GM estimates that only about 3% of the recalled vehicles have the defect, but is taking proactive steps to ensure customer safety. The company has also asked dealers to inspect affected vehicles and repair or replace the engine free of charge.",
+        "shortSummary": "General Motors is recalling 721,000 SUVs and trucks due to potential engine defects, following previous safety recalls and ongoing issues with engine failures.",
+        "translation": "",
+        "translatedTitle": "",
+        "translatedDescription": "",
+        "translatedSummary": "",
+        "locations": [],
+        "reprint": false,
+        "reprintGroupId": "74a9d8266f12400791f739f75ef94ed2",
+        "places": [],
+        "people": []
+    },
+    {
+        "url": "https://www.wsaw.com/video/2025/04/30/general-motors-issues-recall-defective-engine/",
+        "authorsByline": "",
+        "articleId": "62a5569e99bf48f5926ad20c2802dbac",
+        "clusterId": "68f17d621f92430fbad23e31cc169bc5",
+        "source": {
+            "domain": "wsaw.com",
+            "location": {
+                "country": "us",
+                "state": "WI",
+                "county": "Marathon County",
+                "city": "Wausau",
+                "coordinates": {
+                    "lat": 44.9596017,
+                    "lon": -89.6298239
+                }
+            }
+        },
+        "imageUrl": "https://gray-wsaw-prod.gtv-cdn.com/resizer/v2/https%3A%2F%2Fdo0bihdskp9dy.cloudfront.net%2F04-30-2025%2Ft_42864090a8ad49a0ae5f6074eff31f06_name_file_1280x720_2000_v3_1_.jpg?auth=51e985b989f232a1eab25d46d6db0fef8e63cab642bfa01e2042fc08c1a9a56e&width=1200&height=600&smart=true",
+        "country": "us",
+        "language": "en",
+        "pubDate": "2025-04-30T13:14:01+00:00",
+        "addDate": "2025-04-30T13:38:05.566988+00:00",
+        "refreshDate": "2025-04-30T13:38:05.566990+00:00",
+        "score": 135.24518,
+        "title": "General Motors Issues Recall for Defective Engine",
+        "description": "General Motors Issues Recall for Defective Engine",
+        "content": "",
+        "medium": "Video",
+        "links": [],
+        "labels": [],
+        "matchedAuthors": [],
+        "claim": "",
+        "verdict": "",
+        "keywords": [],
+        "topics": [],
+        "categories": [
+            {
+                "name": "Auto"
+            }
+        ],
+        "taxonomies": [],
+        "entities": [],
+        "companies": [],
+        "summary": "",
+        "shortSummary": "",
+        "translation": "",
+        "translatedTitle": "",
+        "translatedDescription": "",
+        "translatedSummary": "",
+        "locations": [],
+        "reprint": false,
+        "reprintGroupId": "297ee2dac8b1499eb2aad4f017c45bb2",
+        "places": [],
+        "people": []
+    },
+    {
+        "url": "https://www.wfaa.com/video/money/general-motors-recalls-600000-vehicles/287-cd61a3b1-c94a-4b5c-a4dd-9ad6ca55f237",
+        "authorsByline": "",
+        "articleId": "f94865b6919c41409145c8cefb41311c",
+        "clusterId": "b9e5c6bed6ca4b2abdc590d9f15998bd",
+        "source": {
+            "domain": "wfaa.com",
+            "paywall": false,
+            "location": {
+                "country": "us",
+                "state": "TX",
+                "county": "Dallas County",
+                "city": "Dallas",
+                "coordinates": {
+                    "lat": 32.7762719,
+                    "lon": -96.7968559
+                }
+            }
+        },
+        "imageUrl": "https://media.wfaa.com/assets/WFAA/images/a372d72c-6dbb-4a2f-a14f-07d7738610cf/20250430T115434/a372d72c-6dbb-4a2f-a14f-07d7738610cf_1140x641.jpg",
+        "country": "us",
+        "language": "en",
+        "pubDate": "2025-04-30T11:54:00+00:00",
+        "addDate": "2025-04-30T12:47:08.717988+00:00",
+        "refreshDate": "2025-04-30T12:47:08.717989+00:00",
+        "score": 128.00427,
+        "title": "General Motors recalls 600,000 vehicles",
+        "description": "The recall is due to a manufacturing error.",
+        "content": "Next up in 5\n\nExample video title will go here for this video",
+        "medium": "Video",
+        "links": [],
+        "labels": [],
+        "matchedAuthors": [],
+        "claim": "",
+        "verdict": "",
+        "keywords": [
+            {
+                "name": "General Motors",
+                "weight": 0.23570226
+            },
+            {
+                "name": "title",
+                "weight": 0.17082997
+            },
+            {
+                "name": "this video",
+                "weight": 0.08938471
+            },
+            {
+                "name": "600,000 vehicles",
+                "weight": 0.08164966
+            }
+        ],
+        "topics": [],
+        "categories": [
+            {
+                "name": "Auto"
+            }
+        ],
+        "taxonomies": [],
+        "entities": [
+            {
+                "data": "General Motors",
+                "type": "ORG",
+                "mentions": 1
+            }
+        ],
+        "companies": [],
+        "sentiment": {
+            "positive": 0.28515625,
+            "negative": 0.078125,
+            "neutral": 0.63623047
+        },
+        "summary": "",
+        "shortSummary": "",
+        "translation": "",
+        "translatedTitle": "",
+        "translatedDescription": "",
+        "translatedSummary": "",
+        "locations": [],
+        "reprint": false,
+        "reprintGroupId": "2c3567d97fb54196a483a783c3120fa9",
+        "places": [],
+        "people": []
+    },
+    {
+        "url": "https://bunatimes.com/economy/396595.html",
+        "authorsByline": "Liza",
+        "articleId": "98c9c402f6b4404f99e4bf761234a015",
+        "clusterId": "68f17d621f92430fbad23e31cc169bc5",
+        "source": {
+            "domain": "bunatimes.com",
+            "location": null
+        },
+        "imageUrl": "https://kor.ill.in.ua/m/610x385/4316788.jpg",
+        "country": "us",
+        "language": "en",
+        "pubDate": "2025-04-30T17:28:00+00:00",
+        "addDate": "2025-04-30T18:20:22.319872+00:00",
+        "refreshDate": "2025-04-30T18:20:22.319873+00:00",
+        "score": 120.20461,
+        "title": "General Motors recall 721 thousand cars because of defective machines",
+        "description": "Photo: Chevrolet The company works as quickly as possible and ensures that customer safety is its highest priority. General Motors announced a large-scale review of nearly 721 thousand cars in the world, where there were nearly 598 thousand in the USA, due to a 6.2-liter V8 engine problem that could…",
+        "content": "The company works as quickly as possible and ensures that customer safety is its highest priority.\n\nGeneral Motors announced a large-scale review of nearly 721 thousand cars in the world, where there ... [1716 symbols]",
+        "medium": "Article",
+        "links": [],
+        "labels": [],
+        "matchedAuthors": [
+            {
+                "id": null,
+                "name": "Liza"
+            }
+        ],
+        "claim": "",
+        "verdict": "",
+        "keywords": [
+            {
+                "name": "popular cars",
+                "weight": 0.099320136
+            },
+            {
+                "name": "associated models",
+                "weight": 0.07314028
+            },
+            {
+                "name": "General Motors",
+                "weight": 0.07147406
+            },
+            {
+                "name": "power loss",
+                "weight": 0.070998736
+            },
+            {
+                "name": "Escalade ESV",
+                "weight": 0.06885696
+            },
+            {
+                "name": "models",
+                "weight": 0.06409627
+            },
+            {
+                "name": "defective machines",
+                "weight": 0.06283831
+            },
+            {
+                "name": "connecting rods",
+                "weight": 0.0627833
+            },
+            {
+                "name": "US roads",
+                "weight": 0.062189825
+            },
+            {
+                "name": "GMC Sierra",
+                "weight": 0.06164311
+            }
+        ],
+        "topics": [
+            {
+                "name": "Consumer Alerts"
+            },
+            {
+                "name": "Economy"
+            }
+        ],
+        "categories": [
+            {
+                "name": "Auto"
+            },
+            {
+                "name": "Finance"
+            }
+        ],
+        "taxonomies": [
+            {
+                "name": "/News/Business News/Company News",
+                "score": 0.97314453125
+            },
+            {
+                "name": "/Business & Industrial/Automotive Industry",
+                "score": 0.78759765625
+            },
+            {
+                "name": "/Autos & Vehicles/Vehicle Shopping/Vehicle Specs, Reviews & Comparisons",
+                "score": 0.429443359375
+            },
+            {
+                "name": "/Autos & Vehicles/Motor Vehicles (By Type)/Hybrid & Alternative Vehicles",
+                "score": 0.426025390625
+            }
+        ],
+        "entities": [
+            {
+                "data": "General Motors",
+                "type": "ORG",
+                "mentions": 2
+            },
+            {
+                "data": "the National Security Department",
+                "type": "ORG",
+                "mentions": 1
+            },
+            {
+                "data": "GM",
+                "type": "ORG",
+                "mentions": 2
+            },
+            {
+                "data": "Cadillac",
+                "type": "ORG",
+                "mentions": 1
+            },
+            {
+                "data": "Chevy",
+                "type": "ORG",
+                "mentions": 1
+            },
+            {
+                "data": "Volkswagen",
+                "type": "ORG",
+                "mentions": 1
+            },
+            {
+                "data": "Stellantis",
+                "type": "ORG",
+                "mentions": 1
+            },
+            {
+                "data": "News",
+                "type": "ORG",
+                "mentions": 1
+            },
+            {
+                "data": "CORRESPONDENT.NET",
+                "type": "ORG",
+                "mentions": 1
+            },
+            {
+                "data": "USA",
+                "type": "GPE",
+                "mentions": 2
+            },
+            {
+                "data": "the United States",
+                "type": "GPE",
+                "mentions": 1
+            },
+            {
+                "data": "V8",
+                "type": "PRODUCT",
+                "mentions": 1
+            },
+            {
+                "data": "Escalade",
+                "type": "PRODUCT",
+                "mentions": 2
+            },
+            {
+                "data": "Silverado 1500",
+                "type": "PRODUCT",
+                "mentions": 2
+            },
+            {
+                "data": "Suburban",
+                "type": "PRODUCT",
+                "mentions": 1
+            },
+            {
+                "data": "Tahoe",
+                "type": "PRODUCT",
+                "mentions": 1
+            },
+            {
+                "data": "Yukon",
+                "type": "PRODUCT",
+                "mentions": 2
+            }
+        ],
+        "companies": [
+            {
+                "id": "afe1ace29bd04674864b1b6abefc1dbe",
+                "name": "General Motors Company",
+                "domains": [
+                    "gm.com"
+                ],
+                "symbols": [
+                    "8GM.DE",
+                    "GM",
+                    "GM.SW"
+                ]
+            }
+        ],
+        "sentiment": {
+            "positive": 0.040863037,
+            "negative": 0.703125,
+            "neutral": 0.25610352
+        },
+        "summary": "General Motors (GM) has recalled nearly 721 thousand cars globally, with nearly 598 thousand in the US. The decision was made after receiving 39 complaints about the destruction of machines. The affected models include popular cars 2021–2024, including Cadillac Escalade and Escalades ESV, Chevy Silverado 1500, Suburban and Tahoe, and GMC Sierra 1500, Yukon and Yukon XL. The recall is due to a 6.2-liter V8 engine problem that could lose power or fail. All cars that fall under the campaign must pass an inspection and if found any defects, they will be repaired or completely replaced. The company also suspended sales of associated models in dealerships.",
+        "shortSummary": "General Motors is recalling nearly 721,000 cars globally due to potentially faulty V8 engines, potentially leading to power loss and mechanical failure.",
+        "translation": "",
+        "translatedTitle": "",
+        "translatedDescription": "",
+        "translatedSummary": "",
+        "locations": [],
+        "reprint": false,
+        "reprintGroupId": "017ff241ab0e45f4aae840002cc182dc",
+        "places": [],
+        "people": []
+    },
+    {
+        "url": "https://247wallst.com/forecasts/2025/04/30/general-motors-gm-price-prediction-and-forecast-2025-2030/",
+        "authorsByline": "Joel South",
+        "articleId": "a9b57e9947314d5186642e4d105af2d5",
+        "clusterId": "5a8d2d68756840908312de7eba7c63dc",
+        "source": {
+            "domain": "247wallst.com",
+            "location": {
+                "country": "us",
+                "state": "NY",
+                "city": "New York",
+                "coordinates": {
+                    "lat": 40.7127281,
+                    "lon": -74.0060152
+                }
+            }
+        },
+        "imageUrl": "https://247wallst.com/wp-content/uploads/2025/03/gm.jpg",
+        "country": "us",
+        "language": "en",
+        "pubDate": "2025-04-30T12:31:30-04:00",
+        "addDate": "2025-04-30T16:46:12.650327+00:00",
+        "refreshDate": "2025-04-30T16:46:12.650328+00:00",
+        "score": 109.76852,
+        "title": "General Motors (NYSE: GM) Price Prediction and Forecast 2025-2030 (April 2025)",
+        "description": "General Motors is \"all-in\" on adding EVs to its product line but faces some legal headwinds.",
+        "content": "Shares of General Motors (NYSE: GM) slid 4.30% over the past month, compounding a difficult start to the year that has seen the stock lose 12.38%. The legacy automaker continues to struggle as the fal... [5551 symbols]",
+        "medium": "Article",
+        "links": [
+            "https://247wallst.com/companies/GM/",
+            "https://247wallst.com/contact/?feedback_url=https%3A%2F%2F247wallst.com%2Fforecasts%2F2025%2F04%2F30%2Fgeneral-motors-gm-price-prediction-and-forecast-2025-2030%2F",
+            "https://247wallst.com/go/smartasset?utm_source=247wallst&utm_campaign&utm_content=desktop||1434337&utm_term=247wallst&utm_medium=eoaCTALink&site=247wallst&tc=67ab71df0707a&tpid=1434337",
+            "https://247wallst.com/companies/LYFT/",
+            "https://247wallst.com/companies/UBER/"
+        ],
+        "labels": [],
+        "matchedAuthors": [
+            {
+                "id": null,
+                "name": "Joel South"
+            }
+        ],
+        "claim": "",
+        "verdict": "",
+        "keywords": [
+            {
+                "name": "GM",
+                "weight": 0.079348125
+            },
+            {
+                "name": "other GM gains",
+                "weight": 0.076037236
+            },
+            {
+                "name": "future stock prices",
+                "weight": 0.07012911
+            },
+            {
+                "name": "General Motors",
+                "weight": 0.06528462
+            },
+            {
+                "name": "vehicle models",
+                "weight": 0.0569809
+            },
+            {
+                "name": "Cruise robotaxis",
+                "weight": 0.055693895
+            },
+            {
+                "name": "GM’s future share price",
+                "weight": 0.05549046
+            },
+            {
+                "name": "Bolt EV",
+                "weight": 0.054624796
+            },
+            {
+                "name": "Chevy Silverado EV",
+                "weight": 0.053516973
+            },
+            {
+                "name": "Additional battery production investment",
+                "weight": 0.053203113
+            }
+        ],
+        "topics": [
+            {
+                "name": "Markets"
+            },
+            {
+                "name": "Stocks"
+            }
+        ],
+        "categories": [
+            {
+                "name": "Finance"
+            },
+            {
+                "name": "Auto"
+            }
+        ],
+        "taxonomies": [
+            {
+                "name": "/News/Business News/Company News",
+                "score": 0.9931640625
+            },
+            {
+                "name": "/Finance/Investing/Stocks & Bonds",
+                "score": 0.89599609375
+            },
+            {
+                "name": "/News/Business News/Financial Markets News",
+                "score": 0.876953125
+            },
+            {
+                "name": "/Business & Industrial/Automotive Industry",
+                "score": 0.64404296875
+            }
+        ],
+        "entities": [
+            {
+                "data": "General Motors",
+                "type": "ORG",
+                "mentions": 8
+            },
+            {
+                "data": "GM",
+                "type": "ORG",
+                "mentions": 19
+            },
+            {
+                "data": "Chevrolet",
+                "type": "ORG",
+                "mentions": 2
+            },
+            {
+                "data": "Buick",
+                "type": "ORG",
+                "mentions": 1
+            },
+            {
+                "data": "Cadillac",
+                "type": "ORG",
+                "mentions": 2
+            },
+            {
+                "data": "Hummer",
+                "type": "ORG",
+                "mentions": 1
+            },
+            {
+                "data": "Chevy",
+                "type": "ORG",
+                "mentions": 1
+            },
+            {
+                "data": "Cruise",
+                "type": "ORG",
+                "mentions": 1
+            },
+            {
+                "data": "Uber Technologies",
+                "type": "ORG",
+                "mentions": 4
+            },
+            {
+                "data": "Opel-Vauxhall",
+                "type": "ORG",
+                "mentions": 1
+            },
+            {
+                "data": "PSA Groupe SA",
+                "type": "ORG",
+                "mentions": 1
+            },
+            {
+                "data": "LG Chem Ltd.",
+                "type": "ORG",
+                "mentions": 1
+            },
+            {
+                "data": "Ford",
+                "type": "ORG",
+                "mentions": 1
+            },
+            {
+                "data": "24/7 Wall St.’s",
+                "type": "ORG",
+                "mentions": 1
+            },
+            {
+                "data": "Trump",
+                "type": "PERSON",
+                "mentions": 2
+            },
+            {
+                "data": "Mary Barra",
+                "type": "PERSON",
+                "mentions": 2
+            },
+            {
+                "data": "U.S.",
+                "type": "GPE",
+                "mentions": 2
+            },
+            {
+                "data": "Mexico",
+                "type": "GPE",
+                "mentions": 1
+            },
+            {
+                "data": "Canada",
+                "type": "GPE",
+                "mentions": 1
+            },
+            {
+                "data": "America",
+                "type": "GPE",
+                "mentions": 1
+            },
+            {
+                "data": "Detroit",
+                "type": "GPE",
+                "mentions": 1
+            },
+            {
+                "data": "Ohio",
+                "type": "GPE",
+                "mentions": 1
+            },
+            {
+                "data": "Tennessee",
+                "type": "GPE",
+                "mentions": 1
+            },
+            {
+                "data": "Lansing",
+                "type": "GPE",
+                "mentions": 1
+            },
+            {
+                "data": "Asia",
+                "type": "LOC",
+                "mentions": 1
+            },
+            {
+                "data": "EV",
+                "type": "PRODUCT",
+                "mentions": 3
+            },
+            {
+                "data": "Silverado",
+                "type": "PRODUCT",
+                "mentions": 1
+            },
+            {
+                "data": "Lyriq",
+                "type": "PRODUCT",
+                "mentions": 1
+            },
+            {
+                "data": "Ultium Drive",
+                "type": "PRODUCT",
+                "mentions": 1
+            },
+            {
+                "data": "Corvette",
+                "type": "PRODUCT",
+                "mentions": 1
+            },
+            {
+                "data": "E-Ray",
+                "type": "PRODUCT",
+                "mentions": 1
+            },
+            {
+                "data": "Cruise",
+                "type": "PRODUCT",
+                "mentions": 4
+            },
+            {
+                "data": "Advanced Driver Assistance Systems",
+                "type": "PRODUCT",
+                "mentions": 1
+            },
+            {
+                "data": "ADAS",
+                "type": "PRODUCT",
+                "mentions": 1
+            },
+            {
+                "data": "European",
+                "type": "NORP",
+                "mentions": 1
+            }
+        ],
+        "companies": [
+            {
+                "id": "adaad3b30200492b9e2ccb064715e5e1",
+                "name": "AM General",
+                "domains": [
+                    "amgeneral.com"
+                ],
+                "symbols": []
+            },
+            {
+                "id": "afe1ace29bd04674864b1b6abefc1dbe",
+                "name": "General Motors Company",
+                "domains": [
+                    "gm.com"
+                ],
+                "symbols": [
+                    "8GM.DE",
+                    "GM",
+                    "GM.SW"
+                ]
+            }
+        ],
+        "sentiment": {
+            "positive": 0.064086914,
+            "negative": 0.7133789,
+            "neutral": 0.22229004
+        },
+        "summary": "Shares of General Motors (NYSE: GM) have dropped 4.30% over the past month, following a difficult start to the year that saw the stock lose 12.38%. The company's stock, which sources its parts from a global network of 3,100 primary suppliers and has significant presence in Mexico, Canada, and Asia, has seen a 1.03% gain over the last year. However, it has produced a 115.22% return over five years. The company’s EV segment is expected to be in the black with models like the Hummer EV, Chevy Silverado EV, and Cadillac Lyriq already on the market. In 2021, GM secured a deal with LG Chem Ltd. to supply enough cathode materials to build 5 million EV vehicles, and between 2022 and 2023, its EV production will increase to deliver over 400,000 vehicles. The firm's share price is currently at $54.54, according to analysts.",
+        "shortSummary": "General Motors shares fell 4.30% amid tough trading and challenges, with strong growth prospects and a strategic partnership with Uber boosting investor confidence.",
+        "translation": "",
+        "translatedTitle": "",
+        "translatedDescription": "",
+        "translatedSummary": "",
+        "locations": [],
+        "reprint": false,
+        "reprintGroupId": "c42a962a4542493ab10380c7ac7a3bc8",
+        "places": [],
+        "people": [
+            {
+                "wikidataId": "Q6779013",
+                "name": "Mary Barra"
+            }
+        ]
+    },
+    {
+        "url": "https://www.komando.com/news/big-gm-recall/",
+        "authorsByline": "Kim Komando",
+        "articleId": "e5ec1f1ea70e4b4691d8ae960279d12a",
+        "clusterId": "07bed8ad0e154e8384bdc72372cebfd5",
+        "source": {
+            "domain": "komando.com",
+            "location": {
+                "country": "us",
+                "state": "AZ",
+                "county": "Maricopa County",
+                "city": "Phoenix",
+                "coordinates": {
+                    "lat": 33.4484367,
+                    "lon": -112.0741417
+                }
+            }
+        },
+        "imageUrl": "https://www.komando.com/wp-content/uploads/2024/05/schema-logo-1200x768-1.jpg",
+        "country": "us",
+        "language": "en",
+        "pubDate": "2025-05-01T13:00:00+00:00",
+        "addDate": "2025-05-01T13:19:41.742748+00:00",
+        "refreshDate": "2025-05-01T13:19:41.742749+00:00",
+        "score": 109.66518,
+        "title": "Big GM recall",
+        "description": "\uD83D\uDE97 Big GM recall: General Motors is recalling nearly 600,000 Chevy, Cadillac and GMC vehicles over major engine issues. If you’ve got a 2021-2024 model with a 6.2L V8 gas engine, you might be on the list. Owner letters go out June 9, but don’t wait. Head to your nearest dealer now for a free […]",
+        "content": "Let me tell you a true story that’ll shake you and hopefully protect someone you love from heartbreak or a well-rehearsed scam call.\n\nIt happened to a 90-year-old grandmother in Nashville. She picked ... [417 symbols]",
+        "medium": "Article",
+        "links": [
+            "https://www.komando.com/news/security/grandma-got-played-but-not-by-bingo/"
+        ],
+        "labels": [],
+        "matchedAuthors": [
+            {
+                "id": "1a963e6d9ae946ec9f0220a326d9661a",
+                "name": "Kim Komando"
+            }
+        ],
+        "claim": "",
+        "verdict": "",
+        "keywords": [
+            {
+                "name": "Big GM recall",
+                "weight": 0.12166607
+            },
+            {
+                "name": "heartbreak",
+                "weight": 0.08862649
+            },
+            {
+                "name": "GM",
+                "weight": 0.08111071
+            },
+            {
+                "name": "Nashville",
+                "weight": 0.07482022
+            },
+            {
+                "name": "a young woman",
+                "weight": 0.06264142
+            },
+            {
+                "name": "a true story",
+                "weight": 0.06038048
+            },
+            {
+                "name": "a car accident",
+                "weight": 0.057353932
+            },
+            {
+                "name": "the other end",
+                "weight": 0.05152669
+            },
+            {
+                "name": "her voice",
+                "weight": 0.042559095
+            },
+            {
+                "name": "a well-rehearsed scam call",
+                "weight": 0.039828118
+            }
+        ],
+        "topics": [
+            {
+                "name": "Consumer Alerts"
+            }
+        ],
+        "categories": [],
+        "taxonomies": [
+            {
+                "name": "/News/Business News/Company News",
+                "score": 0.9150390625
+            },
+            {
+                "name": "/Shopping/Consumer Resources/Consumer Advocacy & Protection",
+                "score": 0.81640625
+            },
+            {
+                "name": "/Law & Government/Public Safety/Crime & Justice",
+                "score": 0.57421875
+            },
+            {
+                "name": "/Law & Government/Legal/Other",
+                "score": 0.498046875
+            },
+            {
+                "name": "/Law & Government/Legal/Business & Corporate Law",
+                "score": 0.42626953125
+            }
+        ],
+        "entities": [
+            {
+                "data": "GM",
+                "type": "ORG",
+                "mentions": 1
+            },
+            {
+                "data": "Nashville",
+                "type": "GPE",
+                "mentions": 1
+            }
+        ],
+        "companies": [
+            {
+                "id": "7a470ed6424e44778ce7c3242ac01da2",
+                "name": "General Motors of Canada",
+                "domains": [
+                    "gm.ca"
+                ],
+                "symbols": []
+            }
+        ],
+        "sentiment": {
+            "positive": 0.11853027,
+            "negative": 0.5605469,
+            "neutral": 0.32104492
+        },
+        "summary": "A true story about a 90-year-old grandmother in Nashville, Tennessee, who received a scam call from a young woman claiming to have been in a car accident and needs to talk to a lawyer. The author shares her own story, which will hopefully prevent someone from suffering or suffering from heartbreak or a scam. This article discusses a true story that occurred to a grandmother who received an unexpected scam call.",
+        "shortSummary": "A 90-year-old grandmother was shaken by a scam call, urging her to seek legal advice and protect loved ones from scam calls and heartbreak.",
+        "translation": "",
+        "translatedTitle": "",
+        "translatedDescription": "",
+        "translatedSummary": "",
+        "locations": [
+            {
+                "country": "us",
+                "state": "TN",
+                "county": "Davidson County",
+                "city": "Nashville-Davidson"
+            }
+        ],
+        "reprint": false,
+        "reprintGroupId": "9b843a5567a3414392273da4c73566e9",
+        "places": [],
+        "people": []
+    },
+    {
+        "url": "https://www.wfiwradio.com/2025/04/30/general-motors-recalls-over-700000-vehicles-due-to-engine-issues/",
+        "authorsByline": "Mark Wells",
+        "articleId": "7aa3c37793a64bd08ff853c3f1e070f0",
+        "clusterId": "68f17d621f92430fbad23e31cc169bc5",
+        "source": {
+            "domain": "wfiwradio.com",
+            "location": {
+                "country": "us",
+                "state": "IL",
+                "county": "Wayne County",
+                "city": "Fairfield",
+                "coordinates": {
+                    "lat": 38.381784,
+                    "lon": -88.39171
+                }
+            }
+        },
+        "imageUrl": "https://media-cdn.socastsrm.com/wordpress/wp-content/blogs.dir/3270/files/2025/04/vehicle-recall-image.jpg",
+        "country": "us",
+        "language": "en",
+        "pubDate": "2025-04-30T16:54:50+00:00",
+        "addDate": "2025-04-30T17:46:30.217945+00:00",
+        "refreshDate": "2025-04-30T17:46:30.217946+00:00",
+        "score": 105.11124,
+        "title": "GENERAL MOTORS RECALLS OVER 700,000 VEHICLES DUE TO ENGINE ISSUES",
+        "description": "General Motors has issued a recall for more than 720,000 vehicles worldwide due to potential engine problems. ...",
+        "content": "General Motors has issued a recall for more than 720,000 vehicles worldwide due to potential engine problems. The recall affects approximately 598,000 vehicles in the United States and involves models... [573 symbols]",
+        "medium": "Article",
+        "links": [],
+        "labels": [],
+        "matchedAuthors": [
+            {
+                "id": null,
+                "name": "Mark Wells"
+            }
+        ],
+        "claim": "",
+        "verdict": "",
+        "keywords": [
+            {
+                "name": "ENGINE ISSUES",
+                "weight": 0.13647693
+            },
+            {
+                "name": "potential engine problems",
+                "weight": 0.13239132
+            },
+            {
+                "name": "engine failures",
+                "weight": 0.12818265
+            },
+            {
+                "name": "Escalade ESV",
+                "weight": 0.11862977
+            },
+            {
+                "name": "several other models",
+                "weight": 0.110691495
+            },
+            {
+                "name": "Cadillac Escalade and Escalade ESV models",
+                "weight": 0.10066769
+            },
+            {
+                "name": "Escalade",
+                "weight": 0.09940285
+            },
+            {
+                "name": "models",
+                "weight": 0.092421554
+            },
+            {
+                "name": "the National Highway Traffic Safety Administration",
+                "weight": 0.088791
+            },
+            {
+                "name": "General Motors",
+                "weight": 0.08450641
+            }
+        ],
+        "topics": [],
+        "categories": [
+            {
+                "name": "Auto"
+            }
+        ],
+        "taxonomies": [
+            {
+                "name": "/News/Business News/Company News",
+                "score": 0.9462890625
+            },
+            {
+                "name": "/Business & Industrial/Automotive Industry",
+                "score": 0.65625
+            },
+            {
+                "name": "/Shopping/Consumer Resources/Consumer Advocacy & Protection",
+                "score": 0.306884765625
+            },
+            {
+                "name": "/Autos & Vehicles/Vehicle Shopping/Vehicle Specs, Reviews & Comparisons",
+                "score": 0.302734375
+            }
+        ],
+        "entities": [
+            {
+                "data": "GENERAL MOTORS",
+                "type": "ORG",
+                "mentions": 2
+            },
+            {
+                "data": "Cadillac",
+                "type": "ORG",
+                "mentions": 1
+            },
+            {
+                "data": "the National Highway Traffic Safety Administration",
+                "type": "ORG",
+                "mentions": 1
+            },
+            {
+                "data": "GM",
+                "type": "ORG",
+                "mentions": 1
+            },
+            {
+                "data": "the United States",
+                "type": "GPE",
+                "mentions": 1
+            },
+            {
+                "data": "U.S.",
+                "type": "GPE",
+                "mentions": 1
+            },
+            {
+                "data": "Escalade",
+                "type": "PRODUCT",
+                "mentions": 2
+            }
+        ],
+        "companies": [
+            {
+                "id": "afe1ace29bd04674864b1b6abefc1dbe",
+                "name": "General Motors Company",
+                "domains": [
+                    "gm.com"
+                ],
+                "symbols": [
+                    "8GM.DE",
+                    "GM",
+                    "GM.SW"
+                ]
+            }
+        ],
+        "sentiment": {
+            "positive": 0.029388428,
+            "negative": 0.8256836,
+            "neutral": 0.14465332
+        },
+        "summary": "General Motors (GM) has issued a recall for over 720,000 vehicles worldwide due to potential engine problems. The affected vehicles include Cadillac Escalade and Escalades, along with several other models. The recall affects approximately 598,000 cars in the United States and involves models from 2021 through 2024. The National Highway Traffic Safety Administration received 39 complaints about engine failures. GM reported 12 crashes and 12 injuries in the U.S. that could be related to the engine issues.",
+        "shortSummary": "General Motors is recalling over 700,000 vehicles globally due to potential engine issues, following a National Highway Traffic Safety Administration investigation.",
+        "translation": "",
+        "translatedTitle": "",
+        "translatedDescription": "",
+        "translatedSummary": "",
+        "locations": [],
+        "reprint": false,
+        "reprintGroupId": "56aab2bcad364d5781bfd52aa47546a4",
+        "places": [],
+        "people": []
+    },
+    {
+        "url": "https://www.news8000.com/news/consumer-headlines-gm-recall/video_ad296f78-2c17-5e0d-a4c9-ccbb6e98edf8.html",
+        "authorsByline": "",
+        "articleId": "7fc8bb7e9a0f454ba48fc9d25cbf43e6",
+        "clusterId": "07bed8ad0e154e8384bdc72372cebfd5",
+        "source": {
+            "domain": "news8000.com",
+            "location": {
+                "country": "us",
+                "state": "WI",
+                "county": "La Crosse County",
+                "city": "La Crosse",
+                "coordinates": {
+                    "lat": 43.8014053,
+                    "lon": -91.2395429
+                }
+            }
+        },
+        "imageUrl": "https://bloximages.newyork1.vip.townnews.com/news8000.com/content/tncms/assets/v3/editorial/a/d2/ad296f78-2c17-5e0d-a4c9-ccbb6e98edf8/68125eb7d06f0.image.jpg?crop=1280%2C672%2C0%2C23&resize=1200%2C630&order=crop%2Cresize",
+        "country": "us",
+        "language": "en",
+        "pubDate": "2025-04-30T17:26:00+00:00",
+        "addDate": "2025-04-30T18:04:26.281534+00:00",
+        "refreshDate": "2025-04-30T18:04:26.281535+00:00",
+        "score": 104.43501,
+        "title": "Consumer headlines: GM recall",
+        "description": "Consumer headlines: GM recall",
+        "content": "Your browser is out of date and potentially vulnerable to security risks.\n\nWe recommend switching to one of the following browsers:",
+        "medium": "Article",
+        "links": [
+            "https://www.microsoft.com/en-us/edge",
+            "https://www.google.com/chrome/",
+            "https://www.mozilla.org/en-US/firefox/"
+        ],
+        "labels": [
+            {
+                "name": "Low Content"
+            }
+        ],
+        "matchedAuthors": [],
+        "claim": "",
+        "verdict": "",
+        "keywords": [
+            {
+                "name": "Consumer headlines",
+                "weight": 0.19245009
+            },
+            {
+                "name": "GM recall",
+                "weight": 0.19245009
+            },
+            {
+                "name": "security risks",
+                "weight": 0.1851092
+            },
+            {
+                "name": "date",
+                "weight": 0.14708109
+            },
+            {
+                "name": "GM",
+                "weight": 0.14433756
+            },
+            {
+                "name": "the following browsers",
+                "weight": 0.11131125
+            },
+            {
+                "name": "Your browser",
+                "weight": 0.08251381
+            }
+        ],
+        "topics": [
+            {
+                "name": "Consumer Alerts"
+            }
+        ],
+        "categories": [],
+        "taxonomies": [],
+        "entities": [
+            {
+                "data": "GM",
+                "type": "ORG",
+                "mentions": 1
+            }
+        ],
+        "companies": [],
+        "sentiment": {
+            "positive": 0.17492676,
+            "negative": 0.20397949,
+            "neutral": 0.62158203
+        },
+        "summary": "",
+        "shortSummary": "",
+        "translation": "",
+        "translatedTitle": "",
+        "translatedDescription": "",
+        "translatedSummary": "",
+        "locations": [],
+        "reprint": false,
+        "reprintGroupId": "db3fa21789f242d893e6836082ffd8ea",
+        "places": [],
+        "people": []
+    },
+    {
+        "url": "https://seekingalpha.com/news/4437544-general-motors-recalls-600k-cadillac-chevrolet-and-gmc-cars-over-engine-failure-risk",
+        "authorsByline": "Manshi Mamtora",
+        "articleId": "f7d79db0b8b648c09ab640fa9379a4b5",
+        "clusterId": "68f17d621f92430fbad23e31cc169bc5",
+        "source": {
+            "domain": "seekingalpha.com",
+            "location": {
+                "country": "us",
+                "state": "NY",
+                "city": "New York",
+                "coordinates": {
+                    "lat": 40.7127281,
+                    "lon": -74.0060152
+                }
+            }
+        },
+        "imageUrl": "https://static.seekingalpha.com/cdn/s3/uploads/getty_images/1156940451/image_1156940451.jpg?io=getty-c-w750",
+        "country": "us",
+        "language": "en",
+        "pubDate": "2025-04-30T06:04:14+00:00",
+        "addDate": "2025-04-30T06:08:22.675454+00:00",
+        "refreshDate": "2025-04-30T06:08:22.675455+00:00",
+        "score": 96.4791,
+        "title": "General Motors recalls ~600K Cadillac, Chevrolet and GMC cars over engine failure risk",
+        "description": "General Motors (NYSE:GM) announced a recall of nearly 600,000 vehicles in the U.S. due to potential engine failure risks.",
+        "content": "General Motors (NYSE:GM) announced a recall of nearly 600,000 vehicles in the U.S. due to potential engine failure risks. The recall affects certain Cadillac Escalades and Escalade ESVs; Chevrolet Sil... [285 symbols]",
+        "medium": "Article",
+        "links": [
+            "https://seekingalpha.com/symbol/GM"
+        ],
+        "labels": [],
+        "matchedAuthors": [
+            {
+                "id": null,
+                "name": "Manshi Mamtora"
+            }
+        ],
+        "claim": "",
+        "verdict": "",
+        "keywords": [
+            {
+                "name": "Chevrolet Silverado 1500s",
+                "weight": 0.15962583
+            },
+            {
+                "name": "GMC Sierra 1500s",
+                "weight": 0.15837634
+            },
+            {
+                "name": "potential engine failure risks",
+                "weight": 0.1508138
+            },
+            {
+                "name": "certain Cadillac Escalades",
+                "weight": 0.14543816
+            },
+            {
+                "name": "engine failure risk",
+                "weight": 0.14523655
+            },
+            {
+                "name": "Sierra 1500s",
+                "weight": 0.1351553
+            },
+            {
+                "name": "Silverado 1500s",
+                "weight": 0.13394903
+            },
+            {
+                "name": "General Motors",
+                "weight": 0.124016784
+            },
+            {
+                "name": "Cadillac",
+                "weight": 0.11818879
+            },
+            {
+                "name": "Chevrolet",
+                "weight": 0.117425464
+            }
+        ],
+        "topics": [
+            {
+                "name": "Markets"
+            }
+        ],
+        "categories": [
+            {
+                "name": "Auto"
+            },
+            {
+                "name": "Finance"
+            }
+        ],
+        "taxonomies": [
+            {
+                "name": "/News/Business News/Company News",
+                "score": 0.97998046875
+            },
+            {
+                "name": "/Business & Industrial/Automotive Industry",
+                "score": 0.693359375
+            }
+        ],
+        "entities": [
+            {
+                "data": "General Motors",
+                "type": "ORG",
+                "mentions": 2
+            },
+            {
+                "data": "Cadillac",
+                "type": "ORG",
+                "mentions": 2
+            },
+            {
+                "data": "Chevrolet",
+                "type": "ORG",
+                "mentions": 2
+            },
+            {
+                "data": "GMC",
+                "type": "ORG",
+                "mentions": 3
+            },
+            {
+                "data": "NYSE",
+                "type": "ORG",
+                "mentions": 1
+            },
+            {
+                "data": "U.S.",
+                "type": "GPE",
+                "mentions": 1
+            },
+            {
+                "data": "Escalades",
+                "type": "PRODUCT",
+                "mentions": 2
+            },
+            {
+                "data": "Silverado 1500s",
+                "type": "PRODUCT",
+                "mentions": 2
+            },
+            {
+                "data": "Suburbans",
+                "type": "PRODUCT",
+                "mentions": 1
+            },
+            {
+                "data": "Tahoes",
+                "type": "PRODUCT",
+                "mentions": 1
+            },
+            {
+                "data": "Yukons",
+                "type": "PRODUCT",
+                "mentions": 2
+            }
+        ],
+        "companies": [],
+        "sentiment": {
+            "positive": 0.031158447,
+            "negative": 0.7939453,
+            "neutral": 0.17541504
+        },
+        "summary": "",
+        "shortSummary": "",
+        "translation": "",
+        "translatedTitle": "",
+        "translatedDescription": "",
+        "translatedSummary": "",
+        "locations": [],
+        "reprint": true,
+        "reprintGroupId": "2be6fc39ca3644a084a97b9cd01300b2",
+        "places": [],
+        "people": []
+    },
+    {
+        "url": "https://www.silive.com/news/2025/04/engine-failure-risk-leads-to-massive-gm-recall.html",
+        "authorsByline": "Mike Matteo | mmatteo@siadvance.com, mike-matteo, Mike Matteo",
+        "articleId": "c6cc713315a944dcb1f25801869cdbd3",
+        "clusterId": "89632c840c65452c89d637ffd34ef8c1",
+        "source": {
+            "domain": "silive.com",
+            "location": {
+                "country": "us",
+                "state": "NY",
+                "city": "Staten Island",
+                "coordinates": {
+                    "lat": 40.5834557,
+                    "lon": -74.1496048
+                }
+            }
+        },
+        "imageUrl": "https://www.silive.com/resizer/v2/L3BJETAKHFAI3H3MXWPZ46LFHU.JPG?auth=77f22cadd7ae91a230257a18f38da6b980cfababd619e7be6f3331088e743c04&width=1280&quality=90",
+        "country": "us",
+        "language": "en",
+        "pubDate": "2025-04-30T16:37:40.018000+00:00",
+        "addDate": "2025-04-30T16:53:53.691200+00:00",
+        "refreshDate": "2025-04-30T16:53:53.691201+00:00",
+        "score": 87.73622,
+        "title": "Engine failure risk leads to massive GM recall",
+        "description": "Approximately 597,630 vehicles are affected, according to the National Highway Traffic Safety Administration.",
+        "content": "General Motors has issued a safety recall for several vehicles across several of the auto giant’s main brands.\n\nThe company is currently recalling certain SUVs and trucks sold under the Cadillac, GMC ... [1692 symbols]",
+        "medium": "Article",
+        "links": [
+            "https://www.silive.com/news/2025/04/audi-recalls-over-44k-cars-over-software-error-that-turns-off-speedometer.html",
+            "https://static.nhtsa.gov/odi/rcl/2025/RCAK-25V274-2120.pdf",
+            "https://www.silive.com/news/2025/04/luxury-automaker-recalls-over-18k-vehicles-for-electrical-system-issues.html",
+            "https://www.silive.com/news/2025/04/over-152000-acura-suvs-recalled-over-new-issue-with-lights.html",
+            "https://www.silive.com/news/2025/04/ford-recalls-thousands-of-this-popular-suv-model-over-engine-power-issue.html",
+            "https://static.nhtsa.gov/odi/rcl/2025/RCLRPT-25V274-1598.PDF"
+        ],
+        "labels": [],
+        "matchedAuthors": [
+            {
+                "id": null,
+                "name": "Mike Matteo"
+            },
+            {
+                "id": null,
+                "name": "Mike-Matteo"
+            }
+        ],
+        "claim": "",
+        "verdict": "",
+        "keywords": [
+            {
+                "name": "massive GM recall",
+                "weight": 0.11186947
+            },
+            {
+                "name": "Engine failure risk",
+                "weight": 0.10031911
+            },
+            {
+                "name": "engine damage",
+                "weight": 0.0988994
+            },
+            {
+                "name": "Cadillac customer service",
+                "weight": 0.09814849
+            },
+            {
+                "name": "GMC customer service",
+                "weight": 0.09503851
+            },
+            {
+                "name": "Chevrolet customer service",
+                "weight": 0.09496952
+            },
+            {
+                "name": "several vehicles",
+                "weight": 0.09230839
+            },
+            {
+                "name": "manufacturing issues",
+                "weight": 0.090597674
+            },
+            {
+                "name": "Cadillac Escalade",
+                "weight": 0.08702276
+            },
+            {
+                "name": "affected vehicles",
+                "weight": 0.08393696
+            }
+        ],
+        "topics": [
+            {
+                "name": "Consumer Alerts"
+            }
+        ],
+        "categories": [],
+        "taxonomies": [
+            {
+                "name": "/News/Business News/Company News",
+                "score": 0.96337890625
+            },
+            {
+                "name": "/Business & Industrial/Automotive Industry",
+                "score": 0.7734375
+            },
+            {
+                "name": "/Autos & Vehicles/Motor Vehicles (By Type)/Hybrid & Alternative Vehicles",
+                "score": 0.34130859375
+            },
+            {
+                "name": "/Autos & Vehicles/Vehicle Shopping/Vehicle Specs, Reviews & Comparisons",
+                "score": 0.339111328125
+            }
+        ],
+        "entities": [
+            {
+                "data": "GM",
+                "type": "ORG",
+                "mentions": 7
+            },
+            {
+                "data": "General Motors",
+                "type": "ORG",
+                "mentions": 1
+            },
+            {
+                "data": "Cadillac",
+                "type": "ORG",
+                "mentions": 3
+            },
+            {
+                "data": "Chevrolet",
+                "type": "ORG",
+                "mentions": 3
+            },
+            {
+                "data": "the National Highway Traffic Safety Administration",
+                "type": "ORG",
+                "mentions": 2
+            },
+            {
+                "data": "SUVs",
+                "type": "PRODUCT",
+                "mentions": 1
+            },
+            {
+                "data": "L87 V8",
+                "type": "PRODUCT",
+                "mentions": 2
+            },
+            {
+                "data": "Silverado 1500",
+                "type": "PRODUCT",
+                "mentions": 2
+            },
+            {
+                "data": "Tahoe",
+                "type": "PRODUCT",
+                "mentions": 1
+            },
+            {
+                "data": "Suburban",
+                "type": "PRODUCT",
+                "mentions": 1
+            },
+            {
+                "data": "Yukon",
+                "type": "PRODUCT",
+                "mentions": 2
+            },
+            {
+                "data": "Escalade",
+                "type": "PRODUCT",
+                "mentions": 2
+            }
+        ],
+        "companies": [
+            {
+                "id": "afe1ace29bd04674864b1b6abefc1dbe",
+                "name": "General Motors Company",
+                "domains": [
+                    "gm.com"
+                ],
+                "symbols": [
+                    "8GM.DE",
+                    "GM",
+                    "GM.SW"
+                ]
+            },
+            {
+                "id": "5c0172fa85754178928c1afb74265c55",
+                "name": "GMC",
+                "domains": [
+                    "gmc.com"
+                ],
+                "symbols": []
+            },
+            {
+                "id": "b5ef33fdb0274cccb4719495277f481d",
+                "name": "Cadillac",
+                "domains": [
+                    "cadillac.com",
+                    "cadillaceurope.com"
+                ],
+                "symbols": []
+            },
+            {
+                "id": "7a470ed6424e44778ce7c3242ac01da2",
+                "name": "General Motors of Canada",
+                "domains": [
+                    "gm.ca"
+                ],
+                "symbols": []
+            },
+            {
+                "id": "9f8a36ced95f4bbe806e0b618c140085",
+                "name": "Chevrolet",
+                "domains": [
+                    "chevrolet.com"
+                ],
+                "symbols": []
+            }
+        ],
+        "sentiment": {
+            "positive": 0.04135132,
+            "negative": 0.71728516,
+            "neutral": 0.24157715
+        },
+        "summary": "General Motors (GM) has issued a safety recall for several vehicles across several of its main brands, including Cadillac, GMC, and Chevrolet, due to manufacturing issues with some engine components. Approximately 597,630 vehicles are affected by the recall. The National Highway Traffic Safety Administration stated that these issues were caused by issues with the connecting rods and crankshaft, which could lead to engine damage or failure. Only vehicles with 6.2L L87 V8 engines are affected. Owners can contact GM to bring their vehicle into a dealership to inspect the engine cylinder and repair or replace it as needed.",
+        "shortSummary": "General Motors is recalling nearly 600,000 vehicles due to potential engine failure issues, requiring urgent repair and replacement options from dealers.",
+        "translation": "",
+        "translatedTitle": "",
+        "translatedDescription": "",
+        "translatedSummary": "",
+        "locations": [],
+        "reprint": false,
+        "reprintGroupId": "0da18f4bab484aa7928e71b68be4f73f",
+        "places": [],
+        "people": []
+    }
+]

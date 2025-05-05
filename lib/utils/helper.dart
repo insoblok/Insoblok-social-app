@@ -10,6 +10,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
+import 'package:insoblok/utils/utils.dart';
 
 class AIHelpers {
   static Future<String> getDeviceIdentifier() async {
@@ -131,5 +132,22 @@ class AIHelpers {
     Fluttertoast.showToast(
       msg: 'This feature was not added yet! Will be came soon. ',
     );
+  }
+
+  static Future<void> sendEmail({
+    required String subject,
+    required String body,
+  }) async {
+    final Uri emailLaunchUri = Uri(
+      scheme: 'mailto',
+      path: kRecevierEmail,
+      queryParameters: {'subject': subject, 'body': body},
+    );
+
+    if (await canLaunchUrl(emailLaunchUri)) {
+      await launchUrl(emailLaunchUri);
+    } else {
+      throw 'Could not launch email';
+    }
   }
 }

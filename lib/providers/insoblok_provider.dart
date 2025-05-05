@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:insoblok/routers/routers.dart';
 
 import 'package:provider/provider.dart';
 
 import 'package:insoblok/providers/providers.dart';
+import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 
@@ -37,14 +37,38 @@ class InSoBlokProvider extends InSoBlokViewModel {
 
   Future<void> onClickMenuMore() async {
     Navigator.of(context).pop();
+    Routers.goToSettingPage(context);
   }
 
   Future<void> onClickMenuItem(int index) async {
     Navigator.of(context).pop();
     logger.d(index);
     switch (index) {
+      case 0:
+        Routers.goToAccountPage(context);
+        break;
+      case 1:
+        Routers.goToAccountListPage(context);
+        break;
+      case 2:
+        Routers.goToAccountTopicPage(context);
+        break;
+      case 3:
+        Routers.goToAccountBookmarkPage(context);
+        break;
+      case 4:
+        Routers.goToAccountMomentPage(context);
+        break;
+      case 5:
+        Routers.goToPrivacyPage(context);
+        break;
+      case 6:
+        Routers.goToHelpCenterPage(context);
+        break;
       case 7:
         _appProvider.updateTheme();
+        break;
+      case 8:
         break;
     }
   }

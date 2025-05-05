@@ -17,4 +17,33 @@ extension StringExt on String {
     }
     return '---';
   }
+
+  String get mdyFormatter {
+    try {
+      var date = kFullDateTimeFormatter.parse(this, true).toLocal();
+      return kDateMDYFormatter.format(date);
+    } catch (e) {
+      logger.e(e);
+    }
+    return '---';
+  }
+
+  bool get isEmailValid => RegExp(
+    r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
+  ).hasMatch(this);
+
+  String get newsTimeago {
+    try {
+      var date = DateTime.parse(this).toLocal();
+      var dateStr = kFullDateTimeFormatter.format(date.toUtc());
+      return dateStr.timeago;
+    } catch (e) {
+      logger.e(e);
+    }
+    return '---';
+  }
+
+  String get pageSpeedThumbnail {
+    return 'https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${Uri.encodeComponent(this)}&screenshot=true';
+  }
 }

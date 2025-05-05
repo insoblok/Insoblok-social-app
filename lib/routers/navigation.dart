@@ -11,8 +11,11 @@ const kRouterRegister = '/register';
 const kRouterMain = '/main';
 
 const kRouterAccount = '/account';
+const kRouterAccountUpdate = '/account-update';
 const kRouterAccountAvatar = '/account-avatar';
-const kRouterAccountList = '/account-list';
+const kRouterAccountPublic = '/account-public';
+const kRouterAccountPrivate = '/account-private';
+const kRouterAccountPost = '/account-post';
 const kRouterAccountTopic = '/account-topic';
 const kRouterAccountBookmark = '/account-bookmark';
 const kRouterAccountMoment = '/account-moment';
@@ -23,10 +26,12 @@ const kRouterMessageSetting = '/message-setting';
 
 const kRouterAddStory = '/add-story';
 const kRouterStoryDetail = '/story-detail';
+const kRouterNewsDetail = '/news-detail';
 
 const kRouterQuillDescription = '/quill-description';
-const kRouterSettingPrivacy = '/setting-privacy';
+const kRouterPrivacy = '/privacy-police';
 const kRouterHelpCenter = '/help-center';
+const kRouterSetting = '/setting';
 
 class Navigation {
   final router = fluro.FluroRouter();
@@ -65,11 +70,20 @@ class Navigation {
     // * AccountPage
     initRoute<UserModel>(kRouterAccount, (props) => AccountPage(user: props));
 
+    // * UpdateAccountPage
+    initRoute(kRouterAccountUpdate, (props) => UpdateProfilePage());
+
     // * AccountAvatarPage
-    initRoute(kRouterAccountAvatar, (props) => AvatarPage());
+    initRoute(kRouterAccountAvatar, (props) => AccountAvatarPage());
+
+    // * AccountPublicPage
+    initRoute(kRouterAccountPublic, (props) => AccountPublicPage());
+
+    // * AccountPrivatePage
+    initRoute(kRouterAccountPrivate, (props) => AccountPrivatePage());
 
     // * AccountListPage
-    initRoute(kRouterAccountList, (props) => ListPage());
+    initRoute(kRouterAccountPost, (props) => PostsPage());
 
     // * AccountTopicPage
     initRoute(kRouterAccountTopic, (props) => TopicPage());
@@ -101,14 +115,23 @@ class Navigation {
       (props) => StoryDetailPage(story: props!),
     );
 
+    // * NewsDetailPage
+    initRoute<NewsModel>(
+      kRouterNewsDetail,
+      (props) => NewsDetailPage(news: props!),
+    );
+
     // * QuillDescriptionPage
     initRoute<String>(
       kRouterQuillDescription,
       (props) => QuillDescriptionPage(originQuill: props),
     );
 
-    // * SettingPrivacyPage
-    initRoute(kRouterSettingPrivacy, (props) => SettingPage());
+    // * SettingPage
+    initRoute(kRouterSetting, (props) => SettingPage());
+
+    // * PrivacyPage
+    initRoute(kRouterPrivacy, (props) => PrivacyPage());
 
     // * HelpCenterPage
     initRoute(kRouterHelpCenter, (props) => HelpPage());

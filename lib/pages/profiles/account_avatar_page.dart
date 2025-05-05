@@ -11,13 +11,13 @@ import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
 
-class AvatarPage extends StatelessWidget {
-  const AvatarPage({super.key});
+class AccountAvatarPage extends StatelessWidget {
+  const AccountAvatarPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Account Setting')),
+      appBar: AppBar(title: Text('Account Setting'), centerTitle: true),
       body: ViewModelBuilder<AvatarProvider>.reactive(
         viewModelBuilder: () => AvatarProvider(),
         onViewModelReady: (viewModel) => viewModel.init(context),
@@ -99,9 +99,7 @@ class AvatarPage extends StatelessWidget {
                             }
                             return Container(
                               width: double.infinity,
-                              color: AIColors.darkScaffoldBackground,
-                              // color:
-                              //     AIColors.appScaffoldBackground.withAlpha(128),
+                              color: AppSettingHelper.background,
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 58,
                               ),
@@ -233,7 +231,7 @@ class AccountHeaderInitView extends ViewModelWidget<AvatarProvider> {
   Widget build(BuildContext context, viewModel) {
     return Container(
       width: double.infinity,
-      color: AIColors.darkScaffoldBackground,
+      color: AppSettingHelper.background,
       padding: const EdgeInsets.symmetric(vertical: 50.0, horizontal: 58),
       child: ShimmerContainer(
         child: Container(
@@ -256,7 +254,7 @@ class AccountHeaderLoadedView extends ViewModelWidget<AvatarProvider> {
         Container(
           width: double.infinity,
           height: 52.0,
-          color: AIColors.darkScaffoldBackground,
+          color: AppSettingHelper.background,
           padding: const EdgeInsets.symmetric(horizontal: 58.0),
           alignment: Alignment.bottomCenter,
           child: Container(
@@ -271,7 +269,7 @@ class AccountHeaderLoadedView extends ViewModelWidget<AvatarProvider> {
               height: 184.0,
               width: 60.0,
               decoration: BoxDecoration(
-                color: AIColors.darkScaffoldBackground,
+                color: AppSettingHelper.background,
                 border: Border(
                   right: BorderSide(width: 2.0, color: AIColors.borderColor),
                 ),
@@ -282,7 +280,7 @@ class AccountHeaderLoadedView extends ViewModelWidget<AvatarProvider> {
               height: 184.0,
               width: 60.0,
               decoration: BoxDecoration(
-                color: AIColors.darkScaffoldBackground,
+                color: AppSettingHelper.background,
                 border: Border(
                   left: BorderSide(width: 2.0, color: AIColors.borderColor),
                 ),
@@ -293,7 +291,7 @@ class AccountHeaderLoadedView extends ViewModelWidget<AvatarProvider> {
         Container(
           width: double.infinity,
           height: 52.0,
-          color: AIColors.darkScaffoldBackground,
+          color: AppSettingHelper.background,
           padding: const EdgeInsets.symmetric(horizontal: 58.0),
           child: Column(
             children: [
@@ -320,7 +318,7 @@ class AccountHeaderReadyView extends ViewModelWidget<AvatarProvider> {
 
     return Container(
       width: double.infinity,
-      color: AIColors.darkScaffoldBackground,
+      color: AppSettingHelper.background,
       padding: const EdgeInsets.symmetric(horizontal: 58),
       child: Column(
         children: [
@@ -363,7 +361,7 @@ class AccountBodyInitView extends ViewModelWidget<AvatarProvider> {
   Widget build(BuildContext context, viewModel) {
     return Container(
       width: double.infinity,
-      color: AIColors.darkScaffoldBackground,
+      color: AppSettingHelper.background,
       padding: const EdgeInsets.symmetric(horizontal: 58),
       child: Column(
         children: [

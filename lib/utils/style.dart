@@ -21,3 +21,8 @@ BoxDecoration kCardDecoration = BoxDecoration(
   borderRadius: BorderRadius.circular(16.0),
   border: Border.all(width: 0.33, color: AIColors.blue),
 );
+
+BoxDecoration kNoBorderDecoration = BoxDecoration(
+  border: Border.all(width: 0.33, color: AIColors.blue),
+  borderRadius: BorderRadius.circular(24.0),
+);
