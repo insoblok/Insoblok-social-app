@@ -77,6 +77,10 @@ class Routers {
     return _pushToRoute(context, kRouterAddStory, null);
   }
 
+  static goToVTOClothingPage(BuildContext context) {
+    return _pushToRoute(context, kRouterMarketVTOClothing, null);
+  }
+
   static goToStoryDetailPage(BuildContext context, StoryModel data) {
     return _pushToRoute(context, kRouterStoryDetail, data);
   }

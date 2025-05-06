@@ -9,6 +9,7 @@ void setupLocator() {
   locator.registerSingleton(FirebaseService());
   locator.registerSingleton(EthereumService());
   locator.registerSingleton(AppSettingService());
+  locator.registerSingleton(NetworkService());
 
   // locator.registerFactory(() => UploadedImagesVM());
 }

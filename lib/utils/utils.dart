@@ -8,3 +8,4 @@ export 'ethereum_client.dart';
 export 'secure_storage.dart';
 export 'deeplink_handler.dart';
 export 'style.dart';
+export 'network.dart';
