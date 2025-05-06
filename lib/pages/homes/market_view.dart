@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:stacked/stacked.dart';
@@ -16,7 +17,18 @@ class MarketView extends StatelessWidget {
       onViewModelReady: (viewModel) => viewModel.init(context),
       builder: (context, viewModel, _) {
         return Scaffold(
-          appBar: AppBar(title: Text('Marketplace'), centerTitle: true),
+          appBar: AppBar(
+            title: Text('Marketplace'),
+            centerTitle: true,
+            actions: [
+              if (kDebugMode) ...{
+                IconButton(
+                  icon: Icon(Icons.add_circle),
+                  onPressed: viewModel.onTapAddProduct,
+                ),
+              },
+            ],
+          ),
           body: ListView(
             physics: BouncingScrollPhysics(),
             children: [

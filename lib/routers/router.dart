@@ -81,6 +81,10 @@ class Routers {
     return _pushToRoute(context, kRouterMarketVTOClothing, null);
   }
 
+  static goToVTOAddProduct(BuildContext context) {
+    return _pushToRoute(context, kRouterVTOAddProduct, null);
+  }
+
   static goToStoryDetailPage(BuildContext context, StoryModel data) {
     return _pushToRoute(context, kRouterStoryDetail, data);
   }
@@ -103,5 +107,12 @@ class Routers {
 
   static goToHelpCenterPage(BuildContext context) {
     return _pushToRoute(context, kRouterHelpCenter, null);
+  }
+
+  static goToMediaDetailPage(
+    BuildContext context, {
+    required List<String> medias,
+  }) {
+    return _pushToRoute(context, kRouterMediaDetail, medias);
   }
 }

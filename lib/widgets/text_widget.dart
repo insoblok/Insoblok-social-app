@@ -62,6 +62,8 @@ class AINoBorderTextField extends StatelessWidget {
   final TextEditingController? controller;
   final double? height;
   final Widget? prefixIcon;
+  final Widget? suffixIcon;
+  final String? suffixText;
   final bool autofocus;
   final bool readOnly;
   final void Function(String)? onChanged;
@@ -79,6 +81,8 @@ class AINoBorderTextField extends StatelessWidget {
     this.hintText,
     this.controller,
     this.prefixIcon,
+    this.suffixIcon,
+    this.suffixText,
     this.autofocus = false,
     this.readOnly = false,
     this.onChanged,
@@ -104,6 +108,8 @@ class AINoBorderTextField extends StatelessWidget {
           contentPadding: EdgeInsets.symmetric(horizontal: 24.0),
           hintText: hintText,
           prefixIcon: prefixIcon,
+          suffixIcon: suffixIcon,
+          suffixText: suffixText,
           border: InputBorder.none,
         ),
         onChanged: onChanged,

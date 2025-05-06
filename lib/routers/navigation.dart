@@ -25,6 +25,7 @@ const kRouterMessage = '/message';
 const kRouterMessageSetting = '/message-setting';
 
 const kRouterMarketVTOClothing = '/vto-clothing';
+const kRouterVTOAddProduct = '/vto-add-product';
 
 const kRouterAddStory = '/add-story';
 const kRouterStoryDetail = '/story-detail';
@@ -33,6 +34,7 @@ const kRouterNewsDetail = '/news-detail';
 const kRouterQuillDescription = '/quill-description';
 const kRouterPrivacy = '/privacy-police';
 const kRouterHelpCenter = '/help-center';
+const kRouterMediaDetail = '/media-detail';
 const kRouterSetting = '/setting';
 
 class Navigation {
@@ -111,6 +113,9 @@ class Navigation {
     // * Marketlace VTO Clothing
     initRoute(kRouterMarketVTOClothing, (props) => VTOClothingPage());
 
+    // * Marketlace Add Product
+    initRoute(kRouterVTOAddProduct, (props) => AddProductPage());
+
     // * AddStoryPage
     initRoute(kRouterAddStory, (props) => AddStoryPage());
 
@@ -140,5 +145,11 @@ class Navigation {
 
     // * HelpCenterPage
     initRoute(kRouterHelpCenter, (props) => HelpPage());
+
+    // * MediaDetailPage
+    initRoute<List<String>>(
+      kRouterMediaDetail,
+      (props) => MediaDetailPage(medias: props!),
+    );
   }
 }

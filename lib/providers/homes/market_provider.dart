@@ -62,4 +62,12 @@ class MarketProvider extends InSoBlokViewModel {
         break;
     }
   }
+
+  Future<void> onTapAddProduct() async {
+    if (isBusy) return;
+    clearErrors();
+
+    await Routers.goToVTOAddProduct(context);
+    fetchData();
+  }
 }
