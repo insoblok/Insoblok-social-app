@@ -37,6 +37,8 @@ class AIImages {
   static String icCircleMore = 'assets/icons/ic_more_circle.svg';
   static String icSetting = 'assets/icons/ic_setting.svg';
   static String icImage = 'assets/icons/ic_image.svg';
+  static String icGif = 'assets/icons/ic_gif.svg';
+  static String icCamera = 'assets/icons/ic_camera.svg';
 
   static String icMenuProfile = 'assets/icons/ic_user.svg';
   static String icMenuLists = 'assets/icons/ic_list.svg';

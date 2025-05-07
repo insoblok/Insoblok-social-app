@@ -73,11 +73,14 @@ class StoryDetailCommentCell extends StatelessWidget {
                 ],
               ),
             ),
-            ClipOval(
-              child: AIImage(
-                user?.avatar,
-                width: kStoryDetailAvatarSize,
-                height: kStoryDetailAvatarSize,
+            InkWell(
+              onTap: viewModel.onTapUserAvatar,
+              child: ClipOval(
+                child: AIImage(
+                  user?.avatar,
+                  width: kStoryDetailAvatarSize,
+                  height: kStoryDetailAvatarSize,
+                ),
               ),
             ),
           ],

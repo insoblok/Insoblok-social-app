@@ -64,7 +64,6 @@ class AuthService with ListenableServiceMixin {
           );
           await FirebaseHelper.updateUser(user);
         }
-        logger.d(user?.toJson());
         _userRx.value = user;
         notifyListeners();
       }

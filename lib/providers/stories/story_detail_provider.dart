@@ -66,6 +66,10 @@ class StoryDetailProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  Future<void> onTapAvatar() async {
+    Routers.goToAccountPage(context, user: owner);
+  }
+
   Future<void> updateLike() async {
     if (isBusy) return;
     clearErrors();

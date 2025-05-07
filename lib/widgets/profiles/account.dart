@@ -96,14 +96,12 @@ class AccountFloatingView extends ViewModelWidget<AccountProvider> {
             style: Theme.of(context).textTheme.labelLarge,
           ),
           const SizedBox(height: 12.0),
-          Text(
-            viewModel.accountUser?.desc ??
+          viewModel.accountUser?.desc != null
+              ? AIHelpers.htmlRender(viewModel.accountUser?.desc)
+              : Text(
                 'User can input your profile description if you didn\'t set that yet!. That will be shown to other and will make more user experience of InSoBlokAI.',
-            style:
-                viewModel.accountUser?.desc == null
-                    ? Theme.of(context).textTheme.labelMedium
-                    : Theme.of(context).textTheme.bodySmall,
-          ),
+                style: Theme.of(context).textTheme.labelMedium,
+              ),
           const SizedBox(height: 16.0),
           Wrap(
             spacing: 12.0,
@@ -326,11 +324,11 @@ class AccountPrivateInfoView extends ViewModelWidget<UpdateProfileProvider> {
           ),
           AccountPrivateInfoCover(
             leading: AIImages.icLocation,
-            title: 'Your City',
+            title: viewModel.account.city ?? 'Your City',
           ),
           AccountPrivateInfoCover(
             leading: AIImages.icLocation,
-            title: 'Your Country',
+            title: viewModel.account.country ?? 'Your Country',
           ),
           AccountPrivateInfoCover(
             leading: AIImages.icLocation,

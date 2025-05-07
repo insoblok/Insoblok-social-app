@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:stacked/stacked.dart';
 
-import 'package:insoblok/generated/l10n.dart';
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
@@ -19,13 +18,9 @@ class CreateRoomPage extends StatelessWidget {
       builder: (context, viewModel, _) {
         return Scaffold(
           appBar: AppBar(
-            title: Text(S.current.create_room),
-            actions: [
-              IconButton(
-                onPressed: () {},
-                icon: Icon(Icons.camera),
-              ),
-            ],
+            title: Text('Find a User'),
+            centerTitle: true,
+            actions: [IconButton(onPressed: () {}, icon: Icon(Icons.camera))],
           ),
           body: SingleChildScrollView(
             padding: const EdgeInsets.symmetric(
@@ -38,7 +33,7 @@ class CreateRoomPage extends StatelessWidget {
                   children: [
                     Expanded(
                       child: AITextField(
-                        hintText: 'Search user...',
+                        hintText: 'First Name, Last Name, Nick ID and UID...',
                         onChanged: (key) => viewModel.key = key,
                       ),
                     ),
@@ -52,10 +47,7 @@ class CreateRoomPage extends StatelessWidget {
                           color: AIColors.blue,
                           shape: BoxShape.circle,
                         ),
-                        child: Icon(
-                          Icons.search,
-                          color: Colors.white,
-                        ),
+                        child: Icon(Icons.search, color: Colors.white),
                       ),
                     ),
                   ],
@@ -67,9 +59,7 @@ class CreateRoomPage extends StatelessWidget {
                     child: Container(
                       padding: const EdgeInsets.all(16.0),
                       decoration: BoxDecoration(
-                        border: Border(
-                          top: BorderSide(width: 0.5),
-                        ),
+                        border: Border(top: BorderSide(width: 0.5)),
                       ),
                       child: Row(
                         children: [
@@ -106,15 +96,12 @@ class CreateRoomPage extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(width: 8.0),
-                          Icon(
-                            Icons.check_circle,
-                            color: Colors.white,
-                          ),
+                          Icon(Icons.check_circle, color: Colors.white),
                         ],
                       ),
                     ),
                   );
-                })
+                }),
               ],
             ),
           ),

@@ -24,4 +24,27 @@ extension StoryModelExt on StoryModel {
       regdate != null ? regdate! : DateTime.now(),
     );
   }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'uid': uid,
+      'title': title,
+      'text': text,
+      'status': status,
+      'likes': likes,
+      'follows': follows,
+      'medias': (medias ?? []).map((e) => e.toJson()).toList(),
+      'comments': (comments ?? []).map((e) => e.toMap()).toList(),
+    };
+  }
+}
+
+extension StoryCommentExt on StoryCommentModel {
+  Map<String, dynamic> toMap() {
+    return {
+      'uid': uid,
+      'title': content,
+      'medias': (medias ?? []).map((e) => e.toJson()).toList(),
+    };
+  }
 }

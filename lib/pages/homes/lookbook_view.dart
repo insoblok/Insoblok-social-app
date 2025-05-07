@@ -74,7 +74,7 @@ class LookbookView extends StatelessWidget {
                           'New Posts',
                           style: TextStyle(
                             fontSize: 12.0,
-                            color: Theme.of(context).colorScheme.primary,
+                            color: Theme.of(context).colorScheme.onPrimary,
                           ),
                         ),
                       ),

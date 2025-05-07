@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
 
@@ -50,7 +51,7 @@ class RoomService {
   Future<bool> createRoom(RoomModel room) async {
     try {
       await _firestore.collection('room').add({
-        ...room.toJson(),
+        ...room.toJson().toFirebaseJson,
         'timestamp': FieldValue.serverTimestamp(),
         'regdate': FieldValue.serverTimestamp(),
       });
@@ -67,7 +68,7 @@ class RoomService {
   Future<bool> updateRoom(RoomModel room) async {
     try {
       await _firestore.collection('room').doc(room.id).update({
-        ...room.toJson(),
+        ...room.toJson().toFirebaseJson,
         'timestamp': FieldValue.serverTimestamp(),
       });
       return true;

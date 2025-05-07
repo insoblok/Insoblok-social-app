@@ -74,36 +74,41 @@ class StoryDetailPage extends StatelessWidget {
                           ),
                         ],
                       ),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            ClipOval(
-                              child: AIImage(
-                                viewModel.owner?.avatar,
-                                width: kStoryDetailAvatarSize,
-                                height: kStoryDetailAvatarSize,
+                    InkWell(
+                      onTap: viewModel.onTapAvatar,
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              ClipOval(
+                                child: AIImage(
+                                  viewModel.owner?.avatar,
+                                  width: kStoryDetailAvatarSize,
+                                  height: kStoryDetailAvatarSize,
+                                ),
                               ),
-                            ),
-                            const SizedBox(width: 8.0),
-                            Column(
-                              mainAxisSize: MainAxisSize.min,
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  viewModel.owner?.fullName ?? '---',
-                                  style: Theme.of(context).textTheme.bodyMedium,
-                                ),
-                                Text(
-                                  '@${viewModel.owner?.nickId}',
-                                  style: Theme.of(context).textTheme.labelLarge,
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ],
+                              const SizedBox(width: 8.0),
+                              Column(
+                                mainAxisSize: MainAxisSize.min,
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    viewModel.owner?.fullName ?? '---',
+                                    style:
+                                        Theme.of(context).textTheme.bodyMedium,
+                                  ),
+                                  Text(
+                                    '@${viewModel.owner?.nickId}',
+                                    style:
+                                        Theme.of(context).textTheme.labelLarge,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
                     const SizedBox(height: 24.0),
                     AIHelpers.htmlRender(viewModel.story.text),

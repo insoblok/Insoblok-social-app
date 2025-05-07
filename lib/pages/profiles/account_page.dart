@@ -22,51 +22,60 @@ class AccountPage extends StatelessWidget {
       onViewModelReady: (viewModel) => viewModel.init(context, model: user),
       builder: (context, viewModel, _) {
         return Scaffold(
-          body: CustomScrollView(
-            physics: BouncingScrollPhysics(),
-            slivers: [
-              SliverPersistentHeader(
-                pinned: true,
-                floating: true,
-                delegate: AIPersistentHeader(
-                  minSize: MediaQuery.of(context).padding.top + 145.0,
-                  maxSize: MediaQuery.of(context).padding.top + 145.0,
-                  child: AccountPresentHeaderView(),
+          body: SizedBox(
+            child: Stack(
+              children: [
+                CustomScrollView(
+                  physics: BouncingScrollPhysics(),
+                  slivers: [
+                    SliverPersistentHeader(
+                      pinned: true,
+                      floating: true,
+                      delegate: AIPersistentHeader(
+                        minSize: MediaQuery.of(context).padding.top + 145.0,
+                        maxSize: MediaQuery.of(context).padding.top + 145.0,
+                        child: AccountPresentHeaderView(),
+                      ),
+                    ),
+                    SliverToBoxAdapter(child: AccountFloatingView()),
+                    SliverAppBar(
+                      pinned: true,
+                      toolbarHeight: 44.0,
+                      backgroundColor: AppSettingHelper.background,
+                      surfaceTintColor: AppSettingHelper.background,
+                      elevation: 0,
+                      automaticallyImplyLeading: false,
+                      title: AccountFloatingHeaderView(),
+                    ),
+                    SliverList(
+                      delegate: SliverChildListDelegate([
+                        if (viewModel.pageIndex == 0) ...{
+                          for (var story in viewModel.stories) ...{
+                            StoryListCell(story: story),
+                          },
+                        },
+                        if (viewModel.pageIndex == 1) ...{
+                          for (var uid
+                              in (viewModel.accountUser?.likes ?? [])) ...{
+                            UserRelatedView(uid: uid),
+                          },
+                        },
+                        if (viewModel.pageIndex == 2) ...{
+                          for (var uid
+                              in (viewModel.accountUser?.follows ?? [])) ...{
+                            UserRelatedView(uid: uid),
+                          },
+                        },
+                        SizedBox(
+                          height: MediaQuery.of(context).padding.bottom + 40.0,
+                        ),
+                      ]),
+                    ),
+                  ],
                 ),
-              ),
-              SliverToBoxAdapter(child: AccountFloatingView()),
-              SliverAppBar(
-                pinned: true,
-                toolbarHeight: 44.0,
-                backgroundColor: AppSettingHelper.background,
-                surfaceTintColor: AppSettingHelper.background,
-                elevation: 0,
-                automaticallyImplyLeading: false,
-                title: AccountFloatingHeaderView(),
-              ),
-              SliverList(
-                delegate: SliverChildListDelegate([
-                  if (viewModel.pageIndex == 0) ...{
-                    for (var story in viewModel.stories) ...{
-                      StoryListCell(story: story),
-                    },
-                  },
-                  if (viewModel.pageIndex == 1) ...{
-                    for (var uid in (viewModel.accountUser?.likes ?? [])) ...{
-                      UserRelatedView(uid: uid),
-                    },
-                  },
-                  if (viewModel.pageIndex == 2) ...{
-                    for (var uid in (viewModel.accountUser?.follows ?? [])) ...{
-                      UserRelatedView(uid: uid),
-                    },
-                  },
-                  SizedBox(
-                    height: MediaQuery.of(context).padding.bottom + 40.0,
-                  ),
-                ]),
-              ),
-            ],
+                if (viewModel.isCreatingRoom) Center(child: Loader()),
+              ],
+            ),
           ),
         );
       },

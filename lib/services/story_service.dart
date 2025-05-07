@@ -103,9 +103,10 @@ class StoryService {
   }
 
   // Get stories updated
-  Stream<UpdatedStoryModel> getStoryUpdated() {
+  Stream<UpdatedStoryModel?> getStoryUpdated() {
     return _firestore.collection('story').doc('updated').snapshots().map((doc) {
       logger.d(doc.data());
+      if (doc.data() == null) return null;
       return UpdatedStoryModel.fromJson(doc.data()!);
     });
   }
@@ -113,7 +114,7 @@ class StoryService {
   // Post a story
   Future<void> postStory({required StoryModel story}) async {
     await _firestore.collection('story').add({
-      ...story.toJson(),
+      ...story.toMap().toFirebaseJson,
       'uid': AuthHelper.user?.uid,
       'timestamp': FieldValue.serverTimestamp(),
       'regdate': FieldValue.serverTimestamp(),
@@ -129,7 +130,7 @@ class StoryService {
     required UserModel? user,
   }) async {
     await _firestore.collection('story').doc(story.id).update({
-      ...story.toJson(),
+      ...story.toMap().toFirebaseJson,
       'regdate': FieldValue.serverTimestamp(),
     });
     if (user != null) {
@@ -154,7 +155,7 @@ class StoryService {
     required UserModel? user,
   }) async {
     await _firestore.collection('story').doc(story.id).update({
-      ...story.toJson(),
+      ...story.toMap().toFirebaseJson,
       'regdate': FieldValue.serverTimestamp(),
     });
 
@@ -177,7 +178,7 @@ class StoryService {
   // Add comment of story
   Future<void> addComment({required StoryModel story}) async {
     await _firestore.collection('story').doc(story.id).update({
-      ...story.toJson(),
+      ...story.toMap().toFirebaseJson,
       'regdate': FieldValue.serverTimestamp(),
       'timestamp': FieldValue.serverTimestamp(),
     });

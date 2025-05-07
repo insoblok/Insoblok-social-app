@@ -18,10 +18,6 @@ class RegisterProvider extends InSoBlokViewModel {
   }
 
   late UserModel _user;
-  void setUser(UserModel u) async {
-    _user = u;
-    notifyListeners();
-  }
 
   Future<void> init(BuildContext context) async {
     this.context = context;
@@ -94,7 +90,7 @@ class RegisterProvider extends InSoBlokViewModel {
       Fluttertoast.showToast(msg: S.current.register_error_name);
       return;
     }
-    if (!(user?.email?.isEmailValid ?? false)) {
+    if (!(_user.email?.isEmailValid ?? false)) {
       Fluttertoast.showToast(msg: 'No matched email!');
       return;
     }
@@ -102,10 +98,16 @@ class RegisterProvider extends InSoBlokViewModel {
       Fluttertoast.showToast(msg: 'No matched password!');
       return;
     }
+
+    if (isBusy) return;
+    clearErrors();
+
+    logger.d(_user.toJson());
+
     await runBusyFuture(() async {
       try {
         await FirebaseHelper.convertAnonymousToPermanent(
-          email: user!.email!,
+          email: _user.email!,
           password: password,
         );
         await AuthHelper.setUser(
@@ -113,7 +115,7 @@ class RegisterProvider extends InSoBlokViewModel {
             nickId: _user.fullName.replaceAll(' ', '').toLowerCase(),
           ),
         );
-        Routers.goToLoginPage(context);
+        Routers.goToMainPage(context);
       } catch (e) {
         setError(e);
       } finally {

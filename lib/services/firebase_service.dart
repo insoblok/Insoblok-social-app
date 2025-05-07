@@ -8,6 +8,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:path_provider/path_provider.dart';
 
+import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/locator.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
@@ -32,7 +33,7 @@ class FirebaseService {
   );
 
   late final FirebaseApp _app;
-  late final UserCredential _userCredential;
+  late UserCredential _userCredential;
   UserCredential get userCredential => _userCredential;
 
   late final FirebaseFirestore _firestore;
@@ -93,7 +94,7 @@ class FirebaseService {
   Future<UserModel?> createUser(UserModel user) async {
     try {
       await _firestore.collection('user').add({
-        ...user.toJson(),
+        ...user.toJson().toFirebaseJson,
         'timestamp': FieldValue.serverTimestamp(),
         'regdate': FieldValue.serverTimestamp(),
       });
@@ -134,7 +135,7 @@ class FirebaseService {
   Future<bool> updateUser(UserModel user) async {
     try {
       await _firestore.collection('user').doc(user.id).update({
-        ...user.toJson(),
+        ...user.toJson().toFirebaseJson,
         'timestamp': FieldValue.serverTimestamp(),
       });
       return true;
@@ -173,7 +174,7 @@ class FirebaseService {
       );
 
       _userCredential = await user.linkWithCredential(credential);
-    } on FirebaseAuthException catch (e) {
+    } on FirebaseException catch (e) {
       logger.e(e);
       if (e.code == 'provider-already-linked') {
         final credential = EmailAuthProvider.credential(
@@ -398,7 +399,7 @@ class FirebaseHelper {
       if (key == 'regdate' || key == 'timestamp') {
         var value = firebaseJson[key] as Timestamp;
         DateTime utcDateTime = value.toDate();
-        newJson[key] = utcDateTime.toLocal();
+        newJson[key] = utcDateTime.toLocal().toIso8601String();
       } else {
         newJson[key] = firebaseJson[key];
       }

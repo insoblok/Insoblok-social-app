@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:insoblok/models/models.dart';
+import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 
@@ -42,5 +43,9 @@ class CommentProvider extends InSoBlokViewModel {
     } finally {
       notifyListeners();
     }
+  }
+
+  Future<void> onTapUserAvatar() async {
+    Routers.goToAccountPage(context, user: owner);
   }
 }
