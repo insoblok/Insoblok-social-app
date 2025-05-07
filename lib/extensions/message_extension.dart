@@ -154,6 +154,37 @@ extension MessageModelExt on MessageModel {
       ],
     );
   }
+
+  String get messageTime {
+    try {
+      if (timestamp != null) {
+        return kDateHMFormatter.format(timestamp!);
+      }
+    } catch (e) {
+      logger.e(e);
+    }
+    return kDateHMFormatter.format(DateTime.now());
+  }
+}
+
+enum MessageModelType { text, image, video, audio, paid }
+
+extension MessageModelTypeExt on MessageModelType {
+  static MessageModelType fromString(String data) {
+    switch (data) {
+      case 'text':
+        return MessageModelType.text;
+      case 'image':
+        return MessageModelType.image;
+      case 'video':
+        return MessageModelType.video;
+      case 'audio':
+        return MessageModelType.audio;
+      case 'paid':
+        return MessageModelType.paid;
+    }
+    return MessageModelType.text;
+  }
 }
 
 class VideoContent extends StatefulWidget {

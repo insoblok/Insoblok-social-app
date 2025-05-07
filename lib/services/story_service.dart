@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
-import 'package:insoblok/utils/utils.dart';
 
 class StoryService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -120,7 +119,7 @@ class StoryService {
       'regdate': FieldValue.serverTimestamp(),
     });
     await _firestore.collection('story').doc('updated').set({
-      'timestamp': kFullDateTimeFormatter.format(DateTime.now().toUtc()),
+      'timestamp': FieldValue.serverTimestamp(),
     });
   }
 
@@ -129,16 +128,10 @@ class StoryService {
     required StoryModel story,
     required UserModel? user,
   }) async {
-    await _firestore
-        .collection('story')
-        .doc(story.id)
-        .update(
-          story
-              .copyWith(
-                regdate: kFullDateTimeFormatter.format(DateTime.now().toUtc()),
-              )
-              .toMap(),
-        );
+    await _firestore.collection('story').doc(story.id).update({
+      ...story.toJson(),
+      'regdate': FieldValue.serverTimestamp(),
+    });
     if (user != null) {
       var isUpdated = false;
       var likes = List<String>.from(user.likes ?? []);
@@ -160,16 +153,10 @@ class StoryService {
     required StoryModel story,
     required UserModel? user,
   }) async {
-    await _firestore
-        .collection('story')
-        .doc(story.id)
-        .update(
-          story
-              .copyWith(
-                regdate: kFullDateTimeFormatter.format(DateTime.now().toUtc()),
-              )
-              .toMap(),
-        );
+    await _firestore.collection('story').doc(story.id).update({
+      ...story.toJson(),
+      'regdate': FieldValue.serverTimestamp(),
+    });
 
     if (user != null) {
       var isUpdated = false;
@@ -189,15 +176,10 @@ class StoryService {
 
   // Add comment of story
   Future<void> addComment({required StoryModel story}) async {
-    await _firestore
-        .collection('story')
-        .doc(story.id)
-        .update(
-          story
-              .copyWith(
-                regdate: kFullDateTimeFormatter.format(DateTime.now().toUtc()),
-              )
-              .toMap(),
-        );
+    await _firestore.collection('story').doc(story.id).update({
+      ...story.toJson(),
+      'regdate': FieldValue.serverTimestamp(),
+      'timestamp': FieldValue.serverTimestamp(),
+    });
   }
 }

@@ -24,6 +24,10 @@ if (hasError) {
     Fluttertoast.showToast(msg: modelError.toString());
 } else {}
 
+  Timestamp timestamp = doc['createdAt'] as Timestamp;
+  DateTime utcDateTime = timestamp.toDate(); // This is already in UTC
+  print(utcDateTime.toIso8601String()); // UTC ISO format
+
 npm install -g firebase-tools
 firebase login
 firebase init functions

@@ -38,7 +38,7 @@ class AuthService with ListenableServiceMixin {
     notifyListeners();
   }
 
-  Future<UserModel?> signIn() async {
+  Future<void> signIn() async {
     try {
       await FirebaseHelper.signInFirebase();
       var credential = FirebaseHelper.userCredential;
@@ -57,9 +57,6 @@ class AuthService with ListenableServiceMixin {
             ipAddress: kDebugMode ? kDefaultIpAddress : data['ip'],
           );
           user = await FirebaseHelper.createUser(user);
-          if (user == null) {
-            return null;
-          }
         } else {
           user = user.copyWith(
             walletAddress: EthereumHelper.address?.hex,
@@ -67,13 +64,13 @@ class AuthService with ListenableServiceMixin {
           );
           await FirebaseHelper.updateUser(user);
         }
+        logger.d(user?.toJson());
         _userRx.value = user;
-        return user;
+        notifyListeners();
       }
     } catch (e) {
       logger.e(e);
     }
-    return null;
   }
 
   Future<UserModel?> signInEmail({

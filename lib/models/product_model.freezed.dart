@@ -32,8 +32,8 @@ mixin _$ProductModel {
   List<String>? get likes;
   List<int>? get rates;
   int? get selles;
-  String? get regdate;
-  String? get timestamp;
+  DateTime? get regdate;
+  DateTime? get timestamp;
 
   /// Create a copy of ProductModel
   /// with the given fields replaced by the non-null parameter values.
@@ -135,8 +135,8 @@ abstract mixin class $ProductModelCopyWith<$Res> {
       List<String>? likes,
       List<int>? rates,
       int? selles,
-      String? regdate,
-      String? timestamp});
+      DateTime? regdate,
+      DateTime? timestamp});
 }
 
 /// @nodoc
@@ -243,11 +243,11 @@ class _$ProductModelCopyWithImpl<$Res> implements $ProductModelCopyWith<$Res> {
       regdate: freezed == regdate
           ? _self.regdate
           : regdate // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as DateTime?,
       timestamp: freezed == timestamp
           ? _self.timestamp
           : timestamp // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as DateTime?,
     ));
   }
 }
@@ -341,9 +341,9 @@ class _ProductModel implements ProductModel {
   @override
   final int? selles;
   @override
-  final String? regdate;
+  final DateTime? regdate;
   @override
-  final String? timestamp;
+  final DateTime? timestamp;
 
   /// Create a copy of ProductModel
   /// with the given fields replaced by the non-null parameter values.
@@ -451,8 +451,8 @@ abstract mixin class _$ProductModelCopyWith<$Res>
       List<String>? likes,
       List<int>? rates,
       int? selles,
-      String? regdate,
-      String? timestamp});
+      DateTime? regdate,
+      DateTime? timestamp});
 }
 
 /// @nodoc
@@ -560,11 +560,11 @@ class __$ProductModelCopyWithImpl<$Res>
       regdate: freezed == regdate
           ? _self.regdate
           : regdate // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as DateTime?,
       timestamp: freezed == timestamp
           ? _self.timestamp
           : timestamp // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as DateTime?,
     ));
   }
 }

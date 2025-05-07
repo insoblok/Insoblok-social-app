@@ -19,7 +19,7 @@ mixin _$MessageModel {
   String? get content;
   String? get senderId;
   String? get senderName;
-  String? get timestamp;
+  DateTime? get timestamp;
   String? get url;
   String? get type;
   String? get isRead;
@@ -71,7 +71,7 @@ abstract mixin class $MessageModelCopyWith<$Res> {
       String? content,
       String? senderId,
       String? senderName,
-      String? timestamp,
+      DateTime? timestamp,
       String? url,
       String? type,
       String? isRead});
@@ -118,7 +118,7 @@ class _$MessageModelCopyWithImpl<$Res> implements $MessageModelCopyWith<$Res> {
       timestamp: freezed == timestamp
           ? _self.timestamp
           : timestamp // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as DateTime?,
       url: freezed == url
           ? _self.url
           : url // ignore: cast_nullable_to_non_nullable
@@ -158,7 +158,7 @@ class _MessageModel implements MessageModel {
   @override
   final String? senderName;
   @override
-  final String? timestamp;
+  final DateTime? timestamp;
   @override
   final String? url;
   @override
@@ -215,7 +215,7 @@ abstract mixin class _$MessageModelCopyWith<$Res>
       String? content,
       String? senderId,
       String? senderName,
-      String? timestamp,
+      DateTime? timestamp,
       String? url,
       String? type,
       String? isRead});
@@ -263,7 +263,7 @@ class __$MessageModelCopyWithImpl<$Res>
       timestamp: freezed == timestamp
           ? _self.timestamp
           : timestamp // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as DateTime?,
       url: freezed == url
           ? _self.url
           : url // ignore: cast_nullable_to_non_nullable

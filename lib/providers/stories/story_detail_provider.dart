@@ -172,11 +172,7 @@ class StoryDetailProvider extends InSoBlokViewModel {
             ConverterOptions.forEmail(),
           );
           var content = converter.convert();
-          var comment = StoryCommentModel(
-            uid: user?.uid,
-            content: content,
-            timestamp: kFullDateTimeFormatter.format(DateTime.now().toUtc()),
-          );
+          var comment = StoryCommentModel(uid: user?.uid, content: content);
           var comments = List<StoryCommentModel>.from(story.comments ?? []);
           comments.add(comment);
           story = story.copyWith(comments: comments);

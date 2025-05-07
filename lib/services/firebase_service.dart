@@ -35,7 +35,7 @@ class FirebaseService {
   late final UserCredential _userCredential;
   UserCredential get userCredential => _userCredential;
 
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  late final FirebaseFirestore _firestore;
   late final FirebaseStorage _storage;
 
   Future<void> init() async {
@@ -50,6 +50,7 @@ class FirebaseService {
         webProvider: ReCaptchaV3Provider('recaptcha-v3-site-key'),
       );
       _storage = FirebaseStorage.instance;
+      _firestore = FirebaseFirestore.instance;
     } on FirebaseAuthException catch (e) {
       logger.e(e.message);
     } catch (e) {
@@ -116,8 +117,12 @@ class FirebaseService {
 
   Future<UserModel?> getUser(String uid) async {
     try {
-      var doc = await _firestore.collection('user').doc(uid).get();
-      return getUserFromDoc(doc);
+      var doc =
+          await _firestore
+              .collection('user')
+              .queryBy(UserQuery.uid, value: uid)
+              .get();
+      return getUserFromDoc(doc.docs.first);
     } on FirebaseAuthException catch (e) {
       logger.e(e.message);
     } catch (e) {
@@ -384,6 +389,22 @@ class FirebaseHelper {
 
   static Future<void> deleteImage(String imageUrl) =>
       service.deleteImage(imageUrl);
+
+  static Map<String, dynamic> fromConvertJson(
+    Map<String, dynamic> firebaseJson,
+  ) {
+    Map<String, dynamic> newJson = {};
+    for (var key in firebaseJson.keys) {
+      if (key == 'regdate' || key == 'timestamp') {
+        var value = firebaseJson[key] as Timestamp;
+        DateTime utcDateTime = value.toDate();
+        newJson[key] = utcDateTime.toLocal();
+      } else {
+        newJson[key] = firebaseJson[key];
+      }
+    }
+    return newJson;
+  }
 }
 
 enum UserQuery { firstName, lastName, uid, nickID }

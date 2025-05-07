@@ -18,8 +18,8 @@ mixin _$RoomModel {
   String? get id;
   String? get uid;
   List<String?>? get uids;
-  String? get regdate;
-  String? get timestamp;
+  DateTime? get regdate;
+  DateTime? get timestamp;
   String? get content;
   String? get statusSender;
   String? get statusReceiver;
@@ -80,8 +80,8 @@ abstract mixin class $RoomModelCopyWith<$Res> {
       {String? id,
       String? uid,
       List<String?>? uids,
-      String? regdate,
-      String? timestamp,
+      DateTime? regdate,
+      DateTime? timestamp,
       String? content,
       String? statusSender,
       String? statusReceiver});
@@ -124,11 +124,11 @@ class _$RoomModelCopyWithImpl<$Res> implements $RoomModelCopyWith<$Res> {
       regdate: freezed == regdate
           ? _self.regdate
           : regdate // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as DateTime?,
       timestamp: freezed == timestamp
           ? _self.timestamp
           : timestamp // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as DateTime?,
       content: freezed == content
           ? _self.content
           : content // ignore: cast_nullable_to_non_nullable
@@ -177,9 +177,9 @@ class _RoomModel implements RoomModel {
   }
 
   @override
-  final String? regdate;
+  final DateTime? regdate;
   @override
-  final String? timestamp;
+  final DateTime? timestamp;
   @override
   final String? content;
   @override
@@ -251,8 +251,8 @@ abstract mixin class _$RoomModelCopyWith<$Res>
       {String? id,
       String? uid,
       List<String?>? uids,
-      String? regdate,
-      String? timestamp,
+      DateTime? regdate,
+      DateTime? timestamp,
       String? content,
       String? statusSender,
       String? statusReceiver});
@@ -295,11 +295,11 @@ class __$RoomModelCopyWithImpl<$Res> implements _$RoomModelCopyWith<$Res> {
       regdate: freezed == regdate
           ? _self.regdate
           : regdate // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as DateTime?,
       timestamp: freezed == timestamp
           ? _self.timestamp
           : timestamp // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as DateTime?,
       content: freezed == content
           ? _self.content
           : content // ignore: cast_nullable_to_non_nullable

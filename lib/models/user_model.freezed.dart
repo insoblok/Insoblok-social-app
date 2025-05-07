@@ -32,8 +32,8 @@ mixin _$UserModel {
   double? get lat;
   double? get lon;
   String? get ipAddress;
-  String? get regdate;
-  String? get timestamp;
+  DateTime? get regdate;
+  DateTime? get timestamp;
   String? get status;
   List<String>? get likes;
   List<String>? get follows;
@@ -141,8 +141,8 @@ abstract mixin class $UserModelCopyWith<$Res> {
       double? lat,
       double? lon,
       String? ipAddress,
-      String? regdate,
-      String? timestamp,
+      DateTime? regdate,
+      DateTime? timestamp,
       String? status,
       List<String>? likes,
       List<String>? follows});
@@ -255,11 +255,11 @@ class _$UserModelCopyWithImpl<$Res> implements $UserModelCopyWith<$Res> {
       regdate: freezed == regdate
           ? _self.regdate
           : regdate // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as DateTime?,
       timestamp: freezed == timestamp
           ? _self.timestamp
           : timestamp // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as DateTime?,
       status: freezed == status
           ? _self.status
           : status // ignore: cast_nullable_to_non_nullable
@@ -343,9 +343,9 @@ class _UserModel implements UserModel {
   @override
   final String? ipAddress;
   @override
-  final String? regdate;
+  final DateTime? regdate;
   @override
-  final String? timestamp;
+  final DateTime? timestamp;
   @override
   final String? status;
   final List<String>? _likes;
@@ -479,8 +479,8 @@ abstract mixin class _$UserModelCopyWith<$Res>
       double? lat,
       double? lon,
       String? ipAddress,
-      String? regdate,
-      String? timestamp,
+      DateTime? regdate,
+      DateTime? timestamp,
       String? status,
       List<String>? likes,
       List<String>? follows});
@@ -593,11 +593,11 @@ class __$UserModelCopyWithImpl<$Res> implements _$UserModelCopyWith<$Res> {
       regdate: freezed == regdate
           ? _self.regdate
           : regdate // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as DateTime?,
       timestamp: freezed == timestamp
           ? _self.timestamp
           : timestamp // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as DateTime?,
       status: freezed == status
           ? _self.status
           : status // ignore: cast_nullable_to_non_nullable

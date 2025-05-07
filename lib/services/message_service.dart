@@ -5,7 +5,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
-import 'package:insoblok/utils/utils.dart';
 
 class MessageService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -41,7 +40,7 @@ class MessageService {
           'content': text,
           'sender_id': AuthHelper.user?.uid,
           'sender_name': AuthHelper.user?.fullName ?? 'Anonymous',
-          'timestamp': kFullDateTimeFormatter.format(DateTime.now().toUtc()),
+          'timestamp': FieldValue.serverTimestamp(),
           'type': 'text',
         });
   }
@@ -59,7 +58,7 @@ class MessageService {
           'content': '[Image]',
           'sender_id': AuthHelper.user?.uid,
           'sender_name': AuthHelper.user?.fullName ?? 'Anonymous',
-          'timestamp': kFullDateTimeFormatter.format(DateTime.now().toUtc()),
+          'timestamp': FieldValue.serverTimestamp(),
           'url': imageUrl,
           'type': 'image',
         });
@@ -78,7 +77,7 @@ class MessageService {
           'content': '[Video]',
           'sender_id': AuthHelper.user?.uid,
           'sender_name': AuthHelper.user?.fullName ?? 'Anonymous',
-          'timestamp': kFullDateTimeFormatter.format(DateTime.now().toUtc()),
+          'timestamp': FieldValue.serverTimestamp(),
           'url': videoUrl,
           'type': 'video',
         });
@@ -97,7 +96,7 @@ class MessageService {
           'content': '[Audio]',
           'sender_id': AuthHelper.user?.uid,
           'sender_name': AuthHelper.user?.fullName ?? 'Anonymous',
-          'timestamp': kFullDateTimeFormatter.format(DateTime.now().toUtc()),
+          'timestamp': FieldValue.serverTimestamp(),
           'url': audioUrl,
           'type': 'audio',
         });
@@ -116,7 +115,7 @@ class MessageService {
           'content': jsonEncode(coin.toJson()),
           'sender_id': AuthHelper.user?.uid,
           'sender_name': AuthHelper.user?.fullName ?? 'Anonymous',
-          'timestamp': kFullDateTimeFormatter.format(DateTime.now().toUtc()),
+          'timestamp': FieldValue.serverTimestamp(),
           'type': 'paid',
         });
   }
