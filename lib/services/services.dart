@@ -14,3 +14,5 @@ export 'media_picker_service.dart';
 export 'news_service.dart';
 export 'network_service.dart';
 export 'vto_service.dart';
+export 'metamask_service.dart';
+export 'room_service.dart';

@@ -16,6 +16,9 @@ class CreateRoomProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  final RoomService _roomService = RoomService();
+  RoomService get roomService => _roomService;
+
   Future<void> init(BuildContext context) async {
     this.context = context;
   }
@@ -95,10 +98,7 @@ class CreateRoomProvider extends InSoBlokViewModel {
                   const SizedBox(height: 24.0),
                   Text(
                     S.current.create_room_confirm,
-                    style: TextStyle(
-                      fontSize: 16.0,
-                      color: Colors.white,
-                    ),
+                    style: TextStyle(fontSize: 16.0, color: Colors.white),
                   ),
                   const SizedBox(height: 24.0),
                   TextFillButton(
@@ -120,13 +120,11 @@ class CreateRoomProvider extends InSoBlokViewModel {
     await runBusyFuture(() async {
       try {
         var room = RoomModel(
-          relatedId: '${AuthHelper.user?.uid}:${user.uid}',
-          senderId: AuthHelper.user?.uid,
-          receiverId: user.uid,
+          uids: [AuthHelper.user?.uid, user.uid],
           content:
               '${AuthHelper.user?.firstName} ${S.current.create_room_message}',
         );
-        await FirebaseHelper.createRoom(room);
+        await roomService.createRoom(room);
       } catch (e) {
         logger.e(e);
         setError(e);

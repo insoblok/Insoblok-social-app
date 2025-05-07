@@ -7,6 +7,7 @@ import 'package:insoblok/pages/pages.dart';
 
 const kRouterBase = '/';
 const kRouterLogin = '/login';
+const kRouterAuth = '/auth';
 const kRouterRegister = '/register';
 const kRouterMain = '/main';
 
@@ -64,6 +65,9 @@ class Navigation {
 
     // * LoginPage
     initRoute(kRouterLogin, (props) => LoginPage());
+
+    // * AuthPage
+    initRoute(kRouterAuth, (props) => AuthPage());
 
     // * RegisterPage
     initRoute(kRouterRegister, (props) => RegisterPage());

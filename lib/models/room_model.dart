@@ -8,11 +8,10 @@ abstract class RoomModel with _$RoomModel {
   @JsonSerializable(fieldRename: FieldRename.snake)
   factory RoomModel({
     String? id,
-    String? relatedId,
-    String? senderId,
-    String? receiverId,
-    String? regDate,
-    String? updateDate,
+    String? uid,
+    List<String?>? uids,
+    String? regdate,
+    String? timestamp,
     String? content,
     String? statusSender,
     String? statusReceiver,

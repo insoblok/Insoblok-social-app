@@ -17,6 +17,10 @@ class Routers {
     _pushReplacement(context, kRouterLogin, null);
   }
 
+  static void goToAuthPage(BuildContext context) {
+    _pushToRoute(context, kRouterAuth, null);
+  }
+
   static void goToRegisterPage(BuildContext context) {
     _pushReplacement(context, kRouterRegister, null);
   }

@@ -9,7 +9,7 @@
     "user": "User",
     "splash_title": "InSoBlokAI",
     "login_title": "Welcome to InSoBlok!",
-    "login_button": "Login by MetaMask",
+    "login_button": "Start by MetaMask",
     "register_detail": "Please complete your information!",
     "register_confirm": "Confirm",
     "register_error_name": "Please input your name!",

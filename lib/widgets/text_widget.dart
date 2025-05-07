@@ -63,6 +63,7 @@ class AINoBorderTextField extends StatelessWidget {
   final double? height;
   final Widget? prefixIcon;
   final Widget? suffixIcon;
+  final Widget? suffix;
   final String? suffixText;
   final bool autofocus;
   final bool readOnly;
@@ -73,6 +74,7 @@ class AINoBorderTextField extends StatelessWidget {
   final void Function(String?)? onSaved;
   final int? minLines;
   final int? maxLines;
+  final bool obscureText;
 
   const AINoBorderTextField({
     super.key,
@@ -82,6 +84,7 @@ class AINoBorderTextField extends StatelessWidget {
     this.controller,
     this.prefixIcon,
     this.suffixIcon,
+    this.suffix,
     this.suffixText,
     this.autofocus = false,
     this.readOnly = false,
@@ -92,6 +95,7 @@ class AINoBorderTextField extends StatelessWidget {
     this.onSaved,
     this.minLines = 1,
     this.maxLines = 1,
+    this.obscureText = false,
   });
 
   @override
@@ -110,6 +114,7 @@ class AINoBorderTextField extends StatelessWidget {
           prefixIcon: prefixIcon,
           suffixIcon: suffixIcon,
           suffixText: suffixText,
+          suffix: suffix,
           border: InputBorder.none,
         ),
         onChanged: onChanged,
@@ -119,6 +124,7 @@ class AINoBorderTextField extends StatelessWidget {
         onSaved: onSaved,
         minLines: minLines,
         maxLines: maxLines,
+        obscureText: obscureText,
       ),
     );
   }

@@ -36,7 +36,6 @@ class FirebaseService {
   UserCredential get userCredential => _userCredential;
 
   late CollectionReference<UserModel> _userRef;
-  late CollectionReference<RoomModel> _roomRef;
 
   late final FirebaseStorage _storage;
 
@@ -72,13 +71,6 @@ class FirebaseService {
                 (snapshot, _) => UserModel.fromJson(snapshot.data()!),
             toFirestore: (user, _) => user.toJson(),
           );
-      _roomRef = FirebaseFirestore.instance
-          .collection('room')
-          .withConverter<RoomModel>(
-            fromFirestore:
-                (snpashot, _) => RoomModel.fromJson(snpashot.data()!),
-            toFirestore: (room, _) => room.toJson(),
-          );
 
       _storage = FirebaseStorage.instance;
     } catch (e) {
@@ -90,6 +82,27 @@ class FirebaseService {
     try {
       var credential = await FirebaseAuth.instance.signInAnonymously();
       _userCredential = credential;
+      logger.d("Signed in with temporary account.");
+    } on FirebaseAuthException catch (e) {
+      logger.e(e.message);
+    } catch (e) {
+      logger.e(e);
+    }
+  }
+
+  Future<void> signInEmail({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      logger.d(FieldValue.serverTimestamp().toString());
+      final credential = EmailAuthProvider.credential(
+        email: email,
+        password: password,
+      );
+      _userCredential = await FirebaseAuth.instance.signInWithCredential(
+        credential,
+      );
       logger.d("Signed in with temporary account.");
     } on FirebaseAuthException catch (e) {
       logger.e(e.message);
@@ -215,66 +228,6 @@ class FirebaseService {
     return [];
   }
 
-  Future<RoomModel?> createRoom(RoomModel room) async {
-    try {
-      var value = await _roomRef.add(
-        room.copyWith(
-          regDate: kFullDateTimeFormatter.format(DateTime.now().toUtc()),
-          updateDate: kFullDateTimeFormatter.format(DateTime.now().toUtc()),
-        ),
-      );
-      var addRoom = room.copyWith(id: value.id);
-      await updateRoom(addRoom);
-      return addRoom;
-    } on FirebaseAuthException catch (e) {
-      logger.e(e.message);
-    } catch (e) {
-      logger.e(e);
-    }
-    return null;
-  }
-
-  Future<List<RoomModel>> getRooms() async {
-    try {
-      var snapshot =
-          await _roomRef
-              .where('related_id', arrayContains: AuthHelper.user?.uid)
-              .get();
-      return snapshot.docs.map((e) => e.data()).toList();
-    } on FirebaseAuthException catch (e) {
-      logger.e(e.message);
-    } catch (e) {
-      logger.e(e.toString());
-    }
-    return [];
-  }
-
-  Future<bool> updateRoom(RoomModel room) async {
-    try {
-      await _roomRef
-          .doc(room.id)
-          .update(
-            room
-                .copyWith(
-                  updateDate: kFullDateTimeFormatter.format(
-                    DateTime.now().toUtc(),
-                  ),
-                )
-                .toJson(),
-          );
-      return true;
-    } on FirebaseAuthException catch (e) {
-      logger.e(e.message);
-    } catch (e) {
-      logger.e(e);
-    }
-    return false;
-  }
-
-  Stream<QuerySnapshot<RoomModel>> getRoomsStream() {
-    return _roomRef.snapshots();
-  }
-
   Future<String?> uploadImageFromUrl({
     required String imageUrl,
     String? uid,
@@ -374,6 +327,10 @@ class FirebaseHelper {
   static UserCredential get userCredential => service.userCredential;
 
   static Future<void> signInFirebase() => service.signInFirebase();
+  static Future<void> signInEmail({
+    required String email,
+    required String password,
+  }) => service.signInEmail(email: email, password: password);
 
   static Future<UserModel?> createUser(UserModel user) =>
       service.createUser(user);
@@ -388,13 +345,6 @@ class FirebaseHelper {
       service.getUserStream(id);
   static Future<List<UserModel>> findUsersByKey(String key) =>
       service.findUsersByKey(key);
-
-  static Future<RoomModel?> createRoom(RoomModel room) =>
-      service.createRoom(room);
-  static Future<List<RoomModel>> getRooms() => service.getRooms();
-  static Future<bool> updateRoom(RoomModel room) => service.updateRoom(room);
-  static Stream<QuerySnapshot<RoomModel>> getRoomsStream() =>
-      service.getRoomsStream();
 
   static Future<String?> uploadImageFromUrl({
     required String imageUrl,

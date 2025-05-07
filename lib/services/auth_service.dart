@@ -14,17 +14,15 @@ class AuthService with ListenableServiceMixin {
   final RxValue<UserModel?> _userRx = RxValue<UserModel?>(null);
   UserModel? get user => _userRx.value;
 
-  final RxValue<SessionStatus?> _sessionStatusRx =
-      RxValue<SessionStatus?>(null);
+  final RxValue<SessionStatus?> _sessionStatusRx = RxValue<SessionStatus?>(
+    null,
+  );
   SessionStatus? get sessionStatus => _sessionStatusRx.value;
 
   bool get isLoggedIn => user?.walletAddress != null;
 
   AuthService() {
-    listenToReactiveValues([
-      _userRx,
-      _sessionStatusRx,
-    ]);
+    listenToReactiveValues([_userRx, _sessionStatusRx]);
   }
 
   Future<void> setUser(UserModel model) async {
@@ -73,6 +71,36 @@ class AuthService with ListenableServiceMixin {
           await FirebaseHelper.updateUser(user);
         }
         _userRx.value = user;
+        return user;
+      }
+    } catch (e) {
+      logger.e(e);
+    }
+    return null;
+  }
+
+  Future<UserModel?> signInEmail({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      await FirebaseHelper.signInEmail(email: email, password: password);
+      var credential = FirebaseHelper.userCredential;
+      var uid = credential.user?.uid;
+      if (uid != null) {
+        logger.d(uid);
+        var user = await FirebaseHelper.getUser(uid);
+        var ipAddress = IpAddress(type: RequestType.json);
+        var data = await ipAddress.getIpAddress();
+        if (user != null) {
+          user = user.copyWith(
+            walletAddress: EthereumHelper.address?.hex,
+            updateDate: kFullDateTimeFormatter.format(DateTime.now().toUtc()),
+            ipAddress: kDebugMode ? kDefaultIpAddress : data['ip'],
+          );
+          await FirebaseHelper.updateUser(user);
+          _userRx.value = user;
+        }
         return user;
       }
     } catch (e) {
