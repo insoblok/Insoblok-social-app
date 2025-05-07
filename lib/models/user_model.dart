@@ -25,7 +25,7 @@ abstract class UserModel with _$UserModel {
     double? lon,
     String? ipAddress,
     String? regdate,
-    String? updateDate,
+    String? timestamp,
     String? status,
     List<String>? likes,
     List<String>? follows,

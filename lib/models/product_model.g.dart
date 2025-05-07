@@ -28,7 +28,7 @@ _ProductModel _$ProductModelFromJson(Map<String, dynamic> json) =>
           ?.map((e) => (e as num).toInt())
           .toList(),
       selles: (json['selles'] as num?)?.toInt(),
-      updatedDate: json['updated_date'] as String?,
+      regdate: json['regdate'] as String?,
       timestamp: json['timestamp'] as String?,
     );
 
@@ -51,6 +51,6 @@ Map<String, dynamic> _$ProductModelToJson(_ProductModel instance) =>
       'likes': instance.likes,
       'rates': instance.rates,
       'selles': instance.selles,
-      'updated_date': instance.updatedDate,
+      'regdate': instance.regdate,
       'timestamp': instance.timestamp,
     };

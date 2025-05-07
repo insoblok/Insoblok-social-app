@@ -24,7 +24,7 @@ abstract class ProductModel with _$ProductModel {
     List<String>? likes,
     List<int>? rates,
     int? selles,
-    String? updatedDate,
+    String? regdate,
     String? timestamp,
   }) = _ProductModel;
   factory ProductModel.fromJson(Map<String, dynamic> json) =>

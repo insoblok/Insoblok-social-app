@@ -113,19 +113,12 @@ class StoryService {
 
   // Post a story
   Future<void> postStory({required StoryModel story}) async {
-    await _firestore
-        .collection('story')
-        .add(
-          story
-              .copyWith(
-                uid: AuthHelper.user?.uid,
-                regdate: kFullDateTimeFormatter.format(DateTime.now().toUtc()),
-                timestamp: kFullDateTimeFormatter.format(
-                  DateTime.now().toUtc(),
-                ),
-              )
-              .toMap(),
-        );
+    await _firestore.collection('story').add({
+      ...story.toJson(),
+      'uid': AuthHelper.user?.uid,
+      'timestamp': FieldValue.serverTimestamp(),
+      'regdate': FieldValue.serverTimestamp(),
+    });
     await _firestore.collection('story').doc('updated').set({
       'timestamp': kFullDateTimeFormatter.format(DateTime.now().toUtc()),
     });

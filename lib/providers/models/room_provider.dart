@@ -49,8 +49,12 @@ class RoomProvider extends InSoBlokViewModel {
         if (chatUser == null) {
           setError('Firebase Error! Please try again later.');
         } else {
-          FirebaseHelper.getUserStream(chatUser!.id!).listen((data) {
-            chatUser = data.data();
+          FirebaseHelper.getUserStream(chatUser!.id!).listen((doc) {
+            var json = doc.data();
+            if (json != null) {
+              json['id'] = doc.id;
+              chatUser = UserModel.fromJson(json);
+            }
           });
         }
       } catch (e) {

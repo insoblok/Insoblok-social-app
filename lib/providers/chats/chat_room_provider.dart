@@ -37,7 +37,11 @@ class CreateRoomProvider extends InSoBlokViewModel {
         _users.clear();
 
         var keyUsers = await FirebaseHelper.findUsersByKey(key);
-        _users.addAll(keyUsers);
+        for (var user in keyUsers) {
+          if (user != null) {
+            _users.add(user);
+          }
+        }
         logger.d(_users.length);
       } catch (e) {
         logger.e(e);

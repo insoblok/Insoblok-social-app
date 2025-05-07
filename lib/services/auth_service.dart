@@ -54,8 +54,6 @@ class AuthService with ListenableServiceMixin {
           user = UserModel(
             uid: uid,
             walletAddress: EthereumHelper.address?.hex,
-            regdate: kFullDateTimeFormatter.format(DateTime.now().toUtc()),
-            updateDate: kFullDateTimeFormatter.format(DateTime.now().toUtc()),
             ipAddress: kDebugMode ? kDefaultIpAddress : data['ip'],
           );
           user = await FirebaseHelper.createUser(user);
@@ -65,7 +63,6 @@ class AuthService with ListenableServiceMixin {
         } else {
           user = user.copyWith(
             walletAddress: EthereumHelper.address?.hex,
-            updateDate: kFullDateTimeFormatter.format(DateTime.now().toUtc()),
             ipAddress: kDebugMode ? kDefaultIpAddress : data['ip'],
           );
           await FirebaseHelper.updateUser(user);
@@ -95,7 +92,6 @@ class AuthService with ListenableServiceMixin {
         if (user != null) {
           user = user.copyWith(
             walletAddress: EthereumHelper.address?.hex,
-            updateDate: kFullDateTimeFormatter.format(DateTime.now().toUtc()),
             ipAddress: kDebugMode ? kDefaultIpAddress : data['ip'],
           );
           await FirebaseHelper.updateUser(user);

@@ -25,7 +25,7 @@ _UserModel _$UserModelFromJson(Map<String, dynamic> json) => _UserModel(
       lon: (json['lon'] as num?)?.toDouble(),
       ipAddress: json['ip_address'] as String?,
       regdate: json['regdate'] as String?,
-      updateDate: json['update_date'] as String?,
+      timestamp: json['timestamp'] as String?,
       status: json['status'] as String?,
       likes:
           (json['likes'] as List<dynamic>?)?.map((e) => e as String).toList(),
@@ -53,7 +53,7 @@ Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
       'lon': instance.lon,
       'ip_address': instance.ipAddress,
       'regdate': instance.regdate,
-      'update_date': instance.updateDate,
+      'timestamp': instance.timestamp,
       'status': instance.status,
       'likes': instance.likes,
       'follows': instance.follows,

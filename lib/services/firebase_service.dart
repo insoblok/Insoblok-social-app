@@ -35,16 +35,10 @@ class FirebaseService {
   late final UserCredential _userCredential;
   UserCredential get userCredential => _userCredential;
 
-  late CollectionReference<UserModel> _userRef;
-
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   late final FirebaseStorage _storage;
 
   Future<void> init() async {
-    await _initAuth();
-    await _initDatabase();
-  }
-
-  Future<void> _initAuth() async {
     try {
       _app = await Firebase.initializeApp(
         options: Platform.isAndroid ? android : ios,
@@ -55,24 +49,9 @@ class FirebaseService {
         appleProvider: AppleProvider.appAttest,
         webProvider: ReCaptchaV3Provider('recaptcha-v3-site-key'),
       );
+      _storage = FirebaseStorage.instance;
     } on FirebaseAuthException catch (e) {
       logger.e(e.message);
-    } catch (e) {
-      logger.e(e);
-    }
-  }
-
-  Future<void> _initDatabase() async {
-    try {
-      _userRef = FirebaseFirestore.instance
-          .collection('user')
-          .withConverter<UserModel>(
-            fromFirestore:
-                (snapshot, _) => UserModel.fromJson(snapshot.data()!),
-            toFirestore: (user, _) => user.toJson(),
-          );
-
-      _storage = FirebaseStorage.instance;
     } catch (e) {
       logger.e(e);
     }
@@ -95,7 +74,6 @@ class FirebaseService {
     required String password,
   }) async {
     try {
-      logger.d(FieldValue.serverTimestamp().toString());
       final credential = EmailAuthProvider.credential(
         email: email,
         password: password,
@@ -113,10 +91,12 @@ class FirebaseService {
 
   Future<UserModel?> createUser(UserModel user) async {
     try {
-      var value = await _userRef.add(user);
-      var addUser = user.copyWith(id: value.id);
-      await updateUser(addUser);
-      return addUser;
+      await _firestore.collection('user').add({
+        ...user.toJson(),
+        'timestamp': FieldValue.serverTimestamp(),
+        'regdate': FieldValue.serverTimestamp(),
+      });
+      return getUser(user.uid!);
     } on FirebaseAuthException catch (e) {
       logger.e(e.message);
     } catch (e) {
@@ -125,11 +105,19 @@ class FirebaseService {
     return null;
   }
 
+  UserModel? getUserFromDoc(DocumentSnapshot<Map<String, dynamic>> doc) {
+    var json = doc.data();
+    if (json != null) {
+      json['id'] = doc.id;
+      return UserModel.fromJson(json);
+    }
+    return null;
+  }
+
   Future<UserModel?> getUser(String uid) async {
     try {
-      var userSnpashot =
-          await _userRef.queryBy(UserQuery.uid, value: uid).get();
-      return userSnpashot.docs.first.data();
+      var doc = await _firestore.collection('user').doc(uid).get();
+      return getUserFromDoc(doc);
     } on FirebaseAuthException catch (e) {
       logger.e(e.message);
     } catch (e) {
@@ -140,17 +128,10 @@ class FirebaseService {
 
   Future<bool> updateUser(UserModel user) async {
     try {
-      await _userRef
-          .doc(user.id)
-          .update(
-            user
-                .copyWith(
-                  updateDate: kFullDateTimeFormatter.format(
-                    DateTime.now().toUtc(),
-                  ),
-                )
-                .toJson(),
-          );
+      await _firestore.collection('user').doc(user.id).update({
+        ...user.toJson(),
+        'timestamp': FieldValue.serverTimestamp(),
+      });
       return true;
     } on FirebaseAuthException catch (e) {
       logger.e(e.message);
@@ -162,7 +143,7 @@ class FirebaseService {
 
   Future<void> deleteUser(UserModel user) async {
     try {
-      await _userRef.doc(user.id).delete();
+      await _firestore.collection('user').doc(user.id).delete();
     } on FirebaseAuthException catch (e) {
       logger.e(e.message);
     } catch (e) {
@@ -186,9 +167,9 @@ class FirebaseService {
         password: password,
       );
 
-      final userCredential = await user.linkWithCredential(credential);
-      _userCredential = userCredential;
+      _userCredential = await user.linkWithCredential(credential);
     } on FirebaseAuthException catch (e) {
+      logger.e(e);
       if (e.code == 'provider-already-linked') {
         final credential = EmailAuthProvider.credential(
           email: email,
@@ -198,28 +179,66 @@ class FirebaseService {
           credential,
         );
       }
-      rethrow;
     }
   }
 
-  Stream<DocumentSnapshot<UserModel>> getUserStream(String id) {
-    return _userRef.doc(id).snapshots();
+  Stream<DocumentSnapshot<Map<String, dynamic>>> getUserStream(String id) {
+    return _firestore.collection('user').doc(id).snapshots();
   }
 
-  Future<List<UserModel>> findUsersByKey(String key) async {
+  Future<List<UserModel?>> findUsersByKey(String key) async {
     try {
-      List<UserModel> users = [];
-      var uidSnapshot = await _userRef.queryBy(UserQuery.uid, value: key).get();
-      users.addAll(uidSnapshot.docs.map((e) => e.data()));
+      List<UserModel?> users = [];
+      var uidSnapshot =
+          await _firestore
+              .collection('user')
+              .queryBy(UserQuery.uid, value: key)
+              .get();
+      users.addAll(uidSnapshot.docs.map((doc) => getUserFromDoc(doc)));
 
       var firstSnapshot =
-          await _userRef.queryBy(UserQuery.firstName, value: key).get();
-      users.addAll(firstSnapshot.docs.map((e) => e.data()));
+          await _firestore
+              .collection('user')
+              .queryBy(UserQuery.firstName, value: key)
+              .get();
+      var firstUsers = firstSnapshot.docs.map((doc) => getUserFromDoc(doc));
+      for (var user in firstUsers) {
+        var idList = users.map((u) => u?.id).toList();
+        if (idList.contains(user?.id)) {
+          continue;
+        }
+        users.add(user);
+      }
 
       var lastSnapshot =
-          await _userRef.queryBy(UserQuery.firstName, value: key).get();
-      users.addAll(lastSnapshot.docs.map((e) => e.data()));
-      return users.where((u) => u.uid != AuthHelper.user?.uid).toList();
+          await _firestore
+              .collection('user')
+              .queryBy(UserQuery.lastName, value: key)
+              .get();
+      var lastUsers = lastSnapshot.docs.map((doc) => getUserFromDoc(doc));
+      for (var user in lastUsers) {
+        var idList = users.map((u) => u?.id).toList();
+        if (idList.contains(user?.id)) {
+          continue;
+        }
+        users.add(user);
+      }
+
+      var nickSnapshot =
+          await _firestore
+              .collection('user')
+              .queryBy(UserQuery.nickID, value: key)
+              .get();
+      var nickUsers = nickSnapshot.docs.map((doc) => getUserFromDoc(doc));
+      for (var user in nickUsers) {
+        var idList = users.map((u) => u?.id).toList();
+        if (idList.contains(user?.id)) {
+          continue;
+        }
+        users.add(user);
+      }
+
+      return users.where((u) => u?.uid != AuthHelper.user?.uid).toList();
     } on FirebaseAuthException catch (e) {
       logger.e(e.message);
     } catch (e) {
@@ -341,9 +360,10 @@ class FirebaseHelper {
     required String email,
     required String password,
   }) => service.convertAnonymousToPermanent(email: email, password: password);
-  static Stream<DocumentSnapshot<UserModel>> getUserStream(String id) =>
-      service.getUserStream(id);
-  static Future<List<UserModel>> findUsersByKey(String key) =>
+  static Stream<DocumentSnapshot<Map<String, dynamic>>> getUserStream(
+    String id,
+  ) => service.getUserStream(id);
+  static Future<List<UserModel?>> findUsersByKey(String key) =>
       service.findUsersByKey(key);
 
   static Future<String?> uploadImageFromUrl({
@@ -366,15 +386,15 @@ class FirebaseHelper {
       service.deleteImage(imageUrl);
 }
 
-enum UserQuery { firstName, lastName, uid, recent }
+enum UserQuery { firstName, lastName, uid, nickID }
 
-extension on Query<UserModel> {
-  Query<UserModel> queryBy(UserQuery query, {String? value}) {
+extension on Query<Map<String, dynamic>> {
+  Query<Map<String, dynamic>> queryBy(UserQuery query, {String? value}) {
     return switch (query) {
       UserQuery.firstName => where('first_name', isEqualTo: value),
       UserQuery.lastName => where('last_name', isEqualTo: value),
       UserQuery.uid => where('uid', isEqualTo: value),
-      UserQuery.recent => orderBy('update_date', descending: true),
+      UserQuery.nickID => where('nick_id', isEqualTo: value),
     };
   }
 }
