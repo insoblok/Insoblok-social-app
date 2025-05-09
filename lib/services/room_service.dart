@@ -31,13 +31,14 @@ class RoomService {
 
   // Find a room
   Future<RoomModel?> getRoomByChatUesr({required String uid}) async {
-    var storiesSnapshot =
-        await _firestore
-            .collection('room')
-            .where('uids', arrayContainsAny: [AuthHelper.user?.uid, uid])
-            .get();
     try {
-      var doc = storiesSnapshot.docs.first;
+      var roomSnapshot =
+          await _firestore
+              .collection('room')
+              .where('uids', arrayContainsAny: [AuthHelper.user?.uid, uid])
+              .get();
+      if (roomSnapshot.docs.isEmpty) return null;
+      var doc = roomSnapshot.docs.first;
       var json = doc.data();
       json['id'] = doc.id;
       return RoomModel.fromJson(json);

@@ -34,6 +34,7 @@ class ChatProvider extends InSoBlokViewModel {
       _rooms.clear();
       for (var doc in queryRooms.docs) {
         var json = doc.data();
+        json['id'] = doc.id;
         _rooms.add(RoomModel.fromJson(json));
       }
       logger.d(_rooms.length);

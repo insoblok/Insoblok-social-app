@@ -72,14 +72,14 @@ class AddStoryPage extends StatelessWidget {
                                   ),
                                   child: Column(
                                     children: [
-                                      Icon(Icons.description, size: 40.0),
+                                      Icon(Icons.description, size: 32.0),
                                       const SizedBox(height: 12.0),
                                       Text(
                                         'Add Description',
                                         style:
                                             Theme.of(
                                               context,
-                                            ).textTheme.displayMedium,
+                                            ).textTheme.labelMedium,
                                       ),
                                     ],
                                   ),

@@ -47,7 +47,7 @@ class CreateRoomPage extends StatelessWidget {
                           color: AIColors.blue,
                           shape: BoxShape.circle,
                         ),
-                        child: Icon(Icons.search, color: Colors.white),
+                        child: Icon(Icons.search),
                       ),
                     ),
                   ],
@@ -81,7 +81,6 @@ class CreateRoomPage extends StatelessWidget {
                                   style: TextStyle(
                                     fontSize: 16.0,
                                     fontWeight: FontWeight.w500,
-                                    color: Colors.white,
                                   ),
                                 ),
                                 Text(
@@ -89,14 +88,13 @@ class CreateRoomPage extends StatelessWidget {
                                   style: TextStyle(
                                     fontSize: 13.0,
                                     fontWeight: FontWeight.w300,
-                                    color: Colors.white,
                                   ),
                                 ),
                               ],
                             ),
                           ),
                           const SizedBox(width: 8.0),
-                          Icon(Icons.check_circle, color: Colors.white),
+                          Icon(Icons.check_circle),
                         ],
                       ),
                     ),

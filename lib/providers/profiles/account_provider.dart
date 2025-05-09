@@ -95,10 +95,11 @@ class AccountProvider extends InSoBlokViewModel {
           );
           if (existedRoom == null) {
             var room = RoomModel(
-              uids: [AuthHelper.user?.uid, accountUser?.uid],
-              content:
-                  '${AuthHelper.user?.firstName} ${S.current.create_room_message}',
+              uid: user?.uid,
+              uids: [user?.uid, accountUser?.uid],
+              content: '${user?.firstName} ${S.current.create_room_message}',
             );
+            logger.d(room.toJson());
             await roomService.createRoom(room);
             existedRoom = await roomService.getRoomByChatUesr(
               uid: accountUser!.uid!,
