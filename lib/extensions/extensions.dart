@@ -4,3 +4,4 @@ export 'user_extension.dart';
 export 'int.dart';
 export 'string.dart';
 export 'news_extension.dart';
+export 'post_extension.dart';

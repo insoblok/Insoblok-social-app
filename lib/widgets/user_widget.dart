@@ -249,14 +249,12 @@ class UserRelatedView extends StatelessWidget {
                   ],
                 ),
                 const SizedBox(height: 12.0),
-                Text(
-                  viewModel.owner?.desc ??
+                (viewModel.owner?.desc != null)
+                    ? AIHelpers.htmlRender(viewModel.owner?.desc)
+                    : Text(
                       'User can input your profile description if you didn\'t set that yet!. That will be shown to other and will make more user experience of InSoBlokAI.',
-                  style:
-                      viewModel.owner?.desc == null
-                          ? Theme.of(context).textTheme.labelMedium
-                          : Theme.of(context).textTheme.bodySmall,
-                ),
+                      style: Theme.of(context).textTheme.labelMedium,
+                    ),
                 const SizedBox(height: 12.0),
                 Row(
                   children: [

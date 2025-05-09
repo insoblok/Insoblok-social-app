@@ -68,7 +68,8 @@ class StoryDetailCommentCell extends StatelessWidget {
                       ),
                     ],
                   ),
-                  AIHelpers.htmlRender(comment.content),
+                  if (comment.content != null)
+                    AIHelpers.htmlRender(comment.content),
                   const SizedBox(height: 8.0),
                 ],
               ),

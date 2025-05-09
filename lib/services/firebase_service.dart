@@ -397,9 +397,11 @@ class FirebaseHelper {
     Map<String, dynamic> newJson = {};
     for (var key in firebaseJson.keys) {
       if (key == 'regdate' || key == 'timestamp') {
-        var value = firebaseJson[key] as Timestamp;
-        DateTime utcDateTime = value.toDate();
-        newJson[key] = utcDateTime.toLocal().toIso8601String();
+        var value = firebaseJson[key];
+        if (value != null) {
+          DateTime utcDateTime = (value as Timestamp).toDate();
+          newJson[key] = utcDateTime.toLocal().toIso8601String();
+        }
       } else {
         newJson[key] = firebaseJson[key];
       }

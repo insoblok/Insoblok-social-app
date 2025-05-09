@@ -43,7 +43,7 @@ extension StoryCommentExt on StoryCommentModel {
   Map<String, dynamic> toMap() {
     return {
       'uid': uid,
-      'title': content,
+      'content': content,
       'medias': (medias ?? []).map((e) => e.toJson()).toList(),
     };
   }

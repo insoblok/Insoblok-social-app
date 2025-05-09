@@ -43,11 +43,10 @@ class MessagePage extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 14.0,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
                       ),
                     ),
                     Text(
-                      viewModel.chatUser.status ?? '',
+                      viewModel.chatUser.status ?? 'Online',
                       style: TextStyle(fontSize: 12.0),
                     ),
                   ],
@@ -78,7 +77,7 @@ class MessagePage extends StatelessWidget {
               ),
               Container(
                 height: viewModel.isAddPop ? 66.0 + kAddPopHeight : 66.0,
-                color: AIColors.darkBar,
+                color: AppSettingHelper.greyBackground,
                 alignment: Alignment.center,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,

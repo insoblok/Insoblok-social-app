@@ -31,6 +31,7 @@ const kRouterVTOAddProduct = '/vto-add-product';
 const kRouterAddStory = '/add-story';
 const kRouterStoryDetail = '/story-detail';
 const kRouterNewsDetail = '/news-detail';
+const kRouterPostDetail = '/post-detail';
 
 const kRouterQuillDescription = '/quill-description';
 const kRouterPrivacy = '/privacy-police';
@@ -134,6 +135,9 @@ class Navigation {
       kRouterNewsDetail,
       (props) => NewsDetailPage(news: props!),
     );
+
+    // * PostDetailPage
+    initRoute(kRouterPostDetail, (props) => PostDetailPage());
 
     // * QuillDescriptionPage
     initRoute<String>(

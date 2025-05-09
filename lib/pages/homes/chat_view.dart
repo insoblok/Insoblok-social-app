@@ -86,7 +86,6 @@ class ChatView extends StatelessWidget {
                               style: TextStyle(
                                 fontSize: 18.0,
                                 fontWeight: FontWeight.bold,
-                                color: Colors.white,
                               ),
                             ),
                             const SizedBox(height: 8.0),
@@ -97,7 +96,6 @@ class ChatView extends StatelessWidget {
                               child: Text(
                                 S.current.room_create_detail,
                                 textAlign: TextAlign.center,
-                                style: TextStyle(color: Colors.white),
                               ),
                             ),
                           ],
