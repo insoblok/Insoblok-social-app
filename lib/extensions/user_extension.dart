@@ -28,13 +28,9 @@ extension UserModelExt on UserModel {
   }
 
   String get sinceStr {
-    try {
-      var date = kFullDateTimeFormatter.parse(regdate!, true);
-      return kDateMMMMYYFormatter.format(date);
-    } catch (e) {
-      logger.e(e);
-    }
-    return '---';
+    return kDateMMMMYYFormatter.format(
+      regdate != null ? regdate! : DateTime.now(),
+    );
   }
 
   List<Map<String, String>> get linkInfo => [

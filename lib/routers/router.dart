@@ -17,6 +17,10 @@ class Routers {
     _pushReplacement(context, kRouterLogin, null);
   }
 
+  static void goToAuthPage(BuildContext context) {
+    _pushToRoute(context, kRouterAuth, null);
+  }
+
   static void goToRegisterPage(BuildContext context) {
     _pushReplacement(context, kRouterRegister, null);
   }
@@ -77,12 +81,24 @@ class Routers {
     return _pushToRoute(context, kRouterAddStory, null);
   }
 
+  static goToVTOClothingPage(BuildContext context) {
+    return _pushToRoute(context, kRouterMarketVTOClothing, null);
+  }
+
+  static goToVTOAddProduct(BuildContext context) {
+    return _pushToRoute(context, kRouterVTOAddProduct, null);
+  }
+
   static goToStoryDetailPage(BuildContext context, StoryModel data) {
     return _pushToRoute(context, kRouterStoryDetail, data);
   }
 
   static goToNewsDetailPage(BuildContext context, NewsModel data) {
     return _pushToRoute(context, kRouterNewsDetail, data);
+  }
+
+  static goToPostDetailPage(BuildContext context) {
+    return _pushToRoute(context, kRouterPostDetail, null);
   }
 
   static goToQuillDescriptionPage(BuildContext context, {String? origin}) {
@@ -99,5 +115,12 @@ class Routers {
 
   static goToHelpCenterPage(BuildContext context) {
     return _pushToRoute(context, kRouterHelpCenter, null);
+  }
+
+  static goToMediaDetailPage(
+    BuildContext context, {
+    required List<String> medias,
+  }) {
+    return _pushToRoute(context, kRouterMediaDetail, medias);
   }
 }

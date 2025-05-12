@@ -4,3 +4,6 @@ export 'message_model.dart';
 export 'coin_model.dart';
 export 'story_model.dart';
 export 'news_model.dart';
+export 'vto_model.dart';
+export 'product_model.dart';
+export 'post_model.dart';

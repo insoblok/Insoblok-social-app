@@ -41,6 +41,7 @@ void main() async {
 
   EthereumHelper.init(kEthereumRpcUrl);
   await FirebaseHelper.init();
+  await NetworkHelper.service.init();
   FirebaseFirestore.instance.settings = const Settings(
     persistenceEnabled: true,
   );

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:chewie/chewie.dart';
+import 'package:insoblok/routers/routers.dart';
 import 'package:stacked/stacked.dart';
 
 import 'package:insoblok/generated/l10n.dart';
@@ -201,7 +202,7 @@ class _LoginPageState extends State<LoginPage>
                                   AIImage(AIImages.imgMetamask, width: 28.0),
                                   const SizedBox(width: 24.0),
                                   Text(
-                                    S.current.login_button,
+                                    'Start with MetaMask',
                                     style: TextStyle(
                                       fontSize: 16.0,
                                       fontWeight: FontWeight.bold,
@@ -215,6 +216,25 @@ class _LoginPageState extends State<LoginPage>
                         ),
                         const SizedBox(width: 24.0),
                       ],
+                    ),
+                    const SizedBox(height: 60.0),
+                    Container(
+                      width: double.infinity,
+                      alignment: Alignment.center,
+                      child: Text('If you already have an account?'),
+                    ),
+                    const SizedBox(height: 16.0),
+                    Container(
+                      width: double.infinity,
+                      alignment: Alignment.center,
+                      child: InkWell(
+                        onTap: () => Routers.goToAuthPage(context),
+                        child: Text(
+                          'Login with Email',
+                          style: Theme.of(context).textTheme.titleMedium
+                              ?.copyWith(color: AIColors.yellow),
+                        ),
+                      ),
                     ),
                   ],
                 ),

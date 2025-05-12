@@ -16,6 +16,9 @@ class CreateRoomProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  final RoomService _roomService = RoomService();
+  RoomService get roomService => _roomService;
+
   Future<void> init(BuildContext context) async {
     this.context = context;
   }
@@ -34,7 +37,11 @@ class CreateRoomProvider extends InSoBlokViewModel {
         _users.clear();
 
         var keyUsers = await FirebaseHelper.findUsersByKey(key);
-        _users.addAll(keyUsers);
+        for (var user in keyUsers) {
+          if (user != null) {
+            _users.add(user);
+          }
+        }
         logger.d(_users.length);
       } catch (e) {
         logger.e(e);
@@ -69,7 +76,7 @@ class CreateRoomProvider extends InSoBlokViewModel {
                 vertical: 24.0,
               ),
               decoration: BoxDecoration(
-                color: Colors.white,
+                color: Theme.of(context).scaffoldBackgroundColor,
                 borderRadius: BorderRadius.circular(16.0),
               ),
               child: Column(
@@ -95,10 +102,7 @@ class CreateRoomProvider extends InSoBlokViewModel {
                   const SizedBox(height: 24.0),
                   Text(
                     S.current.create_room_confirm,
-                    style: TextStyle(
-                      fontSize: 16.0,
-                      color: Colors.white,
-                    ),
+                    style: TextStyle(fontSize: 16.0),
                   ),
                   const SizedBox(height: 24.0),
                   TextFillButton(
@@ -119,14 +123,19 @@ class CreateRoomProvider extends InSoBlokViewModel {
     isCreatingRoom = true;
     await runBusyFuture(() async {
       try {
-        var room = RoomModel(
-          relatedId: '${AuthHelper.user?.uid}:${user.uid}',
-          senderId: AuthHelper.user?.uid,
-          receiverId: user.uid,
-          content:
-              '${AuthHelper.user?.firstName} ${S.current.create_room_message}',
-        );
-        await FirebaseHelper.createRoom(room);
+        var existedRoom = await roomService.getRoomByChatUesr(uid: user.uid!);
+        if (existedRoom != null) {
+          Fluttertoast.showToast(msg: 'You already created user\'s chat.');
+        } else {
+          var room = RoomModel(
+            uids: [AuthHelper.user?.uid, user.uid],
+            content:
+                '${AuthHelper.user?.firstName} ${S.current.create_room_message}',
+          );
+          await roomService.createRoom(room);
+          Fluttertoast.showToast(msg: S.current.create_room_alert);
+        }
+        Navigator.of(context).pop();
       } catch (e) {
         logger.e(e);
         setError(e);
@@ -137,9 +146,6 @@ class CreateRoomProvider extends InSoBlokViewModel {
 
     if (hasError) {
       Fluttertoast.showToast(msg: modelError.toString());
-    } else {
-      Fluttertoast.showToast(msg: S.current.create_room_alert);
-      Navigator.of(context).pop();
     }
   }
 }

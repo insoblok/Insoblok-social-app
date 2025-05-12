@@ -6,6 +6,7 @@ class AITextField extends StatelessWidget {
   final TextEditingController? controller;
   final double? height;
   final Widget? prefixIcon;
+  final Widget? suffix;
   final bool autofocus;
   final void Function(String)? onChanged;
   final void Function(PointerDownEvent)? onTapOutside;
@@ -13,6 +14,7 @@ class AITextField extends StatelessWidget {
   final void Function(String)? onFieldSubmitted;
   final void Function(String?)? onSaved;
   final int? maxLines;
+  final bool obscureText;
 
   const AITextField({
     super.key,
@@ -21,6 +23,7 @@ class AITextField extends StatelessWidget {
     this.hintText,
     this.controller,
     this.prefixIcon,
+    this.suffix,
     this.autofocus = false,
     this.onChanged,
     this.onTapOutside,
@@ -28,6 +31,7 @@ class AITextField extends StatelessWidget {
     this.onFieldSubmitted,
     this.onSaved,
     this.maxLines = 1,
+    this.obscureText = false,
   });
 
   @override
@@ -40,10 +44,14 @@ class AITextField extends StatelessWidget {
         autofocus: autofocus,
         style: Theme.of(context).textTheme.displayMedium,
         decoration: InputDecoration(
-          contentPadding: EdgeInsets.symmetric(horizontal: 24.0),
+          contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
           hintText: hintText,
           prefixIcon: prefixIcon,
-          border: OutlineInputBorder(borderRadius: BorderRadius.circular(32.0)),
+          suffix: suffix,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(32.0),
+            borderSide: BorderSide(width: 0.33),
+          ),
         ),
         onChanged: onChanged,
         onTapOutside: onTapOutside,
@@ -51,6 +59,7 @@ class AITextField extends StatelessWidget {
         onFieldSubmitted: onFieldSubmitted,
         onSaved: onSaved,
         maxLines: maxLines,
+        obscureText: obscureText,
       ),
     );
   }
@@ -62,6 +71,9 @@ class AINoBorderTextField extends StatelessWidget {
   final TextEditingController? controller;
   final double? height;
   final Widget? prefixIcon;
+  final Widget? suffixIcon;
+  final Widget? suffix;
+  final String? suffixText;
   final bool autofocus;
   final bool readOnly;
   final void Function(String)? onChanged;
@@ -71,6 +83,7 @@ class AINoBorderTextField extends StatelessWidget {
   final void Function(String?)? onSaved;
   final int? minLines;
   final int? maxLines;
+  final bool obscureText;
 
   const AINoBorderTextField({
     super.key,
@@ -79,6 +92,9 @@ class AINoBorderTextField extends StatelessWidget {
     this.hintText,
     this.controller,
     this.prefixIcon,
+    this.suffixIcon,
+    this.suffix,
+    this.suffixText,
     this.autofocus = false,
     this.readOnly = false,
     this.onChanged,
@@ -88,6 +104,7 @@ class AINoBorderTextField extends StatelessWidget {
     this.onSaved,
     this.minLines = 1,
     this.maxLines = 1,
+    this.obscureText = false,
   });
 
   @override
@@ -104,6 +121,9 @@ class AINoBorderTextField extends StatelessWidget {
           contentPadding: EdgeInsets.symmetric(horizontal: 24.0),
           hintText: hintText,
           prefixIcon: prefixIcon,
+          suffixIcon: suffixIcon,
+          suffixText: suffixText,
+          suffix: suffix,
           border: InputBorder.none,
         ),
         onChanged: onChanged,
@@ -113,6 +133,7 @@ class AINoBorderTextField extends StatelessWidget {
         onSaved: onSaved,
         minLines: minLines,
         maxLines: maxLines,
+        obscureText: obscureText,
       ),
     );
   }

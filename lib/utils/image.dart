@@ -7,6 +7,9 @@ class AIImages {
   static String imgMetamask = 'assets/images/metamask.svg';
   static String imgBackSplash = 'assets/images/back_splash.jpg';
 
+  static String imgVTOClothing = 'assets/images/img_vto_clothing.jpg';
+  static String imgVTOJewelry = 'assets/images/img_vto_jewelry.jpg';
+
   static String icEthereumGold = 'assets/images/ic_ethereum_gold.png';
 
   static String icBottomHomeFill = 'assets/icons/ic_home_fill.svg';
@@ -34,6 +37,8 @@ class AIImages {
   static String icCircleMore = 'assets/icons/ic_more_circle.svg';
   static String icSetting = 'assets/icons/ic_setting.svg';
   static String icImage = 'assets/icons/ic_image.svg';
+  static String icGif = 'assets/icons/ic_gif.svg';
+  static String icCamera = 'assets/icons/ic_camera.svg';
 
   static String icMenuProfile = 'assets/icons/ic_user.svg';
   static String icMenuLists = 'assets/icons/ic_list.svg';

@@ -8,6 +8,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:path_provider/path_provider.dart';
 
+import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/locator.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
@@ -32,20 +33,13 @@ class FirebaseService {
   );
 
   late final FirebaseApp _app;
-  late final UserCredential _userCredential;
+  late UserCredential _userCredential;
   UserCredential get userCredential => _userCredential;
 
-  late CollectionReference<UserModel> _userRef;
-  late CollectionReference<RoomModel> _roomRef;
-
+  late final FirebaseFirestore _firestore;
   late final FirebaseStorage _storage;
 
   Future<void> init() async {
-    await _initAuth();
-    await _initDatabase();
-  }
-
-  Future<void> _initAuth() async {
     try {
       _app = await Firebase.initializeApp(
         options: Platform.isAndroid ? android : ios,
@@ -56,31 +50,10 @@ class FirebaseService {
         appleProvider: AppleProvider.appAttest,
         webProvider: ReCaptchaV3Provider('recaptcha-v3-site-key'),
       );
+      _storage = FirebaseStorage.instance;
+      _firestore = FirebaseFirestore.instance;
     } on FirebaseAuthException catch (e) {
       logger.e(e.message);
-    } catch (e) {
-      logger.e(e);
-    }
-  }
-
-  Future<void> _initDatabase() async {
-    try {
-      _userRef = FirebaseFirestore.instance
-          .collection('user')
-          .withConverter<UserModel>(
-            fromFirestore:
-                (snapshot, _) => UserModel.fromJson(snapshot.data()!),
-            toFirestore: (user, _) => user.toJson(),
-          );
-      _roomRef = FirebaseFirestore.instance
-          .collection('room')
-          .withConverter<RoomModel>(
-            fromFirestore:
-                (snpashot, _) => RoomModel.fromJson(snpashot.data()!),
-            toFirestore: (room, _) => room.toJson(),
-          );
-
-      _storage = FirebaseStorage.instance;
     } catch (e) {
       logger.e(e);
     }
@@ -98,12 +71,34 @@ class FirebaseService {
     }
   }
 
+  Future<void> signInEmail({
+    required String email,
+    required String password,
+  }) async {
+    try {
+      final credential = EmailAuthProvider.credential(
+        email: email,
+        password: password,
+      );
+      _userCredential = await FirebaseAuth.instance.signInWithCredential(
+        credential,
+      );
+      logger.d("Signed in with temporary account.");
+    } on FirebaseAuthException catch (e) {
+      logger.e(e.message);
+    } catch (e) {
+      logger.e(e);
+    }
+  }
+
   Future<UserModel?> createUser(UserModel user) async {
     try {
-      var value = await _userRef.add(user);
-      var addUser = user.copyWith(id: value.id);
-      await updateUser(addUser);
-      return addUser;
+      await _firestore.collection('user').add({
+        ...user.toJson().toFirebaseJson,
+        'timestamp': FieldValue.serverTimestamp(),
+        'regdate': FieldValue.serverTimestamp(),
+      });
+      return getUser(user.uid!);
     } on FirebaseAuthException catch (e) {
       logger.e(e.message);
     } catch (e) {
@@ -112,11 +107,23 @@ class FirebaseService {
     return null;
   }
 
+  UserModel? getUserFromDoc(DocumentSnapshot<Map<String, dynamic>> doc) {
+    var json = doc.data();
+    if (json != null) {
+      json['id'] = doc.id;
+      return UserModel.fromJson(json);
+    }
+    return null;
+  }
+
   Future<UserModel?> getUser(String uid) async {
     try {
-      var userSnpashot =
-          await _userRef.queryBy(UserQuery.uid, value: uid).get();
-      return userSnpashot.docs.first.data();
+      var doc =
+          await _firestore
+              .collection('user')
+              .queryBy(UserQuery.uid, value: uid)
+              .get();
+      return getUserFromDoc(doc.docs.first);
     } on FirebaseAuthException catch (e) {
       logger.e(e.message);
     } catch (e) {
@@ -127,17 +134,10 @@ class FirebaseService {
 
   Future<bool> updateUser(UserModel user) async {
     try {
-      await _userRef
-          .doc(user.id)
-          .update(
-            user
-                .copyWith(
-                  updateDate: kFullDateTimeFormatter.format(
-                    DateTime.now().toUtc(),
-                  ),
-                )
-                .toJson(),
-          );
+      await _firestore.collection('user').doc(user.id).update({
+        ...user.toJson().toFirebaseJson,
+        'timestamp': FieldValue.serverTimestamp(),
+      });
       return true;
     } on FirebaseAuthException catch (e) {
       logger.e(e.message);
@@ -149,7 +149,7 @@ class FirebaseService {
 
   Future<void> deleteUser(UserModel user) async {
     try {
-      await _userRef.doc(user.id).delete();
+      await _firestore.collection('user').doc(user.id).delete();
     } on FirebaseAuthException catch (e) {
       logger.e(e.message);
     } catch (e) {
@@ -173,9 +173,9 @@ class FirebaseService {
         password: password,
       );
 
-      final userCredential = await user.linkWithCredential(credential);
-      _userCredential = userCredential;
-    } on FirebaseAuthException catch (e) {
+      _userCredential = await user.linkWithCredential(credential);
+    } on FirebaseException catch (e) {
+      logger.e(e);
       if (e.code == 'provider-already-linked') {
         final credential = EmailAuthProvider.credential(
           email: email,
@@ -185,94 +185,72 @@ class FirebaseService {
           credential,
         );
       }
-      rethrow;
     }
   }
 
-  Stream<DocumentSnapshot<UserModel>> getUserStream(String id) {
-    return _userRef.doc(id).snapshots();
+  Stream<DocumentSnapshot<Map<String, dynamic>>> getUserStream(String id) {
+    return _firestore.collection('user').doc(id).snapshots();
   }
 
-  Future<List<UserModel>> findUsersByKey(String key) async {
+  Future<List<UserModel?>> findUsersByKey(String key) async {
     try {
-      List<UserModel> users = [];
-      var uidSnapshot = await _userRef.queryBy(UserQuery.uid, value: key).get();
-      users.addAll(uidSnapshot.docs.map((e) => e.data()));
+      List<UserModel?> users = [];
+      var uidSnapshot =
+          await _firestore
+              .collection('user')
+              .queryBy(UserQuery.uid, value: key)
+              .get();
+      users.addAll(uidSnapshot.docs.map((doc) => getUserFromDoc(doc)));
 
       var firstSnapshot =
-          await _userRef.queryBy(UserQuery.firstName, value: key).get();
-      users.addAll(firstSnapshot.docs.map((e) => e.data()));
+          await _firestore
+              .collection('user')
+              .queryBy(UserQuery.firstName, value: key)
+              .get();
+      var firstUsers = firstSnapshot.docs.map((doc) => getUserFromDoc(doc));
+      for (var user in firstUsers) {
+        var idList = users.map((u) => u?.id).toList();
+        if (idList.contains(user?.id)) {
+          continue;
+        }
+        users.add(user);
+      }
 
       var lastSnapshot =
-          await _userRef.queryBy(UserQuery.firstName, value: key).get();
-      users.addAll(lastSnapshot.docs.map((e) => e.data()));
-      return users.where((u) => u.uid != AuthHelper.user?.uid).toList();
-    } on FirebaseAuthException catch (e) {
-      logger.e(e.message);
-    } catch (e) {
-      logger.e(e.toString());
-    }
-    return [];
-  }
-
-  Future<RoomModel?> createRoom(RoomModel room) async {
-    try {
-      var value = await _roomRef.add(
-        room.copyWith(
-          regDate: kFullDateTimeFormatter.format(DateTime.now().toUtc()),
-          updateDate: kFullDateTimeFormatter.format(DateTime.now().toUtc()),
-        ),
-      );
-      var addRoom = room.copyWith(id: value.id);
-      await updateRoom(addRoom);
-      return addRoom;
-    } on FirebaseAuthException catch (e) {
-      logger.e(e.message);
-    } catch (e) {
-      logger.e(e);
-    }
-    return null;
-  }
-
-  Future<List<RoomModel>> getRooms() async {
-    try {
-      var snapshot =
-          await _roomRef
-              .where('related_id', arrayContains: AuthHelper.user?.uid)
+          await _firestore
+              .collection('user')
+              .queryBy(UserQuery.lastName, value: key)
               .get();
-      return snapshot.docs.map((e) => e.data()).toList();
+      var lastUsers = lastSnapshot.docs.map((doc) => getUserFromDoc(doc));
+      for (var user in lastUsers) {
+        var idList = users.map((u) => u?.id).toList();
+        if (idList.contains(user?.id)) {
+          continue;
+        }
+        users.add(user);
+      }
+
+      var nickSnapshot =
+          await _firestore
+              .collection('user')
+              .queryBy(UserQuery.nickID, value: key)
+              .get();
+      var nickUsers = nickSnapshot.docs.map((doc) => getUserFromDoc(doc));
+      for (var user in nickUsers) {
+        var idList = users.map((u) => u?.id).toList();
+        if (idList.contains(user?.id)) {
+          continue;
+        }
+        users.add(user);
+      }
+
+      return users.where((u) => u?.uid != AuthHelper.user?.uid).toList();
     } on FirebaseAuthException catch (e) {
       logger.e(e.message);
     } catch (e) {
       logger.e(e.toString());
     }
     return [];
-  }
-
-  Future<bool> updateRoom(RoomModel room) async {
-    try {
-      await _roomRef
-          .doc(room.id)
-          .update(
-            room
-                .copyWith(
-                  updateDate: kFullDateTimeFormatter.format(
-                    DateTime.now().toUtc(),
-                  ),
-                )
-                .toJson(),
-          );
-      return true;
-    } on FirebaseAuthException catch (e) {
-      logger.e(e.message);
-    } catch (e) {
-      logger.e(e);
-    }
-    return false;
-  }
-
-  Stream<QuerySnapshot<RoomModel>> getRoomsStream() {
-    return _roomRef.snapshots();
   }
 
   Future<String?> uploadImageFromUrl({
@@ -374,6 +352,10 @@ class FirebaseHelper {
   static UserCredential get userCredential => service.userCredential;
 
   static Future<void> signInFirebase() => service.signInFirebase();
+  static Future<void> signInEmail({
+    required String email,
+    required String password,
+  }) => service.signInEmail(email: email, password: password);
 
   static Future<UserModel?> createUser(UserModel user) =>
       service.createUser(user);
@@ -384,17 +366,11 @@ class FirebaseHelper {
     required String email,
     required String password,
   }) => service.convertAnonymousToPermanent(email: email, password: password);
-  static Stream<DocumentSnapshot<UserModel>> getUserStream(String id) =>
-      service.getUserStream(id);
-  static Future<List<UserModel>> findUsersByKey(String key) =>
+  static Stream<DocumentSnapshot<Map<String, dynamic>>> getUserStream(
+    String id,
+  ) => service.getUserStream(id);
+  static Future<List<UserModel?>> findUsersByKey(String key) =>
       service.findUsersByKey(key);
-
-  static Future<RoomModel?> createRoom(RoomModel room) =>
-      service.createRoom(room);
-  static Future<List<RoomModel>> getRooms() => service.getRooms();
-  static Future<bool> updateRoom(RoomModel room) => service.updateRoom(room);
-  static Stream<QuerySnapshot<RoomModel>> getRoomsStream() =>
-      service.getRoomsStream();
 
   static Future<String?> uploadImageFromUrl({
     required String imageUrl,
@@ -414,17 +390,35 @@ class FirebaseHelper {
 
   static Future<void> deleteImage(String imageUrl) =>
       service.deleteImage(imageUrl);
+
+  static Map<String, dynamic> fromConvertJson(
+    Map<String, dynamic> firebaseJson,
+  ) {
+    Map<String, dynamic> newJson = {};
+    for (var key in firebaseJson.keys) {
+      if (key == 'regdate' || key == 'timestamp') {
+        var value = firebaseJson[key];
+        if (value != null) {
+          DateTime utcDateTime = (value as Timestamp).toDate();
+          newJson[key] = utcDateTime.toLocal().toIso8601String();
+        }
+      } else {
+        newJson[key] = firebaseJson[key];
+      }
+    }
+    return newJson;
+  }
 }
 
-enum UserQuery { firstName, lastName, uid, recent }
+enum UserQuery { firstName, lastName, uid, nickID }
 
-extension on Query<UserModel> {
-  Query<UserModel> queryBy(UserQuery query, {String? value}) {
+extension on Query<Map<String, dynamic>> {
+  Query<Map<String, dynamic>> queryBy(UserQuery query, {String? value}) {
     return switch (query) {
       UserQuery.firstName => where('first_name', isEqualTo: value),
       UserQuery.lastName => where('last_name', isEqualTo: value),
       UserQuery.uid => where('uid', isEqualTo: value),
-      UserQuery.recent => orderBy('update_date', descending: true),
+      UserQuery.nickID => where('nick_id', isEqualTo: value),
     };
   }
 }

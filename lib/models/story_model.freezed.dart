@@ -19,9 +19,9 @@ mixin _$StoryModel {
   String? get uid;
   String? get title;
   String? get text;
-  String? get regdate;
+  DateTime? get regdate;
   String? get status;
-  String? get timestamp;
+  DateTime? get timestamp;
   List<MediaStoryModel>? get medias;
   List<String>? get likes;
   List<String>? get follows;
@@ -89,9 +89,9 @@ abstract mixin class $StoryModelCopyWith<$Res> {
       String? uid,
       String? title,
       String? text,
-      String? regdate,
+      DateTime? regdate,
       String? status,
-      String? timestamp,
+      DateTime? timestamp,
       List<MediaStoryModel>? medias,
       List<String>? likes,
       List<String>? follows,
@@ -142,7 +142,7 @@ class _$StoryModelCopyWithImpl<$Res> implements $StoryModelCopyWith<$Res> {
       regdate: freezed == regdate
           ? _self.regdate
           : regdate // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as DateTime?,
       status: freezed == status
           ? _self.status
           : status // ignore: cast_nullable_to_non_nullable
@@ -150,7 +150,7 @@ class _$StoryModelCopyWithImpl<$Res> implements $StoryModelCopyWith<$Res> {
       timestamp: freezed == timestamp
           ? _self.timestamp
           : timestamp // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as DateTime?,
       medias: freezed == medias
           ? _self.medias
           : medias // ignore: cast_nullable_to_non_nullable
@@ -203,11 +203,11 @@ class _StoryModel implements StoryModel {
   @override
   final String? text;
   @override
-  final String? regdate;
+  final DateTime? regdate;
   @override
   final String? status;
   @override
-  final String? timestamp;
+  final DateTime? timestamp;
   final List<MediaStoryModel>? _medias;
   @override
   List<MediaStoryModel>? get medias {
@@ -317,9 +317,9 @@ abstract mixin class _$StoryModelCopyWith<$Res>
       String? uid,
       String? title,
       String? text,
-      String? regdate,
+      DateTime? regdate,
       String? status,
-      String? timestamp,
+      DateTime? timestamp,
       List<MediaStoryModel>? medias,
       List<String>? likes,
       List<String>? follows,
@@ -370,7 +370,7 @@ class __$StoryModelCopyWithImpl<$Res> implements _$StoryModelCopyWith<$Res> {
       regdate: freezed == regdate
           ? _self.regdate
           : regdate // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as DateTime?,
       status: freezed == status
           ? _self.status
           : status // ignore: cast_nullable_to_non_nullable
@@ -378,7 +378,7 @@ class __$StoryModelCopyWithImpl<$Res> implements _$StoryModelCopyWith<$Res> {
       timestamp: freezed == timestamp
           ? _self.timestamp
           : timestamp // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as DateTime?,
       medias: freezed == medias
           ? _self._medias
           : medias // ignore: cast_nullable_to_non_nullable
@@ -563,7 +563,7 @@ class __$MediaStoryModelCopyWithImpl<$Res>
 mixin _$StoryCommentModel {
   String? get uid;
   String? get content;
-  String? get timestamp;
+  DateTime? get timestamp;
   List<MediaStoryModel>? get medias;
 
   /// Create a copy of StoryCommentModel
@@ -609,7 +609,7 @@ abstract mixin class $StoryCommentModelCopyWith<$Res> {
   $Res call(
       {String? uid,
       String? content,
-      String? timestamp,
+      DateTime? timestamp,
       List<MediaStoryModel>? medias});
 }
 
@@ -643,7 +643,7 @@ class _$StoryCommentModelCopyWithImpl<$Res>
       timestamp: freezed == timestamp
           ? _self.timestamp
           : timestamp // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as DateTime?,
       medias: freezed == medias
           ? _self.medias
           : medias // ignore: cast_nullable_to_non_nullable
@@ -670,7 +670,7 @@ class _StoryCommentModel implements StoryCommentModel {
   @override
   final String? content;
   @override
-  final String? timestamp;
+  final DateTime? timestamp;
   final List<MediaStoryModel>? _medias;
   @override
   List<MediaStoryModel>? get medias {
@@ -730,7 +730,7 @@ abstract mixin class _$StoryCommentModelCopyWith<$Res>
   $Res call(
       {String? uid,
       String? content,
-      String? timestamp,
+      DateTime? timestamp,
       List<MediaStoryModel>? medias});
 }
 
@@ -764,7 +764,7 @@ class __$StoryCommentModelCopyWithImpl<$Res>
       timestamp: freezed == timestamp
           ? _self.timestamp
           : timestamp // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as DateTime?,
       medias: freezed == medias
           ? _self._medias
           : medias // ignore: cast_nullable_to_non_nullable
@@ -775,7 +775,7 @@ class __$StoryCommentModelCopyWithImpl<$Res>
 
 /// @nodoc
 mixin _$UpdatedStoryModel {
-  String? get timestamp;
+  DateTime? get timestamp;
 
   /// Create a copy of UpdatedStoryModel
   /// with the given fields replaced by the non-null parameter values.
@@ -813,7 +813,7 @@ abstract mixin class $UpdatedStoryModelCopyWith<$Res> {
           UpdatedStoryModel value, $Res Function(UpdatedStoryModel) _then) =
       _$UpdatedStoryModelCopyWithImpl;
   @useResult
-  $Res call({String? timestamp});
+  $Res call({DateTime? timestamp});
 }
 
 /// @nodoc
@@ -835,7 +835,7 @@ class _$UpdatedStoryModelCopyWithImpl<$Res>
       timestamp: freezed == timestamp
           ? _self.timestamp
           : timestamp // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as DateTime?,
     ));
   }
 }
@@ -849,7 +849,7 @@ class _UpdatedStoryModel implements UpdatedStoryModel {
       _$UpdatedStoryModelFromJson(json);
 
   @override
-  final String? timestamp;
+  final DateTime? timestamp;
 
   /// Create a copy of UpdatedStoryModel
   /// with the given fields replaced by the non-null parameter values.
@@ -893,7 +893,7 @@ abstract mixin class _$UpdatedStoryModelCopyWith<$Res>
       __$UpdatedStoryModelCopyWithImpl;
   @override
   @useResult
-  $Res call({String? timestamp});
+  $Res call({DateTime? timestamp});
 }
 
 /// @nodoc
@@ -915,7 +915,7 @@ class __$UpdatedStoryModelCopyWithImpl<$Res>
       timestamp: freezed == timestamp
           ? _self.timestamp
           : timestamp // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as DateTime?,
     ));
   }
 }

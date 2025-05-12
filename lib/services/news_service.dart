@@ -7,6 +7,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:insoblok/models/news_model.dart';
 import 'package:insoblok/services/services.dart';
+import 'package:insoblok/utils/utils.dart';
 
 class NewsService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -14,7 +15,8 @@ class NewsService {
   // Get stories
   Future<List<NewsModel>> getNews() async {
     List<NewsModel> result = [];
-    if (kDebugMode) {
+
+    if (kDebugMode || kMVPTestingMode) {
       final String response = await rootBundle.loadString(
         'assets/data/articles.json',
       );

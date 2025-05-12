@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 import 'package:fluttertoast/fluttertoast.dart';
 
+import 'package:insoblok/generated/l10n.dart';
 import 'package:insoblok/models/models.dart';
+import 'package:insoblok/pages/pages.dart';
 import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
@@ -30,6 +32,9 @@ class AccountProvider extends InSoBlokViewModel {
     _pageIndex = i;
     notifyListeners();
   }
+
+  final RoomService _roomService = RoomService();
+  RoomService get roomService => _roomService;
 
   void init(BuildContext context, {UserModel? model}) async {
     this.context = context;
@@ -64,13 +69,57 @@ class AccountProvider extends InSoBlokViewModel {
 
     if (hasError) {
       Fluttertoast.showToast(msg: modelError.toString());
-    } else {}
+    }
+  }
+
+  bool _isCreatingRoom = false;
+  bool get isCreatingRoom => _isCreatingRoom;
+  set isCreatingRoom(bool flag) {
+    _isCreatingRoom = flag;
+    notifyListeners();
   }
 
   Future<void> onClickMoreButton() async {
     if (isMe) {
       await Routers.goToAccountUpdatePage(context);
       notifyListeners();
+    } else {
+      if (isBusy) return;
+      clearErrors();
+
+      isCreatingRoom = true;
+      await runBusyFuture(() async {
+        try {
+          var existedRoom = await roomService.getRoomByChatUesr(
+            uid: accountUser!.uid!,
+          );
+          if (existedRoom == null) {
+            var room = RoomModel(
+              uid: user?.uid,
+              uids: [user?.uid, accountUser?.uid],
+              content: '${user?.firstName} ${S.current.create_room_message}',
+            );
+            logger.d(room.toJson());
+            await roomService.createRoom(room);
+            existedRoom = await roomService.getRoomByChatUesr(
+              uid: accountUser!.uid!,
+            );
+          }
+          Routers.goToMessagePage(
+            context,
+            MessagePageData(room: existedRoom!, chatUser: user!),
+          );
+        } catch (e) {
+          logger.e(e);
+          setError(e);
+        } finally {
+          isCreatingRoom = false;
+        }
+      }());
+
+      if (hasError) {
+        Fluttertoast.showToast(msg: modelError.toString());
+      }
     }
   }
 }

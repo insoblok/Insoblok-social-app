@@ -82,7 +82,7 @@ class AddStoryProvider extends InSoBlokViewModel {
 
     if (hasError) {
       Fluttertoast.showToast(msg: modelError.toString());
-    } else {}
+    }
   }
 
   String _txtUploadButton = 'Post Story';

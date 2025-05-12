@@ -19,11 +19,6 @@ class RegisterProvider extends InSoBlokViewModel {
 
   late UserModel _user;
 
-  Future<void> setUser(UserModel u) async {
-    _user = u;
-    notifyListeners();
-  }
-
   Future<void> init(BuildContext context) async {
     this.context = context;
     _user = AuthHelper.user!;
@@ -39,19 +34,88 @@ class RegisterProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  void updateEmailAddress(String s) {
+    _user = _user.copyWith(email: s);
+    notifyListeners();
+  }
+
+  bool _obscureText = true;
+  bool get obscureText => _obscureText;
+  set obscureText(bool f) {
+    _obscureText = f;
+    notifyListeners();
+  }
+
+  String _password = '';
+  String get password => _password;
+  set password(String s) {
+    _password = s;
+    notifyListeners();
+  }
+
+  String _rePassword = '';
+  String get rePassword => _rePassword;
+  set rePassword(String s) {
+    _rePassword = s;
+    notifyListeners();
+  }
+
+  String _biometric = '';
+  String get biometric => _biometric;
+  set biometric(String s) {
+    _biometric = s;
+    notifyListeners();
+  }
+
+  String _website = '';
+  String get website => _website;
+  set website(String s) {
+    _website = s;
+    notifyListeners();
+  }
+
+  void updateCity(String s) {
+    _user = _user.copyWith(city: s);
+    notifyListeners();
+  }
+
+  void updateCountry(String s) {
+    _user = _user.copyWith(country: s);
+    notifyListeners();
+  }
+
   Future<void> onClickConfirm() async {
     if ((_user.firstName?.isEmpty ?? true) ||
         (_user.lastName?.isEmpty ?? true)) {
       Fluttertoast.showToast(msg: S.current.register_error_name);
       return;
     }
+    if (!(_user.email?.isEmailValid ?? false)) {
+      Fluttertoast.showToast(msg: 'No matched email!');
+      return;
+    }
+    if (password != rePassword) {
+      Fluttertoast.showToast(msg: 'No matched password!');
+      return;
+    }
+
+    if (isBusy) return;
+    clearErrors();
+
+    logger.d(_user.toJson());
+
     await runBusyFuture(() async {
       try {
+        await FirebaseHelper.convertAnonymousToPermanent(
+          email: _user.email!,
+          password: password,
+        );
         await AuthHelper.setUser(
           _user.copyWith(
             nickId: _user.fullName.replaceAll(' ', '').toLowerCase(),
           ),
         );
+        Routers.goToMainPage(context);
       } catch (e) {
         setError(e);
       } finally {
@@ -60,8 +124,6 @@ class RegisterProvider extends InSoBlokViewModel {
     }());
     if (hasError) {
       Fluttertoast.showToast(msg: modelError.toString());
-    } else {
-      Routers.goToLoginPage(context);
     }
   }
 }

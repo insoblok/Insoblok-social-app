@@ -68,16 +68,20 @@ class StoryDetailCommentCell extends StatelessWidget {
                       ),
                     ],
                   ),
-                  AIHelpers.htmlRender(comment.content),
+                  if (comment.content != null)
+                    AIHelpers.htmlRender(comment.content),
                   const SizedBox(height: 8.0),
                 ],
               ),
             ),
-            ClipOval(
-              child: AIImage(
-                user?.avatar,
-                width: kStoryDetailAvatarSize,
-                height: kStoryDetailAvatarSize,
+            InkWell(
+              onTap: viewModel.onTapUserAvatar,
+              child: ClipOval(
+                child: AIImage(
+                  user?.avatar,
+                  width: kStoryDetailAvatarSize,
+                  height: kStoryDetailAvatarSize,
+                ),
               ),
             ),
           ],

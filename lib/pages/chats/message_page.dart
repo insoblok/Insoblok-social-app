@@ -5,6 +5,7 @@ import 'package:stacked/stacked.dart';
 import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/providers/providers.dart';
+import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
 
@@ -42,12 +43,11 @@ class MessagePage extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 14.0,
                         fontWeight: FontWeight.bold,
-                        color: Colors.white,
                       ),
                     ),
                     Text(
-                      viewModel.chatUser.status ?? '',
-                      style: TextStyle(fontSize: 12.0, color: Colors.white),
+                      viewModel.chatUser.status ?? 'Online',
+                      style: TextStyle(fontSize: 12.0),
                     ),
                   ],
                 ),
@@ -77,7 +77,7 @@ class MessagePage extends StatelessWidget {
               ),
               Container(
                 height: viewModel.isAddPop ? 66.0 + kAddPopHeight : 66.0,
-                color: AIColors.darkBar,
+                color: AppSettingHelper.greyBackground,
                 alignment: Alignment.center,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -95,30 +95,21 @@ class MessagePage extends StatelessWidget {
                                 children: [
                                   IconButton(
                                     onPressed: viewModel.onPickerImage,
-                                    icon: Icon(
-                                      Icons.photo,
-                                      color: Colors.white,
-                                    ),
+                                    icon: AIImage(AIImages.icImage),
                                   ),
                                   IconButton(
                                     onPressed: viewModel.onPickerVideo,
-                                    icon: Icon(
-                                      Icons.camera_alt,
-                                      color: Colors.white,
-                                    ),
+                                    icon: AIImage(AIImages.icCamera),
                                   ),
                                   IconButton(
-                                    onPressed: viewModel.onRecordAudio,
-                                    icon: Icon(
-                                      Icons.voicemail,
-                                      color: Colors.white,
-                                    ),
+                                    onPressed: viewModel.onPickGif,
+                                    icon: AIImage(AIImages.icGif),
                                   ),
                                   IconButton(
                                     onPressed: viewModel.onPaidEth,
                                     icon: Icon(
                                       Icons.wallet,
-                                      color: Colors.white,
+                                      color: Theme.of(context).primaryColor,
                                     ),
                                   ),
                                 ],
@@ -126,7 +117,7 @@ class MessagePage extends StatelessWidget {
                             ),
                             IconButton(
                               onPressed: () => viewModel.isAddPop = false,
-                              icon: Icon(Icons.close, color: Colors.white),
+                              icon: Icon(Icons.close),
                             ),
                           ],
                         ),
@@ -136,16 +127,15 @@ class MessagePage extends StatelessWidget {
                       children: [
                         IconButton(
                           onPressed: () => viewModel.isAddPop = true,
-                          icon: Icon(
-                            Icons.add_circle_outline,
-                            color: Colors.white,
-                            size: 32.0,
-                          ),
+                          icon: Icon(Icons.add_circle_outline, size: 32.0),
                         ),
                         Expanded(
                           child: Container(
                             decoration: BoxDecoration(
-                              color: Colors.white,
+                              border: Border.all(
+                                width: 0.33,
+                                color: Theme.of(context).primaryColor,
+                              ),
                               borderRadius: BorderRadius.circular(32.0),
                             ),
                             child: AITextField(
@@ -159,11 +149,7 @@ class MessagePage extends StatelessWidget {
                         ),
                         IconButton(
                           onPressed: viewModel.sendMessage,
-                          icon: Icon(
-                            Icons.send,
-                            color: Colors.white,
-                            size: 32.0,
-                          ),
+                          icon: Icon(Icons.send, size: 32.0),
                         ),
                       ],
                     ),

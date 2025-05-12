@@ -1,5 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import 'package:insoblok/services/services.dart';
+
 part 'user_model.freezed.dart';
 part 'user_model.g.dart';
 
@@ -24,15 +26,15 @@ abstract class UserModel with _$UserModel {
     double? lat,
     double? lon,
     String? ipAddress,
-    String? regdate,
-    String? updateDate,
+    DateTime? regdate,
+    DateTime? timestamp,
     String? status,
     List<String>? likes,
     List<String>? follows,
   }) = _UserModel;
 
   factory UserModel.fromJson(Map<String, dynamic> json) =>
-      _$UserModelFromJson(json);
+      _$UserModelFromJson(FirebaseHelper.fromConvertJson(json));
 }
 
 @freezed

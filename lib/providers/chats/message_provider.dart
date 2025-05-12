@@ -171,7 +171,7 @@ class MessageProvider extends InSoBlokViewModel {
     }
   }
 
-  Future<void> onRecordAudio() async {
+  Future<void> onPickGif() async {
     Fluttertoast.showToast(msg: 'No support this feature yet!');
   }
 

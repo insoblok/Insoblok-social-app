@@ -7,6 +7,7 @@ import 'package:insoblok/pages/pages.dart';
 
 const kRouterBase = '/';
 const kRouterLogin = '/login';
+const kRouterAuth = '/auth';
 const kRouterRegister = '/register';
 const kRouterMain = '/main';
 
@@ -24,13 +25,18 @@ const kRouterCreateRoom = '/create-room';
 const kRouterMessage = '/message';
 const kRouterMessageSetting = '/message-setting';
 
+const kRouterMarketVTOClothing = '/vto-clothing';
+const kRouterVTOAddProduct = '/vto-add-product';
+
 const kRouterAddStory = '/add-story';
 const kRouterStoryDetail = '/story-detail';
 const kRouterNewsDetail = '/news-detail';
+const kRouterPostDetail = '/post-detail';
 
 const kRouterQuillDescription = '/quill-description';
 const kRouterPrivacy = '/privacy-police';
 const kRouterHelpCenter = '/help-center';
+const kRouterMediaDetail = '/media-detail';
 const kRouterSetting = '/setting';
 
 class Navigation {
@@ -60,6 +66,9 @@ class Navigation {
 
     // * LoginPage
     initRoute(kRouterLogin, (props) => LoginPage());
+
+    // * AuthPage
+    initRoute(kRouterAuth, (props) => AuthPage());
 
     // * RegisterPage
     initRoute(kRouterRegister, (props) => RegisterPage());
@@ -106,6 +115,12 @@ class Navigation {
     // * MessageSettingPage
     initRoute(kRouterMessageSetting, (props) => MessageSettingPage());
 
+    // * Marketlace VTO Clothing
+    initRoute(kRouterMarketVTOClothing, (props) => VTOClothingPage());
+
+    // * Marketlace Add Product
+    initRoute(kRouterVTOAddProduct, (props) => AddProductPage());
+
     // * AddStoryPage
     initRoute(kRouterAddStory, (props) => AddStoryPage());
 
@@ -121,6 +136,9 @@ class Navigation {
       (props) => NewsDetailPage(news: props!),
     );
 
+    // * PostDetailPage
+    initRoute(kRouterPostDetail, (props) => PostDetailPage());
+
     // * QuillDescriptionPage
     initRoute<String>(
       kRouterQuillDescription,
@@ -135,5 +153,11 @@ class Navigation {
 
     // * HelpCenterPage
     initRoute(kRouterHelpCenter, (props) => HelpPage());
+
+    // * MediaDetailPage
+    initRoute<List<String>>(
+      kRouterMediaDetail,
+      (props) => MediaDetailPage(medias: props!),
+    );
   }
 }
