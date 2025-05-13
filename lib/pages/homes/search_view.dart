@@ -44,7 +44,12 @@ class SearchView extends StatelessWidget {
               actions: [
                 IconButton(
                   onPressed: () {},
-                  icon: AIImage(AIImages.icSetting, width: 24.0, height: 24.0),
+                  icon: AIImage(
+                    AIImages.icSetting,
+                    width: 24.0,
+                    height: 24.0,
+                    color: Theme.of(context).primaryColor,
+                  ),
                 ),
               ],
             ),

@@ -146,7 +146,7 @@ class RegisterPage extends StatelessWidget {
               const SizedBox(height: 40.0),
               TextFillButton(
                 text: S.current.register_confirm,
-                color: AIColors.blue,
+                color: AIColors.pink,
                 isBusy: viewModel.isBusy,
                 onTap: viewModel.onClickConfirm,
               ),

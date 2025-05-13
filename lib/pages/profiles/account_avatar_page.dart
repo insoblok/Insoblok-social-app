@@ -114,7 +114,7 @@ class AccountAvatarPage extends StatelessWidget {
                                         borderRadius: BorderRadius.circular(
                                           12.0,
                                         ),
-                                        color: AIColors.blue,
+                                        color: AIColors.pink,
                                       ),
                                       alignment: Alignment.center,
                                       child: Text(

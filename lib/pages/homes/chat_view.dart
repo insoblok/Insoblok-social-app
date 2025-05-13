@@ -37,6 +37,7 @@ class ChatView extends StatelessWidget {
                         AIImages.icSetting,
                         width: 24.0,
                         height: 24.0,
+                        color: Theme.of(context).primaryColor,
                       ),
                     ),
                   ],
@@ -61,7 +62,11 @@ class ChatView extends StatelessWidget {
                         const SizedBox(width: 6.0),
                         Text(
                           'Search for people and groups',
-                          style: Theme.of(context).textTheme.labelLarge,
+                          style: TextStyle(
+                            fontSize: 14.0,
+                            color: AIColors.greyTextColor,
+                            fontWeight: FontWeight.normal,
+                          ),
                         ),
                       ],
                     ),

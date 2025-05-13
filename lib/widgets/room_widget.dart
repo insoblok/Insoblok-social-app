@@ -4,9 +4,10 @@ import 'package:stacked/stacked.dart';
 
 import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
-import 'package:insoblok/pages/pages.dart';
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/utils/utils.dart';
+
+const kAvatarSize = 44.0;
 
 class RoomItemView extends StatelessWidget {
   final RoomModel room;
@@ -44,8 +45,10 @@ class RoomItemView extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 viewModel.chatUser!.avatarStatusView(
-                  width: kStoryDetailAvatarSize,
-                  height: kStoryDetailAvatarSize,
+                  width: kAvatarSize,
+                  height: kAvatarSize,
+                  borderWidth: 2.0,
+                  textSize: 18.0,
                 ),
                 const SizedBox(width: 12.0),
                 Expanded(
@@ -53,34 +56,42 @@ class RoomItemView extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text.rich(
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        TextSpan(
-                          children: [
-                            TextSpan(
-                              text: viewModel.chatUser?.fullName ?? '---',
-                              style: Theme.of(context).textTheme.bodyMedium,
+                      Row(
+                        children: [
+                          Text(
+                            viewModel.chatUser?.fullName ?? '---',
+                            style: TextStyle(
+                              fontSize: 14.0,
+                              fontWeight: FontWeight.bold,
                             ),
-                            TextSpan(
-                              text: ' @${viewModel.chatUser?.nickId}',
-                              style: Theme.of(context).textTheme.labelLarge,
+                          ),
+                          const SizedBox(width: 8.0),
+                          Text(
+                            room.timestamp?.timeago ?? '---',
+                            style: TextStyle(
+                              fontSize: 10.0,
+                              color: AIColors.grey,
+                              fontWeight: FontWeight.normal,
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                       Text(
                         '${room.content}',
-                        style: Theme.of(context).textTheme.labelLarge,
+                        style: TextStyle(
+                          fontSize: 12.0,
+                          color: AIColors.grey,
+                          fontWeight: FontWeight.normal,
+                        ),
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(width: 8.0),
-                Text(
-                  room.timestamp?.timeago ?? '---',
-                  style: Theme.of(context).textTheme.labelLarge,
-                ),
+                // const SizedBox(width: 8.0),
+                // Text(
+                //   room.timestamp?.timeago ?? '---',
+                //   style: Theme.of(context).textTheme.labelLarge,
+                // ),
               ],
             ),
           ),

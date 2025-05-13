@@ -33,7 +33,7 @@ class AccountPresentHeaderView extends ViewModelWidget<AccountProvider> {
                 width: kAccountAvatarSize,
                 height: kAccountAvatarSize,
                 decoration: BoxDecoration(
-                  border: Border.all(width: 2.0, color: AIColors.blue),
+                  border: Border.all(width: 2.0, color: AIColors.pink),
                   borderRadius: BorderRadius.circular(kAccountAvatarSize / 2.0),
                 ),
                 child: ClipOval(child: AIImage(viewModel.accountUser?.avatar)),
@@ -177,7 +177,7 @@ class AccountFloatingHeaderView extends ViewModelWidget<AccountProvider> {
                           ? Border(
                             bottom: BorderSide(
                               width: 2.0,
-                              color: AIColors.blue,
+                              color: AIColors.pink,
                             ),
                           )
                           : null,

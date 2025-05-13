@@ -115,7 +115,7 @@ class AddStoryPage extends StatelessWidget {
                     const SizedBox(height: 40.0),
                     TextFillButton(
                       text: viewModel.txtUploadButton,
-                      color: viewModel.isBusy ? AIColors.grey : AIColors.blue,
+                      color: viewModel.isBusy ? AIColors.grey : AIColors.pink,
                       onTap: viewModel.onClickUploadButton,
                     ),
                   ]),

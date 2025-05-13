@@ -164,7 +164,7 @@ class CustomFloatingButton extends StatelessWidget {
         ),
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: AIColors.blue,
+          color: AIColors.pink,
           borderRadius: BorderRadius.circular(28.0),
         ),
         child: AIImage(src, width: 22.0, height: 22.0),

@@ -79,7 +79,7 @@ class MessageSettingPage extends StatelessWidget {
                             TextSpan(
                               text: 'Learn more',
                               style: Theme.of(context).textTheme.labelMedium
-                                  ?.copyWith(color: AIColors.blue),
+                                  ?.copyWith(color: AIColors.pink),
                             ),
                           ],
                         ),

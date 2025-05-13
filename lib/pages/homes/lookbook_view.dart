@@ -34,6 +34,7 @@ class LookbookView extends StatelessWidget {
                         AIImages.icSetting,
                         width: 24.0,
                         height: 24.0,
+                        color: Theme.of(context).primaryColor,
                       ),
                     ),
                   ],
@@ -46,15 +47,31 @@ class LookbookView extends StatelessWidget {
                         vertical: 8.0,
                       ),
                       child: SizedBox(
-                        height: 180.0,
+                        height: 160.0,
                         child: Row(
                           children: [
                             AspectRatio(
-                              aspectRatio: 0.5,
+                              aspectRatio: 0.6,
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(8.0),
                                 child: Container(
                                   color: Theme.of(context).primaryColor,
+                                  child: Stack(
+                                    fit: StackFit.expand,
+                                    children: [
+                                      AIImage(viewModel.user?.avatar),
+                                      Align(
+                                        alignment: Alignment.center,
+                                        child: Text(
+                                          'Create Story',
+                                          style: TextStyle(
+                                            fontSize: 11.0,
+                                            color: AIColors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
@@ -67,7 +84,7 @@ class LookbookView extends StatelessWidget {
                                   children: [
                                     for (var i = 0; i < 10; i++) ...{
                                       AspectRatio(
-                                        aspectRatio: 0.5,
+                                        aspectRatio: 0.6,
                                         child: ClipRRect(
                                           borderRadius: BorderRadius.circular(
                                             8.0,
@@ -111,7 +128,7 @@ class LookbookView extends StatelessWidget {
                           vertical: 2.0,
                         ),
                         decoration: BoxDecoration(
-                          color: AIColors.blue,
+                          color: AIColors.pink,
                           borderRadius: BorderRadius.circular(12.0),
                         ),
                         child: Text(
