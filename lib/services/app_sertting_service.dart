@@ -7,7 +7,7 @@ import 'package:insoblok/locator.dart';
 import 'package:insoblok/utils/utils.dart';
 
 class AppSettingService with ListenableServiceMixin {
-  final RxValue<ThemeMode> _themeModeRx = RxValue<ThemeMode>(ThemeMode.dark);
+  final RxValue<ThemeMode> _themeModeRx = RxValue<ThemeMode>(ThemeMode.light);
   ThemeMode get themeMode => _themeModeRx.value;
 
   AppSettingService() {
@@ -24,8 +24,8 @@ class AppSettingService with ListenableServiceMixin {
   ThemeData get lightTheme => ThemeData(
     fontFamily: 'SFProText',
     colorScheme: ColorScheme.fromSeed(
-      seedColor: AIColors.blue,
-      primary: AIColors.blue,
+      seedColor: AIColors.pink,
+      primary: AIColors.pink,
       onPrimary: AIColors.black,
       secondary: AIColors.black,
       onSecondary: AIColors.white,
@@ -47,7 +47,7 @@ class AppSettingService with ListenableServiceMixin {
     ),
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
       backgroundColor: AIColors.lightBackground,
-      selectedItemColor: AIColors.blue,
+      selectedItemColor: AIColors.pink,
       unselectedItemColor: AIColors.grey,
       showSelectedLabels: false,
       showUnselectedLabels: false,
@@ -86,7 +86,7 @@ class AppSettingService with ListenableServiceMixin {
         letterSpacing: -0.3,
       ),
       bodySmall: TextStyle(
-        fontSize: 16.0,
+        fontSize: 14.0,
         color: AIColors.lightTextColor,
         fontWeight: FontWeight.w500,
         letterSpacing: -0.3,
@@ -148,15 +148,15 @@ class AppSettingService with ListenableServiceMixin {
     ),
     iconTheme: IconThemeData(color: AIColors.lightIconColor),
     floatingActionButtonTheme: FloatingActionButtonThemeData(
-      backgroundColor: AIColors.blue,
+      backgroundColor: AIColors.pink,
     ),
   );
 
   ThemeData get darkTheme => ThemeData(
     fontFamily: 'SFProText',
     colorScheme: ColorScheme.fromSeed(
-      seedColor: AIColors.blue,
-      primary: AIColors.blue,
+      seedColor: AIColors.pink,
+      primary: AIColors.pink,
       onPrimary: AIColors.white,
       secondary: AIColors.white,
       onSecondary: AIColors.black,
@@ -178,7 +178,7 @@ class AppSettingService with ListenableServiceMixin {
     ),
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
       backgroundColor: AIColors.darkBackground,
-      selectedItemColor: AIColors.blue,
+      selectedItemColor: AIColors.pink,
       unselectedItemColor: AIColors.grey,
       showSelectedLabels: false,
       showUnselectedLabels: false,
@@ -279,7 +279,7 @@ class AppSettingService with ListenableServiceMixin {
     ),
     iconTheme: IconThemeData(color: AIColors.darkIconColor),
     floatingActionButtonTheme: FloatingActionButtonThemeData(
-      backgroundColor: AIColors.blue,
+      backgroundColor: AIColors.pink,
     ),
   );
 

@@ -39,7 +39,7 @@ class DashboardView extends StatelessWidget {
                                   ? Border(
                                     bottom: BorderSide(
                                       width: 2.0,
-                                      color: AIColors.blue,
+                                      color: AIColors.pink,
                                     ),
                                   )
                                   : null,

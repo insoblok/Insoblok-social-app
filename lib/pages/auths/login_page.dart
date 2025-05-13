@@ -190,11 +190,11 @@ class _LoginPageState extends State<LoginPage>
                         Expanded(
                           child: Container(
                             color: AIColors.darkScaffoldBackground.withAlpha(
-                              216,
+                              48,
                             ),
                             child: OutlineButton(
                               isBusy: viewModel.isBusy,
-                              borderColor: AIColors.yellow,
+                              borderColor: AIColors.pink,
                               onTap: viewModel.login,
                               child: Row(
                                 mainAxisSize: MainAxisSize.min,
@@ -206,7 +206,7 @@ class _LoginPageState extends State<LoginPage>
                                     style: TextStyle(
                                       fontSize: 16.0,
                                       fontWeight: FontWeight.bold,
-                                      color: AIColors.yellow,
+                                      color: AIColors.pink,
                                     ),
                                   ),
                                 ],
@@ -221,7 +221,10 @@ class _LoginPageState extends State<LoginPage>
                     Container(
                       width: double.infinity,
                       alignment: Alignment.center,
-                      child: Text('If you already have an account?'),
+                      child: Text(
+                        'If you already have an account?',
+                        style: TextStyle(color: AIColors.white),
+                      ),
                     ),
                     const SizedBox(height: 16.0),
                     Container(
@@ -232,7 +235,7 @@ class _LoginPageState extends State<LoginPage>
                         child: Text(
                           'Login with Email',
                           style: Theme.of(context).textTheme.titleMedium
-                              ?.copyWith(color: AIColors.yellow),
+                              ?.copyWith(color: AIColors.pink),
                         ),
                       ),
                     ),

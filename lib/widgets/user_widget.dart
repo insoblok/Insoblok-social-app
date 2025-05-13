@@ -23,7 +23,7 @@ class UserAvatarView extends StatelessWidget {
             width: 120.0,
             height: 120.0,
             decoration: BoxDecoration(
-              border: Border.all(width: 2.0, color: AIColors.blue),
+              border: Border.all(width: 2.0, color: AIColors.pink),
               borderRadius: BorderRadius.circular(60.0),
             ),
             child: ClipOval(
@@ -56,14 +56,14 @@ class UserAvatarView extends StatelessWidget {
                               onTap: () => Navigator.of(context).pop(0),
                               child: Row(
                                 children: [
-                                  AIImage(Icons.air, color: AIColors.blue),
+                                  AIImage(Icons.air, color: AIColors.pink),
                                   const SizedBox(width: 12.0),
                                   Text(
                                     'Create to AI Avatar',
                                     style: TextStyle(
                                       fontSize: 16.0,
                                       fontWeight: FontWeight.bold,
-                                      color: AIColors.blue,
+                                      color: AIColors.pink,
                                     ),
                                   ),
                                   const Spacer(),
@@ -73,7 +73,7 @@ class UserAvatarView extends StatelessWidget {
                                       vertical: 4.0,
                                     ),
                                     decoration: BoxDecoration(
-                                      color: AIColors.blue,
+                                      color: AIColors.pink,
                                       borderRadius: BorderRadius.circular(6.0),
                                     ),
                                     child: Text(
@@ -93,14 +93,14 @@ class UserAvatarView extends StatelessWidget {
                               onTap: () => Navigator.of(context).pop(1),
                               child: Row(
                                 children: [
-                                  AIImage(Icons.camera, color: AIColors.blue),
+                                  AIImage(Icons.camera, color: AIColors.pink),
                                   const SizedBox(width: 12.0),
                                   Text(
                                     'From Image Gallery',
                                     style: TextStyle(
                                       fontSize: 16.0,
                                       fontWeight: FontWeight.bold,
-                                      color: AIColors.blue,
+                                      color: AIColors.pink,
                                     ),
                                   ),
                                   const Spacer(),
@@ -129,7 +129,7 @@ class UserAvatarView extends StatelessWidget {
                 width: 36.0,
                 height: 36.0,
                 decoration: BoxDecoration(
-                  color: AIColors.blue,
+                  color: AIColors.pink,
                   shape: BoxShape.circle,
                 ),
                 child: AIImage(Icons.camera, color: Colors.white),

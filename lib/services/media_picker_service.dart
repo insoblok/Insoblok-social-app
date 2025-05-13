@@ -53,7 +53,7 @@ class MediaPickerService {
         return SafeArea(
           child: Container(
             width: double.infinity,
-            color: AIColors.darkScaffoldBackground,
+            color: AIColors.lightBackground,
             padding: const EdgeInsets.symmetric(
               horizontal: 18.0,
               vertical: 24.0,
@@ -66,14 +66,14 @@ class MediaPickerService {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      AIImage(Icons.air, color: AIColors.blue),
+                      AIImage(Icons.air, color: AIColors.pink),
                       const SizedBox(width: 12.0),
                       Text(
                         'From Gallery',
                         style: TextStyle(
                           fontSize: 16.0,
                           fontWeight: FontWeight.bold,
-                          color: AIColors.blue,
+                          color: AIColors.pink,
                         ),
                       ),
                     ],
@@ -85,14 +85,14 @@ class MediaPickerService {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      AIImage(Icons.camera, color: AIColors.blue),
+                      AIImage(Icons.camera, color: AIColors.pink),
                       const SizedBox(width: 12.0),
                       Text(
                         'From Camera',
                         style: TextStyle(
                           fontSize: 16.0,
                           fontWeight: FontWeight.bold,
-                          color: AIColors.blue,
+                          color: AIColors.pink,
                         ),
                       ),
                     ],

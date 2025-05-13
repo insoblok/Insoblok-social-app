@@ -34,6 +34,7 @@ class NotificationView extends StatelessWidget {
                         AIImages.icSetting,
                         width: 24.0,
                         height: 24.0,
+                        color: Theme.of(context).primaryColor,
                       ),
                     ),
                   ],
@@ -52,7 +53,7 @@ class NotificationView extends StatelessWidget {
                                         ? Border(
                                           bottom: BorderSide(
                                             width: 2.0,
-                                            color: AIColors.blue,
+                                            color: AIColors.pink,
                                           ),
                                         )
                                         : null,
@@ -72,7 +73,7 @@ class NotificationView extends StatelessWidget {
                                         ? Border(
                                           bottom: BorderSide(
                                             width: 2.0,
-                                            color: AIColors.blue,
+                                            color: AIColors.pink,
                                           ),
                                         )
                                         : null,

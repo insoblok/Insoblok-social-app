@@ -5,8 +5,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
+import 'package:observable_ish/value/rx/rx_value.dart';
 
 class MessageService {
+  final RxValue<UserModel?> _userRx = RxValue<UserModel?>(null);
+  UserModel? get user => _userRx.value;
+
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   // Get messages stream
@@ -25,6 +29,23 @@ class MessageService {
                 return MessageModel.fromJson(data);
               }).toList(),
         );
+  }
+
+  // Get user status
+  Stream<QuerySnapshot<Map<String, dynamic>>> getUsersStream() {
+    return _firestore.collection('user').snapshots();
+  }
+
+  UserModel? getUserStatus(String userid) {
+    UserModel? chatUser;
+    FirebaseHelper.getUserStream(userid).listen((doc) {
+      var json = doc.data();
+      if (json != null) {
+        json['id'] = doc.id;
+        chatUser = UserModel.fromJson(json);
+      }
+    });
+    return chatUser;
   }
 
   // Send a text message

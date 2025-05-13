@@ -76,7 +76,7 @@ class CreateRoomProvider extends InSoBlokViewModel {
                 vertical: 24.0,
               ),
               decoration: BoxDecoration(
-                color: Theme.of(context).scaffoldBackgroundColor,
+                color: AIColors.pink,
                 borderRadius: BorderRadius.circular(16.0),
               ),
               child: Column(
@@ -108,7 +108,7 @@ class CreateRoomProvider extends InSoBlokViewModel {
                   TextFillButton(
                     onTap: () => Navigator.of(context).pop(true),
                     text: 'Create',
-                    color: AIColors.blue,
+                    color: AIColors.pink,
                   ),
                 ],
               ),

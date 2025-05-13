@@ -7,7 +7,6 @@ import 'package:insoblok/models/models.dart';
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
-import 'package:insoblok/widgets/widgets.dart';
 
 class MessagePageData {
   MessagePageData({required this.room, required this.chatUser});
@@ -15,8 +14,6 @@ class MessagePageData {
   final RoomModel room;
   final UserModel chatUser;
 }
-
-const kAddPopHeight = 54.0;
 
 class MessagePage extends StatelessWidget {
   final MessagePageData data;
@@ -33,7 +30,12 @@ class MessagePage extends StatelessWidget {
           appBar: AppBar(
             title: Row(
               children: [
-                viewModel.chatUser.avatarStatusView(width: 36.0, height: 36.0),
+                viewModel.chatUser.avatarStatusView(
+                  width: 36.0,
+                  height: 36.0,
+                  borderWidth: 2.0,
+                  statusSize: 10.0,
+                ),
                 const SizedBox(width: 12.0),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -47,7 +49,12 @@ class MessagePage extends StatelessWidget {
                     ),
                     Text(
                       viewModel.chatUser.status ?? 'Online',
-                      style: TextStyle(fontSize: 12.0),
+                      style: TextStyle(
+                        fontSize: 10.0,
+                        color: AIColors.greyTextColor,
+                        fontWeight: FontWeight.normal,
+                        letterSpacing: 0.3,
+                      ),
                     ),
                   ],
                 ),
@@ -76,80 +83,98 @@ class MessagePage extends StatelessWidget {
                 ),
               ),
               Container(
-                height: viewModel.isAddPop ? 66.0 + kAddPopHeight : 66.0,
                 color: AppSettingHelper.greyBackground,
                 alignment: Alignment.center,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    if (viewModel.isAddPop) ...{
-                      Container(
-                        alignment: Alignment.center,
-                        height: kAddPopHeight,
-                        child: Row(
-                          children: [
-                            Expanded(
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  IconButton(
-                                    onPressed: viewModel.onPickerImage,
-                                    icon: AIImage(AIImages.icImage),
-                                  ),
-                                  IconButton(
-                                    onPressed: viewModel.onPickerVideo,
-                                    icon: AIImage(AIImages.icCamera),
-                                  ),
-                                  IconButton(
-                                    onPressed: viewModel.onPickGif,
-                                    icon: AIImage(AIImages.icGif),
-                                  ),
-                                  IconButton(
-                                    onPressed: viewModel.onPaidEth,
-                                    icon: Icon(
-                                      Icons.wallet,
-                                      color: Theme.of(context).primaryColor,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            IconButton(
-                              onPressed: () => viewModel.isAddPop = false,
-                              icon: Icon(Icons.close),
-                            ),
-                          ],
-                        ),
-                      ),
-                    },
                     Row(
                       children: [
-                        IconButton(
-                          onPressed: () => viewModel.isAddPop = true,
-                          icon: Icon(Icons.add_circle_outline, size: 32.0),
-                        ),
                         Expanded(
                           child: Container(
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                width: 0.33,
-                                color: Theme.of(context).primaryColor,
-                              ),
-                              borderRadius: BorderRadius.circular(32.0),
+                            padding: const EdgeInsets.only(
+                              left: 12.0,
+                              right: 12.0,
                             ),
-                            child: AITextField(
-                              hintText: 'Input a message...',
-                              controller: viewModel.textController,
-                              onChanged: (value) => viewModel.content = value,
-                              onFieldSubmitted: (value) {},
-                              onSaved: (value) {},
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(maxHeight: 100.0),
+                              child: TextFormField(
+                                decoration: InputDecoration(
+                                  hintText: 'Type something',
+                                  border: InputBorder.none,
+                                ),
+                                style: Theme.of(context).textTheme.bodySmall,
+                                maxLines: null,
+                                controller: viewModel.textController,
+                                onChanged: (value) => viewModel.content = value,
+                                onFieldSubmitted: (value) {},
+                                onSaved: (value) {},
+                              ),
                             ),
                           ),
                         ),
-                        IconButton(
-                          onPressed: viewModel.sendMessage,
-                          icon: Icon(Icons.send, size: 32.0),
+                      ],
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Expanded(
+                          child: Row(
+                            children: [
+                              IconButton(
+                                onPressed: viewModel.onPickerImage,
+                                icon: AIImage(
+                                  AIImages.icImage,
+                                  color: AIColors.grey,
+                                  width: 20,
+                                ),
+                              ),
+                              IconButton(
+                                onPressed: viewModel.onPickerVideo,
+                                icon: AIImage(
+                                  AIImages.icCamera,
+                                  color: AIColors.grey,
+                                  width: 20,
+                                ),
+                              ),
+                              IconButton(
+                                onPressed: viewModel.onPickGif,
+                                icon: AIImage(
+                                  AIImages.icGif,
+                                  color: AIColors.grey,
+                                  width: 20,
+                                ),
+                              ),
+                              IconButton(
+                                onPressed: viewModel.onPaidEth,
+                                icon: Icon(
+                                  Icons.wallet,
+                                  size: 28,
+                                  color: AIColors.grey,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(right: 12.0),
+                          child: Container(
+                            width: 36.0,
+                            height: 36.0,
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: AIColors.pink,
+                              borderRadius: BorderRadius.circular(18.0),
+                            ),
+                            child: IconButton(
+                              onPressed: viewModel.sendMessage,
+                              icon: Icon(
+                                Icons.arrow_upward_outlined,
+                                color: AIColors.white,
+                                size: 20.0,
+                              ),
+                            ),
+                          ),
                         ),
                       ],
                     ),

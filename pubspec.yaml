@@ -27,6 +27,7 @@ dependencies:
   flutter_quill: any
   vsc_quill_delta_to_html: any
   flutter_html: any
+  gradient_borders: any
 
   logger: any
   freezed_annotation: any

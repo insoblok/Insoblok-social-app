@@ -51,11 +51,12 @@ class AIImage extends StatelessWidget {
               hasSpinner: hasSpinner,
             );
           },
-          placeholder: (ctx, _) => AIDefaultImage(
-            width: width,
-            height: height,
-            hasSpinner: hasSpinner,
-          ),
+          placeholder:
+              (ctx, _) => AIDefaultImage(
+                width: width,
+                height: height,
+                hasSpinner: hasSpinner,
+              ),
         );
       case ImageType.offlineSvg:
         return SvgPicture.asset(
@@ -63,12 +64,8 @@ class AIImage extends StatelessWidget {
           width: width,
           height: height,
           fit: fit ?? BoxFit.contain,
-          colorFilter: color == null
-              ? null
-              : ColorFilter.mode(
-                  color!,
-                  BlendMode.srcIn,
-                ),
+          colorFilter:
+              color == null ? null : ColorFilter.mode(color!, BlendMode.srcIn),
         );
       case ImageType.offlineImage:
         return Image.asset(
@@ -104,13 +101,14 @@ class AIImage extends StatelessWidget {
       case ImageType.iconData:
         return Icon(
           src as IconData,
-          size: (width != null && height != null)
-              ? max(width!, height!)
-              : (width != null)
+          size:
+              (width != null && height != null)
+                  ? max(width!, height!)
+                  : (width != null)
                   ? width
                   : (height != null)
-                      ? height
-                      : null,
+                  ? height
+                  : null,
           color: color,
         );
       case ImageType.file:
@@ -151,16 +149,15 @@ class AIDefaultImage extends StatelessWidget {
         height: height,
         alignment: Alignment.center,
         color: hasSpinner ? AIColors.transparent : AIColors.placeholdBackground,
-        child: hasSpinner
-            ? Center(
-                child: Loader(),
-              )
-            : AIImage(
-                AIImages.placehold,
-                width: width,
-                height: height,
-                fit: BoxFit.contain,
-              ),
+        child:
+            hasSpinner
+                ? Center(child: Loader())
+                : AIImage(
+                  AIImages.placehold,
+                  width: width,
+                  height: height,
+                  fit: BoxFit.fill,
+                ),
       );
     }
     if (width != null) {
@@ -171,15 +168,14 @@ class AIDefaultImage extends StatelessWidget {
           alignment: Alignment.center,
           color:
               hasSpinner ? AIColors.transparent : AIColors.placeholdBackground,
-          child: hasSpinner
-              ? Center(
-                  child: Loader(),
-                )
-              : AIImage(
-                  AIImages.placehold,
-                  width: width,
-                  fit: BoxFit.contain,
-                ),
+          child:
+              hasSpinner
+                  ? Center(child: Loader())
+                  : AIImage(
+                    AIImages.placehold,
+                    width: width,
+                    fit: BoxFit.contain,
+                  ),
         ),
       );
     }
@@ -188,15 +184,14 @@ class AIDefaultImage extends StatelessWidget {
         height: height,
         alignment: Alignment.center,
         color: hasSpinner ? AIColors.transparent : AIColors.placeholdBackground,
-        child: hasSpinner
-            ? Center(
-                child: Loader(),
-              )
-            : AIImage(
-                AIImages.placehold,
-                height: height,
-                fit: BoxFit.contain,
-              ),
+        child:
+            hasSpinner
+                ? Center(child: Loader())
+                : AIImage(
+                  AIImages.placehold,
+                  height: height,
+                  fit: BoxFit.contain,
+                ),
       );
     }
     return AspectRatio(
@@ -204,15 +199,14 @@ class AIDefaultImage extends StatelessWidget {
       child: Container(
         width: MediaQuery.of(context).size.width,
         color: hasSpinner ? AIColors.transparent : AIColors.placeholdBackground,
-        child: hasSpinner
-            ? Center(
-                child: Loader(),
-              )
-            : AIImage(
-                AIImages.placehold,
-                width: MediaQuery.of(context).size.width,
-                fit: BoxFit.contain,
-              ),
+        child:
+            hasSpinner
+                ? Center(child: Loader())
+                : AIImage(
+                  AIImages.placehold,
+                  width: MediaQuery.of(context).size.width,
+                  fit: BoxFit.contain,
+                ),
       ),
     );
   }
@@ -223,12 +217,7 @@ class Loader extends StatelessWidget {
   final double? strokeWidth;
   final double? size;
 
-  const Loader({
-    super.key,
-    this.color,
-    this.strokeWidth,
-    this.size,
-  });
+  const Loader({super.key, this.color, this.strokeWidth, this.size});
 
   @override
   Widget build(BuildContext context) {
@@ -237,9 +226,7 @@ class Loader extends StatelessWidget {
       height: size,
       alignment: Alignment.center,
       child: CircularProgressIndicator(
-        valueColor: AlwaysStoppedAnimation<Color>(
-          color ?? AIColors.blue,
-        ),
+        valueColor: AlwaysStoppedAnimation<Color>(color ?? AIColors.pink),
         strokeWidth: strokeWidth ?? 4.0,
       ),
     );
