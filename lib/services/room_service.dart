@@ -35,9 +35,14 @@ class RoomService {
       var roomSnapshot =
           await _firestore
               .collection('room')
-              .where('uids', arrayContainsAny: [AuthHelper.user?.uid, uid])
+              .where('uids', isEqualTo: [AuthHelper.user?.uid, uid])
               .get();
-      if (roomSnapshot.docs.isEmpty) return null;
+      var roomSnapshot1 =
+          await _firestore
+              .collection('room')
+              .where('uids', isEqualTo: [uid, AuthHelper.user?.uid])
+              .get();
+      if (roomSnapshot.docs.isEmpty && roomSnapshot1.docs.isEmpty) return null;
       var doc = roomSnapshot.docs.first;
       var json = doc.data();
       json['id'] = doc.id;

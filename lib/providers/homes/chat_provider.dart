@@ -35,7 +35,10 @@ class ChatProvider extends InSoBlokViewModel {
       for (var doc in queryRooms.docs) {
         var json = doc.data();
         json['id'] = doc.id;
-        _rooms.add(RoomModel.fromJson(json));
+        var room = RoomModel.fromJson(json);
+        if (room.uids != null && room.uids!.contains(AuthHelper.user?.uid)) {
+          _rooms.add(room);
+        }
       }
       logger.d(_rooms.length);
       notifyListeners();

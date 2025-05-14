@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/foundation.dart';
 
 import 'package:get_ip_address/get_ip_address.dart';
@@ -86,10 +88,18 @@ class AuthService with ListenableServiceMixin {
         var ipAddress = IpAddress(type: RequestType.json);
         var data = await ipAddress.getIpAddress();
         if (user != null) {
-          user = user.copyWith(
-            walletAddress: EthereumHelper.address?.hex,
-            ipAddress: kDebugMode ? kDefaultIpAddress : data['ip'],
-          );
+          if (user.walletAddress == null) {
+            user = user.copyWith(
+              walletAddress: EthereumHelper.address?.hex,
+              ipAddress: kDebugMode ? kDefaultIpAddress : data['ip'],
+            );
+          } else {
+            user = user.copyWith(
+              // walletAddress: EthereumHelper.address?.hex,
+              ipAddress: kDebugMode ? kDefaultIpAddress : data['ip'],
+            );
+          }
+
           await FirebaseHelper.updateUser(user);
           _userRx.value = user;
         }

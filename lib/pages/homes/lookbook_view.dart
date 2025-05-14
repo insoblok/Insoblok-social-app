@@ -59,14 +59,24 @@ class LookbookView extends StatelessWidget {
                                   child: Stack(
                                     fit: StackFit.expand,
                                     children: [
-                                      AIImage(viewModel.user?.avatar),
+                                      AIAvatarImage(
+                                        viewModel.user?.avatar,
+                                        textSize: 36.0,
+                                        fullname:
+                                            viewModel.user?.nickId ?? 'Test',
+                                      ),
                                       Align(
-                                        alignment: Alignment.center,
-                                        child: Text(
-                                          'Create Story',
-                                          style: TextStyle(
-                                            fontSize: 11.0,
-                                            color: AIColors.white,
+                                        alignment: Alignment.bottomCenter,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                            bottom: 12.0,
+                                          ),
+                                          child: Text(
+                                            'Create Story',
+                                            style: TextStyle(
+                                              fontSize: 11.0,
+                                              color: AIColors.white,
+                                            ),
                                           ),
                                         ),
                                       ),

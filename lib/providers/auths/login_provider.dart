@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import 'package:chewie/chewie.dart';
@@ -35,8 +37,9 @@ class LoginProvider extends InSoBlokViewModel {
 
     FlutterNativeSplash.remove();
 
-    _videoPlayerController =
-        VideoPlayerController.asset('assets/videos/insoblock.mp4');
+    _videoPlayerController = VideoPlayerController.asset(
+      'assets/videos/insoblock.mp4',
+    );
     await _videoPlayerController.initialize();
 
     _chewieController = ChewieController(
@@ -63,7 +66,8 @@ class LoginProvider extends InSoBlokViewModel {
     await runBusyFuture(() async {
       try {
         var service = EthereumHelper.service;
-        await service.connectWithPrivateKey(kMetamaskApiKey);
+        var rng = Random.secure();
+        await service.connectWithRandom(rng);
 
         await AuthHelper.service.signIn();
       } catch (e) {
@@ -78,6 +82,7 @@ class LoginProvider extends InSoBlokViewModel {
       Fluttertoast.showToast(msg: modelError.toString());
     } else {
       if (AuthHelper.user?.firstName != null) {
+        await AuthHelper.setUser(AuthHelper.user!.copyWith(status: 'Online'));
         Routers.goToMainPage(context);
       } else {
         Routers.goToRegisterPage(context);

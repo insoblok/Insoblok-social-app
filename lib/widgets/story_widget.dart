@@ -68,10 +68,7 @@ class StoryListCell extends StatelessWidget {
                             viewModel.owner?.avatar,
                             width: kStoryDetailAvatarSize,
                             height: kStoryDetailAvatarSize,
-                            fullname:
-                                viewModel.owner != null
-                                    ? viewModel.owner!.nickId!
-                                    : 'Test',
+                            fullname: viewModel.owner?.nickId ?? 'Test',
                             textSize: 24,
                           ),
                         ),

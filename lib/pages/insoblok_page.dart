@@ -82,9 +82,7 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
                                       width: kStoryDetailAvatarSize,
                                       height: kStoryDetailAvatarSize,
                                       fullname:
-                                          viewModel.user != null
-                                              ? viewModel.user!.nickId!
-                                              : 'Test',
+                                          viewModel.user?.nickId ?? 'Test',
                                       textSize: 24,
                                     ),
                                   ),

@@ -189,8 +189,7 @@ class AppLeadingView extends StatelessWidget {
             AuthHelper.user?.avatar,
             width: 32.0,
             height: 32.0,
-            fullname:
-                AuthHelper.user != null ? AuthHelper.user!.nickId! : 'Test',
+            fullname: AuthHelper.user?.nickId ?? 'Test',
           ),
         ),
       ),
@@ -227,10 +226,12 @@ class UserRelatedView extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         ClipOval(
-                          child: AIImage(
+                          child: AIAvatarImage(
                             viewModel.owner?.avatar,
                             width: kStoryDetailAvatarSize,
                             height: kStoryDetailAvatarSize,
+                            textSize: 24.0,
+                            fullname: viewModel.owner?.nickId ?? 'Test',
                           ),
                         ),
                       ],

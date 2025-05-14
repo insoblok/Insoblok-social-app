@@ -36,7 +36,13 @@ class AccountPresentHeaderView extends ViewModelWidget<AccountProvider> {
                   border: Border.all(width: 2.0, color: AIColors.pink),
                   borderRadius: BorderRadius.circular(kAccountAvatarSize / 2.0),
                 ),
-                child: ClipOval(child: AIImage(viewModel.accountUser?.avatar)),
+                child: ClipOval(
+                  child: AIAvatarImage(
+                    viewModel.accountUser?.avatar,
+                    fullname: viewModel.accountUser?.nickId ?? 'Test',
+                    textSize: 28.0,
+                  ),
+                ),
               ),
             ),
             CustomCircleBackButton(),

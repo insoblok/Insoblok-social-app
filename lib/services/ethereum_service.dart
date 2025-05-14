@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:http/http.dart';
 import 'package:observable_ish/observable_ish.dart';
 import 'package:stacked/stacked.dart';
@@ -32,6 +34,14 @@ class EthereumService with ListenableServiceMixin {
 
   Future<void> connectWithPrivateKey(String privateKey) async {
     _credentialsRx.value = EthPrivateKey.fromHex(privateKey);
+    _addressRx.value = credentials?.address;
+    logger.d(address);
+
+    notifyListeners();
+  }
+
+  Future<void> connectWithRandom(Random rng) async {
+    _credentialsRx.value = EthPrivateKey.createRandom(rng);
     _addressRx.value = credentials?.address;
     logger.d(address);
 

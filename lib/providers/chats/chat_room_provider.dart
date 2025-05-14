@@ -89,20 +89,21 @@ class CreateRoomProvider extends InSoBlokViewModel {
                         S.current.create_room,
                         style: TextStyle(
                           fontSize: 18.0,
+                          color: AIColors.white,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
                       const Spacer(),
                       IconButton(
                         onPressed: () => Navigator.of(context).pop(),
-                        icon: Icon(Icons.close),
+                        icon: Icon(Icons.close, color: AIColors.white),
                       ),
                     ],
                   ),
                   const SizedBox(height: 24.0),
                   Text(
                     S.current.create_room_confirm,
-                    style: TextStyle(fontSize: 16.0),
+                    style: TextStyle(fontSize: 16.0, color: AIColors.white),
                   ),
                   const SizedBox(height: 24.0),
                   TextFillButton(
@@ -123,11 +124,14 @@ class CreateRoomProvider extends InSoBlokViewModel {
     isCreatingRoom = true;
     await runBusyFuture(() async {
       try {
-        var existedRoom = await roomService.getRoomByChatUesr(uid: user.uid!);
+        var existedRoom = await roomService.getRoomByChatUesr(
+          uid: user.uid ?? '',
+        );
         if (existedRoom != null) {
           Fluttertoast.showToast(msg: 'You already created user\'s chat.');
         } else {
           var room = RoomModel(
+            uid: AuthHelper.user?.uid,
             uids: [AuthHelper.user?.uid, user.uid],
             content:
                 '${AuthHelper.user?.firstName} ${S.current.create_room_message}',
