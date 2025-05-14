@@ -55,7 +55,7 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
           canPop: false,
           child: Scaffold(
             drawer: Drawer(
-              backgroundColor: AIColors.pink,
+              backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               child: Column(
                 children: [
                   SizedBox(height: MediaQuery.of(context).padding.top),
@@ -77,28 +77,27 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
                                 InkWell(
                                   onTap: viewModel.onClickMenuAvatar,
                                   child: ClipOval(
-                                    child: AIImage(
+                                    child: AIAvatarImage(
                                       viewModel.user?.avatar,
                                       width: kStoryDetailAvatarSize,
                                       height: kStoryDetailAvatarSize,
+                                      fullname:
+                                          viewModel.user != null
+                                              ? viewModel.user!.nickId!
+                                              : 'Test',
+                                      textSize: 24,
                                     ),
                                   ),
                                 ),
                                 const SizedBox(height: 8.0),
                                 Text(
                                   viewModel.user?.fullName ?? '---',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    color: AIColors.white,
-                                  ),
+                                  style:
+                                      Theme.of(context).textTheme.displayLarge,
                                 ),
                                 Text(
                                   '@${viewModel.user?.nickId}',
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    fontWeight: FontWeight.normal,
-                                    color: AIColors.white,
-                                  ),
+                                  style: Theme.of(context).textTheme.labelLarge,
                                 ),
                               ],
                             ),
@@ -106,7 +105,7 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
                               onTap: viewModel.onClickMenuMore,
                               child: AIImage(
                                 AIImages.icSetting,
-                                color: AIColors.white,
+                                color: Theme.of(context).primaryColor,
                               ),
                             ),
                           ],
@@ -119,36 +118,20 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
                                 text:
                                     (AuthHelper.user?.likes?.length ?? 0)
                                         .socialValue,
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.normal,
-                                  color: AIColors.white,
-                                ),
+                                style: Theme.of(context).textTheme.bodySmall,
                               ),
                               TextSpan(
                                 text: ' Likes  ',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.normal,
-                                  color: AIColors.white,
-                                ),
+                                style: Theme.of(context).textTheme.labelMedium,
                               ),
                               TextSpan(
                                 text:
                                     '  ${(AuthHelper.user?.follows?.length ?? 0).socialValue}',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.normal,
-                                  color: AIColors.white,
-                                ),
+                                style: Theme.of(context).textTheme.bodySmall,
                               ),
                               TextSpan(
                                 text: ' Followers',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.normal,
-                                  color: AIColors.white,
-                                ),
+                                style: Theme.of(context).textTheme.labelMedium,
                               ),
                             ],
                           ),
@@ -165,16 +148,12 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
                           AIImage(
                             menuIcons[i],
                             width: 20.0,
-                            color: AIColors.white,
+                            color: Theme.of(context).primaryColor,
                           ),
                           const SizedBox(width: 20.0),
                           Text(
                             menuTitles[i],
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.normal,
-                              color: AIColors.white,
-                            ),
+                            style: Theme.of(context).textTheme.displayMedium,
                           ),
                         ],
                       ),
@@ -185,22 +164,14 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
                     onTap: () => viewModel.onClickMenuItem(5),
                     child: Text(
                       'Privacy and Policy',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.normal,
-                        color: AIColors.white,
-                      ),
+                      style: Theme.of(context).textTheme.displayMedium,
                     ),
                   ),
                   MenuButtonCover(
                     onTap: () => viewModel.onClickMenuItem(6),
                     child: Text(
                       'Help Center',
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.normal,
-                        color: AIColors.white,
-                      ),
+                      style: Theme.of(context).textTheme.displayMedium,
                     ),
                   ),
                   const Spacer(),
@@ -212,14 +183,14 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
                           onTap: () => viewModel.onClickMenuItem(7),
                           child: AIImage(
                             AIImages.icMenuUnion,
-                            color: AIColors.white,
+                            color: Theme.of(context).primaryColor,
                           ),
                         ),
                         InkWell(
                           onTap: () => viewModel.onClickMenuItem(8),
                           child: AIImage(
                             AIImages.icMenuQrCode,
-                            color: AIColors.white,
+                            color: Theme.of(context).primaryColor,
                           ),
                         ),
                       ],

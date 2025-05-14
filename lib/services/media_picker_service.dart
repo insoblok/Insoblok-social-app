@@ -53,7 +53,7 @@ class MediaPickerService {
         return SafeArea(
           child: Container(
             width: double.infinity,
-            color: AIColors.lightBackground,
+            color: AIColors.darkScaffoldBackground,
             padding: const EdgeInsets.symmetric(
               horizontal: 18.0,
               vertical: 24.0,

@@ -185,7 +185,13 @@ class AppLeadingView extends StatelessWidget {
       child: InkWell(
         onTap: () => Scaffold.of(context).openDrawer(),
         child: ClipOval(
-          child: AIImage(AuthHelper.user?.avatar, width: 32.0, height: 32.0),
+          child: AIAvatarImage(
+            AuthHelper.user?.avatar,
+            width: 32.0,
+            height: 32.0,
+            fullname:
+                AuthHelper.user != null ? AuthHelper.user!.nickId! : 'Test',
+          ),
         ),
       ),
     );

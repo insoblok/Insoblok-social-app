@@ -202,7 +202,7 @@ class MessageProvider extends InSoBlokViewModel {
         await EthereumHelper.sendTransaction(
           to: chatUser.walletAddress!,
           amount: coin.amount!,
-          gasPrice: EtherAmount.fromInt(EtherUnit.szabo, 1),
+          gasPrice: EtherAmount.fromInt(EtherUnit.szabo, 21000),
           gasLimit: 1,
         );
       } catch (e) {

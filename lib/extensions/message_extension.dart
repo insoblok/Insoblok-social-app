@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:chewie/chewie.dart';
 import 'package:insoblok/extensions/user_extension.dart';
+import 'package:insoblok/widgets/message_clipper.dart';
 import 'package:video_player/video_player.dart';
 
 import 'package:insoblok/models/models.dart';
@@ -17,7 +18,7 @@ extension MessageModelExt on MessageModel {
     var type = MessageModelTypeExt.fromString(this.type ?? 'text');
     switch (type) {
       case MessageModelType.text:
-        result = _textContent();
+        result = _textContent(context);
       case MessageModelType.image:
         result = _imageContent();
       case MessageModelType.video:
@@ -29,72 +30,124 @@ extension MessageModelExt on MessageModel {
     }
 
     return Align(
-      alignment: Alignment.centerLeft,
+      alignment: isMe ? Alignment.centerRight : Alignment.centerLeft,
       child: Row(
         mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.end,
         children: [
-          isMe
-              ? AuthHelper.user!.avatarStatusView(
-                width: 32,
-                height: 32,
-                borderWidth: 2.0,
-                textSize: 14.0,
-                statusSize: 10.0,
-              )
-              : chatUser.avatarStatusView(
-                width: 32,
-                height: 32,
-                borderWidth: 2.0,
-                textSize: 14.0,
-                statusSize: 10.0,
-              ),
-          Container(
-            constraints: BoxConstraints(
-              maxWidth: MediaQuery.of(context).size.width - 120.0,
-            ),
-            padding: EdgeInsets.only(left: 12.0, right: 8.0, bottom: 8.0),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
+          if (!isMe) ...{
+            Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
+                chatUser.avatarStatusView(
+                  width: 32,
+                  height: 32,
+                  borderWidth: 2.0,
+                  textSize: 14.0,
+                  statusSize: 10.0,
+                ),
+                Container(
+                  constraints: BoxConstraints(
+                    maxWidth: MediaQuery.of(context).size.width - 120.0,
+                  ),
+                  padding: EdgeInsets.only(left: 12.0, right: 8.0, bottom: 8.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            isMe
+                                ? AuthHelper.user?.fullName ?? 'test'
+                                : chatUser.fullName,
+                            style: Theme.of(context).textTheme.headlineSmall,
+                          ),
+                          SizedBox(width: 8),
+                          Text(
+                            messageTime,
+                            style: TextStyle(
+                              fontSize: 9,
+                              color: AIColors.greyTextColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                      result,
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          },
+          // if (!isMe) ...{
+          //   chatUser.avatarStatusView(
+          //     width: 32,
+          //     height: 32,
+          //     borderWidth: 2.0,
+          //     textSize: 14.0,
+          //     statusSize: 10.0,
+          //   ),
+          // },
+          if (isMe)
+            ClipPath(
+              clipper: isMe ? MessageMeClipper() : MessageChatClipper(),
+              child: Container(
+                constraints: BoxConstraints(
+                  maxWidth: MediaQuery.of(context).size.width - 120.0,
+                ),
+                padding: EdgeInsets.only(
+                  left: isMe ? 8.0 : 20.0,
+                  right: isMe ? 20.0 : 8.0,
+                  top: 8.0,
+                  bottom: 8.0,
+                ),
+                decoration: BoxDecoration(
+                  color: AIColors.blue.withAlpha(196),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    Text(
-                      isMe
-                          ? AuthHelper.user?.fullName ?? 'test'
-                          : chatUser.fullName,
-                      style: TextStyle(fontSize: 12.0, color: Colors.black),
-                    ),
-                    SizedBox(width: 8),
+                    result,
+                    SizedBox(height: 4),
                     Text(
                       messageTime,
-                      style: TextStyle(
-                        fontSize: 9,
-                        color: AIColors.greyTextColor,
-                      ),
+                      style: TextStyle(fontSize: 9, color: Colors.white70),
                     ),
                   ],
                 ),
-                result,
-              ],
+              ),
             ),
-          ),
+          if (isMe) ...{
+            AuthHelper.user!.avatarStatusView(
+              width: 32,
+              height: 32,
+              borderWidth: 2.0,
+              textSize: 14.0,
+              statusSize: 10.0,
+            ),
+          },
         ],
       ),
     );
   }
 
-  Widget _textContent() {
+  Widget _textContent(BuildContext context) {
+    final isMe = senderId == AuthHelper.user?.uid;
     return Text(
       '$content',
-      style: TextStyle(
-        fontSize: 14.0,
-        color: Colors.black,
-        fontWeight: FontWeight.normal,
-      ),
+      style:
+          isMe
+              ? TextStyle(
+                fontSize: 14.0,
+                fontWeight: FontWeight.normal,
+                color: AIColors.white,
+              )
+              : Theme.of(context).textTheme.bodyMedium,
     );
   }
 

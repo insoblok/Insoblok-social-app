@@ -36,18 +36,6 @@ class MessageService {
     return _firestore.collection('user').snapshots();
   }
 
-  UserModel? getUserStatus(String userid) {
-    UserModel? chatUser;
-    FirebaseHelper.getUserStream(userid).listen((doc) {
-      var json = doc.data();
-      if (json != null) {
-        json['id'] = doc.id;
-        chatUser = UserModel.fromJson(json);
-      }
-    });
-    return chatUser;
-  }
-
   // Send a text message
   Future<void> sendMessage({
     required String chatRoomId,

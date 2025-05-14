@@ -80,13 +80,13 @@ class AppSettingService with ListenableServiceMixin {
         letterSpacing: -0.1,
       ),
       bodyMedium: TextStyle(
-        fontSize: 16.0,
+        fontSize: 14.0,
         color: AIColors.lightTextColor,
-        fontWeight: FontWeight.w700,
+        fontWeight: FontWeight.w500,
         letterSpacing: -0.3,
       ),
       bodySmall: TextStyle(
-        fontSize: 14.0,
+        fontSize: 12.0,
         color: AIColors.lightTextColor,
         fontWeight: FontWeight.w500,
         letterSpacing: -0.3,
@@ -211,13 +211,13 @@ class AppSettingService with ListenableServiceMixin {
         letterSpacing: -0.1,
       ),
       bodyMedium: TextStyle(
-        fontSize: 16.0,
+        fontSize: 14.0,
         color: AIColors.darkTextColor,
-        fontWeight: FontWeight.w700,
+        fontWeight: FontWeight.w500,
         letterSpacing: -0.3,
       ),
       bodySmall: TextStyle(
-        fontSize: 16.0,
+        fontSize: 12.0,
         color: AIColors.darkTextColor,
         fontWeight: FontWeight.w500,
         letterSpacing: -0.3,

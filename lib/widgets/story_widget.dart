@@ -64,10 +64,15 @@ class StoryListCell extends StatelessWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: [
                         ClipOval(
-                          child: AIImage(
+                          child: AIAvatarImage(
                             viewModel.owner?.avatar,
                             width: kStoryDetailAvatarSize,
                             height: kStoryDetailAvatarSize,
+                            fullname:
+                                viewModel.owner != null
+                                    ? viewModel.owner!.nickId!
+                                    : 'Test',
+                            textSize: 24,
                           ),
                         ),
                       ],

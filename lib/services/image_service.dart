@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:insoblok/extensions/user_extension.dart';
 
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
@@ -230,6 +231,78 @@ class Loader extends StatelessWidget {
         strokeWidth: strokeWidth ?? 4.0,
       ),
     );
+  }
+}
+
+class AIAvatarImage extends StatelessWidget {
+  final dynamic avatar;
+  final String fullname;
+  final double? width;
+  final double? height;
+  final BoxFit? fit;
+  final Color? color;
+  final double? textSize;
+  final bool noCache;
+  final Color? backgroundColor;
+  final bool noTransitions;
+  final bool hasSpinner;
+
+  const AIAvatarImage(
+    this.avatar, {
+    super.key,
+    this.width,
+    this.height,
+    this.fit,
+    this.color,
+    this.noCache = false,
+    this.backgroundColor,
+    this.noTransitions = false,
+    this.hasSpinner = false,
+    required this.fullname,
+    this.textSize,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return ImageType.getImageType(avatar) == ImageType.onlineLink
+        ? CachedNetworkImage(
+          imageUrl: avatar as String,
+          width: width,
+          height: height,
+          fit: fit ?? BoxFit.cover,
+          fadeInDuration: Duration(milliseconds: noTransitions ? 0 : 500),
+          errorWidget: (context, e, _) {
+            return AIDefaultImage(
+              width: width,
+              height: height,
+              hasSpinner: hasSpinner,
+            );
+          },
+          placeholder:
+              (ctx, _) => AIDefaultImage(
+                width: width,
+                height: height,
+                hasSpinner: hasSpinner,
+              ),
+        )
+        : Container(
+          width: width,
+          height: height,
+          color:
+              fullname.length > kAvatarColors.length
+                  ? AIColors.pink
+                  : kAvatarColors[fullname.length - 1],
+          child: Align(
+            alignment: Alignment.center,
+            child: Text(
+              fullname[0].toUpperCase(),
+              style: TextStyle(
+                fontSize: textSize ?? 14.0,
+                color: AIColors.white,
+              ),
+            ),
+          ),
+        );
   }
 }
 
