@@ -10,7 +10,7 @@ class AIColors {
   static Color darkTransparentBackground = Colors.black54;
 
   static Color lightScaffoldBackground = Color(0xff1c2836);
-  static Color lightTransparentBackground = Colors.white38;
+  static Color lightTransparentBackground = Colors.white;
 
   static Color transparent = Colors.transparent;
   static Color placeholdBackground = Color(0xEFEFEFFF);
@@ -21,7 +21,7 @@ class AIColors {
   static Color yellow = const Color.fromARGB(255, 214, 195, 18);
 
   static Color darkBackground = Color(0xFF1F1F1F);
-  static Color lightBackground = Color(0xFFFFFFFF);
+  static Color lightBackground = Color(0xEFEFEFFF);
 
   static Color greyTextColor = Color(0xFF687684);
 

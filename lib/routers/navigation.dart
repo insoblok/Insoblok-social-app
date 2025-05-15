@@ -20,6 +20,7 @@ const kRouterAccountPost = '/account-post';
 const kRouterAccountTopic = '/account-topic';
 const kRouterAccountBookmark = '/account-bookmark';
 const kRouterAccountMoment = '/account-moment';
+const kRouterAccountWallet = '/account-Wallet';
 
 const kRouterCreateRoom = '/create-room';
 const kRouterMessage = '/message';
@@ -102,6 +103,9 @@ class Navigation {
 
     // * AccountMomentPage
     initRoute(kRouterAccountMoment, (props) => MomentPage());
+
+    // * AccountWalletPage
+    initRoute(kRouterAccountWallet, (props) => AccountWalletPage());
 
     // * CreateRoomPage
     initRoute(kRouterCreateRoom, (props) => CreateRoomPage());

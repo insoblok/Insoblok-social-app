@@ -8,3 +8,4 @@ export 'privacy_page.dart';
 export 'update_profile_page.dart';
 export 'account_public_page.dart';
 export 'account_private_page.dart';
+export 'account_wallet_page.dart';

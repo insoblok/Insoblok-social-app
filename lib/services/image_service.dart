@@ -157,7 +157,7 @@ class AIDefaultImage extends StatelessWidget {
                   AIImages.placehold,
                   width: width,
                   height: height,
-                  fit: BoxFit.fill,
+                  fit: BoxFit.contain,
                 ),
       );
     }

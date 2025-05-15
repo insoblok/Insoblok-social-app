@@ -12,5 +12,6 @@
         <domain includeSubdomains="true">cdn.janusproai.org</domain>
         <domain includeSubdomains="true">bridge.walletconnect.org</domain>
         <domain includeSubdomains="true">insoblokai.firebaseapp.com</domain>
+        <domain includeSubdomains="true">cryptologos.cc</domain>
     </domain-config>
 </network-security-config>

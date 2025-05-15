@@ -65,6 +65,10 @@ class Routers {
     return _pushToRoute(context, kRouterAccountMoment, null);
   }
 
+  static goToAccountWalletPage(BuildContext context) {
+    return _pushToRoute(context, kRouterAccountWallet, null);
+  }
+
   static goToCreateRoomPage(BuildContext context) {
     return _pushToRoute(context, kRouterCreateRoom, null);
   }

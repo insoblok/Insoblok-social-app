@@ -120,10 +120,11 @@ extension UserModelExt on UserModel {
     );
   }
 
-  List<Map<String, String>> get linkInfo => [
+  List<Map<String, dynamic>> get linkInfo => [
     if (website != null)
       {'type': 'website', 'title': website!, 'icon': AIImages.icLink},
     {'type': 'since', 'title': 'Joined $sinceStr', 'icon': AIImages.icCalendar},
     {'type': 'location', 'title': 'United State', 'icon': AIImages.icLocation},
+    {'type': 'wallet', 'title': 'My Wallet', 'icon': Icons.wallet},
   ];
 }

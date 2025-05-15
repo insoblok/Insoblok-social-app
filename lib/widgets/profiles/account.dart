@@ -114,21 +114,23 @@ class AccountFloatingView extends ViewModelWidget<AccountProvider> {
             runSpacing: 4.0,
             children:
                 (viewModel.accountUser?.linkInfo ?? []).map((info) {
-                  return Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      AIImage(
-                        info['icon'],
-                        width: 18.0,
-                        height: 18.0,
-                        color: AIColors.greyTextColor,
-                      ),
-                      const SizedBox(width: 4.0),
-                      Text(
-                        info['title']!,
-                        style: Theme.of(context).textTheme.labelMedium,
-                      ),
-                    ],
+                  return InkWell(
+                    onTap: () => viewModel.onClickInfo(0),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        AIImage(
+                          info['icon'],
+                          height: 18.0,
+                          color: AIColors.greyTextColor,
+                        ),
+                        const SizedBox(width: 4.0),
+                        Text(
+                          info['title']!,
+                          style: Theme.of(context).textTheme.labelMedium,
+                        ),
+                      ],
+                    ),
                   );
                 }).toList(),
           ),
@@ -414,6 +416,50 @@ class AccountPrivateInfoCover extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class AccountWalletIconCover extends StatelessWidget {
+  final Widget child;
+  final void Function()? onTap;
+
+  const AccountWalletIconCover({super.key, required this.child, this.onTap});
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        width: 40.0,
+        height: 40.0,
+        padding: const EdgeInsets.all(10.0),
+        decoration: BoxDecoration(
+          color: AppSettingHelper.greyBackground,
+          borderRadius: BorderRadius.circular(8.0),
+        ),
+        child: child,
+      ),
+    );
+  }
+}
+
+class AccountWalletTokenCover extends StatelessWidget {
+  final Widget child;
+
+  const AccountWalletTokenCover({super.key, required this.child});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 160.0,
+      height: 80.0,
+      padding: const EdgeInsets.all(10.0),
+      decoration: BoxDecoration(
+        color: Theme.of(context).primaryColor,
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      child: child,
     );
   }
 }

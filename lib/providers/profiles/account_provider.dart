@@ -122,4 +122,8 @@ class AccountProvider extends InSoBlokViewModel {
       }
     }
   }
+
+  Future<void> onClickInfo(int index) async {
+    Routers.goToAccountWalletPage(context);
+  }
 }
