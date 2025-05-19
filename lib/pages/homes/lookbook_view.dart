@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 
 import 'package:stacked/stacked.dart';
 
@@ -29,7 +30,7 @@ class LookbookView extends StatelessWidget {
                   pinned: true,
                   actions: [
                     IconButton(
-                      onPressed: () {},
+                      onPressed: viewModel.onClickSettingButton,
                       icon: AIImage(
                         AIImages.icSetting,
                         width: 24.0,
@@ -39,6 +40,21 @@ class LookbookView extends StatelessWidget {
                     ),
                   ],
                 ),
+                if (viewModel.isBusy) ...{
+                  SliverFillRemaining(
+                    child: Center(
+                      child: SizedBox(
+                        width: 60,
+                        height: 60,
+                        child: LoadingIndicator(
+                          indicatorType: Indicator.ballSpinFadeLoader,
+                          colors: [Theme.of(context).primaryColor],
+                          strokeWidth: 2,
+                        ),
+                      ),
+                    ),
+                  ),
+                },
                 SliverList(
                   delegate: SliverChildListDelegate([
                     Padding(
@@ -161,6 +177,21 @@ class LookbookView extends StatelessWidget {
                 src: AIImages.icAddLogo,
               ),
             ),
+            // if (viewModel.isBusy) ...{
+            //   SafeArea(
+            //     child: Center(
+            //       child: SizedBox(
+            //         width: 60,
+            //         height: 60,
+            //         child: LoadingIndicator(
+            //           indicatorType: Indicator.ballSpinFadeLoader,
+            //           colors: [AIColors.pink],
+            //           strokeWidth: 2,
+            //         ),
+            //       ),
+            //     ),
+            //   ),
+            // },
           ],
         );
       },
