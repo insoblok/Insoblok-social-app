@@ -21,7 +21,9 @@ class RoomService {
         var json = doc.data();
         json['id'] = doc.id;
         var room = RoomModel.fromJson(json);
-        result.add(room);
+        if (room.uids != null && room.uids!.contains(AuthHelper.user?.uid)) {
+          result.add(room);
+        }
       } on FirebaseException catch (e) {
         logger.e(e.message);
       }

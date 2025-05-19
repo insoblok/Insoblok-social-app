@@ -61,6 +61,9 @@ class DashboardView extends StatelessWidget {
                 ),
               ),
             ),
+            if (viewModel.isBusy) ...{
+              SliverFillRemaining(child: Center(child: Loader())),
+            },
             if (viewModel.showns.isEmpty) ...{
               SliverFillRemaining(
                 child: Center(

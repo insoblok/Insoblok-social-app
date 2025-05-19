@@ -65,6 +65,7 @@ class StoryListCell extends StatelessWidget {
                       children: [
                         ClipOval(
                           child: AIAvatarImage(
+                            // key: GlobalKey(debugLabel: 'story-${story.uid}'),
                             viewModel.owner?.avatar,
                             width: kStoryDetailAvatarSize,
                             height: kStoryDetailAvatarSize,

@@ -15,7 +15,10 @@ class MediaPickerService {
     _picker = ImagePicker();
   }
 
-  Future<XFile?> onPickerSingleMedia({required bool isImage}) async {
+  Future<XFile?> onPickerSingleMedia({
+    required bool isImage,
+    Duration? maxDuration,
+  }) async {
     var mediaSource = await _showMediaSource();
     if (mediaSource != null) {
       var isAllowed = false;
@@ -29,7 +32,10 @@ class MediaPickerService {
         if (isImage) {
           media = await _picker.pickImage(source: mediaSource);
         } else {
-          media = await _picker.pickVideo(source: mediaSource);
+          media = await _picker.pickVideo(
+            source: mediaSource,
+            maxDuration: maxDuration,
+          );
         }
 
         if (media != null) {
