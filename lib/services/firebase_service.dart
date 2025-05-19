@@ -123,6 +123,7 @@ class FirebaseService {
               .collection('user')
               .queryBy(UserQuery.uid, value: uid)
               .get();
+      if (doc.docs.isEmpty) return null;
       return getUserFromDoc(doc.docs.first);
     } on FirebaseAuthException catch (e) {
       logger.e(e.message);

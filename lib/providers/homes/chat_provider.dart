@@ -28,17 +28,27 @@ class ChatProvider extends InSoBlokViewModel {
   Future<void> init(BuildContext context) async {
     this.context = context;
 
-    balance = await EthereumHelper.getBalance();
+    await runBusyFuture(() async {
+      _rooms.clear();
+      _rooms.addAll(await roomService.getRooms());
+    }());
 
     roomService.getRoomsStream().listen((queryRooms) {
-      _rooms.clear();
       for (var doc in queryRooms.docs) {
         var json = doc.data();
         json['id'] = doc.id;
-        _rooms.add(RoomModel.fromJson(json));
+        var room = RoomModel.fromJson(json);
+        if (rooms.map((r) => r.id).toList().contains(room.id)) {
+          continue;
+        }
+        if (room.uids != null && room.uids!.contains(AuthHelper.user?.uid)) {
+          _rooms.add(room);
+        }
       }
       logger.d(_rooms.length);
       notifyListeners();
     });
+
+    balance = await EthereumHelper.getBalance();
   }
 }

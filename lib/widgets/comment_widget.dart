@@ -77,10 +77,11 @@ class StoryDetailCommentCell extends StatelessWidget {
             InkWell(
               onTap: viewModel.onTapUserAvatar,
               child: ClipOval(
-                child: AIImage(
+                child: AIAvatarImage(
                   user?.avatar,
                   width: kStoryDetailAvatarSize,
                   height: kStoryDetailAvatarSize,
+                  fullname: user?.nickId ?? 'Test',
                 ),
               ),
             ),

@@ -10,7 +10,7 @@ class AIColors {
   static Color darkTransparentBackground = Colors.black54;
 
   static Color lightScaffoldBackground = Color(0xff1c2836);
-  static Color lightTransparentBackground = Colors.white38;
+  static Color lightTransparentBackground = Colors.white;
 
   static Color transparent = Colors.transparent;
   static Color placeholdBackground = Color(0xEFEFEFFF);
@@ -21,7 +21,7 @@ class AIColors {
   static Color yellow = const Color.fromARGB(255, 214, 195, 18);
 
   static Color darkBackground = Color(0xFF1F1F1F);
-  static Color lightBackground = Color(0xFFFFFFFF);
+  static Color lightBackground = Color(0xEFEFEFFF);
 
   static Color greyTextColor = Color(0xFF687684);
 
@@ -38,8 +38,9 @@ class AIColors {
   static Color white = Color(0xFFFFFFFF);
   static Color black = Color(0xFF141619);
   static Color grey = Color(0xFF687684);
-  static Color blue = Color(0xFF4C9EEB);
-  static Color pink = Color(0xFF4C6EEB);
+  static Color lightGrey = Color.fromARGB(255, 152, 164, 175);
+  static Color blue = Color.fromARGB(255, 0, 0, 255);
+  static Color pink = Color(0xFFEC226C);
   static Color purple = Color(0xFF724DBD);
   static Color red = Color(0xFFCE395F);
   static Color green = Color(0xFF59BC6C);

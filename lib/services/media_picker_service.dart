@@ -15,7 +15,10 @@ class MediaPickerService {
     _picker = ImagePicker();
   }
 
-  Future<XFile?> onPickerSingleMedia({required bool isImage}) async {
+  Future<XFile?> onPickerSingleMedia({
+    required bool isImage,
+    Duration? maxDuration,
+  }) async {
     var mediaSource = await _showMediaSource();
     if (mediaSource != null) {
       var isAllowed = false;
@@ -29,7 +32,10 @@ class MediaPickerService {
         if (isImage) {
           media = await _picker.pickImage(source: mediaSource);
         } else {
-          media = await _picker.pickVideo(source: mediaSource);
+          media = await _picker.pickVideo(
+            source: mediaSource,
+            maxDuration: maxDuration,
+          );
         }
 
         if (media != null) {
@@ -66,14 +72,14 @@ class MediaPickerService {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      AIImage(Icons.air, color: AIColors.blue),
+                      AIImage(Icons.air, color: AIColors.pink),
                       const SizedBox(width: 12.0),
                       Text(
                         'From Gallery',
                         style: TextStyle(
                           fontSize: 16.0,
                           fontWeight: FontWeight.bold,
-                          color: AIColors.blue,
+                          color: AIColors.pink,
                         ),
                       ),
                     ],
@@ -85,14 +91,14 @@ class MediaPickerService {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      AIImage(Icons.camera, color: AIColors.blue),
+                      AIImage(Icons.camera, color: AIColors.pink),
                       const SizedBox(width: 12.0),
                       Text(
                         'From Camera',
                         style: TextStyle(
                           fontSize: 16.0,
                           fontWeight: FontWeight.bold,
-                          color: AIColors.blue,
+                          color: AIColors.pink,
                         ),
                       ),
                     ],

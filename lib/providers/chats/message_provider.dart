@@ -77,10 +77,23 @@ class MessageProvider extends InSoBlokViewModel {
 
     messageService.getMessages(room.id!).listen((messages) {
       this.messages = messages;
+      Future.delayed(const Duration(milliseconds: 200), () {
+        scrollController.jumpTo(scrollController.position.maxScrollExtent);
+      });
     });
 
-    Future.delayed(const Duration(milliseconds: 200), () {
-      scrollController.jumpTo(scrollController.position.maxScrollExtent);
+    messageService.getUsersStream().listen((queryRooms) {
+      var userList = [];
+      for (var doc in queryRooms.docs) {
+        var json = doc.data();
+        json['id'] = doc.id;
+        userList.add(UserModel.fromJson(json));
+      }
+      logger.d(userList.length);
+      for (UserModel user in userList) {
+        if (user.uid == data.chatUser.uid) chatUser = user;
+      }
+      notifyListeners();
     });
 
     scrollController.addListener(() {
@@ -102,7 +115,7 @@ class MessageProvider extends InSoBlokViewModel {
     if (content?.isNotEmpty ?? false) {
       try {
         await messageService.sendMessage(chatRoomId: room.id!, text: content!);
-        // scrollToBottom();
+        scrollController.jumpTo(scrollController.position.maxScrollExtent);
         textController.text = '';
       } catch (e) {
         ScaffoldMessenger.of(
@@ -141,6 +154,7 @@ class MessageProvider extends InSoBlokViewModel {
             chatRoomId: room.id!,
             imageUrl: imageUrl,
           );
+          scrollController.jumpTo(scrollController.position.maxScrollExtent);
         }
       }
     }
@@ -166,6 +180,7 @@ class MessageProvider extends InSoBlokViewModel {
             chatRoomId: room.id!,
             videoUrl: videoUrl,
           );
+          scrollController.jumpTo(scrollController.position.maxScrollExtent);
         }
       }
     }
@@ -187,7 +202,7 @@ class MessageProvider extends InSoBlokViewModel {
         await EthereumHelper.sendTransaction(
           to: chatUser.walletAddress!,
           amount: coin.amount!,
-          gasPrice: EtherAmount.fromInt(EtherUnit.szabo, 1),
+          gasPrice: EtherAmount.fromInt(EtherUnit.szabo, 21000),
           gasLimit: 1,
         );
       } catch (e) {
@@ -201,6 +216,7 @@ class MessageProvider extends InSoBlokViewModel {
         Fluttertoast.showToast(msg: modelError.toString());
       } else {
         await messageService.sendPaidMessage(chatRoomId: room.id!, coin: coin);
+        scrollController.jumpTo(scrollController.position.maxScrollExtent);
       }
     }
   }

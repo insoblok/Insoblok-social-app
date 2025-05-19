@@ -42,20 +42,27 @@ class LookbookProvider extends InSoBlokViewModel {
     clearErrors();
 
     _stories.clear();
-    try {
-      var ss = await storyService.getStories();
-      logger.d(ss.length);
-      _stories.addAll(ss);
-      isUpdated = false;
-    } catch (e) {
-      setError(e);
-      logger.e(e);
-    } finally {
-      notifyListeners();
-    }
+    await runBusyFuture(() async {
+      try {
+        var ss = await storyService.getStories();
+        logger.d(ss.length);
+        _stories.addAll(ss);
+        isUpdated = false;
+      } catch (e) {
+        setError(e);
+        logger.e(e);
+      } finally {
+        notifyListeners();
+      }
+    }());
 
     if (hasError) {
       Fluttertoast.showToast(msg: modelError.toString());
     }
+  }
+
+  Future<void> onClickSettingButton() async {
+    if (isBusy) return;
+    clearErrors();
   }
 }

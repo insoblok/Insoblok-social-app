@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:insoblok/extensions/extensions.dart';
 
 import 'package:stacked/stacked.dart';
 
 import 'package:insoblok/providers/providers.dart';
-import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
 
@@ -44,10 +44,10 @@ class CreateRoomPage extends StatelessWidget {
                         width: 44.0,
                         height: 44.0,
                         decoration: BoxDecoration(
-                          color: AIColors.blue,
+                          color: Theme.of(context).primaryColor,
                           shape: BoxShape.circle,
                         ),
-                        child: Icon(Icons.search),
+                        child: Icon(Icons.search, color: AIColors.white),
                       ),
                     ),
                   ],
@@ -63,12 +63,11 @@ class CreateRoomPage extends StatelessWidget {
                       ),
                       child: Row(
                         children: [
-                          ClipOval(
-                            child: AIImage(
-                              user.avatar,
-                              width: 60.0,
-                              height: 60.0,
-                            ),
+                          user.avatarStatusView(
+                            width: kAvatarSize,
+                            height: kAvatarSize,
+                            borderWidth: 2.0,
+                            textSize: 18.0,
                           ),
                           const SizedBox(width: 12.0),
                           Expanded(
@@ -79,14 +78,15 @@ class CreateRoomPage extends StatelessWidget {
                                 Text(
                                   '${user.lastName} ${user.firstName}',
                                   style: TextStyle(
-                                    fontSize: 16.0,
+                                    fontSize: 14.0,
                                     fontWeight: FontWeight.w500,
                                   ),
                                 ),
                                 Text(
                                   '${user.regdate}',
                                   style: TextStyle(
-                                    fontSize: 13.0,
+                                    fontSize: 12.0,
+                                    color: AIColors.grey,
                                     fontWeight: FontWeight.w300,
                                   ),
                                 ),
@@ -94,7 +94,10 @@ class CreateRoomPage extends StatelessWidget {
                             ),
                           ),
                           const SizedBox(width: 8.0),
-                          Icon(Icons.check_circle),
+                          Icon(
+                            Icons.check_circle,
+                            color: Theme.of(context).primaryColor,
+                          ),
                         ],
                       ),
                     ),

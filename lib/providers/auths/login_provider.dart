@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import 'package:chewie/chewie.dart';
@@ -35,8 +37,11 @@ class LoginProvider extends InSoBlokViewModel {
 
     FlutterNativeSplash.remove();
 
-    _videoPlayerController =
-        VideoPlayerController.asset('assets/videos/insoblock.mp4');
+    _reownService = ReownService(context);
+
+    _videoPlayerController = VideoPlayerController.asset(
+      'assets/videos/insoblock.mp4',
+    );
     await _videoPlayerController.initialize();
 
     _chewieController = ChewieController(
@@ -56,16 +61,23 @@ class LoginProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  // final _walletService = WalletService();
+
+  late ReownService _reownService;
+  ReownService get reownService => _reownService;
+
   Future<void> login() async {
     if (isBusy) return;
     clearErrors();
 
     await runBusyFuture(() async {
       try {
-        var service = EthereumHelper.service;
-        await service.connectWithPrivateKey(kMetamaskApiKey);
+        // var service = EthereumHelper.service;
+        // var rng = Random.secure();
+        // await service.connectWithRandom(rng);
 
-        await AuthHelper.service.signIn();
+        // await AuthHelper.service.signIn();
+        // await _walletService.connectWithWalletConnect();
       } catch (e) {
         setError(e);
         logger.e(e);
@@ -77,11 +89,12 @@ class LoginProvider extends InSoBlokViewModel {
     if (hasError) {
       Fluttertoast.showToast(msg: modelError.toString());
     } else {
-      if (AuthHelper.user?.firstName != null) {
-        Routers.goToMainPage(context);
-      } else {
-        Routers.goToRegisterPage(context);
-      }
+      // if (AuthHelper.user?.firstName != null) {
+      //   await AuthHelper.setUser(AuthHelper.user!.copyWith(status: 'Online'));
+      //   Routers.goToMainPage(context);
+      // } else {
+      //   Routers.goToRegisterPage(context);
+      // }
     }
   }
 }

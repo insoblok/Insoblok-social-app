@@ -3,12 +3,13 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 
 import 'package:chewie/chewie.dart';
+import 'package:insoblok/extensions/user_extension.dart';
+import 'package:insoblok/widgets/message_clipper.dart';
 import 'package:video_player/video_player.dart';
 
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
-import 'package:insoblok/widgets/widgets.dart';
 
 extension MessageModelExt on MessageModel {
   Widget item(BuildContext context, {required UserModel chatUser}) {
@@ -17,7 +18,7 @@ extension MessageModelExt on MessageModel {
     var type = MessageModelTypeExt.fromString(this.type ?? 'text');
     switch (type) {
       case MessageModelType.text:
-        result = _textContent();
+        result = _textContent(context);
       case MessageModelType.image:
         result = _imageContent();
       case MessageModelType.video:
@@ -35,52 +36,99 @@ extension MessageModelExt on MessageModel {
         crossAxisAlignment: CrossAxisAlignment.end,
         children: [
           if (!isMe) ...{
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8.0),
-              child: AIImage(chatUser.avatar, width: 32.0, height: 32.0),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                chatUser.avatarStatusView(
+                  width: 32,
+                  height: 32,
+                  borderWidth: 2.0,
+                  textSize: 14.0,
+                  statusSize: 10.0,
+                ),
+                Container(
+                  constraints: BoxConstraints(
+                    maxWidth: MediaQuery.of(context).size.width - 120.0,
+                  ),
+                  padding: EdgeInsets.only(left: 12.0, right: 8.0, bottom: 8.0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        crossAxisAlignment: CrossAxisAlignment.end,
+                        children: [
+                          Text(
+                            isMe
+                                ? AuthHelper.user?.fullName ?? 'test'
+                                : chatUser.fullName,
+                            style: Theme.of(context).textTheme.headlineSmall,
+                          ),
+                          SizedBox(width: 8),
+                          Text(
+                            messageTime,
+                            style: TextStyle(
+                              fontSize: 9,
+                              color: AIColors.greyTextColor,
+                            ),
+                          ),
+                        ],
+                      ),
+                      result,
+                    ],
+                  ),
+                ),
+              ],
             ),
           },
-          ClipPath(
-            clipper: isMe ? MessageMeClipper() : MessageChatClipper(),
-            child: Container(
-              constraints: BoxConstraints(
-                maxWidth: MediaQuery.of(context).size.width - 120.0,
-              ),
-              padding: EdgeInsets.only(
-                left: isMe ? 8.0 : 20.0,
-                right: isMe ? 20.0 : 8.0,
-                top: 8.0,
-                bottom: 8.0,
-              ),
-              decoration: BoxDecoration(
-                color:
-                    isMe
-                        ? AIColors.blue.withAlpha(204)
-                        : AIColors.darkBar.withAlpha(204),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  result,
-                  SizedBox(height: 4),
-                  Text(
-                    messageTime,
-                    style: TextStyle(fontSize: 9, color: Colors.white70),
-                  ),
-                ],
+          // if (!isMe) ...{
+          //   chatUser.avatarStatusView(
+          //     width: 32,
+          //     height: 32,
+          //     borderWidth: 2.0,
+          //     textSize: 14.0,
+          //     statusSize: 10.0,
+          //   ),
+          // },
+          if (isMe)
+            ClipPath(
+              clipper: isMe ? MessageMeClipper() : MessageChatClipper(),
+              child: Container(
+                constraints: BoxConstraints(
+                  maxWidth: MediaQuery.of(context).size.width - 120.0,
+                ),
+                padding: EdgeInsets.only(
+                  left: isMe ? 8.0 : 20.0,
+                  right: isMe ? 20.0 : 8.0,
+                  top: 8.0,
+                  bottom: 8.0,
+                ),
+                decoration: BoxDecoration(
+                  color: AIColors.blue.withAlpha(196),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+                    result,
+                    SizedBox(height: 4),
+                    Text(
+                      messageTime,
+                      style: TextStyle(fontSize: 9, color: Colors.white70),
+                    ),
+                  ],
+                ),
               ),
             ),
-          ),
           if (isMe) ...{
-            ClipRRect(
-              borderRadius: BorderRadius.circular(8.0),
-              child: AIImage(
-                AuthHelper.user?.avatar,
-                width: 32.0,
-                height: 32.0,
-              ),
+            AuthHelper.user!.avatarStatusView(
+              width: 32,
+              height: 32,
+              borderWidth: 2.0,
+              textSize: 14.0,
+              statusSize: 10.0,
             ),
           },
         ],
@@ -88,23 +136,25 @@ extension MessageModelExt on MessageModel {
     );
   }
 
-  Widget _textContent() {
+  Widget _textContent(BuildContext context) {
     final isMe = senderId == AuthHelper.user?.uid;
-
     return Text(
       '$content',
-      style: TextStyle(
-        fontSize: 13.0,
-        color: Colors.white,
-        fontWeight: isMe ? FontWeight.w400 : FontWeight.w500,
-      ),
+      style:
+          isMe
+              ? TextStyle(
+                fontSize: 14.0,
+                fontWeight: FontWeight.normal,
+                color: AIColors.white,
+              )
+              : Theme.of(context).textTheme.bodyMedium,
     );
   }
 
   Widget _imageContent() {
     return ClipRRect(
-      borderRadius: BorderRadius.circular(6.0),
-      child: AIImage(url, width: 180.0, height: 135.0),
+      borderRadius: BorderRadius.circular(16.0),
+      child: AIImage(url, width: 180.0, height: 240.0),
     );
   }
 

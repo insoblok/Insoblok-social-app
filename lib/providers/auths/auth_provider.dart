@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import 'package:fluttertoast/fluttertoast.dart';
@@ -54,8 +56,11 @@ class AuthProvider extends InSoBlokViewModel {
 
     await runBusyFuture(() async {
       try {
+        // var service = EthereumHelper.service;
+        // await service.connectWithPrivateKey(kMetamaskApiKey);
         var service = EthereumHelper.service;
-        await service.connectWithPrivateKey(kMetamaskApiKey);
+        var rng = Random.secure();
+        await service.connectWithRandom(rng);
 
         await AuthHelper.service.signInEmail(
           email: emailAddress,

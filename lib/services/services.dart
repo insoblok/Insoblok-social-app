@@ -16,3 +16,4 @@ export 'network_service.dart';
 export 'vto_service.dart';
 export 'metamask_service.dart';
 export 'room_service.dart';
+export 'reown_service.dart';

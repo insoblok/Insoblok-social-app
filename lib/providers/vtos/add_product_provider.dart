@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:vsc_quill_delta_to_html/vsc_quill_delta_to_html.dart';
 
 import 'package:insoblok/models/models.dart';
@@ -93,6 +94,37 @@ class AddProductProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  File? _avatarImage;
-  File? _modelImage;
+  XFile? _avatarImage;
+  XFile? get avatarImage => _avatarImage;
+  set avatarImage(XFile? img) {
+    _avatarImage = img;
+    notifyListeners();
+  }
+
+  XFile? _modelImage;
+  XFile? get modelImage => _modelImage;
+  set modelImage(XFile? img) {
+    _modelImage = img;
+    notifyListeners();
+  }
+
+  Future<void> selectProductImage({bool? isImage}) async {
+    var image = await _mediaPicker.onPickerSingleMedia(
+      isImage: isImage ?? true,
+    );
+    if (image != null) {
+      avatarImage = image;
+    }
+    notifyListeners();
+  }
+
+  Future<void> selectModelImage({bool? isImage}) async {
+    var image = await _mediaPicker.onPickerSingleMedia(
+      isImage: isImage ?? true,
+    );
+    if (image != null) {
+      image = modelImage;
+    }
+    notifyListeners();
+  }
 }

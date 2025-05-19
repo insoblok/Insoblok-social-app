@@ -1,8 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:gradient_borders/box_borders/gradient_box_border.dart';
 
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
+
+var kAvatarColors = [
+  AIColors.blue,
+  AIColors.pink,
+  AIColors.yellow,
+  AIColors.green,
+  AIColors.grey,
+  AIColors.black,
+  AIColors.purple,
+  AIColors.red,
+];
 
 extension UserModelExt on UserModel {
   bool isLike() {
@@ -21,9 +33,84 @@ extension UserModelExt on UserModel {
     return '${f[0].toUpperCase()}${f.substring(1)} ${l[0].toUpperCase()}${l.substring(1)}';
   }
 
-  Widget avatarStatusView({double? width, double? height}) {
-    return ClipOval(
-      child: AIImage(avatar, width: width ?? 60.0, height: height ?? 60.0),
+  List<Color> getGradientColors(int number) {
+    List<Color> colors = [];
+    if (number > kAvatarColors.length) {
+      colors.addAll(kAvatarColors);
+    } else {
+      for (int i = 0; i < number; i++) {
+        colors.add(kAvatarColors[i]);
+      }
+    }
+    return colors;
+  }
+
+  Widget avatarStatusView({
+    double? width,
+    double? height,
+    double? borderWidth,
+    double? textSize,
+    double? statusSize,
+  }) {
+    return SizedBox(
+      width: width ?? 60.0,
+      height: height ?? 60.0,
+      child: Stack(
+        children: [
+          Container(
+            width: width ?? 60,
+            height: height ?? 60,
+            decoration: BoxDecoration(
+              border: GradientBoxBorder(
+                gradient: LinearGradient(
+                  colors: getGradientColors(fullName.length),
+                ),
+                width: borderWidth ?? 4,
+              ),
+              borderRadius: BorderRadius.circular(30.0),
+            ),
+            child: ClipOval(
+              child:
+                  avatar != null
+                      ? AIImage(
+                        avatar,
+                        width: width ?? 60.0,
+                        height: height ?? 60.0,
+                      )
+                      : Container(
+                        color:
+                            fullName.length > kAvatarColors.length
+                                ? AIColors.pink
+                                : kAvatarColors[fullName.length - 1],
+                        child: Align(
+                          alignment: Alignment.center,
+                          child: Text(
+                            fullName[0],
+                            style: TextStyle(
+                              fontSize: textSize ?? 14.0,
+                              color: AIColors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Container(
+              decoration: BoxDecoration(
+                color: AIColors.white,
+                shape: BoxShape.circle,
+              ),
+              child: AIImage(
+                Icons.brightness_1,
+                color: status == 'Online' ? AIColors.green : AIColors.lightGrey,
+                width: statusSize ?? 14.0,
+              ),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -33,10 +120,11 @@ extension UserModelExt on UserModel {
     );
   }
 
-  List<Map<String, String>> get linkInfo => [
+  List<Map<String, dynamic>> get linkInfo => [
     if (website != null)
       {'type': 'website', 'title': website!, 'icon': AIImages.icLink},
     {'type': 'since', 'title': 'Joined $sinceStr', 'icon': AIImages.icCalendar},
     {'type': 'location', 'title': 'United State', 'icon': AIImages.icLocation},
+    {'type': 'wallet', 'title': 'My Wallet', 'icon': Icons.wallet},
   ];
 }

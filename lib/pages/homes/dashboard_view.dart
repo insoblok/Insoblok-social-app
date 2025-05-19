@@ -39,7 +39,7 @@ class DashboardView extends StatelessWidget {
                                   ? Border(
                                     bottom: BorderSide(
                                       width: 2.0,
-                                      color: AIColors.blue,
+                                      color: AIColors.pink,
                                     ),
                                   )
                                   : null,
@@ -61,6 +61,9 @@ class DashboardView extends StatelessWidget {
                 ),
               ),
             ),
+            if (viewModel.isBusy) ...{
+              SliverFillRemaining(child: Center(child: Loader())),
+            },
             if (viewModel.showns.isEmpty) ...{
               SliverFillRemaining(
                 child: Center(

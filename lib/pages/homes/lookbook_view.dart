@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 
 import 'package:stacked/stacked.dart';
 
@@ -29,15 +30,31 @@ class LookbookView extends StatelessWidget {
                   pinned: true,
                   actions: [
                     IconButton(
-                      onPressed: () {},
+                      onPressed: viewModel.onClickSettingButton,
                       icon: AIImage(
                         AIImages.icSetting,
                         width: 24.0,
                         height: 24.0,
+                        color: Theme.of(context).primaryColor,
                       ),
                     ),
                   ],
                 ),
+                if (viewModel.isBusy) ...{
+                  SliverFillRemaining(
+                    child: Center(
+                      child: SizedBox(
+                        width: 60,
+                        height: 60,
+                        child: LoadingIndicator(
+                          indicatorType: Indicator.ballSpinFadeLoader,
+                          colors: [Theme.of(context).primaryColor],
+                          strokeWidth: 2,
+                        ),
+                      ),
+                    ),
+                  ),
+                },
                 SliverList(
                   delegate: SliverChildListDelegate([
                     Padding(
@@ -46,15 +63,41 @@ class LookbookView extends StatelessWidget {
                         vertical: 8.0,
                       ),
                       child: SizedBox(
-                        height: 180.0,
+                        height: 160.0,
                         child: Row(
                           children: [
                             AspectRatio(
-                              aspectRatio: 0.5,
+                              aspectRatio: 0.6,
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(8.0),
                                 child: Container(
                                   color: Theme.of(context).primaryColor,
+                                  child: Stack(
+                                    fit: StackFit.expand,
+                                    children: [
+                                      AIAvatarImage(
+                                        viewModel.user?.avatar,
+                                        textSize: 36.0,
+                                        fullname:
+                                            viewModel.user?.nickId ?? 'Test',
+                                      ),
+                                      Align(
+                                        alignment: Alignment.bottomCenter,
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(
+                                            bottom: 12.0,
+                                          ),
+                                          child: Text(
+                                            'Create Story',
+                                            style: TextStyle(
+                                              fontSize: 11.0,
+                                              color: AIColors.white,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                             ),
@@ -67,7 +110,7 @@ class LookbookView extends StatelessWidget {
                                   children: [
                                     for (var i = 0; i < 10; i++) ...{
                                       AspectRatio(
-                                        aspectRatio: 0.5,
+                                        aspectRatio: 0.6,
                                         child: ClipRRect(
                                           borderRadius: BorderRadius.circular(
                                             8.0,
@@ -111,7 +154,7 @@ class LookbookView extends StatelessWidget {
                           vertical: 2.0,
                         ),
                         decoration: BoxDecoration(
-                          color: AIColors.blue,
+                          color: AIColors.pink,
                           borderRadius: BorderRadius.circular(12.0),
                         ),
                         child: Text(
@@ -134,6 +177,21 @@ class LookbookView extends StatelessWidget {
                 src: AIImages.icAddLogo,
               ),
             ),
+            // if (viewModel.isBusy) ...{
+            //   SafeArea(
+            //     child: Center(
+            //       child: SizedBox(
+            //         width: 60,
+            //         height: 60,
+            //         child: LoadingIndicator(
+            //           indicatorType: Indicator.ballSpinFadeLoader,
+            //           colors: [AIColors.pink],
+            //           strokeWidth: 2,
+            //         ),
+            //       ),
+            //     ),
+            //   ),
+            // },
           ],
         );
       },

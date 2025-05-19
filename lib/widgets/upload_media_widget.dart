@@ -66,7 +66,7 @@ class UploadMediaWidget extends StatelessWidget {
                               ? Icon(
                                 Icons.check,
                                 size: 18.0,
-                                color: AIColors.blue,
+                                color: AIColors.pink,
                               )
                               : media.isUploading
                               ? Loader(

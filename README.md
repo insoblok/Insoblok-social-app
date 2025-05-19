@@ -37,4 +37,5 @@ firebase logout
 npx eslint index.js --fix
 firebase deploy --only functions
 
+## Reown_AppKit
 gcloud projects add-iam-policy-binding insoblokai  --member="user:info@insoblokai.io"   --role="roles/iam.serviceAccountUser"

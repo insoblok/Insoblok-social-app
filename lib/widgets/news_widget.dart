@@ -77,7 +77,7 @@ class NewsListCell extends StatelessWidget {
                       ),
                       child: Text(
                         category['name'],
-                        style: Theme.of(context).textTheme.headlineSmall,
+                        style: TextStyle(fontSize: 10.0, color: AIColors.white),
                       ),
                     ),
                   },

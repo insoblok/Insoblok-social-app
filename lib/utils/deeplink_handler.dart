@@ -1,34 +1,34 @@
-// import 'package:uni_links3/uni_links.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/services.dart';
 
-// class DeepLinkHandler {
-//   static Stream<String> get onWalletConnected {
-//     return uriLinkStream
-//         .where((uri) => uri?.path == '/metamask')
-//         .map((uri) => uri?.queryParameters['address'] ?? '');
-//   }
+import 'package:reown_appkit/modal/i_appkit_modal_impl.dart';
 
-//   static Stream<String> get onMessageSigned {
-//     return uriLinkStream
-//         .where((uri) => uri?.path == '/sign')
-//         .map((uri) => uri?.queryParameters['signature'] ?? '');
-//   }
+import 'package:insoblok/services/services.dart';
 
-//   static Future<void> init() async {
-//     // Handle initial link if app was opened via deep link
-//     final initialUri = await getInitialUri();
-//     if (initialUri != null) {
-//       _handleDeepLink(initialUri);
-//     }
-//   }
+class DeepLinkHandler {
+  static const _eventChannel = EventChannel('insoblok.social.app/events');
+  static late IReownAppKitModal _appKitModal;
 
-//   static void _handleDeepLink(Uri uri) {
-//     // Handle different deep link paths
-//     if (uri.path == '/metamask') {
-//       final address = uri. ['address'];
-//       // Save address to local storage
-//     } else if (uri.path == '/sign') {
-//       final signature = uri.queryParameters['signature'];
-//       // Process signature
-//     }
-//   }
-// }
+  static void init(IReownAppKitModal appKitModal) {
+    if (kIsWeb) return;
+
+    try {
+      _appKitModal = appKitModal;
+      _eventChannel.receiveBroadcastStream().listen(_onLink, onError: _onError);
+    } catch (e) {
+      debugPrint('[SampleDapp] checkInitialLink $e');
+    }
+  }
+
+  static void _onLink(dynamic link) async {
+    try {
+      _appKitModal.dispatchEnvelope(link);
+    } catch (e) {
+      logger.d(e);
+    }
+  }
+
+  static void _onError(dynamic error) {
+    logger.d(error);
+  }
+}

@@ -35,7 +35,7 @@ class UploadMediaProvider extends InSoBlokViewModel {
     int? maxImages,
   }) async {
     var files = await _mediaPicker.onMultiMediaPicker(
-      limit: (9 - medias.length),
+      limit: (maxImages ?? 9 - medias.length),
     );
     if (files.isEmpty) {
       Fluttertoast.showToast(msg: 'No selected media!');

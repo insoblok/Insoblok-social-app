@@ -5,7 +5,7 @@ publish_to: "none"
 version: 1.0.0+1
 
 environment:
-  sdk: ^3.7.0
+  sdk: ^3.7.2
 
 dependencies:
   flutter:
@@ -14,7 +14,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
-  cupertino_icons: ^1.0.8
+  cupertino_icons: any
   flutter_inappwebview: any
   cached_network_image: any
   flutter_svg: any
@@ -27,6 +27,8 @@ dependencies:
   flutter_quill: any
   vsc_quill_delta_to_html: any
   flutter_html: any
+  gradient_borders: any
+  loading_indicator: any
 
   logger: any
   freezed_annotation: any
@@ -46,11 +48,12 @@ dependencies:
   get_it: any
   stacked: any
 
-  walletconnect_dart: any
+  # walletconnect_dart: any
   web3dart: any
   url_launcher: any
   http: any
   share_plus: any
+  app_links: any
 
   firebase_analytics: any
   cloud_firestore: any
@@ -60,6 +63,7 @@ dependencies:
 
   dio: any
   path_provider: any
+  reown_appkit: ^1.4.3+1
 
 dev_dependencies:
   flutter_test:
@@ -70,6 +74,9 @@ dev_dependencies:
   freezed: any
   build_runner: any
   web3dart_builders: any
+
+dependency_overrides:
+  intl: ^0.20.1
 
 flutter:
   uses-material-design: true
