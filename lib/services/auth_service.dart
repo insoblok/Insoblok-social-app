@@ -1,11 +1,9 @@
-import 'dart:math';
-
 import 'package:flutter/foundation.dart';
 
 import 'package:get_ip_address/get_ip_address.dart';
 import 'package:observable_ish/observable_ish.dart';
 import 'package:stacked/stacked.dart';
-import 'package:walletconnect_dart/walletconnect_dart.dart';
+// import 'package:walletconnect_dart/walletconnect_dart.dart';
 
 import 'package:insoblok/locator.dart';
 import 'package:insoblok/models/models.dart';
@@ -16,15 +14,18 @@ class AuthService with ListenableServiceMixin {
   final RxValue<UserModel?> _userRx = RxValue<UserModel?>(null);
   UserModel? get user => _userRx.value;
 
-  final RxValue<SessionStatus?> _sessionStatusRx = RxValue<SessionStatus?>(
-    null,
-  );
-  SessionStatus? get sessionStatus => _sessionStatusRx.value;
+  // final RxValue<SessionStatus?> _sessionStatusRx = RxValue<SessionStatus?>(
+  //   null,
+  // );
+  // SessionStatus? get sessionStatus => _sessionStatusRx.value;
 
   bool get isLoggedIn => user?.walletAddress != null;
 
   AuthService() {
-    listenToReactiveValues([_userRx, _sessionStatusRx]);
+    listenToReactiveValues([
+      _userRx,
+      // _sessionStatusRx,
+    ]);
   }
 
   Future<void> setUser(UserModel model) async {
@@ -35,10 +36,10 @@ class AuthService with ListenableServiceMixin {
     notifyListeners();
   }
 
-  Future<void> setSessionStatus({SessionStatus? session}) async {
-    _sessionStatusRx.value = session;
-    notifyListeners();
-  }
+  // Future<void> setSessionStatus({SessionStatus? session}) async {
+  //   _sessionStatusRx.value = session;
+  //   notifyListeners();
+  // }
 
   Future<void> signIn() async {
     try {
@@ -115,12 +116,12 @@ class AuthService with ListenableServiceMixin {
 class AuthHelper {
   static AuthService get service => locator<AuthService>();
 
-  static Future<void> setSessionStatus({SessionStatus? session}) =>
-      service.setSessionStatus(session: session);
+  // static Future<void> setSessionStatus({SessionStatus? session}) =>
+  //     service.setSessionStatus(session: session);
 
   static UserModel? get user => service.user;
   static bool get isLoggedIn => service.isLoggedIn;
-  static SessionStatus? get sessionStatus => service.sessionStatus;
+  // static SessionStatus? get sessionStatus => service.sessionStatus;
 
   static Future<void> setUser(UserModel model) => service.setUser(model);
 }

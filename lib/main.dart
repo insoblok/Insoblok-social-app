@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
+import 'package:app_links/app_links.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart' as iaw;
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -49,6 +50,10 @@ void main() async {
   if (!kIsWeb && defaultTargetPlatform == TargetPlatform.android) {
     await iaw.InAppWebViewController.setWebContentsDebuggingEnabled(kDebugMode);
   }
+
+  AppLinks().uriLinkStream.listen((uri) {
+    logger.d('onAppLink: $uri');
+  });
 
   runApp(const InSoBlokApp());
 }
