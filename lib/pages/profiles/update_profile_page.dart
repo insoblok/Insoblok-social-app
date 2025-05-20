@@ -16,7 +16,14 @@ class UpdateProfilePage extends StatelessWidget {
       onViewModelReady: (viewModel) => viewModel.init(context),
       builder: (context, viewModel, _) {
         return Scaffold(
-          appBar: AppBar(title: Text('Update Profile'), centerTitle: true),
+          appBar: AppBar(
+            title: Text('Update Profile'),
+            centerTitle: true,
+            leading: IconButton(
+              onPressed: () => Navigator.of(context).pop(viewModel.account),
+              icon: Icon(Icons.arrow_back),
+            ),
+          ),
           body: ListView(
             physics: BouncingScrollPhysics(),
             children: [
@@ -27,15 +34,15 @@ class UpdateProfilePage extends StatelessWidget {
                 thickness: 0.33,
               ),
               AccountPrivateInfoView(),
-              Padding(
-                padding: const EdgeInsets.all(24.0),
-                child: TextFillButton(
-                  onTap: viewModel.onClickUpdated,
-                  isBusy: viewModel.isBusy,
-                  text: 'Update Profile',
-                  color: Theme.of(context).primaryColor,
-                ),
-              ),
+              // Padding(
+              //   padding: const EdgeInsets.all(24.0),
+              //   child: TextFillButton(
+              //     onTap: viewModel.onClickUpdated,
+              //     isBusy: viewModel.isBusy,
+              //     text: 'Update Profile',
+              //     color: Theme.of(context).primaryColor,
+              //   ),
+              // ),
             ],
           ),
         );
