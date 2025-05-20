@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import 'package:fluttertoast/fluttertoast.dart';
@@ -8,6 +10,48 @@ import 'package:insoblok/models/models.dart';
 import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
+
+class ProductCategory {
+  static final CLOTHING = 'Clothing';
+  static final SHOES = 'Shoes';
+  static final JEWELRY = 'Jewelry';
+}
+
+const kProductCategoryNames = [
+  'Dress',
+  'Shirts',
+  'Trousers',
+  'Shoes',
+  'Jewelry',
+  'Necklace',
+  'Bracelet',
+  'Earrings',
+  'Watch',
+];
+
+final kProductCategories = [
+  ProductCategory.CLOTHING,
+  ProductCategory.CLOTHING,
+  ProductCategory.CLOTHING,
+  ProductCategory.SHOES,
+  ProductCategory.JEWELRY,
+  ProductCategory.JEWELRY,
+  ProductCategory.JEWELRY,
+  ProductCategory.JEWELRY,
+  ProductCategory.JEWELRY,
+];
+
+const kProductTypeNames = [
+  'one-pieces',
+  'tops',
+  'bottoms',
+  'shoes',
+  'ring',
+  'necklace',
+  'bracelet',
+  'earrings',
+  'watch',
+];
 
 class AddProductProvider extends InSoBlokViewModel {
   late BuildContext _context;
@@ -25,6 +69,9 @@ class AddProductProvider extends InSoBlokViewModel {
   Future<void> init(BuildContext context) async {
     this.context = context;
     _mediaPicker = MediaPickerService(context);
+    _product = product.copyWith(category: kProductCategories[0]);
+    _product = product.copyWith(type: kProductTypeNames[0]);
+    _product = product.copyWith(categoryName: kProductCategoryNames[0]);
   }
 
   void updateName(String s) {
@@ -59,36 +106,15 @@ class AddProductProvider extends InSoBlokViewModel {
     }
   }
 
-  String _selectedTag = '';
-  String get selectedTag => _selectedTag;
-  set selectedTag(String s) {
-    _selectedTag = s;
-    notifyListeners();
-  }
+  String _selectedCategory = kProductCategoryNames.first;
+  String get selectedCategory => _selectedCategory;
+  set selectedCategory(String s) {
+    _selectedCategory = s;
+    var index = kProductCategoryNames.indexOf(s);
 
-  void addTag() {
-    if (selectedTag.isEmpty) {
-      Fluttertoast.showToast(msg: 'Tag name should be not empty!');
-      return;
-    }
-    var list = List<String>.from(product.tags ?? []);
-    if (list.contains(selectedTag)) {
-      Fluttertoast.showToast(msg: 'Tag name already added empty!');
-      return;
-    }
-    if (selectedTag.length > 15) {
-      Fluttertoast.showToast(msg: 'Tag name can\'t be over 15 characters!');
-      return;
-    }
-    list.add(selectedTag);
-    _product = product.copyWith(tags: list);
-    notifyListeners();
-  }
-
-  void removeTag(int i) {
-    var list = List<String>.from(product.tags ?? []);
-    list.removeAt(i);
-    _product = product.copyWith(tags: list);
+    _product = product.copyWith(category: kProductCategories[index]);
+    _product = product.copyWith(type: kProductTypeNames[index]);
+    _product = product.copyWith(categoryName: kProductCategoryNames[index]);
     notifyListeners();
   }
 
@@ -107,6 +133,9 @@ class AddProductProvider extends InSoBlokViewModel {
   }
 
   Future<void> selectProductImage({bool? isImage}) async {
+    if (isBusy) return;
+    clearErrors();
+
     var image = await _mediaPicker.onPickerSingleMedia(
       isImage: isImage ?? true,
     );
@@ -117,12 +146,78 @@ class AddProductProvider extends InSoBlokViewModel {
   }
 
   Future<void> selectModelImage({bool? isImage}) async {
+    if (isBusy) return;
+    clearErrors();
+
     var image = await _mediaPicker.onPickerSingleMedia(
       isImage: isImage ?? true,
     );
     if (image != null) {
-      image = modelImage;
+      modelImage = image;
     }
     notifyListeners();
+  }
+
+  bool _isUploading = false;
+  bool get isUploading => _isUploading;
+  set isUploading(bool f) {
+    _isUploading = f;
+    notifyListeners();
+  }
+
+  final _productService = ProductService();
+  ProductService get productService => _productService;
+
+  Future<void> onClickAddProduct() async {
+    if (product.name?.isEmpty ?? true) {
+      Fluttertoast.showToast(msg: 'Product name should be not empty!');
+      return;
+    }
+    if (product.description?.isEmpty ?? true) {
+      Fluttertoast.showToast(msg: 'Product description should be not empty!');
+      return;
+    }
+    if (modelImage == null) {
+      Fluttertoast.showToast(msg: 'Model image should be not empty!');
+      return;
+    }
+
+    if (isBusy) return;
+    clearErrors();
+
+    isUploading = true;
+    await runBusyFuture(() async {
+      try {
+        if (avatarImage != null) {
+          var avatarLink = await FirebaseHelper.uploadFile(
+            file: File(avatarImage!.path),
+            folderName: 'product',
+          );
+          if (avatarLink != null) {
+            _product = product.copyWith(avatarImage: avatarLink);
+          }
+        }
+        var modelLink = await FirebaseHelper.uploadFile(
+          file: File(modelImage!.path),
+          folderName: 'product',
+        );
+        if (modelLink != null) {
+          _product = product.copyWith(modelImage: modelLink);
+          await productService.addProduct(product: product);
+          Navigator.of(context).pop(true);
+        } else {
+          setError('Failed server uploading!');
+        }
+      } catch (e) {
+        setError(e);
+        logger.e(e);
+      } finally {
+        isUploading = false;
+      }
+    }());
+
+    if (hasError) {
+      Fluttertoast.showToast(msg: modelError.toString());
+    }
   }
 }

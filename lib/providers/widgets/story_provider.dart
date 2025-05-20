@@ -38,9 +38,12 @@ class StoryProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  final _userService = UserService();
+  UserService get userService => _userService;
+
   Future<void> fetchUser() async {
     try {
-      owner = await FirebaseHelper.getUser(story.uid!);
+      owner = await userService.getUser(story.uid!);
     } catch (e) {
       setError(e);
       logger.e(e);

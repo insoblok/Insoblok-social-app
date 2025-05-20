@@ -34,12 +34,12 @@ class AIHelpers {
       'body': Style(margin: Margins.all(0), padding: HtmlPaddings.all(0)),
       'p': Style(
         margin: Margins.all(0),
-        fontSize: fontSize ?? FontSize(16.0),
+        fontSize: fontSize ?? FontSize(14.0),
         fontWeight: FontWeight.w400,
         letterSpacing: -0.3,
       ),
       'a': Style(
-        fontSize: fontSize ?? FontSize(16.0),
+        fontSize: fontSize ?? FontSize(14.0),
         fontWeight: FontWeight.w400,
         letterSpacing: -0.3,
       ),

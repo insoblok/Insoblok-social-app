@@ -40,6 +40,7 @@ void main() async {
   setupLocator();
 
   await FirebaseHelper.init();
+  AuthHelper.service.init();
   await NetworkHelper.service.init();
   FirebaseFirestore.instance.settings = const Settings(
     persistenceEnabled: true,

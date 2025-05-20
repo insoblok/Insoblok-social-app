@@ -85,8 +85,8 @@ class Routers {
     return _pushToRoute(context, kRouterAddStory, null);
   }
 
-  static goToVTOClothingPage(BuildContext context) {
-    return _pushToRoute(context, kRouterMarketVTOClothing, null);
+  static goToVTOImagePage(BuildContext context, ProductModel product) {
+    return _pushToRoute(context, kRouterMarketVTOImage, product);
   }
 
   static goToVTOAddProduct(BuildContext context) {

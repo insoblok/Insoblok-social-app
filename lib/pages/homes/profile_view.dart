@@ -25,7 +25,7 @@ class ProfileView extends ViewModelWidget<InSoBlokProvider> {
               if (result == 0) {
                 var url = await Routers.goToAccountAvatarPage(context);
                 if (url != null) {
-                  await AuthHelper.setUser(
+                  await AuthHelper.updateUser(
                     AuthHelper.user!.copyWith(avatar: url),
                   );
                   viewModel.notifyListeners();

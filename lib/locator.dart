@@ -5,8 +5,8 @@ import 'package:insoblok/services/services.dart';
 GetIt locator = GetIt.I;
 
 void setupLocator() {
-  locator.registerSingleton(AuthService());
   locator.registerSingleton(FirebaseService());
+  locator.registerSingleton(AuthService());
   locator.registerSingleton(AppSettingService());
   locator.registerSingleton(NetworkService());
 

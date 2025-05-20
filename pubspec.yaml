@@ -29,6 +29,7 @@ dependencies:
   flutter_html: any
   gradient_borders: any
   loading_indicator: any
+  flutter_staggered_grid_view: any
 
   logger: any
   freezed_annotation: any
@@ -61,7 +62,7 @@ dependencies:
 
   dio: any
   path_provider: any
-  reown_appkit: ^1.4.3+1
+  # reown_appkit: ^1.4.3+1
 
 dev_dependencies:
   flutter_test:

@@ -124,6 +124,9 @@ class StoryService {
     });
   }
 
+  final _userService = UserService();
+  UserService get userService => _userService;
+
   // Update like of story
   Future<void> updateLikeStory({
     required StoryModel story,
@@ -144,7 +147,7 @@ class StoryService {
       }
       if (isUpdated) {
         user = user.copyWith(likes: likes);
-        await FirebaseHelper.updateUser(user);
+        await userService.updateUser(user);
       }
     }
   }
@@ -170,7 +173,7 @@ class StoryService {
       }
       if (isUpdated) {
         user = user.copyWith(follows: follows);
-        await FirebaseHelper.updateUser(user);
+        await userService.updateUser(user);
       }
     }
   }

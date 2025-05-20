@@ -3,22 +3,17 @@ import 'dart:io';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 
-class VTOClothingType {
-  static String tops = 'tops';
-  static String bottoms = 'bottoms';
-  static String onePieces = 'one-pieces';
-}
-
 class VTOService {
   static Future<String?> convertVTOClothing({
     required String path,
     String? clothingLink,
     String clothingType = 'tops',
+    String folderName = 'clothing',
   }) async {
     try {
       var modelUrl = await FirebaseHelper.uploadFile(
         file: File(path),
-        folderName: 'vto_clothing',
+        folderName: folderName,
       );
       if (modelUrl != null) {
         logger.d(modelUrl);

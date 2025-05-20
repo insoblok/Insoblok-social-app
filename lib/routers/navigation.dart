@@ -26,7 +26,7 @@ const kRouterCreateRoom = '/create-room';
 const kRouterMessage = '/message';
 const kRouterMessageSetting = '/message-setting';
 
-const kRouterMarketVTOClothing = '/vto-clothing';
+const kRouterMarketVTOImage = '/vto-image';
 const kRouterVTOAddProduct = '/vto-add-product';
 
 const kRouterAddStory = '/add-story';
@@ -120,7 +120,10 @@ class Navigation {
     initRoute(kRouterMessageSetting, (props) => MessageSettingPage());
 
     // * Marketlace VTO Clothing
-    initRoute(kRouterMarketVTOClothing, (props) => VTOClothingPage());
+    initRoute<ProductModel>(
+      kRouterMarketVTOImage,
+      (props) => VTOImagePage(product: props!),
+    );
 
     // * Marketlace Add Product
     initRoute(kRouterVTOAddProduct, (props) => AddProductPage());

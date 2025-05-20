@@ -11,3 +11,4 @@ export 'appbar.dart';
 export 'comment_widget.dart';
 export 'profiles/profiles.dart';
 export 'news_widget.dart';
+export 'product_widget.dart';

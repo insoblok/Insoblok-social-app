@@ -89,7 +89,7 @@ class LoginProvider extends InSoBlokViewModel {
       Fluttertoast.showToast(msg: modelError.toString());
     } else {
       if (AuthHelper.user?.firstName != null) {
-        await AuthHelper.setUser(AuthHelper.user!.copyWith(status: 'Online'));
+        AuthHelper.updateStatus('Online');
         Routers.goToMainPage(context);
       } else {
         Routers.goToRegisterPage(context);

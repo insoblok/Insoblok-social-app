@@ -34,9 +34,12 @@ class CommentProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  final _userService = UserService();
+  UserService get userService => _userService;
+
   Future<void> fetchUser() async {
     try {
-      owner = await FirebaseHelper.getUser(comment.uid!);
+      owner = await userService.getUser(comment.uid!);
     } catch (e) {
       setError(e);
       logger.e(e);

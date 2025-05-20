@@ -14,13 +14,10 @@ class NetworkUtil {
         'vto',
         method: APIMETHOD.post,
         postParams: {
-          'model_photo': model,
-          'clothing_photo': clothingModel,
-          'clothing_type': clothingType,
-          'outfit': 'a red shirts tops; a black jeans',
-          'gender': 'woman',
-          'country': 'india',
-          'body_type': 'small',
+          'model_photo': model, // Model image URL
+          'clothing_photo': clothingModel, // Clothing image URL
+          'clothing_type':
+              clothingType, // Clothing type. Value can be 'tops', 'bottoms' or 'one-pieces'.
         },
       );
       logger.d(response.data);

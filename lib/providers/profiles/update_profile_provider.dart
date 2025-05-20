@@ -108,13 +108,9 @@ class UpdateProfileProvider extends InSoBlokViewModel {
             password: account.password ?? '',
           );
         }
-        var isUpdated = await FirebaseHelper.updateUser(account);
-        if (isUpdated) {
-          Fluttertoast.showToast(msg: 'Successfully updated user profile!');
-          Navigator.of(context).pop(true);
-        } else {
-          setError('Something get wrong! Please try again later');
-        }
+        await AuthHelper.updateUser(account);
+        Fluttertoast.showToast(msg: 'Successfully updated user profile!');
+        Navigator.of(context).pop(true);
       } catch (e) {
         setError(e);
         logger.e(e);

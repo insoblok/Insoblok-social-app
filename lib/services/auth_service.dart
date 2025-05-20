@@ -13,97 +13,92 @@ class AuthService with ListenableServiceMixin {
   final RxValue<UserModel?> _userRx = RxValue<UserModel?>(null);
   UserModel? get user => _userRx.value;
 
-  // final RxValue<SessionStatus?> _sessionStatusRx = RxValue<SessionStatus?>(
-  //   null,
-  // );
-  // SessionStatus? get sessionStatus => _sessionStatusRx.value;
-
   bool get isLoggedIn => user?.walletAddress != null;
 
   AuthService() {
-    listenToReactiveValues([
-      _userRx,
-      // _sessionStatusRx,
-    ]);
+    listenToReactiveValues([_userRx]);
   }
 
-  Future<void> setUser(UserModel model) async {
-    var isUpdated = await FirebaseHelper.updateUser(model);
-    if (isUpdated) {
-      _userRx.value = model;
-    }
+  Future<void> updateUser(UserModel model) async {
+    await userService.updateUser(model);
+    _userRx.value = model;
     notifyListeners();
   }
 
+  late UserService _userService;
+  UserService get userService => _userService;
+
+  void init() {
+    _userService = UserService();
+  }
+
+  Future<void> updateStatus(String status) async {
+    await userService.updateUser(user!.copyWith(status: status));
+  }
+
   Future<void> signIn({String? walletAddress}) async {
-    try {
-      await FirebaseHelper.signInFirebase();
-      var credential = FirebaseHelper.userCredential;
-      var uid = credential.user?.uid;
-      if (uid != null) {
-        logger.d(uid);
-        var user = await FirebaseHelper.getUser(uid);
+    await FirebaseHelper.signInFirebase();
+    var credential = FirebaseHelper.userCredential;
+    var uid = credential.user?.uid;
+    if (uid != null) {
+      logger.d(uid);
+      var newUser = await userService.getUser(uid);
 
-        var ipAddress = IpAddress(type: RequestType.json);
-        var data = await ipAddress.getIpAddress();
+      var ipAddress = IpAddress(type: RequestType.json);
+      var data = await ipAddress.getIpAddress();
 
-        if (user == null) {
-          user = UserModel(
-            uid: uid,
-            walletAddress: walletAddress,
-            ipAddress: kDebugMode ? kDefaultIpAddress : data['ip'],
-          );
-          user = await FirebaseHelper.createUser(user);
-        } else {
-          user = user.copyWith(
-            walletAddress: walletAddress,
-            ipAddress: kDebugMode ? kDefaultIpAddress : data['ip'],
-          );
-          await FirebaseHelper.updateUser(user);
-        }
-        _userRx.value = user;
-        notifyListeners();
+      if (newUser == null) {
+        newUser = UserModel(
+          uid: uid,
+          walletAddress: walletAddress,
+          ipAddress: kDebugMode ? kDefaultIpAddress : data['ip'],
+        );
+        newUser = await userService.createUser(newUser);
+        _userRx.value = newUser;
+      } else {
+        newUser = newUser.copyWith(
+          walletAddress: walletAddress,
+          ipAddress: kDebugMode ? kDefaultIpAddress : data['ip'],
+        );
+        await updateUser(newUser);
       }
-    } catch (e) {
-      logger.e(e);
     }
   }
 
-  Future<UserModel?> signInEmail({
+  Future<void> signInEmail({
     required String email,
     required String password,
     String? walletAddress,
   }) async {
-    try {
-      await FirebaseHelper.signInEmail(email: email, password: password);
-      var credential = FirebaseHelper.userCredential;
-      var uid = credential.user?.uid;
-      if (uid != null) {
-        logger.d(uid);
-        var user = await FirebaseHelper.getUser(uid);
+    await FirebaseHelper.signInEmail(email: email, password: password);
+    var credential = FirebaseHelper.userCredential;
+    var uid = credential.user?.uid;
+    if (uid != null) {
+      logger.d(uid);
+      var newUser = await userService.getUser(uid);
+      if (newUser != null) {
+        logger.d(newUser.toJson());
+
         var ipAddress = IpAddress(type: RequestType.json);
         var data = await ipAddress.getIpAddress();
-        if (user != null) {
-          if (user.walletAddress == null) {
-            user = user.copyWith(
-              ipAddress: kDebugMode ? kDefaultIpAddress : data['ip'],
-            );
-          } else {
-            user = user.copyWith(
-              walletAddress: walletAddress,
-              ipAddress: kDebugMode ? kDefaultIpAddress : data['ip'],
-            );
-          }
-
-          await FirebaseHelper.updateUser(user);
-          _userRx.value = user;
+        if (newUser.walletAddress != null) {
+          newUser = newUser.copyWith(
+            ipAddress: kDebugMode ? kDefaultIpAddress : data['ip'],
+          );
+        } else {
+          newUser = newUser.copyWith(
+            walletAddress: walletAddress,
+            ipAddress: kDebugMode ? kDefaultIpAddress : data['ip'],
+          );
         }
-        return user;
+
+        await updateUser(newUser);
+      } else {
+        throw Exception('Failed server fatch!');
       }
-    } catch (e) {
-      logger.e(e);
+    } else {
+      throw Exception('No matched email or password!');
     }
-    return null;
   }
 }
 
@@ -113,5 +108,7 @@ class AuthHelper {
   static UserModel? get user => service.user;
   static bool get isLoggedIn => service.isLoggedIn;
 
-  static Future<void> setUser(UserModel model) => service.setUser(model);
+  static Future<void> updateUser(UserModel model) => service.updateUser(model);
+  static Future<void> updateStatus(String status) =>
+      service.updateStatus(status);
 }

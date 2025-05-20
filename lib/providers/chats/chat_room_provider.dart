@@ -19,6 +19,9 @@ class CreateRoomProvider extends InSoBlokViewModel {
   final RoomService _roomService = RoomService();
   RoomService get roomService => _roomService;
 
+  final _userService = UserService();
+  UserService get userService => _userService;
+
   Future<void> init(BuildContext context) async {
     this.context = context;
   }
@@ -36,7 +39,7 @@ class CreateRoomProvider extends InSoBlokViewModel {
       try {
         _users.clear();
 
-        var keyUsers = await FirebaseHelper.findUsersByKey(key);
+        var keyUsers = await userService.findUsersByKey(key);
         for (var user in keyUsers) {
           if (user != null) {
             _users.add(user);

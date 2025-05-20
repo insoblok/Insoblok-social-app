@@ -110,7 +110,7 @@ class RegisterProvider extends InSoBlokViewModel {
           email: _user.email!,
           password: password,
         );
-        await AuthHelper.setUser(
+        await AuthHelper.updateUser(
           _user.copyWith(
             nickId: _user.fullName.replaceAll(' ', '').toLowerCase(),
           ),
