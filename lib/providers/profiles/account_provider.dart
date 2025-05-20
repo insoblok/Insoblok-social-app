@@ -81,8 +81,11 @@ class AccountProvider extends InSoBlokViewModel {
 
   Future<void> onClickMoreButton() async {
     if (isMe) {
-      await Routers.goToAccountUpdatePage(context);
-      notifyListeners();
+      var result = await Routers.goToAccountUpdatePage(context);
+      if (result != null) {
+        accountUser = result;
+        notifyListeners();
+      }
     } else {
       if (isBusy) return;
       clearErrors();

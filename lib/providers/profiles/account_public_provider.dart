@@ -103,10 +103,25 @@ class AccountPublicProvider extends InSoBlokViewModel {
     }
   }
 
-  void onClickUpdateProfile() {
+  void onClickUpdateProfile() async {
     if (isBusy) return;
     clearErrors();
 
-    Navigator.of(context).pop(account);
+    await runBusyFuture(() async {
+      try {
+        await AuthHelper.updateUser(account);
+        Fluttertoast.showToast(msg: 'Successfully updated user profile!');
+        Navigator.of(context).pop(account);
+      } catch (e) {
+        setError(e);
+        logger.e(e);
+      } finally {
+        notifyListeners();
+      }
+    }());
+
+    if (hasError) {
+      Fluttertoast.showToast(msg: modelError.toString());
+    }
   }
 }
