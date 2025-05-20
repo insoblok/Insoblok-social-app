@@ -24,78 +24,85 @@ class VTOImagePage extends StatelessWidget {
       builder: (context, viewModel, _) {
         return Scaffold(
           appBar: AppBar(title: Text(product.name ?? 'VTO'), centerTitle: true),
-          body: ListView(
-            physics: BouncingScrollPhysics(),
-            padding: const EdgeInsets.symmetric(
-              horizontal: 20.0,
-              vertical: 24.0,
-            ),
+          body: Stack(
             children: [
-              AIImage(
-                viewModel.product.modelImage,
-                width: double.infinity,
-                height: 240.0,
-                fit: BoxFit.contain,
-              ),
-              const SizedBox(height: 12.0),
-              Row(
+              ListView(
+                physics: BouncingScrollPhysics(),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20.0,
+                  vertical: 24.0,
+                ),
                 children: [
-                  Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 8.0,
-                      vertical: 4.0,
-                    ),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColor,
-                      borderRadius: BorderRadius.circular(24.0),
-                    ),
-                    child: Text(product.categoryName ?? ''),
+                  AIImage(
+                    viewModel.product.modelImage,
+                    width: double.infinity,
+                    height: 240.0,
+                    fit: BoxFit.contain,
                   ),
-                  const Spacer(),
+                  const SizedBox(height: 12.0),
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8.0,
+                          vertical: 4.0,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).primaryColor,
+                          borderRadius: BorderRadius.circular(24.0),
+                        ),
+                        child: Text(product.categoryName ?? ''),
+                      ),
+                      const Spacer(),
+                      Text(
+                        product.regdate?.timeago ?? '',
+                        style: Theme.of(context).textTheme.labelSmall,
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 24.0),
+                  AIHelpers.htmlRender(product.description),
+
+                  const SizedBox(height: 24.0),
                   Text(
-                    product.regdate?.timeago ?? '',
-                    style: Theme.of(context).textTheme.labelSmall,
+                    'Take a Model',
+                    style: Theme.of(context).textTheme.titleSmall,
                   ),
+                  const SizedBox(height: 8.0),
+                  Container(
+                    padding: const EdgeInsets.all(16.0),
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Theme.of(context).primaryColor),
+                      borderRadius: BorderRadius.circular(16.0),
+                    ),
+                    child: Column(
+                      children: [
+                        Text(
+                          'Important: You will first receive an id number with this call. Then you will have to retrieve the image after 30/40 seconds during the second call using this id number (asynchronous generation).',
+                          style: Theme.of(context).textTheme.labelMedium,
+                        ),
+                        const SizedBox(height: 12.0),
+                        Row(
+                          spacing: 12.0,
+                          children: [
+                            VTOOriginImageView(),
+                            VTOResultImageView(),
+                          ],
+                        ),
+                        const SizedBox(height: 24.0),
+                        TextFillButton(
+                          text: 'Convert Now',
+                          isBusy: viewModel.isConverting,
+                          onTap: viewModel.onClickConvert,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                      ],
+                    ),
+                  ),
+
+                  const SizedBox(height: 24.0),
                 ],
               ),
-              const SizedBox(height: 24.0),
-              AIHelpers.htmlRender(product.description),
-
-              const SizedBox(height: 24.0),
-              Text(
-                'Take a Model',
-                style: Theme.of(context).textTheme.titleSmall,
-              ),
-              const SizedBox(height: 8.0),
-              Container(
-                padding: const EdgeInsets.all(16.0),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Theme.of(context).primaryColor),
-                  borderRadius: BorderRadius.circular(16.0),
-                ),
-                child: Column(
-                  children: [
-                    Text(
-                      'Important: You will first receive an id number with this call. Then you will have to retrieve the image after 30/40 seconds during the second call using this id number (asynchronous generation).',
-                      style: Theme.of(context).textTheme.labelMedium,
-                    ),
-                    const SizedBox(height: 12.0),
-                    Row(
-                      spacing: 12.0,
-                      children: [VTOOriginImageView(), VTOResultImageView()],
-                    ),
-                    const SizedBox(height: 24.0),
-                    TextFillButton(
-                      text: 'Convert Now',
-                      isBusy: viewModel.isConverting,
-                      onTap: viewModel.onClickConvert,
-                      color: Theme.of(context).primaryColor,
-                    ),
-                  ],
-                ),
-              ),
-
-              const SizedBox(height: 24.0),
             ],
           ),
         );
@@ -129,13 +136,7 @@ class VTOOriginImageView extends ViewModelWidget<VTOImageProvider> {
                   child: AspectRatio(
                     aspectRatio: 0.7,
                     child:
-                        viewModel.photoModel.isNotEmpty
-                            ? AIImage(
-                              viewModel.photoModel,
-                              width: double.infinity,
-                              fit: BoxFit.cover,
-                            )
-                            : viewModel.selectedFile != null
+                        viewModel.selectedFile != null
                             ? AIImage(
                               File(viewModel.selectedFile!.path),
                               width: double.infinity,
@@ -156,8 +157,7 @@ class VTOOriginImageView extends ViewModelWidget<VTOImageProvider> {
                             ),
                   ),
                 ),
-                if (((viewModel.selectedFile != null) ||
-                        (viewModel.photoModel.isNotEmpty)) &&
+                if ((viewModel.selectedFile != null) &&
                     (viewModel.resultModel.isEmpty))
                   Padding(
                     padding: const EdgeInsets.all(8.0),
@@ -224,9 +224,25 @@ class VTOResultImageView extends ViewModelWidget<VTOImageProvider> {
                         mainAxisSize: MainAxisSize.min,
                         spacing: 8.0,
                         children: [
-                          CircleImageButton(src: Icons.share),
-                          CircleImageButton(src: Icons.download),
-                          CircleImageButton(src: Icons.upload),
+                          CircleImageButton(
+                            src: Icons.fullscreen,
+                            onTap:
+                                () => AIHelpers.goToDetailView(context, [
+                                  viewModel.resultModel,
+                                ]),
+                          ),
+                          CircleImageButton(
+                            src: Icons.share,
+                            onTap: viewModel.onClickShareButton,
+                          ),
+                          CircleImageButton(
+                            src: Icons.download,
+                            onTap: viewModel.onClickDownloadButton,
+                          ),
+                          CircleImageButton(
+                            src: Icons.upload,
+                            onTap: viewModel.onClickUploadButton,
+                          ),
                         ],
                       ),
                     ),

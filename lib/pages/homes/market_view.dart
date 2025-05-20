@@ -23,6 +23,7 @@ class MarketView extends StatelessWidget {
               title: Text('Marketplace'),
               centerTitle: true,
               leading: AppLeadingView(),
+              pinned: true,
               actions: [
                 if (kDebugMode) ...{
                   IconButton(
@@ -56,8 +57,8 @@ class MarketView extends StatelessWidget {
                 delegate: SliverChildListDelegate([
                   StaggeredGrid.count(
                     crossAxisCount: 2,
-                    crossAxisSpacing: 8.0,
-                    mainAxisSpacing: 8.0,
+                    crossAxisSpacing: 16.0,
+                    mainAxisSpacing: 16.0,
                     children: [
                       ...viewModel.products.map((p) {
                         return ProductItemWidget(

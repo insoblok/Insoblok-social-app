@@ -2,12 +2,9 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-import 'package:flutter_html/flutter_html.dart';
-
 import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
-import 'package:insoblok/utils/utils.dart';
 
 class ProductImageView extends StatelessWidget {
   final String title;
@@ -81,8 +78,15 @@ class ProductItemWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(color: Theme.of(context).primaryColor),
+        color: AppSettingHelper.background,
         borderRadius: BorderRadius.circular(8.0),
+        boxShadow: [
+          BoxShadow(
+            color: AppSettingHelper.greyBackground,
+            blurRadius: 2.0,
+            spreadRadius: 3.0,
+          ),
+        ],
       ),
       child: InkWell(
         onTap: onTap,
@@ -107,10 +111,16 @@ class ProductItemWidget extends StatelessWidget {
                         vertical: 4.0,
                       ),
                       decoration: BoxDecoration(
-                        color: Theme.of(context).primaryColor,
+                        border: Border.all(
+                          color: Theme.of(context).primaryColor,
+                          width: 0.33,
+                        ),
                         borderRadius: BorderRadius.circular(24.0),
                       ),
-                      child: Text(product.categoryName ?? ''),
+                      child: Text(
+                        product.categoryName ?? '',
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
                     ),
                     const SizedBox(height: 8.0),
                     Text(
@@ -123,14 +133,14 @@ class ProductItemWidget extends StatelessWidget {
                       product.regdate?.timeago ?? '',
                       style: Theme.of(context).textTheme.labelSmall,
                     ),
-                    const SizedBox(height: 8.0),
-                    Container(
-                      constraints: BoxConstraints(maxHeight: 80.0),
-                      child: AIHelpers.htmlRender(
-                        product.description,
-                        fontSize: FontSize(12.0),
-                      ),
-                    ),
+                    // const SizedBox(height: 8.0),
+                    // Container(
+                    //   constraints: BoxConstraints(maxHeight: 80.0),
+                    //   child: AIHelpers.htmlRender(
+                    //     product.description,
+                    //     fontSize: FontSize(12.0),
+                    //   ),
+                    // ),
                   ],
                 ),
               ),

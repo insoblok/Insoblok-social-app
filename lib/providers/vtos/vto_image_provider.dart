@@ -28,13 +28,6 @@ class VTOImageProvider extends InSoBlokViewModel {
     _mediaPickerService = MediaPickerService(this.context);
   }
 
-  String _photoModel = '';
-  String get photoModel => _photoModel;
-  set photoModel(String s) {
-    _photoModel = s;
-    notifyListeners();
-  }
-
   XFile? _selectedFile;
   XFile? get selectedFile => _selectedFile;
   set selectedFile(XFile? f) {
@@ -100,7 +93,7 @@ class VTOImageProvider extends InSoBlokViewModel {
 
   Future<void> _clothingConvert() async {
     if (selectedFile == null) {
-      Fluttertoast.showToast(msg: 'Please select a model photo!');
+      Fluttertoast.showToast(msg: 'Please select a origin photo!');
       return;
     }
 
@@ -143,16 +136,16 @@ class VTOImageProvider extends InSoBlokViewModel {
 
     await runBusyFuture(() async {
       try {
-        isConverting = true;
-        var result = await VTOService.convertVTOClothing(
-          path: selectedFile!.path,
-          clothingLink: product.modelImage,
-          clothingType: product.type ?? 'tops',
-          folderName: product.categoryName?.toLowerCase() ?? 'clothing',
-        );
-        if (result != null) {
-          resultModel = result;
-        }
+        // isConverting = true;
+        // var result = await VTOService.convertVTOClothing(
+        //   path: selectedFile!.path,
+        //   clothingLink: product.modelImage,
+        //   clothingType: product.type ?? 'tops',
+        //   folderName: product.categoryName?.toLowerCase() ?? 'clothing',
+        // );
+        // if (result != null) {
+        //   resultModel = result;
+        // }
       } catch (e) {
         setError(e);
         logger.e(e);
@@ -177,16 +170,16 @@ class VTOImageProvider extends InSoBlokViewModel {
 
     await runBusyFuture(() async {
       try {
-        isConverting = true;
-        var result = await VTOService.convertVTOClothing(
-          path: selectedFile!.path,
-          clothingLink: product.modelImage,
-          clothingType: product.type ?? 'tops',
-          folderName: product.categoryName?.toLowerCase() ?? 'clothing',
-        );
-        if (result != null) {
-          resultModel = result;
-        }
+        // isConverting = true;
+        // var result = await VTOService.convertVTOClothing(
+        //   path: selectedFile!.path,
+        //   clothingLink: product.modelImage,
+        //   clothingType: product.type ?? 'tops',
+        //   folderName: product.categoryName?.toLowerCase() ?? 'clothing',
+        // );
+        // if (result != null) {
+        //   resultModel = result;
+        // }
       } catch (e) {
         setError(e);
         logger.e(e);
@@ -208,16 +201,22 @@ class VTOImageProvider extends InSoBlokViewModel {
 
     await runBusyFuture(() async {
       try {
-        var file = await NetworkHelper.downloadFile(
-          resultModel,
-          type: 'gallery',
-          ext: 'png',
-        );
-        if (file != null) {
-          Fluttertoast.showToast(
-            msg: 'Successfully image download to ${file.path}!',
+        if (_resultFile == null) {
+          var file = await NetworkHelper.downloadFile(
+            resultModel,
+            type: 'gallery',
+            ext: 'png',
           );
-          _resultFile = file;
+          if (file != null) {
+            Fluttertoast.showToast(
+              msg: 'Successfully image download to ${file.path}!',
+            );
+            _resultFile = file;
+          }
+        } else {
+          Fluttertoast.showToast(
+            msg: 'Successfully image download to ${_resultFile!.path}!',
+          );
         }
       } catch (e) {
         setError(e);
@@ -263,5 +262,26 @@ class VTOImageProvider extends InSoBlokViewModel {
     }
   }
 
-  Future<void> onClickShareButton() async {}
+  Future<void> onClickShareButton() async {
+    if (isBusy) return;
+    clearErrors();
+
+    await runBusyFuture(() async {
+      try {
+        if (_resultFile == null) {
+          await onClickDownloadButton();
+        }
+        await AIHelpers.shareFileToSocial(_resultFile!.path);
+      } catch (e) {
+        setError(e);
+        logger.e(e);
+      } finally {
+        notifyListeners();
+      }
+    }());
+
+    if (hasError) {
+      Fluttertoast.showToast(msg: modelError.toString());
+    }
+  }
 }

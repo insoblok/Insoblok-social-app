@@ -37,20 +37,20 @@ class AddStoryPage extends StatelessWidget {
                 ),
                 sliver: SliverList(
                   delegate: SliverChildListDelegate([
-                    Padding(
-                      padding: const EdgeInsets.only(left: 8.0),
-                      child: Text(
-                        'Title of Story',
-                        style: Theme.of(context).textTheme.labelMedium,
-                      ),
-                    ),
-                    const SizedBox(height: 12.0),
-                    AITextField(
-                      prefixIcon: Icon(Icons.title),
-                      hintText: 'Input Feed Title...',
-                      onChanged: (value) => viewModel.title = value,
-                    ),
-                    const SizedBox(height: 40.0),
+                    // Padding(
+                    //   padding: const EdgeInsets.only(left: 8.0),
+                    //   child: Text(
+                    //     'Title of Story',
+                    //     style: Theme.of(context).textTheme.labelMedium,
+                    //   ),
+                    // ),
+                    // const SizedBox(height: 12.0),
+                    // AITextField(
+                    //   prefixIcon: Icon(Icons.title),
+                    //   hintText: 'Input Feed Title...',
+                    //   onChanged: (value) => viewModel.title = value,
+                    // ),
+                    // const SizedBox(height: 40.0),
                     Padding(
                       padding: const EdgeInsets.only(left: 8.0),
                       child: Text(
@@ -60,28 +60,18 @@ class AddStoryPage extends StatelessWidget {
                     ),
                     const SizedBox(height: 12.0),
                     Container(
+                      height: 200.0,
                       decoration: kCardDecoration,
                       padding: const EdgeInsets.all(12.0),
                       child: InkWell(
                         onTap: viewModel.updateDescription,
                         child:
                             viewModel.quillDescription.isEmpty
-                                ? Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    vertical: 8.0,
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      Icon(Icons.description, size: 32.0),
-                                      const SizedBox(height: 12.0),
-                                      Text(
-                                        'Add Description',
-                                        style:
-                                            Theme.of(
-                                              context,
-                                            ).textTheme.labelMedium,
-                                      ),
-                                    ],
+                                ? Center(
+                                  child: Text(
+                                    'Add Description',
+                                    style:
+                                        Theme.of(context).textTheme.labelMedium,
                                   ),
                                 )
                                 : AIHelpers.htmlRender(

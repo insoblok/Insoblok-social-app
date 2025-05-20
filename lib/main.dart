@@ -66,12 +66,8 @@ class InSoBlokApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(
-          create: (context) => AppProvider()..init(context),
-        ),
-        ChangeNotifierProvider(
-          create: (context) => UploadMediaProvider()..init(context),
-        ),
+        ChangeNotifierProvider(create: (context) => AppProvider()),
+        ChangeNotifierProvider(create: (context) => UploadMediaProvider()),
       ],
       child: ViewModelBuilder<AppProvider>.reactive(
         viewModelBuilder: () => AppProvider(),

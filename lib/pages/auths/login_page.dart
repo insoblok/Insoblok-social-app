@@ -61,45 +61,44 @@ class _LoginPageState extends State<LoginPage>
         return Scaffold(
           body: Stack(
             children: [
-              // viewModel.videoPlayerController.value.isInitialized
-              //     ? LayoutBuilder(
-              //       builder: (context, constraints) {
-              //         return SizedBox(
-              //           height: constraints.maxHeight,
-              //           child: AspectRatio(
-              //             aspectRatio:
-              //                 viewModel.videoPlayerController.value.aspectRatio,
-              //             child: FittedBox(
-              //               fit: BoxFit.cover,
-              //               child: SizedBox(
-              //                 width:
-              //                     viewModel
-              //                         .videoPlayerController
-              //                         .value
-              //                         .size
-              //                         .width,
-              //                 height:
-              //                     viewModel
-              //                         .videoPlayerController
-              //                         .value
-              //                         .size
-              //                         .height,
-              //                 child: Chewie(
-              //                   controller: viewModel.chewieController,
-              //                 ),
-              //               ),
-              //             ),
-              //           ),
-              //         );
-              //       },
-              //     )
-              //     :
-              AIImage(
-                AIImages.imgBackSplash,
-                width: double.infinity,
-                height: double.infinity,
-                fit: BoxFit.cover,
-              ),
+              viewModel.videoPlayerController.value.isInitialized
+                  ? LayoutBuilder(
+                    builder: (context, constraints) {
+                      return SizedBox(
+                        height: constraints.maxHeight,
+                        child: AspectRatio(
+                          aspectRatio:
+                              viewModel.videoPlayerController.value.aspectRatio,
+                          child: FittedBox(
+                            fit: BoxFit.cover,
+                            child: SizedBox(
+                              width:
+                                  viewModel
+                                      .videoPlayerController
+                                      .value
+                                      .size
+                                      .width,
+                              height:
+                                  viewModel
+                                      .videoPlayerController
+                                      .value
+                                      .size
+                                      .height,
+                              child: Chewie(
+                                controller: viewModel.chewieController,
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  )
+                  : AIImage(
+                    AIImages.imgBackSplash,
+                    width: double.infinity,
+                    height: double.infinity,
+                    fit: BoxFit.cover,
+                  ),
               Padding(
                 padding: const EdgeInsets.all(24.0),
                 child: Column(

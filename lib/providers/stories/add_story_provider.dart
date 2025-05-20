@@ -26,6 +26,8 @@ class AddStoryProvider extends InSoBlokViewModel {
   Future<void> init(BuildContext context) async {
     this.context = context;
     provider = context.read<UploadMediaProvider>();
+    provider.init(context);
+    // provider = Provider.of<UploadMediaProvider>(context, listen: false);
   }
 
   String _title = '';

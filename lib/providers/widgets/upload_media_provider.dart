@@ -34,7 +34,7 @@ class UploadMediaProvider extends InSoBlokViewModel {
     String? title,
     int? maxImages,
   }) async {
-    var files = await _mediaPicker.onMultiMediaPicker(
+    var files = await _mediaPicker.onPickerStoryMedia(
       limit: (maxImages ?? 9 - medias.length),
     );
     if (files.isEmpty) {
