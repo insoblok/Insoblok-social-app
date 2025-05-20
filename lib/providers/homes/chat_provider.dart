@@ -48,7 +48,5 @@ class ChatProvider extends InSoBlokViewModel {
       logger.d(_rooms.length);
       notifyListeners();
     });
-
-    balance = await EthereumHelper.getBalance();
   }
 }

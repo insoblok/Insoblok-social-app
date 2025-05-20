@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 
 import 'package:chewie/chewie.dart';
@@ -61,8 +59,6 @@ class LoginProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  // final _walletService = WalletService();
-
   late ReownService _reownService;
   ReownService get reownService => _reownService;
 
@@ -72,12 +68,15 @@ class LoginProvider extends InSoBlokViewModel {
 
     await runBusyFuture(() async {
       try {
-        // var service = EthereumHelper.service;
-        // var rng = Random.secure();
-        // await service.connectWithRandom(rng);
-
-        // await AuthHelper.service.signIn();
-        // await _walletService.connectWithWalletConnect();
+        await reownService.init();
+        if (reownService.isConnected) {
+          logger.d(reownService.walletAddress);
+          await AuthHelper.service.signIn(
+            walletAddress: reownService.walletAddress,
+          );
+        } else {
+          setError('Failed wallet connected!');
+        }
       } catch (e) {
         setError(e);
         logger.e(e);
@@ -89,12 +88,16 @@ class LoginProvider extends InSoBlokViewModel {
     if (hasError) {
       Fluttertoast.showToast(msg: modelError.toString());
     } else {
-      // if (AuthHelper.user?.firstName != null) {
-      //   await AuthHelper.setUser(AuthHelper.user!.copyWith(status: 'Online'));
-      //   Routers.goToMainPage(context);
-      // } else {
-      //   Routers.goToRegisterPage(context);
-      // }
+      if (AuthHelper.user?.firstName != null) {
+        await AuthHelper.setUser(AuthHelper.user!.copyWith(status: 'Online'));
+        Routers.goToMainPage(context);
+      } else {
+        Routers.goToRegisterPage(context);
+      }
     }
+  }
+
+  Future<void> initReownService() async {
+    await reownService.init();
   }
 }

@@ -3,7 +3,6 @@ import 'package:flutter/foundation.dart';
 import 'package:get_ip_address/get_ip_address.dart';
 import 'package:observable_ish/observable_ish.dart';
 import 'package:stacked/stacked.dart';
-// import 'package:walletconnect_dart/walletconnect_dart.dart';
 
 import 'package:insoblok/locator.dart';
 import 'package:insoblok/models/models.dart';
@@ -36,12 +35,7 @@ class AuthService with ListenableServiceMixin {
     notifyListeners();
   }
 
-  // Future<void> setSessionStatus({SessionStatus? session}) async {
-  //   _sessionStatusRx.value = session;
-  //   notifyListeners();
-  // }
-
-  Future<void> signIn() async {
+  Future<void> signIn({String? walletAddress}) async {
     try {
       await FirebaseHelper.signInFirebase();
       var credential = FirebaseHelper.userCredential;
@@ -56,13 +50,13 @@ class AuthService with ListenableServiceMixin {
         if (user == null) {
           user = UserModel(
             uid: uid,
-            walletAddress: EthereumHelper.address?.hex,
+            walletAddress: walletAddress,
             ipAddress: kDebugMode ? kDefaultIpAddress : data['ip'],
           );
           user = await FirebaseHelper.createUser(user);
         } else {
           user = user.copyWith(
-            walletAddress: EthereumHelper.address?.hex,
+            walletAddress: walletAddress,
             ipAddress: kDebugMode ? kDefaultIpAddress : data['ip'],
           );
           await FirebaseHelper.updateUser(user);
@@ -78,6 +72,7 @@ class AuthService with ListenableServiceMixin {
   Future<UserModel?> signInEmail({
     required String email,
     required String password,
+    String? walletAddress,
   }) async {
     try {
       await FirebaseHelper.signInEmail(email: email, password: password);
@@ -91,12 +86,11 @@ class AuthService with ListenableServiceMixin {
         if (user != null) {
           if (user.walletAddress == null) {
             user = user.copyWith(
-              walletAddress: EthereumHelper.address?.hex,
               ipAddress: kDebugMode ? kDefaultIpAddress : data['ip'],
             );
           } else {
             user = user.copyWith(
-              // walletAddress: EthereumHelper.address?.hex,
+              walletAddress: walletAddress,
               ipAddress: kDebugMode ? kDefaultIpAddress : data['ip'],
             );
           }
@@ -116,12 +110,8 @@ class AuthService with ListenableServiceMixin {
 class AuthHelper {
   static AuthService get service => locator<AuthService>();
 
-  // static Future<void> setSessionStatus({SessionStatus? session}) =>
-  //     service.setSessionStatus(session: session);
-
   static UserModel? get user => service.user;
   static bool get isLoggedIn => service.isLoggedIn;
-  // static SessionStatus? get sessionStatus => service.sessionStatus;
 
   static Future<void> setUser(UserModel model) => service.setUser(model);
 }

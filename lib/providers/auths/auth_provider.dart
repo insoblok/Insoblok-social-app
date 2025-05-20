@@ -1,10 +1,8 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:insoblok/extensions/extensions.dart';
 
+import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
@@ -17,8 +15,12 @@ class AuthProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  late ReownService _reownService;
+  ReownService get reownService => _reownService;
+
   Future<void> init(BuildContext context) async {
     this.context = context;
+    _reownService = ReownService(context);
   }
 
   String _emailAddress = '';
@@ -51,23 +53,25 @@ class AuthProvider extends InSoBlokViewModel {
       Fluttertoast.showToast(msg: 'No matched email!');
       return;
     }
+
     if (isBusy) return;
     clearErrors();
 
     await runBusyFuture(() async {
       try {
-        // var service = EthereumHelper.service;
-        // await service.connectWithPrivateKey(kMetamaskApiKey);
-        var service = EthereumHelper.service;
-        var rng = Random.secure();
-        await service.connectWithRandom(rng);
+        await reownService.init();
+        if (reownService.isConnected) {
+          logger.d(reownService.walletAddress);
+          await AuthHelper.service.signInEmail(
+            email: emailAddress,
+            password: password,
+            walletAddress: reownService.walletAddress,
+          );
 
-        await AuthHelper.service.signInEmail(
-          email: emailAddress,
-          password: password,
-        );
-
-        Routers.goToMainPage(context);
+          Routers.goToMainPage(context);
+        } else {
+          setError('Failed wallet connected!');
+        }
       } catch (e) {
         setError(e);
         logger.e(e);

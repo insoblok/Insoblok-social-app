@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:chewie/chewie.dart';
-import 'package:insoblok/routers/routers.dart';
-import 'package:reown_appkit/reown_appkit.dart';
 import 'package:stacked/stacked.dart';
 
 import 'package:insoblok/generated/l10n.dart';
 import 'package:insoblok/providers/providers.dart';
+import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
@@ -62,44 +61,45 @@ class _LoginPageState extends State<LoginPage>
         return Scaffold(
           body: Stack(
             children: [
-              viewModel.videoPlayerController.value.isInitialized
-                  ? LayoutBuilder(
-                    builder: (context, constraints) {
-                      return SizedBox(
-                        height: constraints.maxHeight,
-                        child: AspectRatio(
-                          aspectRatio:
-                              viewModel.videoPlayerController.value.aspectRatio,
-                          child: FittedBox(
-                            fit: BoxFit.cover,
-                            child: SizedBox(
-                              width:
-                                  viewModel
-                                      .videoPlayerController
-                                      .value
-                                      .size
-                                      .width,
-                              height:
-                                  viewModel
-                                      .videoPlayerController
-                                      .value
-                                      .size
-                                      .height,
-                              child: Chewie(
-                                controller: viewModel.chewieController,
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  )
-                  : AIImage(
-                    AIImages.imgBackSplash,
-                    width: double.infinity,
-                    height: double.infinity,
-                    fit: BoxFit.cover,
-                  ),
+              // viewModel.videoPlayerController.value.isInitialized
+              //     ? LayoutBuilder(
+              //       builder: (context, constraints) {
+              //         return SizedBox(
+              //           height: constraints.maxHeight,
+              //           child: AspectRatio(
+              //             aspectRatio:
+              //                 viewModel.videoPlayerController.value.aspectRatio,
+              //             child: FittedBox(
+              //               fit: BoxFit.cover,
+              //               child: SizedBox(
+              //                 width:
+              //                     viewModel
+              //                         .videoPlayerController
+              //                         .value
+              //                         .size
+              //                         .width,
+              //                 height:
+              //                     viewModel
+              //                         .videoPlayerController
+              //                         .value
+              //                         .size
+              //                         .height,
+              //                 child: Chewie(
+              //                   controller: viewModel.chewieController,
+              //                 ),
+              //               ),
+              //             ),
+              //           ),
+              //         );
+              //       },
+              //     )
+              //     :
+              AIImage(
+                AIImages.imgBackSplash,
+                width: double.infinity,
+                height: double.infinity,
+                fit: BoxFit.cover,
+              ),
               Padding(
                 padding: const EdgeInsets.all(24.0),
                 child: Column(
@@ -240,28 +240,6 @@ class _LoginPageState extends State<LoginPage>
                         ),
                       ),
                     ),
-                    const SizedBox(height: 24.0),
-                    AppKitModalNetworkSelectButton(
-                      appKit: viewModel.reownService.appKitModel,
-                    ),
-                    const SizedBox(height: 24.0),
-                    AppKitModalConnectButton(
-                      appKit: viewModel.reownService.appKitModel,
-                    ),
-                    if (viewModel.reownService.appKitModel.isConnected) ...{
-                      const SizedBox(height: 24.0),
-                      AppKitModalAccountButton(
-                        appKitModal: viewModel.reownService.appKitModel,
-                      ),
-                      SizedBox(height: 24.0),
-                      AppKitModalAddressButton(
-                        appKitModal: viewModel.reownService.appKitModel,
-                      ),
-                      SizedBox(height: 24.0),
-                      AppKitModalBalanceButton(
-                        appKitModal: viewModel.reownService.appKitModel,
-                      ),
-                    },
                   ],
                 ),
               ),

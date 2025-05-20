@@ -7,7 +7,6 @@ GetIt locator = GetIt.I;
 void setupLocator() {
   locator.registerSingleton(AuthService());
   locator.registerSingleton(FirebaseService());
-  locator.registerSingleton(EthereumService());
   locator.registerSingleton(AppSettingService());
   locator.registerSingleton(NetworkService());
 

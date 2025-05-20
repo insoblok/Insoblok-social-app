@@ -18,7 +18,6 @@ import 'package:insoblok/pages/pages.dart';
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
-import 'package:insoblok/utils/utils.dart';
 
 class MyHttpOverrides extends HttpOverrides {
   @override
@@ -40,7 +39,6 @@ void main() async {
 
   setupLocator();
 
-  EthereumHelper.init(kEthereumRpcUrl);
   await FirebaseHelper.init();
   await NetworkHelper.service.init();
   FirebaseFirestore.instance.settings = const Settings(

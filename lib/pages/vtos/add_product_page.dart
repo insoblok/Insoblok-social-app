@@ -161,106 +161,109 @@ class AddProductPage extends StatelessWidget {
               const SizedBox(height: 18.0),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
+                spacing: 24.0,
                 children: [
-                  Column(
-                    children: [
-                      Text('Product'),
-                      const SizedBox(height: 8.0),
-                      Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12.0),
-                          border: Border.all(
-                            width: 0.33,
-                            color: Theme.of(context).primaryColor,
+                  Expanded(
+                    child: Column(
+                      children: [
+                        Text('Product'),
+                        const SizedBox(height: 8.0),
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12.0),
+                            border: Border.all(
+                              width: 0.33,
+                              color: Theme.of(context).primaryColor,
+                            ),
                           ),
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(12.0),
-                          child: SizedBox(
-                            height: 200,
-                            child: AspectRatio(
-                              aspectRatio: 0.7,
-                              child: Stack(
-                                fit: StackFit.expand,
-                                children: [
-                                  viewModel.avatarImage == null
-                                      ? Container()
-                                      : AIImage(
-                                        File(viewModel.avatarImage!.path),
-                                        fit: BoxFit.cover,
-                                      ),
-                                  Align(
-                                    alignment: Alignment.center,
-                                    child: IconButton(
-                                      onPressed: () {
-                                        viewModel.selectProductImage(
-                                          isImage: true,
-                                        );
-                                      },
-                                      icon: Icon(
-                                        size: 80.0,
-                                        Icons.add_outlined,
-                                        color: Theme.of(context).primaryColor,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(12.0),
+                            child: SizedBox(
+                              child: AspectRatio(
+                                aspectRatio: 0.7,
+                                child: Stack(
+                                  fit: StackFit.expand,
+                                  children: [
+                                    viewModel.avatarImage == null
+                                        ? Container()
+                                        : AIImage(
+                                          File(viewModel.avatarImage!.path),
+                                          fit: BoxFit.cover,
+                                        ),
+                                    Align(
+                                      alignment: Alignment.center,
+                                      child: IconButton(
+                                        onPressed: () {
+                                          viewModel.selectProductImage(
+                                            isImage: true,
+                                          );
+                                        },
+                                        icon: Icon(
+                                          size: 80.0,
+                                          Icons.add_outlined,
+                                          color: Theme.of(context).primaryColor,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-                  Column(
-                    children: [
-                      Text('Model'),
-                      const SizedBox(height: 8.0),
-                      Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12.0),
-                          border: Border.all(
-                            width: 0.33,
-                            color: Theme.of(context).primaryColor,
+                  Expanded(
+                    child: Column(
+                      children: [
+                        Text('Model'),
+                        const SizedBox(height: 8.0),
+                        Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(12.0),
+                            border: Border.all(
+                              width: 0.33,
+                              color: Theme.of(context).primaryColor,
+                            ),
                           ),
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(12.0),
-                          child: SizedBox(
-                            height: 200,
-                            child: AspectRatio(
-                              aspectRatio: 0.7,
-                              child: Stack(
-                                fit: StackFit.expand,
-                                children: [
-                                  viewModel.modelImage == null
-                                      ? Container()
-                                      : AIImage(
-                                        File(viewModel.modelImage!.path),
-                                        fit: BoxFit.cover,
-                                      ),
-                                  Align(
-                                    alignment: Alignment.center,
-                                    child: IconButton(
-                                      onPressed: () {
-                                        viewModel.selectModelImage(
-                                          isImage: true,
-                                        );
-                                      },
-                                      icon: Icon(
-                                        size: 80.0,
-                                        Icons.add_outlined,
-                                        color: Theme.of(context).primaryColor,
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(12.0),
+                            child: SizedBox(
+                              child: AspectRatio(
+                                aspectRatio: 0.7,
+                                child: Stack(
+                                  fit: StackFit.expand,
+                                  children: [
+                                    viewModel.modelImage == null
+                                        ? Container()
+                                        : AIImage(
+                                          File(viewModel.modelImage!.path),
+                                          fit: BoxFit.cover,
+                                        ),
+                                    Align(
+                                      alignment: Alignment.center,
+                                      child: IconButton(
+                                        onPressed: () {
+                                          viewModel.selectModelImage(
+                                            isImage: true,
+                                          );
+                                        },
+                                        icon: Icon(
+                                          size: 80.0,
+                                          Icons.add_outlined,
+                                          color: Theme.of(context).primaryColor,
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ],
               ),

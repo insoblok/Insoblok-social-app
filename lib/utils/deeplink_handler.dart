@@ -22,6 +22,7 @@ class DeepLinkHandler {
 
   static void _onLink(dynamic link) async {
     try {
+      logger.d(link);
       _appKitModal.dispatchEnvelope(link);
     } catch (e) {
       logger.d(e);
