@@ -12,7 +12,20 @@
           "package_name": "insoblok.social.app"
         }
       },
-      "oauth_client": [],
+      "oauth_client": [
+        {
+          "client_id": "811299369538-qkepc3ulfhtql50ufl6ehrkcbgb859mm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "insoblok.social.app",
+            "certificate_hash": "fbfe4ff41df3f546c8315a9f7247980ead00ce23"
+          }
+        },
+        {
+          "client_id": "811299369538-42lr8g7r0gpq5t1irqtq9gspukfmdv2s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
       "api_key": [
         {
           "current_key": "AIzaSyAN4xG1SxbgazfmqjxG84yX4Il1DV01Jxc"
@@ -20,7 +33,19 @@
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": []
+          "other_platform_oauth_client": [
+            {
+              "client_id": "811299369538-42lr8g7r0gpq5t1irqtq9gspukfmdv2s.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "811299369538-8u8osjvdekkrn5ic20vg82m9bjlurg2r.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "insoblok.social.app"
+              }
+            }
+          ]
         }
       }
     }

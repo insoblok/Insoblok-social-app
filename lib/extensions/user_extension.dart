@@ -28,9 +28,17 @@ extension UserModelExt on UserModel {
   }
 
   String get fullName {
-    var f = (firstName ?? '--').trim();
-    var l = (lastName ?? '--').trim();
-    return '${f[0].toUpperCase()}${f.substring(1)} ${l[0].toUpperCase()}${l.substring(1)}';
+    try {
+      if (lastName?.isEmpty ?? true) {
+        var f = (firstName ?? '--').trim();
+        return '${f[0].toUpperCase()}${f.substring(1)}';
+      }
+      var f = (firstName ?? '--').trim();
+      var l = (lastName ?? '--').trim();
+      return '${f[0].toUpperCase()}${f.substring(1)} ${l[0].toUpperCase()}${l.substring(1)}';
+    } catch (e) {
+      return firstName ?? '';
+    }
   }
 
   List<Color> getGradientColors(int number) {
