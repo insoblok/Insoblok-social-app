@@ -54,6 +54,7 @@ extension MapExt on Map<String, dynamic> {
           ..remove('id')
           ..remove('regdate')
           ..remove('timestamp');
+
     return newJson;
   }
 }

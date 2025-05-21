@@ -57,76 +57,76 @@ class LookbookView extends StatelessWidget {
                 },
                 SliverList(
                   delegate: SliverChildListDelegate([
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 20.0,
-                        vertical: 8.0,
-                      ),
-                      child: SizedBox(
-                        height: 160.0,
-                        child: Row(
-                          children: [
-                            AspectRatio(
-                              aspectRatio: 0.6,
-                              child: ClipRRect(
-                                borderRadius: BorderRadius.circular(8.0),
-                                child: Container(
-                                  color: Theme.of(context).primaryColor,
-                                  child: Stack(
-                                    fit: StackFit.expand,
-                                    children: [
-                                      AIAvatarImage(
-                                        viewModel.user?.avatar,
-                                        textSize: 36.0,
-                                        fullname:
-                                            viewModel.user?.nickId ?? 'Test',
-                                      ),
-                                      Align(
-                                        alignment: Alignment.bottomCenter,
-                                        child: Padding(
-                                          padding: const EdgeInsets.only(
-                                            bottom: 12.0,
-                                          ),
-                                          child: Text(
-                                            'Create Story',
-                                            style: TextStyle(
-                                              fontSize: 11.0,
-                                              color: AIColors.white,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 8.0),
-                            Expanded(
-                              child: SingleChildScrollView(
-                                scrollDirection: Axis.horizontal,
-                                child: Row(
-                                  spacing: 8.0,
-                                  children: [
-                                    for (var i = 0; i < 10; i++) ...{
-                                      AspectRatio(
-                                        aspectRatio: 0.6,
-                                        child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(
-                                            8.0,
-                                          ),
-                                          child: Container(color: Colors.red),
-                                        ),
-                                      ),
-                                    },
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
+                    // Padding(
+                    //   padding: const EdgeInsets.symmetric(
+                    //     horizontal: 20.0,
+                    //     vertical: 8.0,
+                    //   ),
+                    //   child: SizedBox(
+                    //     height: 160.0,
+                    //     child: Row(
+                    //       children: [
+                    //         AspectRatio(
+                    //           aspectRatio: 0.6,
+                    //           child: ClipRRect(
+                    //             borderRadius: BorderRadius.circular(8.0),
+                    //             child: Container(
+                    //               color: Theme.of(context).primaryColor,
+                    //               child: Stack(
+                    //                 fit: StackFit.expand,
+                    //                 children: [
+                    //                   AIAvatarImage(
+                    //                     viewModel.user?.avatar,
+                    //                     textSize: 36.0,
+                    //                     fullname:
+                    //                         viewModel.user?.nickId ?? 'Test',
+                    //                   ),
+                    //                   Align(
+                    //                     alignment: Alignment.bottomCenter,
+                    //                     child: Padding(
+                    //                       padding: const EdgeInsets.only(
+                    //                         bottom: 12.0,
+                    //                       ),
+                    //                       child: Text(
+                    //                         'Create Story',
+                    //                         style: TextStyle(
+                    //                           fontSize: 11.0,
+                    //                           color: AIColors.white,
+                    //                         ),
+                    //                       ),
+                    //                     ),
+                    //                   ),
+                    //                 ],
+                    //               ),
+                    //             ),
+                    //           ),
+                    //         ),
+                    //         const SizedBox(width: 8.0),
+                    //         Expanded(
+                    //           child: SingleChildScrollView(
+                    //             scrollDirection: Axis.horizontal,
+                    //             child: Row(
+                    //               spacing: 8.0,
+                    //               children: [
+                    //                 for (var i = 0; i < 10; i++) ...{
+                    //                   AspectRatio(
+                    //                     aspectRatio: 0.6,
+                    //                     child: ClipRRect(
+                    //                       borderRadius: BorderRadius.circular(
+                    //                         8.0,
+                    //                       ),
+                    //                       child: Container(color: Colors.red),
+                    //                     ),
+                    //                   ),
+                    //                 },
+                    //               ],
+                    //             ),
+                    //           ),
+                    //         ),
+                    //       ],
+                    //     ),
+                    //   ),
+                    // ),
                     ...viewModel.stories.reversed.map((story) {
                       return StoryListCell(story: story);
                     }),

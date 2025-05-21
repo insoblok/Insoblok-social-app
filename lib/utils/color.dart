@@ -21,7 +21,7 @@ class AIColors {
   static Color yellow = const Color.fromARGB(255, 214, 195, 18);
 
   static Color darkBackground = Color(0xFF1F1F1F);
-  static Color lightBackground = Color(0xEFEFEFFF);
+  static Color lightBackground = Color(0xffffffff);
 
   static Color greyTextColor = Color(0xFF687684);
 

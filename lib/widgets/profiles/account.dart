@@ -172,7 +172,7 @@ class AccountFloatingHeaderView extends ViewModelWidget<AccountProvider> {
     return Row(
       spacing: 12.0,
       children: [
-        for (var i = 0; i < 3; i++) ...{
+        for (var i = 0; i < 4; i++) ...{
           Expanded(
             child: InkWell(
               onTap: () => viewModel.pageIndex = i,
@@ -362,7 +362,7 @@ class AccountPrivateInfoView extends ViewModelWidget<UpdateProfileProvider> {
                           AIImage(AIImages.icImage, height: 32.0),
                           const SizedBox(height: 12.0),
                           Text(
-                            '+ Discovery image',
+                            'Discovery image',
                             style: Theme.of(context).textTheme.labelLarge,
                           ),
                         ],

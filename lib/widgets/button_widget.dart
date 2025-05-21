@@ -196,3 +196,33 @@ class CustomCircleBackButton extends StatelessWidget {
     );
   }
 }
+
+class CircleImageButton extends StatelessWidget {
+  final dynamic src;
+  final double? size;
+  final void Function()? onTap;
+
+  const CircleImageButton({
+    super.key,
+    required this.src,
+    this.size,
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        width: size ?? 36.0,
+        height: size ?? 36.0,
+        decoration: BoxDecoration(
+          color: Theme.of(context).primaryColor.withAlpha(128),
+          shape: BoxShape.circle,
+        ),
+        alignment: Alignment.center,
+        child: AIImage(src, width: 20.0, height: 20.0),
+      ),
+    );
+  }
+}

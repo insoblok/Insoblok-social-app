@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+
 import 'package:stacked/stacked.dart';
+
 import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/pages/pages.dart';
 import 'package:insoblok/providers/providers.dart';
@@ -232,11 +234,11 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
   }
 
   @override
-  void didChangeAppLifecycleState(AppLifecycleState state) async {
-    if (state == AppLifecycleState.resumed) {
-      await AuthHelper.setUser(AuthHelper.user!.copyWith(status: 'Online'));
-    } else {
-      await AuthHelper.setUser(AuthHelper.user!.copyWith(status: 'Offline'));
-    }
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // if (state == AppLifecycleState.resumed) {
+    //   AuthHelper.updateStatus('Online');
+    // } else {
+    //   AuthHelper.updateStatus('Offline');
+    // }
   }
 }

@@ -15,6 +15,43 @@ class MediaPickerService {
     _picker = ImagePicker();
   }
 
+  Future<List<XFile>> onPickerStoryMedia({int? limit}) async {
+    var mediaSource = await _showMediaSource();
+    logger.d(mediaSource);
+
+    if (mediaSource != null) {
+      var isAllowed = false;
+      isAllowed =
+          mediaSource == ImageSource.gallery
+              ? ((await PermissionService.requestGalleryPermission()) ?? false)
+              : ((await PermissionService.requestCameraPermission()) ?? false);
+
+      if (isAllowed) {
+        List<XFile> medias = [];
+        if (mediaSource == ImageSource.camera) {
+          var media = await _picker.pickVideo(
+            source: mediaSource,
+            maxDuration: const Duration(seconds: 10),
+          );
+          if (media != null) {
+            medias.add(media);
+          }
+        } else {
+          var selects = await onMultiMediaPicker(limit: limit);
+          medias.addAll(selects);
+        }
+
+        if (medias.isEmpty) {
+          Fluttertoast.showToast(msg: 'No selected medias!');
+        }
+        return medias;
+      } else {
+        Fluttertoast.showToast(msg: 'Permission Denided!');
+      }
+    }
+    return [];
+  }
+
   Future<XFile?> onPickerSingleMedia({
     required bool isImage,
     Duration? maxDuration,
@@ -52,8 +89,8 @@ class MediaPickerService {
     return null;
   }
 
-  Future<ImageSource?> _showMediaSource() async {
-    return await showModalBottomSheet<ImageSource>(
+  Future<ImageSource?> _showMediaSource() {
+    return showModalBottomSheet<ImageSource>(
       context: _context,
       builder: (context) {
         return SafeArea(

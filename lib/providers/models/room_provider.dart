@@ -28,6 +28,9 @@ class RoomProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  final _userService = UserService();
+  UserService get userService => _userService;
+
   Future<void> init(BuildContext context, {required RoomModel model}) async {
     this.context = context;
     room = model;
@@ -45,11 +48,11 @@ class RoomProvider extends InSoBlokViewModel {
         if (room.uid == user?.uid) {
           chatUserId = (room.uids ?? [])[1];
         }
-        chatUser = await FirebaseHelper.getUser(chatUserId!);
+        chatUser = await userService.getUser(chatUserId!);
         if (chatUser == null) {
           setError('Firebase Error! Please try again later.');
         } else {
-          FirebaseHelper.getUserStream(chatUser!.id!).listen((doc) {
+          userService.getUserStream(chatUser!.id!).listen((doc) {
             var json = doc.data();
             if (json != null) {
               json['id'] = doc.id;

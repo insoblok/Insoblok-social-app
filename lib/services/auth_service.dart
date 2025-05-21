@@ -3,7 +3,6 @@ import 'package:flutter/foundation.dart';
 import 'package:get_ip_address/get_ip_address.dart';
 import 'package:observable_ish/observable_ish.dart';
 import 'package:stacked/stacked.dart';
-// import 'package:walletconnect_dart/walletconnect_dart.dart';
 
 import 'package:insoblok/locator.dart';
 import 'package:insoblok/models/models.dart';
@@ -14,114 +13,102 @@ class AuthService with ListenableServiceMixin {
   final RxValue<UserModel?> _userRx = RxValue<UserModel?>(null);
   UserModel? get user => _userRx.value;
 
-  // final RxValue<SessionStatus?> _sessionStatusRx = RxValue<SessionStatus?>(
-  //   null,
-  // );
-  // SessionStatus? get sessionStatus => _sessionStatusRx.value;
-
   bool get isLoggedIn => user?.walletAddress != null;
 
   AuthService() {
-    listenToReactiveValues([
-      _userRx,
-      // _sessionStatusRx,
-    ]);
+    listenToReactiveValues([_userRx]);
   }
 
-  Future<void> setUser(UserModel model) async {
-    var isUpdated = await FirebaseHelper.updateUser(model);
-    if (isUpdated) {
-      _userRx.value = model;
-    }
+  Future<void> updateUser(UserModel model) async {
+    await userService.updateUser(model);
+    _userRx.value = model;
     notifyListeners();
   }
 
-  // Future<void> setSessionStatus({SessionStatus? session}) async {
-  //   _sessionStatusRx.value = session;
-  //   notifyListeners();
-  // }
+  late UserService _userService;
+  UserService get userService => _userService;
 
-  Future<void> signIn() async {
-    try {
-      await FirebaseHelper.signInFirebase();
-      var credential = FirebaseHelper.userCredential;
-      var uid = credential.user?.uid;
-      if (uid != null) {
-        logger.d(uid);
-        var user = await FirebaseHelper.getUser(uid);
+  void init() {
+    _userService = UserService();
+  }
 
-        var ipAddress = IpAddress(type: RequestType.json);
-        var data = await ipAddress.getIpAddress();
+  Future<void> updateStatus(String status) async {
+    await userService.updateUser(user!.copyWith(status: status));
+  }
 
-        if (user == null) {
-          user = UserModel(
-            uid: uid,
-            walletAddress: EthereumHelper.address?.hex,
-            ipAddress: kDebugMode ? kDefaultIpAddress : data['ip'],
-          );
-          user = await FirebaseHelper.createUser(user);
-        } else {
-          user = user.copyWith(
-            walletAddress: EthereumHelper.address?.hex,
-            ipAddress: kDebugMode ? kDefaultIpAddress : data['ip'],
-          );
-          await FirebaseHelper.updateUser(user);
-        }
-        _userRx.value = user;
-        notifyListeners();
+  Future<void> signIn({String? walletAddress}) async {
+    await FirebaseHelper.signInFirebase();
+    var credential = FirebaseHelper.userCredential;
+    var uid = credential.user?.uid;
+    if (uid != null) {
+      logger.d(uid);
+      var newUser = await userService.getUser(uid);
+
+      var ipAddress = IpAddress(type: RequestType.json);
+      var data = await ipAddress.getIpAddress();
+
+      if (newUser == null) {
+        newUser = UserModel(
+          uid: uid,
+          walletAddress: walletAddress,
+          ipAddress: kDebugMode ? kDefaultIpAddress : data['ip'],
+        );
+        newUser = await userService.createUser(newUser);
+        _userRx.value = newUser;
+      } else {
+        newUser = newUser.copyWith(
+          walletAddress: walletAddress,
+          ipAddress: kDebugMode ? kDefaultIpAddress : data['ip'],
+        );
+        await updateUser(newUser);
       }
-    } catch (e) {
-      logger.e(e);
     }
   }
 
-  Future<UserModel?> signInEmail({
+  Future<void> signInEmail({
     required String email,
     required String password,
+    String? walletAddress,
   }) async {
-    try {
-      await FirebaseHelper.signInEmail(email: email, password: password);
-      var credential = FirebaseHelper.userCredential;
-      var uid = credential.user?.uid;
-      if (uid != null) {
-        logger.d(uid);
-        var user = await FirebaseHelper.getUser(uid);
+    await FirebaseHelper.signInEmail(email: email, password: password);
+    var credential = FirebaseHelper.userCredential;
+    var uid = credential.user?.uid;
+    if (uid != null) {
+      logger.d(uid);
+      var newUser = await userService.getUser(uid);
+      if (newUser != null) {
+        logger.d(newUser.toJson());
+
         var ipAddress = IpAddress(type: RequestType.json);
         var data = await ipAddress.getIpAddress();
-        if (user != null) {
-          if (user.walletAddress == null) {
-            user = user.copyWith(
-              walletAddress: EthereumHelper.address?.hex,
-              ipAddress: kDebugMode ? kDefaultIpAddress : data['ip'],
-            );
-          } else {
-            user = user.copyWith(
-              // walletAddress: EthereumHelper.address?.hex,
-              ipAddress: kDebugMode ? kDefaultIpAddress : data['ip'],
-            );
-          }
-
-          await FirebaseHelper.updateUser(user);
-          _userRx.value = user;
+        if (newUser.walletAddress != null) {
+          newUser = newUser.copyWith(
+            ipAddress: kDebugMode ? kDefaultIpAddress : data['ip'],
+          );
+        } else {
+          newUser = newUser.copyWith(
+            walletAddress: walletAddress,
+            ipAddress: kDebugMode ? kDefaultIpAddress : data['ip'],
+          );
         }
-        return user;
+
+        await updateUser(newUser);
+      } else {
+        throw Exception('Failed server fatch!');
       }
-    } catch (e) {
-      logger.e(e);
+    } else {
+      throw Exception('No matched email or password!');
     }
-    return null;
   }
 }
 
 class AuthHelper {
   static AuthService get service => locator<AuthService>();
 
-  // static Future<void> setSessionStatus({SessionStatus? session}) =>
-  //     service.setSessionStatus(session: session);
-
   static UserModel? get user => service.user;
   static bool get isLoggedIn => service.isLoggedIn;
-  // static SessionStatus? get sessionStatus => service.sessionStatus;
 
-  static Future<void> setUser(UserModel model) => service.setUser(model);
+  static Future<void> updateUser(UserModel model) => service.updateUser(model);
+  static Future<void> updateStatus(String status) =>
+      service.updateStatus(status);
 }

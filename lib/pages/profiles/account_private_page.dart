@@ -76,7 +76,7 @@ class AccountPrivatePage extends StatelessWidget {
               Container(
                 decoration: kNoBorderDecoration,
                 child: AINoBorderTextField(
-                  hintText: 'Emter your city',
+                  hintText: 'Enter your city',
                   initialValue: viewModel.account.city,
                   onChanged: viewModel.updateCity,
                 ),

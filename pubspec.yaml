@@ -29,6 +29,7 @@ dependencies:
   flutter_html: any
   gradient_borders: any
   loading_indicator: any
+  flutter_staggered_grid_view: any
 
   logger: any
   freezed_annotation: any
@@ -48,8 +49,6 @@ dependencies:
   get_it: any
   stacked: any
 
-  # walletconnect_dart: any
-  web3dart: any
   url_launcher: any
   http: any
   share_plus: any

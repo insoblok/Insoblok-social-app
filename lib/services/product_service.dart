@@ -13,7 +13,7 @@ class ProductService {
     var productSnapshot =
         await _firestore
             .collection('product')
-            .orderBy('timestamp', descending: false)
+            .orderBy('timestamp', descending: true)
             .get();
     for (var doc in productSnapshot.docs) {
       try {

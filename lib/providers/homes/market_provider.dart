@@ -1,26 +1,11 @@
 import 'package:flutter/material.dart';
 
+import 'package:fluttertoast/fluttertoast.dart';
+
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
-
-var kAICategoryMapData = {
-  'VTO': [
-    {
-      'title': 'VTO Clothing',
-      'image': AIImages.imgVTOClothing,
-      'desc':
-          'A mix and match virtual try-on method that takes as input multiple garment images',
-    },
-    {
-      'title': 'VTO Jewelry',
-      'image': AIImages.imgVTOJewelry,
-      'desc':
-          'This repository contains the dataset used in the following papers',
-    },
-  ],
-};
 
 class MarketProvider extends InSoBlokViewModel {
   late BuildContext _context;
@@ -36,29 +21,45 @@ class MarketProvider extends InSoBlokViewModel {
     fetchData();
   }
 
-  final List<VTOGroupModel> vtoGroup = [];
+  final List<ProductModel> _products = [];
+  List<ProductModel> get products => _products;
+
+  final _productService = ProductService();
+  ProductService get productService => _productService;
 
   Future<void> fetchData() async {
-    vtoGroup.clear();
+    if (isBusy) return;
+    clearErrors();
 
-    for (var key in kAICategoryMapData.keys) {
-      var data = kAICategoryMapData[key];
-      List<VTOCellModel> models = [];
-      for (var item in data ?? []) {
-        var vtoCell = VTOCellModel.fromJson(item);
-        models.add(vtoCell);
+    await runBusyFuture(() async {
+      try {
+        var ps = await productService.getProducts();
+        if (ps.isNotEmpty) {
+          _products.clear();
+          _products.addAll(ps);
+        }
+        logger.d(products.length);
+      } catch (e) {
+        setError(e);
+      } finally {
+        notifyListeners();
       }
-      var group = VTOGroupModel(name: key, list: models);
-      vtoGroup.add(group);
-    }
+    }());
 
-    logger.d(vtoGroup.length);
+    if (hasError) {
+      Fluttertoast.showToast(msg: modelError.toString());
+    }
   }
 
-  Future<void> onTapVTOList(VTOCellModel model) async {
-    switch (model.title) {
-      case 'VTO Clothing':
-        Routers.goToVTOClothingPage(context);
+  Future<void> onTapVTOList(ProductModel product) async {
+    switch (product.category) {
+      case 'Clothing':
+      case 'Shoes':
+      case 'Jewelry':
+        Routers.goToVTOImagePage(context, product);
+        break;
+      default:
+        Fluttertoast.showToast(msg: 'No support this feature yet!');
         break;
     }
   }

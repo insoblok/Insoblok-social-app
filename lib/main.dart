@@ -18,7 +18,6 @@ import 'package:insoblok/pages/pages.dart';
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
-import 'package:insoblok/utils/utils.dart';
 
 class MyHttpOverrides extends HttpOverrides {
   @override
@@ -40,8 +39,8 @@ void main() async {
 
   setupLocator();
 
-  EthereumHelper.init(kEthereumRpcUrl);
   await FirebaseHelper.init();
+  AuthHelper.service.init();
   await NetworkHelper.service.init();
   FirebaseFirestore.instance.settings = const Settings(
     persistenceEnabled: true,
@@ -67,12 +66,8 @@ class InSoBlokApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(
-          create: (context) => AppProvider()..init(context),
-        ),
-        ChangeNotifierProvider(
-          create: (context) => UploadMediaProvider()..init(context),
-        ),
+        ChangeNotifierProvider(create: (context) => AppProvider()),
+        ChangeNotifierProvider(create: (context) => UploadMediaProvider()),
       ],
       child: ViewModelBuilder<AppProvider>.reactive(
         viewModelBuilder: () => AppProvider(),

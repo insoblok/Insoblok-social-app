@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:insoblok/routers/routers.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -34,12 +35,12 @@ class AIHelpers {
       'body': Style(margin: Margins.all(0), padding: HtmlPaddings.all(0)),
       'p': Style(
         margin: Margins.all(0),
-        fontSize: fontSize ?? FontSize(16.0),
+        fontSize: fontSize ?? FontSize(14.0),
         fontWeight: FontWeight.w400,
         letterSpacing: -0.3,
       ),
       'a': Style(
-        fontSize: fontSize ?? FontSize(16.0),
+        fontSize: fontSize ?? FontSize(14.0),
         fontWeight: FontWeight.w400,
         letterSpacing: -0.3,
       ),
@@ -149,5 +150,22 @@ class AIHelpers {
     } else {
       throw 'Could not launch email';
     }
+  }
+
+  static Future<void> shareFileToSocial(String path) async {
+    final params = ShareParams(text: 'Share Meida', files: [XFile(path)]);
+
+    final result = await SharePlus.instance.share(params);
+
+    if (result.status == ShareResultStatus.success) {
+      Fluttertoast.showToast(msg: 'Thank you for sharing the media!');
+    }
+  }
+
+  static Future<void> goToDetailView(
+    BuildContext context,
+    List<String> medias,
+  ) async {
+    Routers.goToMediaDetailPage(context, medias: medias);
   }
 }

@@ -1,15 +1,10 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:insoblok/services/image_service.dart';
 
 import 'package:stacked/stacked.dart';
 
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
-
-const kProductCategoryNames = ['Brand New', 'Dress', 'Shirts', 'Trousers'];
 
 class AddProductPage extends StatelessWidget {
   const AddProductPage({super.key});
@@ -76,9 +71,10 @@ class AddProductPage extends StatelessWidget {
               const SizedBox(height: 24.0),
               Padding(
                 padding: const EdgeInsets.only(left: 12.0, bottom: 16.0),
-                child: Text('Tags of Product'),
+                child: Text('Category of Product'),
               ),
               Row(
+                spacing: 12.0,
                 children: [
                   Expanded(
                     child: Container(
@@ -87,8 +83,8 @@ class AddProductPage extends StatelessWidget {
                       child: DropdownButton<String>(
                         isExpanded: true,
                         value:
-                            viewModel.selectedTag.isNotEmpty
-                                ? viewModel.selectedTag
+                            viewModel.selectedCategory.isNotEmpty
+                                ? viewModel.selectedCategory
                                 : null,
                         dropdownColor:
                             Theme.of(context).colorScheme.onSecondary,
@@ -105,165 +101,55 @@ class AddProductPage extends StatelessWidget {
                               );
                             }).toList(),
                         onChanged:
-                            (value) => viewModel.selectedTag = (value ?? ''),
+                            (value) =>
+                                viewModel.selectedCategory = (value ?? ''),
                       ),
                     ),
                   ),
-                  IconButton(
-                    onPressed: viewModel.addTag,
-                    icon: Icon(
-                      Icons.add_circle,
-                      color: Theme.of(context).primaryColor,
+                  Expanded(
+                    child: Container(
+                      height: 48.0,
+                      alignment: Alignment.center,
+                      decoration: kNoBorderDecoration,
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      child: Text(viewModel.product.category ?? ''),
+                    ),
+                  ),
+                  Expanded(
+                    child: Container(
+                      height: 48.0,
+                      alignment: Alignment.center,
+                      decoration: kNoBorderDecoration,
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      child: Text(viewModel.product.type ?? ''),
                     ),
                   ),
                 ],
-              ),
-              const SizedBox(height: 8.0),
-              Wrap(
-                spacing: 8.0,
-                runSpacing: 8.0,
-                children:
-                    (viewModel.product.tags ?? [])
-                        .map(
-                          (tag) => Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8.0,
-                              vertical: 4.0,
-                            ),
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).primaryColor,
-                              borderRadius: BorderRadius.circular(16.0),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Text(
-                                  tag,
-                                  style:
-                                      Theme.of(context).textTheme.headlineSmall,
-                                ),
-                                const SizedBox(width: 4.0),
-                                InkWell(
-                                  onTap:
-                                      () => viewModel.removeTag(
-                                        (viewModel.product.tags ?? []).indexOf(
-                                          tag,
-                                        ),
-                                      ),
-                                  child: Icon(Icons.close, size: 20.0),
-                                ),
-                              ],
-                            ),
-                          ),
-                        )
-                        .toList(),
               ),
               const SizedBox(height: 18.0),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
+                spacing: 24.0,
                 children: [
-                  Column(
-                    children: [
-                      Text('Product'),
-                      const SizedBox(height: 8.0),
-                      Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12.0),
-                          border: Border.all(
-                            width: 0.33,
-                            color: Theme.of(context).primaryColor,
-                          ),
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(12.0),
-                          child: SizedBox(
-                            height: 200,
-                            child: AspectRatio(
-                              aspectRatio: 0.7,
-                              child: Stack(
-                                fit: StackFit.expand,
-                                children: [
-                                  viewModel.avatarImage == null
-                                      ? Container()
-                                      : AIImage(
-                                        File(viewModel.avatarImage!.path),
-                                        fit: BoxFit.cover,
-                                      ),
-                                  Align(
-                                    alignment: Alignment.center,
-                                    child: IconButton(
-                                      onPressed: () {
-                                        viewModel.selectProductImage(
-                                          isImage: true,
-                                        );
-                                      },
-                                      icon: Icon(
-                                        size: 80.0,
-                                        Icons.add_outlined,
-                                        color: Theme.of(context).primaryColor,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                  ProductImageView(
+                    title: 'Product',
+                    imagePath: viewModel.avatarImage?.path,
+                    onTap: () => viewModel.selectProductImage(isImage: true),
                   ),
-                  Column(
-                    children: [
-                      Text('Model'),
-                      const SizedBox(height: 8.0),
-                      Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(12.0),
-                          border: Border.all(
-                            width: 0.33,
-                            color: Theme.of(context).primaryColor,
-                          ),
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(12.0),
-                          child: SizedBox(
-                            height: 200,
-                            child: AspectRatio(
-                              aspectRatio: 0.7,
-                              child: Stack(
-                                fit: StackFit.expand,
-                                children: [
-                                  viewModel.modelImage == null
-                                      ? Container()
-                                      : AIImage(
-                                        File(viewModel.modelImage!.path),
-                                        fit: BoxFit.cover,
-                                      ),
-                                  Align(
-                                    alignment: Alignment.center,
-                                    child: IconButton(
-                                      onPressed: () {
-                                        viewModel.selectModelImage(
-                                          isImage: true,
-                                        );
-                                      },
-                                      icon: Icon(
-                                        size: 80.0,
-                                        Icons.add_outlined,
-                                        color: Theme.of(context).primaryColor,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
+                  ProductImageView(
+                    title: 'Model',
+                    imagePath: viewModel.modelImage?.path,
+                    onTap: () => viewModel.selectModelImage(isImage: true),
                   ),
                 ],
               ),
+              const SizedBox(height: 40.0),
+              TextFillButton(
+                text: viewModel.isBusy ? 'Uploading...' : 'Add Product',
+                color: viewModel.isBusy ? AIColors.grey : AIColors.pink,
+                onTap: viewModel.onClickAddProduct,
+              ),
+              const SizedBox(height: 40.0),
             ],
           ),
         );

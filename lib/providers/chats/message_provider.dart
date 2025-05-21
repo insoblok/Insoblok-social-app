@@ -6,7 +6,6 @@ import 'package:chewie/chewie.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:video_player/video_player.dart';
-import 'package:web3dart/web3dart.dart';
 
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/pages/pages.dart';
@@ -65,6 +64,9 @@ class MessageProvider extends InSoBlokViewModel {
   var scrollController = ScrollController();
   late MediaPickerService _mediaPickerService;
 
+  late ReownService _reownService;
+  ReownService get reownService => _reownService;
+
   Future<void> init(
     BuildContext context, {
     required MessagePageData data,
@@ -73,7 +75,7 @@ class MessageProvider extends InSoBlokViewModel {
     room = data.room;
     chatUser = data.chatUser;
 
-    balance = await EthereumHelper.getBalance();
+    _reownService = ReownService(context);
 
     messageService.getMessages(room.id!).listen((messages) {
       this.messages = messages;
@@ -199,12 +201,17 @@ class MessageProvider extends InSoBlokViewModel {
     var coin = await _showCoinOption();
     if (coin != null) {
       try {
-        await EthereumHelper.sendTransaction(
-          to: chatUser.walletAddress!,
-          amount: coin.amount!,
-          gasPrice: EtherAmount.fromInt(EtherUnit.szabo, 21000),
-          gasLimit: 1,
-        );
+        await reownService.init();
+        await reownService.connect();
+        if (reownService.isConnected) {
+          if (chatUser.walletAddress == null) {
+            setError('Chat user has not wallet!');
+          } else {
+            await reownService.transferToken(chatUser.walletAddress!);
+          }
+        } else {
+          setError('Failed wallet connected!');
+        }
       } catch (e) {
         logger.e(e);
         setError(e);

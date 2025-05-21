@@ -8,9 +8,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:path_provider/path_provider.dart';
 
-import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/locator.dart';
-import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 
@@ -36,126 +34,39 @@ class FirebaseService {
   late UserCredential _userCredential;
   UserCredential get userCredential => _userCredential;
 
-  late final FirebaseFirestore _firestore;
   late final FirebaseStorage _storage;
 
   Future<void> init() async {
-    try {
-      _app = await Firebase.initializeApp(
-        options: Platform.isAndroid ? android : ios,
-      );
-      FirebaseAuth.instanceFor(app: _app);
-      await FirebaseAppCheck.instance.activate(
-        androidProvider: AndroidProvider.playIntegrity,
-        appleProvider: AppleProvider.appAttest,
-        webProvider: ReCaptchaV3Provider('recaptcha-v3-site-key'),
-      );
-      _storage = FirebaseStorage.instance;
-      _firestore = FirebaseFirestore.instance;
-    } on FirebaseAuthException catch (e) {
-      logger.e(e.message);
-    } catch (e) {
-      logger.e(e);
-    }
+    _app = await Firebase.initializeApp(
+      options: Platform.isAndroid ? android : ios,
+    );
+    FirebaseAuth.instanceFor(app: _app);
+    await FirebaseAppCheck.instance.activate(
+      androidProvider: AndroidProvider.playIntegrity,
+      appleProvider: AppleProvider.appAttest,
+      webProvider: ReCaptchaV3Provider('recaptcha-v3-site-key'),
+    );
+    _storage = FirebaseStorage.instance;
   }
 
   Future<void> signInFirebase() async {
-    try {
-      var credential = await FirebaseAuth.instance.signInAnonymously();
-      _userCredential = credential;
-      logger.d("Signed in with temporary account.");
-    } on FirebaseAuthException catch (e) {
-      logger.e(e.message);
-    } catch (e) {
-      logger.e(e);
-    }
+    var credential = await FirebaseAuth.instance.signInAnonymously();
+    _userCredential = credential;
+    logger.d("Signed in with temporary account.");
   }
 
   Future<void> signInEmail({
     required String email,
     required String password,
   }) async {
-    try {
-      final credential = EmailAuthProvider.credential(
-        email: email,
-        password: password,
-      );
-      _userCredential = await FirebaseAuth.instance.signInWithCredential(
-        credential,
-      );
-      logger.d("Signed in with temporary account.");
-    } on FirebaseAuthException catch (e) {
-      logger.e(e.message);
-    } catch (e) {
-      logger.e(e);
-    }
-  }
-
-  Future<UserModel?> createUser(UserModel user) async {
-    try {
-      await _firestore.collection('user').add({
-        ...user.toJson().toFirebaseJson,
-        'timestamp': FieldValue.serverTimestamp(),
-        'regdate': FieldValue.serverTimestamp(),
-      });
-      return getUser(user.uid!);
-    } on FirebaseAuthException catch (e) {
-      logger.e(e.message);
-    } catch (e) {
-      logger.e(e);
-    }
-    return null;
-  }
-
-  UserModel? getUserFromDoc(DocumentSnapshot<Map<String, dynamic>> doc) {
-    var json = doc.data();
-    if (json != null) {
-      json['id'] = doc.id;
-      return UserModel.fromJson(json);
-    }
-    return null;
-  }
-
-  Future<UserModel?> getUser(String uid) async {
-    try {
-      var doc =
-          await _firestore
-              .collection('user')
-              .queryBy(UserQuery.uid, value: uid)
-              .get();
-      if (doc.docs.isEmpty) return null;
-      return getUserFromDoc(doc.docs.first);
-    } on FirebaseAuthException catch (e) {
-      logger.e(e.message);
-    } catch (e) {
-      logger.e(e.toString());
-    }
-    return null;
-  }
-
-  Future<bool> updateUser(UserModel user) async {
-    try {
-      await _firestore.collection('user').doc(user.id).update({
-        ...user.toJson().toFirebaseJson,
-        'timestamp': FieldValue.serverTimestamp(),
-      });
-      return true;
-    } on FirebaseAuthException catch (e) {
-      logger.e(e.message);
-    } catch (e) {
-      logger.e(e);
-    }
-    return false;
-  }
-
-  Future<void> deleteUser(UserModel user) async {
-    try {
-      await _firestore.collection('user').doc(user.id).delete();
-    } on FirebaseAuthException catch (e) {
-      logger.e(e.message);
-    } catch (e) {
-      logger.e(e);
-    }
+    final credential = EmailAuthProvider.credential(
+      email: email,
+      password: password,
+    );
+    _userCredential = await FirebaseAuth.instance.signInWithCredential(
+      credential,
+    );
+    logger.d("Signed in with email & password.");
   }
 
   Future<void> convertAnonymousToPermanent({
@@ -178,80 +89,9 @@ class FirebaseService {
     } on FirebaseException catch (e) {
       logger.e(e);
       if (e.code == 'provider-already-linked') {
-        final credential = EmailAuthProvider.credential(
-          email: email,
-          password: password,
-        );
-        _userCredential = await FirebaseAuth.instance.signInWithCredential(
-          credential,
-        );
+        await signInEmail(email: email, password: password);
       }
     }
-  }
-
-  Stream<DocumentSnapshot<Map<String, dynamic>>> getUserStream(String id) {
-    return _firestore.collection('user').doc(id).snapshots();
-  }
-
-  Future<List<UserModel?>> findUsersByKey(String key) async {
-    try {
-      List<UserModel?> users = [];
-      var uidSnapshot =
-          await _firestore
-              .collection('user')
-              .queryBy(UserQuery.uid, value: key)
-              .get();
-      users.addAll(uidSnapshot.docs.map((doc) => getUserFromDoc(doc)));
-
-      var firstSnapshot =
-          await _firestore
-              .collection('user')
-              .queryBy(UserQuery.firstName, value: key)
-              .get();
-      var firstUsers = firstSnapshot.docs.map((doc) => getUserFromDoc(doc));
-      for (var user in firstUsers) {
-        var idList = users.map((u) => u?.id).toList();
-        if (idList.contains(user?.id)) {
-          continue;
-        }
-        users.add(user);
-      }
-
-      var lastSnapshot =
-          await _firestore
-              .collection('user')
-              .queryBy(UserQuery.lastName, value: key)
-              .get();
-      var lastUsers = lastSnapshot.docs.map((doc) => getUserFromDoc(doc));
-      for (var user in lastUsers) {
-        var idList = users.map((u) => u?.id).toList();
-        if (idList.contains(user?.id)) {
-          continue;
-        }
-        users.add(user);
-      }
-
-      var nickSnapshot =
-          await _firestore
-              .collection('user')
-              .queryBy(UserQuery.nickID, value: key)
-              .get();
-      var nickUsers = nickSnapshot.docs.map((doc) => getUserFromDoc(doc));
-      for (var user in nickUsers) {
-        var idList = users.map((u) => u?.id).toList();
-        if (idList.contains(user?.id)) {
-          continue;
-        }
-        users.add(user);
-      }
-
-      return users.where((u) => u?.uid != AuthHelper.user?.uid).toList();
-    } on FirebaseAuthException catch (e) {
-      logger.e(e.message);
-    } catch (e) {
-      logger.e(e.toString());
-    }
-    return [];
   }
 
   Future<String?> uploadImageFromUrl({
@@ -358,20 +198,10 @@ class FirebaseHelper {
     required String password,
   }) => service.signInEmail(email: email, password: password);
 
-  static Future<UserModel?> createUser(UserModel user) =>
-      service.createUser(user);
-  static Future<UserModel?> getUser(String uid) => service.getUser(uid);
-  static Future<bool> updateUser(UserModel user) => service.updateUser(user);
-  static Future<void> deleteUser(UserModel user) => service.deleteUser(user);
   static Future<void> convertAnonymousToPermanent({
     required String email,
     required String password,
   }) => service.convertAnonymousToPermanent(email: email, password: password);
-  static Stream<DocumentSnapshot<Map<String, dynamic>>> getUserStream(
-    String id,
-  ) => service.getUserStream(id);
-  static Future<List<UserModel?>> findUsersByKey(String key) =>
-      service.findUsersByKey(key);
 
   static Future<String?> uploadImageFromUrl({
     required String imageUrl,
@@ -408,18 +238,5 @@ class FirebaseHelper {
       }
     }
     return newJson;
-  }
-}
-
-enum UserQuery { firstName, lastName, uid, nickID }
-
-extension on Query<Map<String, dynamic>> {
-  Query<Map<String, dynamic>> queryBy(UserQuery query, {String? value}) {
-    return switch (query) {
-      UserQuery.firstName => where('first_name', isEqualTo: value),
-      UserQuery.lastName => where('last_name', isEqualTo: value),
-      UserQuery.uid => where('uid', isEqualTo: value),
-      UserQuery.nickID => where('nick_id', isEqualTo: value),
-    };
   }
 }
