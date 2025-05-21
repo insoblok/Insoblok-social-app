@@ -60,6 +60,7 @@ class AuthProvider extends InSoBlokViewModel {
     await runBusyFuture(() async {
       try {
         await reownService.init();
+        await reownService.connect();
         if (reownService.isConnected) {
           logger.d(reownService.walletAddress);
           await AuthHelper.service.signInEmail(

@@ -33,9 +33,10 @@ class LoginProvider extends InSoBlokViewModel {
   Future<void> init(BuildContext context) async {
     this.context = context;
 
-    FlutterNativeSplash.remove();
-
     _reownService = ReownService(context);
+    await _reownService.init();
+
+    FlutterNativeSplash.remove();
 
     _videoPlayerController = VideoPlayerController.asset(
       'assets/videos/insoblock.mp4',
@@ -68,7 +69,7 @@ class LoginProvider extends InSoBlokViewModel {
 
     await runBusyFuture(() async {
       try {
-        await reownService.init();
+        await reownService.connect();
         if (reownService.isConnected) {
           logger.d(reownService.walletAddress);
           await AuthHelper.service.signIn(
@@ -95,9 +96,5 @@ class LoginProvider extends InSoBlokViewModel {
         Routers.goToRegisterPage(context);
       }
     }
-  }
-
-  Future<void> initReownService() async {
-    await reownService.init();
   }
 }

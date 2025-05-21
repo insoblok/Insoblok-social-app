@@ -40,4 +40,6 @@ firebase deploy --only functions
 ## Reown_AppKit
 gcloud projects add-iam-policy-binding insoblokai  --member="user:info@insoblokai.io"   --role="roles/iam.serviceAccountUser"
 
+taskkill /f /im java.exe
 flutter run --dart-define=PROJECT_ID=9296d8bab961cfb830ef10f47bc495bc
+flutter build apk --no-tree-shake-icons --dart-define=PROJECT_ID=9296d8bab961cfb830ef10f47bc495bc

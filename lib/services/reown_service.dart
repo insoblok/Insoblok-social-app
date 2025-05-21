@@ -33,10 +33,14 @@ class ReownService {
   }
 
   Future<void> init() async {
-    if (appKitModel.isConnected) return;
     await _appKitModel.init();
     DeepLinkHandler.init(_appKitModel);
-    await _appKitModel.openModalView(ReownAppKitModalMainWalletsPage());
+  }
+
+  Future<void> connect() async {
+    if (!isConnected) {
+      await _appKitModel.openModalView(ReownAppKitModalMainWalletsPage());
+    }
   }
 
   bool get isConnected => appKitModel.isConnected;
