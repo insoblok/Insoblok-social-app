@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:animated_text_kit/animated_text_kit.dart';
 import 'package:chewie/chewie.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:stacked/stacked.dart';
 
 import 'package:insoblok/generated/l10n.dart';
@@ -193,7 +194,7 @@ class _LoginPageState extends State<LoginPage>
                               48,
                             ),
                             child: OutlineButton(
-                              isBusy: viewModel.isBusy,
+                              isBusy: viewModel.isClickWallet,
                               borderColor: AIColors.pink,
                               onTap: viewModel.login,
                               child: Row(
@@ -203,6 +204,40 @@ class _LoginPageState extends State<LoginPage>
                                   const SizedBox(width: 24.0),
                                   Text(
                                     'Start with MetaMask',
+                                    style: TextStyle(
+                                      fontSize: 16.0,
+                                      fontWeight: FontWeight.bold,
+                                      color: AIColors.pink,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(width: 24.0),
+                      ],
+                    ),
+                    const SizedBox(height: 16.0),
+                    Row(
+                      children: [
+                        const SizedBox(width: 24.0),
+                        Expanded(
+                          child: Container(
+                            color: AIColors.darkScaffoldBackground.withAlpha(
+                              48,
+                            ),
+                            child: OutlineButton(
+                              isBusy: viewModel.isBusy,
+                              borderColor: AIColors.pink,
+                              onTap: viewModel.googleSignin,
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  AIImage(AIImages.imgGoogle, width: 28.0),
+                                  const SizedBox(width: 26.0),
+                                  Text(
+                                    'Sign in with Google',
                                     style: TextStyle(
                                       fontSize: 16.0,
                                       fontWeight: FontWeight.bold,
@@ -239,9 +274,36 @@ class _LoginPageState extends State<LoginPage>
                         ),
                       ),
                     ),
+                    const SizedBox(height: 16.0),
+                    // Container(
+                    //   width: double.infinity,
+                    //   alignment: Alignment.center,
+                    //   child: InkWell(
+                    //     onTap: () => viewModel.googleSignin(),
+                    //     child: Text(
+                    //       'Google Login',
+                    //       style: Theme.of(context).textTheme.titleMedium
+                    //           ?.copyWith(color: AIColors.pink),
+                    //     ),
+                    //   ),
+                    // ),
                   ],
                 ),
               ),
+
+              // if (viewModel.isBusy) ...{
+              //   Center(
+              //     child: SizedBox(
+              //       width: 60,
+              //       height: 60,
+              //       child: LoadingIndicator(
+              //         indicatorType: Indicator.ballSpinFadeLoader,
+              //         colors: [AIColors.pink],
+              //         strokeWidth: 2,
+              //       ),
+              //     ),
+              //   ),
+              // },
             ],
           ),
         );

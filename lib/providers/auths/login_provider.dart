@@ -60,23 +60,67 @@ class LoginProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  bool _isClickWallet = false;
+  bool get isClickWallet => _isClickWallet;
+  set isClickWallet(bool f) {
+    _isClickWallet = f;
+    notifyListeners();
+  }
+
   late ReownService _reownService;
   ReownService get reownService => _reownService;
 
   Future<void> login() async {
+    if (isClickWallet) return;
+    clearErrors();
+    isClickWallet = true;
+    try {
+      await reownService.connect();
+      if (reownService.isConnected) {
+        logger.d(reownService.walletAddress);
+        await AuthHelper.service.signIn(
+          walletAddress: reownService.walletAddress,
+        );
+      } else {
+        setError('Failed wallet connected!');
+      }
+    } catch (e) {
+      setError(e);
+      logger.e(e);
+    } finally {
+      notifyListeners();
+    }
+
+    if (hasError) {
+      Fluttertoast.showToast(msg: modelError.toString());
+    } else {
+      if (AuthHelper.user?.firstName != null) {
+        AuthHelper.updateStatus('Online');
+        Routers.goToMainPage(context);
+      } else {
+        Routers.goToRegisterPage(context);
+      }
+    }
+  }
+
+  Future<void> googleSignin() async {
     if (isBusy) return;
     clearErrors();
 
     await runBusyFuture(() async {
       try {
-        await reownService.connect();
-        if (reownService.isConnected) {
-          logger.d(reownService.walletAddress);
-          await AuthHelper.service.signIn(
-            walletAddress: reownService.walletAddress,
-          );
+        if (await reownService.showWallet(context) == true) {
+          await reownService.connect();
+          if (reownService.isConnected) {
+            logger.d(reownService.walletAddress);
+            await AuthHelper.service.signInWithGoogle(
+              walletAddress: reownService.walletAddress,
+            );
+          } else {
+            setError('Failed wallet connected!');
+          }
         } else {
-          setError('Failed wallet connected!');
+          await AuthHelper.service.signInWithGoogle();
         }
       } catch (e) {
         setError(e);

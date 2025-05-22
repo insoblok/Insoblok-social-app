@@ -63,6 +63,7 @@ dependencies:
   dio: any
   path_provider: any
   reown_appkit: ^1.4.3+1
+  google_sign_in: any
 
 dev_dependencies:
   flutter_test:

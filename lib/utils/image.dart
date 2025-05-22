@@ -5,6 +5,7 @@ class AIImages {
   static String placehold = 'assets/images/placehold.png';
 
   static String imgMetamask = 'assets/images/metamask.svg';
+  static String imgGoogle = 'assets/images/google_icon.png';
   static String imgBackSplash = 'assets/images/back_splash.jpg';
 
   static String imgVTOClothing = 'assets/images/img_vto_clothing.jpg';

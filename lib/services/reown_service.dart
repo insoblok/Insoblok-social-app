@@ -123,6 +123,67 @@ class ReownService {
     return int.parse(pad);
   }
 
+  Future<bool?> showWallet(BuildContext context) {
+    return showModalBottomSheet<bool>(
+      context: context,
+      builder: (context) {
+        return SafeArea(
+          child: Container(
+            width: double.infinity,
+            color: AIColors.darkScaffoldBackground,
+            padding: const EdgeInsets.symmetric(
+              horizontal: 18.0,
+              vertical: 24.0,
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'Do you want to connect your wallet to INSOBLOK?',
+                  textAlign: TextAlign.center,
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    fontWeight: FontWeight.bold,
+                    color: AIColors.pink,
+                  ),
+                ),
+                const SizedBox(height: 24.0),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    InkWell(
+                      onTap: () => Navigator.of(context).pop(true),
+                      child: Text(
+                        'Yes',
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold,
+                          color: AIColors.pink,
+                        ),
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () => Navigator.of(context).pop(false),
+                      child: Text(
+                        'Skip',
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold,
+                          color: AIColors.pink,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   List<Map<String, dynamic>> get contractABI => [
     {
       'inputs': [
