@@ -1,13 +1,11 @@
+import 'dart:async';
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
-import 'package:animated_text_kit/animated_text_kit.dart';
-import 'package:chewie/chewie.dart';
-import 'package:loading_indicator/loading_indicator.dart';
 import 'package:stacked/stacked.dart';
-
-import 'package:insoblok/generated/l10n.dart';
 import 'package:insoblok/providers/providers.dart';
-import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
@@ -24,6 +22,10 @@ class _LoginPageState extends State<LoginPage>
   late AnimationController _controller;
   late Animation<double> _fadeAnimation;
   late Animation<Offset> _positionAnimation;
+
+  late Timer _timer;
+  PageController _pageController = PageController(initialPage: 0);
+  int _currentPage = 0;
 
   @override
   void initState() {
@@ -45,12 +47,27 @@ class _LoginPageState extends State<LoginPage>
     ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
 
     _controller.forward();
+
+    _timer = Timer.periodic(Duration(seconds: 3), (Timer timer) {
+      if (_currentPage < 2) {
+        _currentPage++;
+      } else {
+        _currentPage = 0;
+      }
+
+      _pageController.animateToPage(
+        _currentPage,
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeIn,
+      );
+    });
   }
 
   @override
   void dispose() {
     _controller.dispose();
     super.dispose();
+    _timer.cancel();
   }
 
   @override
@@ -101,6 +118,7 @@ class _LoginPageState extends State<LoginPage>
                 color: AIColors.landingBackgroundColor,
               ),
               PageView(
+                controller: _pageController,
                 children: [
                   Padding(
                     padding: const EdgeInsets.only(
@@ -230,6 +248,7 @@ class _LoginPageState extends State<LoginPage>
                   ),
                 ],
               ),
+
               // Padding(
               //   padding: const EdgeInsets.all(24.0),
               //   child: Column(
@@ -314,24 +333,18 @@ class _LoginPageState extends State<LoginPage>
               Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  // Padding(
-                  //   padding: const EdgeInsets.only(left: 80.0, right: 80.0),
-                  //   child: SlideTransition(
-                  //     position: _positionAnimation,
-                  //     child: FadeTransition(
-                  //       opacity: _fadeAnimation,
-                  //       child: Text(
-                  //         'No forms. Just you. Tap in, explore, and own your vibe - your way',
-                  //         textAlign: TextAlign.center,
-                  //         style: TextStyle(
-                  //           fontSize: 18.0,
-                  //           color: AIColors.lightYellow,
-                  //         ),
-                  //       ),
-                  //     ),
-                  //   ),
-                  // ),
-                  // const SizedBox(height: 40.0),
+                  SmoothPageIndicator(
+                    controller: _pageController,
+                    count: 3,
+                    effect: ExpandingDotsEffect(
+                      dotWidth: 36.0,
+                      dotHeight: 4.0,
+                      spacing: 4.0,
+                      dotColor: AIColors.white,
+                      activeDotColor: AIColors.pink,
+                    ),
+                  ),
+                  const SizedBox(height: 32),
                   Row(
                     children: [
                       const SizedBox(width: 48.0),
@@ -395,7 +408,7 @@ class _LoginPageState extends State<LoginPage>
                       const SizedBox(width: 48.0),
                     ],
                   ),
-                  const SizedBox(height: 40.0),
+                  const SizedBox(height: 36.0),
                   Text(
                     'By proceeding you accept InSoBlok',
                     style: TextStyle(color: AIColors.white, fontSize: 14.0),
@@ -410,7 +423,9 @@ class _LoginPageState extends State<LoginPage>
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       InkWell(
-                        onTap: () {},
+                        onTap: () {
+                          AIHelpers.loadUrl(kPrivacyUrl);
+                        },
                         child: Text(
                           'Terms of Use',
                           style: TextStyle(
@@ -427,7 +442,9 @@ class _LoginPageState extends State<LoginPage>
                       ),
                       const SizedBox(width: 4),
                       InkWell(
-                        onTap: () {},
+                        onTap: () {
+                          AIHelpers.loadUrl(kPrivacyUrl);
+                        },
                         child: Text(
                           'Privacy Policy',
                           style: TextStyle(
