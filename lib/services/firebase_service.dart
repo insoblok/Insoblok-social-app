@@ -6,6 +6,7 @@ import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:path_provider/path_provider.dart';
 
 import 'package:insoblok/locator.dart';
@@ -67,6 +68,21 @@ class FirebaseService {
       credential,
     );
     logger.d("Signed in with email & password.");
+  }
+
+  Future<void> signInWithGoogle() async {
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+    final GoogleSignInAuthentication? googleAuth =
+        await googleUser?.authentication;
+
+    // Create a new credential
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth?.accessToken,
+      idToken: googleAuth?.idToken,
+    );
+    _userCredential = await FirebaseAuth.instance.signInWithCredential(
+      credential,
+    );
   }
 
   Future<void> convertAnonymousToPermanent({
@@ -197,6 +213,7 @@ class FirebaseHelper {
     required String email,
     required String password,
   }) => service.signInEmail(email: email, password: password);
+  static Future<void> signInWithGoogle() => service.signInWithGoogle();
 
   static Future<void> convertAnonymousToPermanent({
     required String email,

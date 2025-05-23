@@ -17,10 +17,11 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addObserver(this);
 
-    var titles = ['Home', 'LookBook', 'Market', 'Messages', 'User'];
+    var titles = ['Home', 'LookBook', 'Wallet', 'Market', 'Messages', 'User'];
     var pages = [
       DashboardView(),
       LookbookView(),
+      AccountWalletPage(),
       MarketView(),
       ChatView(),
       ProfileView(),
@@ -28,6 +29,7 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
     var selectedIcon = [
       AIImages.icBottomHomeFill,
       AIImages.icBottomLookFill,
+      AIImages.icBottomWalletFill,
       AIImages.icBottomMarketFill,
       AIImages.icBottomMessageFill,
       AIImages.icBottomUserFill,
@@ -35,6 +37,7 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
     var unselectedIcon = [
       AIImages.icBottomHome,
       AIImages.icBottomLook,
+      AIImages.icBottomWallet,
       AIImages.icBottomMarket,
       AIImages.icBottomMessage,
       AIImages.icBottomUser,
@@ -204,7 +207,7 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
             bottomNavigationBar: BottomNavigationBar(
               currentIndex: viewModel.pageIndex,
               onTap: (value) {
-                if (value == 4) {
+                if (value == 5) {
                   Routers.goToAccountPage(context);
                 } else {
                   viewModel.pageIndex = value;

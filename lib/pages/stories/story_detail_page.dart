@@ -82,10 +82,12 @@ class StoryDetailPage extends StatelessWidget {
                           Row(
                             children: [
                               ClipOval(
-                                child: AIImage(
+                                child: AIAvatarImage(
                                   viewModel.owner?.avatar,
                                   width: kStoryDetailAvatarSize,
                                   height: kStoryDetailAvatarSize,
+                                  textSize: 24,
+                                  fullname: viewModel.owner?.fullName ?? '---',
                                 ),
                               ),
                               const SizedBox(width: 8.0),
@@ -226,7 +228,10 @@ class StoryDetailPage extends StatelessWidget {
               for (var comment
                   in (viewModel.story.comments?.reversed.toList() ?? [])) ...{
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0,
+                    vertical: 4.0,
+                  ),
                   child: StoryDetailCommentCell(
                     comment: comment,
                     isLast: (viewModel.story.comments ?? []).length == comment,

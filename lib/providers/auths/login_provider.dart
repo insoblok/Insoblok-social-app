@@ -17,16 +17,16 @@ class LoginProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  late VideoPlayerController _videoPlayerController;
-  VideoPlayerController get videoPlayerController => _videoPlayerController;
+  // late VideoPlayerController _videoPlayerController;
+  // VideoPlayerController get videoPlayerController => _videoPlayerController;
 
-  late ChewieController _chewieController;
-  ChewieController get chewieController => _chewieController;
+  // late ChewieController _chewieController;
+  // ChewieController get chewieController => _chewieController;
 
   @override
   void dispose() {
-    _videoPlayerController.dispose();
-    _chewieController.dispose();
+    // _videoPlayerController.dispose();
+    // _chewieController.dispose();
     super.dispose();
   }
 
@@ -36,27 +36,36 @@ class LoginProvider extends InSoBlokViewModel {
     _reownService = ReownService(context);
     await _reownService.init();
 
-    _videoPlayerController = VideoPlayerController.asset(
-      'assets/videos/insoblock.mp4',
-    );
-    await _videoPlayerController.initialize();
+    FlutterNativeSplash.remove();
 
-    _chewieController = ChewieController(
-      videoPlayerController: _videoPlayerController,
-      autoPlay: true,
-      looping: true,
-      aspectRatio: _videoPlayerController.value.aspectRatio,
-      showControls: false,
-      materialProgressColors: ChewieProgressColors(
-        playedColor: Colors.red,
-        handleColor: Colors.red,
-        backgroundColor: Colors.grey,
-        bufferedColor: Colors.lightGreen,
-      ),
-    );
+    // _videoPlayerController = VideoPlayerController.asset(
+    //   'assets/videos/insoblock.mp4',
+    // );
+    // await _videoPlayerController.initialize();
+
+    // _chewieController = ChewieController(
+    //   videoPlayerController: _videoPlayerController,
+    //   autoPlay: true,
+    //   looping: true,
+    //   aspectRatio: _videoPlayerController.value.aspectRatio,
+    //   showControls: false,
+    //   materialProgressColors: ChewieProgressColors(
+    //     playedColor: Colors.red,
+    //     handleColor: Colors.red,
+    //     backgroundColor: Colors.grey,
+    //     bufferedColor: Colors.lightGreen,
+    //   ),
+    // );
 
     FlutterNativeSplash.remove();
 
+    notifyListeners();
+  }
+
+  bool _isClickWallet = false;
+  bool get isClickWallet => _isClickWallet;
+  set isClickWallet(bool f) {
+    _isClickWallet = f;
     notifyListeners();
   }
 
@@ -64,20 +73,58 @@ class LoginProvider extends InSoBlokViewModel {
   ReownService get reownService => _reownService;
 
   Future<void> login() async {
+    if (isClickWallet) return;
+    clearErrors();
+    isClickWallet = true;
+    try {
+      await reownService.connect();
+      if (reownService.isConnected) {
+        logger.d(reownService.walletAddress);
+        await AuthHelper.service.signIn(
+          walletAddress: reownService.walletAddress,
+        );
+      } else {
+        setError('Failed wallet connected!');
+      }
+    } catch (e) {
+      setError(e);
+      logger.e(e);
+    } finally {
+      notifyListeners();
+    }
+
+    if (hasError) {
+      Fluttertoast.showToast(msg: modelError.toString());
+    } else {
+      if (AuthHelper.user?.firstName != null) {
+        AuthHelper.updateStatus('Online');
+        Routers.goToMainPage(context);
+      } else {
+        Routers.goToRegisterPage(context);
+      }
+    }
+  }
+
+  Future<void> googleSignin() async {
     if (isBusy) return;
     clearErrors();
 
     await runBusyFuture(() async {
       try {
-        await reownService.connect();
-        if (reownService.isConnected) {
-          logger.d(reownService.walletAddress);
-          await AuthHelper.service.signIn(
-            walletAddress: reownService.walletAddress,
-          );
-        } else {
-          setError('Failed wallet connected!');
-        }
+        await AuthHelper.service.signInWithGoogle();
+        // if (await reownService.showWallet(context) == true) {
+        //   await reownService.connect();
+        //   if (reownService.isConnected) {
+        //     logger.d(reownService.walletAddress);
+        //     await AuthHelper.service.signInWithGoogle(
+        //       walletAddress: reownService.walletAddress,
+        //     );
+        //   } else {
+        //     setError('Failed wallet connected!');
+        //   }
+        // } else {
+        //   await AuthHelper.service.signInWithGoogle();
+        // }
       } catch (e) {
         setError(e);
         logger.e(e);

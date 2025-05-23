@@ -5,7 +5,11 @@ class AIImages {
   static String placehold = 'assets/images/placehold.png';
 
   static String imgMetamask = 'assets/images/metamask.svg';
+  static String imgGoogle = 'assets/images/google_icon.png';
   static String imgBackSplash = 'assets/images/back_splash.jpg';
+  static String imgSplash1 = 'assets/images/bg_splash_1.jpg';
+  static String imgSplash2 = 'assets/images/bg_splash_2.jpg';
+  static String imgSplash3 = 'assets/images/bg_splash_3.jpg';
 
   static String imgVTOClothing = 'assets/images/img_vto_clothing.jpg';
   static String imgVTOJewelry = 'assets/images/img_vto_jewelry.jpg';
@@ -26,6 +30,8 @@ class AIImages {
   static String icBottomMessage = 'assets/icons/ic_message.svg';
   static String icBottomUserFill = 'assets/icons/ic_user_fill.svg';
   static String icBottomUser = 'assets/icons/ic_user.svg';
+  static String icBottomWalletFill = 'assets/icons/ic_wallet_fill.svg';
+  static String icBottomWallet = 'assets/icons/ic_wallet.svg';
 
   static String icTopEffect = 'assets/icons/ic_effect_2.svg';
   static String icFavoriteFill = 'assets/icons/ic_favourite_fill.svg';

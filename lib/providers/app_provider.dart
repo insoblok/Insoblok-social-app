@@ -16,8 +16,6 @@ class AppProvider extends InSoBlokViewModel {
 
   Future<void> init(BuildContext context) async {
     this.context = context;
-    var uploadProvider = context.read<UploadMediaProvider>();
-    uploadProvider.init(context);
   }
 
   void updateTheme() {

@@ -100,6 +100,53 @@ class AuthService with ListenableServiceMixin {
       throw Exception('No matched email or password!');
     }
   }
+
+  Future<void> signInWithGoogle({String? walletAddress}) async {
+    await FirebaseHelper.signInWithGoogle();
+    var credential = FirebaseHelper.userCredential;
+    var uid = credential.user?.uid;
+    if (uid != null) {
+      logger.d(uid);
+      var ipAddress = IpAddress(type: RequestType.json);
+      var data = await ipAddress.getIpAddress();
+      var newUser = await userService.getUser(uid);
+      if (newUser != null) {
+        logger.d(newUser.toJson());
+
+        // var ipAddress = IpAddress(type: RequestType.json);
+        // var data = await ipAddress.getIpAddress();
+        if (newUser.walletAddress != null) {
+          newUser = newUser.copyWith(
+            ipAddress: kDebugMode ? kDefaultIpAddress : data['ip'],
+          );
+        } else {
+          newUser = newUser.copyWith(
+            walletAddress: walletAddress,
+            ipAddress: kDebugMode ? kDefaultIpAddress : data['ip'],
+          );
+        }
+
+        await updateUser(newUser);
+      } else {
+        newUser = UserModel(
+          uid: uid,
+          email: credential.user?.email,
+          firstName: credential.user?.displayName,
+          nickId:
+              credential.user?.displayName
+                  ?.trim()
+                  .replaceAll(' ', '')
+                  .toLowerCase(),
+          walletAddress: walletAddress,
+          ipAddress: kDebugMode ? kDefaultIpAddress : data['ip'],
+        );
+        newUser = await userService.createUser(newUser);
+        _userRx.value = newUser;
+      }
+    } else {
+      throw Exception('No matched email or password!');
+    }
+  }
 }
 
 class AuthHelper {
