@@ -1,1768 +1,410 @@
-[
-    {
-        "url": "https://www.theglobeandmail.com/investing/markets/stocks/GM-N/pressreleases/32155931/general-motors-gm-sounds-the-alarm-on-massive-recall-amid-engine-defect-concerns/",
-        "authorsByline": "Unknown",
-        "articleId": "b2d3a6f3757b4520a27cfb894b15c9d9",
-        "clusterId": "78139c01b18b4062b434a9782545afe9",
-        "source": {
-            "domain": "theglobeandmail.com",
-            "paywall": true,
-            "location": {
-                "country": "ca",
-                "city": "Toronto",
-                "coordinates": {
-                    "lat": 43.6534817,
-                    "lon": -79.3839347
-                }
-            }
+{
+    "status": "success",
+    "totalResults": 2286,
+    "results": [
+        {
+            "article_id": "55feb81a4b6e800136756902b425d995",
+            "title": "Bitcoin (BTC) to Pakistani Rupee (PKR) rates for May 22, 2025",
+            "link": "https://arynews.tv/bitcoin-to-pakistani-rupee-rate-today-may-22-2025/",
+            "keywords": [
+                "bitcoin",
+                "pakistani rupees",
+                "pkr",
+                "cryptocurrency",
+                "business",
+                "btc"
+            ],
+            "creator": [
+                "Web Desk"
+            ],
+            "description": "On Thursday, May 22, 2025, the price of Bitcoin (BTC) reached PKR 31,308,229.73 (Approximately Rs 31.3 million), slightly higher than the closing rate of PKR 31,267,545 on May 21, 2025. Crypto exchange Coinbase reported stronger-than-expected fourth-quarter profits, boosted by increased trading activity in Bitcoin and other cryptocurrencies after the U.S. election. Following Donald Trump’s win [...]",
+            "content": "ONLY AVAILABLE IN PAID PLANS",
+            "pubDate": "2025-05-22 12:41:54",
+            "pubDateTZ": "UTC",
+            "image_url": "https://arynews.tv/wp-content/uploads/2022/11/Untitled-1-113.jpg",
+            "video_url": null,
+            "source_id": "arynews",
+            "source_name": "Ary News",
+            "source_priority": 41852,
+            "source_url": "https://arynews.tv",
+            "source_icon": "https://n.bytvi.com/arynews.jpg",
+            "language": "english",
+            "country": [
+                "pakistan"
+            ],
+            "category": [
+                "business"
+            ],
+            "sentiment": "ONLY AVAILABLE IN PROFESSIONAL AND CORPORATE PLANS",
+            "sentiment_stats": "ONLY AVAILABLE IN PROFESSIONAL AND CORPORATE PLANS",
+            "ai_tag": "ONLY AVAILABLE IN PROFESSIONAL AND CORPORATE PLANS",
+            "ai_region": "ONLY AVAILABLE IN CORPORATE PLANS",
+            "ai_org": "ONLY AVAILABLE IN CORPORATE PLANS",
+            "duplicate": false
         },
-        "imageUrl": "https://www.theglobeandmail.com/pf/resources/assets/meta/twitter-summary-240x240.png?d=692",
-        "country": "ca",
-        "language": "en",
-        "pubDate": "2025-05-01T11:35:06+00:00",
-        "addDate": "2025-05-01T11:52:49.630678+00:00",
-        "refreshDate": "2025-05-01T11:52:49.630680+00:00",
-        "score": 141.47061,
-        "title": "General Motors (GM) Sounds the Alarm on Massive Recall amid Engine Defect Concerns",
-        "description": "Detailed price information for General Motors Company (GM-N) from The Globe and Mail including charting and trades.",
-        "content": "General Motors (GM) has announced a global recall of about 721,000 SUVs and trucks due to potential engine defects that could lead to a loss of power and increase the risk of accidents. This recall, a... [2551 symbols]",
-        "medium": "Article",
-        "links": [
-            "https://www.tipranks.com/stocks/gm/forecast?utm_source=theglobeandmail.com&utm_medium=referral",
-            "https://www.tipranks.com/glossary/d/disclaimer-disclosure",
-            "https://www.tipranks.com/lp/value-newsletter?llf=rss&utm_source=theglobeandmail.com&utm_medium=referral",
-            "https://www.tipranks.com/stocks/gm?utm_source=theglobeandmail.com&utm_medium=referral",
-            "https://www.tipranks.com/glossary/c/contact-editor"
-        ],
-        "labels": [
-            {
-                "name": "Press Release"
-            }
-        ],
-        "matchedAuthors": [],
-        "claim": "",
-        "verdict": "",
-        "keywords": [
-            {
-                "name": "GM stock",
-                "weight": 0.09959295
-            },
-            {
-                "name": "engine failures",
-                "weight": 0.099503115
-            },
-            {
-                "name": "Engine Defect Concerns",
-                "weight": 0.09910191
-            },
-            {
-                "name": "potential engine defects",
-                "weight": 0.09757284
-            },
-            {
-                "name": "thicker engine oil",
-                "weight": 0.093845196
-            },
-            {
-                "name": "engine damage",
-                "weight": 0.091436274
-            },
-            {
-                "name": "GM",
-                "weight": 0.08533126
-            },
-            {
-                "name": "affected vehicles",
-                "weight": 0.07978062
-            },
-            {
-                "name": "vehicles",
-                "weight": 0.070203714
-            },
-            {
-                "name": "Massive Recall",
-                "weight": 0.070159055
-            }
-        ],
-        "topics": [
-            {
-                "name": "Markets"
-            }
-        ],
-        "categories": [
-            {
-                "name": "Finance"
-            },
-            {
-                "name": "Auto"
-            }
-        ],
-        "taxonomies": [
-            {
-                "name": "/News/Business News/Company News",
-                "score": 0.9912109375
-            },
-            {
-                "name": "/Business & Industrial/Automotive Industry",
-                "score": 0.80517578125
-            },
-            {
-                "name": "/Autos & Vehicles/Motor Vehicles (By Type)/Hybrid & Alternative Vehicles",
-                "score": 0.383056640625
-            }
-        ],
-        "entities": [
-            {
-                "data": "General Motors",
-                "type": "ORG",
-                "mentions": 3
-            },
-            {
-                "data": "GM",
-                "type": "ORG",
-                "mentions": 12
-            },
-            {
-                "data": "the National Highway Traffic Safety Administration",
-                "type": "ORG",
-                "mentions": 1
-            },
-            {
-                "data": "NHTSA",
-                "type": "ORG",
-                "mentions": 3
-            },
-            {
-                "data": "Cadillac",
-                "type": "ORG",
-                "mentions": 1
-            },
-            {
-                "data": "Chevrolet",
-                "type": "ORG",
-                "mentions": 3
-            },
-            {
-                "data": "TipRanks",
-                "type": "ORG",
-                "mentions": 1
-            },
-            {
-                "data": "Sells",
-                "type": "ORG",
-                "mentions": 1
-            },
-            {
-                "data": "SUVs",
-                "type": "PRODUCT",
-                "mentions": 1
-            },
-            {
-                "data": "6.2L V8",
-                "type": "PRODUCT",
-                "mentions": 1
-            },
-            {
-                "data": "Silverado",
-                "type": "PRODUCT",
-                "mentions": 1
-            },
-            {
-                "data": "GMC Sierra",
-                "type": "PRODUCT",
-                "mentions": 1
-            }
-        ],
-        "companies": [
-            {
-                "id": "afe1ace29bd04674864b1b6abefc1dbe",
-                "name": "General Motors Company",
-                "domains": [
-                    "gm.com"
-                ],
-                "symbols": [
-                    "8GM.DE",
-                    "GM",
-                    "GM.SW"
-                ]
-            }
-        ],
-        "sentiment": {
-            "positive": 0.059631348,
-            "negative": 0.6503906,
-            "neutral": 0.29003906
+        {
+            "article_id": "2e60f75e0cfed96bacaec5c3587c2ac2",
+            "title": "Futures, Treasuries Slide After 'Big, Beautiful Bill' Passes",
+            "link": "https://www.zerohedge.com/markets/futures-treasuries-slide-after-big-beautiful-bill-passes",
+            "keywords": null,
+            "creator": [
+                "Tyler Durden"
+            ],
+            "description": "Futures, Treasuries Slide After 'Big, Beautiful Bill' Passes US stocks and treasuries sold off after President Trump’s signature tax bill passed the House by the narrowest of margins (214-215), sparking fears that the surging deficit - already at a nosebleed 6.5% of GDP - necessary to fund the bill will spark even higher rates at a time when foreign buyers are boycotting US Treasury purchases. As of 8:00am, S&P futures slumped by 0.5%, trading near session lows and reversing an earlier gain of about 0.3%. Nasdaq futures dropped 0.4%. Treasuries also slumped, extending days of losses in which the 30-year yield hit the highest since 2023: the 10Y was trading at session highs of 4.62%. The dollar ended a three-day losing run while Bitcoin pushed further into record territory. Commodities are weaker across all 3 complexes: oil slumped again after BBG reported that OPEC+ is considering another production hike at the June 1 meeting. SCMP reports that Mexico pledges neutrality between US/China in the Trade War; this follows a similar announcement from Indonesia last month. Today’s macro data focus is on Flash PMIs, weekly claims, existing home sales, and regional Fed activity indicators.In premarket trading, Mag 7 stocks were mixed (Alphabet +1.2%, Nvidia +0.5%, Amazon +0.5%, Tesla -0.2%, Meta Platforms +0.3%, Microsoft +0.02%, Apple -0.1%). Solar stocks sink as US House Republicans’ new version of the tax and spending bill accelerates the end of incentives for clean electricity production (Sunrun -34%, Array Technologies -14%, First Solar -6%). Crypto-linked stocks gained in premarket trading after Bitcoin hit an all-time high. The world’s largest cryptocurrency reached a record price of $111,878 on Thursday amid growing optimism around the US stablecoin bill (Galaxy Digital (GLXY) +5%, Riot Platforms (RIOT) +3%, Mara Holdings (MARA) +3%). Here are some other notable premarket movers:Advance Auto Parts (AAP) soars 30% after the retailer of aftermarket auto components reaffirmed its comparable sales forecast for the full year.Analog Devices (ADI) rises 2% after the chipmaker reported adjusted earnings per share for the second quarter that beat the average analyst estimate.Delcath Systems (DCTH) rises 2% after the specialty pharmaceutical and medical devices company issued full year 2025 guidance and announced a plan to enter into a National Medicaid Drug Rebate Agreement to expand patient access.Nike (NKE) shares rose in premarket trading as the company returns to Amazon.com’s online store after leaving it in 2019.Humana (HUM) falls 5% and UnitedHealth Group (UNH) slips 2% after the Centers for Medicare & Medicaid Services said it will embark on a “significant expansion” of its auditing efforts for Medicare Advantage plans.LiveRamp (RAMP) climbs 10% after the marketing technology company reported fourth-quarter results that beat expectations.Lumen Technologies (LUMN) advances 12% after AT&T agreed to buy the company’s consumer fiber operations for $5.75 billion, expanding its fast broadband service in major cities like Denver and Las Vegas.Manchester United (MANU) drops 5% after the English football club lost the high-stakes Europa League final to Tottenham Hotspur in Bilbao, Spain last night.Navitas Semiconductor (NVTS) surges 175% after the semiconductor company said Nvidia picked it to collaborate on data center power infrastructure.Sable Offshore Corp. (SOC) falls 4% after the oil and gas company priced its stock offering.Snowflake (SNOW) gains 9% after the software developer forecast product revenue for the second quarter above the average analyst estimate.Urban Outfitters (URBN) rises 18% after the apparel retailer reported net sales for the first quarter that beat the average analyst estimate.Just before 7am ET, after an all night session in the House, US lawmakers passed Trump's 'big, beautiful bill', a sprawling multi-trillion dollar package that would avert a year-end tax increase at the expense of adding to the US debt burden. The move comes after a downgrade by Moody’s Ratings thrust concerns over the ballooning deficit into the spotlight. This has shown up in Treasuries, sapping sentiment after an equity rebound put the S&P 500 on the cusp of a bull market. Goldman calculated the yield at which stocks would crack: the bank notes that on May 1st, 10yr yield was 4.12%...we just touched 4.6% yesterday after the weak 20yr auction. At what level do yields start to put real pressure on the stock market? The easy big round number is 10yr @ 5%. The more nuanced answer is >4.7% (before the end of May) as velocity of move in rates matters much more than absolute levels (in regards to impacting stocks). When 10yr yield has moved higher by 2SD (60bps) within a one month period the stock market comes under pressure.“Bond vigilantes are back,” Beata Manthey, a strategist at Citigroup Inc., told Bloomberg TV. “The market is worried about debt sustainability. It’s not very helpful, given how strong a rebound we’ve been seeing in equity markets.”Later on Thursday, S&P Global will issue its preliminary May survey of manufacturing and service providers. Based on economists’ projections, industrial weakness probably continued while growth in services activity may have picked up slightly. Weekly jobless claims data is also due.Meanwhile, the doom and gloom from Jamie Dimon continued, after the JPMorgan CEO said he can’t rule out the US economy will fall into stagflation as the country faces huge risks from both geopolitics, deficits and price pressures. “I don’t agree that we’re in a sweet spot,” Dimon told Bloomberg TV in Shanghai.With everything else being sold, traders turned to non-fiat alternatives: Bitcoin surpassed $111,000 for the first time with traders increasingly bullish on the prospects of the cryptocurrency., gold traded back over $3,300.“Bitcoin, and the crypto market in general, have largely decoupled from equities over the last few days,” said Richard Galvin, co-founder of hedge fund DACM. “Bitcoin continues to benefit from its market position as a non-system, store of value.”European stocks fall as worries over rising bond yields curbed investor appetite for risky assets. The Estoxx index slumped 1%, with the yield-sensitive technology sector is among the biggest laggards. Among individual stocks, EasyJet Plc falls after the low-cost airline reported bigger-than-expected losses, while Johnson Matthey rises on a major sale of its technology business. Here are some of the biggest movers:Johnson Matthey shares jump as much as 34%, the most in over three years, after the company announced the sale of its catalyst technology business at an enterprise value of £1.8 billion, with the bulk of proceeds to be returned to shareholders.Mitchells & Butlers gains as much as 2.2% after the pub and restaurant operator delivers what analysts view as a strong update, with full-year operating profit expected to be at the top end of current consensus.Grenergy Renovables gains as much as 8%, hitting a new record high. RBC Capital says the Spanish renewables company has achieved strong growth in the first quarter, supported by gains of the Atacama storage project.Gimv gains as much as 8.9%, the most since March 2020, after the investment company posts what KBC Securities describes as another record yearStora Enso gains as much as 7% to its highest since March 20 after the Finnish forest and paper company said it will divest around 175,000 hectares of forest land in Sweden for a total value of €900 million.EasyJet shares fall as much as 6.1% after the travel firm reported a loss in the first half.BT shares drop as much as 5.3% after the telecom company reported a decline of 243,000 Openreach broadband lines in the quarter ended March, a sign of heightened competition among UK’s fiber builders.British Land shares drop as much as 7.1% in their worst one-day loss in two years, after the UK property firm’s unchanged guidance and forecast for flat 2026 earnings per share tempered a recent rally in the stock.Freenet shares sink as much as 16%, the most since May 2022, after the mobile communications service provider reported Ebitda for the first quarter that missed estimates.Elior drops as much as 5.3% following a mixed first-half report from the commercial catering company.Intertek shares drop as much as 3% after the inspection services provider reported disappointing organic growth for the first four months of the year.MPC Container Ships falls as much as 17%, the most since 2021, after the Norwegian shipping firm presented its latest earnings and a new dividend policy.Asian equities dropped the most in two weeks, driven by losses in technology stocks after Treasury yields jumped overnight on concerns about the US budget deficit. The MSCI Asia Pacific Index fell as much as 0.8%, the biggest decline since May 8, with Alibaba, TSMC and Samsung contributing the most to the losses. South Korea’s Kospi retreated over 1%, while benchmark gauges in Hong Kong, Japan and India also lost ground. Philippine stocks weakened after President Ferdinand Marcos Jr. ordered his cabinet to resign.In FX, the Bloomberg Dollar Spot Index rebounded to rise 0.1% after three straight days of losses. EUR/USD fell 0.2% to 1.131 after data showed private-sector activity in the euro area unexpectedly shrank in May. USD/JPY slumped as much as 0.6% to 142.81, the lowest level in two weeks, before paring the move to trade 0.2% lower. Despite the latest drop, the Hang Seng China Enterprises Index remains on track to cap a sixth straight week of gains. JPMorgan Chase is committed to long-term investment in China, despite tensions with the US, Chief Executive Officer Jamie Dimon said in a Bloomberg TV interview. In rates, the yield for 10-year Treasuries advanced two basis points to 4.62% on Thursday. The worry in debt markets is that the tax bill would add trillions of dollars to an already bulging deficit at a time when investors’ appetite is US assets is slumping. The 30-year yield reaching new multimonth highs of 5.15% while short-end tenors richen, pivoting around a little-changed 7-year sector. 5s30s spread near 97bp is widest since May 1. European sovereign curves are also steeper. The Treasury will sell $18 billion of 10-year TIPS in a reopening at 1pm New York; Wednesday’s 20-year new-issue auction tailed by about 1bp, spurring long-end yields higher. Focal points include House Republicans narrowly passing President Trump’s tax bill shortly before 7am, PMI and jobless claims data, a 10-year TIPS auction and comments by NY Fed President Williams.Looking at today's calendar, US economic data includes April Chicago Fed national activity index and weekly jobless claims (8:30am), May preliminary S&P Global US PMIs (9:45am), April existing home sales (10am) and May Kansas City Fed manufacturing activity (11am). Fed speaker slate includes Richmond Fed President Barkin (8am) and Williams (2pm).Market SnapshotS&P 500 mini -0.5%Nasdaq 100 mini -0.4%, Stoxx Europe 600 -1%DAX -0.8%, CAC 40 -1%10-year Treasury yield -2 basis points at 4.58%VIX -0.4 points at 20.49Bloomberg Dollar Index +0.1% at 1220.46euro -0.3% at $1.1297WTI crude -1.5% at $60.66/barrelTop Overnight NewsA man fatally shot two Israeli Embassy staff members late Wednesday near a Jewish museum in downtown Washington. WSJScott Bessent and his Japanese counterpart Katsunobu Kato confirmed existing currency views and didn’t discuss FX levels when they met in Canada. BBGOn a call Monday, President Trump told European leaders that Russian President Vladimir Putin isn’t ready to end the Ukraine war because he thinks he is winning. This runs counter to what Trump has often said publicly, that he believes Putin genuinely wants peace. WSJBOJ board member Asahi Noguchi said on Thursday he saw no need for the central bank to intervene in the bond market to stem recent sharp rises in super-long yields, describing the moves as 'rapid but not abnormal.' Noguchi also said the central bank must pause its interest rate hikes for the time being until there is more clarity on the impact of U.S. tariffs on the economy. RTRSIsrael is making preparations to “swiftly” strike Iran’s nuclear facilities if talks between Washington and Tehran collapse without a deal. AxiosOPEC+ members are discussing whether to agree on another super-sized production increase at their meeting June 1, delegates said. That would be the third straight month of adding more barrels to the market. Oil declined. BBGEurozone flash PMIs for May were mixed, with modest upside on manufacturing (49.4, up from 49 in Apr and above the Street’s 49.2 forecast) and slight downside on services (48.9, down from 50.1 in Apr and below the Street’s 50.5 forecast), while inflation in aggregate cooled (driven by manufacturing). S&PUS/EU trade talks – Brussels is offering to extend an existing shellfish trade deal w/the US that expires on 7/31 as an inducement to striking a broader agreement around tariffs. FTLutnick says he predicts a slew of trade deals by the middle of the summer and doesn’t anticipate tariffs fueling higher prices in the US. AxiosBofA Institute Total Card Spending (Week to 17th May) -0.7% (vs +1.0% average in April)US President Trump posted 'I am giving very serious consideration to bringing Fannie Mae and Freddie Mac public. I will be speaking with Treasury Secretary Scott Bessent, Secretary of Commerce Howard Lutnick, and the Director of the Federal Housing Finance Agency, William Pulte, among others, and will be making a decision in the near future.'Trade/TariffsEU is open to extending lobster deal as part of a package to remove tariffs imposed by US President Trump, according to FT.South African President Ramaphosa said following a meeting with US President Trump that they had discussions on trade and there will continue to be engagement on tariffs. It was also reported that South Africa's Trade Minister said they submitted a proposal regarding a framework agreement with the US and had some US feedback, while they then resubmitted a revised document with the proposal about a trade agreement.Canada's Minister of International Trade and Intergovernmental Affairs LeBlanc is to visit Washington DC to meet with Trump admin officials, while it was also reported that Canada's Finance Minister Champagne said he will discuss Canada's role as the largest customer for US exports in meeting with US Treasury Secretary Bessent.Japanese Finance Minister Kato said he told Bessent that US tariffs are regrettable and stated tariffs are not an appropriate means to correct macroeconomic imbalances that are behind trade imbalances, while Kato noted that he did not directly discuss Japan's US Treasury holdings in the meeting with Bessent.US Treasury Secretary Bessent and Japanese Finance Minister Kato discussed global security and bilateral trade and currency issues on the sidelines of the G7, while they reaffirmed shared belief that exchange rates should be market-determined and reaffirmed USD/JPY exchange rate currently reflects fundamentals.A more detailed look at global markets courtesy of NewsquawkAPAC stocks were on the back foot following the sell-off on Wall St where stocks, treasuries and the dollar were pressured amid deficit concerns and a weak 20-year auction. ASX 200 retreated with energy and tech front-running the declines, although continued strength in gold producers atoned for some of the losses. Nikkei 225 gapped beneath the 37,000 level amid a firmer currency and proceeded in a somewhat choppy fashion as participants also digested data releases, including a surprise surge in Japanese Machinery Orders and mixed PMI figures. Hang Seng and Shanghai Comp conformed to the downbeat sentiment in the absence of any fresh bullish catalysts and after recent earnings results failed to inspire, while the mainland initially showed resilience in early trade before succumbing to the broad risk-off mood.Top Asian NewsPBoC to sell CNY 500bln of one year medium term lending facility loans on Friday.RBA's Hauser, on recent trip to China, says found confidence Beijing would do what was needed to sustain growth; Australian exporters upbeat about resilience of China demand Found striking confidence that China going into trade war with strong hand. China organisations expected large share of economic costs of tariffs would fall on US. China contacts expressed a determination not to cushion those costs. Found little expectation that yuan would be devalued to insulate US from tariffs. Possible could see more intense competition at home from Chinese firms discounting. Unclear how big an impact given limited overlap between Chinese and Australian output.BoJ's Noguchi says they do not look at the size of JGB buying from the standpoint of monetary policy. In tapering, market predictability and flexibility is the most important. Does not think it is appropriate to recklessly intervene to correct bond yield moves. Should not move on rates when there is a lack of clarity on economic outlook.Japanese Economy Minister Akazawa held unofficial phone talks with US Treasury Secretary Bessent before Wednesday, according to TV Tokyo; Bessent reportedly expressed reluctance to meet Akazawa this week; the two will meet next week instead.China's MOFCOM says China firmly opposes US export controls on Chinese AI chips.European bourses (STOXX 600 -0.7%) opened lower across the board, in a continuation of the pressure seen on Wall St/APAC trade and have traded at subdued levels throughout the morning. European sectors hold a strong negative bias, with only Basic Resources and Chemicals marginally holding in positive territory. Consumer Products is underperforming after LVMH’s (-1.5%) cautious comments on the Luxury sector. Chemicals names are faring better vs peers, with Bayer (+1.7%) doing much of the heavy lifting. The Co. benefits from a WSJ report which suggests the US HHS Secretary's move will “go easier than expected on pesticides in farming”.Top European NewsECB's Nagel sees progress on the US tariff dispute but more hurdles to overcome and noted the US was showing a better understanding of Europe's point of view, while he is a little more confident than perhaps was a few days ago. Nagel stated that German economic growth in Q1 could surprise on the upside but will get worse in Q2 and could see 1% plus growth in 2026.ECB's Vujcic says 'Euro area growth is positive but low; inflation is slowly converging to 2% target; expect to get close to 2% target at end-2025' Expect to reach 2% target in early 2026.IMF forecasts French growth of 0.6% in 2025 and 1% in 2026; says France needs fiscal effort of 1.1% of GDP in 2026, followed by an average of about 0.9% over the medium term; Says France needs credible and well-designed package of measures to rein in deficit over time.EU Parliament backs very high tariffs on nitrogen-based fertilisers and farm produce from Russia and Belarus.Eurozone PMIsEU HCOB Composite Flash PMI (May) 49.5 vs. Exp. 50.7 (Prev. 50.4); HCOB Services Flash PMI (May) 48.9 vs. Exp. 50.3 (Prev. 50.1); HCOB Manufacturing Flash PMI (May) 49.4 vs. Exp. 49.3 (Prev. 49.0)French HCOB Composite Flash PMI (May) 48.0 vs. Exp. 48.0 (Prev. 47.8); HCOB Services Flash PMI (May) 47.4 vs. Exp. 47.5 (Prev. 47.3); HCOB Manufacturing Flash PMI (May) 49.5 vs. Exp. 48.9 (Prev. 48.7)German HCOB Composite Flash PMI (May) 48.6 vs. Exp. 50.4 (Prev. 50.1); HCOB Services Flash PMI (May) 47.2 vs. Exp. 49.5 (Prev. 49.0); HCOB Manufacturing Flash PMI (May) 48.8 vs. Exp. 48.9 (Prev. 48.4)UK Flash Composite PMI (May) 49.4 vs. Exp. 49.3 (Prev. 48.5); Flash Services PMI (May) 50.2 vs. Exp. 50.0 (Prev. 49.0); Flash Manufacturing PMI (May) 45.1 vs. Exp. 46.0 (Prev. 45.4)FXUSD is currently relatively steady and mixed vs. peers following three consecutive sessions of losses. With trade updates lacking, focus is currently on the fiscal front as markets await the outcome of the House vote on President Trump's tax bill. If the bill passes this hurdle, attention from an FX perspective will be on how back-end US rates react to the price tag and impact on the deficit. This week's data highlights are presented today via weekly claims and flash PMI metrics. The latter will likely carry greater sway as markets look for evidence on how the trade war is impacting US business. Fed speaker's today include Williams and Barkin.The rally in the EUR has paused for breath. This morning's macro focus has been on EZ PMI metrics which have painted a picture of a stabilising manufacturing sector but a slowdown in the services industry. The trade war is clearly acting as a cloud over the Eurozone economy; note, yesterday Bloomberg reported that the EU is preparing a trade proposal for the US to steer momentum into talks. Today's docket sees the ECB's account of the April meeting. Currently trading around the 1.13 mark.JPY is top of the G10 leaderboard alongside the soft risk sentiment and as markets digest comments from Japanese Finance Minister Kato and BoJ board member Noguchi. On the former, Kato noted that he agreed with US Treasury Secretary Bessent that FX rates should be set by markets and they did not directly discuss Japan's US Treasury holdings. Elsewhere, BoJ's Noguchi, in response to recent moves in Japanese yields, said that he does not think it is appropriate to recklessly intervene to correct bond yield moves.GBP is a touch firmer vs. the USD and extending its winning run for a fourth consecutive session. The latest round of PMI metrics from the UK saw the services component beat expectations and return to expansionary territory, manufacturing missed but ultimately, the composite rose and just about beat the consensus. Looking ahead, today's speaker slate sees a trio of MPC members with Breeden, Dhingra & Pill all due on deck. Cable is currently contained within Wednesday's 1.3380-1.3468 range.Mildly diverging fortunes for the Antipodes with AUD outperforming NZD as the AUD/NZD cross looks to close the post-RBA gap lower. Incremental newsflow for both has been lacking as the New Zealand Budget and forecasts garnered little fanfare and comments from RBA's Hauser proved to be non-incremental.Fixed IncomeUSTs are a little firmer, attempting to recover following the hefty losses seen in the prior session following a weak US 20yr auction. Focus firmly is on the fiscal front. Overnight, the House Rules Committee passed President Trump’s tax/spending bill. Thereafter, the broader floor voted to open debate on the tax bill, a debate process that lasts for around two hours (started approx. 08:00BST) and is followed by a vote on the bill. Progress on the bill is bearish for USTs as it will increase the US’ debt level, a figure which has been increasing and was the driver behind the Moody’s downgrade last week. USTs currently trading around 109-19.Bunds started the day in the red but currently at the upper-end of a 129.49-91 band. Bunds have been gradually making their way off lows throughout the morning, edging higher slowly into the day’s data points which have featured generally weak Flash PMIs, with the expectation of Manufacturing where tariff-mitigation measures appear to have provided some support. No real reaction to the German Ifo figures at the same time. Ahead, ECB Minutes though as usual these will be deemed stale; focus will be on ECB's de Guindos, Elderson and Escriva throughout the day.Gilts are softer, trading slightly weaker than EGBs throughout the morning as has been the case at several points over the last few weeks but with today’s underperformance likely a function of Gilts reacting to Wednesday’s US auction and borrowing data this morning. PSNB data this morning came in well above expectations and the prior, though that was subject to a downward revision, in another unwelcome series for Chancellor Reeves after the hotter-than-expected inflation print earlier this week. Given all this, Gilts opened lower by 18 ticks and then slipped another 13 to a 90.29 trough in short order.Swedish Debt Office sees the 2025 deficit at SEK 93bln (Nov. forecast 65bln), nominal bond volume SEK 118bln (Nov. forecast 100bln); 'new plan also contains an additional foreign currency bond for this year'.Spain sells EUR 6.2bln vs exp. EUR 5.5-6.5bln 5.15% 2028, 3.10% 2031 & 1.00% 2042 Bonds.France sells EUR 12.497bln vs exp. EUR 10.5-12.5bln 2.40% 2028, 2.70% 2031, 0.00% 2032 OATs.CommoditiesCrude futures were pressured overnight by the downbeat mood across markets and following bearish inventory data. Renewed pressure was seen during the European morning amid source reports that OPEC+ members are reportedly discussing whether to agree to another output hike of 411k BPD in July, via Bloomberg citing sources, although no agreement has been reached yet. WTI resides in a USD 60.37-61.75/bbl range while its Brent counterpart trades in a USD 63.67-65.03/bbl parameter.Overall, there is mixed trade across precious metals with hefty underperformance in spot palladium as it tracks the downbeat sentiment across the auto sector. Spot gold trades flat now and currently resides in a current USD 3,311.08-3,345.47/oz range.Base metals are mostly lower amid the broader downbeat risk profile, whilst Flash PMIs from Europe this morning were mixed but the commentary was mostly downbeat. 3M LME copper resides closer to the bottom end of a USD 9,495.65-9,579.20/t range at the time of writing.UK urged lowering price cap on Russian oil at the G7 meeting, according to Bloomberg.OPEC+ members are reportedly discussing on whether to agree to another output hike of 411k BPD in July, via Bloomberg citing sources; one of the options being discussed, no agreement has been reached yet.Geopolitics: Middle EastIranian Foreign Minister says 'We have a better understanding in many areas, but in some, especially enrichment, differences still remain. I think we cannot reach an agreement until this issue is resolved.', via Iran NuancesIsrael is preparing to carry out a swift attack on Iran's nuclear facilities if nuclear talks between the US and Iran fail, via Walla citing sources.Israeli military said it identified and intercepted a missile launched from Yemen towards Israel.Two Israeli embassy employees were killed in a shooting near a Jewish museum in Washington DC, while the Washington DC police chief announced the suspect was detained by event security and had chanted 'Free Palestine' while in custody.Geopolitics: UkraineMoscow Mayor says Russian has downed two drones en route to MoscowUS President Trump told European leaders in private that Russian President Putin isn't ready to end the war, according to WSJ.Geopolitics: OtherNorth Korea said it will convene the ruling party central committee meeting in late June and North Korean leader Kim watched the launch of a 5000-ton destroyer, while an accident occurred during the launch of the North Korean warship. Furthermore, Kim said the accident was unacceptable and was the result of negligence and irresponsibility.Indian PM Modi says Pakistan will not get water, to which India has a right.US Event Calendar8:30 am: Apr Chicago Fed Nat Activity Index, est. -0.25, prior -0.038:30 am: May 17 Initial Jobless Claims, est. 230k, prior 229k8:30 am: May 10 Continuing Claims, est. 1881.62k, prior 1881k9:45 am: May P S&P Global U.S. Manufacturing PMI, est. 49.85, prior 50.29:45 am: May P S&P Global U.S. Services PMI, est. 51, prior 50.89:45 am: May P S&P Global U.S. Composite PMI, est. 50.3, prior 50.610:00 am: Apr Existing Home Sales, est. 4.1m, prior 4.02m10:00 am: Apr Existing Home Sales MoM, est. 1.99%, prior -5.9%DB's Jim Reid concludes the overnight wrapMorning from Holland where I’ve just been told I’m now a BA Gold Card holder for life after my latest trip tipped me over the landmark. Annoyingly in my first 10 plus years of my career I didn’t collect tier points as I couldn’t be bothered to fill in the forms. So what could have been. I’ll make sure that on my way back home today I’ll have a celebratory decaf latte in the lounge.If you collected air miles for issuing government debt then many DM countries would have been in the first class lounge many years ago and over the last 24 hours concerns have continued to mount about debt sustainability. We should put it into some perspective as sensible people have been worried about debt sustainability for years. Indeed if you'd have told anyone 10-20 years ago that the US could comfortably fund 7% mid-cycle deficits in recent years then most would have been incredulous at the prospect. So we could have sustainability fears for years to come before an inevitable accident or event happens. However it's fair to say that events in 2025 have brought forward any day of reckoning.Yesterday saw the 30yr Treasury yield (+12.3bps to 5.09%) close above 5% for the first time since October 2023, and only 2bps away from its highest level since 2007. Even during the inflation peak at 9.1% in 2022, 30 year US yields didn't climb above 4.40% that year. The only time they've been briefly above 5% since 2007 was at the peak of the Treasury sell off in autumn 2023, when yields rose by over 100bps in under three months following an increase in the supply of long-dated bonds and delay of Fed rate cut expectations. It took a change in issuance duration from the Treasury to calm the long-end.While Treasury yields were already trading around 5bps higher midway through yesterday’s session, they took another major step higher after a soft 20yr auction, which saw $16bn of bonds issued at 5.05%, +1.2bps above the pre-sale yield. This ended a pattern seen in the previous two sessions of an early Treasury sell-off reversing during US trading hours. Real yields led the move higher, with 30yr real yields rising +11.2bps to 2.78%, their highest level since 2008. Elsewhere along the curve, the 10yr yield (+11.2bps) rose to 4.60% and even the front-end wasn’t immune to the selloff, as the 2yr yield (+4.7bps) also moved back up to 4.02%. And in a repeat of concerns over US ability to attract foreign investors to fund its twin deficits, the rise in yields came while the dollar index (-0.56%) lost ground for a third session running. This morning US Treasuries are quieter, trading 1-2bps lower across the curve.The soft 20yr auction was also a trigger for a broader market slump, with the S&P 500 falling from -0.2% on the day to -1.61% by the close, its worst day in the past month. This was a very broad-based decline with only 18 advancers in the whole index and the equal-weighted version of the S&P down -2.15%. The Mag-7 (-1.03%) saw a relative outperformance, mostly thanks to a +2.79% advance for Alphabet. Over in Europe, markets had closed before the US sell-off, with the STOXX 600 (-0.04%) little changed, while Germany’s DAX (+0.36%) reached another record high that took its YTD gains to +21.16%. European futures are around two-thirds of a percent lower as I type.All those moves came amid an increased focus on the fiscal implication of the US tax bill going through the House of Representatives, which includes tax cuts that would increase the deficit over the years ahead. Initially, it had looked as though we might get a vote on the bill yesterday, which Speaker Johnson said he was planning on. But the chances diminished as the day went on, as various Republican members were still signalling their opposition. As a reminder, they only have a 220-212 margin in the House, so it only requires a handful of votes against (along with the Democrats) to vote down any bill.In terms of the latest on the budget bill, some of the main issues appeared to be overcome yesterday with the House Republican leadership releasing an revised version late last night US time. That included raising the proposed state and local tax (SALT) deduction up to $40,000, from $10,000 at present, as several Republicans from higher-tax states had threatened to vote against a bill that didn’t see a big enough increase in the SALT limit. And to placate fiscal conservatives, the updated bill would speed up the implementation of Medicaid work requirements and a reduction in Biden-era clean energy tax breaks. As I write this, it still remains to be seen if the revised bill will pass the House, though reporting last night suggested that Trump and Speaker Johnson had assuaged the opposition from the right-wing House Freedom Caucus.Turning to the global moves, the bond selloff also wasn’t helped by an upside surprise in the UK CPI print. That showed headline CPI rising more than expected to +3.5% in April (vs. +3.3% expected), whilst core inflation also rose to +3.8% (vs. +3.6% expected). In absolute terms, it was also the fastest headline inflation rate since January 2024, so that led investors to dial back their expectations for rate cuts from the Bank of England. For example, the amount of cuts priced by December came down -3.2bps on the day to 38bps. And in turn, gilts underperformed their counterparts elsewhere, with the 10yr yield up +5.4bps to 4.76%. But sovereign bonds also sold off across Europe, with yields on 10yr bunds (+3.9ps), OATs (+4.9bps) and BTPs (+4.0bps) all moving higher.In trade news, Bloomberg reported yesterday that the EU has shared a revised trade proposal with Washington, which includes steps such as gradually reducing tariffs to zero on non-sensitive agricultural products and industrial goods, as it aims to build new momentum for transatlantic talks.Looking forward, the main highlight today will be the flash PMIs for May from around the world. Those will be interesting, as they’re one of the first indications we have for how the global economy has performed this month, particularly given not all of the Liberation Day impact would have been immediately clear in April. Overnight, we’ve already had the numbers from Japan and Australia. Data showed that Australia's manufacturing sector has maintained its expansion for the fifth consecutive month, with the S&P Global manufacturing PMI holding steady at 51.7 in May. The services PMI decreased to 50.5 from 51.0 previously, while the composite fell to 50.6 in May from 51.0 in the prior month.Japan's manufacturing sector continued its decline in May, marking the 11th consecutive month below 50, coming in at 49.0 in May, showing a slight improvement from the previous month's level of 48.7. On a more positive note, services remained in expansion at 50.8 in May, although it slowed from April's 52.4. The composite declined to 49.8 in May from 51.2 in April.Asian equity markets are following on from Wall Street's late decline. The KOSPI (-1.16%) is leading the way, primarily due to losses in technology stocks. It is followed by the Nikkei (-1.12%), Hang Seng (-0.55%) and the S&P/ASX 200 (-0.54%). Mainland Chinese markets are relatively flat amid increasing optimism that Beijing will introduce additional stimulus measures to bolster the economy.Meanwhile Bitcoin is fast approaching $112,000 and trading at a new record as hopes increase that Stablecoin regulation will soon pass after the advancement of legislation yesterday. The US debt instability has probably helped too.To the day ahead now, and the main data highlight will be the flash PMIs from Europe and the US. Otherwise, we’ll get the US weekly initial jobless claims and existing home sales for April, whilst in Germany there’s the Ifo’s business climate indicator for May. From central banks, we’ll hear from ECB Vice President de Guindos, the ECB’s Holzmann, Vujcic, Nagel, Elderson and Escriva, the Fed’s Barkin and Williams, and the BoE’s Breeden, Dhingra and Pill. We’ll also get the ECB’s account of their April meeting. Tyler DurdenThu, 05/22/2025 - 08:41",
+            "content": "ONLY AVAILABLE IN PAID PLANS",
+            "pubDate": "2025-05-22 12:41:38",
+            "pubDateTZ": "UTC",
+            "image_url": "https://assets.zerohedge.com/s3fs-public/styles/inline_image_mobile/public/inline-images/BBB%202025-05-22_8-04-52.jpg?itok=v6bxMR6d",
+            "video_url": null,
+            "source_id": "zerohedge",
+            "source_name": "Zerohedge",
+            "source_priority": 5212,
+            "source_url": "https://www.zerohedge.com",
+            "source_icon": "https://n.bytvi.com/zerohedge.png",
+            "language": "english",
+            "country": [
+                "united states of america"
+            ],
+            "category": [
+                "business"
+            ],
+            "sentiment": "ONLY AVAILABLE IN PROFESSIONAL AND CORPORATE PLANS",
+            "sentiment_stats": "ONLY AVAILABLE IN PROFESSIONAL AND CORPORATE PLANS",
+            "ai_tag": "ONLY AVAILABLE IN PROFESSIONAL AND CORPORATE PLANS",
+            "ai_region": "ONLY AVAILABLE IN CORPORATE PLANS",
+            "ai_org": "ONLY AVAILABLE IN CORPORATE PLANS",
+            "duplicate": false
         },
-        "summary": "General Motors (GM) has announced a global recall of about 721,000 SUVs and trucks due to potential engine defects that could lead to a loss of power and increase the risk of accidents. The affected vehicles are Cadillac, Chevrolet, and GMC models spanning 2021 through 2024. The recall follows over 28,000 complaints related to engine failures, including 12 reported crashes, 12 injuries, and 42 fires potentially linked to this issue. GM estimates that only about 3% of the recalled vehicles have the defect, but is taking proactive steps to ensure customer safety. The company has also asked dealers to inspect affected vehicles and repair or replace the engine free of charge.",
-        "shortSummary": "General Motors is recalling 721,000 SUVs and trucks due to potential engine defects, following previous safety recalls and ongoing issues with engine failures.",
-        "translation": "",
-        "translatedTitle": "",
-        "translatedDescription": "",
-        "translatedSummary": "",
-        "locations": [],
-        "reprint": false,
-        "reprintGroupId": "74a9d8266f12400791f739f75ef94ed2",
-        "places": [],
-        "people": []
-    },
-    {
-        "url": "https://www.wsaw.com/video/2025/04/30/general-motors-issues-recall-defective-engine/",
-        "authorsByline": "",
-        "articleId": "62a5569e99bf48f5926ad20c2802dbac",
-        "clusterId": "68f17d621f92430fbad23e31cc169bc5",
-        "source": {
-            "domain": "wsaw.com",
-            "location": {
-                "country": "us",
-                "state": "WI",
-                "county": "Marathon County",
-                "city": "Wausau",
-                "coordinates": {
-                    "lat": 44.9596017,
-                    "lon": -89.6298239
-                }
-            }
+        {
+            "article_id": "9fc707f53f7a94ec8b72af670976592a",
+            "title": "Pro-Trump Crypto Enthusiasts Slam Trump's Memecoin Dinner As 'Distasteful' And An 'Unnecessary Distraction': 'He's Becoming A Salesman-In-Chief'",
+            "link": "https://www.benzinga.com/markets/25/05/45563302/pro-trump-crypto-enthusiasts-slam-trumps-memecoin-dinner-as-distasteful-and-an-unnecessary-distraction-he",
+            "keywords": [
+                "benzinga",
+                "benzinga neuro",
+                "trump meme coin",
+                "markets",
+                "donald trump",
+                "official trump memecoin",
+                "btc",
+                "$trump",
+                "joe biden",
+                "exclusive gala dinner",
+                "us2036121067",
+                "news"
+            ],
+            "creator": [
+                "Namrata Sen"
+            ],
+            "description": "The memecoin dinner to be hosted by President Donald Trump for the top investors of his Official Trump meme coin (CRYPTO: TRUMP) has sparked concerns amid Democrats as well as pro-Trump crypto enthusiasts about potential shadowy buyers and conflicts of interest.What Happened: Thursday’s dinner at Trump's upscale Virginia golf club is drawing scrutiny over concerns that anonymous online bidders may be using the event to discreetly gain access to the former president, reported ABC News.While the Senate was advancing pro-crypto legislation and Bitcoin prices were soaring, the dinner drew criticism from Democrats who allege that Trump is leveraging his presidential power to boost profits for his family business.Notably, some pro-Trump crypto enthusiasts are concerned that the president’s involvement in meme coins could undermine their efforts to establish credibility, stability and legitimacy in ...Full story available on Benzinga.com",
+            "content": "ONLY AVAILABLE IN PAID PLANS",
+            "pubDate": "2025-05-22 12:36:36",
+            "pubDateTZ": "UTC",
+            "image_url": "https://cdn.benzinga.com/files/images/story/2025/05/22/Coins-Memcoin-Trump-Against-Other-Crypto.jpeg?auto=jpg&dpr=1&fit=crop&height=480&optimize=medium&width=720",
+            "video_url": null,
+            "source_id": "benzinga",
+            "source_name": "Benzinga",
+            "source_priority": 2050,
+            "source_url": "https://www.benzinga.com",
+            "source_icon": "https://n.bytvi.com/benzinga.png",
+            "language": "english",
+            "country": [
+                "united states of america"
+            ],
+            "category": [
+                "top",
+                "business"
+            ],
+            "sentiment": "ONLY AVAILABLE IN PROFESSIONAL AND CORPORATE PLANS",
+            "sentiment_stats": "ONLY AVAILABLE IN PROFESSIONAL AND CORPORATE PLANS",
+            "ai_tag": "ONLY AVAILABLE IN PROFESSIONAL AND CORPORATE PLANS",
+            "ai_region": "ONLY AVAILABLE IN CORPORATE PLANS",
+            "ai_org": "ONLY AVAILABLE IN CORPORATE PLANS",
+            "duplicate": false
         },
-        "imageUrl": "https://gray-wsaw-prod.gtv-cdn.com/resizer/v2/https%3A%2F%2Fdo0bihdskp9dy.cloudfront.net%2F04-30-2025%2Ft_42864090a8ad49a0ae5f6074eff31f06_name_file_1280x720_2000_v3_1_.jpg?auth=51e985b989f232a1eab25d46d6db0fef8e63cab642bfa01e2042fc08c1a9a56e&width=1200&height=600&smart=true",
-        "country": "us",
-        "language": "en",
-        "pubDate": "2025-04-30T13:14:01+00:00",
-        "addDate": "2025-04-30T13:38:05.566988+00:00",
-        "refreshDate": "2025-04-30T13:38:05.566990+00:00",
-        "score": 135.24518,
-        "title": "General Motors Issues Recall for Defective Engine",
-        "description": "General Motors Issues Recall for Defective Engine",
-        "content": "",
-        "medium": "Video",
-        "links": [],
-        "labels": [],
-        "matchedAuthors": [],
-        "claim": "",
-        "verdict": "",
-        "keywords": [],
-        "topics": [],
-        "categories": [
-            {
-                "name": "Auto"
-            }
-        ],
-        "taxonomies": [],
-        "entities": [],
-        "companies": [],
-        "summary": "",
-        "shortSummary": "",
-        "translation": "",
-        "translatedTitle": "",
-        "translatedDescription": "",
-        "translatedSummary": "",
-        "locations": [],
-        "reprint": false,
-        "reprintGroupId": "297ee2dac8b1499eb2aad4f017c45bb2",
-        "places": [],
-        "people": []
-    },
-    {
-        "url": "https://www.wfaa.com/video/money/general-motors-recalls-600000-vehicles/287-cd61a3b1-c94a-4b5c-a4dd-9ad6ca55f237",
-        "authorsByline": "",
-        "articleId": "f94865b6919c41409145c8cefb41311c",
-        "clusterId": "b9e5c6bed6ca4b2abdc590d9f15998bd",
-        "source": {
-            "domain": "wfaa.com",
-            "paywall": false,
-            "location": {
-                "country": "us",
-                "state": "TX",
-                "county": "Dallas County",
-                "city": "Dallas",
-                "coordinates": {
-                    "lat": 32.7762719,
-                    "lon": -96.7968559
-                }
-            }
+        {
+            "article_id": "905242a72b4ee68bb759d9cf554720cf",
+            "title": "Биржа Sui DEX Cetus подверглась хакерской атаке и остановила работу",
+            "link": "https://bits.media/birzha-sui-dex-cetus-podverglas-khzakerskoy-atake-i-ostanovila-rabotu/",
+            "keywords": [
+                "токен",
+                "блокчейн",
+                "dex",
+                "хакер",
+                "взлом",
+                "эфириум",
+                "децентрализованная биржа",
+                "смарт-контракт",
+                "майнинг пул",
+                "платформа"
+            ],
+            "creator": null,
+            "description": "Децентрализованная биржа Cetus, работающая на блокчейне Sui, подверглась крупной хакерской атаке, в результате которой из пула ликвидности SUI/USDC было похищено около $11 млн в токенах SUI. Инцидент привел к обрушению стоимости токенов экосистемы более чем на 75%, а также к приостановке работы смарт-контрактов платформы.",
+            "content": "ONLY AVAILABLE IN PAID PLANS",
+            "pubDate": "2025-05-22 12:33:38",
+            "pubDateTZ": "UTC",
+            "image_url": "https://bits.media/upload/resize_cache/webp/iblock/490/gd19k8l2vb24c111k3l12e110h1vkrts/masshtabnaya_khakerskaya_ataka_vynudila_birzhu_sui_dex_cetus_priostanovit_obsluzhivanie_polzovateley.webp",
+            "video_url": null,
+            "source_id": "bits_media",
+            "source_name": "Bits Media",
+            "source_priority": 66297,
+            "source_url": "https://bits.media",
+            "source_icon": null,
+            "language": "russian",
+            "country": [
+                "russia"
+            ],
+            "category": [
+                "top"
+            ],
+            "sentiment": "ONLY AVAILABLE IN PROFESSIONAL AND CORPORATE PLANS",
+            "sentiment_stats": "ONLY AVAILABLE IN PROFESSIONAL AND CORPORATE PLANS",
+            "ai_tag": "ONLY AVAILABLE IN PROFESSIONAL AND CORPORATE PLANS",
+            "ai_region": "ONLY AVAILABLE IN CORPORATE PLANS",
+            "ai_org": "ONLY AVAILABLE IN CORPORATE PLANS",
+            "duplicate": true
         },
-        "imageUrl": "https://media.wfaa.com/assets/WFAA/images/a372d72c-6dbb-4a2f-a14f-07d7738610cf/20250430T115434/a372d72c-6dbb-4a2f-a14f-07d7738610cf_1140x641.jpg",
-        "country": "us",
-        "language": "en",
-        "pubDate": "2025-04-30T11:54:00+00:00",
-        "addDate": "2025-04-30T12:47:08.717988+00:00",
-        "refreshDate": "2025-04-30T12:47:08.717989+00:00",
-        "score": 128.00427,
-        "title": "General Motors recalls 600,000 vehicles",
-        "description": "The recall is due to a manufacturing error.",
-        "content": "Next up in 5\n\nExample video title will go here for this video",
-        "medium": "Video",
-        "links": [],
-        "labels": [],
-        "matchedAuthors": [],
-        "claim": "",
-        "verdict": "",
-        "keywords": [
-            {
-                "name": "General Motors",
-                "weight": 0.23570226
-            },
-            {
-                "name": "title",
-                "weight": 0.17082997
-            },
-            {
-                "name": "this video",
-                "weight": 0.08938471
-            },
-            {
-                "name": "600,000 vehicles",
-                "weight": 0.08164966
-            }
-        ],
-        "topics": [],
-        "categories": [
-            {
-                "name": "Auto"
-            }
-        ],
-        "taxonomies": [],
-        "entities": [
-            {
-                "data": "General Motors",
-                "type": "ORG",
-                "mentions": 1
-            }
-        ],
-        "companies": [],
-        "sentiment": {
-            "positive": 0.28515625,
-            "negative": 0.078125,
-            "neutral": 0.63623047
+        {
+            "article_id": "6dbeff40f60b190d53f58d1d27c4cdae",
+            "title": "DOGE to PKR: Conversion Rate; May 22, 2025",
+            "link": "https://arynews.tv/dogecoin-to-pakistani-rupee-rate-today-may-22-2025/",
+            "keywords": [
+                "dogecoin",
+                "pkr",
+                "cryptocurrency",
+                "business",
+                "doge"
+            ],
+            "creator": [
+                "Web Desk"
+            ],
+            "description": "Cryptocurrency, often just called crypto, like Dogecoin (DOGE), is a type of digital or virtual money that relies on cryptography to keep transactions secure. This article shares the latest price in Pakistani rupees (PKR). Unlike regular money, cryptocurrencies don’t have a central bank or authority controlling them. They work on a decentralised network that tracks [...]",
+            "content": "ONLY AVAILABLE IN PAID PLANS",
+            "pubDate": "2025-05-22 12:33:16",
+            "pubDateTZ": "UTC",
+            "image_url": "https://arynews.tv/wp-content/uploads/2021/04/dogecoin.jpg",
+            "video_url": null,
+            "source_id": "arynews",
+            "source_name": "Ary News",
+            "source_priority": 41852,
+            "source_url": "https://arynews.tv",
+            "source_icon": "https://n.bytvi.com/arynews.jpg",
+            "language": "english",
+            "country": [
+                "pakistan"
+            ],
+            "category": [
+                "business"
+            ],
+            "sentiment": "ONLY AVAILABLE IN PROFESSIONAL AND CORPORATE PLANS",
+            "sentiment_stats": "ONLY AVAILABLE IN PROFESSIONAL AND CORPORATE PLANS",
+            "ai_tag": "ONLY AVAILABLE IN PROFESSIONAL AND CORPORATE PLANS",
+            "ai_region": "ONLY AVAILABLE IN CORPORATE PLANS",
+            "ai_org": "ONLY AVAILABLE IN CORPORATE PLANS",
+            "duplicate": false
         },
-        "summary": "",
-        "shortSummary": "",
-        "translation": "",
-        "translatedTitle": "",
-        "translatedDescription": "",
-        "translatedSummary": "",
-        "locations": [],
-        "reprint": false,
-        "reprintGroupId": "2c3567d97fb54196a483a783c3120fa9",
-        "places": [],
-        "people": []
-    },
-    {
-        "url": "https://bunatimes.com/economy/396595.html",
-        "authorsByline": "Liza",
-        "articleId": "98c9c402f6b4404f99e4bf761234a015",
-        "clusterId": "68f17d621f92430fbad23e31cc169bc5",
-        "source": {
-            "domain": "bunatimes.com",
-            "location": null
+        {
+            "article_id": "77069ef08ee2f1094ed71a64f3c1460b",
+            "title": "Le Bitcoin vient de dépasser son record historique !",
+            "link": "https://www.clubic.com/actualite-566496-le-bitcoin-vient-de-depasser-son-record-historique.html",
+            "keywords": null,
+            "creator": null,
+            "description": "L'or numérique continue d'étonner. Il vient ainsi pour la première fois de son histoire de dépasser la barre des 110 000 dollars !",
+            "content": "ONLY AVAILABLE IN PAID PLANS",
+            "pubDate": "2025-05-22 12:32:00",
+            "pubDateTZ": "UTC",
+            "image_url": "https://pic.clubic.com/v1/images/2287383/raw",
+            "video_url": null,
+            "source_id": "clubic",
+            "source_name": "Clubic",
+            "source_priority": 419411,
+            "source_url": "https://www.clubic.com",
+            "source_icon": "https://n.bytvi.com/clubic.png",
+            "language": "french",
+            "country": [
+                "france"
+            ],
+            "category": [
+                "top",
+                "technology"
+            ],
+            "sentiment": "ONLY AVAILABLE IN PROFESSIONAL AND CORPORATE PLANS",
+            "sentiment_stats": "ONLY AVAILABLE IN PROFESSIONAL AND CORPORATE PLANS",
+            "ai_tag": "ONLY AVAILABLE IN PROFESSIONAL AND CORPORATE PLANS",
+            "ai_region": "ONLY AVAILABLE IN CORPORATE PLANS",
+            "ai_org": "ONLY AVAILABLE IN CORPORATE PLANS",
+            "duplicate": false
         },
-        "imageUrl": "https://kor.ill.in.ua/m/610x385/4316788.jpg",
-        "country": "us",
-        "language": "en",
-        "pubDate": "2025-04-30T17:28:00+00:00",
-        "addDate": "2025-04-30T18:20:22.319872+00:00",
-        "refreshDate": "2025-04-30T18:20:22.319873+00:00",
-        "score": 120.20461,
-        "title": "General Motors recall 721 thousand cars because of defective machines",
-        "description": "Photo: Chevrolet The company works as quickly as possible and ensures that customer safety is its highest priority. General Motors announced a large-scale review of nearly 721 thousand cars in the world, where there were nearly 598 thousand in the USA, due to a 6.2-liter V8 engine problem that could…",
-        "content": "The company works as quickly as possible and ensures that customer safety is its highest priority.\n\nGeneral Motors announced a large-scale review of nearly 721 thousand cars in the world, where there ... [1716 symbols]",
-        "medium": "Article",
-        "links": [],
-        "labels": [],
-        "matchedAuthors": [
-            {
-                "id": null,
-                "name": "Liza"
-            }
-        ],
-        "claim": "",
-        "verdict": "",
-        "keywords": [
-            {
-                "name": "popular cars",
-                "weight": 0.099320136
-            },
-            {
-                "name": "associated models",
-                "weight": 0.07314028
-            },
-            {
-                "name": "General Motors",
-                "weight": 0.07147406
-            },
-            {
-                "name": "power loss",
-                "weight": 0.070998736
-            },
-            {
-                "name": "Escalade ESV",
-                "weight": 0.06885696
-            },
-            {
-                "name": "models",
-                "weight": 0.06409627
-            },
-            {
-                "name": "defective machines",
-                "weight": 0.06283831
-            },
-            {
-                "name": "connecting rods",
-                "weight": 0.0627833
-            },
-            {
-                "name": "US roads",
-                "weight": 0.062189825
-            },
-            {
-                "name": "GMC Sierra",
-                "weight": 0.06164311
-            }
-        ],
-        "topics": [
-            {
-                "name": "Consumer Alerts"
-            },
-            {
-                "name": "Economy"
-            }
-        ],
-        "categories": [
-            {
-                "name": "Auto"
-            },
-            {
-                "name": "Finance"
-            }
-        ],
-        "taxonomies": [
-            {
-                "name": "/News/Business News/Company News",
-                "score": 0.97314453125
-            },
-            {
-                "name": "/Business & Industrial/Automotive Industry",
-                "score": 0.78759765625
-            },
-            {
-                "name": "/Autos & Vehicles/Vehicle Shopping/Vehicle Specs, Reviews & Comparisons",
-                "score": 0.429443359375
-            },
-            {
-                "name": "/Autos & Vehicles/Motor Vehicles (By Type)/Hybrid & Alternative Vehicles",
-                "score": 0.426025390625
-            }
-        ],
-        "entities": [
-            {
-                "data": "General Motors",
-                "type": "ORG",
-                "mentions": 2
-            },
-            {
-                "data": "the National Security Department",
-                "type": "ORG",
-                "mentions": 1
-            },
-            {
-                "data": "GM",
-                "type": "ORG",
-                "mentions": 2
-            },
-            {
-                "data": "Cadillac",
-                "type": "ORG",
-                "mentions": 1
-            },
-            {
-                "data": "Chevy",
-                "type": "ORG",
-                "mentions": 1
-            },
-            {
-                "data": "Volkswagen",
-                "type": "ORG",
-                "mentions": 1
-            },
-            {
-                "data": "Stellantis",
-                "type": "ORG",
-                "mentions": 1
-            },
-            {
-                "data": "News",
-                "type": "ORG",
-                "mentions": 1
-            },
-            {
-                "data": "CORRESPONDENT.NET",
-                "type": "ORG",
-                "mentions": 1
-            },
-            {
-                "data": "USA",
-                "type": "GPE",
-                "mentions": 2
-            },
-            {
-                "data": "the United States",
-                "type": "GPE",
-                "mentions": 1
-            },
-            {
-                "data": "V8",
-                "type": "PRODUCT",
-                "mentions": 1
-            },
-            {
-                "data": "Escalade",
-                "type": "PRODUCT",
-                "mentions": 2
-            },
-            {
-                "data": "Silverado 1500",
-                "type": "PRODUCT",
-                "mentions": 2
-            },
-            {
-                "data": "Suburban",
-                "type": "PRODUCT",
-                "mentions": 1
-            },
-            {
-                "data": "Tahoe",
-                "type": "PRODUCT",
-                "mentions": 1
-            },
-            {
-                "data": "Yukon",
-                "type": "PRODUCT",
-                "mentions": 2
-            }
-        ],
-        "companies": [
-            {
-                "id": "afe1ace29bd04674864b1b6abefc1dbe",
-                "name": "General Motors Company",
-                "domains": [
-                    "gm.com"
-                ],
-                "symbols": [
-                    "8GM.DE",
-                    "GM",
-                    "GM.SW"
-                ]
-            }
-        ],
-        "sentiment": {
-            "positive": 0.040863037,
-            "negative": 0.703125,
-            "neutral": 0.25610352
+        {
+            "article_id": "d34ec0cc480c4e32f4080666d13d54a3",
+            "title": "Coinshares Announces Block Transaction By Shareholder",
+            "link": "https://menafn.com/1109583764/Coinshares-Announces-Block-Transaction-By-Shareholder",
+            "keywords": null,
+            "creator": [
+                "marketing@menafn.com (MENAFN)"
+            ],
+            "description": "(MENAFN - GlobeNewsWire - Nasdaq) Thursday, 22 May 2025 | SAINT HELIER, Jersey - CoinShares International Limited (' CoinShares ' or the ' Company ') (Nasdaq Stockholm Market: CS; US OTCQX: ...",
+            "content": "ONLY AVAILABLE IN PAID PLANS",
+            "pubDate": "2025-05-22 12:31:31",
+            "pubDateTZ": "UTC",
+            "image_url": null,
+            "video_url": null,
+            "source_id": "menafn",
+            "source_name": "Menafn",
+            "source_priority": 1117534,
+            "source_url": "https://menafn.com",
+            "source_icon": "https://n.bytvi.com/menafn.png",
+            "language": "english",
+            "country": [
+                "honduras",
+                "united states of america",
+                "el salvador",
+                "jamaica",
+                "canada",
+                "haiti",
+                "barbados",
+                "mexico",
+                "argentina",
+                "netherland",
+                "cayman islands",
+                "nicaragua",
+                "colombia",
+                "brazil",
+                "cuba",
+                "bahamas",
+                "belize",
+                "grenada",
+                "venezuela",
+                "peru",
+                "guyana",
+                "suriname",
+                "chile",
+                "ecuador",
+                "puerto rico",
+                "dominican republic",
+                "costa rica",
+                "bolivia",
+                "paraguay",
+                "panama",
+                "guatemala",
+                "uruguay"
+            ],
+            "category": [
+                "top"
+            ],
+            "sentiment": "ONLY AVAILABLE IN PROFESSIONAL AND CORPORATE PLANS",
+            "sentiment_stats": "ONLY AVAILABLE IN PROFESSIONAL AND CORPORATE PLANS",
+            "ai_tag": "ONLY AVAILABLE IN PROFESSIONAL AND CORPORATE PLANS",
+            "ai_region": "ONLY AVAILABLE IN CORPORATE PLANS",
+            "ai_org": "ONLY AVAILABLE IN CORPORATE PLANS",
+            "duplicate": true
         },
-        "summary": "General Motors (GM) has recalled nearly 721 thousand cars globally, with nearly 598 thousand in the US. The decision was made after receiving 39 complaints about the destruction of machines. The affected models include popular cars 2021–2024, including Cadillac Escalade and Escalades ESV, Chevy Silverado 1500, Suburban and Tahoe, and GMC Sierra 1500, Yukon and Yukon XL. The recall is due to a 6.2-liter V8 engine problem that could lose power or fail. All cars that fall under the campaign must pass an inspection and if found any defects, they will be repaired or completely replaced. The company also suspended sales of associated models in dealerships.",
-        "shortSummary": "General Motors is recalling nearly 721,000 cars globally due to potentially faulty V8 engines, potentially leading to power loss and mechanical failure.",
-        "translation": "",
-        "translatedTitle": "",
-        "translatedDescription": "",
-        "translatedSummary": "",
-        "locations": [],
-        "reprint": false,
-        "reprintGroupId": "017ff241ab0e45f4aae840002cc182dc",
-        "places": [],
-        "people": []
-    },
-    {
-        "url": "https://247wallst.com/forecasts/2025/04/30/general-motors-gm-price-prediction-and-forecast-2025-2030/",
-        "authorsByline": "Joel South",
-        "articleId": "a9b57e9947314d5186642e4d105af2d5",
-        "clusterId": "5a8d2d68756840908312de7eba7c63dc",
-        "source": {
-            "domain": "247wallst.com",
-            "location": {
-                "country": "us",
-                "state": "NY",
-                "city": "New York",
-                "coordinates": {
-                    "lat": 40.7127281,
-                    "lon": -74.0060152
-                }
-            }
+        {
+            "article_id": "f30a9ca48532a2ba7a7a4a2a6a6c6225",
+            "title": "הקריפטו היומי: הביטקוין ממשיך לטפס, ואיזה מטבע עלה ביותר מ-8%?",
+            "link": "https://www.ice.co.il/crypto/news/article/1066012",
+            "keywords": null,
+            "creator": null,
+            "description": "שוק מטבעות הקריפטו רושם היום מגמה חיובית בכל המטבעות המרכזיים, כשהביטקוין ממשיך לשבור שיאים עם שווי של יותר מ-110 אלף דולר לאחד",
+            "content": "ONLY AVAILABLE IN PAID PLANS",
+            "pubDate": "2025-05-22 12:31:21",
+            "pubDateTZ": "UTC",
+            "image_url": "https://img.ice.co.il/giflib/news/rsPhoto/sz_534/rsz_615_346_22ice14052025.jpg",
+            "video_url": null,
+            "source_id": "ice",
+            "source_name": "Ice",
+            "source_priority": 369241,
+            "source_url": "https://www.ice.co.il",
+            "source_icon": "https://n.bytvi.com/ice.png",
+            "language": "hebrew",
+            "country": [
+                "israel"
+            ],
+            "category": [
+                "top"
+            ],
+            "sentiment": "ONLY AVAILABLE IN PROFESSIONAL AND CORPORATE PLANS",
+            "sentiment_stats": "ONLY AVAILABLE IN PROFESSIONAL AND CORPORATE PLANS",
+            "ai_tag": "ONLY AVAILABLE IN PROFESSIONAL AND CORPORATE PLANS",
+            "ai_region": "ONLY AVAILABLE IN CORPORATE PLANS",
+            "ai_org": "ONLY AVAILABLE IN CORPORATE PLANS",
+            "duplicate": false
         },
-        "imageUrl": "https://247wallst.com/wp-content/uploads/2025/03/gm.jpg",
-        "country": "us",
-        "language": "en",
-        "pubDate": "2025-04-30T12:31:30-04:00",
-        "addDate": "2025-04-30T16:46:12.650327+00:00",
-        "refreshDate": "2025-04-30T16:46:12.650328+00:00",
-        "score": 109.76852,
-        "title": "General Motors (NYSE: GM) Price Prediction and Forecast 2025-2030 (April 2025)",
-        "description": "General Motors is \"all-in\" on adding EVs to its product line but faces some legal headwinds.",
-        "content": "Shares of General Motors (NYSE: GM) slid 4.30% over the past month, compounding a difficult start to the year that has seen the stock lose 12.38%. The legacy automaker continues to struggle as the fal... [5551 symbols]",
-        "medium": "Article",
-        "links": [
-            "https://247wallst.com/companies/GM/",
-            "https://247wallst.com/contact/?feedback_url=https%3A%2F%2F247wallst.com%2Fforecasts%2F2025%2F04%2F30%2Fgeneral-motors-gm-price-prediction-and-forecast-2025-2030%2F",
-            "https://247wallst.com/go/smartasset?utm_source=247wallst&utm_campaign&utm_content=desktop||1434337&utm_term=247wallst&utm_medium=eoaCTALink&site=247wallst&tc=67ab71df0707a&tpid=1434337",
-            "https://247wallst.com/companies/LYFT/",
-            "https://247wallst.com/companies/UBER/"
-        ],
-        "labels": [],
-        "matchedAuthors": [
-            {
-                "id": null,
-                "name": "Joel South"
-            }
-        ],
-        "claim": "",
-        "verdict": "",
-        "keywords": [
-            {
-                "name": "GM",
-                "weight": 0.079348125
-            },
-            {
-                "name": "other GM gains",
-                "weight": 0.076037236
-            },
-            {
-                "name": "future stock prices",
-                "weight": 0.07012911
-            },
-            {
-                "name": "General Motors",
-                "weight": 0.06528462
-            },
-            {
-                "name": "vehicle models",
-                "weight": 0.0569809
-            },
-            {
-                "name": "Cruise robotaxis",
-                "weight": 0.055693895
-            },
-            {
-                "name": "GM’s future share price",
-                "weight": 0.05549046
-            },
-            {
-                "name": "Bolt EV",
-                "weight": 0.054624796
-            },
-            {
-                "name": "Chevy Silverado EV",
-                "weight": 0.053516973
-            },
-            {
-                "name": "Additional battery production investment",
-                "weight": 0.053203113
-            }
-        ],
-        "topics": [
-            {
-                "name": "Markets"
-            },
-            {
-                "name": "Stocks"
-            }
-        ],
-        "categories": [
-            {
-                "name": "Finance"
-            },
-            {
-                "name": "Auto"
-            }
-        ],
-        "taxonomies": [
-            {
-                "name": "/News/Business News/Company News",
-                "score": 0.9931640625
-            },
-            {
-                "name": "/Finance/Investing/Stocks & Bonds",
-                "score": 0.89599609375
-            },
-            {
-                "name": "/News/Business News/Financial Markets News",
-                "score": 0.876953125
-            },
-            {
-                "name": "/Business & Industrial/Automotive Industry",
-                "score": 0.64404296875
-            }
-        ],
-        "entities": [
-            {
-                "data": "General Motors",
-                "type": "ORG",
-                "mentions": 8
-            },
-            {
-                "data": "GM",
-                "type": "ORG",
-                "mentions": 19
-            },
-            {
-                "data": "Chevrolet",
-                "type": "ORG",
-                "mentions": 2
-            },
-            {
-                "data": "Buick",
-                "type": "ORG",
-                "mentions": 1
-            },
-            {
-                "data": "Cadillac",
-                "type": "ORG",
-                "mentions": 2
-            },
-            {
-                "data": "Hummer",
-                "type": "ORG",
-                "mentions": 1
-            },
-            {
-                "data": "Chevy",
-                "type": "ORG",
-                "mentions": 1
-            },
-            {
-                "data": "Cruise",
-                "type": "ORG",
-                "mentions": 1
-            },
-            {
-                "data": "Uber Technologies",
-                "type": "ORG",
-                "mentions": 4
-            },
-            {
-                "data": "Opel-Vauxhall",
-                "type": "ORG",
-                "mentions": 1
-            },
-            {
-                "data": "PSA Groupe SA",
-                "type": "ORG",
-                "mentions": 1
-            },
-            {
-                "data": "LG Chem Ltd.",
-                "type": "ORG",
-                "mentions": 1
-            },
-            {
-                "data": "Ford",
-                "type": "ORG",
-                "mentions": 1
-            },
-            {
-                "data": "24/7 Wall St.’s",
-                "type": "ORG",
-                "mentions": 1
-            },
-            {
-                "data": "Trump",
-                "type": "PERSON",
-                "mentions": 2
-            },
-            {
-                "data": "Mary Barra",
-                "type": "PERSON",
-                "mentions": 2
-            },
-            {
-                "data": "U.S.",
-                "type": "GPE",
-                "mentions": 2
-            },
-            {
-                "data": "Mexico",
-                "type": "GPE",
-                "mentions": 1
-            },
-            {
-                "data": "Canada",
-                "type": "GPE",
-                "mentions": 1
-            },
-            {
-                "data": "America",
-                "type": "GPE",
-                "mentions": 1
-            },
-            {
-                "data": "Detroit",
-                "type": "GPE",
-                "mentions": 1
-            },
-            {
-                "data": "Ohio",
-                "type": "GPE",
-                "mentions": 1
-            },
-            {
-                "data": "Tennessee",
-                "type": "GPE",
-                "mentions": 1
-            },
-            {
-                "data": "Lansing",
-                "type": "GPE",
-                "mentions": 1
-            },
-            {
-                "data": "Asia",
-                "type": "LOC",
-                "mentions": 1
-            },
-            {
-                "data": "EV",
-                "type": "PRODUCT",
-                "mentions": 3
-            },
-            {
-                "data": "Silverado",
-                "type": "PRODUCT",
-                "mentions": 1
-            },
-            {
-                "data": "Lyriq",
-                "type": "PRODUCT",
-                "mentions": 1
-            },
-            {
-                "data": "Ultium Drive",
-                "type": "PRODUCT",
-                "mentions": 1
-            },
-            {
-                "data": "Corvette",
-                "type": "PRODUCT",
-                "mentions": 1
-            },
-            {
-                "data": "E-Ray",
-                "type": "PRODUCT",
-                "mentions": 1
-            },
-            {
-                "data": "Cruise",
-                "type": "PRODUCT",
-                "mentions": 4
-            },
-            {
-                "data": "Advanced Driver Assistance Systems",
-                "type": "PRODUCT",
-                "mentions": 1
-            },
-            {
-                "data": "ADAS",
-                "type": "PRODUCT",
-                "mentions": 1
-            },
-            {
-                "data": "European",
-                "type": "NORP",
-                "mentions": 1
-            }
-        ],
-        "companies": [
-            {
-                "id": "adaad3b30200492b9e2ccb064715e5e1",
-                "name": "AM General",
-                "domains": [
-                    "amgeneral.com"
-                ],
-                "symbols": []
-            },
-            {
-                "id": "afe1ace29bd04674864b1b6abefc1dbe",
-                "name": "General Motors Company",
-                "domains": [
-                    "gm.com"
-                ],
-                "symbols": [
-                    "8GM.DE",
-                    "GM",
-                    "GM.SW"
-                ]
-            }
-        ],
-        "sentiment": {
-            "positive": 0.064086914,
-            "negative": 0.7133789,
-            "neutral": 0.22229004
+        {
+            "article_id": "249a7dca6dfa1fc7c5487a79c035be29",
+            "title": "Dogecoin spicca il volo: +7% in 24 ore! Cosa sta succedendo?",
+            "link": "https://it.benzinga.com/crypto/dogecoin/dogecoin-spicca-il-volo-7-in-24-ore/",
+            "keywords": [
+                "bitcoin",
+                "opzioni",
+                "mercato",
+                "criptovalute",
+                "coinglass",
+                "tradingview",
+                "derivati",
+                "dogecoin",
+                "futures",
+                "binance"
+            ],
+            "creator": [
+                "Aniket Verma"
+            ],
+            "description": "Il token canino è in piena corsa: Dogecoin raggiunge un massimo intraday di 0,2433 dollari e il volume di scambi esplode del 55%.",
+            "content": "ONLY AVAILABLE IN PAID PLANS",
+            "pubDate": "2025-05-22 12:31:15",
+            "pubDateTZ": "UTC",
+            "image_url": "https://global-assets.benzinga.com/it/2025/05/22143113/1747917073-Dogecoin.jpeg",
+            "video_url": null,
+            "source_id": "benzinga_it",
+            "source_name": "Benzinga Italia",
+            "source_priority": 4795,
+            "source_url": "https://it.benzinga.com",
+            "source_icon": "https://n.bytvi.com/benzinga_it.png",
+            "language": "italian",
+            "country": [
+                "italy"
+            ],
+            "category": [
+                "top"
+            ],
+            "sentiment": "ONLY AVAILABLE IN PROFESSIONAL AND CORPORATE PLANS",
+            "sentiment_stats": "ONLY AVAILABLE IN PROFESSIONAL AND CORPORATE PLANS",
+            "ai_tag": "ONLY AVAILABLE IN PROFESSIONAL AND CORPORATE PLANS",
+            "ai_region": "ONLY AVAILABLE IN CORPORATE PLANS",
+            "ai_org": "ONLY AVAILABLE IN CORPORATE PLANS",
+            "duplicate": false
         },
-        "summary": "Shares of General Motors (NYSE: GM) have dropped 4.30% over the past month, following a difficult start to the year that saw the stock lose 12.38%. The company's stock, which sources its parts from a global network of 3,100 primary suppliers and has significant presence in Mexico, Canada, and Asia, has seen a 1.03% gain over the last year. However, it has produced a 115.22% return over five years. The company’s EV segment is expected to be in the black with models like the Hummer EV, Chevy Silverado EV, and Cadillac Lyriq already on the market. In 2021, GM secured a deal with LG Chem Ltd. to supply enough cathode materials to build 5 million EV vehicles, and between 2022 and 2023, its EV production will increase to deliver over 400,000 vehicles. The firm's share price is currently at $54.54, according to analysts.",
-        "shortSummary": "General Motors shares fell 4.30% amid tough trading and challenges, with strong growth prospects and a strategic partnership with Uber boosting investor confidence.",
-        "translation": "",
-        "translatedTitle": "",
-        "translatedDescription": "",
-        "translatedSummary": "",
-        "locations": [],
-        "reprint": false,
-        "reprintGroupId": "c42a962a4542493ab10380c7ac7a3bc8",
-        "places": [],
-        "people": [
-            {
-                "wikidataId": "Q6779013",
-                "name": "Mary Barra"
-            }
-        ]
-    },
-    {
-        "url": "https://www.komando.com/news/big-gm-recall/",
-        "authorsByline": "Kim Komando",
-        "articleId": "e5ec1f1ea70e4b4691d8ae960279d12a",
-        "clusterId": "07bed8ad0e154e8384bdc72372cebfd5",
-        "source": {
-            "domain": "komando.com",
-            "location": {
-                "country": "us",
-                "state": "AZ",
-                "county": "Maricopa County",
-                "city": "Phoenix",
-                "coordinates": {
-                    "lat": 33.4484367,
-                    "lon": -112.0741417
-                }
-            }
-        },
-        "imageUrl": "https://www.komando.com/wp-content/uploads/2024/05/schema-logo-1200x768-1.jpg",
-        "country": "us",
-        "language": "en",
-        "pubDate": "2025-05-01T13:00:00+00:00",
-        "addDate": "2025-05-01T13:19:41.742748+00:00",
-        "refreshDate": "2025-05-01T13:19:41.742749+00:00",
-        "score": 109.66518,
-        "title": "Big GM recall",
-        "description": "\uD83D\uDE97 Big GM recall: General Motors is recalling nearly 600,000 Chevy, Cadillac and GMC vehicles over major engine issues. If you’ve got a 2021-2024 model with a 6.2L V8 gas engine, you might be on the list. Owner letters go out June 9, but don’t wait. Head to your nearest dealer now for a free […]",
-        "content": "Let me tell you a true story that’ll shake you and hopefully protect someone you love from heartbreak or a well-rehearsed scam call.\n\nIt happened to a 90-year-old grandmother in Nashville. She picked ... [417 symbols]",
-        "medium": "Article",
-        "links": [
-            "https://www.komando.com/news/security/grandma-got-played-but-not-by-bingo/"
-        ],
-        "labels": [],
-        "matchedAuthors": [
-            {
-                "id": "1a963e6d9ae946ec9f0220a326d9661a",
-                "name": "Kim Komando"
-            }
-        ],
-        "claim": "",
-        "verdict": "",
-        "keywords": [
-            {
-                "name": "Big GM recall",
-                "weight": 0.12166607
-            },
-            {
-                "name": "heartbreak",
-                "weight": 0.08862649
-            },
-            {
-                "name": "GM",
-                "weight": 0.08111071
-            },
-            {
-                "name": "Nashville",
-                "weight": 0.07482022
-            },
-            {
-                "name": "a young woman",
-                "weight": 0.06264142
-            },
-            {
-                "name": "a true story",
-                "weight": 0.06038048
-            },
-            {
-                "name": "a car accident",
-                "weight": 0.057353932
-            },
-            {
-                "name": "the other end",
-                "weight": 0.05152669
-            },
-            {
-                "name": "her voice",
-                "weight": 0.042559095
-            },
-            {
-                "name": "a well-rehearsed scam call",
-                "weight": 0.039828118
-            }
-        ],
-        "topics": [
-            {
-                "name": "Consumer Alerts"
-            }
-        ],
-        "categories": [],
-        "taxonomies": [
-            {
-                "name": "/News/Business News/Company News",
-                "score": 0.9150390625
-            },
-            {
-                "name": "/Shopping/Consumer Resources/Consumer Advocacy & Protection",
-                "score": 0.81640625
-            },
-            {
-                "name": "/Law & Government/Public Safety/Crime & Justice",
-                "score": 0.57421875
-            },
-            {
-                "name": "/Law & Government/Legal/Other",
-                "score": 0.498046875
-            },
-            {
-                "name": "/Law & Government/Legal/Business & Corporate Law",
-                "score": 0.42626953125
-            }
-        ],
-        "entities": [
-            {
-                "data": "GM",
-                "type": "ORG",
-                "mentions": 1
-            },
-            {
-                "data": "Nashville",
-                "type": "GPE",
-                "mentions": 1
-            }
-        ],
-        "companies": [
-            {
-                "id": "7a470ed6424e44778ce7c3242ac01da2",
-                "name": "General Motors of Canada",
-                "domains": [
-                    "gm.ca"
-                ],
-                "symbols": []
-            }
-        ],
-        "sentiment": {
-            "positive": 0.11853027,
-            "negative": 0.5605469,
-            "neutral": 0.32104492
-        },
-        "summary": "A true story about a 90-year-old grandmother in Nashville, Tennessee, who received a scam call from a young woman claiming to have been in a car accident and needs to talk to a lawyer. The author shares her own story, which will hopefully prevent someone from suffering or suffering from heartbreak or a scam. This article discusses a true story that occurred to a grandmother who received an unexpected scam call.",
-        "shortSummary": "A 90-year-old grandmother was shaken by a scam call, urging her to seek legal advice and protect loved ones from scam calls and heartbreak.",
-        "translation": "",
-        "translatedTitle": "",
-        "translatedDescription": "",
-        "translatedSummary": "",
-        "locations": [
-            {
-                "country": "us",
-                "state": "TN",
-                "county": "Davidson County",
-                "city": "Nashville-Davidson"
-            }
-        ],
-        "reprint": false,
-        "reprintGroupId": "9b843a5567a3414392273da4c73566e9",
-        "places": [],
-        "people": []
-    },
-    {
-        "url": "https://www.wfiwradio.com/2025/04/30/general-motors-recalls-over-700000-vehicles-due-to-engine-issues/",
-        "authorsByline": "Mark Wells",
-        "articleId": "7aa3c37793a64bd08ff853c3f1e070f0",
-        "clusterId": "68f17d621f92430fbad23e31cc169bc5",
-        "source": {
-            "domain": "wfiwradio.com",
-            "location": {
-                "country": "us",
-                "state": "IL",
-                "county": "Wayne County",
-                "city": "Fairfield",
-                "coordinates": {
-                    "lat": 38.381784,
-                    "lon": -88.39171
-                }
-            }
-        },
-        "imageUrl": "https://media-cdn.socastsrm.com/wordpress/wp-content/blogs.dir/3270/files/2025/04/vehicle-recall-image.jpg",
-        "country": "us",
-        "language": "en",
-        "pubDate": "2025-04-30T16:54:50+00:00",
-        "addDate": "2025-04-30T17:46:30.217945+00:00",
-        "refreshDate": "2025-04-30T17:46:30.217946+00:00",
-        "score": 105.11124,
-        "title": "GENERAL MOTORS RECALLS OVER 700,000 VEHICLES DUE TO ENGINE ISSUES",
-        "description": "General Motors has issued a recall for more than 720,000 vehicles worldwide due to potential engine problems. ...",
-        "content": "General Motors has issued a recall for more than 720,000 vehicles worldwide due to potential engine problems. The recall affects approximately 598,000 vehicles in the United States and involves models... [573 symbols]",
-        "medium": "Article",
-        "links": [],
-        "labels": [],
-        "matchedAuthors": [
-            {
-                "id": null,
-                "name": "Mark Wells"
-            }
-        ],
-        "claim": "",
-        "verdict": "",
-        "keywords": [
-            {
-                "name": "ENGINE ISSUES",
-                "weight": 0.13647693
-            },
-            {
-                "name": "potential engine problems",
-                "weight": 0.13239132
-            },
-            {
-                "name": "engine failures",
-                "weight": 0.12818265
-            },
-            {
-                "name": "Escalade ESV",
-                "weight": 0.11862977
-            },
-            {
-                "name": "several other models",
-                "weight": 0.110691495
-            },
-            {
-                "name": "Cadillac Escalade and Escalade ESV models",
-                "weight": 0.10066769
-            },
-            {
-                "name": "Escalade",
-                "weight": 0.09940285
-            },
-            {
-                "name": "models",
-                "weight": 0.092421554
-            },
-            {
-                "name": "the National Highway Traffic Safety Administration",
-                "weight": 0.088791
-            },
-            {
-                "name": "General Motors",
-                "weight": 0.08450641
-            }
-        ],
-        "topics": [],
-        "categories": [
-            {
-                "name": "Auto"
-            }
-        ],
-        "taxonomies": [
-            {
-                "name": "/News/Business News/Company News",
-                "score": 0.9462890625
-            },
-            {
-                "name": "/Business & Industrial/Automotive Industry",
-                "score": 0.65625
-            },
-            {
-                "name": "/Shopping/Consumer Resources/Consumer Advocacy & Protection",
-                "score": 0.306884765625
-            },
-            {
-                "name": "/Autos & Vehicles/Vehicle Shopping/Vehicle Specs, Reviews & Comparisons",
-                "score": 0.302734375
-            }
-        ],
-        "entities": [
-            {
-                "data": "GENERAL MOTORS",
-                "type": "ORG",
-                "mentions": 2
-            },
-            {
-                "data": "Cadillac",
-                "type": "ORG",
-                "mentions": 1
-            },
-            {
-                "data": "the National Highway Traffic Safety Administration",
-                "type": "ORG",
-                "mentions": 1
-            },
-            {
-                "data": "GM",
-                "type": "ORG",
-                "mentions": 1
-            },
-            {
-                "data": "the United States",
-                "type": "GPE",
-                "mentions": 1
-            },
-            {
-                "data": "U.S.",
-                "type": "GPE",
-                "mentions": 1
-            },
-            {
-                "data": "Escalade",
-                "type": "PRODUCT",
-                "mentions": 2
-            }
-        ],
-        "companies": [
-            {
-                "id": "afe1ace29bd04674864b1b6abefc1dbe",
-                "name": "General Motors Company",
-                "domains": [
-                    "gm.com"
-                ],
-                "symbols": [
-                    "8GM.DE",
-                    "GM",
-                    "GM.SW"
-                ]
-            }
-        ],
-        "sentiment": {
-            "positive": 0.029388428,
-            "negative": 0.8256836,
-            "neutral": 0.14465332
-        },
-        "summary": "General Motors (GM) has issued a recall for over 720,000 vehicles worldwide due to potential engine problems. The affected vehicles include Cadillac Escalade and Escalades, along with several other models. The recall affects approximately 598,000 cars in the United States and involves models from 2021 through 2024. The National Highway Traffic Safety Administration received 39 complaints about engine failures. GM reported 12 crashes and 12 injuries in the U.S. that could be related to the engine issues.",
-        "shortSummary": "General Motors is recalling over 700,000 vehicles globally due to potential engine issues, following a National Highway Traffic Safety Administration investigation.",
-        "translation": "",
-        "translatedTitle": "",
-        "translatedDescription": "",
-        "translatedSummary": "",
-        "locations": [],
-        "reprint": false,
-        "reprintGroupId": "56aab2bcad364d5781bfd52aa47546a4",
-        "places": [],
-        "people": []
-    },
-    {
-        "url": "https://www.news8000.com/news/consumer-headlines-gm-recall/video_ad296f78-2c17-5e0d-a4c9-ccbb6e98edf8.html",
-        "authorsByline": "",
-        "articleId": "7fc8bb7e9a0f454ba48fc9d25cbf43e6",
-        "clusterId": "07bed8ad0e154e8384bdc72372cebfd5",
-        "source": {
-            "domain": "news8000.com",
-            "location": {
-                "country": "us",
-                "state": "WI",
-                "county": "La Crosse County",
-                "city": "La Crosse",
-                "coordinates": {
-                    "lat": 43.8014053,
-                    "lon": -91.2395429
-                }
-            }
-        },
-        "imageUrl": "https://bloximages.newyork1.vip.townnews.com/news8000.com/content/tncms/assets/v3/editorial/a/d2/ad296f78-2c17-5e0d-a4c9-ccbb6e98edf8/68125eb7d06f0.image.jpg?crop=1280%2C672%2C0%2C23&resize=1200%2C630&order=crop%2Cresize",
-        "country": "us",
-        "language": "en",
-        "pubDate": "2025-04-30T17:26:00+00:00",
-        "addDate": "2025-04-30T18:04:26.281534+00:00",
-        "refreshDate": "2025-04-30T18:04:26.281535+00:00",
-        "score": 104.43501,
-        "title": "Consumer headlines: GM recall",
-        "description": "Consumer headlines: GM recall",
-        "content": "Your browser is out of date and potentially vulnerable to security risks.\n\nWe recommend switching to one of the following browsers:",
-        "medium": "Article",
-        "links": [
-            "https://www.microsoft.com/en-us/edge",
-            "https://www.google.com/chrome/",
-            "https://www.mozilla.org/en-US/firefox/"
-        ],
-        "labels": [
-            {
-                "name": "Low Content"
-            }
-        ],
-        "matchedAuthors": [],
-        "claim": "",
-        "verdict": "",
-        "keywords": [
-            {
-                "name": "Consumer headlines",
-                "weight": 0.19245009
-            },
-            {
-                "name": "GM recall",
-                "weight": 0.19245009
-            },
-            {
-                "name": "security risks",
-                "weight": 0.1851092
-            },
-            {
-                "name": "date",
-                "weight": 0.14708109
-            },
-            {
-                "name": "GM",
-                "weight": 0.14433756
-            },
-            {
-                "name": "the following browsers",
-                "weight": 0.11131125
-            },
-            {
-                "name": "Your browser",
-                "weight": 0.08251381
-            }
-        ],
-        "topics": [
-            {
-                "name": "Consumer Alerts"
-            }
-        ],
-        "categories": [],
-        "taxonomies": [],
-        "entities": [
-            {
-                "data": "GM",
-                "type": "ORG",
-                "mentions": 1
-            }
-        ],
-        "companies": [],
-        "sentiment": {
-            "positive": 0.17492676,
-            "negative": 0.20397949,
-            "neutral": 0.62158203
-        },
-        "summary": "",
-        "shortSummary": "",
-        "translation": "",
-        "translatedTitle": "",
-        "translatedDescription": "",
-        "translatedSummary": "",
-        "locations": [],
-        "reprint": false,
-        "reprintGroupId": "db3fa21789f242d893e6836082ffd8ea",
-        "places": [],
-        "people": []
-    },
-    {
-        "url": "https://seekingalpha.com/news/4437544-general-motors-recalls-600k-cadillac-chevrolet-and-gmc-cars-over-engine-failure-risk",
-        "authorsByline": "Manshi Mamtora",
-        "articleId": "f7d79db0b8b648c09ab640fa9379a4b5",
-        "clusterId": "68f17d621f92430fbad23e31cc169bc5",
-        "source": {
-            "domain": "seekingalpha.com",
-            "location": {
-                "country": "us",
-                "state": "NY",
-                "city": "New York",
-                "coordinates": {
-                    "lat": 40.7127281,
-                    "lon": -74.0060152
-                }
-            }
-        },
-        "imageUrl": "https://static.seekingalpha.com/cdn/s3/uploads/getty_images/1156940451/image_1156940451.jpg?io=getty-c-w750",
-        "country": "us",
-        "language": "en",
-        "pubDate": "2025-04-30T06:04:14+00:00",
-        "addDate": "2025-04-30T06:08:22.675454+00:00",
-        "refreshDate": "2025-04-30T06:08:22.675455+00:00",
-        "score": 96.4791,
-        "title": "General Motors recalls ~600K Cadillac, Chevrolet and GMC cars over engine failure risk",
-        "description": "General Motors (NYSE:GM) announced a recall of nearly 600,000 vehicles in the U.S. due to potential engine failure risks.",
-        "content": "General Motors (NYSE:GM) announced a recall of nearly 600,000 vehicles in the U.S. due to potential engine failure risks. The recall affects certain Cadillac Escalades and Escalade ESVs; Chevrolet Sil... [285 symbols]",
-        "medium": "Article",
-        "links": [
-            "https://seekingalpha.com/symbol/GM"
-        ],
-        "labels": [],
-        "matchedAuthors": [
-            {
-                "id": null,
-                "name": "Manshi Mamtora"
-            }
-        ],
-        "claim": "",
-        "verdict": "",
-        "keywords": [
-            {
-                "name": "Chevrolet Silverado 1500s",
-                "weight": 0.15962583
-            },
-            {
-                "name": "GMC Sierra 1500s",
-                "weight": 0.15837634
-            },
-            {
-                "name": "potential engine failure risks",
-                "weight": 0.1508138
-            },
-            {
-                "name": "certain Cadillac Escalades",
-                "weight": 0.14543816
-            },
-            {
-                "name": "engine failure risk",
-                "weight": 0.14523655
-            },
-            {
-                "name": "Sierra 1500s",
-                "weight": 0.1351553
-            },
-            {
-                "name": "Silverado 1500s",
-                "weight": 0.13394903
-            },
-            {
-                "name": "General Motors",
-                "weight": 0.124016784
-            },
-            {
-                "name": "Cadillac",
-                "weight": 0.11818879
-            },
-            {
-                "name": "Chevrolet",
-                "weight": 0.117425464
-            }
-        ],
-        "topics": [
-            {
-                "name": "Markets"
-            }
-        ],
-        "categories": [
-            {
-                "name": "Auto"
-            },
-            {
-                "name": "Finance"
-            }
-        ],
-        "taxonomies": [
-            {
-                "name": "/News/Business News/Company News",
-                "score": 0.97998046875
-            },
-            {
-                "name": "/Business & Industrial/Automotive Industry",
-                "score": 0.693359375
-            }
-        ],
-        "entities": [
-            {
-                "data": "General Motors",
-                "type": "ORG",
-                "mentions": 2
-            },
-            {
-                "data": "Cadillac",
-                "type": "ORG",
-                "mentions": 2
-            },
-            {
-                "data": "Chevrolet",
-                "type": "ORG",
-                "mentions": 2
-            },
-            {
-                "data": "GMC",
-                "type": "ORG",
-                "mentions": 3
-            },
-            {
-                "data": "NYSE",
-                "type": "ORG",
-                "mentions": 1
-            },
-            {
-                "data": "U.S.",
-                "type": "GPE",
-                "mentions": 1
-            },
-            {
-                "data": "Escalades",
-                "type": "PRODUCT",
-                "mentions": 2
-            },
-            {
-                "data": "Silverado 1500s",
-                "type": "PRODUCT",
-                "mentions": 2
-            },
-            {
-                "data": "Suburbans",
-                "type": "PRODUCT",
-                "mentions": 1
-            },
-            {
-                "data": "Tahoes",
-                "type": "PRODUCT",
-                "mentions": 1
-            },
-            {
-                "data": "Yukons",
-                "type": "PRODUCT",
-                "mentions": 2
-            }
-        ],
-        "companies": [],
-        "sentiment": {
-            "positive": 0.031158447,
-            "negative": 0.7939453,
-            "neutral": 0.17541504
-        },
-        "summary": "",
-        "shortSummary": "",
-        "translation": "",
-        "translatedTitle": "",
-        "translatedDescription": "",
-        "translatedSummary": "",
-        "locations": [],
-        "reprint": true,
-        "reprintGroupId": "2be6fc39ca3644a084a97b9cd01300b2",
-        "places": [],
-        "people": []
-    },
-    {
-        "url": "https://www.silive.com/news/2025/04/engine-failure-risk-leads-to-massive-gm-recall.html",
-        "authorsByline": "Mike Matteo | mmatteo@siadvance.com, mike-matteo, Mike Matteo",
-        "articleId": "c6cc713315a944dcb1f25801869cdbd3",
-        "clusterId": "89632c840c65452c89d637ffd34ef8c1",
-        "source": {
-            "domain": "silive.com",
-            "location": {
-                "country": "us",
-                "state": "NY",
-                "city": "Staten Island",
-                "coordinates": {
-                    "lat": 40.5834557,
-                    "lon": -74.1496048
-                }
-            }
-        },
-        "imageUrl": "https://www.silive.com/resizer/v2/L3BJETAKHFAI3H3MXWPZ46LFHU.JPG?auth=77f22cadd7ae91a230257a18f38da6b980cfababd619e7be6f3331088e743c04&width=1280&quality=90",
-        "country": "us",
-        "language": "en",
-        "pubDate": "2025-04-30T16:37:40.018000+00:00",
-        "addDate": "2025-04-30T16:53:53.691200+00:00",
-        "refreshDate": "2025-04-30T16:53:53.691201+00:00",
-        "score": 87.73622,
-        "title": "Engine failure risk leads to massive GM recall",
-        "description": "Approximately 597,630 vehicles are affected, according to the National Highway Traffic Safety Administration.",
-        "content": "General Motors has issued a safety recall for several vehicles across several of the auto giant’s main brands.\n\nThe company is currently recalling certain SUVs and trucks sold under the Cadillac, GMC ... [1692 symbols]",
-        "medium": "Article",
-        "links": [
-            "https://www.silive.com/news/2025/04/audi-recalls-over-44k-cars-over-software-error-that-turns-off-speedometer.html",
-            "https://static.nhtsa.gov/odi/rcl/2025/RCAK-25V274-2120.pdf",
-            "https://www.silive.com/news/2025/04/luxury-automaker-recalls-over-18k-vehicles-for-electrical-system-issues.html",
-            "https://www.silive.com/news/2025/04/over-152000-acura-suvs-recalled-over-new-issue-with-lights.html",
-            "https://www.silive.com/news/2025/04/ford-recalls-thousands-of-this-popular-suv-model-over-engine-power-issue.html",
-            "https://static.nhtsa.gov/odi/rcl/2025/RCLRPT-25V274-1598.PDF"
-        ],
-        "labels": [],
-        "matchedAuthors": [
-            {
-                "id": null,
-                "name": "Mike Matteo"
-            },
-            {
-                "id": null,
-                "name": "Mike-Matteo"
-            }
-        ],
-        "claim": "",
-        "verdict": "",
-        "keywords": [
-            {
-                "name": "massive GM recall",
-                "weight": 0.11186947
-            },
-            {
-                "name": "Engine failure risk",
-                "weight": 0.10031911
-            },
-            {
-                "name": "engine damage",
-                "weight": 0.0988994
-            },
-            {
-                "name": "Cadillac customer service",
-                "weight": 0.09814849
-            },
-            {
-                "name": "GMC customer service",
-                "weight": 0.09503851
-            },
-            {
-                "name": "Chevrolet customer service",
-                "weight": 0.09496952
-            },
-            {
-                "name": "several vehicles",
-                "weight": 0.09230839
-            },
-            {
-                "name": "manufacturing issues",
-                "weight": 0.090597674
-            },
-            {
-                "name": "Cadillac Escalade",
-                "weight": 0.08702276
-            },
-            {
-                "name": "affected vehicles",
-                "weight": 0.08393696
-            }
-        ],
-        "topics": [
-            {
-                "name": "Consumer Alerts"
-            }
-        ],
-        "categories": [],
-        "taxonomies": [
-            {
-                "name": "/News/Business News/Company News",
-                "score": 0.96337890625
-            },
-            {
-                "name": "/Business & Industrial/Automotive Industry",
-                "score": 0.7734375
-            },
-            {
-                "name": "/Autos & Vehicles/Motor Vehicles (By Type)/Hybrid & Alternative Vehicles",
-                "score": 0.34130859375
-            },
-            {
-                "name": "/Autos & Vehicles/Vehicle Shopping/Vehicle Specs, Reviews & Comparisons",
-                "score": 0.339111328125
-            }
-        ],
-        "entities": [
-            {
-                "data": "GM",
-                "type": "ORG",
-                "mentions": 7
-            },
-            {
-                "data": "General Motors",
-                "type": "ORG",
-                "mentions": 1
-            },
-            {
-                "data": "Cadillac",
-                "type": "ORG",
-                "mentions": 3
-            },
-            {
-                "data": "Chevrolet",
-                "type": "ORG",
-                "mentions": 3
-            },
-            {
-                "data": "the National Highway Traffic Safety Administration",
-                "type": "ORG",
-                "mentions": 2
-            },
-            {
-                "data": "SUVs",
-                "type": "PRODUCT",
-                "mentions": 1
-            },
-            {
-                "data": "L87 V8",
-                "type": "PRODUCT",
-                "mentions": 2
-            },
-            {
-                "data": "Silverado 1500",
-                "type": "PRODUCT",
-                "mentions": 2
-            },
-            {
-                "data": "Tahoe",
-                "type": "PRODUCT",
-                "mentions": 1
-            },
-            {
-                "data": "Suburban",
-                "type": "PRODUCT",
-                "mentions": 1
-            },
-            {
-                "data": "Yukon",
-                "type": "PRODUCT",
-                "mentions": 2
-            },
-            {
-                "data": "Escalade",
-                "type": "PRODUCT",
-                "mentions": 2
-            }
-        ],
-        "companies": [
-            {
-                "id": "afe1ace29bd04674864b1b6abefc1dbe",
-                "name": "General Motors Company",
-                "domains": [
-                    "gm.com"
-                ],
-                "symbols": [
-                    "8GM.DE",
-                    "GM",
-                    "GM.SW"
-                ]
-            },
-            {
-                "id": "5c0172fa85754178928c1afb74265c55",
-                "name": "GMC",
-                "domains": [
-                    "gmc.com"
-                ],
-                "symbols": []
-            },
-            {
-                "id": "b5ef33fdb0274cccb4719495277f481d",
-                "name": "Cadillac",
-                "domains": [
-                    "cadillac.com",
-                    "cadillaceurope.com"
-                ],
-                "symbols": []
-            },
-            {
-                "id": "7a470ed6424e44778ce7c3242ac01da2",
-                "name": "General Motors of Canada",
-                "domains": [
-                    "gm.ca"
-                ],
-                "symbols": []
-            },
-            {
-                "id": "9f8a36ced95f4bbe806e0b618c140085",
-                "name": "Chevrolet",
-                "domains": [
-                    "chevrolet.com"
-                ],
-                "symbols": []
-            }
-        ],
-        "sentiment": {
-            "positive": 0.04135132,
-            "negative": 0.71728516,
-            "neutral": 0.24157715
-        },
-        "summary": "General Motors (GM) has issued a safety recall for several vehicles across several of its main brands, including Cadillac, GMC, and Chevrolet, due to manufacturing issues with some engine components. Approximately 597,630 vehicles are affected by the recall. The National Highway Traffic Safety Administration stated that these issues were caused by issues with the connecting rods and crankshaft, which could lead to engine damage or failure. Only vehicles with 6.2L L87 V8 engines are affected. Owners can contact GM to bring their vehicle into a dealership to inspect the engine cylinder and repair or replace it as needed.",
-        "shortSummary": "General Motors is recalling nearly 600,000 vehicles due to potential engine failure issues, requiring urgent repair and replacement options from dealers.",
-        "translation": "",
-        "translatedTitle": "",
-        "translatedDescription": "",
-        "translatedSummary": "",
-        "locations": [],
-        "reprint": false,
-        "reprintGroupId": "0da18f4bab484aa7928e71b68be4f73f",
-        "places": [],
-        "people": []
-    }
-]
+        {
+            "article_id": "a3b06443da1dcb8ae2cd02a385c92856",
+            "title": "AP Technology SummaryBrief at 8:30 a.m. EDT",
+            "link": "https://www.cadillacnews.com/ap/business/ap-technology-summarybrief-at-8-30-a-m-edt/article_5494e3ca-7299-5969-bc76-e8cd1db07f12.html",
+            "keywords": null,
+            "creator": null,
+            "description": "One Tech Tip: These are the apps that can now avoid Apple's in-app payment system",
+            "content": "ONLY AVAILABLE IN PAID PLANS",
+            "pubDate": "2025-05-22 12:30:28",
+            "pubDateTZ": "UTC",
+            "image_url": null,
+            "video_url": null,
+            "source_id": "cadillacnews",
+            "source_name": "Cadillacnews",
+            "source_priority": 85513,
+            "source_url": "https://www.cadillacnews.com",
+            "source_icon": "https://n.bytvi.com/cadillacnews.jpg",
+            "language": "english",
+            "country": [
+                "united states of america"
+            ],
+            "category": [
+                "top"
+            ],
+            "sentiment": "ONLY AVAILABLE IN PROFESSIONAL AND CORPORATE PLANS",
+            "sentiment_stats": "ONLY AVAILABLE IN PROFESSIONAL AND CORPORATE PLANS",
+            "ai_tag": "ONLY AVAILABLE IN PROFESSIONAL AND CORPORATE PLANS",
+            "ai_region": "ONLY AVAILABLE IN CORPORATE PLANS",
+            "ai_org": "ONLY AVAILABLE IN CORPORATE PLANS",
+            "duplicate": true
+        }
+    ],
+    "nextPage": "1747917028459986922"
+}

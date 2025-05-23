@@ -57,6 +57,8 @@ class LoginProvider extends InSoBlokViewModel {
     //   ),
     // );
 
+    FlutterNativeSplash.remove();
+
     notifyListeners();
   }
 

@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:insoblok/services/image_service.dart';
 
 import 'package:stacked/stacked.dart';
 
 import 'package:insoblok/providers/providers.dart';
+import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
 
@@ -25,46 +25,11 @@ class DashboardView extends StatelessWidget {
               floating: true,
               leading: AppLeadingView(),
               title: Text('Home'),
-              extendWidget: SingleChildScrollView(
-                scrollDirection: Axis.horizontal,
-                child: Row(
-                  spacing: 8.0,
-                  children: [
-                    for (var i = 0; i < kDashbordPageTitles.length; i++) ...{
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                        decoration: BoxDecoration(
-                          border:
-                              viewModel.pageIndex == i
-                                  ? Border(
-                                    bottom: BorderSide(
-                                      width: 2.0,
-                                      color: AIColors.pink,
-                                    ),
-                                  )
-                                  : null,
-                        ),
-                        alignment: Alignment.center,
-                        child: InkWell(
-                          onTap: () => viewModel.pageIndex = i,
-                          child: Text(
-                            kDashbordPageTitles[i],
-                            style:
-                                viewModel.pageIndex == i
-                                    ? Theme.of(context).textTheme.bodySmall
-                                    : Theme.of(context).textTheme.labelLarge,
-                          ),
-                        ),
-                      ),
-                    },
-                  ],
-                ),
-              ),
             ),
             if (viewModel.isBusy) ...{
               SliverFillRemaining(child: Center(child: Loader())),
             },
-            if (viewModel.showns.isEmpty) ...{
+            if (viewModel.showNewses.isEmpty) ...{
               SliverFillRemaining(
                 child: Center(
                   child: Column(
@@ -89,7 +54,7 @@ class DashboardView extends StatelessWidget {
             } else ...{
               SliverList(
                 delegate: SliverChildListDelegate([
-                  for (var news in viewModel.showns) ...{
+                  for (var news in viewModel.showNewses) ...{
                     NewsListCell(news: news),
                   },
                 ]),

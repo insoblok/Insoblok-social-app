@@ -256,4 +256,16 @@ class FirebaseHelper {
     }
     return newJson;
   }
+
+  static Map<String, dynamic> toConvertJson(Map<String, dynamic> firebaseJson) {
+    Map<String, dynamic> newJson = {};
+    for (var key in firebaseJson.keys) {
+      if (key == 'regdate' || key == 'timestamp' || key == 'id') {
+        continue;
+      } else {
+        newJson[key] = firebaseJson[key];
+      }
+    }
+    return newJson;
+  }
 }

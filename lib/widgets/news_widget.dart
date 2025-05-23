@@ -35,13 +35,38 @@ class NewsListCell extends StatelessWidget {
                 child: AspectRatio(
                   aspectRatio: 1.91,
                   child: AIImage(
-                    news.imageUrl,
+                    news.image_url,
                     width: double.infinity,
                     height: double.infinity,
                   ),
                 ),
               ),
             ),
+
+            if (news.keywords?.isNotEmpty ?? false) ...{
+              const SizedBox(height: 8.0),
+              Wrap(
+                spacing: 8.0,
+                runSpacing: 4.0,
+                children: [
+                  for (var category in (news.keywords ?? [])) ...{
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8.0,
+                        vertical: 2.0,
+                      ),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Theme.of(context).primaryColor,
+                        ),
+                        borderRadius: BorderRadius.circular(24.0),
+                      ),
+                      child: Text(category, style: TextStyle(fontSize: 12.0)),
+                    ),
+                  },
+                ],
+              ),
+            },
             const SizedBox(height: 8.0),
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -51,67 +76,22 @@ class NewsListCell extends StatelessWidget {
                     news.title ?? '---',
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
+                    style: Theme.of(context).textTheme.bodyLarge,
                   ),
                 ),
                 const SizedBox(width: 12.0),
                 Text(
-                  news.addDate?.newsTimeago ?? '---',
+                  news.pubDate?.newsTimeago ?? '',
                   style: Theme.of(context).textTheme.labelMedium,
                 ),
               ],
             ),
-            if (news.categories?.isNotEmpty ?? false) ...{
-              const SizedBox(height: 8.0),
-              Wrap(
-                spacing: 8.0,
-                children: [
-                  for (var category in (news.categories ?? [])) ...{
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8.0,
-                        vertical: 2.0,
-                      ),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).primaryColor,
-                        borderRadius: BorderRadius.circular(24.0),
-                      ),
-                      child: Text(
-                        category['name'],
-                        style: TextStyle(fontSize: 10.0, color: AIColors.white),
-                      ),
-                    ),
-                  },
-                ],
-              ),
-            },
-            if (news.topics?.isNotEmpty ?? false) ...{
-              const SizedBox(height: 8.0),
-              Wrap(
-                spacing: 8.0,
-                children: [
-                  for (var topic in (news.topics ?? [])) ...{
-                    Text(
-                      '#${topic['name']}',
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                  },
-                ],
-              ),
-            },
             const SizedBox(height: 8.0),
             Text(
               news.description ?? '---',
-              style: Theme.of(context).textTheme.bodySmall,
+              style: Theme.of(context).textTheme.bodyMedium,
               maxLines: 3,
             ),
-            if (news.shortSummary?.isNotEmpty ?? false) ...{
-              const SizedBox(height: 8.0),
-              Text(
-                news.shortSummary ?? '---',
-                style: Theme.of(context).textTheme.labelMedium,
-                maxLines: 3,
-              ),
-            },
           ],
         ),
       ),

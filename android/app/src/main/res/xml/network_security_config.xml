@@ -13,6 +13,8 @@
         <domain includeSubdomains="true">bridge.walletconnect.org</domain>
         <domain includeSubdomains="true">www.insoblokai.io</domain>
         <domain includeSubdomains="true">www.cryptologos.cc</domain>
+        <domain includeSubdomains="true">www.newsdata.io</domain>
+        <domain includeSubdomains="true">www.thenewblack.ai</domain>
     </domain-config>
 </network-security-config>
 
