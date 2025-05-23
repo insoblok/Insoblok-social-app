@@ -1,74 +1,36 @@
-import 'dart:async';
-import 'dart:ui';
-
 import 'package:flutter/material.dart';
-import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
+import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:stacked/stacked.dart';
+
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
 
-class LoginPage extends StatefulWidget {
+final kLandingPageData = [
+  {
+    'title': 'Unlock Your World',
+    'description':
+        'No forms. Just you. Tap in, explore, and own your vibe - your way',
+    'image': AIImages.imgSplash1,
+  },
+  {
+    'title': 'Speak Your Vibe. Stay on Lock',
+    'description':
+        'Yay/Nay chats with friends. Private. Encrypted. Untouchable',
+    'image': AIImages.imgSplash2,
+  },
+  {
+    'title': 'Unlock Your World',
+    'description':
+        'No forms. Just you. Tap in, explore, and own your vibe - your way',
+    'image': AIImages.imgSplash3,
+  },
+];
+
+class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
-
-  @override
-  State<LoginPage> createState() => _LoginPageState();
-}
-
-class _LoginPageState extends State<LoginPage>
-    with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _fadeAnimation;
-  late Animation<Offset> _positionAnimation;
-
-  late Timer _timer;
-  PageController _pageController = PageController(initialPage: 0);
-  int _currentPage = 0;
-
-  @override
-  void initState() {
-    super.initState();
-
-    _controller = AnimationController(
-      duration: const Duration(seconds: 1),
-      vsync: this,
-    );
-
-    _fadeAnimation = Tween<double>(
-      begin: 0.0,
-      end: 1.0,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
-
-    _positionAnimation = Tween<Offset>(
-      begin: Offset(0, 0.5),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
-
-    _controller.forward();
-
-    _timer = Timer.periodic(Duration(seconds: 3), (Timer timer) {
-      if (_currentPage < 2) {
-        _currentPage++;
-      } else {
-        _currentPage = 0;
-      }
-
-      _pageController.animateToPage(
-        _currentPage,
-        duration: Duration(milliseconds: 300),
-        curve: Curves.easeIn,
-      );
-    });
-  }
-
-  @override
-  void dispose() {
-    _controller.dispose();
-    super.dispose();
-    _timer.cancel();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,261 +42,24 @@ class _LoginPageState extends State<LoginPage>
           body: Stack(
             fit: StackFit.expand,
             children: [
-              // viewModel.videoPlayerController.value.isInitialized
-              //     ? LayoutBuilder(
-              //       builder: (context, constraints) {
-              //         return SizedBox(
-              //           height: constraints.maxHeight,
-              //           child: AspectRatio(
-              //             aspectRatio:
-              //                 viewModel.videoPlayerController.value.aspectRatio,
-              //             child: FittedBox(
-              //               fit: BoxFit.cover,
-              //               child: SizedBox(
-              //                 width:
-              //                     viewModel
-              //                         .videoPlayerController
-              //                         .value
-              //                         .size
-              //                         .width,
-              //                 height:
-              //                     viewModel
-              //                         .videoPlayerController
-              //                         .value
-              //                         .size
-              //                         .height,
-              //                 child: Chewie(
-              //                   controller: viewModel.chewieController,
-              //                 ),
-              //               ),
-              //             ),
-              //           ),
-              //         );
-              //       },
-              //     ) :
               Container(
                 width: double.infinity,
                 height: double.infinity,
                 color: AIColors.landingBackgroundColor,
               ),
               PageView(
-                controller: _pageController,
+                controller: viewModel.pageController,
                 children: [
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      left: 48.0,
-                      right: 48.0,
-                      top: 60.0,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SlideTransition(
-                          position: _positionAnimation,
-                          child: FadeTransition(
-                            opacity: _fadeAnimation,
-                            child: Text(
-                              'Unlock Your World',
-                              style: TextStyle(
-                                fontSize: 18.0,
-                                fontWeight: FontWeight.bold,
-                                color: AIColors.white,
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 8.0),
-                        SlideTransition(
-                          position: _positionAnimation,
-                          child: FadeTransition(
-                            opacity: _fadeAnimation,
-                            child: Text(
-                              'No forms. Just you. Tap in, explore, and own your vibe - your way',
-                              style: TextStyle(
-                                fontSize: 14.0,
-                                color: AIColors.white,
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 40.0),
-                        AIImage(AIImages.imgSplash1),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      left: 48.0,
-                      right: 48.0,
-                      top: 60.0,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SlideTransition(
-                          position: _positionAnimation,
-                          child: FadeTransition(
-                            opacity: _fadeAnimation,
-                            child: Text(
-                              'Speak Your Vibe. Stay on Lock',
-                              style: TextStyle(
-                                fontSize: 18.0,
-                                fontWeight: FontWeight.bold,
-                                color: AIColors.white,
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 8.0),
-                        SlideTransition(
-                          position: _positionAnimation,
-                          child: FadeTransition(
-                            opacity: _fadeAnimation,
-                            child: Text(
-                              'Yay/Nay chats with friends. Private. Encrypted. Untouchable',
-                              style: TextStyle(
-                                fontSize: 14.0,
-                                color: AIColors.white,
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 40.0),
-                        AIImage(AIImages.imgSplash2),
-                      ],
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                      left: 48.0,
-                      right: 48.0,
-                      top: 60.0,
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        SlideTransition(
-                          position: _positionAnimation,
-                          child: FadeTransition(
-                            opacity: _fadeAnimation,
-                            child: Text(
-                              'Unlock Your World',
-                              style: TextStyle(
-                                fontSize: 18.0,
-                                fontWeight: FontWeight.bold,
-                                color: AIColors.white,
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 8.0),
-                        SlideTransition(
-                          position: _positionAnimation,
-                          child: FadeTransition(
-                            opacity: _fadeAnimation,
-                            child: Text(
-                              'No forms. Just you. Tap in, explore, and own your vibe - your way',
-                              style: TextStyle(
-                                fontSize: 14.0,
-                                color: AIColors.white,
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(height: 40.0),
-                        AIImage(AIImages.imgSplash3),
-                      ],
-                    ),
-                  ),
+                  for (var data in kLandingPageData) ...{
+                    LoginPageView(data: data),
+                  },
                 ],
               ),
-
-              // Padding(
-              //   padding: const EdgeInsets.all(24.0),
-              //   child: Column(
-              //     crossAxisAlignment: CrossAxisAlignment.start,
-              //     children: [
-              //       SizedBox(
-              //         height: MediaQuery.of(context).viewInsets.top + 16.0,
-              //       ),
-              //       const SizedBox(width: 16.0),
-              //       Row(
-              //         children: [
-              //           AIImage(
-              //             AIImages.logoInsoblok,
-              //             width: 48.0,
-              //             height: 48.0,
-              //           ),
-              //           const SizedBox(width: 16.0),
-              //           Text(
-              //             S.current.title.toUpperCase(),
-              //             style: TextStyle(
-              //               fontSize: 20.0,
-              //               fontWeight: FontWeight.bold,
-              //               color: Colors.white,
-              //             ),
-              //           ),
-              //         ],
-              //       ),
-              //       const SizedBox(height: 40.0),
-              //       Align(
-              //         alignment: Alignment.center,
-              //         child: Column(
-              //           // crossAxisAlignment: CrossAxisAlignment.start,
-              //           mainAxisSize: MainAxisSize.min,
-              //           children: [
-              //             AnimatedTextKit(
-              //               totalRepeatCount: 1,
-              //               animatedTexts: [
-              //                 TyperAnimatedText(
-              //                   'Unlock',
-              //                   textStyle: TextStyle(
-              //                     fontSize: 32.0,
-              //                     color: AIColors.darkYellow,
-              //                     fontWeight: FontWeight.bold,
-              //                   ),
-              //                 ),
-              //               ],
-              //             ),
-              //             AnimatedTextKit(
-              //               totalRepeatCount: 1,
-              //               animatedTexts: [
-              //                 TyperAnimatedText(
-              //                   'Your World',
-              //                   textStyle: TextStyle(
-              //                     fontSize: 32.0,
-              //                     color: AIColors.darkYellow,
-              //                     fontWeight: FontWeight.bold,
-              //                   ),
-              //                 ),
-              //               ],
-              //             ),
-              //             // AnimatedTextKit(
-              //             //   totalRepeatCount: 1,
-              //             //   animatedTexts: [
-              //             //     TyperAnimatedText(
-              //             //       'Platform',
-              //             //       textStyle: TextStyle(
-              //             //         fontSize: 32.0,
-              //             //         color: Colors.white,
-              //             //         fontWeight: FontWeight.bold,
-              //             //       ),
-              //             //     ),
-              //             //   ],
-              //             // ),
-              //           ],
-              //         ),
-              //       ),
-
-              //       // const SizedBox(height: 24.0),
-              //     ],
-              //   ),
-              // ),
               Column(
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   SmoothPageIndicator(
-                    controller: _pageController,
+                    controller: viewModel.pageController,
                     count: 3,
                     effect: ExpandingDotsEffect(
                       dotWidth: 36.0,
@@ -456,20 +181,6 @@ class _LoginPageState extends State<LoginPage>
                       ),
                     ],
                   ),
-                  // const SizedBox(height: 16.0),
-                  // Container(
-                  //   width: double.infinity,
-                  //   alignment: Alignment.center,
-                  //   child: InkWell(
-                  //     onTap: () => Routers.goToAuthPage(context),
-                  //     child: Text(
-                  //       'Login with Email',
-                  //       style: Theme.of(
-                  //         context,
-                  //       ).textTheme.titleMedium?.copyWith(color: AIColors.pink),
-                  //     ),
-                  //   ),
-                  // ),
                   const SizedBox(height: 24.0),
                 ],
               ),
@@ -477,6 +188,39 @@ class _LoginPageState extends State<LoginPage>
           ),
         );
       },
+    );
+  }
+}
+
+class LoginPageView extends StatelessWidget {
+  final dynamic data;
+
+  const LoginPageView({super.key, required this.data});
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 48.0, right: 48.0, top: 60.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            data['title'],
+            style: TextStyle(
+              fontSize: 18.0,
+              fontWeight: FontWeight.bold,
+              color: AIColors.white,
+            ),
+          ),
+          const SizedBox(height: 8.0),
+          Text(
+            data['description'],
+            style: TextStyle(fontSize: 14.0, color: AIColors.white),
+          ),
+          const SizedBox(height: 40.0),
+          AIImage(data['image']),
+        ],
+      ),
     );
   }
 }

@@ -2,7 +2,6 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:insoblok/widgets/tag_widget.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 import 'package:stacked/stacked.dart';
 

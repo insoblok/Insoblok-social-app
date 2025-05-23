@@ -1,9 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 
-import 'package:chewie/chewie.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:video_player/video_player.dart';
 
 import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
@@ -17,16 +17,16 @@ class LoginProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  // late VideoPlayerController _videoPlayerController;
-  // VideoPlayerController get videoPlayerController => _videoPlayerController;
-
-  // late ChewieController _chewieController;
-  // ChewieController get chewieController => _chewieController;
+  late Timer _timer;
+  final _pageController = PageController(initialPage: 0);
+  PageController get pageController => _pageController;
+  int _currentPage = 0;
 
   @override
   void dispose() {
-    // _videoPlayerController.dispose();
-    // _chewieController.dispose();
+    _pageController.dispose();
+    _timer.cancel();
+
     super.dispose();
   }
 
@@ -38,26 +38,19 @@ class LoginProvider extends InSoBlokViewModel {
 
     FlutterNativeSplash.remove();
 
-    // _videoPlayerController = VideoPlayerController.asset(
-    //   'assets/videos/insoblock.mp4',
-    // );
-    // await _videoPlayerController.initialize();
+    _timer = Timer.periodic(Duration(seconds: 3), (Timer timer) {
+      if (_currentPage < 2) {
+        _currentPage++;
+      } else {
+        _currentPage = 0;
+      }
 
-    // _chewieController = ChewieController(
-    //   videoPlayerController: _videoPlayerController,
-    //   autoPlay: true,
-    //   looping: true,
-    //   aspectRatio: _videoPlayerController.value.aspectRatio,
-    //   showControls: false,
-    //   materialProgressColors: ChewieProgressColors(
-    //     playedColor: Colors.red,
-    //     handleColor: Colors.red,
-    //     backgroundColor: Colors.grey,
-    //     bufferedColor: Colors.lightGreen,
-    //   ),
-    // );
-
-    FlutterNativeSplash.remove();
+      _pageController.animateToPage(
+        _currentPage,
+        duration: Duration(milliseconds: 300),
+        curve: Curves.easeIn,
+      );
+    });
 
     notifyListeners();
   }
@@ -112,19 +105,6 @@ class LoginProvider extends InSoBlokViewModel {
     await runBusyFuture(() async {
       try {
         await AuthHelper.service.signInWithGoogle();
-        // if (await reownService.showWallet(context) == true) {
-        //   await reownService.connect();
-        //   if (reownService.isConnected) {
-        //     logger.d(reownService.walletAddress);
-        //     await AuthHelper.service.signInWithGoogle(
-        //       walletAddress: reownService.walletAddress,
-        //     );
-        //   } else {
-        //     setError('Failed wallet connected!');
-        //   }
-        // } else {
-        //   await AuthHelper.service.signInWithGoogle();
-        // }
       } catch (e) {
         setError(e);
         logger.e(e);

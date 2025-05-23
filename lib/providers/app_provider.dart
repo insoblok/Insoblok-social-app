@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:provider/provider.dart';
-
-import 'package:insoblok/providers/providers.dart';
-import 'package:insoblok/services/app_sertting_service.dart';
+import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 
 class AppProvider extends InSoBlokViewModel {

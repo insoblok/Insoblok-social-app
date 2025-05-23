@@ -87,8 +87,9 @@ class MarketProvider extends InSoBlokViewModel {
         if (_selectedTags[i]) tags.add(kProductCategoryNames[i]);
       }
       for (var i = 0; i < _products.length; i++) {
-        if (tags.contains(_products[i].categoryName))
+        if (tags.contains(_products[i].categoryName)) {
           dataList.add(_products[i]);
+        }
       }
 
       _filterProducts.clear();
