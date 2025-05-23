@@ -30,7 +30,7 @@ class AISliverAppbar extends SliverAppBar {
                    background: Container(
                      margin: EdgeInsets.only(
                        top:
-                           (extendHeight ?? kExtendAppbarHeight) +
+                           (kExtendAppbarHeight) +
                            MediaQuery.of(context).padding.top +
                            10.0,
                      ),
