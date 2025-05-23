@@ -36,8 +36,6 @@ class LoginProvider extends InSoBlokViewModel {
     _reownService = ReownService(context);
     await _reownService.init();
 
-    FlutterNativeSplash.remove();
-
     _videoPlayerController = VideoPlayerController.asset(
       'assets/videos/insoblock.mp4',
     );
@@ -56,6 +54,8 @@ class LoginProvider extends InSoBlokViewModel {
         bufferedColor: Colors.lightGreen,
       ),
     );
+
+    FlutterNativeSplash.remove();
 
     notifyListeners();
   }

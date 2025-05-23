@@ -8,7 +8,7 @@ import 'package:stacked/stacked.dart';
 
 import 'package:insoblok/locator.dart';
 import 'package:insoblok/services/services.dart';
-import 'package:insoblok/utils/const.dart';
+import 'package:insoblok/utils/utils.dart';
 
 class APIMETHOD {
   static String get = 'GET';
@@ -18,8 +18,11 @@ class APIMETHOD {
 }
 
 class NetworkService with ListenableServiceMixin {
-  final RxValue<Dio?> _apiRx = RxValue<Dio?>(null);
-  Dio? get apiDio => _apiRx.value;
+  final RxValue<Dio?> _vtoApiRx = RxValue<Dio?>(null);
+  Dio? get vtoApiDio => _vtoApiRx.value;
+
+  final RxValue<Dio?> _newsApiRx = RxValue<Dio?>(null);
+  Dio? get newsApiDio => _newsApiRx.value;
 
   InterceptorsWrapper get apiInterceptor => InterceptorsWrapper(
     onRequest: (RequestOptions options, handler) {
@@ -34,7 +37,7 @@ class NetworkService with ListenableServiceMixin {
   );
 
   NetworkService() {
-    listenToReactiveValues([_apiRx]);
+    listenToReactiveValues([_vtoApiRx, _newsApiRx]);
   }
 
   Map<String, dynamic> _nonNullJson(Map<String, dynamic>? json) {
@@ -54,14 +57,19 @@ class NetworkService with ListenableServiceMixin {
 
   Future<void> init() async {
     try {
-      var api =
+      var vtoApi =
           Dio()
             ..options.baseUrl = 'https://thenewblack.ai/api/1.1/wf/'
             ..options.validateStatus = ((status) => (status ?? 1) > 0)
-            ..interceptors.add(LogInterceptor())
-      // ..httpClientAdapter = kHttpClientAdapter
-      ;
-      _apiRx.value = api;
+            ..interceptors.add(LogInterceptor());
+      _vtoApiRx.value = vtoApi;
+
+      var newsApi =
+          Dio()
+            ..options.baseUrl = 'https://newsdata.io/api/1/'
+            ..options.validateStatus = ((status) => (status ?? 1) > 0)
+            ..interceptors.add(LogInterceptor());
+      _newsApiRx.value = newsApi;
 
       notifyListeners();
     } catch (e) {
@@ -69,7 +77,7 @@ class NetworkService with ListenableServiceMixin {
     }
   }
 
-  Future<Response> apiRequest(
+  Future<Response> vtoApiRequest(
     String path, {
     String method = 'GET',
     Map<String, dynamic>? queryParams,
@@ -92,7 +100,7 @@ class NetworkService with ListenableServiceMixin {
     var reqData = FormData.fromMap(pParm);
 
     var dio =
-        apiDio!
+        vtoApiDio!
           ..options.queryParameters = _nonNullJson(queryParams)
           ..options.method = method
           ..interceptors.add(apiInterceptor);
@@ -105,10 +113,45 @@ class NetworkService with ListenableServiceMixin {
 
     var endTime = DateTime.now();
     logger.i(endTime.difference(startTime).inMilliseconds);
-    // Analytics.trackApiRequest(
-    //   response.realUri.path,
-    //   endTime.difference(startTime).inMilliseconds,
-    // );
+    return response;
+  }
+
+  Future<Response> newsApiRequest(
+    String path, {
+    String method = 'GET',
+    Map<String, dynamic>? queryParams,
+    Map<String, dynamic>? postParams,
+    Function(int, int)? onSendProgress,
+    Function(int, int)? onReceiveProgress,
+  }) async {
+    var startTime = DateTime.now();
+
+    var qParm = {
+      ...(queryParams ?? {}),
+      'apikey': kNewsDataCryptoApiKey,
+      'q': 'crypto',
+    };
+
+    var pParm = postParams ?? {};
+
+    logger.d(pParm);
+
+    var reqData = FormData.fromMap(pParm);
+
+    var dio =
+        newsApiDio!
+          ..options.queryParameters = _nonNullJson(qParm)
+          ..options.method = method
+          ..interceptors.add(apiInterceptor);
+    final response = await dio.request(
+      path,
+      data: reqData,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+
+    var endTime = DateTime.now();
+    logger.i(endTime.difference(startTime).inMilliseconds);
     return response;
   }
 
@@ -159,14 +202,30 @@ class NetworkService with ListenableServiceMixin {
 class NetworkHelper {
   static NetworkService get service => locator<NetworkService>();
 
-  static Future<Response> apiRequest(
+  static Future<Response> vtoApiRequest(
     String path, {
     String method = 'GET',
     Map<String, dynamic>? queryParams,
     Map<String, dynamic>? postParams,
     Function(int, int)? onSendProgress,
     Function(int, int)? onReceiveProgress,
-  }) => service.apiRequest(
+  }) => service.vtoApiRequest(
+    path,
+    method: method,
+    queryParams: queryParams,
+    postParams: postParams,
+    onSendProgress: onSendProgress,
+    onReceiveProgress: onReceiveProgress,
+  );
+
+  static Future<Response> newsApiRequest(
+    String path, {
+    String method = 'GET',
+    Map<String, dynamic>? queryParams,
+    Map<String, dynamic>? postParams,
+    Function(int, int)? onSendProgress,
+    Function(int, int)? onReceiveProgress,
+  }) => service.newsApiRequest(
     path,
     method: method,
     queryParams: queryParams,

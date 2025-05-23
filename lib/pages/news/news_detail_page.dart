@@ -1,6 +1,7 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:insoblok/extensions/string.dart';
 
-import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
@@ -28,7 +29,7 @@ class NewsDetailPage extends StatelessWidget {
               child: Stack(
                 children: [
                   AIImage(
-                    news.imageUrl,
+                    news.image_url,
                     height: kNewsHeaderImageHeight,
                     width: double.infinity,
                   ),
@@ -47,41 +48,25 @@ class NewsDetailPage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text.rich(
-                      TextSpan(
-                        children: [
-                          TextSpan(
-                            text: news.title ?? '',
-                            style: Theme.of(context).textTheme.titleSmall,
-                          ),
-                          TextSpan(
-                            text: '   Visit Website',
-                            style: Theme.of(
-                              context,
-                            ).textTheme.labelMedium?.copyWith(
-                              color: Theme.of(context).primaryColor,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    if (news.categories?.isNotEmpty ?? false) ...{
-                      const SizedBox(height: 8.0),
+                    if (news.keywords?.isNotEmpty ?? false) ...{
                       Wrap(
                         spacing: 8.0,
+                        runSpacing: 4.0,
                         children: [
-                          for (var category in (news.categories ?? [])) ...{
+                          for (var keyword in (news.keywords ?? [])) ...{
                             Container(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 8.0,
                                 vertical: 2.0,
                               ),
                               decoration: BoxDecoration(
-                                color: Theme.of(context).primaryColor,
+                                border: Border.all(
+                                  color: Theme.of(context).primaryColor,
+                                ),
                                 borderRadius: BorderRadius.circular(24.0),
                               ),
                               child: Text(
-                                category['name'],
+                                keyword,
                                 style:
                                     Theme.of(context).textTheme.headlineSmall,
                               ),
@@ -90,24 +75,36 @@ class NewsDetailPage extends StatelessWidget {
                         ],
                       ),
                     },
-                    if (news.topics?.isNotEmpty ?? false) ...{
-                      const SizedBox(height: 8.0),
-                      Wrap(
-                        spacing: 8.0,
+                    const SizedBox(height: 16.0),
+                    Text.rich(
+                      TextSpan(
                         children: [
-                          for (var topic in (news.topics ?? [])) ...{
-                            Text(
-                              '#${topic['name']}',
-                              style: Theme.of(context).textTheme.bodySmall,
+                          TextSpan(
+                            text: news.title ?? '',
+                            style: Theme.of(context).textTheme.titleSmall,
+                          ),
+                          if (news.source_url?.isNotEmpty ?? false)
+                            TextSpan(
+                              text: '   Visit Website',
+                              style: Theme.of(
+                                context,
+                              ).textTheme.labelMedium?.copyWith(
+                                color: Theme.of(context).primaryColor,
+                              ),
+                              recognizer:
+                                  TapGestureRecognizer()
+                                    ..onTap =
+                                        () =>
+                                            AIHelpers.loadUrl(news.source_url!),
                             ),
-                          },
                         ],
                       ),
-                    },
+                    ),
                     const SizedBox(height: 16.0),
                     Text(
                       news.description ?? '',
-                      style: Theme.of(context).textTheme.bodySmall,
+                      style: Theme.of(context).textTheme.bodyMedium,
+                      textAlign: TextAlign.justify,
                     ),
                   ],
                 ),
@@ -126,81 +123,69 @@ class NewsDetailPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text('Summary & Infomation'),
-                    if (news.linkInfo.isNotEmpty) ...{
+                    if (news.country?.isNotEmpty ?? false) ...{
                       const SizedBox(height: 8.0),
                       Wrap(
                         spacing: 12.0,
                         runSpacing: 4.0,
                         children:
-                            (news.linkInfo).map((info) {
-                              return Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  AIImage(
-                                    info['icon'],
-                                    width: 18.0,
-                                    height: 18.0,
-                                    color: AIColors.greyTextColor,
-                                  ),
-                                  const SizedBox(width: 4.0),
-                                  Text(
-                                    info['title']!,
-                                    style:
-                                        Theme.of(context).textTheme.labelMedium,
-                                  ),
-                                ],
+                            (news.country ?? []).map((info) {
+                              return Text(
+                                info?.toTitleCase ?? '',
+                                style: Theme.of(context).textTheme.labelMedium,
                               );
                             }).toList(),
                       ),
                     },
-                    if (news.keywords?.isNotEmpty ?? false) ...{
+                    if (news.category?.isNotEmpty ?? false) ...{
                       const SizedBox(height: 8.0),
                       Wrap(
                         spacing: 8.0,
-                        children: [
-                          for (var keyword in (news.keywords ?? [])) ...{
-                            Text(
-                              '#${keyword['name']}',
-                              style: Theme.of(context).textTheme.labelMedium,
-                            ),
-                          },
-                        ],
+                        runSpacing: 4.0,
+                        children:
+                            (news.category ?? []).map((info) {
+                              return Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8.0,
+                                  vertical: 2.0,
+                                ),
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: Theme.of(context).primaryColor,
+                                  ),
+                                  borderRadius: BorderRadius.circular(24.0),
+                                ),
+                                child: Text(
+                                  info ?? '',
+                                  style:
+                                      Theme.of(context).textTheme.headlineSmall,
+                                ),
+                              );
+                            }).toList(),
                       ),
                     },
+                    const SizedBox(height: 16.0),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8.0,
+                        vertical: 2.0,
+                      ),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Theme.of(context).primaryColor,
+                        ),
+                        borderRadius: BorderRadius.circular(24.0),
+                      ),
+                      child: Text(
+                        news.language ?? '',
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                    ),
                     const SizedBox(height: 16.0),
                     Text(
                       news.content ?? '',
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
-                    const SizedBox(height: 8.0),
-                    Text(
-                      news.summary ?? '',
-                      style: Theme.of(context).textTheme.labelLarge,
-                    ),
-                  ],
-                ),
-              ),
-              Divider(
-                height: 1,
-                color: AIColors.greyTextColor,
-                thickness: 0.33,
-              ),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20.0,
-                  vertical: 16.0,
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('Related Articles'),
-                    for (String? link in (news.links ?? [])) ...{
-                      const SizedBox(height: 8.0),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(12.0),
-                        child: AIImage(link?.pageSpeedThumbnail),
-                      ),
-                    },
                   ],
                 ),
               ),

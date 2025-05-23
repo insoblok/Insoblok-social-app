@@ -19,6 +19,14 @@ extension StringExt on String {
   String get pageSpeedThumbnail {
     return 'https://www.googleapis.com/pagespeedonline/v5/runPagespeed?url=${Uri.encodeComponent(this)}&screenshot=true';
   }
+
+  String get toCapitalized =>
+      length > 0 ? '${this[0].toUpperCase()}${substring(1).toLowerCase()}' : '';
+
+  String get toTitleCase => replaceAll(
+    RegExp(' +'),
+    ' ',
+  ).split(' ').map((str) => str.toCapitalized).join(' ');
 }
 
 extension DateTimeExt on DateTime {

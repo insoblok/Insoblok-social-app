@@ -19,7 +19,7 @@ class VTOService {
         logger.d(modelUrl);
         var id = await NetworkUtil.getVTOCredit(
           model: modelUrl,
-          clothingModel: clothingLink,
+          clothingModel: clothingLink!,
           clothingType: clothingType,
         );
         if (id != null) {

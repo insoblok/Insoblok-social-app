@@ -7,135 +7,74 @@ part of 'news_model.dart';
 // **************************************************************************
 
 _NewsModel _$NewsModelFromJson(Map<String, dynamic> json) => _NewsModel(
-      id: json['id'] as String?,
-      url: json['url'] as String?,
-      authorsByline: json['authorsByline'] as String?,
-      articleId: json['articleId'] as String?,
-      clusterId: json['clusterId'] as String?,
-      source: json['source'] == null
-          ? null
-          : NewsSourceModel.fromJson(json['source'] as Map<String, dynamic>),
-      imageUrl: json['imageUrl'] as String?,
-      country: json['country'] as String?,
-      language: json['language'] as String?,
-      pubDate: json['pubDate'] as String?,
-      addDate: json['addDate'] as String?,
-      refreshDate: json['refreshDate'] as String?,
-      score: (json['score'] as num?)?.toDouble(),
+      article_id: json['article_id'] as String?,
       title: json['title'] as String?,
+      link: json['link'] as String?,
+      keywords: (json['keywords'] as List<dynamic>?)
+          ?.map((e) => e as String?)
+          .toList(),
+      creator: (json['creator'] as List<dynamic>?)
+          ?.map((e) => e as String?)
+          .toList(),
       description: json['description'] as String?,
       content: json['content'] as String?,
-      medium: json['medium'] as String?,
-      links:
-          (json['links'] as List<dynamic>?)?.map((e) => e as String?).toList(),
-      labels: (json['labels'] as List<dynamic>?)
-          ?.map((e) => e as Map<String, dynamic>)
+      pubDate: json['pubDate'] as String?,
+      pubDateTz: json['pubDateTz'] as String?,
+      image_url: json['image_url'] as String?,
+      video_url: json['video_url'] as String?,
+      source_id: json['source_id'] as String?,
+      source_name: json['source_name'] as String?,
+      source_priority: (json['source_priority'] as num?)?.toInt(),
+      source_url: json['source_url'] as String?,
+      source_icon: json['source_icon'] as String?,
+      language: json['language'] as String?,
+      country: (json['country'] as List<dynamic>?)
+          ?.map((e) => e as String?)
           .toList(),
-      claim: json['claim'] as String?,
-      verdict: json['verdict'] as String?,
-      keywords: (json['keywords'] as List<dynamic>?)
-          ?.map((e) => e as Map<String, dynamic>)
+      category: (json['category'] as List<dynamic>?)
+          ?.map((e) => e as String?)
           .toList(),
-      topics: (json['topics'] as List<dynamic>?)
-          ?.map((e) => e as Map<String, dynamic>)
-          .toList(),
-      categories: (json['categories'] as List<dynamic>?)
-          ?.map((e) => e as Map<String, dynamic>)
-          .toList(),
-      taxonomies: (json['taxonomies'] as List<dynamic>?)
-          ?.map((e) => e as Map<String, dynamic>)
-          .toList(),
-      entities: (json['entities'] as List<dynamic>?)
-          ?.map((e) => e as Map<String, dynamic>)
-          .toList(),
-      companies: (json['companies'] as List<dynamic>?)
-          ?.map((e) => e as Map<String, dynamic>)
-          .toList(),
-      sentiment: json['sentiment'] as Map<String, dynamic>?,
-      summary: json['summary'] as String?,
-      shortSummary: json['shortSummary'] as String?,
+      sentiment: json['sentiment'] as String?,
+      sentiment_stats: json['sentiment_stats'] as String?,
+      ai_tag: json['ai_tag'] as String?,
+      ai_region: json['ai_region'] as String?,
+      ai_org: json['ai_org'] as String?,
+      timestamp: json['timestamp'] == null
+          ? null
+          : DateTime.parse(json['timestamp'] as String),
+      regdate: json['regdate'] == null
+          ? null
+          : DateTime.parse(json['regdate'] as String),
+      duplicate: json['duplicate'] as bool?,
     );
 
 Map<String, dynamic> _$NewsModelToJson(_NewsModel instance) =>
     <String, dynamic>{
-      'id': instance.id,
-      'url': instance.url,
-      'authorsByline': instance.authorsByline,
-      'articleId': instance.articleId,
-      'clusterId': instance.clusterId,
-      'source': instance.source,
-      'imageUrl': instance.imageUrl,
-      'country': instance.country,
-      'language': instance.language,
-      'pubDate': instance.pubDate,
-      'addDate': instance.addDate,
-      'refreshDate': instance.refreshDate,
-      'score': instance.score,
+      'article_id': instance.article_id,
       'title': instance.title,
+      'link': instance.link,
+      'keywords': instance.keywords,
+      'creator': instance.creator,
       'description': instance.description,
       'content': instance.content,
-      'medium': instance.medium,
-      'links': instance.links,
-      'labels': instance.labels,
-      'claim': instance.claim,
-      'verdict': instance.verdict,
-      'keywords': instance.keywords,
-      'topics': instance.topics,
-      'categories': instance.categories,
-      'taxonomies': instance.taxonomies,
-      'entities': instance.entities,
-      'companies': instance.companies,
-      'sentiment': instance.sentiment,
-      'summary': instance.summary,
-      'shortSummary': instance.shortSummary,
-    };
-
-_NewsSourceModel _$NewsSourceModelFromJson(Map<String, dynamic> json) =>
-    _NewsSourceModel(
-      domain: json['domain'] as String?,
-      paywall: json['paywall'] as bool?,
-      location: json['location'] == null
-          ? null
-          : NewsSourceLocationModel.fromJson(
-              json['location'] as Map<String, dynamic>),
-    );
-
-Map<String, dynamic> _$NewsSourceModelToJson(_NewsSourceModel instance) =>
-    <String, dynamic>{
-      'domain': instance.domain,
-      'paywall': instance.paywall,
-      'location': instance.location,
-    };
-
-_NewsSourceLocationModel _$NewsSourceLocationModelFromJson(
-        Map<String, dynamic> json) =>
-    _NewsSourceLocationModel(
-      country: json['country'] as String?,
-      city: json['city'] as String?,
-      coordinates: json['coordinates'] == null
-          ? null
-          : NewsSourceCoordModel.fromJson(
-              json['coordinates'] as Map<String, dynamic>),
-    );
-
-Map<String, dynamic> _$NewsSourceLocationModelToJson(
-        _NewsSourceLocationModel instance) =>
-    <String, dynamic>{
+      'pubDate': instance.pubDate,
+      'pubDateTz': instance.pubDateTz,
+      'image_url': instance.image_url,
+      'video_url': instance.video_url,
+      'source_id': instance.source_id,
+      'source_name': instance.source_name,
+      'source_priority': instance.source_priority,
+      'source_url': instance.source_url,
+      'source_icon': instance.source_icon,
+      'language': instance.language,
       'country': instance.country,
-      'city': instance.city,
-      'coordinates': instance.coordinates,
-    };
-
-_NewsSourceCoordModel _$NewsSourceCoordModelFromJson(
-        Map<String, dynamic> json) =>
-    _NewsSourceCoordModel(
-      lat: (json['lat'] as num?)?.toDouble(),
-      lon: (json['lon'] as num?)?.toDouble(),
-    );
-
-Map<String, dynamic> _$NewsSourceCoordModelToJson(
-        _NewsSourceCoordModel instance) =>
-    <String, dynamic>{
-      'lat': instance.lat,
-      'lon': instance.lon,
+      'category': instance.category,
+      'sentiment': instance.sentiment,
+      'sentiment_stats': instance.sentiment_stats,
+      'ai_tag': instance.ai_tag,
+      'ai_region': instance.ai_region,
+      'ai_org': instance.ai_org,
+      'timestamp': instance.timestamp?.toIso8601String(),
+      'regdate': instance.regdate?.toIso8601String(),
+      'duplicate': instance.duplicate,
     };
