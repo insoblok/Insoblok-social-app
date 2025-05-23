@@ -24,6 +24,7 @@ class CreateRoomProvider extends InSoBlokViewModel {
 
   Future<void> init(BuildContext context) async {
     this.context = context;
+    getUsers();
   }
 
   String key = '';
@@ -40,6 +41,30 @@ class CreateRoomProvider extends InSoBlokViewModel {
         _users.clear();
 
         var keyUsers = await userService.findUsersByKey(key);
+        for (var user in keyUsers) {
+          if (user != null) {
+            _users.add(user);
+          }
+        }
+        logger.d(_users.length);
+      } catch (e) {
+        logger.e(e);
+        setError(e);
+      } finally {
+        notifyListeners();
+      }
+    }());
+  }
+
+  Future<void> getUsers() async {
+    if (isBusy) return;
+    clearErrors();
+
+    await runBusyFuture(() async {
+      try {
+        _users.clear();
+
+        var keyUsers = await userService.getAllUsers();
         for (var user in keyUsers) {
           if (user != null) {
             _users.add(user);
