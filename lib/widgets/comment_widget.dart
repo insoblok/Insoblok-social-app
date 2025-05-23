@@ -79,6 +79,7 @@ class StoryDetailCommentCell extends StatelessWidget {
               child: ClipOval(
                 child: AIAvatarImage(
                   user?.avatar,
+                  textSize: 22,
                   width: kStoryDetailAvatarSize,
                   height: kStoryDetailAvatarSize,
                   fullname: user?.nickId ?? 'Test',

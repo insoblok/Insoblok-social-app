@@ -61,249 +61,401 @@ class _LoginPageState extends State<LoginPage>
       builder: (context, viewModel, _) {
         return Scaffold(
           body: Stack(
+            fit: StackFit.expand,
             children: [
-              viewModel.videoPlayerController.value.isInitialized
-                  ? LayoutBuilder(
-                    builder: (context, constraints) {
-                      return SizedBox(
-                        height: constraints.maxHeight,
-                        child: AspectRatio(
-                          aspectRatio:
-                              viewModel.videoPlayerController.value.aspectRatio,
-                          child: FittedBox(
-                            fit: BoxFit.cover,
-                            child: SizedBox(
-                              width:
-                                  viewModel
-                                      .videoPlayerController
-                                      .value
-                                      .size
-                                      .width,
-                              height:
-                                  viewModel
-                                      .videoPlayerController
-                                      .value
-                                      .size
-                                      .height,
-                              child: Chewie(
-                                controller: viewModel.chewieController,
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  )
-                  : AIImage(
-                    AIImages.imgBackSplash,
-                    width: double.infinity,
-                    height: double.infinity,
-                    fit: BoxFit.cover,
-                  ),
-              Padding(
-                padding: const EdgeInsets.all(24.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      height: MediaQuery.of(context).viewInsets.top + 16.0,
-                    ),
-                    const SizedBox(width: 16.0),
-                    Row(
-                      children: [
-                        AIImage(
-                          AIImages.logoInsoblok,
-                          width: 48.0,
-                          height: 48.0,
-                        ),
-                        const SizedBox(width: 16.0),
-                        Text(
-                          S.current.title.toUpperCase(),
-                          style: TextStyle(
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 80.0),
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        AnimatedTextKit(
-                          totalRepeatCount: 1,
-                          animatedTexts: [
-                            TyperAnimatedText(
-                              'First Layer 1 SocialFi &',
-                              textStyle: TextStyle(
-                                fontSize: 32.0,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                        AnimatedTextKit(
-                          totalRepeatCount: 1,
-                          animatedTexts: [
-                            TyperAnimatedText(
-                              'Influencer Commerce',
-                              textStyle: TextStyle(
-                                fontSize: 32.0,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                        AnimatedTextKit(
-                          totalRepeatCount: 1,
-                          animatedTexts: [
-                            TyperAnimatedText(
-                              'Platform',
-                              textStyle: TextStyle(
-                                fontSize: 32.0,
-                                color: Colors.white,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 24.0),
-                    SlideTransition(
-                      position: _positionAnimation,
-                      child: FadeTransition(
-                        opacity: _fadeAnimation,
-                        child: Text(
-                          'Powering Influencer Commerce, P2P Payments, Dynamic Soveringity ,User Driven Ecosytem',
-                          style: TextStyle(fontSize: 18.0, color: Colors.white),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 80.0),
-                    Row(
-                      children: [
-                        const SizedBox(width: 24.0),
-                        Expanded(
-                          child: Container(
-                            color: AIColors.darkScaffoldBackground.withAlpha(
-                              48,
-                            ),
-                            child: OutlineButton(
-                              isBusy: viewModel.isClickWallet,
-                              borderColor: AIColors.pink,
-                              onTap: viewModel.login,
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  AIImage(AIImages.imgMetamask, width: 28.0),
-                                  const SizedBox(width: 24.0),
-                                  Text(
-                                    'Start with MetaMask',
-                                    style: TextStyle(
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.bold,
-                                      color: AIColors.pink,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 24.0),
-                      ],
-                    ),
-                    const SizedBox(height: 16.0),
-                    Row(
-                      children: [
-                        const SizedBox(width: 24.0),
-                        Expanded(
-                          child: Container(
-                            color: AIColors.darkScaffoldBackground.withAlpha(
-                              48,
-                            ),
-                            child: OutlineButton(
-                              isBusy: viewModel.isBusy,
-                              borderColor: AIColors.pink,
-                              onTap: viewModel.googleSignin,
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  AIImage(AIImages.imgGoogle, width: 28.0),
-                                  const SizedBox(width: 26.0),
-                                  Text(
-                                    'Sign in with Google',
-                                    style: TextStyle(
-                                      fontSize: 16.0,
-                                      fontWeight: FontWeight.bold,
-                                      color: AIColors.pink,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-                        const SizedBox(width: 24.0),
-                      ],
-                    ),
-                    const SizedBox(height: 60.0),
-                    Container(
-                      width: double.infinity,
-                      alignment: Alignment.center,
-                      child: Text(
-                        'If you already have an account?',
-                        style: TextStyle(color: AIColors.white),
-                      ),
-                    ),
-                    const SizedBox(height: 16.0),
-                    Container(
-                      width: double.infinity,
-                      alignment: Alignment.center,
-                      child: InkWell(
-                        onTap: () => Routers.goToAuthPage(context),
-                        child: Text(
-                          'Login with Email',
-                          style: Theme.of(context).textTheme.titleMedium
-                              ?.copyWith(color: AIColors.pink),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 16.0),
-                    // Container(
-                    //   width: double.infinity,
-                    //   alignment: Alignment.center,
-                    //   child: InkWell(
-                    //     onTap: () => viewModel.googleSignin(),
-                    //     child: Text(
-                    //       'Google Login',
-                    //       style: Theme.of(context).textTheme.titleMedium
-                    //           ?.copyWith(color: AIColors.pink),
-                    //     ),
-                    //   ),
-                    // ),
-                  ],
-                ),
+              // viewModel.videoPlayerController.value.isInitialized
+              //     ? LayoutBuilder(
+              //       builder: (context, constraints) {
+              //         return SizedBox(
+              //           height: constraints.maxHeight,
+              //           child: AspectRatio(
+              //             aspectRatio:
+              //                 viewModel.videoPlayerController.value.aspectRatio,
+              //             child: FittedBox(
+              //               fit: BoxFit.cover,
+              //               child: SizedBox(
+              //                 width:
+              //                     viewModel
+              //                         .videoPlayerController
+              //                         .value
+              //                         .size
+              //                         .width,
+              //                 height:
+              //                     viewModel
+              //                         .videoPlayerController
+              //                         .value
+              //                         .size
+              //                         .height,
+              //                 child: Chewie(
+              //                   controller: viewModel.chewieController,
+              //                 ),
+              //               ),
+              //             ),
+              //           ),
+              //         );
+              //       },
+              //     ) :
+              Container(
+                width: double.infinity,
+                height: double.infinity,
+                color: AIColors.landingBackgroundColor,
               ),
-
-              // if (viewModel.isBusy) ...{
-              //   Center(
-              //     child: SizedBox(
-              //       width: 60,
-              //       height: 60,
-              //       child: LoadingIndicator(
-              //         indicatorType: Indicator.ballSpinFadeLoader,
-              //         colors: [AIColors.pink],
-              //         strokeWidth: 2,
+              PageView(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      left: 48.0,
+                      right: 48.0,
+                      top: 60.0,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SlideTransition(
+                          position: _positionAnimation,
+                          child: FadeTransition(
+                            opacity: _fadeAnimation,
+                            child: Text(
+                              'Unlock Your World',
+                              style: TextStyle(
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.bold,
+                                color: AIColors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 8.0),
+                        SlideTransition(
+                          position: _positionAnimation,
+                          child: FadeTransition(
+                            opacity: _fadeAnimation,
+                            child: Text(
+                              'No forms. Just you. Tap in, explore, and own your vibe - your way',
+                              style: TextStyle(
+                                fontSize: 14.0,
+                                color: AIColors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 40.0),
+                        AIImage(AIImages.imgSplash1),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      left: 48.0,
+                      right: 48.0,
+                      top: 60.0,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SlideTransition(
+                          position: _positionAnimation,
+                          child: FadeTransition(
+                            opacity: _fadeAnimation,
+                            child: Text(
+                              'Speak Your Vibe. Stay on Lock',
+                              style: TextStyle(
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.bold,
+                                color: AIColors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 8.0),
+                        SlideTransition(
+                          position: _positionAnimation,
+                          child: FadeTransition(
+                            opacity: _fadeAnimation,
+                            child: Text(
+                              'Yay/Nay chats with friends. Private. Encrypted. Untouchable',
+                              style: TextStyle(
+                                fontSize: 14.0,
+                                color: AIColors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 40.0),
+                        AIImage(AIImages.imgSplash2),
+                      ],
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(
+                      left: 48.0,
+                      right: 48.0,
+                      top: 60.0,
+                    ),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SlideTransition(
+                          position: _positionAnimation,
+                          child: FadeTransition(
+                            opacity: _fadeAnimation,
+                            child: Text(
+                              'Unlock Your World',
+                              style: TextStyle(
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.bold,
+                                color: AIColors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 8.0),
+                        SlideTransition(
+                          position: _positionAnimation,
+                          child: FadeTransition(
+                            opacity: _fadeAnimation,
+                            child: Text(
+                              'No forms. Just you. Tap in, explore, and own your vibe - your way',
+                              style: TextStyle(
+                                fontSize: 14.0,
+                                color: AIColors.white,
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 40.0),
+                        AIImage(AIImages.imgSplash3),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+              // Padding(
+              //   padding: const EdgeInsets.all(24.0),
+              //   child: Column(
+              //     crossAxisAlignment: CrossAxisAlignment.start,
+              //     children: [
+              //       SizedBox(
+              //         height: MediaQuery.of(context).viewInsets.top + 16.0,
               //       ),
-              //     ),
+              //       const SizedBox(width: 16.0),
+              //       Row(
+              //         children: [
+              //           AIImage(
+              //             AIImages.logoInsoblok,
+              //             width: 48.0,
+              //             height: 48.0,
+              //           ),
+              //           const SizedBox(width: 16.0),
+              //           Text(
+              //             S.current.title.toUpperCase(),
+              //             style: TextStyle(
+              //               fontSize: 20.0,
+              //               fontWeight: FontWeight.bold,
+              //               color: Colors.white,
+              //             ),
+              //           ),
+              //         ],
+              //       ),
+              //       const SizedBox(height: 40.0),
+              //       Align(
+              //         alignment: Alignment.center,
+              //         child: Column(
+              //           // crossAxisAlignment: CrossAxisAlignment.start,
+              //           mainAxisSize: MainAxisSize.min,
+              //           children: [
+              //             AnimatedTextKit(
+              //               totalRepeatCount: 1,
+              //               animatedTexts: [
+              //                 TyperAnimatedText(
+              //                   'Unlock',
+              //                   textStyle: TextStyle(
+              //                     fontSize: 32.0,
+              //                     color: AIColors.darkYellow,
+              //                     fontWeight: FontWeight.bold,
+              //                   ),
+              //                 ),
+              //               ],
+              //             ),
+              //             AnimatedTextKit(
+              //               totalRepeatCount: 1,
+              //               animatedTexts: [
+              //                 TyperAnimatedText(
+              //                   'Your World',
+              //                   textStyle: TextStyle(
+              //                     fontSize: 32.0,
+              //                     color: AIColors.darkYellow,
+              //                     fontWeight: FontWeight.bold,
+              //                   ),
+              //                 ),
+              //               ],
+              //             ),
+              //             // AnimatedTextKit(
+              //             //   totalRepeatCount: 1,
+              //             //   animatedTexts: [
+              //             //     TyperAnimatedText(
+              //             //       'Platform',
+              //             //       textStyle: TextStyle(
+              //             //         fontSize: 32.0,
+              //             //         color: Colors.white,
+              //             //         fontWeight: FontWeight.bold,
+              //             //       ),
+              //             //     ),
+              //             //   ],
+              //             // ),
+              //           ],
+              //         ),
+              //       ),
+
+              //       // const SizedBox(height: 24.0),
+              //     ],
               //   ),
-              // },
+              // ),
+              Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  // Padding(
+                  //   padding: const EdgeInsets.only(left: 80.0, right: 80.0),
+                  //   child: SlideTransition(
+                  //     position: _positionAnimation,
+                  //     child: FadeTransition(
+                  //       opacity: _fadeAnimation,
+                  //       child: Text(
+                  //         'No forms. Just you. Tap in, explore, and own your vibe - your way',
+                  //         textAlign: TextAlign.center,
+                  //         style: TextStyle(
+                  //           fontSize: 18.0,
+                  //           color: AIColors.lightYellow,
+                  //         ),
+                  //       ),
+                  //     ),
+                  //   ),
+                  // ),
+                  // const SizedBox(height: 40.0),
+                  Row(
+                    children: [
+                      const SizedBox(width: 48.0),
+                      Expanded(
+                        child: Container(
+                          color: AIColors.darkScaffoldBackground.withAlpha(48),
+                          child: OutlineButton(
+                            isBusy: viewModel.isClickWallet,
+                            borderColor: AIColors.pink,
+                            onTap: viewModel.login,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                AIImage(AIImages.imgMetamask, width: 28.0),
+                                const SizedBox(width: 24.0),
+                                Text(
+                                  'Start with MetaMask',
+                                  style: TextStyle(
+                                    fontSize: 16.0,
+                                    fontWeight: FontWeight.bold,
+                                    color: AIColors.pink,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 48.0),
+                    ],
+                  ),
+                  const SizedBox(height: 16.0),
+                  Row(
+                    children: [
+                      const SizedBox(width: 48.0),
+                      Expanded(
+                        child: Container(
+                          color: AIColors.darkScaffoldBackground.withAlpha(48),
+                          child: OutlineButton(
+                            isBusy: viewModel.isBusy,
+                            borderColor: AIColors.pink,
+                            onTap: viewModel.googleSignin,
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                AIImage(AIImages.imgGoogle, width: 28.0),
+                                const SizedBox(width: 26.0),
+                                Text(
+                                  'Sign in with Google',
+                                  style: TextStyle(
+                                    fontSize: 16.0,
+                                    fontWeight: FontWeight.bold,
+                                    color: AIColors.pink,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 48.0),
+                    ],
+                  ),
+                  const SizedBox(height: 40.0),
+                  Text(
+                    'By proceeding you accept InSoBlok',
+                    style: TextStyle(color: AIColors.white, fontSize: 14.0),
+                  ),
+                  // Text(
+                  //   'If you already have an account?',
+                  //   style: TextStyle(color: AIColors.white, fontSize: 14.0),
+                  // ),
+                  const SizedBox(height: 8.0),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      InkWell(
+                        onTap: () {},
+                        child: Text(
+                          'Terms of Use',
+                          style: TextStyle(
+                            fontSize: 14.0,
+                            color: AIColors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      Text(
+                        'and',
+                        style: TextStyle(color: AIColors.white, fontSize: 14.0),
+                      ),
+                      const SizedBox(width: 4),
+                      InkWell(
+                        onTap: () {},
+                        child: Text(
+                          'Privacy Policy',
+                          style: TextStyle(
+                            color: AIColors.white,
+                            fontSize: 14.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  // const SizedBox(height: 16.0),
+                  // Container(
+                  //   width: double.infinity,
+                  //   alignment: Alignment.center,
+                  //   child: InkWell(
+                  //     onTap: () => Routers.goToAuthPage(context),
+                  //     child: Text(
+                  //       'Login with Email',
+                  //       style: Theme.of(
+                  //         context,
+                  //       ).textTheme.titleMedium?.copyWith(color: AIColors.pink),
+                  //     ),
+                  //   ),
+                  // ),
+                  const SizedBox(height: 24.0),
+                ],
+              ),
             ],
           ),
         );

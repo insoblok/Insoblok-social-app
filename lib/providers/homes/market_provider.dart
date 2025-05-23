@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:insoblok/models/models.dart';
+import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
@@ -24,8 +25,27 @@ class MarketProvider extends InSoBlokViewModel {
   final List<ProductModel> _products = [];
   List<ProductModel> get products => _products;
 
+  final List<ProductModel> _filterProducts = [];
+  List<ProductModel> get filterProducts => _filterProducts;
+
   final _productService = ProductService();
   ProductService get productService => _productService;
+
+  bool _isClickFilter = false;
+  bool get isClickFilter => _isClickFilter;
+  set isClickFilter(bool f) {
+    _isClickFilter = f;
+    notifyListeners();
+  }
+
+  final List<bool> _selectedTags = [];
+  List<bool> get selectedTags => _selectedTags;
+
+  void updateTagSelect(int index) {
+    var value = _selectedTags[index];
+    _selectedTags[index] = !value;
+    notifyListeners();
+  }
 
   Future<void> fetchData() async {
     if (isBusy) return;
@@ -33,10 +53,16 @@ class MarketProvider extends InSoBlokViewModel {
 
     await runBusyFuture(() async {
       try {
+        for (var i = 0; i < kProductCategoryNames.length; i++) {
+          _selectedTags.add(true);
+        }
+
         var ps = await productService.getProducts();
         if (ps.isNotEmpty) {
           _products.clear();
+          _filterProducts.clear();
           _products.addAll(ps);
+          _filterProducts.addAll(ps);
         }
         logger.d(products.length);
       } catch (e) {
@@ -44,6 +70,30 @@ class MarketProvider extends InSoBlokViewModel {
       } finally {
         notifyListeners();
       }
+    }());
+
+    if (hasError) {
+      Fluttertoast.showToast(msg: modelError.toString());
+    }
+  }
+
+  Future<void> filterData() async {
+    if (isBusy) return;
+    clearErrors();
+    await runBusyFuture(() async {
+      List<ProductModel> dataList = [];
+      var tags = [];
+      for (var i = 0; i < _selectedTags.length; i++) {
+        if (_selectedTags[i]) tags.add(kProductCategoryNames[i]);
+      }
+      for (var i = 0; i < _products.length; i++) {
+        if (tags.contains(_products[i].categoryName))
+          dataList.add(_products[i]);
+      }
+
+      _filterProducts.clear();
+      _filterProducts.addAll(dataList);
+      notifyListeners();
     }());
 
     if (hasError) {
@@ -70,5 +120,9 @@ class MarketProvider extends InSoBlokViewModel {
 
     await Routers.goToVTOAddProduct(context);
     fetchData();
+  }
+
+  void onTapFilter() {
+    isClickFilter = !isClickFilter;
   }
 }
