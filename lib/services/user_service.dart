@@ -37,6 +37,21 @@ class UserService {
     return null;
   }
 
+  Future<List<UserModel?>> getAllUsers() async {
+    List<UserModel?> users = [];
+    var snapshot = await _userCollection.get();
+    var allUsers = snapshot.docs.map((doc) => _getUserFromDoc(doc));
+    for (var user in allUsers) {
+      var idList = users.map((u) => u?.id).toList();
+      if (idList.contains(user?.id)) {
+        continue;
+      }
+      users.add(user);
+    }
+
+    return users.where((u) => u?.uid != AuthHelper.user?.uid).toList();
+  }
+
   Future<void> updateUser(UserModel user) async {
     logger.d(user.toJson());
     await _userCollection.doc(user.id).update({
