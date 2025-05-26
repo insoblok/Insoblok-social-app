@@ -26,7 +26,7 @@ class MarketView extends StatelessWidget {
               leading: AppLeadingView(),
               pinned: true,
               actions: [
-                !kDebugMode
+                kDebugMode
                     ? IconButton(
                       icon: Icon(Icons.add_circle),
                       onPressed: viewModel.onTapAddProduct,
