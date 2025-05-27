@@ -1,4 +1,8 @@
+import 'dart:convert';
+import 'dart:math';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:fluttertoast/fluttertoast.dart';
 
@@ -24,6 +28,22 @@ class MarketProvider extends InSoBlokViewModel {
 
   final List<ProductModel> _products = [];
   List<ProductModel> get products => _products;
+
+  ProductSubtypeModel itemCategory({int? i}) {
+    int index = i ?? Random().nextInt(allSubtypes.length);
+    return allSubtypes[index];
+  }
+
+  final List<ProductTribeCategoryModel> _tribeCategories = [];
+  List<ProductTribeCategoryModel> get tribeCategories => _tribeCategories;
+
+  List<ProductSubtypeModel> get allSubtypes {
+    List<ProductSubtypeModel> result = [];
+    for (var category in tribeCategories) {
+      result.addAll(category.subtypes ?? []);
+    }
+    return result;
+  }
 
   final List<ProductModel> _filterProducts = [];
   List<ProductModel> get filterProducts => _filterProducts;
@@ -53,6 +73,23 @@ class MarketProvider extends InSoBlokViewModel {
 
     await runBusyFuture(() async {
       try {
+        final String response = await rootBundle.loadString(
+          'assets/data/vto_tribe_categories.json',
+        );
+        final data = (await json.decode(response));
+        for (var json in (data as List)) {
+          try {
+            var category = ProductTribeCategoryModel.fromJson(json);
+            _tribeCategories.add(category);
+          } catch (e) {
+            logger.e(e);
+            logger.i(json);
+          }
+        }
+
+        logger.d(_tribeCategories.length);
+        logger.d(allSubtypes.length);
+
         for (var i = 0; i < kProductCategoryNames.length; i++) {
           _selectedTags.add(true);
         }

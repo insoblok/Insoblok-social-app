@@ -70,9 +70,15 @@ class ProductImageView extends StatelessWidget {
 
 class ProductItemWidget extends StatelessWidget {
   final ProductModel product;
+  final ProductSubtypeModel category;
   final void Function()? onTap;
 
-  const ProductItemWidget({super.key, required this.product, this.onTap});
+  const ProductItemWidget({
+    super.key,
+    required this.product,
+    required this.category,
+    this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -119,6 +125,24 @@ class ProductItemWidget extends StatelessWidget {
                       ),
                       child: Text(
                         product.categoryName ?? '',
+                        style: Theme.of(context).textTheme.bodySmall,
+                      ),
+                    ),
+                    const SizedBox(height: 8.0),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 8.0,
+                        vertical: 4.0,
+                      ),
+                      decoration: BoxDecoration(
+                        border: Border.all(
+                          color: Theme.of(context).primaryColor,
+                          width: 0.33,
+                        ),
+                        borderRadius: BorderRadius.circular(24.0),
+                      ),
+                      child: Text(
+                        category.title ?? '',
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
                     ),
