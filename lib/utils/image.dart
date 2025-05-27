@@ -14,6 +14,9 @@ class AIImages {
   static String imgVTOClothing = 'assets/images/img_vto_clothing.jpg';
   static String imgVTOJewelry = 'assets/images/img_vto_jewelry.jpg';
 
+  static String icYay = 'assets/icons/ic_yay.png';
+  static String icNay = 'assets/icons/ic_nay.png';
+
   static String icEthereumGold = 'assets/images/ic_ethereum_gold.png';
 
   static String icBottomHomeFill = 'assets/icons/ic_home_fill.svg';

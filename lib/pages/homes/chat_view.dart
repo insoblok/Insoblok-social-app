@@ -128,14 +128,7 @@ class ChatView extends StatelessWidget {
                         ...viewModel.rooms.map((room) {
                           return RoomItemView(
                             room: room,
-                            onTap:
-                                (chatUser) => Routers.goToMessagePage(
-                                  context,
-                                  MessagePageData(
-                                    room: room,
-                                    chatUser: chatUser,
-                                  ),
-                                ),
+                            onTap: viewModel.gotoNewChat,
                           );
                         }),
                         SizedBox(height: MediaQuery.of(context).padding.bottom),
@@ -143,13 +136,13 @@ class ChatView extends StatelessWidget {
                     ),
               ],
             ),
-            Align(
-              alignment: Alignment.bottomRight,
-              child: CustomFloatingButton(
-                onTap: () => Routers.goToCreateRoomPage(context),
-                src: AIImages.icAddMessage,
-              ),
-            ),
+            // Align(
+            //   alignment: Alignment.bottomRight,
+            //   child: CustomFloatingButton(
+            //     onTap: () => Routers.goToCreateRoomPage(context),
+            //     src: AIImages.icAddMessage,
+            //   ),
+            // ),
           ],
         );
       },

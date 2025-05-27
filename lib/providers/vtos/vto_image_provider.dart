@@ -284,4 +284,62 @@ class VTOImageProvider extends InSoBlokViewModel {
       Fluttertoast.showToast(msg: modelError.toString());
     }
   }
+
+  final _storyService = StoryService();
+  StoryService get storyService => _storyService;
+
+  String _txtLookbookButton = '';
+  String get txtLookbookButton => _txtLookbookButton;
+  set txtLookbookButton(String s) {
+    _txtLookbookButton = s;
+    notifyListeners();
+  }
+
+  Future<void> savetoLookBook() async {
+    if (isBusy) return;
+    clearErrors();
+
+    await runBusyFuture(() async {
+      try {
+        if (_resultFile == null) {
+          var file = await NetworkHelper.downloadFile(
+            resultModel,
+            type: 'gallery',
+            ext: 'png',
+          );
+          if (file != null) {
+            _resultFile = file;
+          }
+        }
+        txtLookbookButton = 'Uploading Media...';
+        var mediaUrl = await FirebaseHelper.uploadFile(
+          file: _resultFile!,
+          folderName: 'story',
+        );
+        if (mediaUrl != null) {
+          txtLookbookButton = 'Adding to Server...';
+          var story = StoryModel(
+            title: 'Virtual Try-On',
+            text: 'Virtual Try-On',
+            medias: [MediaStoryModel(link: mediaUrl, type: 'image')],
+          );
+          await storyService.postStory(story: story);
+
+          Fluttertoast.showToast(msg: 'Successfully posted VTO to Lookbook!');
+        } else {
+          setError('Failed file upload!');
+        }
+      } catch (e, s) {
+        setError(e);
+        logger.e(e, stackTrace: s);
+      } finally {
+        txtLookbookButton = '';
+        notifyListeners();
+      }
+    }());
+
+    if (hasError) {
+      Fluttertoast.showToast(msg: modelError.toString());
+    }
+  }
 }

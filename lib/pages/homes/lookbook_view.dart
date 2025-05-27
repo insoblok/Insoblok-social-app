@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:loading_indicator/loading_indicator.dart';
-
 import 'package:stacked/stacked.dart';
-
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
@@ -18,10 +16,29 @@ class LookbookView extends StatelessWidget {
       viewModelBuilder: () => LookbookProvider(),
       onViewModelReady: (viewModel) => viewModel.init(context),
       builder: (context, viewModel, _) {
+        // return SwipeTutorial(
+        //   showTutorial: false,
+        //   swipeDirection: SwipeDirection.topToBottom,
+        //   text: "Swipe to the bottom to see more items",
+        //   child: Center(
+        //     child: SizedBox(
+        //       height: 500,
+        //       child: PageView.builder(
+        //         scrollDirection: Axis.vertical,
+        //         controller: viewModel.pageController,
+        //         padEnds: false,
+        //         itemCount: viewModel.stories.length,
+        //         itemBuilder: (_, index) {
+        //           return StoryListCell(story: viewModel.stories[index]);
+        //         },
+        //       ),
+        //     ),
+        //   ),
+        // );
         return Stack(
           children: [
             CustomScrollView(
-              physics: BouncingScrollPhysics(),
+              physics: NeverScrollableScrollPhysics(),
               slivers: [
                 SliverAppBar(
                   leading: AppLeadingView(),
@@ -29,12 +46,21 @@ class LookbookView extends StatelessWidget {
                   centerTitle: true,
                   pinned: true,
                   actions: [
+                    // IconButton(
+                    //   onPressed: viewModel.onClickSettingButton,
+                    //   icon: AIImage(
+                    //     AIImages.icSetting,
+                    //     width: 24.0,
+                    //     height: 24.0,
+                    //     color: Theme.of(context).primaryColor,
+                    //   ),
+                    // ),
                     IconButton(
-                      onPressed: viewModel.onClickSettingButton,
+                      onPressed: () => Routers.goToAddStoryPage(context),
                       icon: AIImage(
-                        AIImages.icSetting,
-                        width: 24.0,
-                        height: 24.0,
+                        AIImages.icAddLogo,
+                        width: 28.0,
+                        height: 28.0,
                         color: Theme.of(context).primaryColor,
                       ),
                     ),
@@ -54,85 +80,118 @@ class LookbookView extends StatelessWidget {
                       ),
                     ),
                   ),
+                } else ...{
+                  SliverFillRemaining(
+                    child: PageView.builder(
+                      scrollDirection: Axis.horizontal,
+                      controller: viewModel.pageController,
+                      padEnds: false,
+                      itemCount: viewModel.stories.length,
+                      itemBuilder: (_, index) {
+                        return StoryListCell(story: viewModel.stories[index]);
+                      },
+                    ),
+                  ),
                 },
-                SliverList(
-                  delegate: SliverChildListDelegate([
-                    // Padding(
-                    //   padding: const EdgeInsets.symmetric(
-                    //     horizontal: 20.0,
-                    //     vertical: 8.0,
-                    //   ),
-                    //   child: SizedBox(
-                    //     height: 160.0,
-                    //     child: Row(
-                    //       children: [
-                    //         AspectRatio(
-                    //           aspectRatio: 0.6,
-                    //           child: ClipRRect(
-                    //             borderRadius: BorderRadius.circular(8.0),
-                    //             child: Container(
-                    //               color: Theme.of(context).primaryColor,
-                    //               child: Stack(
-                    //                 fit: StackFit.expand,
-                    //                 children: [
-                    //                   AIAvatarImage(
-                    //                     viewModel.user?.avatar,
-                    //                     textSize: 36.0,
-                    //                     fullname:
-                    //                         viewModel.user?.nickId ?? 'Test',
-                    //                   ),
-                    //                   Align(
-                    //                     alignment: Alignment.bottomCenter,
-                    //                     child: Padding(
-                    //                       padding: const EdgeInsets.only(
-                    //                         bottom: 12.0,
-                    //                       ),
-                    //                       child: Text(
-                    //                         'Create Story',
-                    //                         style: TextStyle(
-                    //                           fontSize: 11.0,
-                    //                           color: AIColors.white,
-                    //                         ),
-                    //                       ),
-                    //                     ),
-                    //                   ),
-                    //                 ],
-                    //               ),
-                    //             ),
-                    //           ),
-                    //         ),
-                    //         const SizedBox(width: 8.0),
-                    //         Expanded(
-                    //           child: SingleChildScrollView(
-                    //             scrollDirection: Axis.horizontal,
-                    //             child: Row(
-                    //               spacing: 8.0,
-                    //               children: [
-                    //                 for (var i = 0; i < 10; i++) ...{
-                    //                   AspectRatio(
-                    //                     aspectRatio: 0.6,
-                    //                     child: ClipRRect(
-                    //                       borderRadius: BorderRadius.circular(
-                    //                         8.0,
-                    //                       ),
-                    //                       child: Container(color: Colors.red),
-                    //                     ),
-                    //                   ),
-                    //                 },
-                    //               ],
-                    //             ),
-                    //           ),
-                    //         ),
-                    //       ],
-                    //     ),
-                    //   ),
-                    // ),
-                    ...viewModel.stories.reversed.map((story) {
-                      return StoryListCell(story: story);
-                    }),
-                    const SizedBox(height: 20),
-                  ]),
-                ),
+                // SliverList(
+                //   delegate: SliverChildListDelegate([
+                //     // Padding(
+                //     //   padding: const EdgeInsets.symmetric(
+                //     //     horizontal: 20.0,
+                //     //     vertical: 8.0,
+                //     //   ),
+                //     //   child: SizedBox(
+                //     //     height: 160.0,
+                //     //     child: Row(
+                //     //       children: [
+                //     //         AspectRatio(
+                //     //           aspectRatio: 0.6,
+                //     //           child: ClipRRect(
+                //     //             borderRadius: BorderRadius.circular(8.0),
+                //     //             child: Container(
+                //     //               color: Theme.of(context).primaryColor,
+                //     //               child: Stack(
+                //     //                 fit: StackFit.expand,
+                //     //                 children: [
+                //     //                   AIAvatarImage(
+                //     //                     viewModel.user?.avatar,
+                //     //                     textSize: 36.0,
+                //     //                     fullname:
+                //     //                         viewModel.user?.nickId ?? 'Test',
+                //     //                   ),
+                //     //                   Align(
+                //     //                     alignment: Alignment.bottomCenter,
+                //     //                     child: Padding(
+                //     //                       padding: const EdgeInsets.only(
+                //     //                         bottom: 12.0,
+                //     //                       ),
+                //     //                       child: Text(
+                //     //                         'Create Story',
+                //     //                         style: TextStyle(
+                //     //                           fontSize: 11.0,
+                //     //                           color: AIColors.white,
+                //     //                         ),
+                //     //                       ),
+                //     //                     ),
+                //     //                   ),
+                //     //                 ],
+                //     //               ),
+                //     //             ),
+                //     //           ),
+                //     //         ),
+                //     //         const SizedBox(width: 8.0),
+                //     //         Expanded(
+                //     //           child: SingleChildScrollView(
+                //     //             scrollDirection: Axis.horizontal,
+                //     //             child: Row(
+                //     //               spacing: 8.0,
+                //     //               children: [
+                //     //                 for (var i = 0; i < 10; i++) ...{
+                //     //                   AspectRatio(
+                //     //                     aspectRatio: 0.6,
+                //     //                     child: ClipRRect(
+                //     //                       borderRadius: BorderRadius.circular(
+                //     //                         8.0,
+                //     //                       ),
+                //     //                       child: Container(color: Colors.red),
+                //     //                     ),
+                //     //                   ),
+                //     //                 },
+                //     //               ],
+                //     //             ),
+                //     //           ),
+                //     //         ),
+                //     //       ],
+                //     //     ),
+                //     //   ),
+                //     // ),
+                //     // ...viewModel.stories.reversed.map((story) {
+                //     //   return StoryListCell(story: story);
+                //     // }),
+                //     // const SizedBox(height: 20),
+                //     SwipeTutorial(
+                //       showTutorial: false,
+                //       swipeDirection: SwipeDirection.topToBottom,
+                //       text: "Swipe to the bottom to see more items",
+                //       child: Center(
+                //         child: SizedBox(
+                //           height: 800,
+                //           child: PageView.builder(
+                //             scrollDirection: Axis.horizontal,
+                //             controller: viewModel.pageController,
+                //             padEnds: false,
+                //             itemCount: viewModel.stories.length,
+                //             itemBuilder: (_, index) {
+                //               return StoryListCell(
+                //                 story: viewModel.stories[index],
+                //               );
+                //             },
+                //           ),
+                //         ),
+                //       ),
+                //     ),
+                //   ]),
+                // ),
               ],
             ),
             if (viewModel.isUpdated)
@@ -170,28 +229,13 @@ class LookbookView extends StatelessWidget {
                   ],
                 ),
               ),
-            Align(
-              alignment: Alignment.bottomRight,
-              child: CustomFloatingButton(
-                onTap: () => Routers.goToAddStoryPage(context),
-                src: AIImages.icAddLogo,
-              ),
-            ),
-            // if (viewModel.isBusy) ...{
-            //   SafeArea(
-            //     child: Center(
-            //       child: SizedBox(
-            //         width: 60,
-            //         height: 60,
-            //         child: LoadingIndicator(
-            //           indicatorType: Indicator.ballSpinFadeLoader,
-            //           colors: [AIColors.pink],
-            //           strokeWidth: 2,
-            //         ),
-            //       ),
-            //     ),
+            // Align(
+            //   alignment: Alignment.bottomRight,
+            //   child: CustomFloatingButton(
+            //     onTap: () => Routers.goToAddStoryPage(context),
+            //     src: AIImages.icAddLogo,
             //   ),
-            // },
+            // ),
           ],
         );
       },

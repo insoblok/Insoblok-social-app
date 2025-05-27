@@ -45,7 +45,10 @@ class RoomService {
               .where('uids', isEqualTo: [uid, AuthHelper.user?.uid])
               .get();
       if (roomSnapshot.docs.isEmpty && roomSnapshot1.docs.isEmpty) return null;
-      var doc = roomSnapshot.docs.first;
+      var doc =
+          roomSnapshot.docs.isNotEmpty
+              ? roomSnapshot.docs.first
+              : roomSnapshot1.docs.first;
       var json = doc.data();
       json['id'] = doc.id;
       return RoomModel.fromJson(json);

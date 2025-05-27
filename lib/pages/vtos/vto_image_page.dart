@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:insoblok/extensions/extensions.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 
 import 'package:stacked/stacked.dart';
 
@@ -194,7 +195,6 @@ class VTOResultImageView extends ViewModelWidget<VTOImageProvider> {
               borderRadius: BorderRadius.circular(16.0),
             ),
             child: Stack(
-              fit: StackFit.loose,
               children: [
                 ClipRRect(
                   borderRadius: BorderRadius.circular(16.0),
@@ -215,7 +215,7 @@ class VTOResultImageView extends ViewModelWidget<VTOImageProvider> {
                             ),
                   ),
                 ),
-                if (viewModel.resultModel.isNotEmpty)
+                if (viewModel.resultModel.isNotEmpty) ...{
                   Align(
                     alignment: Alignment.topRight,
                     child: Padding(
@@ -247,6 +247,53 @@ class VTOResultImageView extends ViewModelWidget<VTOImageProvider> {
                       ),
                     ),
                   ),
+                  Positioned(
+                    bottom: 12.0,
+                    left: 0.0,
+                    right: 0.0,
+                    child: Align(
+                      alignment: Alignment.bottomCenter,
+                      child: InkWell(
+                        onTap: viewModel.savetoLookBook,
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12.0,
+                            vertical: 4.0,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Theme.of(
+                              context,
+                            ).primaryColor.withAlpha(172),
+                            borderRadius: BorderRadius.circular(24.0),
+                          ),
+                          child: Text(
+                            viewModel.txtLookbookButton.isEmpty
+                                ? 'Save to LookBook'
+                                : viewModel.txtLookbookButton,
+                            style: TextStyle(
+                              fontSize: 12.0,
+                              color: AIColors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  if (viewModel.txtLookbookButton.isNotEmpty)
+                    Positioned.fill(
+                      child: Center(
+                        child: SizedBox(
+                          width: 60,
+                          height: 60,
+                          child: LoadingIndicator(
+                            indicatorType: Indicator.ballSpinFadeLoader,
+                            colors: [AIColors.pink],
+                            strokeWidth: 2,
+                          ),
+                        ),
+                      ),
+                    ),
+                },
               ],
             ),
           ),

@@ -24,11 +24,29 @@ class StoryProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  final PageController _pageController = PageController();
+  PageController get pageController => _pageController;
+  int _currentPage = 0;
+
   void init(BuildContext context, {required StoryModel model}) async {
     this.context = context;
     story = model;
 
+    _pageController.addListener(() {
+      var currentPage = _pageController.page?.round();
+      if (currentPage != null && currentPage != _currentPage) {
+        _currentPage = currentPage;
+        notifyListeners();
+      }
+    });
+
     fetchUser();
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 
   UserModel? _owner;
