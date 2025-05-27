@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:loading_indicator/loading_indicator.dart';
 
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:stacked/stacked.dart';
 
 import 'package:insoblok/generated/l10n.dart';
-import 'package:insoblok/pages/pages.dart';
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';

@@ -33,3 +33,25 @@ abstract class ProductModel with _$ProductModel {
   factory ProductModel.fromJson(Map<String, dynamic> json) =>
       _$ProductModelFromJson(FirebaseHelper.fromConvertJson(json));
 }
+
+@freezed
+abstract class ProductTribeCategoryModel with _$ProductTribeCategoryModel {
+  @JsonSerializable(fieldRename: FieldRename.snake)
+  factory ProductTribeCategoryModel({
+    String? title,
+    List<ProductSubtypeModel>? subtypes,
+  }) = _ProductTribeCategoryModel;
+
+  factory ProductTribeCategoryModel.fromJson(Map<String, dynamic> json) =>
+      _$ProductTribeCategoryModelFromJson(json);
+}
+
+@freezed
+abstract class ProductSubtypeModel with _$ProductSubtypeModel {
+  @JsonSerializable(fieldRename: FieldRename.snake)
+  factory ProductSubtypeModel({String? title, String? description}) =
+      _ProductSubtypeModel;
+
+  factory ProductSubtypeModel.fromJson(Map<String, dynamic> json) =>
+      _$ProductSubtypeModelFromJson(json);
+}

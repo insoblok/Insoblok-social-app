@@ -1,0 +1,105 @@
+[
+    {
+        "title": "Fashion Tribes",
+        "subtypes": [
+            {
+                "title": "🔸 Streetwear",
+                "description": "Techwear, Sneakerhead, Grailed-core"
+            },
+            {
+                "title": "🔸 Minimalist",
+                "description": "Neutral fits, clean cuts, Scandi style"
+            },
+            {
+                "title": "🔸 Y2K / Nostalgia",
+                "description": "Denim skirts, butterfly clips, vintage"
+            },
+            {
+                "title": "🔸 Alt/Grunge",
+                "description": "Thrifted, metal tees, oversized flannel"
+            },
+            {
+                "title": "🔸 Avant-Garde",
+                "description": "Runway experimental, Rick Owens vibes"
+            },
+            {
+                "title": "🔸 Cottagecore / Boho",
+                "description": "Earth tones, flowy layers, prairie fits"
+            },
+            {
+                "title": "🔸 Urban Luxe",
+                "description": "Ivy League, tennis skirts, polos"
+            },
+            {
+                "title": "🔸 Preppy",
+                "description": "Designer drip + polished aesthetics"
+            },
+            {
+                "title": "🔸 Festival Ready",
+                "description": "Euphoria looks, ravewear, glitter fits"
+            }
+        ]
+    },
+    {
+        "title": "Beauty & Personal Care Tribes",
+        "subtypes": [
+            {
+                "title": "💅 Skincare Junkies",
+                "description": "Serums, glow-ups, ingredient callouts"
+            },
+            {
+                "title": "💋 Soft Glam",
+                "description": "Everyday wearable looks"
+            },
+            {
+                "title": "🎭 Experimental MUA",
+                "description": "SFX, editorial, transformation"
+            },
+            {
+                "title": "💖 Clean Girl",
+                "description": "Dewy, light, minimalist makeup"
+            },
+            {
+                "title": "🧴 K-Beauty Enthusiasts",
+                "description": "Sheet masks, jelly cleansers"
+            },
+            {
+                "title": "✨ Bold Beat Crew",
+                "description": "Dramatic lashes, contour, full glam"
+            },
+            {
+                "title": "🌿 Naturalists",
+                "description": "Organic, no-makeup makeup lovers"
+            }
+        ]
+    },
+    {
+        "title": "Health & Fitness Tribes",
+        "subtypes": [
+            {
+                "title": "🏋️ Gym Bros & Girls",
+                "description": "Muscle fits, bulk/cut progressions"
+            },
+            {
+                "title": "🧘‍♀️ Yoga Flow",
+                "description": "Lululemon aesthetic, breathwork gear"
+            },
+            {
+                "title": "🏃 Runners’ Circle",
+                "description": "Trackwear, compression fits"
+            },
+            {
+                "title": "🥊 Combat Core",
+                "description": "MMA, boxing, Muay Thai apparel"
+            },
+            {
+                "title": "🧃 Wellness Warriors",
+                "description": "Matcha, macro tracking, glow goals"
+            },
+            {
+                "title": "🧗 Functional Movement",
+                "description": "Climbing fits, parkour, barefoot shoes"
+            }
+        ]
+    }
+]

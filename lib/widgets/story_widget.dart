@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+
 import 'package:stacked/stacked.dart';
+
 import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/pages/pages.dart';
@@ -19,7 +21,6 @@ class StoryListCell extends StatelessWidget {
       viewModelBuilder: () => StoryProvider(),
       onViewModelReady: (viewModel) => viewModel.init(context, model: story),
       builder: (context, viewModel, _) {
-        var medias = viewModel.story.medias ?? [];
         return PageView(
           controller: viewModel.pageController,
           scrollDirection: Axis.vertical,
