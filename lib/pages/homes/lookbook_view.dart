@@ -46,15 +46,6 @@ class LookbookView extends StatelessWidget {
                   centerTitle: true,
                   pinned: true,
                   actions: [
-                    // IconButton(
-                    //   onPressed: viewModel.onClickSettingButton,
-                    //   icon: AIImage(
-                    //     AIImages.icSetting,
-                    //     width: 24.0,
-                    //     height: 24.0,
-                    //     color: Theme.of(context).primaryColor,
-                    //   ),
-                    // ),
                     IconButton(
                       onPressed: () => Routers.goToAddStoryPage(context),
                       icon: AIImage(
@@ -82,14 +73,23 @@ class LookbookView extends StatelessWidget {
                   ),
                 } else ...{
                   SliverFillRemaining(
-                    child: PageView.builder(
-                      scrollDirection: Axis.horizontal,
-                      controller: viewModel.pageController,
-                      padEnds: false,
-                      itemCount: viewModel.stories.length,
-                      itemBuilder: (_, index) {
-                        return StoryListCell(story: viewModel.stories[index]);
-                      },
+                    child: Column(
+                      children: [
+                        // AITabBarView(onTap: (i) => logger.d(i)),
+                        Expanded(
+                          child: PageView.builder(
+                            scrollDirection: Axis.horizontal,
+                            controller: viewModel.pageController,
+                            padEnds: false,
+                            itemCount: viewModel.stories.length,
+                            itemBuilder: (_, index) {
+                              return StoryListCell(
+                                story: viewModel.stories[index],
+                              );
+                            },
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 },

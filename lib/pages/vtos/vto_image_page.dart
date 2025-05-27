@@ -90,6 +90,29 @@ class VTOImagePage extends StatelessWidget {
                             VTOResultImageView(),
                           ],
                         ),
+                        if (viewModel.resultModel.isNotEmpty) ...{
+                          Container(
+                            padding: const EdgeInsets.only(
+                              left: 12.0,
+                              right: 12.0,
+                            ),
+                            child: ConstrainedBox(
+                              constraints: BoxConstraints(maxHeight: 100.0),
+                              child: TextFormField(
+                                decoration: InputDecoration(
+                                  hintText: 'Add Description',
+                                  border: InputBorder.none,
+                                ),
+                                style: Theme.of(context).textTheme.bodySmall,
+                                maxLines: null,
+                                controller: viewModel.textController,
+                                onChanged: (value) => viewModel.content = value,
+                                onFieldSubmitted: (value) {},
+                                onSaved: (value) {},
+                              ),
+                            ),
+                          ),
+                        },
                         const SizedBox(height: 24.0),
                         TextFillButton(
                           text: 'Convert Now',

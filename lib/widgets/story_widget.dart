@@ -19,7 +19,6 @@ class StoryListCell extends StatelessWidget {
       viewModelBuilder: () => StoryProvider(),
       onViewModelReady: (viewModel) => viewModel.init(context, model: story),
       builder: (context, viewModel, _) {
-        var medias = viewModel.story.medias ?? [];
         return PageView(
           controller: viewModel.pageController,
           scrollDirection: Axis.vertical,
@@ -193,6 +192,7 @@ class StoryContentPage extends StatelessWidget {
             return [];
           },
           body: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
               Container(
                 padding: const EdgeInsets.symmetric(
