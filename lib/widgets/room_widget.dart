@@ -67,7 +67,7 @@ class RoomItemView extends StatelessWidget {
                           ),
                           const SizedBox(width: 8.0),
                           Text(
-                            room.timestamp?.timeago ?? '---',
+                            room.timestamp?.timeago ?? '',
                             style: TextStyle(
                               fontSize: 10.0,
                               color: AIColors.grey,
@@ -77,7 +77,8 @@ class RoomItemView extends StatelessWidget {
                         ],
                       ),
                       Text(
-                        '${room.content}',
+                        // room.content ?? '@${room.uid}',
+                        room.content ?? 'New User',
                         style: TextStyle(
                           fontSize: 12.0,
                           color: AIColors.grey,
@@ -87,11 +88,6 @@ class RoomItemView extends StatelessWidget {
                     ],
                   ),
                 ),
-                // const SizedBox(width: 8.0),
-                // Text(
-                //   room.timestamp?.timeago ?? '---',
-                //   style: Theme.of(context).textTheme.labelLarge,
-                // ),
               ],
             ),
           ),

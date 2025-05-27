@@ -80,7 +80,11 @@ class MessageProvider extends InSoBlokViewModel {
     messageService.getMessages(room.id!).listen((messages) {
       this.messages = messages;
       Future.delayed(const Duration(milliseconds: 200), () {
-        scrollController.jumpTo(scrollController.position.maxScrollExtent);
+        try {
+          scrollController.jumpTo(scrollController.position.maxScrollExtent);
+        } catch (e) {
+          logger.e(e);
+        }
       });
     });
 

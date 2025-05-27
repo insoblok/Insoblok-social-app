@@ -13,7 +13,7 @@ class StoryService {
     var storiesSnapshot =
         await _firestore
             .collection('story')
-            .orderBy('timestamp', descending: false)
+            .orderBy('timestamp', descending: true)
             .get();
     for (var doc in storiesSnapshot.docs) {
       try {
