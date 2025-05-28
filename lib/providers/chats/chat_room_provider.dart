@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:fluttertoast/fluttertoast.dart';
 
-import 'package:insoblok/generated/l10n.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
@@ -114,7 +113,7 @@ class CreateRoomProvider extends InSoBlokViewModel {
                   Row(
                     children: [
                       Text(
-                        S.current.create_room,
+                        "Create Room",
                         style: TextStyle(
                           fontSize: 18.0,
                           color: AIColors.white,
@@ -130,7 +129,7 @@ class CreateRoomProvider extends InSoBlokViewModel {
                   ),
                   const SizedBox(height: 24.0),
                   Text(
-                    S.current.create_room_confirm,
+                    "Are you sure want to chat with the selected user?",
                     style: TextStyle(fontSize: 16.0, color: AIColors.white),
                   ),
                   const SizedBox(height: 24.0),
@@ -161,11 +160,10 @@ class CreateRoomProvider extends InSoBlokViewModel {
           var room = RoomModel(
             uid: AuthHelper.user?.uid,
             uids: [AuthHelper.user?.uid, user.uid],
-            content:
-                '${AuthHelper.user?.firstName} ${S.current.create_room_message}',
+            content: '${AuthHelper.user?.firstName} have created a room',
           );
           await roomService.createRoom(room);
-          Fluttertoast.showToast(msg: S.current.create_room_alert);
+          Fluttertoast.showToast(msg: "Successfully Create Room!");
         }
         Navigator.of(context).pop();
       } catch (e) {

@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:fluttertoast/fluttertoast.dart';
 
-import 'package:insoblok/generated/l10n.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/pages/pages.dart';
 import 'package:insoblok/routers/routers.dart';
@@ -100,7 +99,7 @@ class AccountProvider extends InSoBlokViewModel {
             var room = RoomModel(
               uid: user?.uid,
               uids: [user?.uid, accountUser?.uid],
-              content: '${user?.firstName} ${S.current.create_room_message}',
+              content: '${user?.firstName} have created a room',
             );
             logger.d(room.toJson());
             await roomService.createRoom(room);
