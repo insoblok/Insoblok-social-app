@@ -34,6 +34,9 @@ _ProductModel _$ProductModelFromJson(Map<String, dynamic> json) =>
       timestamp: json['timestamp'] == null
           ? null
           : DateTime.parse(json['timestamp'] as String),
+      medias: (json['medias'] as List<dynamic>?)
+          ?.map((e) => MediaStoryModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$ProductModelToJson(_ProductModel instance) =>
@@ -57,6 +60,7 @@ Map<String, dynamic> _$ProductModelToJson(_ProductModel instance) =>
       'selles': instance.selles,
       'regdate': instance.regdate?.toIso8601String(),
       'timestamp': instance.timestamp?.toIso8601String(),
+      'medias': instance.medias,
     };
 
 _ProductTribeCategoryModel _$ProductTribeCategoryModelFromJson(

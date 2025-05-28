@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-import 'package:loading_indicator/loading_indicator.dart';
 import 'package:stacked/stacked.dart';
 
 import 'package:insoblok/extensions/extensions.dart';
@@ -42,59 +41,75 @@ class VTOImagePage extends StatelessWidget {
                   ),
                   const SizedBox(height: 12.0),
                   Row(
+                    spacing: 12.0,
                     children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8.0,
-                          vertical: 4.0,
+                      Expanded(
+                        child: InkWell(
+                          onTap: () => viewModel.tagIndex = 0,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(vertical: 12.0),
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              border:
+                                  viewModel.tagIndex == 0
+                                      ? Border(
+                                        bottom: BorderSide(
+                                          width: 2.0,
+                                          color: AIColors.pink,
+                                        ),
+                                      )
+                                      : null,
+                            ),
+                            child: Text(
+                              'Information',
+                              style:
+                                  viewModel.tagIndex == 0
+                                      ? Theme.of(context).textTheme.bodyMedium
+                                      : Theme.of(context).textTheme.labelLarge,
+                            ),
+                          ),
                         ),
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).primaryColor,
-                          borderRadius: BorderRadius.circular(24.0),
-                        ),
-                        child: Text(product.categoryName ?? ''),
                       ),
-                      const Spacer(),
-                      Text(
-                        product.regdate?.timeago ?? '',
-                        style: Theme.of(context).textTheme.labelSmall,
+                      Expanded(
+                        child: InkWell(
+                          onTap: () => viewModel.tagIndex = 1,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(vertical: 12.0),
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              border:
+                                  viewModel.tagIndex == 1
+                                      ? Border(
+                                        bottom: BorderSide(
+                                          width: 2.0,
+                                          color: AIColors.pink,
+                                        ),
+                                      )
+                                      : null,
+                            ),
+                            child: Text(
+                              'Uesr Gallery(s)',
+                              style:
+                                  viewModel.tagIndex == 1
+                                      ? Theme.of(context).textTheme.bodyMedium
+                                      : Theme.of(context).textTheme.labelLarge,
+                            ),
+                          ),
+                        ),
                       ),
                     ],
                   ),
-                  if ((viewModel.product.tags ?? []).isNotEmpty) ...{
-                    const SizedBox(height: 12.0),
-                    Wrap(
-                      spacing: 12.0,
-                      runSpacing: 8.0,
-                      children: [
-                        for (var tag in viewModel.product.tags ?? []) ...{
-                          Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 8.0,
-                              vertical: 4.0,
-                            ),
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                color: Theme.of(context).primaryColor,
-                                width: 0.33,
-                              ),
-                              borderRadius: BorderRadius.circular(24.0),
-                            ),
-                            child: Text(
-                              tag,
-                              style: Theme.of(context).textTheme.bodySmall,
-                            ),
-                          ),
-                        },
-                      ],
-                    ),
-                  },
-                  const SizedBox(height: 12.0),
-                  AIHelpers.htmlRender(product.description),
+
+                  viewModel.tagIndex == 0
+                      ? VTOInformationView()
+                      : VTOGalleryView(),
                   const SizedBox(height: 24.0),
-                  Text(
-                    'Take a Model',
-                    style: Theme.of(context).textTheme.titleSmall,
+                  Padding(
+                    padding: const EdgeInsets.only(left: 8.0),
+                    child: Text(
+                      'Take a Model',
+                      style: Theme.of(context).textTheme.titleSmall,
+                    ),
                   ),
                   const SizedBox(height: 8.0),
                   Container(
@@ -119,9 +134,15 @@ class VTOImagePage extends StatelessWidget {
                         ),
                         const SizedBox(height: 24.0),
                         TextFillButton(
-                          text: 'Convert Now',
+                          text:
+                              viewModel.serverUrl != null
+                                  ? 'Save to LookBook'
+                                  : 'Convert Now',
                           isBusy: viewModel.isConverting,
-                          onTap: viewModel.onClickConvert,
+                          onTap:
+                              viewModel.serverUrl != null
+                                  ? viewModel.savetoLookBook
+                                  : viewModel.onClickConvert,
                           color: Theme.of(context).primaryColor,
                         ),
                       ],
@@ -186,7 +207,7 @@ class VTOOriginImageView extends ViewModelWidget<VTOImageProvider> {
                   ),
                 ),
                 if ((viewModel.selectedFile != null) &&
-                    (viewModel.resultModel.isEmpty))
+                    (viewModel.serverUrl == null))
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: CircleImageButton(
@@ -228,9 +249,9 @@ class VTOResultImageView extends ViewModelWidget<VTOImageProvider> {
                   child: AspectRatio(
                     aspectRatio: 0.7,
                     child:
-                        viewModel.resultModel.isNotEmpty
+                        viewModel.serverUrl != null
                             ? AIImage(
-                              viewModel.resultModel,
+                              viewModel.serverUrl,
                               width: double.infinity,
                               fit: BoxFit.cover,
                             )
@@ -242,7 +263,7 @@ class VTOResultImageView extends ViewModelWidget<VTOImageProvider> {
                             ),
                   ),
                 ),
-                if (viewModel.resultModel.isNotEmpty) ...{
+                if (viewModel.serverUrl != null) ...{
                   Align(
                     alignment: Alignment.topRight,
                     child: Padding(
@@ -255,77 +276,132 @@ class VTOResultImageView extends ViewModelWidget<VTOImageProvider> {
                             src: Icons.fullscreen,
                             onTap:
                                 () => AIHelpers.goToDetailView(context, [
-                                  viewModel.resultModel,
+                                  viewModel.serverUrl!,
                                 ]),
                           ),
                           CircleImageButton(
                             src: Icons.share,
                             onTap: viewModel.onClickShareButton,
                           ),
-                          CircleImageButton(
-                            src: Icons.download,
-                            onTap: viewModel.onClickDownloadButton,
-                          ),
-                          CircleImageButton(
-                            src: Icons.upload,
-                            onTap: viewModel.onClickUploadButton,
-                          ),
                         ],
                       ),
                     ),
                   ),
-                  Positioned(
-                    bottom: 12.0,
-                    left: 0.0,
-                    right: 0.0,
-                    child: Align(
-                      alignment: Alignment.bottomCenter,
-                      child: InkWell(
-                        onTap: viewModel.savetoLookBook,
-                        child: Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12.0,
-                            vertical: 4.0,
-                          ),
-                          decoration: BoxDecoration(
-                            color: Theme.of(
-                              context,
-                            ).primaryColor.withAlpha(172),
-                            borderRadius: BorderRadius.circular(24.0),
-                          ),
-                          child: Text(
-                            viewModel.txtLookbookButton.isEmpty
-                                ? 'Save to LookBook'
-                                : viewModel.txtLookbookButton,
-                            style: TextStyle(
-                              fontSize: 12.0,
-                              color: AIColors.white,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  if (viewModel.txtLookbookButton.isNotEmpty)
-                    Positioned.fill(
-                      child: Center(
-                        child: SizedBox(
-                          width: 60,
-                          height: 60,
-                          child: LoadingIndicator(
-                            indicatorType: Indicator.ballSpinFadeLoader,
-                            colors: [AIColors.pink],
-                            strokeWidth: 2,
-                          ),
-                        ),
-                      ),
-                    ),
                 },
               ],
             ),
           ),
         ],
       ),
+    );
+  }
+}
+
+class VTOInformationView extends ViewModelWidget<VTOImageProvider> {
+  const VTOInformationView({super.key});
+
+  @override
+  Widget build(BuildContext context, viewModel) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const SizedBox(height: 24.0),
+        Row(
+          children: [
+            Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 8.0,
+                vertical: 4.0,
+              ),
+              decoration: BoxDecoration(
+                color: Theme.of(context).primaryColor,
+                borderRadius: BorderRadius.circular(24.0),
+              ),
+              child: Text(viewModel.product.categoryName ?? ''),
+            ),
+            const Spacer(),
+            Text(
+              viewModel.product.regdate?.timeago ?? '',
+              style: Theme.of(context).textTheme.labelSmall,
+            ),
+          ],
+        ),
+        if ((viewModel.product.tags ?? []).isNotEmpty) ...{
+          const SizedBox(height: 12.0),
+          Wrap(
+            spacing: 12.0,
+            runSpacing: 8.0,
+            children: [
+              for (var tag in viewModel.product.tags ?? []) ...{
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8.0,
+                    vertical: 4.0,
+                  ),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Theme.of(context).primaryColor,
+                      width: 0.33,
+                    ),
+                    borderRadius: BorderRadius.circular(24.0),
+                  ),
+                  child: Text(
+                    tag,
+                    style: Theme.of(context).textTheme.bodySmall,
+                  ),
+                ),
+              },
+            ],
+          ),
+        },
+        const SizedBox(height: 12.0),
+        AIHelpers.htmlRender(viewModel.product.description),
+      ],
+    );
+  }
+}
+
+class VTOGalleryView extends ViewModelWidget<VTOImageProvider> {
+  const VTOGalleryView({super.key});
+
+  @override
+  Widget build(BuildContext context, viewModel) {
+    List<MediaStoryModel> medias = viewModel.product.medias ?? [];
+    logger.d(medias.length);
+
+    return SizedBox(
+      height: 180.0 + 16.0,
+      child:
+          medias.isEmpty
+              ? Center(
+                child: Text(
+                  'Not have any gallery image yet!',
+                  style: Theme.of(context).textTheme.labelMedium,
+                ),
+              )
+              : SingleChildScrollView(
+                padding: const EdgeInsets.symmetric(vertical: 8.0),
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  spacing: 8.0,
+                  children: [
+                    for (MediaStoryModel gallery in medias) ...{
+                      Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Theme.of(context).primaryColor,
+                          ),
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(8.0),
+                          child: AIImage(gallery.link, height: double.infinity),
+                        ),
+                      ),
+                    },
+                  ],
+                ),
+              ),
     );
   }
 }

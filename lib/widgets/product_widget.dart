@@ -98,7 +98,29 @@ class ProductItemWidget extends StatelessWidget {
             children: [
               AspectRatio(
                 aspectRatio: 1,
-                child: AIImage(product.avatarImage ?? product.modelImage),
+                child: Stack(
+                  children: [
+                    AIImage(
+                      product.avatarImage ?? product.modelImage,
+                      width: double.infinity,
+                      height: double.infinity,
+                    ),
+                    if (product.avatarImage == null &&
+                        (product.medias?.isNotEmpty ?? false))
+                      Positioned(
+                        right: 4.0,
+                        bottom: 4.0,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(8.0),
+                          child: AIImage(
+                            product.medias?.first.link,
+                            width: 80.0,
+                            height: 100.0,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
               ),
               const SizedBox(height: 4.0),
               Padding(

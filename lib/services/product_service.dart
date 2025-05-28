@@ -60,9 +60,20 @@ class ProductService {
   // Add a product
   Future<void> addProduct({required ProductModel product}) async {
     await _firestore.collection('product').add({
-      ...product.toJson().toFirebaseJson,
+      ...product.toMap().toFirebaseJson,
       'uid': AuthHelper.user?.uid,
       'timestamp': FieldValue.serverTimestamp(),
+      'regdate': FieldValue.serverTimestamp(),
+    });
+  }
+
+  // update a product
+  Future<void> updateProduct({
+    required String id,
+    required ProductModel product,
+  }) async {
+    await _firestore.collection('product').doc(id).update({
+      ...product.toMap().toFirebaseJson,
       'regdate': FieldValue.serverTimestamp(),
     });
   }

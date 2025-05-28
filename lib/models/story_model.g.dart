@@ -15,6 +15,7 @@ _StoryModel _$StoryModelFromJson(Map<String, dynamic> json) => _StoryModel(
           ? null
           : DateTime.parse(json['regdate'] as String),
       status: json['status'] as String?,
+      category: json['category'] as String?,
       timestamp: json['timestamp'] == null
           ? null
           : DateTime.parse(json['timestamp'] as String),
@@ -38,6 +39,7 @@ Map<String, dynamic> _$StoryModelToJson(_StoryModel instance) =>
       'text': instance.text,
       'regdate': instance.regdate?.toIso8601String(),
       'status': instance.status,
+      'category': instance.category,
       'timestamp': instance.timestamp?.toIso8601String(),
       'medias': instance.medias,
       'likes': instance.likes,

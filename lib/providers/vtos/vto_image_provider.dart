@@ -23,7 +23,15 @@ class VTOImageProvider extends InSoBlokViewModel {
   void init(BuildContext context, {required ProductModel p}) async {
     this.context = context;
     product = p;
+    logger.d(p.toJson());
     _mediaPickerService = MediaPickerService(this.context);
+  }
+
+  int _tagIndex = 0;
+  int get tagIndex => _tagIndex;
+  set tagIndex(int i) {
+    _tagIndex = i;
+    notifyListeners();
   }
 
   XFile? _selectedFile;
@@ -58,13 +66,6 @@ class VTOImageProvider extends InSoBlokViewModel {
     }
   }
 
-  String _resultModel = '';
-  String get resultModel => _resultModel;
-  set resultModel(String s) {
-    _resultModel = s;
-    notifyListeners();
-  }
-
   bool _isConverting = false;
   bool get isConverting => _isConverting;
   set isConverting(bool f) {
@@ -89,6 +90,22 @@ class VTOImageProvider extends InSoBlokViewModel {
     }
   }
 
+  String? _originUrl;
+  String? get originUrl => _originUrl;
+  set originUrl(String? s) {
+    _originUrl = s;
+    notifyListeners();
+  }
+
+  File? _resultFile;
+
+  String? _serverUrl;
+  String? get serverUrl => _serverUrl;
+  set serverUrl(String? s) {
+    _serverUrl = s;
+    notifyListeners();
+  }
+
   Future<void> _clothingConvert() async {
     if (selectedFile == null) {
       AIHelpers.showToast(msg: 'Please select a origin photo!');
@@ -101,14 +118,55 @@ class VTOImageProvider extends InSoBlokViewModel {
     await runBusyFuture(() async {
       try {
         isConverting = true;
-        var result = await VTOService.convertVTOClothing(
-          path: selectedFile!.path,
-          clothingLink: product.modelImage,
-          clothingType: product.type ?? 'tops',
+        originUrl = await FirebaseHelper.uploadFile(
+          file: File(selectedFile!.path),
           folderName: product.categoryName?.toLowerCase() ?? 'clothing',
         );
-        if (result != null) {
-          resultModel = result;
+
+        if (originUrl == null) {
+          throw ('Failed origin image uploaded!');
+        }
+
+        var resultUrl = await VTOService.convertVTOClothing(
+          modelUrl: originUrl!,
+          clothingLink: product.modelImage,
+          clothingType: product.type ?? 'tops',
+        );
+        if (resultUrl == null) {
+          throw ('Failed AI Convertor!');
+        }
+
+        _resultFile = await NetworkHelper.downloadFile(
+          resultUrl,
+          type: 'gallery',
+          ext: 'png',
+        );
+        if (_resultFile == null) {
+          throw ('Failed result file downloaded!');
+        }
+
+        var path = await FirebaseHelper.uploadFile(
+          file: _resultFile!,
+          folderName: 'gallery',
+        );
+
+        if (path != null) {
+          serverUrl = path;
+
+          List<MediaStoryModel> medias = [];
+          medias.addAll(product.medias ?? []);
+
+          if (!medias.map((m) => m.link).toList().contains(serverUrl)) {
+            medias.insert(0, MediaStoryModel(link: serverUrl, type: 'image'));
+            logger.d(medias.length);
+            product = product.copyWith(medias: medias);
+            await productService.updateProduct(
+              id: product.id!,
+              product: product,
+            );
+          }
+        } else {
+          throw ('Failed server error!');
         }
       } catch (e) {
         setError(e);
@@ -191,74 +249,8 @@ class VTOImageProvider extends InSoBlokViewModel {
     }
   }
 
-  File? _resultFile;
-
-  Future<void> onClickDownloadButton() async {
-    if (isBusy) return;
-    clearErrors();
-
-    await runBusyFuture(() async {
-      try {
-        if (_resultFile == null) {
-          var file = await NetworkHelper.downloadFile(
-            resultModel,
-            type: 'gallery',
-            ext: 'png',
-          );
-          if (file != null) {
-            AIHelpers.showToast(
-              msg: 'Successfully image download to ${file.path}!',
-            );
-            _resultFile = file;
-          }
-        } else {
-          AIHelpers.showToast(
-            msg: 'Successfully image download to ${_resultFile!.path}!',
-          );
-        }
-      } catch (e) {
-        setError(e);
-        logger.e(e);
-      } finally {
-        notifyListeners();
-      }
-    }());
-
-    if (hasError) {
-      AIHelpers.showToast(msg: modelError.toString());
-    }
-  }
-
-  Future<void> onClickUploadButton() async {
-    if (isBusy) return;
-    clearErrors();
-
-    await runBusyFuture(() async {
-      try {
-        if (_resultFile == null) {
-          await onClickDownloadButton();
-        }
-        var path = await FirebaseHelper.uploadFile(
-          file: _resultFile!,
-          folderName: 'gallery',
-        );
-        if (path != null) {
-          AIHelpers.showToast(msg: 'Successfully image upload to server!');
-        } else {
-          setError('Failed server error!');
-        }
-      } catch (e) {
-        setError(e);
-        logger.e(e);
-      } finally {
-        notifyListeners();
-      }
-    }());
-
-    if (hasError) {
-      AIHelpers.showToast(msg: modelError.toString());
-    }
-  }
+  final _productService = ProductService();
+  ProductService get productService => _productService;
 
   Future<void> onClickShareButton() async {
     if (isBusy) return;
@@ -266,9 +258,6 @@ class VTOImageProvider extends InSoBlokViewModel {
 
     await runBusyFuture(() async {
       try {
-        if (_resultFile == null) {
-          await onClickDownloadButton();
-        }
         await AIHelpers.shareFileToSocial(_resultFile!.path);
       } catch (e) {
         setError(e);
@@ -286,53 +275,30 @@ class VTOImageProvider extends InSoBlokViewModel {
   final _storyService = StoryService();
   StoryService get storyService => _storyService;
 
-  String _txtLookbookButton = '';
-  String get txtLookbookButton => _txtLookbookButton;
-  set txtLookbookButton(String s) {
-    _txtLookbookButton = s;
-    notifyListeners();
-  }
-
   Future<void> savetoLookBook() async {
     if (isBusy) return;
     clearErrors();
 
+    isConverting = true;
+
     await runBusyFuture(() async {
       try {
-        if (_resultFile == null) {
-          var file = await NetworkHelper.downloadFile(
-            resultModel,
-            type: 'gallery',
-            ext: 'png',
-          );
-          if (file != null) {
-            _resultFile = file;
-          }
-        }
-        txtLookbookButton = 'Uploading Media...';
-        var mediaUrl = await FirebaseHelper.uploadFile(
-          file: _resultFile!,
-          folderName: 'story',
+        var story = StoryModel(
+          title: 'Virtual Try-On',
+          text: 'Virtual Try-On',
+          medias: [
+            MediaStoryModel(link: originUrl!, type: 'image'),
+            MediaStoryModel(link: serverUrl, type: 'image'),
+          ],
         );
-        if (mediaUrl != null) {
-          txtLookbookButton = 'Adding to Server...';
-          var story = StoryModel(
-            title: 'Virtual Try-On',
-            text: 'Virtual Try-On',
-            medias: [MediaStoryModel(link: mediaUrl, type: 'image')],
-          );
-          await storyService.postStory(story: story);
+        await storyService.postStory(story: story);
 
-          AIHelpers.showToast(msg: 'Successfully posted VTO to Lookbook!');
-        } else {
-          setError('Failed file upload!');
-        }
+        AIHelpers.showToast(msg: 'Successfully posted VTO to Lookbook!');
       } catch (e, s) {
         setError(e);
         logger.e(e, stackTrace: s);
       } finally {
-        txtLookbookButton = '';
-        notifyListeners();
+        isConverting = false;
       }
     }());
 

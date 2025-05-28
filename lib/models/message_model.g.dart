@@ -12,10 +12,9 @@ _MessageModel _$MessageModelFromJson(Map<String, dynamic> json) =>
       content: json['content'] as String?,
       senderId: json['sender_id'] as String?,
       senderName: json['sender_name'] as String?,
-      timestamp:
-          json['timestamp'] == null
-              ? null
-              : DateTime.parse(json['timestamp'] as String),
+      timestamp: json['timestamp'] == null
+          ? null
+          : DateTime.parse(json['timestamp'] as String),
       url: json['url'] as String?,
       type: json['type'] as String?,
       isRead: json['is_read'] as String?,

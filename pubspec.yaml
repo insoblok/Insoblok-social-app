@@ -64,7 +64,7 @@ dependencies:
 
   dio: any
   path_provider: any
-  # reown_appkit: ^1.4.3+1
+  reown_appkit: ^1.4.3+1
   google_sign_in: any
   smooth_page_indicator: any
 
@@ -77,9 +77,6 @@ dev_dependencies:
   freezed: any
   build_runner: any
   web3dart_builders: any
-
-# dependency_overrides:
-#   intl: ^0.20.1
 
 flutter:
   uses-material-design: true

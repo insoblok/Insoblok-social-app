@@ -15,6 +15,7 @@ abstract class StoryModel with _$StoryModel {
     String? text,
     DateTime? regdate,
     String? status,
+    String? category,
     DateTime? timestamp,
     List<MediaStoryModel>? medias,
     List<String>? likes,

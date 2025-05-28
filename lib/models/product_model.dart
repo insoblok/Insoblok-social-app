@@ -1,5 +1,6 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
 
 part 'product_model.freezed.dart';
@@ -28,6 +29,7 @@ abstract class ProductModel with _$ProductModel {
     int? selles,
     DateTime? regdate,
     DateTime? timestamp,
+    List<MediaStoryModel>? medias,
   }) = _ProductModel;
 
   factory ProductModel.fromJson(Map<String, dynamic> json) =>

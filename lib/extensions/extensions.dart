@@ -5,3 +5,4 @@ export 'int.dart';
 export 'string.dart';
 export 'news_extension.dart';
 export 'post_extension.dart';
+export 'product_extension.dart';

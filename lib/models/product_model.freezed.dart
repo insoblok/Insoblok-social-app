@@ -34,6 +34,7 @@ mixin _$ProductModel {
   int? get selles;
   DateTime? get regdate;
   DateTime? get timestamp;
+  List<MediaStoryModel>? get medias;
 
   /// Create a copy of ProductModel
   /// with the given fields replaced by the non-null parameter values.
@@ -77,7 +78,8 @@ mixin _$ProductModel {
             (identical(other.selles, selles) || other.selles == selles) &&
             (identical(other.regdate, regdate) || other.regdate == regdate) &&
             (identical(other.timestamp, timestamp) ||
-                other.timestamp == timestamp));
+                other.timestamp == timestamp) &&
+            const DeepCollectionEquality().equals(other.medias, medias));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -102,12 +104,13 @@ mixin _$ProductModel {
         const DeepCollectionEquality().hash(rates),
         selles,
         regdate,
-        timestamp
+        timestamp,
+        const DeepCollectionEquality().hash(medias)
       ]);
 
   @override
   String toString() {
-    return 'ProductModel(id: $id, name: $name, description: $description, tags: $tags, avatarImage: $avatarImage, modelImage: $modelImage, oldPrice: $oldPrice, price: $price, off: $off, delivery: $delivery, category: $category, categoryName: $categoryName, type: $type, uid: $uid, likes: $likes, rates: $rates, selles: $selles, regdate: $regdate, timestamp: $timestamp)';
+    return 'ProductModel(id: $id, name: $name, description: $description, tags: $tags, avatarImage: $avatarImage, modelImage: $modelImage, oldPrice: $oldPrice, price: $price, off: $off, delivery: $delivery, category: $category, categoryName: $categoryName, type: $type, uid: $uid, likes: $likes, rates: $rates, selles: $selles, regdate: $regdate, timestamp: $timestamp, medias: $medias)';
   }
 }
 
@@ -136,7 +139,8 @@ abstract mixin class $ProductModelCopyWith<$Res> {
       List<int>? rates,
       int? selles,
       DateTime? regdate,
-      DateTime? timestamp});
+      DateTime? timestamp,
+      List<MediaStoryModel>? medias});
 }
 
 /// @nodoc
@@ -170,6 +174,7 @@ class _$ProductModelCopyWithImpl<$Res> implements $ProductModelCopyWith<$Res> {
     Object? selles = freezed,
     Object? regdate = freezed,
     Object? timestamp = freezed,
+    Object? medias = freezed,
   }) {
     return _then(_self.copyWith(
       id: freezed == id
@@ -248,6 +253,10 @@ class _$ProductModelCopyWithImpl<$Res> implements $ProductModelCopyWith<$Res> {
           ? _self.timestamp
           : timestamp // ignore: cast_nullable_to_non_nullable
               as DateTime?,
+      medias: freezed == medias
+          ? _self.medias
+          : medias // ignore: cast_nullable_to_non_nullable
+              as List<MediaStoryModel>?,
     ));
   }
 }
@@ -275,10 +284,12 @@ class _ProductModel implements ProductModel {
       final List<int>? rates,
       this.selles,
       this.regdate,
-      this.timestamp})
+      this.timestamp,
+      final List<MediaStoryModel>? medias})
       : _tags = tags,
         _likes = likes,
-        _rates = rates;
+        _rates = rates,
+        _medias = medias;
   factory _ProductModel.fromJson(Map<String, dynamic> json) =>
       _$ProductModelFromJson(json);
 
@@ -344,6 +355,15 @@ class _ProductModel implements ProductModel {
   final DateTime? regdate;
   @override
   final DateTime? timestamp;
+  final List<MediaStoryModel>? _medias;
+  @override
+  List<MediaStoryModel>? get medias {
+    final value = _medias;
+    if (value == null) return null;
+    if (_medias is EqualUnmodifiableListView) return _medias;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
 
   /// Create a copy of ProductModel
   /// with the given fields replaced by the non-null parameter values.
@@ -391,7 +411,8 @@ class _ProductModel implements ProductModel {
             (identical(other.selles, selles) || other.selles == selles) &&
             (identical(other.regdate, regdate) || other.regdate == regdate) &&
             (identical(other.timestamp, timestamp) ||
-                other.timestamp == timestamp));
+                other.timestamp == timestamp) &&
+            const DeepCollectionEquality().equals(other._medias, _medias));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -416,12 +437,13 @@ class _ProductModel implements ProductModel {
         const DeepCollectionEquality().hash(_rates),
         selles,
         regdate,
-        timestamp
+        timestamp,
+        const DeepCollectionEquality().hash(_medias)
       ]);
 
   @override
   String toString() {
-    return 'ProductModel(id: $id, name: $name, description: $description, tags: $tags, avatarImage: $avatarImage, modelImage: $modelImage, oldPrice: $oldPrice, price: $price, off: $off, delivery: $delivery, category: $category, categoryName: $categoryName, type: $type, uid: $uid, likes: $likes, rates: $rates, selles: $selles, regdate: $regdate, timestamp: $timestamp)';
+    return 'ProductModel(id: $id, name: $name, description: $description, tags: $tags, avatarImage: $avatarImage, modelImage: $modelImage, oldPrice: $oldPrice, price: $price, off: $off, delivery: $delivery, category: $category, categoryName: $categoryName, type: $type, uid: $uid, likes: $likes, rates: $rates, selles: $selles, regdate: $regdate, timestamp: $timestamp, medias: $medias)';
   }
 }
 
@@ -452,7 +474,8 @@ abstract mixin class _$ProductModelCopyWith<$Res>
       List<int>? rates,
       int? selles,
       DateTime? regdate,
-      DateTime? timestamp});
+      DateTime? timestamp,
+      List<MediaStoryModel>? medias});
 }
 
 /// @nodoc
@@ -487,6 +510,7 @@ class __$ProductModelCopyWithImpl<$Res>
     Object? selles = freezed,
     Object? regdate = freezed,
     Object? timestamp = freezed,
+    Object? medias = freezed,
   }) {
     return _then(_ProductModel(
       id: freezed == id
@@ -565,6 +589,10 @@ class __$ProductModelCopyWithImpl<$Res>
           ? _self.timestamp
           : timestamp // ignore: cast_nullable_to_non_nullable
               as DateTime?,
+      medias: freezed == medias
+          ? _self._medias
+          : medias // ignore: cast_nullable_to_non_nullable
+              as List<MediaStoryModel>?,
     ));
   }
 }
