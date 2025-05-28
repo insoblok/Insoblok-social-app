@@ -16,25 +16,6 @@ class LookbookView extends StatelessWidget {
       viewModelBuilder: () => LookbookProvider(),
       onViewModelReady: (viewModel) => viewModel.init(context),
       builder: (context, viewModel, _) {
-        // return SwipeTutorial(
-        //   showTutorial: false,
-        //   swipeDirection: SwipeDirection.topToBottom,
-        //   text: "Swipe to the bottom to see more items",
-        //   child: Center(
-        //     child: SizedBox(
-        //       height: 500,
-        //       child: PageView.builder(
-        //         scrollDirection: Axis.vertical,
-        //         controller: viewModel.pageController,
-        //         padEnds: false,
-        //         itemCount: viewModel.stories.length,
-        //         itemBuilder: (_, index) {
-        //           return StoryListCell(story: viewModel.stories[index]);
-        //         },
-        //       ),
-        //     ),
-        //   ),
-        // );
         return Stack(
           children: [
             CustomScrollView(
