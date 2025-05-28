@@ -86,6 +86,7 @@ class StoryListCell extends StatelessWidget {
                           borderRadius: BorderRadius.circular(12.0),
                           child: StoryCarouselView(
                             story: story,
+                            height: double.infinity,
                             onChangePage:
                                 (index) => viewModel.pageIndex = index,
                           ),
@@ -194,6 +195,7 @@ class StoryContentPage extends StatelessWidget {
             return [];
           },
           body: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
               Container(
                 padding: const EdgeInsets.symmetric(
@@ -208,40 +210,7 @@ class StoryContentPage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Row(
-                        //   children: [
-                        //     ClipOval(
-                        //       child: AIAvatarImage(
-                        //         viewModel.owner?.avatar,
-                        //         width: kStoryDetailAvatarSize,
-                        //         height: kStoryDetailAvatarSize,
-                        //         textSize: 24,
-                        //         fullname: viewModel.owner?.fullName ?? '---',
-                        //       ),
-                        //     ),
-                        //     const SizedBox(width: 8.0),
-                        //     Column(
-                        //       mainAxisSize: MainAxisSize.min,
-                        //       crossAxisAlignment: CrossAxisAlignment.start,
-                        //       children: [
-                        //         Text(
-                        //           viewModel.owner?.fullName ?? '---',
-                        //           style: Theme.of(context).textTheme.bodyMedium,
-                        //         ),
-                        //         Text(
-                        //           '@${viewModel.owner?.nickId}',
-                        //           style: Theme.of(context).textTheme.labelLarge,
-                        //         ),
-                        //       ],
-                        //     ),
-                        //   ],
-                        // ),
-                      ],
-                    ),
-                    const SizedBox(height: 24.0),
+                    // const SizedBox(height: 12.0),
                     AIHelpers.htmlRender(viewModel.story.text),
                     if ((viewModel.story.medias ?? []).isNotEmpty) ...{
                       const SizedBox(height: 8.0),
@@ -257,11 +226,49 @@ class StoryContentPage extends StatelessWidget {
                           borderRadius: BorderRadius.circular(12.0),
                           child: AspectRatio(
                             aspectRatio: 1.91,
-                            child: StoryCarouselView(
-                              story: story,
-                              height: double.infinity,
-                              onChangePage: (index) {},
+                            child: Row(
+                              children: [
+                                Expanded(
+                                  child: SingleChildScrollView(
+                                    scrollDirection: Axis.horizontal,
+                                    child: Row(
+                                      spacing: 8.0,
+                                      children: [
+                                        for (
+                                          var i = 0;
+                                          i < viewModel.story.medias!.length;
+                                          i++
+                                        ) ...{
+                                          AspectRatio(
+                                            aspectRatio: 0.6,
+                                            child: ClipRRect(
+                                              borderRadius:
+                                                  BorderRadius.circular(12.0),
+                                              child: AspectRatio(
+                                                aspectRatio: 3 / 2,
+                                                child: AIImage(
+                                                  viewModel
+                                                      .story
+                                                      .medias![i]
+                                                      .link,
+                                                  fit: BoxFit.cover,
+                                                  width: double.infinity,
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        },
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
                             ),
+                            // child: StoryCarouselView(
+                            //   story: story,
+                            //   height: double.infinity,
+                            //   onChangePage: (index) {},
+                            // ),
                           ),
                         ),
                       ),

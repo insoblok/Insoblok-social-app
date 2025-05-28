@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:insoblok/utils/utils.dart';
 
 const kCustomAppbarHeight = 45.0;
 const kExtendAppbarHeight = 45.0;
@@ -73,5 +74,63 @@ class AIPersistentHeader extends SliverPersistentHeaderDelegate {
     if (oldDelegate.maxExtent != maxSize) return true;
     if (oldDelegate.dynamicValue != dynamicValue) return true;
     return false;
+  }
+}
+
+class AITabBarView extends StatefulWidget {
+  final void Function(int)? onTap;
+
+  const AITabBarView({super.key, this.onTap});
+
+  @override
+  State<AITabBarView> createState() => _AITabBarViewState();
+}
+
+class _AITabBarViewState extends State<AITabBarView>
+    with TickerProviderStateMixin {
+  late final TabController _tabController;
+
+  @override
+  void initState() {
+    _tabController = TabController(length: 2, vsync: this);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return DefaultTabController(
+      length: 2,
+      child: Column(
+        children: [
+          Container(
+            height: kToolbarHeight - 8.0,
+            decoration: BoxDecoration(
+              border: Border.all(),
+              borderRadius: BorderRadius.circular(8.0),
+            ),
+            child: TabBar(
+              controller: _tabController,
+              indicatorSize: TabBarIndicatorSize.tab,
+              dividerColor: Colors.transparent,
+              indicator: BoxDecoration(
+                borderRadius: BorderRadius.circular(8.0),
+                color: AIColors.pink,
+              ),
+              padding: const EdgeInsets.all(4),
+              labelStyle: Theme.of(context).textTheme.titleMedium,
+              unselectedLabelStyle: Theme.of(context).textTheme.titleMedium!,
+              tabs: const [Tab(text: "Monthly"), Tab(text: "Daily")],
+              onTap: widget.onTap,
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }

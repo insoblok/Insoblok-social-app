@@ -41,6 +41,15 @@ class VTOImageProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  var textController = TextEditingController();
+
+  String? _content;
+  String? get content => _content;
+  set content(String? s) {
+    _content = s;
+    notifyListeners();
+  }
+
   Future<void> onClickAddPhoto() async {
     if (isBusy) return;
     clearErrors();
