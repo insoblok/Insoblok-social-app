@@ -87,6 +87,8 @@ class StoryListCell extends StatelessWidget {
                           child: StoryCarouselView(
                             story: story,
                             height: double.infinity,
+                            autoPlay: true,
+                            scrollPhysics: NeverScrollableScrollPhysics(),
                             onChangePage:
                                 (index) => viewModel.pageIndex = index,
                           ),
@@ -222,53 +224,88 @@ class StoryContentPage extends StatelessWidget {
                           ),
                           borderRadius: BorderRadius.circular(12.0),
                         ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(12.0),
-                          child: AspectRatio(
-                            aspectRatio: 1.91,
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: SingleChildScrollView(
-                                    scrollDirection: Axis.horizontal,
-                                    child: Row(
-                                      spacing: 8.0,
-                                      children: [
-                                        for (
-                                          var i = 0;
-                                          i < viewModel.story.medias!.length;
-                                          i++
-                                        ) ...{
-                                          AspectRatio(
-                                            aspectRatio: 0.6,
-                                            child: ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(12.0),
-                                              child: AspectRatio(
-                                                aspectRatio: 3 / 2,
-                                                child: AIImage(
-                                                  viewModel
-                                                      .story
-                                                      .medias![i]
-                                                      .link,
-                                                  fit: BoxFit.cover,
-                                                  width: double.infinity,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8.0,
+                            vertical: 8.0,
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(12.0),
+                            child: AspectRatio(
+                              aspectRatio: 1.91,
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: SingleChildScrollView(
+                                      scrollDirection: Axis.horizontal,
+                                      child: Row(
+                                        spacing: 8.0,
+                                        children: [
+                                          for (
+                                            var i = 0;
+                                            i < viewModel.story.medias!.length;
+                                            i++
+                                          ) ...{
+                                            AspectRatio(
+                                              aspectRatio: 0.6,
+                                              child: InkWell(
+                                                onTap:
+                                                    () =>
+                                                        AIHelpers.goToDetailView(
+                                                          context,
+                                                          [
+                                                            viewModel
+                                                                .story
+                                                                .medias![i]
+                                                                .link!,
+                                                          ],
+                                                        ),
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    border: Border.all(
+                                                      width: 0.33,
+                                                      color:
+                                                          AIColors
+                                                              .speraterColor,
+                                                    ),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          12.0,
+                                                        ),
+                                                  ),
+                                                  child: ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          12.0,
+                                                        ),
+                                                    child: AspectRatio(
+                                                      aspectRatio: 3 / 2,
+                                                      child: AIImage(
+                                                        viewModel
+                                                            .story
+                                                            .medias![i]
+                                                            .link,
+                                                        fit: BoxFit.cover,
+                                                        width: double.infinity,
+                                                      ),
+                                                    ),
+                                                  ),
                                                 ),
                                               ),
                                             ),
-                                          ),
-                                        },
-                                      ],
+                                          },
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
+                              // child: StoryCarouselView(
+                              //   story: story,
+                              //   height: double.infinity,
+                              //   onChangePage: (index) {},
+                              // ),
                             ),
-                            // child: StoryCarouselView(
-                            //   story: story,
-                            //   height: double.infinity,
-                            //   onChangePage: (index) {},
-                            // ),
                           ),
                         ),
                       ),
