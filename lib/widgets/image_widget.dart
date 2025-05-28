@@ -73,8 +73,13 @@ class _StoryCarouselViewState extends State<StoryCarouselView> {
                 options: CarouselOptions(
                   viewportFraction: 1.0,
                   enlargeCenterPage: false,
+                  enableInfiniteScroll: false,
+                  autoPlay: true,
+                  autoPlayInterval: Duration(seconds: 2),
+                  autoPlayAnimationDuration: Duration(seconds: 1),
                   aspectRatio: 3 / 2,
                   height: widget.height,
+                  scrollPhysics: NeverScrollableScrollPhysics(),
                   onPageChanged: (index, reason) {
                     indexListener.value = index;
                     if (widget.onChangePage != null) {

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:insoblok/widgets/account_story_widget.dart';
 
 import 'package:stacked/stacked.dart';
 
@@ -51,7 +52,7 @@ class AccountPage extends StatelessWidget {
                       delegate: SliverChildListDelegate([
                         if (viewModel.pageIndex == 0) ...{
                           for (var story in viewModel.stories) ...{
-                            StoryListCell(story: story),
+                            AccountStoryListCell(story: story),
                           },
                         },
                         if (viewModel.pageIndex == 1) ...{

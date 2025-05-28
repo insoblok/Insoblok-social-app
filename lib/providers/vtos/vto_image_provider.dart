@@ -35,6 +35,15 @@ class VTOImageProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  var textController = TextEditingController();
+
+  String? _content;
+  String? get content => _content;
+  set content(String? s) {
+    _content = s;
+    notifyListeners();
+  }
+
   Future<void> onClickAddPhoto() async {
     if (isBusy) return;
     clearErrors();
@@ -320,7 +329,7 @@ class VTOImageProvider extends InSoBlokViewModel {
           txtLookbookButton = 'Adding to Server...';
           var story = StoryModel(
             title: 'Virtual Try-On',
-            text: 'Virtual Try-On',
+            text: content ?? 'Virtual Try-On',
             medias: [MediaStoryModel(link: mediaUrl, type: 'image')],
           );
           await storyService.postStory(story: story);
