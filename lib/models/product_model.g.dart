@@ -34,6 +34,9 @@ _ProductModel _$ProductModelFromJson(Map<String, dynamic> json) =>
       timestamp: json['timestamp'] == null
           ? null
           : DateTime.parse(json['timestamp'] as String),
+      medias: (json['medias'] as List<dynamic>?)
+          ?.map((e) => MediaStoryModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$ProductModelToJson(_ProductModel instance) =>
@@ -57,4 +60,34 @@ Map<String, dynamic> _$ProductModelToJson(_ProductModel instance) =>
       'selles': instance.selles,
       'regdate': instance.regdate?.toIso8601String(),
       'timestamp': instance.timestamp?.toIso8601String(),
+      'medias': instance.medias,
+    };
+
+_ProductTribeCategoryModel _$ProductTribeCategoryModelFromJson(
+        Map<String, dynamic> json) =>
+    _ProductTribeCategoryModel(
+      title: json['title'] as String?,
+      subtypes: (json['subtypes'] as List<dynamic>?)
+          ?.map((e) => ProductSubtypeModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
+    );
+
+Map<String, dynamic> _$ProductTribeCategoryModelToJson(
+        _ProductTribeCategoryModel instance) =>
+    <String, dynamic>{
+      'title': instance.title,
+      'subtypes': instance.subtypes,
+    };
+
+_ProductSubtypeModel _$ProductSubtypeModelFromJson(Map<String, dynamic> json) =>
+    _ProductSubtypeModel(
+      title: json['title'] as String?,
+      description: json['description'] as String?,
+    );
+
+Map<String, dynamic> _$ProductSubtypeModelToJson(
+        _ProductSubtypeModel instance) =>
+    <String, dynamic>{
+      'title': instance.title,
+      'description': instance.description,
     };

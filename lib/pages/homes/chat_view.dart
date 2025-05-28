@@ -1,10 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:loading_indicator/loading_indicator.dart';
 
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:stacked/stacked.dart';
 
-import 'package:insoblok/generated/l10n.dart';
-import 'package:insoblok/pages/pages.dart';
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
@@ -103,7 +101,7 @@ class ChatView extends StatelessWidget {
                             ),
                             const SizedBox(height: 40.0),
                             Text(
-                              S.current.create_room,
+                              "Create Room",
                               style: TextStyle(
                                 fontSize: 18.0,
                                 fontWeight: FontWeight.bold,
@@ -115,7 +113,7 @@ class ChatView extends StatelessWidget {
                                 horizontal: 60.0,
                               ),
                               child: Text(
-                                S.current.room_create_detail,
+                                "You have not any chatting uesr yet! Please try to create a new room first by clicking + button.",
                                 textAlign: TextAlign.center,
                               ),
                             ),

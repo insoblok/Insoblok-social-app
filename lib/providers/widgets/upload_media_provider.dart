@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:insoblok/models/models.dart';
@@ -19,12 +18,16 @@ class UploadMediaItem {
 }
 
 class UploadMediaProvider extends InSoBlokViewModel {
-  late MediaPickerService _mediaPicker;
+  static UploadMediaProvider? _instance;
+  static UploadMediaProvider getInstance(BuildContext context) =>
+      _instance ?? UploadMediaProvider(context);
 
-  Future<void> init(BuildContext context) async {
-    reset();
+  UploadMediaProvider(BuildContext context) {
     _mediaPicker = MediaPickerService(context);
+    _instance = this;
   }
+
+  late MediaPickerService _mediaPicker;
 
   List<UploadMediaItem> medias = [];
 
@@ -38,7 +41,7 @@ class UploadMediaProvider extends InSoBlokViewModel {
       limit: (maxImages ?? 9 - medias.length),
     );
     if (files.isEmpty) {
-      Fluttertoast.showToast(msg: 'No selected media!');
+      AIHelpers.showToast(msg: 'No selected media!');
     } else {
       medias.addAll(
         files.map((asset) => UploadMediaItem(file: asset)).toList(),

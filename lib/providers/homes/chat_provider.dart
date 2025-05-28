@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:insoblok/generated/l10n.dart';
 
 import 'package:insoblok/models/models.dart';
-import 'package:insoblok/pages/chats/message_page.dart';
+import 'package:insoblok/pages/pages.dart';
 import 'package:insoblok/routers/router.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
-import 'package:insoblok/widgets/button_widget.dart';
+import 'package:insoblok/widgets/widgets.dart';
 
 class ChatProvider extends InSoBlokViewModel {
   late BuildContext _context;
@@ -121,7 +119,7 @@ class ChatProvider extends InSoBlokViewModel {
                         Row(
                           children: [
                             Text(
-                              S.current.create_room,
+                              "Create Room",
                               style: TextStyle(
                                 fontSize: 18.0,
                                 color: AIColors.white,
@@ -137,7 +135,7 @@ class ChatProvider extends InSoBlokViewModel {
                         ),
                         const SizedBox(height: 24.0),
                         Text(
-                          S.current.create_room_confirm,
+                          "Are you sure want to chat with the selected user?",
                           style: TextStyle(
                             fontSize: 16.0,
                             color: AIColors.white,
@@ -162,7 +160,7 @@ class ChatProvider extends InSoBlokViewModel {
           var room = RoomModel(
             uid: user?.uid,
             uids: [user?.uid, chatUser.uid],
-            content: '${user?.firstName} ${S.current.create_room_message}',
+            content: '${user?.firstName} have created a room',
           );
           logger.d(room.toJson());
           await roomService.createRoom(room);
@@ -177,7 +175,7 @@ class ChatProvider extends InSoBlokViewModel {
     }());
 
     if (hasError) {
-      Fluttertoast.showToast(msg: modelError.toString());
+      AIHelpers.showToast(msg: modelError.toString());
     } else {
       if (existedRoom != null) {
         await Routers.goToMessagePage(

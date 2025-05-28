@@ -76,6 +76,7 @@ class ProductItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var category = (product.tags ?? []).isEmpty ? null : product.tags!.first;
     return Container(
       decoration: BoxDecoration(
         color: AppSettingHelper.background,
@@ -97,7 +98,29 @@ class ProductItemWidget extends StatelessWidget {
             children: [
               AspectRatio(
                 aspectRatio: 1,
-                child: AIImage(product.avatarImage ?? product.modelImage),
+                child: Stack(
+                  children: [
+                    AIImage(
+                      product.avatarImage ?? product.modelImage,
+                      width: double.infinity,
+                      height: double.infinity,
+                    ),
+                    if (product.avatarImage == null &&
+                        (product.medias?.isNotEmpty ?? false))
+                      Positioned(
+                        right: 4.0,
+                        bottom: 4.0,
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(8.0),
+                          child: AIImage(
+                            product.medias?.first.link,
+                            width: 80.0,
+                            height: 100.0,
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
               ),
               const SizedBox(height: 4.0),
               Padding(
@@ -122,6 +145,26 @@ class ProductItemWidget extends StatelessWidget {
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
                     ),
+                    if (category != null) ...{
+                      const SizedBox(height: 8.0),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8.0,
+                          vertical: 4.0,
+                        ),
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Theme.of(context).primaryColor,
+                            width: 0.33,
+                          ),
+                          borderRadius: BorderRadius.circular(24.0),
+                        ),
+                        child: Text(
+                          category,
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                      ),
+                    },
                     const SizedBox(height: 8.0),
                     Text(
                       product.name ?? '',

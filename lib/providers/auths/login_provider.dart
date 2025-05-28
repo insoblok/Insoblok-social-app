@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_native_splash/flutter_native_splash.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
@@ -87,7 +86,7 @@ class LoginProvider extends InSoBlokViewModel {
     }
 
     if (hasError) {
-      Fluttertoast.showToast(msg: modelError.toString());
+      AIHelpers.showToast(msg: modelError.toString());
     } else {
       if (AuthHelper.user?.firstName != null) {
         AuthHelper.updateStatus('Online');
@@ -114,7 +113,7 @@ class LoginProvider extends InSoBlokViewModel {
     }());
 
     if (hasError) {
-      Fluttertoast.showToast(msg: modelError.toString());
+      AIHelpers.showToast(msg: modelError.toString());
     } else {
       if (AuthHelper.user?.firstName != null) {
         AuthHelper.updateStatus('Online');

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:fluttertoast/fluttertoast.dart';
-
 import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
@@ -41,15 +39,15 @@ class HelpProvider extends InSoBlokViewModel {
 
   Future<void> onSendMessage() async {
     if (email.isEmpty) {
-      Fluttertoast.showToast(msg: 'Email address should not be emapy!');
+      AIHelpers.showToast(msg: 'Email address should not be emapy!');
       return;
     }
     if (!email.isEmailValid) {
-      Fluttertoast.showToast(msg: 'Email address was not matched!');
+      AIHelpers.showToast(msg: 'Email address was not matched!');
       return;
     }
     if (message.isEmpty) {
-      Fluttertoast.showToast(msg: 'The message should not be emapy!');
+      AIHelpers.showToast(msg: 'The message should not be emapy!');
       return;
     }
 
@@ -68,7 +66,7 @@ class HelpProvider extends InSoBlokViewModel {
     }());
 
     if (hasError) {
-      Fluttertoast.showToast(msg: modelError.toString());
+      AIHelpers.showToast(msg: modelError.toString());
     }
   }
 }

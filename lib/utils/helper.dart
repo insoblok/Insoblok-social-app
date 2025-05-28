@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-import 'package:insoblok/routers/routers.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:insoblok/models/models.dart';
+import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 
@@ -124,13 +124,13 @@ class AIHelpers {
   }
 
   static Future<void> shareStoryToInSoBlok({required StoryModel story}) async {
-    Fluttertoast.showToast(
+    AIHelpers.showToast(
       msg: 'This feature was not added yet! Will be came soon. ',
     );
   }
 
   static Future<void> shareComment({required StoryCommentModel comment}) async {
-    Fluttertoast.showToast(
+    AIHelpers.showToast(
       msg: 'This feature was not added yet! Will be came soon. ',
     );
   }
@@ -158,7 +158,7 @@ class AIHelpers {
     final result = await SharePlus.instance.share(params);
 
     if (result.status == ShareResultStatus.success) {
-      Fluttertoast.showToast(msg: 'Thank you for sharing the media!');
+      AIHelpers.showToast(msg: 'Thank you for sharing the media!');
     }
   }
 
@@ -167,5 +167,9 @@ class AIHelpers {
     List<String> medias,
   ) async {
     Routers.goToMediaDetailPage(context, medias: medias);
+  }
+
+  static Future<bool?> showToast({required String msg}) {
+    return Fluttertoast.showToast(msg: msg);
   }
 }

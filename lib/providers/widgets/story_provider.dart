@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:vsc_quill_delta_to_html/vsc_quill_delta_to_html.dart';
 
 import 'package:insoblok/extensions/extensions.dart';
@@ -100,7 +99,7 @@ class StoryProvider extends InSoBlokViewModel {
     clearErrors();
 
     if (story.uid == user?.uid) {
-      Fluttertoast.showToast(msg: 'You can\'t like to your feed!');
+      AIHelpers.showToast(msg: 'You can\'t like to your feed!');
       return;
     }
 
@@ -126,13 +125,13 @@ class StoryProvider extends InSoBlokViewModel {
     }());
 
     if (hasError) {
-      Fluttertoast.showToast(msg: modelError.toString());
+      AIHelpers.showToast(msg: modelError.toString());
     } else {
       story = story.copyWith(likes: likes);
       if (story.isLike()) {
-        Fluttertoast.showToast(msg: 'You liked to a feed!');
+        AIHelpers.showToast(msg: 'You liked to a feed!');
       } else {
-        Fluttertoast.showToast(msg: 'You unliked to a feed!');
+        AIHelpers.showToast(msg: 'You unliked to a feed!');
       }
       notifyListeners();
     }
@@ -150,7 +149,7 @@ class StoryProvider extends InSoBlokViewModel {
     clearErrors();
 
     if (story.uid == user?.uid) {
-      Fluttertoast.showToast(msg: 'You can\'t follow to your feed!');
+      AIHelpers.showToast(msg: 'You can\'t follow to your feed!');
       return;
     }
 
@@ -176,13 +175,13 @@ class StoryProvider extends InSoBlokViewModel {
     }());
 
     if (hasError) {
-      Fluttertoast.showToast(msg: modelError.toString());
+      AIHelpers.showToast(msg: modelError.toString());
     } else {
       story = story.copyWith(follows: follows);
       if (story.isFollow()) {
-        Fluttertoast.showToast(msg: 'You followed to a feed!');
+        AIHelpers.showToast(msg: 'You followed to a feed!');
       } else {
-        Fluttertoast.showToast(msg: 'You unfollowed to a feed!');
+        AIHelpers.showToast(msg: 'You unfollowed to a feed!');
       }
       notifyListeners();
     }
@@ -208,7 +207,7 @@ class StoryProvider extends InSoBlokViewModel {
           story = story.copyWith(comments: comments);
           await storyService.addComment(story: story);
 
-          Fluttertoast.showToast(msg: 'Successfully add your comment!');
+          AIHelpers.showToast(msg: 'Successfully add your comment!');
         } else {
           setError('Your comment is empty!');
         }
@@ -221,7 +220,7 @@ class StoryProvider extends InSoBlokViewModel {
     }());
 
     if (hasError) {
-      Fluttertoast.showToast(msg: modelError.toString());
+      AIHelpers.showToast(msg: modelError.toString());
     }
   }
 }

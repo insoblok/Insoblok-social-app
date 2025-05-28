@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:fluttertoast/fluttertoast.dart';
-
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/routers/routers.dart';
@@ -24,6 +22,22 @@ class MarketProvider extends InSoBlokViewModel {
 
   final List<ProductModel> _products = [];
   List<ProductModel> get products => _products;
+
+  // ProductSubtypeModel itemCategory({int? i}) {
+  //   int index = i ?? Random().nextInt(allSubtypes.length);
+  //   return allSubtypes[index];
+  // }
+
+  // final List<ProductTribeCategoryModel> _tribeCategories = [];
+  // List<ProductTribeCategoryModel> get tribeCategories => _tribeCategories;
+
+  // List<ProductSubtypeModel> get allSubtypes {
+  //   List<ProductSubtypeModel> result = [];
+  //   for (var category in tribeCategories) {
+  //     result.addAll(category.subtypes ?? []);
+  //   }
+  //   return result;
+  // }
 
   final List<ProductModel> _filterProducts = [];
   List<ProductModel> get filterProducts => _filterProducts;
@@ -53,6 +67,8 @@ class MarketProvider extends InSoBlokViewModel {
 
     await runBusyFuture(() async {
       try {
+        // _tribeCategories.addAll(await productService.getProductTypes());
+
         for (var i = 0; i < kProductCategoryNames.length; i++) {
           _selectedTags.add(true);
         }
@@ -73,7 +89,7 @@ class MarketProvider extends InSoBlokViewModel {
     }());
 
     if (hasError) {
-      Fluttertoast.showToast(msg: modelError.toString());
+      AIHelpers.showToast(msg: modelError.toString());
     }
   }
 
@@ -98,7 +114,7 @@ class MarketProvider extends InSoBlokViewModel {
     }());
 
     if (hasError) {
-      Fluttertoast.showToast(msg: modelError.toString());
+      AIHelpers.showToast(msg: modelError.toString());
     }
   }
 
@@ -110,7 +126,7 @@ class MarketProvider extends InSoBlokViewModel {
         Routers.goToVTOImagePage(context, product);
         break;
       default:
-        Fluttertoast.showToast(msg: 'No support this feature yet!');
+        AIHelpers.showToast(msg: 'No support this feature yet!');
         break;
     }
   }

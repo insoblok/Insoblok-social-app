@@ -14,6 +14,8 @@ dependencies:
   flutter_localizations:
     sdk: flutter
 
+  intl: any
+
   cupertino_icons: any
   flutter_inappwebview: any
   cached_network_image: any
@@ -75,9 +77,6 @@ dev_dependencies:
   freezed: any
   build_runner: any
   web3dart_builders: any
-
-dependency_overrides:
-  intl: ^0.20.1
 
 flutter:
   uses-material-design: true

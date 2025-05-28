@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:insoblok/extensions/extensions.dart';
 
 import 'package:insoblok/models/models.dart';
@@ -104,11 +103,11 @@ class AccountPrivateProvider extends InSoBlokViewModel {
   void onClickUpdateProfile() async {
     if (account.email?.isEmpty ?? true) {
       if (!(email.isEmailValid)) {
-        Fluttertoast.showToast(msg: 'No matched email!');
+        AIHelpers.showToast(msg: 'No matched email!');
         return;
       }
       if (password != confirmedPassword) {
-        Fluttertoast.showToast(msg: 'No matched password!');
+        AIHelpers.showToast(msg: 'No matched password!');
         return;
       }
     }
@@ -125,7 +124,7 @@ class AccountPrivateProvider extends InSoBlokViewModel {
     await runBusyFuture(() async {
       try {
         await AuthHelper.updateUser(account);
-        Fluttertoast.showToast(msg: 'Successfully updated user profile!');
+        AIHelpers.showToast(msg: 'Successfully updated user profile!');
         Navigator.of(context).pop(account);
       } catch (e) {
         setError(e);
@@ -136,7 +135,7 @@ class AccountPrivateProvider extends InSoBlokViewModel {
     }());
 
     if (hasError) {
-      Fluttertoast.showToast(msg: modelError.toString());
+      AIHelpers.showToast(msg: modelError.toString());
     }
 
     // Navigator.of(context).pop(account);

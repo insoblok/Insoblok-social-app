@@ -4,7 +4,6 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:insoblok/services/services.dart';
 
 import 'package:insoblok/utils/utils.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 const kScrappingUrl = 'https://genimg.ai/';
 
@@ -91,7 +90,7 @@ return null;
 
   Future<void> onClickConvertImage() async {
     if (_base64Org == null) {
-      Fluttertoast.showToast(msg: 'Please choose an origin image.');
+      AIHelpers.showToast(msg: 'Please choose an origin image.');
       return;
     }
     var receiveOnClickEvent = '''
@@ -131,7 +130,7 @@ return null;
 
   Future<void> onClickConfirm() async {
     if (aiImageUrl == null) {
-      Fluttertoast.showToast(
+      AIHelpers.showToast(
         msg: 'We didn\'t get an AI image yet. Please try to create image',
       );
       return;

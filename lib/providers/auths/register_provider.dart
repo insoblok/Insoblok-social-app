@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'package:fluttertoast/fluttertoast.dart';
-
 import 'package:insoblok/extensions/extensions.dart';
-import 'package:insoblok/generated/l10n.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
@@ -87,15 +84,15 @@ class RegisterProvider extends InSoBlokViewModel {
   Future<void> onClickConfirm() async {
     if ((_user.firstName?.isEmpty ?? true) ||
         (_user.lastName?.isEmpty ?? true)) {
-      Fluttertoast.showToast(msg: S.current.register_error_name);
+      AIHelpers.showToast(msg: "Please input your name!");
       return;
     }
     if (!(_user.email?.isEmailValid ?? false)) {
-      Fluttertoast.showToast(msg: 'No matched email!');
+      AIHelpers.showToast(msg: 'No matched email!');
       return;
     }
     if (password != rePassword) {
-      Fluttertoast.showToast(msg: 'No matched password!');
+      AIHelpers.showToast(msg: 'No matched password!');
       return;
     }
 
@@ -123,7 +120,7 @@ class RegisterProvider extends InSoBlokViewModel {
       }
     }());
     if (hasError) {
-      Fluttertoast.showToast(msg: modelError.toString());
+      AIHelpers.showToast(msg: modelError.toString());
     }
   }
 }

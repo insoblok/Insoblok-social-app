@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 
 import 'package:stacked/stacked.dart';
 
-import 'package:insoblok/generated/l10n.dart';
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
@@ -33,7 +32,7 @@ class RegisterPage extends StatelessWidget {
               const SizedBox(width: double.infinity, height: 40.0),
               Center(
                 child: Text(
-                  S.current.register_detail,
+                  'Please complete your information!',
                   style: Theme.of(context).textTheme.labelLarge,
                 ),
               ),
@@ -42,7 +41,7 @@ class RegisterPage extends StatelessWidget {
                 children: [
                   Expanded(
                     child: AITextField(
-                      hintText: S.current.first_name,
+                      hintText: "First Name",
                       prefixIcon: Icon(Icons.account_circle),
                       onChanged: viewModel.updateFirstName,
                     ),
@@ -50,7 +49,7 @@ class RegisterPage extends StatelessWidget {
                   const SizedBox(width: 8.0),
                   Expanded(
                     child: AITextField(
-                      hintText: S.current.last_name,
+                      hintText: "Last Name",
                       prefixIcon: Icon(Icons.account_circle),
                       onChanged: viewModel.updateLastName,
                     ),
@@ -145,7 +144,7 @@ class RegisterPage extends StatelessWidget {
               ),
               const SizedBox(height: 40.0),
               TextFillButton(
-                text: S.current.register_confirm,
+                text: "Confirm",
                 color: AIColors.pink,
                 isBusy: viewModel.isBusy,
                 onTap: viewModel.onClickConfirm,

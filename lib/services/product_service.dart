@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart';
 
 import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
@@ -57,10 +60,39 @@ class ProductService {
   // Add a product
   Future<void> addProduct({required ProductModel product}) async {
     await _firestore.collection('product').add({
-      ...product.toJson().toFirebaseJson,
+      ...product.toMap().toFirebaseJson,
       'uid': AuthHelper.user?.uid,
       'timestamp': FieldValue.serverTimestamp(),
       'regdate': FieldValue.serverTimestamp(),
     });
+  }
+
+  // update a product
+  Future<void> updateProduct({
+    required String id,
+    required ProductModel product,
+  }) async {
+    await _firestore.collection('product').doc(id).update({
+      ...product.toMap().toFirebaseJson,
+      'regdate': FieldValue.serverTimestamp(),
+    });
+  }
+
+  Future<List<ProductTribeCategoryModel>> getProductTypes() async {
+    List<ProductTribeCategoryModel> result = [];
+    final String response = await rootBundle.loadString(
+      'assets/data/vto_tribe_categories.json',
+    );
+    final data = (await json.decode(response));
+    for (var json in (data as List)) {
+      try {
+        var category = ProductTribeCategoryModel.fromJson(json);
+        result.add(category);
+      } catch (e) {
+        logger.e(e);
+        logger.i(json);
+      }
+    }
+    return result;
   }
 }

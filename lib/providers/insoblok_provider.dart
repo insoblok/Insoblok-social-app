@@ -26,12 +26,7 @@ class InSoBlokProvider extends InSoBlokViewModel {
 
   Future<void> init(BuildContext context) async {
     this.context = context;
-
     _appProvider = context.read<AppProvider>();
-    Future.delayed(const Duration(seconds: 1), () {
-      var uploadProvider = context.read<UploadMediaProvider>();
-      uploadProvider.init(context);
-    });
   }
 
   Future<void> onClickMenuAvatar() async {

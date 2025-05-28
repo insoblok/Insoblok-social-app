@@ -53,7 +53,6 @@ class UserService {
   }
 
   Future<void> updateUser(UserModel user) async {
-    logger.d(user.toJson());
     await _userCollection.doc(user.id).update({
       ...user.toJson().toFirebaseJson,
       'timestamp': FieldValue.serverTimestamp(),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:vsc_quill_delta_to_html/vsc_quill_delta_to_html.dart';
 
@@ -67,7 +66,7 @@ class AccountPublicProvider extends InSoBlokViewModel {
     }());
 
     if (hasError) {
-      Fluttertoast.showToast(msg: modelError.toString());
+      AIHelpers.showToast(msg: modelError.toString());
     }
   }
 
@@ -99,7 +98,7 @@ class AccountPublicProvider extends InSoBlokViewModel {
     }());
 
     if (hasError) {
-      Fluttertoast.showToast(msg: modelError.toString());
+      AIHelpers.showToast(msg: modelError.toString());
     }
   }
 
@@ -110,7 +109,7 @@ class AccountPublicProvider extends InSoBlokViewModel {
     await runBusyFuture(() async {
       try {
         await AuthHelper.updateUser(account);
-        Fluttertoast.showToast(msg: 'Successfully updated user profile!');
+        AIHelpers.showToast(msg: 'Successfully updated user profile!');
         Navigator.of(context).pop(account);
       } catch (e) {
         setError(e);
@@ -121,7 +120,7 @@ class AccountPublicProvider extends InSoBlokViewModel {
     }());
 
     if (hasError) {
-      Fluttertoast.showToast(msg: modelError.toString());
+      AIHelpers.showToast(msg: modelError.toString());
     }
   }
 }

@@ -34,6 +34,7 @@ mixin _$ProductModel {
   int? get selles;
   DateTime? get regdate;
   DateTime? get timestamp;
+  List<MediaStoryModel>? get medias;
 
   /// Create a copy of ProductModel
   /// with the given fields replaced by the non-null parameter values.
@@ -77,7 +78,8 @@ mixin _$ProductModel {
             (identical(other.selles, selles) || other.selles == selles) &&
             (identical(other.regdate, regdate) || other.regdate == regdate) &&
             (identical(other.timestamp, timestamp) ||
-                other.timestamp == timestamp));
+                other.timestamp == timestamp) &&
+            const DeepCollectionEquality().equals(other.medias, medias));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -102,12 +104,13 @@ mixin _$ProductModel {
         const DeepCollectionEquality().hash(rates),
         selles,
         regdate,
-        timestamp
+        timestamp,
+        const DeepCollectionEquality().hash(medias)
       ]);
 
   @override
   String toString() {
-    return 'ProductModel(id: $id, name: $name, description: $description, tags: $tags, avatarImage: $avatarImage, modelImage: $modelImage, oldPrice: $oldPrice, price: $price, off: $off, delivery: $delivery, category: $category, categoryName: $categoryName, type: $type, uid: $uid, likes: $likes, rates: $rates, selles: $selles, regdate: $regdate, timestamp: $timestamp)';
+    return 'ProductModel(id: $id, name: $name, description: $description, tags: $tags, avatarImage: $avatarImage, modelImage: $modelImage, oldPrice: $oldPrice, price: $price, off: $off, delivery: $delivery, category: $category, categoryName: $categoryName, type: $type, uid: $uid, likes: $likes, rates: $rates, selles: $selles, regdate: $regdate, timestamp: $timestamp, medias: $medias)';
   }
 }
 
@@ -136,7 +139,8 @@ abstract mixin class $ProductModelCopyWith<$Res> {
       List<int>? rates,
       int? selles,
       DateTime? regdate,
-      DateTime? timestamp});
+      DateTime? timestamp,
+      List<MediaStoryModel>? medias});
 }
 
 /// @nodoc
@@ -170,6 +174,7 @@ class _$ProductModelCopyWithImpl<$Res> implements $ProductModelCopyWith<$Res> {
     Object? selles = freezed,
     Object? regdate = freezed,
     Object? timestamp = freezed,
+    Object? medias = freezed,
   }) {
     return _then(_self.copyWith(
       id: freezed == id
@@ -248,6 +253,10 @@ class _$ProductModelCopyWithImpl<$Res> implements $ProductModelCopyWith<$Res> {
           ? _self.timestamp
           : timestamp // ignore: cast_nullable_to_non_nullable
               as DateTime?,
+      medias: freezed == medias
+          ? _self.medias
+          : medias // ignore: cast_nullable_to_non_nullable
+              as List<MediaStoryModel>?,
     ));
   }
 }
@@ -275,10 +284,12 @@ class _ProductModel implements ProductModel {
       final List<int>? rates,
       this.selles,
       this.regdate,
-      this.timestamp})
+      this.timestamp,
+      final List<MediaStoryModel>? medias})
       : _tags = tags,
         _likes = likes,
-        _rates = rates;
+        _rates = rates,
+        _medias = medias;
   factory _ProductModel.fromJson(Map<String, dynamic> json) =>
       _$ProductModelFromJson(json);
 
@@ -344,6 +355,15 @@ class _ProductModel implements ProductModel {
   final DateTime? regdate;
   @override
   final DateTime? timestamp;
+  final List<MediaStoryModel>? _medias;
+  @override
+  List<MediaStoryModel>? get medias {
+    final value = _medias;
+    if (value == null) return null;
+    if (_medias is EqualUnmodifiableListView) return _medias;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
 
   /// Create a copy of ProductModel
   /// with the given fields replaced by the non-null parameter values.
@@ -391,7 +411,8 @@ class _ProductModel implements ProductModel {
             (identical(other.selles, selles) || other.selles == selles) &&
             (identical(other.regdate, regdate) || other.regdate == regdate) &&
             (identical(other.timestamp, timestamp) ||
-                other.timestamp == timestamp));
+                other.timestamp == timestamp) &&
+            const DeepCollectionEquality().equals(other._medias, _medias));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -416,12 +437,13 @@ class _ProductModel implements ProductModel {
         const DeepCollectionEquality().hash(_rates),
         selles,
         regdate,
-        timestamp
+        timestamp,
+        const DeepCollectionEquality().hash(_medias)
       ]);
 
   @override
   String toString() {
-    return 'ProductModel(id: $id, name: $name, description: $description, tags: $tags, avatarImage: $avatarImage, modelImage: $modelImage, oldPrice: $oldPrice, price: $price, off: $off, delivery: $delivery, category: $category, categoryName: $categoryName, type: $type, uid: $uid, likes: $likes, rates: $rates, selles: $selles, regdate: $regdate, timestamp: $timestamp)';
+    return 'ProductModel(id: $id, name: $name, description: $description, tags: $tags, avatarImage: $avatarImage, modelImage: $modelImage, oldPrice: $oldPrice, price: $price, off: $off, delivery: $delivery, category: $category, categoryName: $categoryName, type: $type, uid: $uid, likes: $likes, rates: $rates, selles: $selles, regdate: $regdate, timestamp: $timestamp, medias: $medias)';
   }
 }
 
@@ -452,7 +474,8 @@ abstract mixin class _$ProductModelCopyWith<$Res>
       List<int>? rates,
       int? selles,
       DateTime? regdate,
-      DateTime? timestamp});
+      DateTime? timestamp,
+      List<MediaStoryModel>? medias});
 }
 
 /// @nodoc
@@ -487,6 +510,7 @@ class __$ProductModelCopyWithImpl<$Res>
     Object? selles = freezed,
     Object? regdate = freezed,
     Object? timestamp = freezed,
+    Object? medias = freezed,
   }) {
     return _then(_ProductModel(
       id: freezed == id
@@ -565,6 +589,346 @@ class __$ProductModelCopyWithImpl<$Res>
           ? _self.timestamp
           : timestamp // ignore: cast_nullable_to_non_nullable
               as DateTime?,
+      medias: freezed == medias
+          ? _self._medias
+          : medias // ignore: cast_nullable_to_non_nullable
+              as List<MediaStoryModel>?,
+    ));
+  }
+}
+
+/// @nodoc
+mixin _$ProductTribeCategoryModel {
+  String? get title;
+  List<ProductSubtypeModel>? get subtypes;
+
+  /// Create a copy of ProductTribeCategoryModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $ProductTribeCategoryModelCopyWith<ProductTribeCategoryModel> get copyWith =>
+      _$ProductTribeCategoryModelCopyWithImpl<ProductTribeCategoryModel>(
+          this as ProductTribeCategoryModel, _$identity);
+
+  /// Serializes this ProductTribeCategoryModel to a JSON map.
+  Map<String, dynamic> toJson();
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is ProductTribeCategoryModel &&
+            (identical(other.title, title) || other.title == title) &&
+            const DeepCollectionEquality().equals(other.subtypes, subtypes));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(
+      runtimeType, title, const DeepCollectionEquality().hash(subtypes));
+
+  @override
+  String toString() {
+    return 'ProductTribeCategoryModel(title: $title, subtypes: $subtypes)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $ProductTribeCategoryModelCopyWith<$Res> {
+  factory $ProductTribeCategoryModelCopyWith(ProductTribeCategoryModel value,
+          $Res Function(ProductTribeCategoryModel) _then) =
+      _$ProductTribeCategoryModelCopyWithImpl;
+  @useResult
+  $Res call({String? title, List<ProductSubtypeModel>? subtypes});
+}
+
+/// @nodoc
+class _$ProductTribeCategoryModelCopyWithImpl<$Res>
+    implements $ProductTribeCategoryModelCopyWith<$Res> {
+  _$ProductTribeCategoryModelCopyWithImpl(this._self, this._then);
+
+  final ProductTribeCategoryModel _self;
+  final $Res Function(ProductTribeCategoryModel) _then;
+
+  /// Create a copy of ProductTribeCategoryModel
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? title = freezed,
+    Object? subtypes = freezed,
+  }) {
+    return _then(_self.copyWith(
+      title: freezed == title
+          ? _self.title
+          : title // ignore: cast_nullable_to_non_nullable
+              as String?,
+      subtypes: freezed == subtypes
+          ? _self.subtypes
+          : subtypes // ignore: cast_nullable_to_non_nullable
+              as List<ProductSubtypeModel>?,
+    ));
+  }
+}
+
+/// @nodoc
+
+@JsonSerializable(fieldRename: FieldRename.snake)
+class _ProductTribeCategoryModel implements ProductTribeCategoryModel {
+  _ProductTribeCategoryModel(
+      {this.title, final List<ProductSubtypeModel>? subtypes})
+      : _subtypes = subtypes;
+  factory _ProductTribeCategoryModel.fromJson(Map<String, dynamic> json) =>
+      _$ProductTribeCategoryModelFromJson(json);
+
+  @override
+  final String? title;
+  final List<ProductSubtypeModel>? _subtypes;
+  @override
+  List<ProductSubtypeModel>? get subtypes {
+    final value = _subtypes;
+    if (value == null) return null;
+    if (_subtypes is EqualUnmodifiableListView) return _subtypes;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
+
+  /// Create a copy of ProductTribeCategoryModel
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$ProductTribeCategoryModelCopyWith<_ProductTribeCategoryModel>
+      get copyWith =>
+          __$ProductTribeCategoryModelCopyWithImpl<_ProductTribeCategoryModel>(
+              this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$ProductTribeCategoryModelToJson(
+      this,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _ProductTribeCategoryModel &&
+            (identical(other.title, title) || other.title == title) &&
+            const DeepCollectionEquality().equals(other._subtypes, _subtypes));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(
+      runtimeType, title, const DeepCollectionEquality().hash(_subtypes));
+
+  @override
+  String toString() {
+    return 'ProductTribeCategoryModel(title: $title, subtypes: $subtypes)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$ProductTribeCategoryModelCopyWith<$Res>
+    implements $ProductTribeCategoryModelCopyWith<$Res> {
+  factory _$ProductTribeCategoryModelCopyWith(_ProductTribeCategoryModel value,
+          $Res Function(_ProductTribeCategoryModel) _then) =
+      __$ProductTribeCategoryModelCopyWithImpl;
+  @override
+  @useResult
+  $Res call({String? title, List<ProductSubtypeModel>? subtypes});
+}
+
+/// @nodoc
+class __$ProductTribeCategoryModelCopyWithImpl<$Res>
+    implements _$ProductTribeCategoryModelCopyWith<$Res> {
+  __$ProductTribeCategoryModelCopyWithImpl(this._self, this._then);
+
+  final _ProductTribeCategoryModel _self;
+  final $Res Function(_ProductTribeCategoryModel) _then;
+
+  /// Create a copy of ProductTribeCategoryModel
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? title = freezed,
+    Object? subtypes = freezed,
+  }) {
+    return _then(_ProductTribeCategoryModel(
+      title: freezed == title
+          ? _self.title
+          : title // ignore: cast_nullable_to_non_nullable
+              as String?,
+      subtypes: freezed == subtypes
+          ? _self._subtypes
+          : subtypes // ignore: cast_nullable_to_non_nullable
+              as List<ProductSubtypeModel>?,
+    ));
+  }
+}
+
+/// @nodoc
+mixin _$ProductSubtypeModel {
+  String? get title;
+  String? get description;
+
+  /// Create a copy of ProductSubtypeModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $ProductSubtypeModelCopyWith<ProductSubtypeModel> get copyWith =>
+      _$ProductSubtypeModelCopyWithImpl<ProductSubtypeModel>(
+          this as ProductSubtypeModel, _$identity);
+
+  /// Serializes this ProductSubtypeModel to a JSON map.
+  Map<String, dynamic> toJson();
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is ProductSubtypeModel &&
+            (identical(other.title, title) || other.title == title) &&
+            (identical(other.description, description) ||
+                other.description == description));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, title, description);
+
+  @override
+  String toString() {
+    return 'ProductSubtypeModel(title: $title, description: $description)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $ProductSubtypeModelCopyWith<$Res> {
+  factory $ProductSubtypeModelCopyWith(
+          ProductSubtypeModel value, $Res Function(ProductSubtypeModel) _then) =
+      _$ProductSubtypeModelCopyWithImpl;
+  @useResult
+  $Res call({String? title, String? description});
+}
+
+/// @nodoc
+class _$ProductSubtypeModelCopyWithImpl<$Res>
+    implements $ProductSubtypeModelCopyWith<$Res> {
+  _$ProductSubtypeModelCopyWithImpl(this._self, this._then);
+
+  final ProductSubtypeModel _self;
+  final $Res Function(ProductSubtypeModel) _then;
+
+  /// Create a copy of ProductSubtypeModel
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? title = freezed,
+    Object? description = freezed,
+  }) {
+    return _then(_self.copyWith(
+      title: freezed == title
+          ? _self.title
+          : title // ignore: cast_nullable_to_non_nullable
+              as String?,
+      description: freezed == description
+          ? _self.description
+          : description // ignore: cast_nullable_to_non_nullable
+              as String?,
+    ));
+  }
+}
+
+/// @nodoc
+
+@JsonSerializable(fieldRename: FieldRename.snake)
+class _ProductSubtypeModel implements ProductSubtypeModel {
+  _ProductSubtypeModel({this.title, this.description});
+  factory _ProductSubtypeModel.fromJson(Map<String, dynamic> json) =>
+      _$ProductSubtypeModelFromJson(json);
+
+  @override
+  final String? title;
+  @override
+  final String? description;
+
+  /// Create a copy of ProductSubtypeModel
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$ProductSubtypeModelCopyWith<_ProductSubtypeModel> get copyWith =>
+      __$ProductSubtypeModelCopyWithImpl<_ProductSubtypeModel>(
+          this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$ProductSubtypeModelToJson(
+      this,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _ProductSubtypeModel &&
+            (identical(other.title, title) || other.title == title) &&
+            (identical(other.description, description) ||
+                other.description == description));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, title, description);
+
+  @override
+  String toString() {
+    return 'ProductSubtypeModel(title: $title, description: $description)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$ProductSubtypeModelCopyWith<$Res>
+    implements $ProductSubtypeModelCopyWith<$Res> {
+  factory _$ProductSubtypeModelCopyWith(_ProductSubtypeModel value,
+          $Res Function(_ProductSubtypeModel) _then) =
+      __$ProductSubtypeModelCopyWithImpl;
+  @override
+  @useResult
+  $Res call({String? title, String? description});
+}
+
+/// @nodoc
+class __$ProductSubtypeModelCopyWithImpl<$Res>
+    implements _$ProductSubtypeModelCopyWith<$Res> {
+  __$ProductSubtypeModelCopyWithImpl(this._self, this._then);
+
+  final _ProductSubtypeModel _self;
+  final $Res Function(_ProductSubtypeModel) _then;
+
+  /// Create a copy of ProductSubtypeModel
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? title = freezed,
+    Object? description = freezed,
+  }) {
+    return _then(_ProductSubtypeModel(
+      title: freezed == title
+          ? _self.title
+          : title // ignore: cast_nullable_to_non_nullable
+              as String?,
+      description: freezed == description
+          ? _self.description
+          : description // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }

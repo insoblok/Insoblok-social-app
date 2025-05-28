@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:fluttertoast/fluttertoast.dart';
-
 import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
@@ -45,12 +43,12 @@ class AuthProvider extends InSoBlokViewModel {
   }
 
   Future<void> onTapForgotPassword() async {
-    Fluttertoast.showToast(msg: 'Not support this feature yet!');
+    AIHelpers.showToast(msg: 'Not support this feature yet!');
   }
 
   Future<void> onTapLoginButton() async {
     if (!emailAddress.isEmailValid) {
-      Fluttertoast.showToast(msg: 'No matched email!');
+      AIHelpers.showToast(msg: 'No matched email!');
       return;
     }
 
@@ -82,7 +80,7 @@ class AuthProvider extends InSoBlokViewModel {
     }());
 
     if (hasError) {
-      Fluttertoast.showToast(msg: modelError.toString());
+      AIHelpers.showToast(msg: modelError.toString());
     }
   }
 }

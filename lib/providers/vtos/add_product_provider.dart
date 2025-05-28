@@ -2,7 +2,6 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:vsc_quill_delta_to_html/vsc_quill_delta_to_html.dart';
 
@@ -68,11 +67,33 @@ class AddProductProvider extends InSoBlokViewModel {
 
   Future<void> init(BuildContext context) async {
     this.context = context;
+
     _mediaPicker = MediaPickerService(context);
     _product = product.copyWith(category: kProductCategories[0]);
     _product = product.copyWith(type: kProductTypeNames[0]);
     _product = product.copyWith(categoryName: kProductCategoryNames[0]);
+
+    _tribeCategories.addAll(await productService.getProductTypes());
+
+    notifyListeners();
   }
+
+  final List<ProductTribeCategoryModel> _tribeCategories = [];
+  List<ProductTribeCategoryModel> get tribeCategories => _tribeCategories;
+
+  final List<ProductSubtypeModel> _selectedTags = [];
+  List<ProductSubtypeModel> get selectedTags => _selectedTags;
+  void onTapTagItem(ProductSubtypeModel tag) {
+    if (selectedTags.contains(tag)) {
+      _selectedTags.remove(tag);
+    } else {
+      _selectedTags.add(tag);
+    }
+    notifyListeners();
+  }
+
+  final _productService = ProductService();
+  ProductService get productService => _productService;
 
   void updateName(String s) {
     _product = product.copyWith(name: s);
@@ -102,7 +123,7 @@ class AddProductProvider extends InSoBlokViewModel {
     }());
 
     if (hasError) {
-      Fluttertoast.showToast(msg: modelError.toString());
+      AIHelpers.showToast(msg: modelError.toString());
     }
   }
 
@@ -165,20 +186,17 @@ class AddProductProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  final _productService = ProductService();
-  ProductService get productService => _productService;
-
   Future<void> onClickAddProduct() async {
     if (product.name?.isEmpty ?? true) {
-      Fluttertoast.showToast(msg: 'Product name should be not empty!');
+      AIHelpers.showToast(msg: 'Product name should be not empty!');
       return;
     }
     if (product.description?.isEmpty ?? true) {
-      Fluttertoast.showToast(msg: 'Product description should be not empty!');
+      AIHelpers.showToast(msg: 'Product description should be not empty!');
       return;
     }
     if (modelImage == null) {
-      Fluttertoast.showToast(msg: 'Model image should be not empty!');
+      AIHelpers.showToast(msg: 'Model image should be not empty!');
       return;
     }
 
@@ -197,10 +215,16 @@ class AddProductProvider extends InSoBlokViewModel {
             _product = product.copyWith(avatarImage: avatarLink);
           }
         }
+        if (selectedTags.isNotEmpty) {
+          _product = product.copyWith(
+            tags: selectedTags.map((tag) => tag.title ?? '').toList(),
+          );
+        }
         var modelLink = await FirebaseHelper.uploadFile(
           file: File(modelImage!.path),
           folderName: 'product',
         );
+
         if (modelLink != null) {
           _product = product.copyWith(modelImage: modelLink);
           await productService.addProduct(product: product);
@@ -217,7 +241,7 @@ class AddProductProvider extends InSoBlokViewModel {
     }());
 
     if (hasError) {
-      Fluttertoast.showToast(msg: modelError.toString());
+      AIHelpers.showToast(msg: modelError.toString());
     }
   }
 }

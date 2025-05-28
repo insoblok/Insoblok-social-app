@@ -7,9 +7,9 @@ class AIImages {
   static String imgMetamask = 'assets/images/metamask.svg';
   static String imgGoogle = 'assets/images/google_icon.png';
   static String imgBackSplash = 'assets/images/back_splash.jpg';
-  static String imgSplash1 = 'assets/images/bg_splash_1.jpg';
-  static String imgSplash2 = 'assets/images/bg_splash_2.jpg';
-  static String imgSplash3 = 'assets/images/bg_splash_3.jpg';
+  static String imgSplash1 = 'assets/images/bg_splash_1.png';
+  static String imgSplash2 = 'assets/images/bg_splash_2.png';
+  static String imgSplash3 = 'assets/images/bg_splash_3.png';
 
   static String imgVTOClothing = 'assets/images/img_vto_clothing.jpg';
   static String imgVTOJewelry = 'assets/images/img_vto_jewelry.jpg';

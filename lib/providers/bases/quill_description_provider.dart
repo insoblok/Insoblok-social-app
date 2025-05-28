@@ -3,7 +3,6 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_quill/flutter_quill.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:insoblok/utils/utils.dart';
 
@@ -42,7 +41,7 @@ class QuillDescriptionProvider extends InSoBlokViewModel {
   Future<void> onClickSave() async {
     var length = quillController.document.length;
     if (length > kDefaultDescLength) {
-      Fluttertoast.showToast(
+      AIHelpers.showToast(
         msg:
             'The description length can\'t be over $kDefaultDescLength characters!',
       );

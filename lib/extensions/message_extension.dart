@@ -3,13 +3,13 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 
 import 'package:chewie/chewie.dart';
-import 'package:insoblok/extensions/user_extension.dart';
-import 'package:insoblok/widgets/message_clipper.dart';
 import 'package:video_player/video_player.dart';
 
+import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
+import 'package:insoblok/widgets/widgets.dart';
 
 extension MessageModelExt on MessageModel {
   Widget item(BuildContext context, {required UserModel chatUser}) {
