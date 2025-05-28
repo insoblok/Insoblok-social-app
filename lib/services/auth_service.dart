@@ -111,10 +111,6 @@ class AuthService with ListenableServiceMixin {
       var data = await ipAddress.getIpAddress();
       var newUser = await userService.getUser(uid);
       if (newUser != null) {
-        logger.d(newUser.toJson());
-
-        // var ipAddress = IpAddress(type: RequestType.json);
-        // var data = await ipAddress.getIpAddress();
         if (newUser.walletAddress != null) {
           newUser = newUser.copyWith(
             ipAddress: kDebugMode ? kDefaultIpAddress : data['ip'],

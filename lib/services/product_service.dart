@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/services.dart';
 
 import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
@@ -62,5 +65,23 @@ class ProductService {
       'timestamp': FieldValue.serverTimestamp(),
       'regdate': FieldValue.serverTimestamp(),
     });
+  }
+
+  Future<List<ProductTribeCategoryModel>> getProductTypes() async {
+    List<ProductTribeCategoryModel> result = [];
+    final String response = await rootBundle.loadString(
+      'assets/data/vto_tribe_categories.json',
+    );
+    final data = (await json.decode(response));
+    for (var json in (data as List)) {
+      try {
+        var category = ProductTribeCategoryModel.fromJson(json);
+        result.add(category);
+      } catch (e) {
+        logger.e(e);
+        logger.i(json);
+      }
+    }
+    return result;
   }
 }

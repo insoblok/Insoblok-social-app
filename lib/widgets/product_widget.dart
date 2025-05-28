@@ -70,18 +70,13 @@ class ProductImageView extends StatelessWidget {
 
 class ProductItemWidget extends StatelessWidget {
   final ProductModel product;
-  final ProductSubtypeModel category;
   final void Function()? onTap;
 
-  const ProductItemWidget({
-    super.key,
-    required this.product,
-    required this.category,
-    this.onTap,
-  });
+  const ProductItemWidget({super.key, required this.product, this.onTap});
 
   @override
   Widget build(BuildContext context) {
+    var category = (product.tags ?? []).isEmpty ? null : product.tags!.first;
     return Container(
       decoration: BoxDecoration(
         color: AppSettingHelper.background,
@@ -128,24 +123,26 @@ class ProductItemWidget extends StatelessWidget {
                         style: Theme.of(context).textTheme.bodySmall,
                       ),
                     ),
-                    const SizedBox(height: 8.0),
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8.0,
-                        vertical: 4.0,
-                      ),
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Theme.of(context).primaryColor,
-                          width: 0.33,
+                    if (category != null) ...{
+                      const SizedBox(height: 8.0),
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 8.0,
+                          vertical: 4.0,
                         ),
-                        borderRadius: BorderRadius.circular(24.0),
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Theme.of(context).primaryColor,
+                            width: 0.33,
+                          ),
+                          borderRadius: BorderRadius.circular(24.0),
+                        ),
+                        child: Text(
+                          category,
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
                       ),
-                      child: Text(
-                        category.title ?? '',
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
-                    ),
+                    },
                     const SizedBox(height: 8.0),
                     Text(
                       product.name ?? '',

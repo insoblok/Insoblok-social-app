@@ -200,24 +200,32 @@ class LoginPageView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(left: 48.0, right: 48.0, top: 60.0),
+      padding: const EdgeInsets.only(left: 24.0, right: 24.0, top: 60.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            data['title'],
-            style: TextStyle(
-              fontSize: 18.0,
-              fontWeight: FontWeight.bold,
-              color: AIColors.white,
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  data['title'],
+                  style: TextStyle(
+                    fontSize: 18.0,
+                    fontWeight: FontWeight.bold,
+                    color: AIColors.white,
+                  ),
+                ),
+                const SizedBox(height: 8.0),
+                Text(
+                  data['description'],
+                  style: TextStyle(fontSize: 14.0, color: AIColors.white),
+                ),
+              ],
             ),
           ),
-          const SizedBox(height: 8.0),
-          Text(
-            data['description'],
-            style: TextStyle(fontSize: 14.0, color: AIColors.white),
-          ),
-          const SizedBox(height: 40.0),
+          const SizedBox(height: 12.0),
           AIImage(data['image']),
         ],
       ),

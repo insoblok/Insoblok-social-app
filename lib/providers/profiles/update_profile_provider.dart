@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:fluttertoast/fluttertoast.dart';
-
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
@@ -46,7 +44,7 @@ class UpdateProfileProvider extends InSoBlokViewModel {
     }());
 
     if (hasError) {
-      Fluttertoast.showToast(msg: modelError.toString());
+      AIHelpers.showToast(msg: modelError.toString());
     }
   }
 
@@ -69,7 +67,7 @@ class UpdateProfileProvider extends InSoBlokViewModel {
     }());
 
     if (hasError) {
-      Fluttertoast.showToast(msg: modelError.toString());
+      AIHelpers.showToast(msg: modelError.toString());
     }
   }
 
@@ -92,7 +90,7 @@ class UpdateProfileProvider extends InSoBlokViewModel {
     }());
 
     if (hasError) {
-      Fluttertoast.showToast(msg: modelError.toString());
+      AIHelpers.showToast(msg: modelError.toString());
     }
   }
 
@@ -109,7 +107,7 @@ class UpdateProfileProvider extends InSoBlokViewModel {
           );
         }
         await AuthHelper.updateUser(account);
-        Fluttertoast.showToast(msg: 'Successfully updated user profile!');
+        AIHelpers.showToast(msg: 'Successfully updated user profile!');
         Navigator.of(context).pop(true);
       } catch (e) {
         setError(e);
@@ -120,7 +118,7 @@ class UpdateProfileProvider extends InSoBlokViewModel {
     }());
 
     if (hasError) {
-      Fluttertoast.showToast(msg: modelError.toString());
+      AIHelpers.showToast(msg: modelError.toString());
     }
   }
 }

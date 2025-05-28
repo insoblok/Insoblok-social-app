@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:fluttertoast/fluttertoast.dart';
-
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/pages/pages.dart';
 import 'package:insoblok/routers/routers.dart';
@@ -67,7 +65,7 @@ class AccountProvider extends InSoBlokViewModel {
     }());
 
     if (hasError) {
-      Fluttertoast.showToast(msg: modelError.toString());
+      AIHelpers.showToast(msg: modelError.toString());
     }
   }
 
@@ -120,7 +118,7 @@ class AccountProvider extends InSoBlokViewModel {
       }());
 
       if (hasError) {
-        Fluttertoast.showToast(msg: modelError.toString());
+        AIHelpers.showToast(msg: modelError.toString());
       }
     }
   }

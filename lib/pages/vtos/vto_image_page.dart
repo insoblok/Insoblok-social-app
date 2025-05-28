@@ -1,11 +1,11 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:insoblok/extensions/extensions.dart';
-import 'package:loading_indicator/loading_indicator.dart';
 
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:stacked/stacked.dart';
 
+import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/services/services.dart';
@@ -61,9 +61,36 @@ class VTOImagePage extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 24.0),
+                  if ((viewModel.product.tags ?? []).isNotEmpty) ...{
+                    const SizedBox(height: 12.0),
+                    Wrap(
+                      spacing: 12.0,
+                      runSpacing: 8.0,
+                      children: [
+                        for (var tag in viewModel.product.tags ?? []) ...{
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8.0,
+                              vertical: 4.0,
+                            ),
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Theme.of(context).primaryColor,
+                                width: 0.33,
+                              ),
+                              borderRadius: BorderRadius.circular(24.0),
+                            ),
+                            child: Text(
+                              tag,
+                              style: Theme.of(context).textTheme.bodySmall,
+                            ),
+                          ),
+                        },
+                      ],
+                    ),
+                  },
+                  const SizedBox(height: 12.0),
                   AIHelpers.htmlRender(product.description),
-
                   const SizedBox(height: 24.0),
                   Text(
                     'Take a Model',

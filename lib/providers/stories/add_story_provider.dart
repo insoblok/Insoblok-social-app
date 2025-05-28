@@ -2,8 +2,6 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:provider/provider.dart';
 import 'package:vsc_quill_delta_to_html/vsc_quill_delta_to_html.dart';
 
 import 'package:insoblok/models/models.dart';
@@ -25,9 +23,9 @@ class AddStoryProvider extends InSoBlokViewModel {
 
   Future<void> init(BuildContext context) async {
     this.context = context;
-    provider = context.read<UploadMediaProvider>();
-    provider.init(context);
-    // provider = Provider.of<UploadMediaProvider>(context, listen: false);
+
+    provider = UploadMediaProvider.getInstance(context);
+    provider.reset();
   }
 
   String _title = '';
@@ -83,7 +81,7 @@ class AddStoryProvider extends InSoBlokViewModel {
     }());
 
     if (hasError) {
-      Fluttertoast.showToast(msg: modelError.toString());
+      AIHelpers.showToast(msg: modelError.toString());
     }
   }
 
@@ -121,9 +119,9 @@ class AddStoryProvider extends InSoBlokViewModel {
     }());
 
     if (hasError) {
-      Fluttertoast.showToast(msg: modelError.toString());
+      AIHelpers.showToast(msg: modelError.toString());
     } else {
-      Fluttertoast.showToast(
+      AIHelpers.showToast(
         msg: 'Successfully your post! Your feed is in list now!',
       );
       provider.reset();

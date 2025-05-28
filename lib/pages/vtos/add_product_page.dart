@@ -143,6 +143,59 @@ class AddProductPage extends StatelessWidget {
                   ),
                 ],
               ),
+              const SizedBox(height: 18.0),
+              const Divider(),
+              const SizedBox(height: 18.0),
+              Text(
+                'Tags of Product',
+                style: Theme.of(context).textTheme.headlineMedium,
+              ),
+              const SizedBox(height: 18.0),
+              for (var subtypes in viewModel.tribeCategories) ...{
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Divider(),
+                    const SizedBox(height: 12.0),
+                    Text(subtypes.title ?? ''),
+                    const SizedBox(height: 12.0),
+                    Wrap(
+                      spacing: 12.0,
+                      runSpacing: 8.0,
+                      children: [
+                        for (var tag in subtypes.subtypes ?? []) ...{
+                          InkWell(
+                            onTap: () => viewModel.onTapTagItem(tag),
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8.0,
+                                vertical: 4.0,
+                              ),
+                              decoration: BoxDecoration(
+                                color:
+                                    viewModel.selectedTags.contains(tag)
+                                        ? Theme.of(context).primaryColor
+                                        : null,
+                                border: Border.all(
+                                  color: Theme.of(context).primaryColor,
+                                  width: 0.33,
+                                ),
+                                borderRadius: BorderRadius.circular(24.0),
+                              ),
+                              child: Text(
+                                tag.title ?? '',
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                            ),
+                          ),
+                        },
+                      ],
+                    ),
+                    const SizedBox(height: 12.0),
+                  ],
+                ),
+              },
+
               const SizedBox(height: 40.0),
               TextFillButton(
                 text: viewModel.isBusy ? 'Uploading...' : 'Add Product',

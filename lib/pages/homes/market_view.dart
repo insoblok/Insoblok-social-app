@@ -92,7 +92,6 @@ class MarketView extends StatelessWidget {
                       ...viewModel.filterProducts.map((p) {
                         return ProductItemWidget(
                           product: p,
-                          category: viewModel.itemCategory(),
                           onTap: () => viewModel.onTapVTOList(p),
                         );
                       }),

@@ -3,7 +3,6 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 import 'package:chewie/chewie.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:video_player/video_player.dart';
 
@@ -193,7 +192,7 @@ class MessageProvider extends InSoBlokViewModel {
   }
 
   Future<void> onPickGif() async {
-    Fluttertoast.showToast(msg: 'No support this feature yet!');
+    AIHelpers.showToast(msg: 'No support this feature yet!');
   }
 
   Future<void> onPaidEth() async {
@@ -224,7 +223,7 @@ class MessageProvider extends InSoBlokViewModel {
       }
 
       if (hasError) {
-        Fluttertoast.showToast(msg: modelError.toString());
+        AIHelpers.showToast(msg: modelError.toString());
       } else {
         await messageService.sendPaidMessage(chatRoomId: room.id!, coin: coin);
         scrollController.jumpTo(scrollController.position.maxScrollExtent);

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:insoblok/services/services.dart';
@@ -42,11 +41,11 @@ class MediaPickerService {
         }
 
         if (medias.isEmpty) {
-          Fluttertoast.showToast(msg: 'No selected medias!');
+          AIHelpers.showToast(msg: 'No selected medias!');
         }
         return medias;
       } else {
-        Fluttertoast.showToast(msg: 'Permission Denided!');
+        AIHelpers.showToast(msg: 'Permission Denided!');
       }
     }
     return [];
@@ -78,12 +77,12 @@ class MediaPickerService {
         if (media != null) {
           return media;
         } else {
-          Fluttertoast.showToast(
+          AIHelpers.showToast(
             msg: 'No selected ${isImage ? 'image' : 'video'}!',
           );
         }
       } else {
-        Fluttertoast.showToast(msg: 'Permission Denided!');
+        AIHelpers.showToast(msg: 'Permission Denided!');
       }
     }
     return null;
@@ -155,7 +154,7 @@ class MediaPickerService {
     if (isAllowed == true) {
       result = await _picker.pickMultiImage(limit: limit);
     } else {
-      Fluttertoast.showToast(msg: 'Permission Denided!');
+      AIHelpers.showToast(msg: 'Permission Denided!');
     }
     return result;
   }
@@ -166,7 +165,7 @@ class MediaPickerService {
     if (isAllowed == true) {
       result = await _picker.pickMultipleMedia(limit: limit);
     } else {
-      Fluttertoast.showToast(msg: 'Permission Denided!');
+      AIHelpers.showToast(msg: 'Permission Denided!');
     }
     return result;
   }

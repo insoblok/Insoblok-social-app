@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:fluttertoast/fluttertoast.dart';
-
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
@@ -155,7 +153,7 @@ class CreateRoomProvider extends InSoBlokViewModel {
           uid: user.uid ?? '',
         );
         if (existedRoom != null) {
-          Fluttertoast.showToast(msg: 'You already created user\'s chat.');
+          AIHelpers.showToast(msg: 'You already created user\'s chat.');
         } else {
           var room = RoomModel(
             uid: AuthHelper.user?.uid,
@@ -163,7 +161,7 @@ class CreateRoomProvider extends InSoBlokViewModel {
             content: '${AuthHelper.user?.firstName} have created a room',
           );
           await roomService.createRoom(room);
-          Fluttertoast.showToast(msg: "Successfully Create Room!");
+          AIHelpers.showToast(msg: "Successfully Create Room!");
         }
         Navigator.of(context).pop();
       } catch (e) {
@@ -175,7 +173,7 @@ class CreateRoomProvider extends InSoBlokViewModel {
     }());
 
     if (hasError) {
-      Fluttertoast.showToast(msg: modelError.toString());
+      AIHelpers.showToast(msg: modelError.toString());
     }
   }
 }

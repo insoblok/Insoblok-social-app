@@ -2,12 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/providers/providers.dart';
-
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 
@@ -56,7 +54,7 @@ class VTOImageProvider extends InSoBlokViewModel {
     }());
 
     if (hasError) {
-      Fluttertoast.showToast(msg: modelError.toString());
+      AIHelpers.showToast(msg: modelError.toString());
     }
   }
 
@@ -87,13 +85,13 @@ class VTOImageProvider extends InSoBlokViewModel {
     } else if (product.category == ProductCategory.JEWELRY) {
       await _jewelryConvert();
     } else {
-      Fluttertoast.showToast(msg: 'No support this feature yet!');
+      AIHelpers.showToast(msg: 'No support this feature yet!');
     }
   }
 
   Future<void> _clothingConvert() async {
     if (selectedFile == null) {
-      Fluttertoast.showToast(msg: 'Please select a origin photo!');
+      AIHelpers.showToast(msg: 'Please select a origin photo!');
       return;
     }
 
@@ -121,13 +119,13 @@ class VTOImageProvider extends InSoBlokViewModel {
     }());
 
     if (hasError) {
-      Fluttertoast.showToast(msg: modelError.toString());
+      AIHelpers.showToast(msg: modelError.toString());
     }
   }
 
   Future<void> _shoesConvert() async {
     if (selectedFile == null) {
-      Fluttertoast.showToast(msg: 'Please select a model photo!');
+      AIHelpers.showToast(msg: 'Please select a model photo!');
       return;
     }
 
@@ -155,13 +153,13 @@ class VTOImageProvider extends InSoBlokViewModel {
     }());
 
     if (hasError) {
-      Fluttertoast.showToast(msg: modelError.toString());
+      AIHelpers.showToast(msg: modelError.toString());
     }
   }
 
   Future<void> _jewelryConvert() async {
     if (selectedFile == null) {
-      Fluttertoast.showToast(msg: 'Please select a model photo!');
+      AIHelpers.showToast(msg: 'Please select a model photo!');
       return;
     }
 
@@ -189,7 +187,7 @@ class VTOImageProvider extends InSoBlokViewModel {
     }());
 
     if (hasError) {
-      Fluttertoast.showToast(msg: modelError.toString());
+      AIHelpers.showToast(msg: modelError.toString());
     }
   }
 
@@ -208,13 +206,13 @@ class VTOImageProvider extends InSoBlokViewModel {
             ext: 'png',
           );
           if (file != null) {
-            Fluttertoast.showToast(
+            AIHelpers.showToast(
               msg: 'Successfully image download to ${file.path}!',
             );
             _resultFile = file;
           }
         } else {
-          Fluttertoast.showToast(
+          AIHelpers.showToast(
             msg: 'Successfully image download to ${_resultFile!.path}!',
           );
         }
@@ -227,7 +225,7 @@ class VTOImageProvider extends InSoBlokViewModel {
     }());
 
     if (hasError) {
-      Fluttertoast.showToast(msg: modelError.toString());
+      AIHelpers.showToast(msg: modelError.toString());
     }
   }
 
@@ -245,7 +243,7 @@ class VTOImageProvider extends InSoBlokViewModel {
           folderName: 'gallery',
         );
         if (path != null) {
-          Fluttertoast.showToast(msg: 'Successfully image upload to server!');
+          AIHelpers.showToast(msg: 'Successfully image upload to server!');
         } else {
           setError('Failed server error!');
         }
@@ -258,7 +256,7 @@ class VTOImageProvider extends InSoBlokViewModel {
     }());
 
     if (hasError) {
-      Fluttertoast.showToast(msg: modelError.toString());
+      AIHelpers.showToast(msg: modelError.toString());
     }
   }
 
@@ -281,7 +279,7 @@ class VTOImageProvider extends InSoBlokViewModel {
     }());
 
     if (hasError) {
-      Fluttertoast.showToast(msg: modelError.toString());
+      AIHelpers.showToast(msg: modelError.toString());
     }
   }
 
@@ -325,7 +323,7 @@ class VTOImageProvider extends InSoBlokViewModel {
           );
           await storyService.postStory(story: story);
 
-          Fluttertoast.showToast(msg: 'Successfully posted VTO to Lookbook!');
+          AIHelpers.showToast(msg: 'Successfully posted VTO to Lookbook!');
         } else {
           setError('Failed file upload!');
         }
@@ -339,7 +337,7 @@ class VTOImageProvider extends InSoBlokViewModel {
     }());
 
     if (hasError) {
-      Fluttertoast.showToast(msg: modelError.toString());
+      AIHelpers.showToast(msg: modelError.toString());
     }
   }
 }
