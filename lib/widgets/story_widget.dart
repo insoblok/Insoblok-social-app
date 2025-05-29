@@ -99,74 +99,88 @@ class StoryListCell extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        InkWell(
+                        VoteFloatingButton(
                           onTap: () {},
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 36.0,
-                              vertical: 8.0,
-                            ),
-                            decoration: BoxDecoration(
-                              color: AIColors.green,
-                              borderRadius: BorderRadius.circular(24.0),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                AIImage(
-                                  AIImages.icYay,
-                                  width: 32,
-                                  height: 32,
-                                  color: AIColors.white,
-                                ),
-                                const SizedBox(width: 16),
-                                Text(
-                                  'Yay',
-                                  style: TextStyle(
-                                    fontSize: 16.0,
-                                    color: AIColors.white,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
+                          text: 'Yay',
+                          src: AIImages.icYay,
+                          backgroundColor: AIColors.green,
+                          borderColor: AIColors.green,
                         ),
-                        InkWell(
+                        VoteFloatingButton(
                           onTap: () {},
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 36.0,
-                              vertical: 8.0,
-                            ),
-                            decoration: BoxDecoration(
-                              color: AIColors.pink,
-                              borderRadius: BorderRadius.circular(24.0),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                AIImage(
-                                  AIImages.icNay,
-                                  width: 32,
-                                  height: 32,
-                                  color: AIColors.white,
-                                ),
-                                const SizedBox(width: 16),
-                                Text(
-                                  'Nay',
-                                  style: TextStyle(
-                                    fontSize: 16.0,
-                                    color: AIColors.white,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
+                          text: 'Nay',
+                          src: AIImages.icNay,
+                          backgroundColor: AIColors.pink,
+                          borderColor: AIColors.pink,
                         ),
+                        // InkWell(
+                        //   onTap: () {},
+                        //   child: Container(
+                        //     padding: const EdgeInsets.symmetric(
+                        //       horizontal: 36.0,
+                        //       vertical: 8.0,
+                        //     ),
+                        //     decoration: BoxDecoration(
+                        //       color: AIColors.green,
+                        //       borderRadius: BorderRadius.circular(24.0),
+                        //     ),
+                        //     child: Row(
+                        //       mainAxisAlignment: MainAxisAlignment.start,
+                        //       crossAxisAlignment: CrossAxisAlignment.center,
+                        //       mainAxisSize: MainAxisSize.min,
+                        //       children: [
+                        //         AIImage(
+                        //           AIImages.icYay,
+                        //           width: 32,
+                        //           height: 32,
+                        //           color: AIColors.white,
+                        //         ),
+                        //         const SizedBox(width: 16),
+                        //         Text(
+                        //           'Yay',
+                        //           style: TextStyle(
+                        //             fontSize: 16.0,
+                        //             color: AIColors.white,
+                        //           ),
+                        //         ),
+                        //       ],
+                        //     ),
+                        //   ),
+                        // ),
+                        // InkWell(
+                        //   onTap: () {},
+                        //   child: Container(
+                        //     padding: const EdgeInsets.symmetric(
+                        //       horizontal: 36.0,
+                        //       vertical: 8.0,
+                        //     ),
+                        //     decoration: BoxDecoration(
+                        //       color: AIColors.pink,
+                        //       borderRadius: BorderRadius.circular(24.0),
+                        //     ),
+                        //     child: Row(
+                        //       mainAxisAlignment: MainAxisAlignment.start,
+                        //       crossAxisAlignment: CrossAxisAlignment.center,
+                        //       mainAxisSize: MainAxisSize.min,
+                        //       children: [
+                        //         AIImage(
+                        //           AIImages.icNay,
+                        //           width: 32,
+                        //           height: 32,
+                        //           color: AIColors.white,
+                        //         ),
+                        //         const SizedBox(width: 16),
+                        //         Text(
+                        //           'Nay',
+                        //           style: TextStyle(
+                        //             fontSize: 16.0,
+                        //             color: AIColors.white,
+                        //           ),
+                        //         ),
+                        //       ],
+                        //     ),
+                        //   ),
+                        // ),
                       ],
                     ),
                   ],
@@ -300,11 +314,6 @@ class StoryContentPage extends StatelessWidget {
                                   ),
                                 ],
                               ),
-                              // child: StoryCarouselView(
-                              //   story: story,
-                              //   height: double.infinity,
-                              //   onChangePage: (index) {},
-                              // ),
                             ),
                           ),
                         ),
