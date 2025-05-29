@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 
@@ -132,29 +133,6 @@ class VTOImagePage extends StatelessWidget {
                             VTOResultImageView(),
                           ],
                         ),
-                        if (viewModel.resultModel.isNotEmpty) ...{
-                          Container(
-                            padding: const EdgeInsets.only(
-                              left: 12.0,
-                              right: 12.0,
-                            ),
-                            child: ConstrainedBox(
-                              constraints: BoxConstraints(maxHeight: 100.0),
-                              child: TextFormField(
-                                decoration: InputDecoration(
-                                  hintText: 'Add Description',
-                                  border: InputBorder.none,
-                                ),
-                                style: Theme.of(context).textTheme.bodySmall,
-                                maxLines: null,
-                                controller: viewModel.textController,
-                                onChanged: (value) => viewModel.content = value,
-                                onFieldSubmitted: (value) {},
-                                onSaved: (value) {},
-                              ),
-                            ),
-                          ),
-                        },
                         const SizedBox(height: 24.0),
                         TextFillButton(
                           text:
@@ -391,9 +369,10 @@ class VTOGalleryView extends ViewModelWidget<VTOImageProvider> {
   Widget build(BuildContext context, viewModel) {
     List<MediaStoryModel> medias = viewModel.product.medias ?? [];
     logger.d(medias.length);
+    var restValue = medias.length - 3;
 
     return SizedBox(
-      height: 180.0 + 16.0,
+      height: 200,
       child:
           medias.isEmpty
               ? Center(
@@ -402,25 +381,59 @@ class VTOGalleryView extends ViewModelWidget<VTOImageProvider> {
                   style: Theme.of(context).textTheme.labelMedium,
                 ),
               )
-              : SingleChildScrollView(
+              : Container(
                 padding: const EdgeInsets.symmetric(vertical: 8.0),
-                scrollDirection: Axis.horizontal,
                 child: Row(
                   spacing: 8.0,
                   children: [
-                    for (MediaStoryModel gallery in medias) ...{
-                      Container(
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Theme.of(context).primaryColor,
+                    for (var i = 0; i < min(3, medias.length); i++) ...{
+                      Expanded(
+                        child: Container(
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Theme.of(context).primaryColor,
+                            ),
+                            borderRadius: BorderRadius.circular(8.0),
                           ),
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(8.0),
-                          child: AIImage(gallery.link, height: double.infinity),
+                          child: InkWell(
+                            onTap:
+                                () => AIHelpers.goToDetailView(
+                                  context,
+                                  medias
+                                      .map((media) => media.link ?? '')
+                                      .toList(),
+                                ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(8.0),
+                              child: Stack(
+                                children: [
+                                  AIImage(
+                                    medias[i].link,
+                                    width: double.infinity,
+                                    height: double.infinity,
+                                  ),
+                                  if (restValue > 0 && i == 2) ...{
+                                    Container(
+                                      width: double.infinity,
+                                      height: double.infinity,
+                                      color: Theme.of(
+                                        context,
+                                      ).primaryColor.withAlpha(127),
+                                      alignment: Alignment.center,
+                                      child: Text('More +$restValue'),
+                                    ),
+                                  },
+                                ],
+                              ),
+                            ),
+                          ),
                         ),
                       ),
+                    },
+                    if (restValue < 0) ...{
+                      for (var i = 0; i < (3 - medias.length); i++) ...{
+                        Spacer(key: GlobalKey(debugLabel: '$i')),
+                      },
                     },
                   ],
                 ),

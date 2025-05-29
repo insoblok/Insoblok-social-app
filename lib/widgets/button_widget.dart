@@ -189,7 +189,7 @@ class CustomCircleBackButton extends StatelessWidget {
         ),
         decoration: BoxDecoration(
           shape: BoxShape.circle,
-          color: AppSettingHelper.transparentBackground,
+          color: Theme.of(context).primaryColor.withAlpha(128),
         ),
         child: Icon(Icons.arrow_back, size: 18.0),
       ),

@@ -194,7 +194,7 @@ class AccountFloatingHeaderView extends ViewModelWidget<AccountProvider> {
                   kAccountPageTitles[i],
                   style:
                       viewModel.pageIndex == i
-                          ? Theme.of(context).textTheme.bodySmall
+                          ? Theme.of(context).textTheme.bodyMedium
                           : Theme.of(context).textTheme.labelLarge,
                 ),
               ),

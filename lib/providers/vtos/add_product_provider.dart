@@ -3,10 +3,8 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 import 'package:image_picker/image_picker.dart';
-import 'package:vsc_quill_delta_to_html/vsc_quill_delta_to_html.dart';
 
 import 'package:insoblok/models/models.dart';
-import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 
@@ -106,13 +104,9 @@ class AddProductProvider extends InSoBlokViewModel {
 
     await runBusyFuture(() async {
       try {
-        var desc = await Routers.goToQuillDescriptionPage(context);
+        var desc = await AIHelpers.goToDescriptionView(context);
         if (desc != null) {
-          final converter = QuillDeltaToHtmlConverter(
-            desc,
-            ConverterOptions.forEmail(),
-          );
-          _product = product.copyWith(description: converter.convert());
+          _product = product.copyWith(description: desc);
         }
       } catch (e) {
         setError(e);

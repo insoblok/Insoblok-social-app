@@ -23,7 +23,6 @@ class VTOImageProvider extends InSoBlokViewModel {
   void init(BuildContext context, {required ProductModel p}) async {
     this.context = context;
     product = p;
-    logger.d(p.toJson());
     _mediaPickerService = MediaPickerService(this.context);
   }
 
@@ -292,9 +291,15 @@ class VTOImageProvider extends InSoBlokViewModel {
 
     await runBusyFuture(() async {
       try {
+        var hasDescription = await _showDescriptionDialog();
+        String? description;
+        if (hasDescription == true) {
+          description = await AIHelpers.goToDescriptionView(context);
+        }
+
         var story = StoryModel(
-          title: 'Virtual Try-On',
-          text: 'Virtual Try-On',
+          title: 'VTO',
+          text: description ?? 'Virtual Try-On',
           medias: [
             MediaStoryModel(link: originUrl!, type: 'image'),
             MediaStoryModel(link: serverUrl, type: 'image'),
@@ -315,4 +320,82 @@ class VTOImageProvider extends InSoBlokViewModel {
       AIHelpers.showToast(msg: modelError.toString());
     }
   }
+
+  Future<bool?> _showDescriptionDialog() => showDialog<bool>(
+    context: context,
+    builder: (context) {
+      return Center(
+        child: Container(
+          margin: const EdgeInsets.all(40.0),
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.onSecondary,
+            borderRadius: BorderRadius.circular(20.0),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Add Description',
+                style: Theme.of(context).textTheme.titleSmall,
+              ),
+              const SizedBox(height: 16.0),
+              Text(
+                'Do you just want to add a description for LookBook post?',
+                style: Theme.of(context).textTheme.labelLarge,
+              ),
+              const SizedBox(height: 24.0),
+              Row(
+                spacing: 24.0,
+                children: [
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () => Navigator.of(context).pop(true),
+                      child: Container(
+                        height: 44.0,
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).primaryColor,
+                          borderRadius: BorderRadius.circular(16.0),
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          'Add',
+                          style: Theme.of(
+                            context,
+                          ).textTheme.bodyMedium?.copyWith(
+                            color: Theme.of(context).colorScheme.onSecondary,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () => Navigator.of(context).pop(),
+                      child: Container(
+                        height: 44.0,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            width: 2.0,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                          borderRadius: BorderRadius.circular(16.0),
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          'Skip',
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(color: Theme.of(context).primaryColor),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
 }
