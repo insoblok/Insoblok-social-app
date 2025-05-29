@@ -13,6 +13,8 @@ class StoryCarouselView extends StatefulWidget {
   final StoryModel story;
   final double? height;
   final bool showPlaceholder;
+  final bool autoPlay;
+  final ScrollPhysics? scrollPhysics;
   final void Function(int index)? onChangePage;
 
   const StoryCarouselView({
@@ -20,6 +22,8 @@ class StoryCarouselView extends StatefulWidget {
     required this.story,
     this.height = 240.0,
     this.showPlaceholder = false,
+    this.autoPlay = false,
+    this.scrollPhysics,
     this.onChangePage,
   });
 
@@ -74,12 +78,13 @@ class _StoryCarouselViewState extends State<StoryCarouselView> {
                   viewportFraction: 1.0,
                   enlargeCenterPage: false,
                   enableInfiniteScroll: false,
-                  autoPlay: true,
-                  autoPlayInterval: Duration(seconds: 2),
+                  autoPlay: widget.autoPlay,
+                  autoPlayInterval: Duration(seconds: 3),
                   autoPlayAnimationDuration: Duration(seconds: 1),
                   aspectRatio: 3 / 2,
                   height: widget.height,
-                  scrollPhysics: NeverScrollableScrollPhysics(),
+                  scrollPhysics:
+                      widget.scrollPhysics ?? AlwaysScrollableScrollPhysics(),
                   onPageChanged: (index, reason) {
                     indexListener.value = index;
                     if (widget.onChangePage != null) {

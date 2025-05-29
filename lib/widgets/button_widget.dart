@@ -226,3 +226,73 @@ class CircleImageButton extends StatelessWidget {
     );
   }
 }
+
+class VoteFloatingButton extends StatelessWidget {
+  final dynamic src;
+  final void Function()? onTap;
+  final double? imgSize;
+  final Color? backgroundColor;
+  final Color? borderColor;
+  final double? borderRadius;
+  final String text;
+  final double? textSize;
+  final Color? textColor;
+  final double? horizontal;
+  final double? vertical;
+
+  const VoteFloatingButton({
+    super.key,
+    required this.src,
+    this.onTap,
+    this.imgSize,
+    this.backgroundColor,
+    this.borderColor,
+    this.borderRadius,
+    required this.text,
+    this.textSize,
+    this.textColor,
+    this.horizontal,
+    this.vertical,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        padding: EdgeInsets.symmetric(
+          horizontal: horizontal ?? 36.0,
+          vertical: vertical ?? 8.0,
+        ),
+        decoration: BoxDecoration(
+          color: backgroundColor ?? Theme.of(context).primaryColor,
+          borderRadius: BorderRadius.circular(borderRadius ?? 24.0),
+          border: Border.all(
+            color: borderColor ?? Theme.of(context).primaryColor,
+          ),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            AIImage(
+              src,
+              width: imgSize ?? 32,
+              height: imgSize ?? 32,
+              color: textColor ?? AIColors.white,
+            ),
+            const SizedBox(width: 16),
+            Text(
+              text,
+              style: TextStyle(
+                fontSize: textSize ?? 16.0,
+                color: textColor ?? AIColors.white,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

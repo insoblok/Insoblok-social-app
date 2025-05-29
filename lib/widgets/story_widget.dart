@@ -87,6 +87,8 @@ class StoryListCell extends StatelessWidget {
                           child: StoryCarouselView(
                             story: story,
                             height: double.infinity,
+                            autoPlay: true,
+                            scrollPhysics: NeverScrollableScrollPhysics(),
                             onChangePage:
                                 (index) => viewModel.pageIndex = index,
                           ),
@@ -97,74 +99,88 @@ class StoryListCell extends StatelessWidget {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
                       children: [
-                        InkWell(
+                        VoteFloatingButton(
                           onTap: () {},
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 36.0,
-                              vertical: 8.0,
-                            ),
-                            decoration: BoxDecoration(
-                              color: AIColors.green,
-                              borderRadius: BorderRadius.circular(24.0),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                AIImage(
-                                  AIImages.icYay,
-                                  width: 32,
-                                  height: 32,
-                                  color: AIColors.white,
-                                ),
-                                const SizedBox(width: 16),
-                                Text(
-                                  'Yay',
-                                  style: TextStyle(
-                                    fontSize: 16.0,
-                                    color: AIColors.white,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
+                          text: 'Yay',
+                          src: AIImages.icYay,
+                          backgroundColor: AIColors.green,
+                          borderColor: AIColors.green,
                         ),
-                        InkWell(
+                        VoteFloatingButton(
                           onTap: () {},
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 36.0,
-                              vertical: 8.0,
-                            ),
-                            decoration: BoxDecoration(
-                              color: AIColors.pink,
-                              borderRadius: BorderRadius.circular(24.0),
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                AIImage(
-                                  AIImages.icNay,
-                                  width: 32,
-                                  height: 32,
-                                  color: AIColors.white,
-                                ),
-                                const SizedBox(width: 16),
-                                Text(
-                                  'Nay',
-                                  style: TextStyle(
-                                    fontSize: 16.0,
-                                    color: AIColors.white,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
+                          text: 'Nay',
+                          src: AIImages.icNay,
+                          backgroundColor: AIColors.pink,
+                          borderColor: AIColors.pink,
                         ),
+                        // InkWell(
+                        //   onTap: () {},
+                        //   child: Container(
+                        //     padding: const EdgeInsets.symmetric(
+                        //       horizontal: 36.0,
+                        //       vertical: 8.0,
+                        //     ),
+                        //     decoration: BoxDecoration(
+                        //       color: AIColors.green,
+                        //       borderRadius: BorderRadius.circular(24.0),
+                        //     ),
+                        //     child: Row(
+                        //       mainAxisAlignment: MainAxisAlignment.start,
+                        //       crossAxisAlignment: CrossAxisAlignment.center,
+                        //       mainAxisSize: MainAxisSize.min,
+                        //       children: [
+                        //         AIImage(
+                        //           AIImages.icYay,
+                        //           width: 32,
+                        //           height: 32,
+                        //           color: AIColors.white,
+                        //         ),
+                        //         const SizedBox(width: 16),
+                        //         Text(
+                        //           'Yay',
+                        //           style: TextStyle(
+                        //             fontSize: 16.0,
+                        //             color: AIColors.white,
+                        //           ),
+                        //         ),
+                        //       ],
+                        //     ),
+                        //   ),
+                        // ),
+                        // InkWell(
+                        //   onTap: () {},
+                        //   child: Container(
+                        //     padding: const EdgeInsets.symmetric(
+                        //       horizontal: 36.0,
+                        //       vertical: 8.0,
+                        //     ),
+                        //     decoration: BoxDecoration(
+                        //       color: AIColors.pink,
+                        //       borderRadius: BorderRadius.circular(24.0),
+                        //     ),
+                        //     child: Row(
+                        //       mainAxisAlignment: MainAxisAlignment.start,
+                        //       crossAxisAlignment: CrossAxisAlignment.center,
+                        //       mainAxisSize: MainAxisSize.min,
+                        //       children: [
+                        //         AIImage(
+                        //           AIImages.icNay,
+                        //           width: 32,
+                        //           height: 32,
+                        //           color: AIColors.white,
+                        //         ),
+                        //         const SizedBox(width: 16),
+                        //         Text(
+                        //           'Nay',
+                        //           style: TextStyle(
+                        //             fontSize: 16.0,
+                        //             color: AIColors.white,
+                        //           ),
+                        //         ),
+                        //       ],
+                        //     ),
+                        //   ),
+                        // ),
                       ],
                     ),
                   ],
@@ -222,53 +238,83 @@ class StoryContentPage extends StatelessWidget {
                           ),
                           borderRadius: BorderRadius.circular(12.0),
                         ),
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(12.0),
-                          child: AspectRatio(
-                            aspectRatio: 1.91,
-                            child: Row(
-                              children: [
-                                Expanded(
-                                  child: SingleChildScrollView(
-                                    scrollDirection: Axis.horizontal,
-                                    child: Row(
-                                      spacing: 8.0,
-                                      children: [
-                                        for (
-                                          var i = 0;
-                                          i < viewModel.story.medias!.length;
-                                          i++
-                                        ) ...{
-                                          AspectRatio(
-                                            aspectRatio: 0.6,
-                                            child: ClipRRect(
-                                              borderRadius:
-                                                  BorderRadius.circular(12.0),
-                                              child: AspectRatio(
-                                                aspectRatio: 3 / 2,
-                                                child: AIImage(
-                                                  viewModel
-                                                      .story
-                                                      .medias![i]
-                                                      .link,
-                                                  fit: BoxFit.cover,
-                                                  width: double.infinity,
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8.0,
+                            vertical: 8.0,
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(12.0),
+                            child: AspectRatio(
+                              aspectRatio: 1.91,
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: SingleChildScrollView(
+                                      scrollDirection: Axis.horizontal,
+                                      child: Row(
+                                        spacing: 8.0,
+                                        children: [
+                                          for (
+                                            var i = 0;
+                                            i < viewModel.story.medias!.length;
+                                            i++
+                                          ) ...{
+                                            AspectRatio(
+                                              aspectRatio: 0.6,
+                                              child: InkWell(
+                                                onTap:
+                                                    () =>
+                                                        AIHelpers.goToDetailView(
+                                                          context,
+                                                          [
+                                                            viewModel
+                                                                .story
+                                                                .medias![i]
+                                                                .link!,
+                                                          ],
+                                                        ),
+                                                child: Container(
+                                                  decoration: BoxDecoration(
+                                                    border: Border.all(
+                                                      width: 0.33,
+                                                      color:
+                                                          AIColors
+                                                              .speraterColor,
+                                                    ),
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          12.0,
+                                                        ),
+                                                  ),
+                                                  child: ClipRRect(
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                          12.0,
+                                                        ),
+                                                    child: AspectRatio(
+                                                      aspectRatio: 3 / 2,
+                                                      child: AIImage(
+                                                        viewModel
+                                                            .story
+                                                            .medias![i]
+                                                            .link,
+                                                        fit: BoxFit.cover,
+                                                        width: double.infinity,
+                                                      ),
+                                                    ),
+                                                  ),
                                                 ),
                                               ),
                                             ),
-                                          ),
-                                        },
-                                      ],
+                                          },
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                            // child: StoryCarouselView(
-                            //   story: story,
-                            //   height: double.infinity,
-                            //   onChangePage: (index) {},
-                            // ),
                           ),
                         ),
                       ),
