@@ -29,6 +29,9 @@ _StoryModel _$StoryModelFromJson(Map<String, dynamic> json) => _StoryModel(
       comments: (json['comments'] as List<dynamic>?)
           ?.map((e) => StoryCommentModel.fromJson(e as Map<String, dynamic>))
           .toList(),
+      votes: (json['votes'] as List<dynamic>?)
+          ?.map((e) => StoryVoteModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$StoryModelToJson(_StoryModel instance) =>
@@ -45,6 +48,23 @@ Map<String, dynamic> _$StoryModelToJson(_StoryModel instance) =>
       'likes': instance.likes,
       'follows': instance.follows,
       'comments': instance.comments,
+      'votes': instance.votes,
+    };
+
+_StoryVoteModel _$StoryVoteModelFromJson(Map<String, dynamic> json) =>
+    _StoryVoteModel(
+      uid: json['uid'] as String?,
+      vote: json['vote'] as bool?,
+      timestamp: json['timestamp'] == null
+          ? null
+          : DateTime.parse(json['timestamp'] as String),
+    );
+
+Map<String, dynamic> _$StoryVoteModelToJson(_StoryVoteModel instance) =>
+    <String, dynamic>{
+      'uid': instance.uid,
+      'vote': instance.vote,
+      'timestamp': instance.timestamp?.toIso8601String(),
     };
 
 _MediaStoryModel _$MediaStoryModelFromJson(Map<String, dynamic> json) =>

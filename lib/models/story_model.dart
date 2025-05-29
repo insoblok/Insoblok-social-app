@@ -21,10 +21,21 @@ abstract class StoryModel with _$StoryModel {
     List<String>? likes,
     List<String>? follows,
     List<StoryCommentModel>? comments,
+    List<StoryVoteModel>? votes,
   }) = _StoryModel;
 
   factory StoryModel.fromJson(Map<String, dynamic> json) =>
       _$StoryModelFromJson(FirebaseHelper.fromConvertJson(json));
+}
+
+@freezed
+abstract class StoryVoteModel with _$StoryVoteModel {
+  @JsonSerializable(fieldRename: FieldRename.snake)
+  factory StoryVoteModel({String? uid, bool? vote, DateTime? timestamp}) =
+      _StoryVoteModel;
+
+  factory StoryVoteModel.fromJson(Map<String, dynamic> json) =>
+      _$StoryVoteModelFromJson(FirebaseHelper.fromConvertJson(json));
 }
 
 @freezed

@@ -36,6 +36,7 @@ extension StoryModelExt on StoryModel {
       'category': category,
       'medias': (medias ?? []).map((e) => e.toJson()).toList(),
       'comments': (comments ?? []).map((e) => e.toMap()).toList(),
+      'votes': (votes ?? []).map((e) => e.toJson()).toList(),
     };
   }
 }
