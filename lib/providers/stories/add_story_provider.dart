@@ -1,12 +1,7 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
-
-import 'package:vsc_quill_delta_to_html/vsc_quill_delta_to_html.dart';
 
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/providers/providers.dart';
-import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 
@@ -50,17 +45,12 @@ class AddStoryProvider extends InSoBlokViewModel {
   }
 
   Future<void> updateDescription() async {
-    var desc = await Routers.goToQuillDescriptionPage(
+    var desc = await AIHelpers.goToDescriptionView(
       context,
-      origin: jsonEncode(quillData),
+      quillData: quillData,
     );
     if (desc != null) {
-      quillData = desc;
-      final converter = QuillDeltaToHtmlConverter(
-        desc,
-        ConverterOptions.forEmail(),
-      );
-      quillDescription = converter.convert();
+      quillDescription = desc;
       notifyListeners();
     }
   }

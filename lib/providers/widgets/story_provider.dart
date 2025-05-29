@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:vsc_quill_delta_to_html/vsc_quill_delta_to_html.dart';
-
 import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/routers/routers.dart';
@@ -193,15 +191,10 @@ class StoryProvider extends InSoBlokViewModel {
 
     await runBusyFuture(() async {
       try {
-        var desc = await Routers.goToQuillDescriptionPage(context);
+        var desc = await AIHelpers.goToDescriptionView(context);
         logger.d(desc);
-        if ((desc as List<Map<String, dynamic>>?)?.isNotEmpty ?? false) {
-          final converter = QuillDeltaToHtmlConverter(
-            desc!,
-            ConverterOptions.forEmail(),
-          );
-          var content = converter.convert();
-          var comment = StoryCommentModel(uid: user?.uid, content: content);
+        if (desc != null) {
+          var comment = StoryCommentModel(uid: user?.uid, content: desc);
           var comments = List<StoryCommentModel>.from(story.comments ?? []);
           comments.add(comment);
           story = story.copyWith(comments: comments);

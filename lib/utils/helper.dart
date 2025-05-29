@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
@@ -12,6 +13,7 @@ import 'package:insoblok/models/models.dart';
 import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
+import 'package:vsc_quill_delta_to_html/vsc_quill_delta_to_html.dart';
 
 class AIHelpers {
   static Future<String> getDeviceIdentifier() async {
@@ -167,6 +169,21 @@ class AIHelpers {
     List<String> medias,
   ) async {
     Routers.goToMediaDetailPage(context, medias: medias);
+  }
+
+  static Future<String?> goToDescriptionView(
+    BuildContext context, {
+    List<Map<String, dynamic>>? quillData,
+  }) async {
+    var desc = await Routers.goToQuillDescriptionPage(
+      context,
+      origin: jsonEncode(quillData),
+    );
+    final converter = QuillDeltaToHtmlConverter(
+      desc,
+      ConverterOptions.forEmail(),
+    );
+    return converter.convert();
   }
 
   static Future<bool?> showToast({required String msg}) {
