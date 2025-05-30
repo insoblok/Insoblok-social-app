@@ -135,4 +135,29 @@ extension UserModelExt on UserModel {
     {'type': 'location', 'title': 'United State', 'icon': AIImages.icLocation},
     {'type': 'wallet', 'title': 'My Wallet', 'icon': Icons.wallet},
   ];
+
+  Map<String, dynamic> toMap() {
+    return {
+      'uid': uid,
+      'wallet_address': walletAddress,
+      'avatar': avatar,
+      'first_name': firstName,
+      'last_name': lastName,
+      'email': email,
+      'password': password,
+      'city': city,
+      'country': country,
+      'website': website,
+      'desc': desc,
+      'discovery': discovery,
+      'nick_id': nickId,
+      'lat': lat,
+      'lon': lon,
+      'ip_address': ipAddress,
+      'status': status,
+      'likes': likes,
+      'follows': follows,
+      'actions': (actions ?? []).map((e) => e.toJson()).toList(),
+    };
+  }
 }

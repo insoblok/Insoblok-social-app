@@ -37,6 +37,7 @@ mixin _$UserModel {
   String? get status;
   List<String>? get likes;
   List<String>? get follows;
+  List<UserActionModel>? get actions;
 
   /// Create a copy of UserModel
   /// with the given fields replaced by the non-null parameter values.
@@ -81,7 +82,8 @@ mixin _$UserModel {
                 other.timestamp == timestamp) &&
             (identical(other.status, status) || other.status == status) &&
             const DeepCollectionEquality().equals(other.likes, likes) &&
-            const DeepCollectionEquality().equals(other.follows, follows));
+            const DeepCollectionEquality().equals(other.follows, follows) &&
+            const DeepCollectionEquality().equals(other.actions, actions));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -109,12 +111,13 @@ mixin _$UserModel {
         timestamp,
         status,
         const DeepCollectionEquality().hash(likes),
-        const DeepCollectionEquality().hash(follows)
+        const DeepCollectionEquality().hash(follows),
+        const DeepCollectionEquality().hash(actions)
       ]);
 
   @override
   String toString() {
-    return 'UserModel(id: $id, uid: $uid, walletAddress: $walletAddress, avatar: $avatar, firstName: $firstName, lastName: $lastName, email: $email, password: $password, city: $city, country: $country, website: $website, desc: $desc, discovery: $discovery, nickId: $nickId, lat: $lat, lon: $lon, ipAddress: $ipAddress, regdate: $regdate, timestamp: $timestamp, status: $status, likes: $likes, follows: $follows)';
+    return 'UserModel(id: $id, uid: $uid, walletAddress: $walletAddress, avatar: $avatar, firstName: $firstName, lastName: $lastName, email: $email, password: $password, city: $city, country: $country, website: $website, desc: $desc, discovery: $discovery, nickId: $nickId, lat: $lat, lon: $lon, ipAddress: $ipAddress, regdate: $regdate, timestamp: $timestamp, status: $status, likes: $likes, follows: $follows, actions: $actions)';
   }
 }
 
@@ -145,7 +148,8 @@ abstract mixin class $UserModelCopyWith<$Res> {
       DateTime? timestamp,
       String? status,
       List<String>? likes,
-      List<String>? follows});
+      List<String>? follows,
+      List<UserActionModel>? actions});
 }
 
 /// @nodoc
@@ -182,6 +186,7 @@ class _$UserModelCopyWithImpl<$Res> implements $UserModelCopyWith<$Res> {
     Object? status = freezed,
     Object? likes = freezed,
     Object? follows = freezed,
+    Object? actions = freezed,
   }) {
     return _then(_self.copyWith(
       id: freezed == id
@@ -272,6 +277,10 @@ class _$UserModelCopyWithImpl<$Res> implements $UserModelCopyWith<$Res> {
           ? _self.follows
           : follows // ignore: cast_nullable_to_non_nullable
               as List<String>?,
+      actions: freezed == actions
+          ? _self.actions
+          : actions // ignore: cast_nullable_to_non_nullable
+              as List<UserActionModel>?,
     ));
   }
 }
@@ -302,9 +311,11 @@ class _UserModel implements UserModel {
       this.timestamp,
       this.status,
       final List<String>? likes,
-      final List<String>? follows})
+      final List<String>? follows,
+      final List<UserActionModel>? actions})
       : _likes = likes,
-        _follows = follows;
+        _follows = follows,
+        _actions = actions;
   factory _UserModel.fromJson(Map<String, dynamic> json) =>
       _$UserModelFromJson(json);
 
@@ -368,6 +379,16 @@ class _UserModel implements UserModel {
     return EqualUnmodifiableListView(value);
   }
 
+  final List<UserActionModel>? _actions;
+  @override
+  List<UserActionModel>? get actions {
+    final value = _actions;
+    if (value == null) return null;
+    if (_actions is EqualUnmodifiableListView) return _actions;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
+
   /// Create a copy of UserModel
   /// with the given fields replaced by the non-null parameter values.
   @override
@@ -416,7 +437,8 @@ class _UserModel implements UserModel {
                 other.timestamp == timestamp) &&
             (identical(other.status, status) || other.status == status) &&
             const DeepCollectionEquality().equals(other._likes, _likes) &&
-            const DeepCollectionEquality().equals(other._follows, _follows));
+            const DeepCollectionEquality().equals(other._follows, _follows) &&
+            const DeepCollectionEquality().equals(other._actions, _actions));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -444,12 +466,13 @@ class _UserModel implements UserModel {
         timestamp,
         status,
         const DeepCollectionEquality().hash(_likes),
-        const DeepCollectionEquality().hash(_follows)
+        const DeepCollectionEquality().hash(_follows),
+        const DeepCollectionEquality().hash(_actions)
       ]);
 
   @override
   String toString() {
-    return 'UserModel(id: $id, uid: $uid, walletAddress: $walletAddress, avatar: $avatar, firstName: $firstName, lastName: $lastName, email: $email, password: $password, city: $city, country: $country, website: $website, desc: $desc, discovery: $discovery, nickId: $nickId, lat: $lat, lon: $lon, ipAddress: $ipAddress, regdate: $regdate, timestamp: $timestamp, status: $status, likes: $likes, follows: $follows)';
+    return 'UserModel(id: $id, uid: $uid, walletAddress: $walletAddress, avatar: $avatar, firstName: $firstName, lastName: $lastName, email: $email, password: $password, city: $city, country: $country, website: $website, desc: $desc, discovery: $discovery, nickId: $nickId, lat: $lat, lon: $lon, ipAddress: $ipAddress, regdate: $regdate, timestamp: $timestamp, status: $status, likes: $likes, follows: $follows, actions: $actions)';
   }
 }
 
@@ -483,7 +506,8 @@ abstract mixin class _$UserModelCopyWith<$Res>
       DateTime? timestamp,
       String? status,
       List<String>? likes,
-      List<String>? follows});
+      List<String>? follows,
+      List<UserActionModel>? actions});
 }
 
 /// @nodoc
@@ -520,6 +544,7 @@ class __$UserModelCopyWithImpl<$Res> implements _$UserModelCopyWith<$Res> {
     Object? status = freezed,
     Object? likes = freezed,
     Object? follows = freezed,
+    Object? actions = freezed,
   }) {
     return _then(_UserModel(
       id: freezed == id
@@ -610,6 +635,254 @@ class __$UserModelCopyWithImpl<$Res> implements _$UserModelCopyWith<$Res> {
           ? _self._follows
           : follows // ignore: cast_nullable_to_non_nullable
               as List<String>?,
+      actions: freezed == actions
+          ? _self._actions
+          : actions // ignore: cast_nullable_to_non_nullable
+              as List<UserActionModel>?,
+    ));
+  }
+}
+
+/// @nodoc
+mixin _$UserActionModel {
+  String? get postUid;
+  String? get userUid;
+  bool? get value;
+  String? get type;
+  String? get description;
+  DateTime? get timestamp;
+
+  /// Create a copy of UserActionModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $UserActionModelCopyWith<UserActionModel> get copyWith =>
+      _$UserActionModelCopyWithImpl<UserActionModel>(
+          this as UserActionModel, _$identity);
+
+  /// Serializes this UserActionModel to a JSON map.
+  Map<String, dynamic> toJson();
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is UserActionModel &&
+            (identical(other.postUid, postUid) || other.postUid == postUid) &&
+            (identical(other.userUid, userUid) || other.userUid == userUid) &&
+            (identical(other.value, value) || other.value == value) &&
+            (identical(other.type, type) || other.type == type) &&
+            (identical(other.description, description) ||
+                other.description == description) &&
+            (identical(other.timestamp, timestamp) ||
+                other.timestamp == timestamp));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(
+      runtimeType, postUid, userUid, value, type, description, timestamp);
+
+  @override
+  String toString() {
+    return 'UserActionModel(postUid: $postUid, userUid: $userUid, value: $value, type: $type, description: $description, timestamp: $timestamp)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $UserActionModelCopyWith<$Res> {
+  factory $UserActionModelCopyWith(
+          UserActionModel value, $Res Function(UserActionModel) _then) =
+      _$UserActionModelCopyWithImpl;
+  @useResult
+  $Res call(
+      {String? postUid,
+      String? userUid,
+      bool? value,
+      String? type,
+      String? description,
+      DateTime? timestamp});
+}
+
+/// @nodoc
+class _$UserActionModelCopyWithImpl<$Res>
+    implements $UserActionModelCopyWith<$Res> {
+  _$UserActionModelCopyWithImpl(this._self, this._then);
+
+  final UserActionModel _self;
+  final $Res Function(UserActionModel) _then;
+
+  /// Create a copy of UserActionModel
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? postUid = freezed,
+    Object? userUid = freezed,
+    Object? value = freezed,
+    Object? type = freezed,
+    Object? description = freezed,
+    Object? timestamp = freezed,
+  }) {
+    return _then(_self.copyWith(
+      postUid: freezed == postUid
+          ? _self.postUid
+          : postUid // ignore: cast_nullable_to_non_nullable
+              as String?,
+      userUid: freezed == userUid
+          ? _self.userUid
+          : userUid // ignore: cast_nullable_to_non_nullable
+              as String?,
+      value: freezed == value
+          ? _self.value
+          : value // ignore: cast_nullable_to_non_nullable
+              as bool?,
+      type: freezed == type
+          ? _self.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as String?,
+      description: freezed == description
+          ? _self.description
+          : description // ignore: cast_nullable_to_non_nullable
+              as String?,
+      timestamp: freezed == timestamp
+          ? _self.timestamp
+          : timestamp // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+    ));
+  }
+}
+
+/// @nodoc
+
+@JsonSerializable(fieldRename: FieldRename.snake)
+class _UserActionModel implements UserActionModel {
+  _UserActionModel(
+      {this.postUid,
+      this.userUid,
+      this.value,
+      this.type,
+      this.description,
+      this.timestamp});
+  factory _UserActionModel.fromJson(Map<String, dynamic> json) =>
+      _$UserActionModelFromJson(json);
+
+  @override
+  final String? postUid;
+  @override
+  final String? userUid;
+  @override
+  final bool? value;
+  @override
+  final String? type;
+  @override
+  final String? description;
+  @override
+  final DateTime? timestamp;
+
+  /// Create a copy of UserActionModel
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$UserActionModelCopyWith<_UserActionModel> get copyWith =>
+      __$UserActionModelCopyWithImpl<_UserActionModel>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$UserActionModelToJson(
+      this,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _UserActionModel &&
+            (identical(other.postUid, postUid) || other.postUid == postUid) &&
+            (identical(other.userUid, userUid) || other.userUid == userUid) &&
+            (identical(other.value, value) || other.value == value) &&
+            (identical(other.type, type) || other.type == type) &&
+            (identical(other.description, description) ||
+                other.description == description) &&
+            (identical(other.timestamp, timestamp) ||
+                other.timestamp == timestamp));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(
+      runtimeType, postUid, userUid, value, type, description, timestamp);
+
+  @override
+  String toString() {
+    return 'UserActionModel(postUid: $postUid, userUid: $userUid, value: $value, type: $type, description: $description, timestamp: $timestamp)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$UserActionModelCopyWith<$Res>
+    implements $UserActionModelCopyWith<$Res> {
+  factory _$UserActionModelCopyWith(
+          _UserActionModel value, $Res Function(_UserActionModel) _then) =
+      __$UserActionModelCopyWithImpl;
+  @override
+  @useResult
+  $Res call(
+      {String? postUid,
+      String? userUid,
+      bool? value,
+      String? type,
+      String? description,
+      DateTime? timestamp});
+}
+
+/// @nodoc
+class __$UserActionModelCopyWithImpl<$Res>
+    implements _$UserActionModelCopyWith<$Res> {
+  __$UserActionModelCopyWithImpl(this._self, this._then);
+
+  final _UserActionModel _self;
+  final $Res Function(_UserActionModel) _then;
+
+  /// Create a copy of UserActionModel
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? postUid = freezed,
+    Object? userUid = freezed,
+    Object? value = freezed,
+    Object? type = freezed,
+    Object? description = freezed,
+    Object? timestamp = freezed,
+  }) {
+    return _then(_UserActionModel(
+      postUid: freezed == postUid
+          ? _self.postUid
+          : postUid // ignore: cast_nullable_to_non_nullable
+              as String?,
+      userUid: freezed == userUid
+          ? _self.userUid
+          : userUid // ignore: cast_nullable_to_non_nullable
+              as String?,
+      value: freezed == value
+          ? _self.value
+          : value // ignore: cast_nullable_to_non_nullable
+              as bool?,
+      type: freezed == type
+          ? _self.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as String?,
+      description: freezed == description
+          ? _self.description
+          : description // ignore: cast_nullable_to_non_nullable
+              as String?,
+      timestamp: freezed == timestamp
+          ? _self.timestamp
+          : timestamp // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
     ));
   }
 }

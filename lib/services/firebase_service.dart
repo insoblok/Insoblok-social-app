@@ -247,7 +247,12 @@ class FirebaseHelper {
       if (key == 'regdate' || key == 'timestamp') {
         var value = firebaseJson[key];
         if (value != null) {
-          DateTime utcDateTime = (value as Timestamp).toDate();
+          DateTime utcDateTime;
+          if (value is String) {
+            utcDateTime = kFirebaseFormatter.parse(value);
+          } else {
+            utcDateTime = (value as Timestamp).toDate();
+          }
           newJson[key] = utcDateTime.toLocal().toIso8601String();
         }
       } else {

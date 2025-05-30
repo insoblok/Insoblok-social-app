@@ -31,10 +31,27 @@ abstract class UserModel with _$UserModel {
     String? status,
     List<String>? likes,
     List<String>? follows,
+    List<UserActionModel>? actions,
   }) = _UserModel;
 
   factory UserModel.fromJson(Map<String, dynamic> json) =>
       _$UserModelFromJson(FirebaseHelper.fromConvertJson(json));
+}
+
+@freezed
+abstract class UserActionModel with _$UserActionModel {
+  @JsonSerializable(fieldRename: FieldRename.snake)
+  factory UserActionModel({
+    String? postUid,
+    String? userUid,
+    bool? value,
+    String? type,
+    String? description,
+    DateTime? timestamp,
+  }) = _UserActionModel;
+
+  factory UserActionModel.fromJson(Map<String, dynamic> json) =>
+      _$UserActionModelFromJson(FirebaseHelper.fromConvertJson(json));
 }
 
 @freezed

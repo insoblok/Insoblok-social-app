@@ -30,6 +30,13 @@ class AddStoryProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  bool _isVoteImage = true;
+  bool get isVoteImage => _isVoteImage;
+  set isVoteImage(bool s) {
+    _isVoteImage = s;
+    notifyListeners();
+  }
+
   String _quillDescription = '';
   String get quillDescription => _quillDescription;
   set quillDescription(String s) {
@@ -53,6 +60,11 @@ class AddStoryProvider extends InSoBlokViewModel {
       quillDescription = desc;
       notifyListeners();
     }
+  }
+
+  void setPostType(bool isVote) {
+    _isVoteImage = isVote;
+    notifyListeners();
   }
 
   Future<void> onClickAddMediaButton() async {
@@ -98,6 +110,7 @@ class AddStoryProvider extends InSoBlokViewModel {
         var story = StoryModel(
           title: title,
           text: quillDescription,
+          category: isVoteImage ? 'vote' : 'regular',
         ).copyWith(medias: medias);
         await storyService.postStory(story: story);
       } catch (e, s) {

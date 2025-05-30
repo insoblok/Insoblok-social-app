@@ -41,6 +41,7 @@ class AIImages {
   static String icFavorite = 'assets/icons/ic_favourite.svg';
   static String icCommit = 'assets/icons/ic_commit.svg';
   static String icRetwitter = 'assets/icons/ic_retweet.svg';
+  static String icFollow = 'assets/icons/ic_follow.png';
   static String icShare = 'assets/icons/ic_upload.svg';
   static String icAddLogo = 'assets/icons/ic_add_logo.svg';
   static String icCircleMore = 'assets/icons/ic_more_circle.svg';

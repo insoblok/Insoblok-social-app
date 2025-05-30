@@ -178,12 +178,52 @@ class StoryService {
     }
   }
 
+  // Update vote of story
+  Future<void> updateVoteStory({
+    required StoryModel story,
+    required UserModel? user,
+
+    required bool? isVote,
+  }) async {
+    await _firestore.collection('story').doc(story.id).update({
+      ...story.toMap().toFirebaseJson,
+      'regdate': FieldValue.serverTimestamp(),
+    });
+
+    if (user != null) {
+      var votes = List<UserActionModel>.from(user.actions ?? []);
+      var index = votes.indexWhere(
+        (vote) =>
+            vote.userUid == AuthHelper.user?.uid && vote.postUid == story.id,
+      );
+
+      if (index == -1) {
+        votes.add(
+          UserActionModel(
+            postUid: story.id,
+            userUid: AuthHelper.user!.uid!,
+            value: isVote,
+            type: 'vote',
+          ),
+        );
+      } else {
+        votes[index] = UserActionModel(
+          postUid: story.id,
+          userUid: AuthHelper.user!.uid!,
+          value: isVote,
+          type: 'vote',
+        );
+      }
+      user = user.copyWith(actions: votes);
+      await userService.updateUser(user);
+    }
+  }
+
   // Add comment of story
   Future<void> addComment({required StoryModel story}) async {
     await _firestore.collection('story').doc(story.id).update({
       ...story.toMap().toFirebaseJson,
       'regdate': FieldValue.serverTimestamp(),
-      'timestamp': FieldValue.serverTimestamp(),
     });
   }
 }

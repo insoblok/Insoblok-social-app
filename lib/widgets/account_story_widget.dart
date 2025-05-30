@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:insoblok/providers/widgets/story_content_provider.dart';
 import 'package:stacked/stacked.dart';
 import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
@@ -15,8 +16,8 @@ class AccountStoryListCell extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ViewModelBuilder<StoryProvider>.reactive(
-      viewModelBuilder: () => StoryProvider(),
+    return ViewModelBuilder<StoryContentProvider>.reactive(
+      viewModelBuilder: () => StoryContentProvider(),
       onViewModelReady: (viewModel) => viewModel.init(context, model: story),
       builder: (context, viewModel, _) {
         var medias = viewModel.story.medias ?? [];

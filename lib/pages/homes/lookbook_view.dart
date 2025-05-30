@@ -210,13 +210,6 @@ class LookbookView extends StatelessWidget {
                   ],
                 ),
               ),
-            // Align(
-            //   alignment: Alignment.bottomRight,
-            //   child: CustomFloatingButton(
-            //     onTap: () => Routers.goToAddStoryPage(context),
-            //     src: AIImages.icAddLogo,
-            //   ),
-            // ),
           ],
         );
       },
