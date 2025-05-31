@@ -105,7 +105,9 @@ class AddStoryProvider extends InSoBlokViewModel {
       try {
         txtUploadButton = 'Uploading Media(s)...';
         var medias = await provider.uploadMedias();
-        if (quillDescription == '' && medias.isEmpty) return;
+        if (quillDescription == '' && medias.isEmpty) {
+          throw ('Invalid story type');
+        }
         txtUploadButton = 'Adding to Server...';
         var story = StoryModel(
           title: title,

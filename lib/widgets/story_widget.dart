@@ -92,6 +92,8 @@ class StoryListCell extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 16.0),
+                  AIHelpers.htmlRender(viewModel.story.text),
+                  const SizedBox(height: 16.0),
                   Expanded(
                     child: Container(
                       decoration: BoxDecoration(
@@ -118,38 +120,43 @@ class StoryListCell extends StatelessWidget {
                       viewModel.story.category == 'vote') ...{
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      spacing: 12.0,
                       children: [
-                        VoteFloatingButton(
-                          onTap: () {
-                            viewModel.updateVote(true);
-                          },
-                          text: 'Yay (${viewModel.story.cntYay})',
-                          textColor:
-                              viewModel.story.isVote() == true
-                                  ? AIColors.white
-                                  : AIColors.green,
-                          src: AIImages.icYay,
-                          backgroundColor:
-                              viewModel.story.isVote() == true
-                                  ? AIColors.green
-                                  : AIColors.white,
-                          borderColor: AIColors.green,
+                        Expanded(
+                          child: VoteFloatingButton(
+                            onTap: () {
+                              viewModel.updateVote(true);
+                            },
+                            text: 'Yay (${viewModel.story.cntYay})',
+                            textColor:
+                                viewModel.story.isVote() == true
+                                    ? AIColors.white
+                                    : AIColors.green,
+                            src: AIImages.icYay,
+                            backgroundColor:
+                                viewModel.story.isVote() == true
+                                    ? AIColors.green
+                                    : AIColors.white,
+                            borderColor: AIColors.green,
+                          ),
                         ),
-                        VoteFloatingButton(
-                          onTap: () {
-                            viewModel.updateVote(false);
-                          },
-                          text: 'Nay (${viewModel.story.cntNay})',
-                          textColor:
-                              viewModel.story.isVote() == false
-                                  ? AIColors.white
-                                  : AIColors.pink,
-                          src: AIImages.icNay,
-                          backgroundColor:
-                              viewModel.story.isVote() == false
-                                  ? AIColors.pink
-                                  : AIColors.white,
-                          borderColor: AIColors.pink,
+                        Expanded(
+                          child: VoteFloatingButton(
+                            onTap: () {
+                              viewModel.updateVote(false);
+                            },
+                            text: 'Nay (${viewModel.story.cntNay})',
+                            textColor:
+                                viewModel.story.isVote() == false
+                                    ? AIColors.white
+                                    : AIColors.pink,
+                            src: AIImages.icNay,
+                            backgroundColor:
+                                viewModel.story.isVote() == false
+                                    ? AIColors.pink
+                                    : AIColors.white,
+                            borderColor: AIColors.pink,
+                          ),
                         ),
                       ],
                     ),
