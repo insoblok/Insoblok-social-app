@@ -1,11 +1,12 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:image_picker/image_picker.dart';
 
 import 'package:insoblok/models/models.dart';
-import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 
@@ -20,10 +21,43 @@ class VTOImageProvider extends InSoBlokViewModel {
   late MediaPickerService _mediaPickerService;
   late ProductModel product;
 
+  final List<UserCountryModel> _countries = [];
+  List<UserCountryModel> get countries => _countries;
+
   void init(BuildContext context, {required ProductModel p}) async {
     this.context = context;
+
     product = p;
     _mediaPickerService = MediaPickerService(this.context);
+
+    final String response = await rootBundle.loadString(
+      'assets/data/country.json',
+    );
+    final data = await json.decode(response);
+    _countries.addAll((data as List).map((d) => UserCountryModel.fromJson(d)));
+
+    notifyListeners();
+  }
+
+  UserCountryModel? _selectedCountry;
+  UserCountryModel? get selectedCountry => _selectedCountry;
+  set selectedCountry(UserCountryModel? c) {
+    _selectedCountry = c;
+    notifyListeners();
+  }
+
+  String? _gender;
+  String? get gender => _gender;
+  set gender(String? s) {
+    _gender = s;
+    notifyListeners();
+  }
+
+  int? _age;
+  int? get age => _age;
+  set age(int? i) {
+    _age = i;
+    notifyListeners();
   }
 
   int _tagIndex = 0;
@@ -114,6 +148,8 @@ class VTOImageProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  final _vtoService = VTOService();
+
   Future<void> _clothingConvert() async {
     if (selectedFile == null) {
       AIHelpers.showToast(msg: 'Please select a origin photo!');
@@ -135,10 +171,10 @@ class VTOImageProvider extends InSoBlokViewModel {
           throw ('Failed origin image uploaded!');
         }
 
-        var resultUrl = await VTOService.convertVTOClothing(
+        var resultUrl = await _vtoService.convertVTOClothing(
           modelUrl: originUrl!,
-          clothingLink: product.modelImage,
-          clothingType: product.type ?? 'tops',
+          photoUrl: product.modelImage,
+          type: product.type ?? 'tops',
         );
         if (resultUrl == null) {
           throw ('Failed AI Convertor!');
@@ -224,26 +260,55 @@ class VTOImageProvider extends InSoBlokViewModel {
   }
 
   Future<void> _jewelryConvert() async {
-    if (selectedFile == null) {
-      AIHelpers.showToast(msg: 'Please select a model photo!');
-      return;
-    }
-
     if (isBusy) return;
     clearErrors();
 
+    isConverting = true;
     await runBusyFuture(() async {
       try {
-        // isConverting = true;
-        // var result = await VTOService.convertVTOClothing(
-        //   path: selectedFile!.path,
-        //   clothingLink: product.modelImage,
-        //   clothingType: product.type ?? 'tops',
-        //   folderName: product.categoryName?.toLowerCase() ?? 'clothing',
-        // );
-        // if (result != null) {
-        //   resultModel = result;
-        // }
+        var resultUrl = await _vtoService.getVTOJewelryModelImage(
+          modelUrl: product.modelImage!,
+          type: product.type ?? 'ring',
+          gender: gender,
+          country: selectedCountry?.name,
+          age: age == null ? null : '$age',
+        );
+        if (resultUrl == null) {
+          throw ('Failed AI Convertor!');
+        }
+
+        _resultFile = await NetworkHelper.downloadFile(
+          resultUrl,
+          type: 'gallery',
+          ext: 'png',
+        );
+        if (_resultFile == null) {
+          throw ('Failed result file downloaded!');
+        }
+
+        var path = await FirebaseHelper.uploadFile(
+          file: _resultFile!,
+          folderName: 'gallery',
+        );
+
+        if (path != null) {
+          serverUrl = path;
+
+          List<MediaStoryModel> medias = [];
+          medias.addAll(product.medias ?? []);
+
+          if (!medias.map((m) => m.link).toList().contains(serverUrl)) {
+            medias.insert(0, MediaStoryModel(link: serverUrl, type: 'image'));
+            logger.d(medias.length);
+            product = product.copyWith(medias: medias);
+            await productService.updateProduct(
+              id: product.id!,
+              product: product,
+            );
+          }
+        } else {
+          throw ('Failed server error!');
+        }
       } catch (e) {
         setError(e);
         logger.e(e);
