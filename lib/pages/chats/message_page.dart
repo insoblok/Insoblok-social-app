@@ -107,8 +107,15 @@ class MessagePage extends StatelessWidget {
                                 maxLines: null,
                                 controller: viewModel.textController,
                                 onChanged: (value) => viewModel.content = value,
-                                onFieldSubmitted: (value) {},
-                                onSaved: (value) {},
+                                onFieldSubmitted: (value) {
+                                  viewModel.sendMessage();
+                                },
+                                onSaved: (value) {
+                                  logger.d('onSaved');
+                                },
+                                onEditingComplete: () {
+                                  logger.d('onEditingComplete');
+                                },
                               ),
                             ),
                           ),

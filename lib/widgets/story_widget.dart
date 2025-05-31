@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:insoblok/providers/widgets/story_content_provider.dart';
-import 'package:insoblok/widgets/widgets.dart';
-import 'package:loading_indicator/loading_indicator.dart';
 
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:stacked/stacked.dart';
 
 import 'package:insoblok/extensions/extensions.dart';
@@ -11,6 +9,7 @@ import 'package:insoblok/pages/pages.dart';
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
+import 'package:insoblok/widgets/widgets.dart';
 
 class StoryListCell extends StatelessWidget {
   final StoryModel story;
