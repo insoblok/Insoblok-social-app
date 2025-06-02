@@ -11,7 +11,7 @@ class UserService {
   Future<UserModel?> createUser(UserModel user) async {
     try {
       await _userCollection.add({
-        ...user.toJson().toFirebaseJson,
+        ...user.toMap().toFirebaseJson,
         'timestamp': FieldValue.serverTimestamp(),
         'regdate': FieldValue.serverTimestamp(),
       });
@@ -52,9 +52,10 @@ class UserService {
     return users.where((u) => u?.uid != AuthHelper.user?.uid).toList();
   }
 
-  Future<void> updateUser(UserModel user) async {
+  Future<void> updateUser(UserModel user, {Map<String, dynamic>? data}) async {
     await _userCollection.doc(user.id).update({
-      ...user.toJson().toFirebaseJson,
+      ...user.toMap().toFirebaseJson,
+      ...(data ?? {}),
       'timestamp': FieldValue.serverTimestamp(),
     });
   }

@@ -97,17 +97,19 @@ class AccountWalletPage extends StatelessWidget {
                 child: Row(
                   spacing: 12.0,
                   children: [
-                    AccountWalletTokenCover(
-                      child: Column(
-                        children: [
-                          Text('Ethereum'),
-                          Text(
-                            '\$ 0.00',
-                            style: Theme.of(context).textTheme.titleMedium,
-                          ),
-                        ],
+                    for (var item in kWalletTokenList) ...{
+                      AccountWalletTokenCover(
+                        child: Column(
+                          children: [
+                            Text(
+                              item['name']!,
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                            Text('${item['short_name']} 0.00'),
+                          ],
+                        ),
                       ),
-                    ),
+                    },
                     Container(
                       width: 160.0,
                       height: 80.0,

@@ -260,10 +260,7 @@ class VoteFloatingButton extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Container(
-        padding: EdgeInsets.symmetric(
-          horizontal: horizontal ?? 36.0,
-          vertical: vertical ?? 8.0,
-        ),
+        height: 52.0,
         decoration: BoxDecoration(
           color: backgroundColor ?? Theme.of(context).primaryColor,
           borderRadius: BorderRadius.circular(borderRadius ?? 24.0),
@@ -271,6 +268,7 @@ class VoteFloatingButton extends StatelessWidget {
             color: borderColor ?? Theme.of(context).primaryColor,
           ),
         ),
+        alignment: Alignment.center,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,

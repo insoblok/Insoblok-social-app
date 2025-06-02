@@ -179,6 +179,7 @@ class AIHelpers {
       context,
       origin: jsonEncode(quillData),
     );
+    if (desc == null) return null;
     final converter = QuillDeltaToHtmlConverter(
       desc,
       ConverterOptions.forEmail(),

@@ -103,6 +103,21 @@ class AddStoryPage extends StatelessWidget {
                       },
                     ),
                     const SizedBox(height: 40.0),
+                    Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Checkbox(
+                          value: viewModel.isVoteImage,
+                          onChanged: (bool? newValue) {
+                            viewModel.setPostType(newValue ?? true);
+                          },
+                        ),
+                        Text(
+                          'Post as a Vote Story',
+                          style: Theme.of(context).textTheme.labelMedium,
+                        ),
+                      ],
+                    ),
                     TextFillButton(
                       text: viewModel.txtUploadButton,
                       color: viewModel.isBusy ? AIColors.grey : AIColors.pink,

@@ -21,29 +21,11 @@ class StoryProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  final PageController _pageController = PageController();
-  PageController get pageController => _pageController;
-  int _currentPage = 0;
-
   void init(BuildContext context, {required StoryModel model}) async {
     this.context = context;
     story = model;
 
-    _pageController.addListener(() {
-      var currentPage = _pageController.page?.round();
-      if (currentPage != null && currentPage != _currentPage) {
-        _currentPage = currentPage;
-        notifyListeners();
-      }
-    });
-
     fetchUser();
-  }
-
-  @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
   }
 
   UserModel? _owner;
@@ -85,135 +67,66 @@ class StoryProvider extends InSoBlokViewModel {
   final _storyService = StoryService();
   StoryService get storyService => _storyService;
 
-  bool _isLiking = false;
-  bool get isLiking => _isLiking;
-  set isLiking(bool f) {
-    _isLiking = f;
+  bool _isVote = false;
+  bool get isVote => _isVote;
+  set isVote(bool f) {
+    _isVote = f;
     notifyListeners();
   }
 
-  Future<void> updateLike() async {
+  Future<void> updateVote(bool isVote) async {
     if (isBusy) return;
     clearErrors();
 
     if (story.uid == user?.uid) {
-      AIHelpers.showToast(msg: 'You can\'t like to your feed!');
+      AIHelpers.showToast(msg: 'You can\'t vote to your feed!');
       return;
     }
-
-    isLiking = true;
-    var likes = List<String>.from(story.likes ?? []);
+    var votes = List<StoryVoteModel>.from(story.votes ?? []);
     await runBusyFuture(() async {
       try {
-        if (story.isLike()) {
-          likes.remove(user!.uid);
+        if (story.isVote() == null) {
+          votes.add(
+            StoryVoteModel(
+              uid: user?.uid,
+              vote: isVote,
+              // timestamp: DateTime.now(),
+            ),
+          );
         } else {
-          likes.add(user!.uid!);
+          for (var i = 0; i < votes.length; i++) {
+            var vote = votes[i];
+            if (vote.uid == user?.uid) {
+              votes[i] = StoryVoteModel(
+                uid: user?.uid,
+                vote: isVote,
+                // timestamp: DateTime.now(),
+              );
+            }
+          }
         }
-        await storyService.updateLikeStory(
-          story: story.copyWith(likes: likes),
+        await storyService.updateVoteStory(
+          story: story.copyWith(votes: votes),
           user: owner,
+          isVote: isVote,
         );
       } catch (e) {
         setError(e);
         logger.e(e);
-      } finally {
-        isLiking = false;
-      }
+      } finally {}
     }());
 
     if (hasError) {
       AIHelpers.showToast(msg: modelError.toString());
+      notifyListeners();
     } else {
-      story = story.copyWith(likes: likes);
-      if (story.isLike()) {
-        AIHelpers.showToast(msg: 'You liked to a feed!');
+      story = story.copyWith(votes: votes);
+      if (story.isVote() != null && story.isVote() == true) {
+        AIHelpers.showToast(msg: 'Yay!');
       } else {
-        AIHelpers.showToast(msg: 'You unliked to a feed!');
+        AIHelpers.showToast(msg: 'Nay!');
       }
       notifyListeners();
-    }
-  }
-
-  bool _isFollowing = false;
-  bool get isFollowing => _isFollowing;
-  set isFollowing(bool f) {
-    _isFollowing = f;
-    notifyListeners();
-  }
-
-  Future<void> updateFollow() async {
-    if (isBusy) return;
-    clearErrors();
-
-    if (story.uid == user?.uid) {
-      AIHelpers.showToast(msg: 'You can\'t follow to your feed!');
-      return;
-    }
-
-    isFollowing = true;
-    var follows = List<String>.from(story.follows ?? []);
-    await runBusyFuture(() async {
-      try {
-        if (story.isFollow()) {
-          follows.remove(user!.uid);
-        } else {
-          follows.add(user!.uid!);
-        }
-        await storyService.updateFollowStory(
-          story: story.copyWith(follows: follows),
-          user: owner,
-        );
-      } catch (e) {
-        setError(e);
-        logger.e(e);
-      } finally {
-        isFollowing = false;
-      }
-    }());
-
-    if (hasError) {
-      AIHelpers.showToast(msg: modelError.toString());
-    } else {
-      story = story.copyWith(follows: follows);
-      if (story.isFollow()) {
-        AIHelpers.showToast(msg: 'You followed to a feed!');
-      } else {
-        AIHelpers.showToast(msg: 'You unfollowed to a feed!');
-      }
-      notifyListeners();
-    }
-  }
-
-  Future<void> addComment() async {
-    if (isBusy) return;
-    clearErrors();
-
-    await runBusyFuture(() async {
-      try {
-        var desc = await AIHelpers.goToDescriptionView(context);
-        logger.d(desc);
-        if (desc != null) {
-          var comment = StoryCommentModel(uid: user?.uid, content: desc);
-          var comments = List<StoryCommentModel>.from(story.comments ?? []);
-          comments.add(comment);
-          story = story.copyWith(comments: comments);
-          await storyService.addComment(story: story);
-
-          AIHelpers.showToast(msg: 'Successfully add your comment!');
-        } else {
-          setError('Your comment is empty!');
-        }
-      } catch (e) {
-        setError(e);
-        logger.e(e);
-      } finally {
-        notifyListeners();
-      }
-    }());
-
-    if (hasError) {
-      AIHelpers.showToast(msg: modelError.toString());
     }
   }
 }
