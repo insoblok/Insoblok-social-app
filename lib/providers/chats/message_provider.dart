@@ -425,7 +425,7 @@ class _VideoPreviewState extends State<VideoPreview> {
         children: [
           _videoPlayerController.value.isInitialized
               ? Chewie(controller: _chewieController)
-              : Center(child: Loader()),
+              : Center(child: Loader(size: 30)),
           Align(
             alignment: Alignment.center,
             child: IconButton(
