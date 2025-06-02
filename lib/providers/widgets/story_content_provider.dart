@@ -26,6 +26,8 @@ class StoryContentProvider extends InSoBlokViewModel {
   final _scrollController = ScrollController();
   ScrollController get scrollController => _scrollController;
 
+  final _userService = UserService();
+
   void init(BuildContext context, {required StoryModel model}) async {
     this.context = context;
     story = model;
@@ -35,6 +37,10 @@ class StoryContentProvider extends InSoBlokViewModel {
     } else {
       actionType('comment');
     }
+
+    owner = await _userService.getUser(story.uid!);
+
+    notifyListeners();
   }
 
   UserModel? _owner;

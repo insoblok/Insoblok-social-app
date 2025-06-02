@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
+import 'package:insoblok/extensions/extensions.dart';
 
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
@@ -124,7 +126,7 @@ extension UserModelExt on UserModel {
 
   String get sinceStr {
     return kDateMMMMYYFormatter.format(
-      regdate != null ? regdate! : DateTime.now(),
+      updateDate != null ? updateDate! : DateTime.now(),
     );
   }
 
@@ -157,7 +159,9 @@ extension UserModelExt on UserModel {
       'status': status,
       'likes': likes,
       'follows': follows,
-      'actions': (actions ?? []).map((e) => e.toJson()).toList(),
+      'reward_date': rewardDate,
+      'update_date': updateDate,
+      'actions': (actions ?? []).map((e) => e.toJson().toFirebaseJson).toList(),
     };
   }
 }

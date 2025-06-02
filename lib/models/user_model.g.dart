@@ -24,13 +24,14 @@ _UserModel _$UserModelFromJson(Map<String, dynamic> json) => _UserModel(
       lat: (json['lat'] as num?)?.toDouble(),
       lon: (json['lon'] as num?)?.toDouble(),
       ipAddress: json['ip_address'] as String?,
-      regdate: json['regdate'] == null
+      updateDate: json['update_date'] == null
           ? null
-          : DateTime.parse(json['regdate'] as String),
+          : DateTime.parse(json['update_date'] as String),
       timestamp: json['timestamp'] == null
           ? null
           : DateTime.parse(json['timestamp'] as String),
       status: json['status'] as String?,
+      rewardDate: (json['reward_date'] as num?)?.toInt(),
       likes:
           (json['likes'] as List<dynamic>?)?.map((e) => e as String).toList(),
       follows:
@@ -59,9 +60,10 @@ Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
       'lat': instance.lat,
       'lon': instance.lon,
       'ip_address': instance.ipAddress,
-      'regdate': instance.regdate?.toIso8601String(),
+      'update_date': instance.updateDate?.toIso8601String(),
       'timestamp': instance.timestamp?.toIso8601String(),
       'status': instance.status,
+      'reward_date': instance.rewardDate,
       'likes': instance.likes,
       'follows': instance.follows,
       'actions': instance.actions,

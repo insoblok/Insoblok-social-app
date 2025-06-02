@@ -13,7 +13,7 @@ class UserService {
       await _userCollection.add({
         ...user.toMap().toFirebaseJson,
         'timestamp': FieldValue.serverTimestamp(),
-        'regdate': FieldValue.serverTimestamp(),
+        'update_date': FieldValue.serverTimestamp(),
       });
       return getUser(user.uid!);
     } on FirebaseException catch (e) {
@@ -56,7 +56,7 @@ class UserService {
     await _userCollection.doc(user.id).update({
       ...user.toMap().toFirebaseJson,
       ...(data ?? {}),
-      'timestamp': FieldValue.serverTimestamp(),
+      'update_date': FieldValue.serverTimestamp(),
     });
   }
 

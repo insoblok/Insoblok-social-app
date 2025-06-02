@@ -91,7 +91,7 @@ class CreateRoomPage extends StatelessWidget {
                                   ),
                                 ),
                                 Text(
-                                  '${user.regdate}',
+                                  '${user.timestamp?.timeago}',
                                   style: TextStyle(
                                     fontSize: 12.0,
                                     color: AIColors.grey,

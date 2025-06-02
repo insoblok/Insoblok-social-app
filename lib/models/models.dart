@@ -7,3 +7,4 @@ export 'news_model.dart';
 export 'vto_model.dart';
 export 'product_model.dart';
 export 'post_model.dart';
+export 'app_setting_model.dart';

@@ -111,14 +111,38 @@ class AuthService with ListenableServiceMixin {
       var data = await ipAddress.getIpAddress();
       var newUser = await userService.getUser(uid);
       if (newUser != null) {
+        var reward = newUser.rewardDate ?? 0;
+        var loginedDate = newUser.updateDate ?? DateTime.now();
+
+        logger.d(kDateYMDFormatter.format(newUser.updateDate!));
+
+        var logined = DateTime(
+          loginedDate.year,
+          loginedDate.month,
+          loginedDate.day,
+        );
+        var current = DateTime(
+          DateTime.now().year,
+          DateTime.now().month,
+          DateTime.now().day,
+        );
+
+        if (current.difference(logined) == Duration(days: 1)) {
+          reward = reward + 1;
+        } else if (current.difference(logined) > Duration(days: 1)) {
+          reward = 0;
+        }
+
         if (newUser.walletAddress != null) {
           newUser = newUser.copyWith(
             ipAddress: kDebugMode ? kDefaultIpAddress : data['ip'],
+            rewardDate: reward,
           );
         } else {
           newUser = newUser.copyWith(
             walletAddress: walletAddress,
             ipAddress: kDebugMode ? kDefaultIpAddress : data['ip'],
+            rewardDate: reward,
           );
         }
 
@@ -135,6 +159,7 @@ class AuthService with ListenableServiceMixin {
                   .toLowerCase(),
           walletAddress: walletAddress,
           ipAddress: kDebugMode ? kDefaultIpAddress : data['ip'],
+          rewardDate: 0,
         );
         newUser = await userService.createUser(newUser);
         _userRx.value = newUser;
