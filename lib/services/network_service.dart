@@ -90,9 +90,9 @@ class NetworkService with ListenableServiceMixin {
     queryParams ??= <String, String>{};
 
     var pParm = {
-      ...(postParams ?? {}),
       'email': kDefaultVTOEmail,
       'password': kDefaultVTOPassword,
+      ...(postParams ?? {}),
     };
 
     logger.d(pParm);

@@ -126,13 +126,22 @@ class VTOImagePage extends StatelessWidget {
                           style: Theme.of(context).textTheme.labelMedium,
                         ),
                         const SizedBox(height: 12.0),
-                        Row(
-                          spacing: 12.0,
-                          children: [
-                            VTOOriginImageView(),
-                            VTOResultImageView(),
-                          ],
-                        ),
+                        if (viewModel.product.category ==
+                            ProductCategory.CLOTHING) ...{
+                          Row(
+                            spacing: 12.0,
+                            children: [
+                              VTOOriginImageView(),
+                              VTOResultImageView(),
+                            ],
+                          ),
+                        },
+
+                        if (viewModel.product.category ==
+                            ProductCategory.JEWELRY) ...{
+                          VTOFashionImageView(),
+                        },
+
                         const SizedBox(height: 24.0),
                         TextFillButton(
                           text:
@@ -157,6 +166,185 @@ class VTOImagePage extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+class VTOFashionImageView extends ViewModelWidget<VTOImageProvider> {
+  const VTOFashionImageView({super.key});
+
+  @override
+  Widget build(BuildContext context, viewModel) {
+    return Column(
+      children: [
+        Row(
+          spacing: 12.0,
+          children: [
+            if (viewModel.countries.isNotEmpty)
+              Expanded(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text('Country'),
+                    const SizedBox(height: 4.0),
+                    Container(
+                      height: 44.0,
+                      decoration: kNoBorderDecoration,
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                      child: DropdownButton<UserCountryModel>(
+                        isExpanded: true,
+                        value: viewModel.selectedCountry,
+                        dropdownColor:
+                            Theme.of(context).colorScheme.onSecondary,
+                        icon: const Icon(Icons.keyboard_arrow_down),
+                        underline: Container(),
+                        items:
+                            viewModel.countries.map((country) {
+                              return DropdownMenuItem(
+                                value: country,
+                                child: Text(
+                                  country.name ?? '',
+                                  style: Theme.of(context).textTheme.bodySmall,
+                                ),
+                              );
+                            }).toList(),
+                        onChanged: (c) => viewModel.selectedCountry = c,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            Expanded(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text('Gender'),
+                  const SizedBox(height: 4.0),
+                  Container(
+                    height: 44.0,
+                    decoration: kNoBorderDecoration,
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: DropdownButton<String>(
+                      isExpanded: true,
+                      value: viewModel.gender,
+                      dropdownColor: Theme.of(context).colorScheme.onSecondary,
+                      icon: const Icon(Icons.keyboard_arrow_down),
+                      underline: Container(),
+                      items:
+                          [ProductCategory.MAN, ProductCategory.WOMAN].map((
+                            name,
+                          ) {
+                            return DropdownMenuItem(
+                              value: name,
+                              child: Text(
+                                name.toTitleCase,
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                            );
+                          }).toList(),
+                      onChanged: (g) => viewModel.gender = g,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text('Age (30 ~ 70)'),
+                  const SizedBox(height: 4.0),
+                  Container(
+                    height: 44.0,
+                    decoration: kNoBorderDecoration,
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: DropdownButton<int>(
+                      isExpanded: true,
+                      value: viewModel.age,
+                      dropdownColor: Theme.of(context).colorScheme.onSecondary,
+                      icon: const Icon(Icons.keyboard_arrow_down),
+                      underline: Container(),
+                      items:
+                          List<int>.generate(41, (index) => index + 30).map((
+                            value,
+                          ) {
+                            return DropdownMenuItem(
+                              value: value,
+                              child: Text(
+                                '$value',
+                                style: Theme.of(context).textTheme.bodySmall,
+                              ),
+                            );
+                          }).toList(),
+                      onChanged: (i) => viewModel.age = i,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 16.0),
+        Text('Fashion Image'),
+        const SizedBox(height: 12.0),
+        Container(
+          decoration: BoxDecoration(
+            border: Border.all(
+              width: 0.33,
+              color: Theme.of(context).primaryColor,
+            ),
+            borderRadius: BorderRadius.circular(16.0),
+          ),
+          child: Stack(
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(16.0),
+                child: AspectRatio(
+                  aspectRatio: 1.4,
+                  child:
+                      viewModel.serverUrl != null
+                          ? AIImage(
+                            viewModel.serverUrl,
+                            width: double.infinity,
+                            fit: BoxFit.cover,
+                          )
+                          : Center(
+                            child: Text(
+                              'That will be taken around a min.',
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                ),
+              ),
+              if (viewModel.serverUrl != null) ...{
+                Align(
+                  alignment: Alignment.topRight,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      spacing: 8.0,
+                      children: [
+                        CircleImageButton(
+                          src: Icons.fullscreen,
+                          onTap:
+                              () => AIHelpers.goToDetailView(context, [
+                                viewModel.serverUrl!,
+                              ]),
+                        ),
+                        CircleImageButton(
+                          src: Icons.share,
+                          onTap: viewModel.onClickShareButton,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              },
+            ],
+          ),
+        ),
+      ],
     );
   }
 }

@@ -8,48 +8,6 @@ import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 
-class ProductCategory {
-  static final CLOTHING = 'Clothing';
-  static final SHOES = 'Shoes';
-  static final JEWELRY = 'Jewelry';
-}
-
-const kProductCategoryNames = [
-  'Dress',
-  'Shirts',
-  'Trousers',
-  'Shoes',
-  'Jewelry',
-  'Necklace',
-  'Bracelet',
-  'Earrings',
-  'Watch',
-];
-
-final kProductCategories = [
-  ProductCategory.CLOTHING,
-  ProductCategory.CLOTHING,
-  ProductCategory.CLOTHING,
-  ProductCategory.SHOES,
-  ProductCategory.JEWELRY,
-  ProductCategory.JEWELRY,
-  ProductCategory.JEWELRY,
-  ProductCategory.JEWELRY,
-  ProductCategory.JEWELRY,
-];
-
-const kProductTypeNames = [
-  'one-pieces',
-  'tops',
-  'bottoms',
-  'shoes',
-  'ring',
-  'necklace',
-  'bracelet',
-  'earrings',
-  'watch',
-];
-
 class AddProductProvider extends InSoBlokViewModel {
   late BuildContext _context;
   BuildContext get context => _context;
