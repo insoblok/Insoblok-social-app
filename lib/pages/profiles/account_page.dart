@@ -80,7 +80,7 @@ class AccountPage extends StatelessWidget {
                     ),
                   ],
                 ),
-                if (viewModel.isCreatingRoom) Center(child: Loader()),
+                if (viewModel.isCreatingRoom) Center(child: Loader(size: 60)),
               ],
             ),
           ),

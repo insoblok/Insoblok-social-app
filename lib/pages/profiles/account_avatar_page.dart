@@ -194,7 +194,7 @@ class AccountAvatarPage extends StatelessWidget {
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              Loader(),
+                              Loader(size: 60),
                               Padding(
                                 padding: const EdgeInsets.symmetric(
                                   vertical: 24.0,

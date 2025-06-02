@@ -47,7 +47,7 @@ class Navigation {
     defineRoutes();
   }
 
-  defineRoutes() {
+  dynamic defineRoutes() {
     initRoute<T>(
       String route,
       Function(T? props) init, {

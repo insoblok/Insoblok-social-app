@@ -27,7 +27,7 @@ class DashboardView extends StatelessWidget {
               title: Text('Home'),
             ),
             if (viewModel.isBusy) ...{
-              SliverFillRemaining(child: Center(child: Loader())),
+              SliverFillRemaining(child: Center(child: Loader(size: 60))),
             },
             if (viewModel.showNewses.isEmpty) ...{
               SliverFillRemaining(

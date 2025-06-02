@@ -35,6 +35,9 @@ _UserModel _$UserModelFromJson(Map<String, dynamic> json) => _UserModel(
           (json['likes'] as List<dynamic>?)?.map((e) => e as String).toList(),
       follows:
           (json['follows'] as List<dynamic>?)?.map((e) => e as String).toList(),
+      actions: (json['actions'] as List<dynamic>?)
+          ?.map((e) => UserActionModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
@@ -61,6 +64,29 @@ Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
       'status': instance.status,
       'likes': instance.likes,
       'follows': instance.follows,
+      'actions': instance.actions,
+    };
+
+_UserActionModel _$UserActionModelFromJson(Map<String, dynamic> json) =>
+    _UserActionModel(
+      postUid: json['post_uid'] as String?,
+      userUid: json['user_uid'] as String?,
+      value: json['value'] as bool?,
+      type: json['type'] as String?,
+      description: json['description'] as String?,
+      timestamp: json['timestamp'] == null
+          ? null
+          : DateTime.parse(json['timestamp'] as String),
+    );
+
+Map<String, dynamic> _$UserActionModelToJson(_UserActionModel instance) =>
+    <String, dynamic>{
+      'post_uid': instance.postUid,
+      'user_uid': instance.userUid,
+      'value': instance.value,
+      'type': instance.type,
+      'description': instance.description,
+      'timestamp': instance.timestamp?.toIso8601String(),
     };
 
 _UserCountryModel _$UserCountryModelFromJson(Map<String, dynamic> json) =>

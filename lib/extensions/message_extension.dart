@@ -304,7 +304,7 @@ class _VideoContentState extends State<VideoContent> {
           children: [
             _videoPlayerController.value.isInitialized
                 ? Chewie(controller: _chewieController)
-                : Center(child: Loader(color: Colors.white)),
+                : Center(child: Loader(size: 60, color: Colors.white)),
             if (_videoPlayerController.value.isInitialized) ...{
               Align(
                 alignment: Alignment.center,

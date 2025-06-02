@@ -5,123 +5,126 @@ import 'package:insoblok/pages/pages.dart';
 import 'package:insoblok/routers/routers.dart';
 
 class Routers {
-  static _pushToRoute(BuildContext context, String route, props) {
+  static dynamic _pushToRoute(BuildContext context, String route, props) {
     return Navigator.pushNamed(context, route, arguments: props);
   }
 
-  static _pushReplacement(BuildContext context, String route, props) {
+  static dynamic _pushReplacement(BuildContext context, String route, props) {
     return Navigator.pushReplacementNamed(context, route, arguments: props);
   }
 
-  static void goToLoginPage(BuildContext context) {
+  static dynamic goToLoginPage(BuildContext context) {
     _pushReplacement(context, kRouterLogin, null);
   }
 
-  static void goToAuthPage(BuildContext context) {
+  static dynamic goToAuthPage(BuildContext context) {
     _pushToRoute(context, kRouterAuth, null);
   }
 
-  static void goToRegisterPage(BuildContext context) {
+  static dynamic goToRegisterPage(BuildContext context) {
     _pushReplacement(context, kRouterRegister, null);
   }
 
-  static void goToMainPage(BuildContext context) {
+  static dynamic goToMainPage(BuildContext context) {
     _pushReplacement(context, kRouterMain, null);
   }
 
-  static goToAccountPage(BuildContext context, {UserModel? user}) {
+  static dynamic goToAccountPage(BuildContext context, {UserModel? user}) {
     return _pushToRoute(context, kRouterAccount, user);
   }
 
-  static goToAccountUpdatePage(BuildContext context) {
+  static dynamic goToAccountUpdatePage(BuildContext context) {
     return _pushToRoute(context, kRouterAccountUpdate, null);
   }
 
-  static goToAccountAvatarPage(BuildContext context) {
+  static dynamic goToAccountAvatarPage(BuildContext context) {
     return _pushToRoute(context, kRouterAccountAvatar, null);
   }
 
-  static goToAccountPublicPage(BuildContext context) {
+  static dynamic goToAccountPublicPage(BuildContext context) {
     return _pushToRoute(context, kRouterAccountPublic, null);
   }
 
-  static goToAccountPrivatePage(BuildContext context) {
+  static dynamic goToAccountPrivatePage(BuildContext context) {
     return _pushToRoute(context, kRouterAccountPrivate, null);
   }
 
-  static goToAccountListPage(BuildContext context) {
+  static dynamic goToAccountListPage(BuildContext context) {
     return _pushToRoute(context, kRouterAccountPost, null);
   }
 
-  static goToAccountTopicPage(BuildContext context) {
+  static dynamic goToAccountTopicPage(BuildContext context) {
     return _pushToRoute(context, kRouterAccountTopic, null);
   }
 
-  static goToAccountBookmarkPage(BuildContext context) {
+  static dynamic goToAccountBookmarkPage(BuildContext context) {
     return _pushToRoute(context, kRouterAccountBookmark, null);
   }
 
-  static goToAccountMomentPage(BuildContext context) {
+  static dynamic goToAccountMomentPage(BuildContext context) {
     return _pushToRoute(context, kRouterAccountMoment, null);
   }
 
-  static goToAccountWalletPage(BuildContext context) {
+  static dynamic goToAccountWalletPage(BuildContext context) {
     return _pushToRoute(context, kRouterAccountWallet, null);
   }
 
-  static goToCreateRoomPage(BuildContext context) {
+  static dynamic goToCreateRoomPage(BuildContext context) {
     return _pushToRoute(context, kRouterCreateRoom, null);
   }
 
-  static goToMessagePage(BuildContext context, MessagePageData data) {
+  static dynamic goToMessagePage(BuildContext context, MessagePageData data) {
     return _pushToRoute(context, kRouterMessage, data);
   }
 
-  static goToMessageSettingPage(BuildContext context) {
+  static dynamic goToMessageSettingPage(BuildContext context) {
     return _pushToRoute(context, kRouterMessageSetting, null);
   }
 
-  static goToAddStoryPage(BuildContext context) {
+  static dynamic goToAddStoryPage(BuildContext context) {
     return _pushToRoute(context, kRouterAddStory, null);
   }
 
-  static goToVTOImagePage(BuildContext context, ProductModel product) {
+  static dynamic goToVTOImagePage(BuildContext context, ProductModel product) {
     return _pushToRoute(context, kRouterMarketVTOImage, product);
   }
 
-  static goToVTOAddProduct(BuildContext context) {
+  static dynamic goToVTOAddProduct(BuildContext context) {
     return _pushToRoute(context, kRouterVTOAddProduct, null);
   }
 
-  static goToStoryDetailPage(BuildContext context, StoryModel data) {
+  static dynamic goToStoryDetailPage(BuildContext context, StoryModel data) {
     return _pushToRoute(context, kRouterStoryDetail, data);
   }
 
-  static goToNewsDetailPage(BuildContext context, NewsModel data) {
+  static dynamic goToNewsDetailPage(BuildContext context, NewsModel data) {
     return _pushToRoute(context, kRouterNewsDetail, data);
   }
 
-  static goToPostDetailPage(BuildContext context) {
+  static dynamic goToPostDetailPage(BuildContext context) {
     return _pushToRoute(context, kRouterPostDetail, null);
   }
 
-  static goToQuillDescriptionPage(BuildContext context, {String? origin}) {
+  static dynamic goToQuillDescriptionPage(
+    BuildContext context, {
+    String? origin,
+  }) {
     return _pushToRoute(context, kRouterQuillDescription, origin);
   }
 
-  static goToSettingPage(BuildContext context) {
+  static dynamic goToSettingPage(BuildContext context) {
     return _pushToRoute(context, kRouterSetting, null);
   }
 
-  static goToPrivacyPage(BuildContext context) {
+  static dynamic goToPrivacyPage(BuildContext context) {
     return _pushToRoute(context, kRouterPrivacy, null);
   }
 
-  static goToHelpCenterPage(BuildContext context) {
+  static dynamic goToHelpCenterPage(BuildContext context) {
     return _pushToRoute(context, kRouterHelpCenter, null);
   }
 
-  static goToMediaDetailPage(
+  static dynamic goToMediaDetailPage(
     BuildContext context, {
     required List<String> medias,
   }) {

@@ -1,0 +1,140 @@
+{
+    "about": [
+        {
+            "title": "XP Engine",
+            "description": "Earned from voting, reposting, remixing, early minting, and accurate curation."
+        },
+        {
+            "title": "Milestone System",
+            "description": "XP milestones unlock eligibility for $INSO claims (e.g., every 500 XP → access to a claim pool)."
+        },
+        {
+            "title": "Conversion Control",
+            "description": "Conversion rate tied to platform-wide activity + deflation mechanisms (i.e., more users = harder-to-earn tokens)."
+        },
+        {
+            "title": "Vesting or Cooldowns",
+            "description": "Prevents instant dumping — e.g., $INSO claimable in 7-day cycles or with bonus for staking inside the app."
+        }
+    ],
+    "xp_earn": {
+        "vote": {
+            "name": "Vote Yay/Nay",
+            "bouns_description": "+2x if voted early before post reaches threshold",
+            "reword": 10,
+            "bounes": 2.0
+        },
+        "repost": {
+            "name": "Repost Content",
+            "bouns_description": "+1.5x if repost drives new voters",
+            "reword": 15,
+            "bounes": 1.5
+        },
+        "remix": {
+            "name": "Remix Content",
+            "bouns_description": "+2x if remixed look mints or hits top leaderboard",
+            "reword": 25,
+            "bounes": 2.0
+        },
+        "post_freestyle": {
+            "name": "Post Freestyle Look",
+            "bouns_description": "+1.2x if receives 100+ votes",
+            "reword": 30,
+            "bounes": 1.2
+        },
+        "win_creator": {
+            "name": "Win Creator Challenge",
+            "bouns_description": "Flat, no multiplier",
+            "reword": 50,
+            "bounes": 0.0
+        },
+        "daily_bonus": {
+            "name": "Daily Streak Bonus",
+            "bouns_description": "+5 XP per streak day past 3 days ",
+            "reword": 20,
+            "bounes": 5.0
+        }
+    },
+    "xp_inso": [
+        {
+            "min": 0,
+            "max": 500,
+            "rate": 50
+        },
+        {
+            "min": 500,
+            "max": 1000,
+            "rate": 40
+        },
+        {
+            "min": 1000,
+            "max": 2500,
+            "rate": 35
+        },
+        {
+            "min": 2500,
+            "max": 5000,
+            "rate": 30
+        },
+        {
+            "min": 5000,
+            "max": 10000,
+            "rate": 25
+        },
+        {
+            "min": 10000
+        }
+    ],
+    "user_level": [
+        {
+            "level": 1,
+            "title": "Observer",
+            "min": 0,
+            "max": 100,
+            "feature": [
+                "dashboard",
+                "vote"
+            ]
+        },
+        {
+            "level": 2,
+            "title": "Curator",
+            "min": 100,
+            "max": 300,
+            "feature": [
+                "remix",
+                "repost"
+            ]
+        },
+        {
+            "level": 3,
+            "title": "Tastemaker",
+            "min": 300,
+            "max": 700,
+            "feature": [
+                "drops",
+                "leaderboard"
+            ]
+        },
+        {
+            "level": 4,
+            "title": "Trend Oracle",
+            "min": 700,
+            "max": 1500,
+            "feature": [
+                "curation",
+                "boosted_vote"
+            ]
+        },
+        {
+            "level": 5,
+            "title": "Validator",
+            "min": 1500,
+            "feature": [
+                "dao_voting",
+                "collab_eligibility",
+                "conversion"
+            ]
+        }
+    ]
+}

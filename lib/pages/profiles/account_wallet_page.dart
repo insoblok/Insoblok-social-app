@@ -9,22 +9,14 @@ import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
 
 final kWalletTokenList = [
-  {
-    'name': 'Ethereum',
-    'short_name': 'ETH',
-    'icon': 'https://cryptologos.cc/logos/ethereum-eth-logo.png?v=040',
-  },
-  {
-    'name': 'Tether',
-    'short_name': 'USDT',
-    'icon': 'https://cryptologos.cc/logos/tether-usdt-logo.png?v=040',
-  },
-  {
-    'name': 'Xrp',
-    'short_name': 'XRP',
-    'icon': 'https://cryptologos.cc/logos/xrp-xrp-logo.png?v=040',
-  },
-  {'name': 'InSoBlok', 'short_name': 'INSO', 'icon': AIImages.logoInsoblok},
+  // {
+  //   'name': 'Ethereum',
+  //   'short_name': 'ETH',
+  //   'icon': 'https://cryptologos.cc/logos/ethereum-eth-logo.png?v=040',
+  // },
+  {'name': 'INSO', 'short_name': 'INSO', 'icon': AIImages.logoInsoblok},
+  {'name': 'USDT', 'short_name': 'USDT', 'icon': AIImages.icUsdt},
+  {'name': 'XRP', 'short_name': 'XRP', 'icon': AIImages.icXrp},
 ];
 
 const kWalletActionList = [
@@ -97,17 +89,19 @@ class AccountWalletPage extends StatelessWidget {
                 child: Row(
                   spacing: 12.0,
                   children: [
-                    AccountWalletTokenCover(
-                      child: Column(
-                        children: [
-                          Text('Ethereum'),
-                          Text(
-                            '\$ 0.00',
-                            style: Theme.of(context).textTheme.titleMedium,
-                          ),
-                        ],
+                    for (var item in kWalletTokenList) ...{
+                      AccountWalletTokenCover(
+                        child: Column(
+                          children: [
+                            Text(
+                              item['name']!,
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                            Text('${item['short_name']} 0.00'),
+                          ],
+                        ),
                       ),
-                    ),
+                    },
                     Container(
                       width: 160.0,
                       height: 80.0,

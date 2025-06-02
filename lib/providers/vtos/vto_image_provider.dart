@@ -365,6 +365,7 @@ class VTOImageProvider extends InSoBlokViewModel {
         var story = StoryModel(
           title: 'VTO',
           text: description ?? 'Virtual Try-On',
+          category: 'vote',
           medias: [
             MediaStoryModel(link: originUrl!, type: 'image'),
             MediaStoryModel(link: serverUrl, type: 'image'),

@@ -2,7 +2,7 @@ class AIImages {
   static String logoInsoblok = 'assets/images/background.png';
 
   static String logo = 'assets/images/logo.png';
-  static String placehold = 'assets/images/placehold.png';
+  static String placehold = 'assets/images/placehold.svg';
 
   static String imgMetamask = 'assets/images/metamask.svg';
   static String imgGoogle = 'assets/images/google_icon.png';
@@ -35,12 +35,15 @@ class AIImages {
   static String icBottomUser = 'assets/icons/ic_user.svg';
   static String icBottomWalletFill = 'assets/icons/ic_wallet_fill.svg';
   static String icBottomWallet = 'assets/icons/ic_wallet.svg';
+  static String icUsdt = 'assets/icons/ic_usdt.png';
+  static String icXrp = 'assets/icons/ic_xrp.svg';
 
   static String icTopEffect = 'assets/icons/ic_effect_2.svg';
   static String icFavoriteFill = 'assets/icons/ic_favourite_fill.svg';
   static String icFavorite = 'assets/icons/ic_favourite.svg';
   static String icCommit = 'assets/icons/ic_commit.svg';
   static String icRetwitter = 'assets/icons/ic_retweet.svg';
+  static String icFollow = 'assets/icons/ic_follow.png';
   static String icShare = 'assets/icons/ic_upload.svg';
   static String icAddLogo = 'assets/icons/ic_add_logo.svg';
   static String icCircleMore = 'assets/icons/ic_more_circle.svg';

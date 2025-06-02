@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:loading_indicator/loading_indicator.dart';
+
 import 'package:stacked/stacked.dart';
+
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
@@ -39,19 +40,7 @@ class LookbookView extends StatelessWidget {
                   ],
                 ),
                 if (viewModel.isBusy) ...{
-                  SliverFillRemaining(
-                    child: Center(
-                      child: SizedBox(
-                        width: 60,
-                        height: 60,
-                        child: LoadingIndicator(
-                          indicatorType: Indicator.ballSpinFadeLoader,
-                          colors: [Theme.of(context).primaryColor],
-                          strokeWidth: 2,
-                        ),
-                      ),
-                    ),
-                  ),
+                  SliverFillRemaining(child: Center(child: Loader(size: 60))),
                 } else ...{
                   SliverFillRemaining(
                     child: Column(
@@ -210,13 +199,6 @@ class LookbookView extends StatelessWidget {
                   ],
                 ),
               ),
-            // Align(
-            //   alignment: Alignment.bottomRight,
-            //   child: CustomFloatingButton(
-            //     onTap: () => Routers.goToAddStoryPage(context),
-            //     src: AIImages.icAddLogo,
-            //   ),
-            // ),
           ],
         );
       },

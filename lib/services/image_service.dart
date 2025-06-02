@@ -10,6 +10,7 @@ import 'package:insoblok/extensions/user_extension.dart';
 
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 
 class AIImage extends StatelessWidget {
   final dynamic src;
@@ -222,13 +223,13 @@ class Loader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: size,
       height: size,
-      alignment: Alignment.center,
-      child: CircularProgressIndicator(
-        valueColor: AlwaysStoppedAnimation<Color>(color ?? AIColors.pink),
-        strokeWidth: strokeWidth ?? 4.0,
+      child: LoadingIndicator(
+        indicatorType: Indicator.ballSpinFadeLoader,
+        colors: [Theme.of(context).primaryColor],
+        strokeWidth: 2,
       ),
     );
   }
