@@ -2,7 +2,7 @@ class AIImages {
   static String logoInsoblok = 'assets/images/background.png';
 
   static String logo = 'assets/images/logo.png';
-  static String placehold = 'assets/images/placehold.png';
+  static String placehold = 'assets/images/placehold.svg';
 
   static String imgMetamask = 'assets/images/metamask.svg';
   static String imgGoogle = 'assets/images/google_icon.png';

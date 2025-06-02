@@ -39,19 +39,7 @@ class LookbookView extends StatelessWidget {
                   ],
                 ),
                 if (viewModel.isBusy) ...{
-                  SliverFillRemaining(
-                    child: Center(
-                      child: SizedBox(
-                        width: 60,
-                        height: 60,
-                        child: LoadingIndicator(
-                          indicatorType: Indicator.ballSpinFadeLoader,
-                          colors: [Theme.of(context).primaryColor],
-                          strokeWidth: 2,
-                        ),
-                      ),
-                    ),
-                  ),
+                  SliverFillRemaining(child: Center(child: Loader(size: 60))),
                 } else ...{
                   SliverFillRemaining(
                     child: Column(

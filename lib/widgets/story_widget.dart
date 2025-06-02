@@ -914,17 +914,7 @@ class StoryDetailDialog extends StatelessWidget {
             if (viewModel.isBusy) ...{
               Align(
                 alignment: Alignment.center,
-                child: Center(
-                  child: SizedBox(
-                    width: 60,
-                    height: 60,
-                    child: LoadingIndicator(
-                      indicatorType: Indicator.ballSpinFadeLoader,
-                      colors: [AIColors.pink],
-                      strokeWidth: 2,
-                    ),
-                  ),
-                ),
+                child: Center(child: Loader(size: 60)),
               ),
             },
           ],

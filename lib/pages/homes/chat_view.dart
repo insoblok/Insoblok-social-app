@@ -72,19 +72,7 @@ class ChatView extends StatelessWidget {
                   ),
                 ),
                 if (viewModel.isBusy) ...{
-                  SliverFillRemaining(
-                    child: Center(
-                      child: SizedBox(
-                        width: 60,
-                        height: 60,
-                        child: LoadingIndicator(
-                          indicatorType: Indicator.ballSpinFadeLoader,
-                          colors: [AIColors.pink],
-                          strokeWidth: 2,
-                        ),
-                      ),
-                    ),
-                  ),
+                  SliverFillRemaining(child: Center(child: Loader(size: 60))),
                 },
                 viewModel.rooms.isEmpty
                     ? SliverFillRemaining(
