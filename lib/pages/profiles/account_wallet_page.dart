@@ -9,22 +9,14 @@ import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
 
 final kWalletTokenList = [
-  {
-    'name': 'Ethereum',
-    'short_name': 'ETH',
-    'icon': 'https://cryptologos.cc/logos/ethereum-eth-logo.png?v=040',
-  },
-  {
-    'name': 'Tether',
-    'short_name': 'USDT',
-    'icon': 'https://cryptologos.cc/logos/tether-usdt-logo.png?v=040',
-  },
-  {
-    'name': 'Xrp',
-    'short_name': 'XRP',
-    'icon': 'https://cryptologos.cc/logos/xrp-xrp-logo.png?v=040',
-  },
-  {'name': 'InSoBlok', 'short_name': 'INSO', 'icon': AIImages.logoInsoblok},
+  // {
+  //   'name': 'Ethereum',
+  //   'short_name': 'ETH',
+  //   'icon': 'https://cryptologos.cc/logos/ethereum-eth-logo.png?v=040',
+  // },
+  {'name': 'INSO', 'short_name': 'INSO', 'icon': AIImages.logoInsoblok},
+  {'name': 'USDT', 'short_name': 'USDT', 'icon': AIImages.icUsdt},
+  {'name': 'XRP', 'short_name': 'XRP', 'icon': AIImages.icXrp},
 ];
 
 const kWalletActionList = [

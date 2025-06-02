@@ -35,6 +35,8 @@ class AIImages {
   static String icBottomUser = 'assets/icons/ic_user.svg';
   static String icBottomWalletFill = 'assets/icons/ic_wallet_fill.svg';
   static String icBottomWallet = 'assets/icons/ic_wallet.svg';
+  static String icUsdt = 'assets/icons/ic_usdt.png';
+  static String icXrp = 'assets/icons/ic_xrp.svg';
 
   static String icTopEffect = 'assets/icons/ic_effect_2.svg';
   static String icFavoriteFill = 'assets/icons/ic_favourite_fill.svg';

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:loading_indicator/loading_indicator.dart';
 import 'package:stacked/stacked.dart';
 
 import 'package:insoblok/providers/providers.dart';
