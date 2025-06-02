@@ -2,11 +2,10 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
-import 'package:insoblok/services/image_service.dart';
-import 'package:loading_indicator/loading_indicator.dart';
 import 'package:stacked/stacked.dart';
 
 import 'package:insoblok/providers/providers.dart';
+import 'package:insoblok/services/services.dart';
 import 'package:insoblok/widgets/widgets.dart';
 
 class MarketView extends StatelessWidget {
