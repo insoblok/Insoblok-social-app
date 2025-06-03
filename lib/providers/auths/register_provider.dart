@@ -43,20 +43,6 @@ class RegisterProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  String _password = '';
-  String get password => _password;
-  set password(String s) {
-    _password = s;
-    notifyListeners();
-  }
-
-  String _rePassword = '';
-  String get rePassword => _rePassword;
-  set rePassword(String s) {
-    _rePassword = s;
-    notifyListeners();
-  }
-
   String _biometric = '';
   String get biometric => _biometric;
   set biometric(String s) {
@@ -91,10 +77,6 @@ class RegisterProvider extends InSoBlokViewModel {
       AIHelpers.showToast(msg: 'No matched email!');
       return;
     }
-    if (password != rePassword) {
-      AIHelpers.showToast(msg: 'No matched password!');
-      return;
-    }
 
     if (isBusy) return;
     clearErrors();
@@ -103,10 +85,6 @@ class RegisterProvider extends InSoBlokViewModel {
 
     await runBusyFuture(() async {
       try {
-        await FirebaseHelper.convertAnonymousToPermanent(
-          email: _user.email!,
-          password: password,
-        );
         await AuthHelper.updateUser(
           _user.copyWith(
             nickId: _user.fullName.replaceAll(' ', '').toLowerCase(),

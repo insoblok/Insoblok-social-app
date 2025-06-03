@@ -336,6 +336,16 @@ class _VideoContentState extends State<VideoContent> {
 
 extension RoomModelExt on RoomModel {
   Map<String, dynamic> toMap() {
-    return toJson().toFirebaseJson;
+    Map<String, dynamic> result = {
+      'uid': uid,
+      'uids': (uids),
+      'content': content,
+      'status_sender': statusSender,
+      'status_receiver': statusReceiver,
+      'update_date': updateDate?.toUtc().toIso8601String(),
+      'timestamp': timestamp?.toUtc().toIso8601String(),
+    };
+    result.removeWhere((k, v) => v == null);
+    return result;
   }
 }

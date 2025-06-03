@@ -5,7 +5,6 @@ import 'package:flutter/services.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
@@ -76,7 +75,7 @@ class NewsService {
 
   Future<void> addNews(NewsModel news) async {
     await _newsCollection.add({
-      ...news.toJson().toFirebaseJson,
+      ...news.toJson(),
       'timestamp': kFirebaseFormatter.format(DateTime.now().toUtc()),
       'update_date': kFirebaseFormatter.format(DateTime.now().toUtc()),
     });

@@ -13,24 +13,24 @@ _StoryModel _$StoryModelFromJson(Map<String, dynamic> json) => _StoryModel(
       text: json['text'] as String?,
       status: json['status'] as String?,
       category: json['category'] as String?,
+      likes:
+          (json['likes'] as List<dynamic>?)?.map((e) => e as String).toList(),
+      follows:
+          (json['follows'] as List<dynamic>?)?.map((e) => e as String).toList(),
       updateDate: json['update_date'] == null
           ? null
           : DateTime.parse(json['update_date'] as String),
       timestamp: json['timestamp'] == null
           ? null
           : DateTime.parse(json['timestamp'] as String),
-      medias: (json['medias'] as List<dynamic>?)
-          ?.map((e) => MediaStoryModel.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      likes:
-          (json['likes'] as List<dynamic>?)?.map((e) => e as String).toList(),
-      follows:
-          (json['follows'] as List<dynamic>?)?.map((e) => e as String).toList(),
       comments: (json['comments'] as List<dynamic>?)
           ?.map((e) => StoryCommentModel.fromJson(e as Map<String, dynamic>))
           .toList(),
       votes: (json['votes'] as List<dynamic>?)
           ?.map((e) => StoryVoteModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      medias: (json['medias'] as List<dynamic>?)
+          ?.map((e) => MediaStoryModel.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 
@@ -42,13 +42,13 @@ Map<String, dynamic> _$StoryModelToJson(_StoryModel instance) =>
       'text': instance.text,
       'status': instance.status,
       'category': instance.category,
-      'update_date': instance.updateDate?.toIso8601String(),
-      'timestamp': instance.timestamp?.toIso8601String(),
-      'medias': instance.medias,
       'likes': instance.likes,
       'follows': instance.follows,
+      'update_date': instance.updateDate?.toIso8601String(),
+      'timestamp': instance.timestamp?.toIso8601String(),
       'comments': instance.comments,
       'votes': instance.votes,
+      'medias': instance.medias,
     };
 
 _StoryVoteModel _$StoryVoteModelFromJson(Map<String, dynamic> json) =>

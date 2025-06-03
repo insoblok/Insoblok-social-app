@@ -3,6 +3,12 @@ import 'package:insoblok/models/models.dart';
 
 extension PostExtension on PostModel {
   Map<String, dynamic> toMap() {
-    return toJson().toFirebaseJson;
+    Map<String, dynamic> result = {
+      'uid': uid,
+      'media': media?.toMap(),
+      'timestamp': timestamp?.toUtc().toIso8601String(),
+    };
+    result.removeWhere((k, v) => v == null);
+    return result;
   }
 }

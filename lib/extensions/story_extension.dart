@@ -48,30 +48,64 @@ extension StoryModelExt on StoryModel {
   }
 
   Map<String, dynamic> toMap() {
-    return toJson().toFirebaseJson;
+    Map<String, dynamic> result = {
+      'uid': uid,
+      'title': title,
+      'text': text,
+      'status': status,
+      'category': category,
+      'likes': (likes),
+      'follows': (follows),
+      'update_date': updateDate?.toUtc().toIso8601String(),
+      'timestamp': timestamp?.toUtc().toIso8601String(),
+      'comments': ((comments ?? []).map((e) => e.toMap()).toList()),
+      'votes': ((votes ?? []).map((e) => e.toMap()).toList()),
+      'medias': ((medias ?? []).map((e) => e.toMap()).toList()),
+    };
+    result.removeWhere((k, v) => v == null);
+    return result;
   }
 }
 
 extension StoryVoteModelExt on StoryVoteModel {
   Map<String, dynamic> toMap() {
-    return toJson().toFirebaseJson;
+    Map<String, dynamic> result = {
+      'uid': uid,
+      'vote': vote,
+      'timestamp': timestamp?.toUtc().toIso8601String(),
+    };
+    result.removeWhere((k, v) => v == null);
+    return result;
   }
 }
 
 extension MediaStoryModelExt on MediaStoryModel {
   Map<String, dynamic> toMap() {
-    return toJson().toFirebaseJson;
+    Map<String, dynamic> result = {'link': link, 'type': type};
+    result.removeWhere((k, v) => v == null);
+    return result;
   }
 }
 
 extension StoryCommentModelExt on StoryCommentModel {
   Map<String, dynamic> toMap() {
-    return toJson().toFirebaseJson;
+    Map<String, dynamic> result = {
+      'uid': uid,
+      'content': content,
+      'medias': ((medias ?? []).map((e) => e.toMap()).toList()),
+      'timestamp': timestamp?.toUtc().toIso8601String(),
+    };
+    result.removeWhere((k, v) => v == null);
+    return result;
   }
 }
 
 extension UpdatedStoryModelExt on UpdatedStoryModel {
   Map<String, dynamic> toMap() {
-    return toJson().toFirebaseJson;
+    Map<String, dynamic> result = {
+      'timestamp': timestamp?.toUtc().toIso8601String(),
+    };
+    result.removeWhere((k, v) => v == null);
+    return result;
   }
 }

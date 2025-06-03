@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:insoblok/extensions/extensions.dart';
@@ -122,7 +120,7 @@ class MessageService {
         .doc(chatRoomId)
         .collection('messages')
         .add({
-          'content': jsonEncode(coin.toJson()),
+          'content': (coin.toJson()),
           'sender_id': AuthHelper.user?.uid,
           'sender_name': AuthHelper.user?.fullName ?? 'Anonymous',
           'timestamp': kFirebaseFormatter.format(DateTime.now().toUtc()),

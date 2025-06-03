@@ -368,6 +368,8 @@ class VTOImageProvider extends InSoBlokViewModel {
             MediaStoryModel(link: originUrl!, type: 'image'),
             MediaStoryModel(link: serverUrl, type: 'image'),
           ],
+          updateDate: DateTime.now(),
+          timestamp: DateTime.now(),
         );
         await storyService.postStory(story: story);
 

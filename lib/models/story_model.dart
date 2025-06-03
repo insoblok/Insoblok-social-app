@@ -15,13 +15,13 @@ abstract class StoryModel with _$StoryModel {
     String? text,
     String? status,
     String? category,
-    DateTime? updateDate,
-    DateTime? timestamp,
-    List<MediaStoryModel>? medias,
     List<String>? likes,
     List<String>? follows,
+    DateTime? updateDate,
+    DateTime? timestamp,
     List<StoryCommentModel>? comments,
     List<StoryVoteModel>? votes,
+    List<MediaStoryModel>? medias,
   }) = _StoryModel;
 
   factory StoryModel.fromJson(Map<String, dynamic> json) =>

@@ -116,12 +116,8 @@ class LoginProvider extends InSoBlokViewModel {
     if (hasError) {
       AIHelpers.showToast(msg: modelError.toString());
     } else {
-      if (AuthHelper.user?.firstName != null) {
-        AuthHelper.updateStatus('Online');
-        Routers.goToMainPage(context);
-      } else {
-        Routers.goToRegisterPage(context);
-      }
+      AuthHelper.updateStatus('Online');
+      Routers.goToMainPage(context);
     }
   }
 }

@@ -101,9 +101,6 @@ class AuthService with ListenableServiceMixin {
     }
   }
 
-  final _tastScoreService = TastescoreService();
-  TastescoreService get tastScoreService => _tastScoreService;
-
   Future<void> signInWithGoogle({String? walletAddress}) async {
     await FirebaseHelper.signInWithGoogle();
     var credential = FirebaseHelper.userCredential;
@@ -114,6 +111,7 @@ class AuthService with ListenableServiceMixin {
       var data = await ipAddress.getIpAddress();
       var newUser = await userService.getUser(uid);
       if (newUser != null) {
+        final tastScoreService = TastescoreService();
         var reward = await tastScoreService.loginScore(newUser);
         if (newUser.walletAddress != null) {
           newUser = newUser.copyWith(

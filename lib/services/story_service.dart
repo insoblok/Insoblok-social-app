@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
-import 'package:insoblok/utils/utils.dart';
 
 class StoryService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -110,14 +109,9 @@ class StoryService {
 
   // Post a story
   Future<void> postStory({required StoryModel story}) async {
-    await storyCollection.add({
-      ...story.toJson().toFirebaseJson,
-      'uid': AuthHelper.user?.uid,
-      'timestamp': kFirebaseFormatter.format(DateTime.now().toUtc()),
-      'update_date': kFirebaseFormatter.format(DateTime.now().toUtc()),
-    });
+    await storyCollection.add({...story.toMap(), 'uid': AuthHelper.user?.uid});
     await storyCollection.doc('updated').set({
-      'timestamp': kFirebaseFormatter.format(DateTime.now().toUtc()),
+      'timestamp': DateTime.now().toUtc().toIso8601String(),
     });
   }
 
@@ -129,10 +123,7 @@ class StoryService {
     required StoryModel story,
     required UserModel? user,
   }) async {
-    await storyCollection.doc(story.id).update({
-      ...story.toJson().toFirebaseJson,
-      'update_date': kFirebaseFormatter.format(DateTime.now().toUtc()),
-    });
+    await storyCollection.doc(story.id).update(story.toMap());
     if (user != null) {
       var isUpdated = false;
       var likes = List<String>.from(user.likes ?? []);
@@ -154,10 +145,7 @@ class StoryService {
     required StoryModel story,
     required UserModel? user,
   }) async {
-    await storyCollection.doc(story.id).update({
-      ...story.toJson().toFirebaseJson,
-      'update_date': kFirebaseFormatter.format(DateTime.now().toUtc()),
-    });
+    await storyCollection.doc(story.id).update(story.toMap());
 
     if (user != null) {
       var isUpdated = false;
@@ -182,10 +170,7 @@ class StoryService {
 
     required bool? isVote,
   }) async {
-    await storyCollection.doc(story.id).update({
-      ...story.toJson().toFirebaseJson,
-      'update_date': kFirebaseFormatter.format(DateTime.now().toUtc()),
-    });
+    await storyCollection.doc(story.id).update(story.toMap());
 
     if (user != null) {
       var votes = List<UserActionModel>.from(user.actions ?? []);
@@ -218,9 +203,6 @@ class StoryService {
 
   // Add comment of story
   Future<void> addComment({required StoryModel story}) async {
-    await storyCollection.doc(story.id).update({
-      ...story.toJson().toFirebaseJson,
-      'update_date': kFirebaseFormatter.format(DateTime.now().toUtc()),
-    });
+    await storyCollection.doc(story.id).update(story.toMap());
   }
 }

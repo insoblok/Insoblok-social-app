@@ -139,18 +139,53 @@ extension UserModelExt on UserModel {
   ];
 
   Map<String, dynamic> toMap() {
-    return toJson().toFirebaseJson;
+    Map<String, dynamic> result = {
+      'uid': uid,
+      'wallet_address': walletAddress,
+      'avatar': avatar,
+      'first_name': firstName,
+      'last_name': lastName,
+      'email': email,
+      'password': password,
+      'city': city,
+      'country': country,
+      'website': website,
+      'desc': desc,
+      'discovery': discovery,
+      'nick_id': nickId,
+      'lat': lat,
+      'lon': lon,
+      'ip_address': ipAddress,
+      'status': status,
+      'reward_date': rewardDate,
+      'likes': (likes),
+      'follows': (follows),
+      'actions': ((actions ?? []).map((e) => e.toMap()).toList()),
+      'update_date': updateDate?.toUtc().toIso8601String(),
+      'timestamp': timestamp?.toUtc().toIso8601String(),
+    };
+    result.removeWhere((k, v) => v == null);
+    return result;
   }
 }
 
 extension UserActionModelExt on UserActionModel {
   Map<String, dynamic> toMap() {
-    return toJson().toFirebaseJson;
+    Map<String, dynamic> result = {
+      'post_uid': postUid,
+      'user_uid': userUid,
+      'value': value,
+      'type': type,
+      'description': description,
+      'timestamp': timestamp?.toUtc().toIso8601String(),
+    };
+    result.removeWhere((k, v) => v == null);
+    return result;
   }
 }
 
 extension UserCountryModelExt on UserCountryModel {
   Map<String, dynamic> toMap() {
-    return toJson().toFirebaseJson;
+    return toJson();
   }
 }

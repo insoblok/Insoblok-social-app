@@ -13,7 +13,7 @@ abstract class PostModel with _$PostModel {
     String? id,
     String? uid,
     MediaStoryModel? media,
-    String? timestamp,
+    DateTime? timestamp,
   }) = _PostModel;
 
   factory PostModel.fromJson(Map<String, dynamic> json) =>

@@ -22,8 +22,8 @@ class PermissionService {
   static Future<bool?> requestGalleryPermission() async {
     PermissionStatus status;
     if (Platform.isAndroid) {
-      // status = await Permission.storage.request();
-      status = await Permission.photos.request();
+      status = await Permission.storage.request();
+      // status = await Permission.photos.request();
     } else {
       status = await Permission.photos.request();
     }

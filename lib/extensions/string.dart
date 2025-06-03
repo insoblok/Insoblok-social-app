@@ -54,36 +54,3 @@ extension DateTimeExt on DateTime {
     return '---';
   }
 }
-
-extension MapExt on Map<String, dynamic> {
-  Map<String, dynamic> get toFirebaseJson {
-    Map<String, dynamic> result = {};
-
-    for (var key in keys) {
-      if (key == 'id') continue;
-      var value = this[key];
-
-      if (value == null) continue;
-
-      if ((value is double) ||
-          (value is String) ||
-          (value is int) ||
-          (value is bool)) {
-      } else {
-        if (value is DateTime) {
-          logger.d('$key --- ${kFirebaseFormatter.format(value)}');
-          value = kFirebaseFormatter.format(value.toUtc());
-        } else if (value.runtimeType.toString().contains('List')) {
-          if (value.runtimeType.toString() != 'List<String>') {
-            value = value.map((e) => e.toMap()).toList();
-          }
-        } else {
-          value = value.toMap();
-        }
-      }
-
-      result[key] = value;
-    }
-    return result;
-  }
-}

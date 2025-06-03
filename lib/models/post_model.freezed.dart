@@ -18,7 +18,7 @@ mixin _$PostModel {
   String? get id;
   String? get uid;
   MediaStoryModel? get media;
-  String? get timestamp;
+  DateTime? get timestamp;
 
   /// Create a copy of PostModel
   /// with the given fields replaced by the non-null parameter values.
@@ -58,7 +58,7 @@ abstract mixin class $PostModelCopyWith<$Res> {
       _$PostModelCopyWithImpl;
   @useResult
   $Res call(
-      {String? id, String? uid, MediaStoryModel? media, String? timestamp});
+      {String? id, String? uid, MediaStoryModel? media, DateTime? timestamp});
 
   $MediaStoryModelCopyWith<$Res>? get media;
 }
@@ -96,7 +96,7 @@ class _$PostModelCopyWithImpl<$Res> implements $PostModelCopyWith<$Res> {
       timestamp: freezed == timestamp
           ? _self.timestamp
           : timestamp // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as DateTime?,
     ));
   }
 
@@ -130,7 +130,7 @@ class _PostModel implements PostModel {
   @override
   final MediaStoryModel? media;
   @override
-  final String? timestamp;
+  final DateTime? timestamp;
 
   /// Create a copy of PostModel
   /// with the given fields replaced by the non-null parameter values.
@@ -178,7 +178,7 @@ abstract mixin class _$PostModelCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String? id, String? uid, MediaStoryModel? media, String? timestamp});
+      {String? id, String? uid, MediaStoryModel? media, DateTime? timestamp});
 
   @override
   $MediaStoryModelCopyWith<$Res>? get media;
@@ -217,7 +217,7 @@ class __$PostModelCopyWithImpl<$Res> implements _$PostModelCopyWith<$Res> {
       timestamp: freezed == timestamp
           ? _self.timestamp
           : timestamp // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as DateTime?,
     ));
   }
 

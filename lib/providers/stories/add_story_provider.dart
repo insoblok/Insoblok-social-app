@@ -110,6 +110,8 @@ class AddStoryProvider extends InSoBlokViewModel {
           title: title,
           text: quillDescription,
           category: isVoteImage ? 'vote' : 'regular',
+          updateDate: DateTime.now(),
+          timestamp: DateTime.now(),
         ).copyWith(medias: medias);
         await storyService.postStory(story: story);
       } catch (e, s) {

@@ -91,7 +91,7 @@ class StoryContentProvider extends InSoBlokViewModel {
           likes.add(user!.uid!);
         }
         await storyService.updateLikeStory(
-          story: story.copyWith(likes: likes),
+          story: story.copyWith(likes: likes, updateDate: DateTime.now()),
           user: owner,
         );
       } catch (e) {
@@ -155,7 +155,7 @@ class StoryContentProvider extends InSoBlokViewModel {
           follows.add(user!.uid!);
         }
         await storyService.updateFollowStory(
-          story: story.copyWith(follows: follows),
+          story: story.copyWith(follows: follows, updateDate: DateTime.now()),
           user: owner,
         );
       } catch (e) {
@@ -195,7 +195,7 @@ class StoryContentProvider extends InSoBlokViewModel {
             StoryVoteModel(
               uid: user?.uid,
               vote: isVote,
-              // timestamp: DateTime.now(),
+              timestamp: DateTime.now(),
             ),
           );
         } else {
@@ -205,13 +205,13 @@ class StoryContentProvider extends InSoBlokViewModel {
               votes[i] = StoryVoteModel(
                 uid: user?.uid,
                 vote: isVote,
-                // timestamp: DateTime.now(),
+                timestamp: DateTime.now(),
               );
             }
           }
         }
         await storyService.updateVoteStory(
-          story: story.copyWith(votes: votes),
+          story: story.copyWith(votes: votes, updateDate: DateTime.now()),
           user: owner,
           isVote: isVote,
         );
@@ -259,7 +259,10 @@ class StoryContentProvider extends InSoBlokViewModel {
           var comments = List<StoryCommentModel>.from(story.comments ?? []);
 
           comments.add(comment);
-          story = story.copyWith(comments: comments);
+          story = story.copyWith(
+            comments: comments,
+            updateDate: DateTime.now(),
+          );
           await storyService.addComment(story: story);
 
           AIHelpers.showToast(msg: 'Successfully add your comment!');
@@ -299,7 +302,10 @@ class StoryContentProvider extends InSoBlokViewModel {
           var comments = List<StoryCommentModel>.from(story.comments ?? []);
 
           comments.add(comment);
-          story = story.copyWith(comments: comments);
+          story = story.copyWith(
+            comments: comments,
+            updateDate: DateTime.now(),
+          );
           await storyService.addComment(story: story);
           textController.text = '';
         } else {
@@ -339,6 +345,8 @@ class StoryContentProvider extends InSoBlokViewModel {
             text: description,
             category: 'vote',
             medias: story.medias,
+            updateDate: DateTime.now(),
+            timestamp: DateTime.now(),
           );
           await storyService.postStory(story: newStory);
 

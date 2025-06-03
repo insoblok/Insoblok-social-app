@@ -186,9 +186,10 @@ class AddProductProvider extends InSoBlokViewModel {
         } else {
           setError('Failed server uploading!');
         }
-      } catch (e) {
+      } catch (e, s) {
         setError(e);
         logger.e(e);
+        logger.e(s);
       } finally {
         isUploading = false;
       }

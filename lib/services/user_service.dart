@@ -50,7 +50,7 @@ class UserService {
 
   Future<void> updateUser(UserModel user, {Map<String, dynamic>? data}) async {
     await _userCollection.doc(user.id).update({
-      ...user.toJson().toFirebaseJson,
+      ...user.toMap(),
       ...(data ?? {}),
     });
   }

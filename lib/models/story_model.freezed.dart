@@ -21,13 +21,13 @@ mixin _$StoryModel {
   String? get text;
   String? get status;
   String? get category;
-  DateTime? get updateDate;
-  DateTime? get timestamp;
-  List<MediaStoryModel>? get medias;
   List<String>? get likes;
   List<String>? get follows;
+  DateTime? get updateDate;
+  DateTime? get timestamp;
   List<StoryCommentModel>? get comments;
   List<StoryVoteModel>? get votes;
+  List<MediaStoryModel>? get medias;
 
   /// Create a copy of StoryModel
   /// with the given fields replaced by the non-null parameter values.
@@ -51,15 +51,15 @@ mixin _$StoryModel {
             (identical(other.status, status) || other.status == status) &&
             (identical(other.category, category) ||
                 other.category == category) &&
+            const DeepCollectionEquality().equals(other.likes, likes) &&
+            const DeepCollectionEquality().equals(other.follows, follows) &&
             (identical(other.updateDate, updateDate) ||
                 other.updateDate == updateDate) &&
             (identical(other.timestamp, timestamp) ||
                 other.timestamp == timestamp) &&
-            const DeepCollectionEquality().equals(other.medias, medias) &&
-            const DeepCollectionEquality().equals(other.likes, likes) &&
-            const DeepCollectionEquality().equals(other.follows, follows) &&
             const DeepCollectionEquality().equals(other.comments, comments) &&
-            const DeepCollectionEquality().equals(other.votes, votes));
+            const DeepCollectionEquality().equals(other.votes, votes) &&
+            const DeepCollectionEquality().equals(other.medias, medias));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -72,17 +72,17 @@ mixin _$StoryModel {
       text,
       status,
       category,
-      updateDate,
-      timestamp,
-      const DeepCollectionEquality().hash(medias),
       const DeepCollectionEquality().hash(likes),
       const DeepCollectionEquality().hash(follows),
+      updateDate,
+      timestamp,
       const DeepCollectionEquality().hash(comments),
-      const DeepCollectionEquality().hash(votes));
+      const DeepCollectionEquality().hash(votes),
+      const DeepCollectionEquality().hash(medias));
 
   @override
   String toString() {
-    return 'StoryModel(id: $id, uid: $uid, title: $title, text: $text, status: $status, category: $category, updateDate: $updateDate, timestamp: $timestamp, medias: $medias, likes: $likes, follows: $follows, comments: $comments, votes: $votes)';
+    return 'StoryModel(id: $id, uid: $uid, title: $title, text: $text, status: $status, category: $category, likes: $likes, follows: $follows, updateDate: $updateDate, timestamp: $timestamp, comments: $comments, votes: $votes, medias: $medias)';
   }
 }
 
@@ -99,13 +99,13 @@ abstract mixin class $StoryModelCopyWith<$Res> {
       String? text,
       String? status,
       String? category,
-      DateTime? updateDate,
-      DateTime? timestamp,
-      List<MediaStoryModel>? medias,
       List<String>? likes,
       List<String>? follows,
+      DateTime? updateDate,
+      DateTime? timestamp,
       List<StoryCommentModel>? comments,
-      List<StoryVoteModel>? votes});
+      List<StoryVoteModel>? votes,
+      List<MediaStoryModel>? medias});
 }
 
 /// @nodoc
@@ -126,13 +126,13 @@ class _$StoryModelCopyWithImpl<$Res> implements $StoryModelCopyWith<$Res> {
     Object? text = freezed,
     Object? status = freezed,
     Object? category = freezed,
-    Object? updateDate = freezed,
-    Object? timestamp = freezed,
-    Object? medias = freezed,
     Object? likes = freezed,
     Object? follows = freezed,
+    Object? updateDate = freezed,
+    Object? timestamp = freezed,
     Object? comments = freezed,
     Object? votes = freezed,
+    Object? medias = freezed,
   }) {
     return _then(_self.copyWith(
       id: freezed == id
@@ -159,18 +159,6 @@ class _$StoryModelCopyWithImpl<$Res> implements $StoryModelCopyWith<$Res> {
           ? _self.category
           : category // ignore: cast_nullable_to_non_nullable
               as String?,
-      updateDate: freezed == updateDate
-          ? _self.updateDate
-          : updateDate // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
-      timestamp: freezed == timestamp
-          ? _self.timestamp
-          : timestamp // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
-      medias: freezed == medias
-          ? _self.medias
-          : medias // ignore: cast_nullable_to_non_nullable
-              as List<MediaStoryModel>?,
       likes: freezed == likes
           ? _self.likes
           : likes // ignore: cast_nullable_to_non_nullable
@@ -179,6 +167,14 @@ class _$StoryModelCopyWithImpl<$Res> implements $StoryModelCopyWith<$Res> {
           ? _self.follows
           : follows // ignore: cast_nullable_to_non_nullable
               as List<String>?,
+      updateDate: freezed == updateDate
+          ? _self.updateDate
+          : updateDate // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      timestamp: freezed == timestamp
+          ? _self.timestamp
+          : timestamp // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
       comments: freezed == comments
           ? _self.comments
           : comments // ignore: cast_nullable_to_non_nullable
@@ -187,6 +183,10 @@ class _$StoryModelCopyWithImpl<$Res> implements $StoryModelCopyWith<$Res> {
           ? _self.votes
           : votes // ignore: cast_nullable_to_non_nullable
               as List<StoryVoteModel>?,
+      medias: freezed == medias
+          ? _self.medias
+          : medias // ignore: cast_nullable_to_non_nullable
+              as List<MediaStoryModel>?,
     ));
   }
 }
@@ -202,18 +202,18 @@ class _StoryModel implements StoryModel {
       this.text,
       this.status,
       this.category,
-      this.updateDate,
-      this.timestamp,
-      final List<MediaStoryModel>? medias,
       final List<String>? likes,
       final List<String>? follows,
+      this.updateDate,
+      this.timestamp,
       final List<StoryCommentModel>? comments,
-      final List<StoryVoteModel>? votes})
-      : _medias = medias,
-        _likes = likes,
+      final List<StoryVoteModel>? votes,
+      final List<MediaStoryModel>? medias})
+      : _likes = likes,
         _follows = follows,
         _comments = comments,
-        _votes = votes;
+        _votes = votes,
+        _medias = medias;
   factory _StoryModel.fromJson(Map<String, dynamic> json) =>
       _$StoryModelFromJson(json);
 
@@ -229,20 +229,6 @@ class _StoryModel implements StoryModel {
   final String? status;
   @override
   final String? category;
-  @override
-  final DateTime? updateDate;
-  @override
-  final DateTime? timestamp;
-  final List<MediaStoryModel>? _medias;
-  @override
-  List<MediaStoryModel>? get medias {
-    final value = _medias;
-    if (value == null) return null;
-    if (_medias is EqualUnmodifiableListView) return _medias;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(value);
-  }
-
   final List<String>? _likes;
   @override
   List<String>? get likes {
@@ -263,6 +249,10 @@ class _StoryModel implements StoryModel {
     return EqualUnmodifiableListView(value);
   }
 
+  @override
+  final DateTime? updateDate;
+  @override
+  final DateTime? timestamp;
   final List<StoryCommentModel>? _comments;
   @override
   List<StoryCommentModel>? get comments {
@@ -279,6 +269,16 @@ class _StoryModel implements StoryModel {
     final value = _votes;
     if (value == null) return null;
     if (_votes is EqualUnmodifiableListView) return _votes;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
+
+  final List<MediaStoryModel>? _medias;
+  @override
+  List<MediaStoryModel>? get medias {
+    final value = _medias;
+    if (value == null) return null;
+    if (_medias is EqualUnmodifiableListView) return _medias;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(value);
   }
@@ -310,15 +310,15 @@ class _StoryModel implements StoryModel {
             (identical(other.status, status) || other.status == status) &&
             (identical(other.category, category) ||
                 other.category == category) &&
+            const DeepCollectionEquality().equals(other._likes, _likes) &&
+            const DeepCollectionEquality().equals(other._follows, _follows) &&
             (identical(other.updateDate, updateDate) ||
                 other.updateDate == updateDate) &&
             (identical(other.timestamp, timestamp) ||
                 other.timestamp == timestamp) &&
-            const DeepCollectionEquality().equals(other._medias, _medias) &&
-            const DeepCollectionEquality().equals(other._likes, _likes) &&
-            const DeepCollectionEquality().equals(other._follows, _follows) &&
             const DeepCollectionEquality().equals(other._comments, _comments) &&
-            const DeepCollectionEquality().equals(other._votes, _votes));
+            const DeepCollectionEquality().equals(other._votes, _votes) &&
+            const DeepCollectionEquality().equals(other._medias, _medias));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -331,17 +331,17 @@ class _StoryModel implements StoryModel {
       text,
       status,
       category,
-      updateDate,
-      timestamp,
-      const DeepCollectionEquality().hash(_medias),
       const DeepCollectionEquality().hash(_likes),
       const DeepCollectionEquality().hash(_follows),
+      updateDate,
+      timestamp,
       const DeepCollectionEquality().hash(_comments),
-      const DeepCollectionEquality().hash(_votes));
+      const DeepCollectionEquality().hash(_votes),
+      const DeepCollectionEquality().hash(_medias));
 
   @override
   String toString() {
-    return 'StoryModel(id: $id, uid: $uid, title: $title, text: $text, status: $status, category: $category, updateDate: $updateDate, timestamp: $timestamp, medias: $medias, likes: $likes, follows: $follows, comments: $comments, votes: $votes)';
+    return 'StoryModel(id: $id, uid: $uid, title: $title, text: $text, status: $status, category: $category, likes: $likes, follows: $follows, updateDate: $updateDate, timestamp: $timestamp, comments: $comments, votes: $votes, medias: $medias)';
   }
 }
 
@@ -360,13 +360,13 @@ abstract mixin class _$StoryModelCopyWith<$Res>
       String? text,
       String? status,
       String? category,
-      DateTime? updateDate,
-      DateTime? timestamp,
-      List<MediaStoryModel>? medias,
       List<String>? likes,
       List<String>? follows,
+      DateTime? updateDate,
+      DateTime? timestamp,
       List<StoryCommentModel>? comments,
-      List<StoryVoteModel>? votes});
+      List<StoryVoteModel>? votes,
+      List<MediaStoryModel>? medias});
 }
 
 /// @nodoc
@@ -387,13 +387,13 @@ class __$StoryModelCopyWithImpl<$Res> implements _$StoryModelCopyWith<$Res> {
     Object? text = freezed,
     Object? status = freezed,
     Object? category = freezed,
-    Object? updateDate = freezed,
-    Object? timestamp = freezed,
-    Object? medias = freezed,
     Object? likes = freezed,
     Object? follows = freezed,
+    Object? updateDate = freezed,
+    Object? timestamp = freezed,
     Object? comments = freezed,
     Object? votes = freezed,
+    Object? medias = freezed,
   }) {
     return _then(_StoryModel(
       id: freezed == id
@@ -420,18 +420,6 @@ class __$StoryModelCopyWithImpl<$Res> implements _$StoryModelCopyWith<$Res> {
           ? _self.category
           : category // ignore: cast_nullable_to_non_nullable
               as String?,
-      updateDate: freezed == updateDate
-          ? _self.updateDate
-          : updateDate // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
-      timestamp: freezed == timestamp
-          ? _self.timestamp
-          : timestamp // ignore: cast_nullable_to_non_nullable
-              as DateTime?,
-      medias: freezed == medias
-          ? _self._medias
-          : medias // ignore: cast_nullable_to_non_nullable
-              as List<MediaStoryModel>?,
       likes: freezed == likes
           ? _self._likes
           : likes // ignore: cast_nullable_to_non_nullable
@@ -440,6 +428,14 @@ class __$StoryModelCopyWithImpl<$Res> implements _$StoryModelCopyWith<$Res> {
           ? _self._follows
           : follows // ignore: cast_nullable_to_non_nullable
               as List<String>?,
+      updateDate: freezed == updateDate
+          ? _self.updateDate
+          : updateDate // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
+      timestamp: freezed == timestamp
+          ? _self.timestamp
+          : timestamp // ignore: cast_nullable_to_non_nullable
+              as DateTime?,
       comments: freezed == comments
           ? _self._comments
           : comments // ignore: cast_nullable_to_non_nullable
@@ -448,6 +444,10 @@ class __$StoryModelCopyWithImpl<$Res> implements _$StoryModelCopyWith<$Res> {
           ? _self._votes
           : votes // ignore: cast_nullable_to_non_nullable
               as List<StoryVoteModel>?,
+      medias: freezed == medias
+          ? _self._medias
+          : medias // ignore: cast_nullable_to_non_nullable
+              as List<MediaStoryModel>?,
     ));
   }
 }

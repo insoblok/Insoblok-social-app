@@ -57,52 +57,6 @@ class RegisterPage extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 24.0),
-              AITextField(
-                hintText: 'Email Address',
-                prefixIcon: Icon(Icons.email),
-                onChanged: viewModel.updateEmailAddress,
-              ),
-              const SizedBox(height: 24.0),
-              Row(
-                children: [
-                  Expanded(
-                    child: AITextField(
-                      hintText: 'Password',
-                      prefixIcon: Icon(Icons.password),
-                      onChanged: (value) => viewModel.password = value,
-                      obscureText: viewModel.obscureText,
-                      suffix: InkWell(
-                        onTap:
-                            () =>
-                                viewModel.obscureText = !viewModel.obscureText,
-                        child: Icon(
-                          viewModel.obscureText ? Icons.lock : Icons.lock_open,
-                          size: 18.0,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 8.0),
-                  Expanded(
-                    child: AITextField(
-                      hintText: 'Confirm Password',
-                      prefixIcon: Icon(Icons.password),
-                      onChanged: (value) => viewModel.rePassword = value,
-                      obscureText: viewModel.obscureText,
-                      suffix: InkWell(
-                        onTap:
-                            () =>
-                                viewModel.obscureText = !viewModel.obscureText,
-                        child: Icon(
-                          viewModel.obscureText ? Icons.lock : Icons.lock_open,
-                          size: 18.0,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 24.0),
               Row(
                 children: [
                   Expanded(

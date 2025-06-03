@@ -83,7 +83,7 @@ class StoryDetailProvider extends InSoBlokViewModel {
           likes.add(user!.uid!);
         }
         await storyService.updateLikeStory(
-          story: story.copyWith(likes: likes),
+          story: story.copyWith(likes: likes, updateDate: DateTime.now()),
           user: owner,
         );
       } catch (e) {
@@ -133,7 +133,7 @@ class StoryDetailProvider extends InSoBlokViewModel {
           follows.add(user!.uid!);
         }
         await storyService.updateFollowStory(
-          story: story.copyWith(follows: follows),
+          story: story.copyWith(follows: follows, updateDate: DateTime.now()),
           user: owner,
         );
       } catch (e) {
@@ -168,7 +168,10 @@ class StoryDetailProvider extends InSoBlokViewModel {
           var comment = StoryCommentModel(uid: user?.uid, content: desc);
           var comments = List<StoryCommentModel>.from(story.comments ?? []);
           comments.add(comment);
-          story = story.copyWith(comments: comments);
+          story = story.copyWith(
+            comments: comments,
+            updateDate: DateTime.now(),
+          );
           await storyService.addComment(story: story);
 
           AIHelpers.showToast(msg: 'Successfully add your comment!');

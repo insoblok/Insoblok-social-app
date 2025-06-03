@@ -84,7 +84,7 @@ class StoryProvider extends InSoBlokViewModel {
             StoryVoteModel(
               uid: user?.uid,
               vote: isVote,
-              // timestamp: DateTime.now(),
+              timestamp: DateTime.now(),
             ),
           );
         } else {
@@ -94,13 +94,13 @@ class StoryProvider extends InSoBlokViewModel {
               votes[i] = StoryVoteModel(
                 uid: user?.uid,
                 vote: isVote,
-                // timestamp: DateTime.now(),
+                timestamp: DateTime.now(),
               );
             }
           }
         }
         await storyService.updateVoteStory(
-          story: story.copyWith(votes: votes),
+          story: story.copyWith(votes: votes, updateDate: DateTime.now()),
           user: owner,
           isVote: isVote,
         );
