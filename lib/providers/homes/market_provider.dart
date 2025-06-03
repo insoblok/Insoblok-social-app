@@ -41,9 +41,6 @@ class MarketProvider extends InSoBlokViewModel {
   final List<ProductModel> _filterProducts = [];
   List<ProductModel> get filterProducts => _filterProducts;
 
-  final _productService = ProductService();
-  ProductService get productService => _productService;
-
   bool _isClickFilter = false;
   bool get isClickFilter => _isClickFilter;
   set isClickFilter(bool f) {

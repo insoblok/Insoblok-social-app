@@ -57,12 +57,28 @@ extension DateTimeExt on DateTime {
 
 extension MapExt on Map<String, dynamic> {
   Map<String, dynamic> get toFirebaseJson {
-    var newJson =
-        this
-          ..remove('id')
-          ..remove('regdate')
-          ..remove('timestamp');
+    Map<String, dynamic> result = {};
+    for (var key in keys) {
+      if (key == 'id') continue;
+      var value = this[key];
+      if (value == null) continue;
 
-    return newJson;
+      if (value is DateTime) {
+        logger.d('$key --- ${kFirebaseFormatter.format(value)}');
+        value = kFirebaseFormatter.format(value.toUtc());
+      }
+      if (value.runtimeType.toString().contains('List')) {
+        if (value.runtimeType.toString() != 'List<String>') {
+          value =
+              value
+                  .map(
+                    (e) => (e.toJson() as Map<String, dynamic>).toFirebaseJson,
+                  )
+                  .toList();
+        }
+      }
+      result[key] = value;
+    }
+    return result;
   }
 }

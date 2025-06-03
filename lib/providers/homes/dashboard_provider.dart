@@ -25,9 +25,6 @@ class DashboardProvider extends InSoBlokViewModel {
     fetchData();
   }
 
-  final _newsService = NewsService();
-  NewsService get newsService => _newsService;
-
   final List<NewsModel> _allNewses = [];
   List<NewsModel> get showNewses => _allNewses;
 

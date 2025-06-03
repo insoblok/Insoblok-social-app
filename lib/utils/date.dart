@@ -1,6 +1,6 @@
 import 'package:intl/intl.dart';
 
-var kFirebaseFormatter = DateFormat("MMMM d, y 'at' h:mm:ss a 'UTC'Z");
+var kFirebaseFormatter = DateFormat("MMMM dd, yyyy 'at' hh:mm:ss a 'UTC'Z");
 var kFullFormatter = DateFormat('yyyyMMddHHmmss');
 var kFullDateTimeFormatter = DateFormat('yyyy-MM-dd HH:mm:ss');
 var kDateYMDFormatter = DateFormat('yyyy-MM-dd');

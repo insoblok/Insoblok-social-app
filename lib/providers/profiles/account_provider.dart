@@ -30,18 +30,12 @@ class AccountProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  final RoomService _roomService = RoomService();
-  RoomService get roomService => _roomService;
-
   void init(BuildContext context, {UserModel? model}) async {
     this.context = context;
     accountUser = model ?? AuthHelper.user;
 
     fetchStories();
   }
-
-  final _storyService = StoryService();
-  StoryService get storyService => _storyService;
 
   final List<StoryModel> stories = [];
 

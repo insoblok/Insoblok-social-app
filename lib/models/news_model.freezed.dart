@@ -40,7 +40,7 @@ mixin _$NewsModel {
   String? get ai_region;
   String? get ai_org;
   DateTime? get timestamp;
-  DateTime? get regdate;
+  DateTime? get updateDate;
   bool? get duplicate;
 
   /// Create a copy of NewsModel
@@ -98,7 +98,8 @@ mixin _$NewsModel {
             (identical(other.ai_org, ai_org) || other.ai_org == ai_org) &&
             (identical(other.timestamp, timestamp) ||
                 other.timestamp == timestamp) &&
-            (identical(other.regdate, regdate) || other.regdate == regdate) &&
+            (identical(other.updateDate, updateDate) ||
+                other.updateDate == updateDate) &&
             (identical(other.duplicate, duplicate) ||
                 other.duplicate == duplicate));
   }
@@ -132,13 +133,13 @@ mixin _$NewsModel {
         ai_region,
         ai_org,
         timestamp,
-        regdate,
+        updateDate,
         duplicate
       ]);
 
   @override
   String toString() {
-    return 'NewsModel(article_id: $article_id, title: $title, link: $link, keywords: $keywords, creator: $creator, description: $description, content: $content, pubDate: $pubDate, pubDateTz: $pubDateTz, image_url: $image_url, video_url: $video_url, source_id: $source_id, source_name: $source_name, source_priority: $source_priority, source_url: $source_url, source_icon: $source_icon, language: $language, country: $country, category: $category, sentiment: $sentiment, sentiment_stats: $sentiment_stats, ai_tag: $ai_tag, ai_region: $ai_region, ai_org: $ai_org, timestamp: $timestamp, regdate: $regdate, duplicate: $duplicate)';
+    return 'NewsModel(article_id: $article_id, title: $title, link: $link, keywords: $keywords, creator: $creator, description: $description, content: $content, pubDate: $pubDate, pubDateTz: $pubDateTz, image_url: $image_url, video_url: $video_url, source_id: $source_id, source_name: $source_name, source_priority: $source_priority, source_url: $source_url, source_icon: $source_icon, language: $language, country: $country, category: $category, sentiment: $sentiment, sentiment_stats: $sentiment_stats, ai_tag: $ai_tag, ai_region: $ai_region, ai_org: $ai_org, timestamp: $timestamp, updateDate: $updateDate, duplicate: $duplicate)';
   }
 }
 
@@ -173,7 +174,7 @@ abstract mixin class $NewsModelCopyWith<$Res> {
       String? ai_region,
       String? ai_org,
       DateTime? timestamp,
-      DateTime? regdate,
+      DateTime? updateDate,
       bool? duplicate});
 }
 
@@ -214,7 +215,7 @@ class _$NewsModelCopyWithImpl<$Res> implements $NewsModelCopyWith<$Res> {
     Object? ai_region = freezed,
     Object? ai_org = freezed,
     Object? timestamp = freezed,
-    Object? regdate = freezed,
+    Object? updateDate = freezed,
     Object? duplicate = freezed,
   }) {
     return _then(_self.copyWith(
@@ -318,9 +319,9 @@ class _$NewsModelCopyWithImpl<$Res> implements $NewsModelCopyWith<$Res> {
           ? _self.timestamp
           : timestamp // ignore: cast_nullable_to_non_nullable
               as DateTime?,
-      regdate: freezed == regdate
-          ? _self.regdate
-          : regdate // ignore: cast_nullable_to_non_nullable
+      updateDate: freezed == updateDate
+          ? _self.updateDate
+          : updateDate // ignore: cast_nullable_to_non_nullable
               as DateTime?,
       duplicate: freezed == duplicate
           ? _self.duplicate
@@ -359,7 +360,7 @@ class _NewsModel implements NewsModel {
       this.ai_region,
       this.ai_org,
       this.timestamp,
-      this.regdate,
+      this.updateDate,
       this.duplicate})
       : _keywords = keywords,
         _creator = creator,
@@ -451,7 +452,7 @@ class _NewsModel implements NewsModel {
   @override
   final DateTime? timestamp;
   @override
-  final DateTime? regdate;
+  final DateTime? updateDate;
   @override
   final bool? duplicate;
 
@@ -515,7 +516,8 @@ class _NewsModel implements NewsModel {
             (identical(other.ai_org, ai_org) || other.ai_org == ai_org) &&
             (identical(other.timestamp, timestamp) ||
                 other.timestamp == timestamp) &&
-            (identical(other.regdate, regdate) || other.regdate == regdate) &&
+            (identical(other.updateDate, updateDate) ||
+                other.updateDate == updateDate) &&
             (identical(other.duplicate, duplicate) ||
                 other.duplicate == duplicate));
   }
@@ -549,13 +551,13 @@ class _NewsModel implements NewsModel {
         ai_region,
         ai_org,
         timestamp,
-        regdate,
+        updateDate,
         duplicate
       ]);
 
   @override
   String toString() {
-    return 'NewsModel(article_id: $article_id, title: $title, link: $link, keywords: $keywords, creator: $creator, description: $description, content: $content, pubDate: $pubDate, pubDateTz: $pubDateTz, image_url: $image_url, video_url: $video_url, source_id: $source_id, source_name: $source_name, source_priority: $source_priority, source_url: $source_url, source_icon: $source_icon, language: $language, country: $country, category: $category, sentiment: $sentiment, sentiment_stats: $sentiment_stats, ai_tag: $ai_tag, ai_region: $ai_region, ai_org: $ai_org, timestamp: $timestamp, regdate: $regdate, duplicate: $duplicate)';
+    return 'NewsModel(article_id: $article_id, title: $title, link: $link, keywords: $keywords, creator: $creator, description: $description, content: $content, pubDate: $pubDate, pubDateTz: $pubDateTz, image_url: $image_url, video_url: $video_url, source_id: $source_id, source_name: $source_name, source_priority: $source_priority, source_url: $source_url, source_icon: $source_icon, language: $language, country: $country, category: $category, sentiment: $sentiment, sentiment_stats: $sentiment_stats, ai_tag: $ai_tag, ai_region: $ai_region, ai_org: $ai_org, timestamp: $timestamp, updateDate: $updateDate, duplicate: $duplicate)';
   }
 }
 
@@ -593,7 +595,7 @@ abstract mixin class _$NewsModelCopyWith<$Res>
       String? ai_region,
       String? ai_org,
       DateTime? timestamp,
-      DateTime? regdate,
+      DateTime? updateDate,
       bool? duplicate});
 }
 
@@ -634,7 +636,7 @@ class __$NewsModelCopyWithImpl<$Res> implements _$NewsModelCopyWith<$Res> {
     Object? ai_region = freezed,
     Object? ai_org = freezed,
     Object? timestamp = freezed,
-    Object? regdate = freezed,
+    Object? updateDate = freezed,
     Object? duplicate = freezed,
   }) {
     return _then(_NewsModel(
@@ -738,9 +740,9 @@ class __$NewsModelCopyWithImpl<$Res> implements _$NewsModelCopyWith<$Res> {
           ? _self.timestamp
           : timestamp // ignore: cast_nullable_to_non_nullable
               as DateTime?,
-      regdate: freezed == regdate
-          ? _self.regdate
-          : regdate // ignore: cast_nullable_to_non_nullable
+      updateDate: freezed == updateDate
+          ? _self.updateDate
+          : updateDate // ignore: cast_nullable_to_non_nullable
               as DateTime?,
       duplicate: freezed == duplicate
           ? _self.duplicate

@@ -42,9 +42,9 @@ _NewsModel _$NewsModelFromJson(Map<String, dynamic> json) => _NewsModel(
       timestamp: json['timestamp'] == null
           ? null
           : DateTime.parse(json['timestamp'] as String),
-      regdate: json['regdate'] == null
+      updateDate: json['updateDate'] == null
           ? null
-          : DateTime.parse(json['regdate'] as String),
+          : DateTime.parse(json['updateDate'] as String),
       duplicate: json['duplicate'] as bool?,
     );
 
@@ -75,6 +75,6 @@ Map<String, dynamic> _$NewsModelToJson(_NewsModel instance) =>
       'ai_region': instance.ai_region,
       'ai_org': instance.ai_org,
       'timestamp': instance.timestamp?.toIso8601String(),
-      'regdate': instance.regdate?.toIso8601String(),
+      'updateDate': instance.updateDate?.toIso8601String(),
       'duplicate': instance.duplicate,
     };

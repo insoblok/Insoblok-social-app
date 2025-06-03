@@ -50,9 +50,6 @@ class StoryContentProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  final _storyService = StoryService();
-  StoryService get storyService => _storyService;
-
   bool _isLiking = false;
   bool get isLiking => _isLiking;
   set isLiking(bool f) {
@@ -308,9 +305,10 @@ class StoryContentProvider extends InSoBlokViewModel {
         } else {
           AIHelpers.showToast(msg: 'Your comment is empty!');
         }
-      } catch (e) {
+      } catch (e, s) {
         setError(e);
         logger.e(e);
+        logger.e(s);
       } finally {
         notifyListeners();
       }

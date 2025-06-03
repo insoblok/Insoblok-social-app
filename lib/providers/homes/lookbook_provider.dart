@@ -47,9 +47,6 @@ class LookbookProvider extends InSoBlokViewModel {
     super.dispose();
   }
 
-  final _storyService = StoryService();
-  StoryService get storyService => _storyService;
-
   final List<StoryModel> _stories = [];
   List<StoryModel> get stories => _stories;
 

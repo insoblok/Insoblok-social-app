@@ -42,9 +42,6 @@ class StoryDetailProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  final _userService = UserService();
-  UserService get userService => _userService;
-
   Future<void> fetchUser() async {
     try {
       owner = await userService.getUser(story.uid!);
@@ -55,9 +52,6 @@ class StoryDetailProvider extends InSoBlokViewModel {
       notifyListeners();
     }
   }
-
-  final _storyService = StoryService();
-  StoryService get storyService => _storyService;
 
   bool _isLiking = false;
   bool get isLiking => _isLiking;

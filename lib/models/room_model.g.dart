@@ -10,9 +10,9 @@ _RoomModel _$RoomModelFromJson(Map<String, dynamic> json) => _RoomModel(
       id: json['id'] as String?,
       uid: json['uid'] as String?,
       uids: (json['uids'] as List<dynamic>?)?.map((e) => e as String?).toList(),
-      regdate: json['regdate'] == null
+      updateDate: json['update_date'] == null
           ? null
-          : DateTime.parse(json['regdate'] as String),
+          : DateTime.parse(json['update_date'] as String),
       timestamp: json['timestamp'] == null
           ? null
           : DateTime.parse(json['timestamp'] as String),
@@ -26,7 +26,7 @@ Map<String, dynamic> _$RoomModelToJson(_RoomModel instance) =>
       'id': instance.id,
       'uid': instance.uid,
       'uids': instance.uids,
-      'regdate': instance.regdate?.toIso8601String(),
+      'update_date': instance.updateDate?.toIso8601String(),
       'timestamp': instance.timestamp?.toIso8601String(),
       'content': instance.content,
       'status_sender': instance.statusSender,

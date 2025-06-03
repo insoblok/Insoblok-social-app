@@ -173,7 +173,7 @@ class ProductItemWidget extends StatelessWidget {
                     ),
                     const SizedBox(height: 2.0),
                     Text(
-                      product.regdate?.timeago ?? '',
+                      product.timestamp?.timeago ?? '',
                       style: Theme.of(context).textTheme.labelSmall,
                     ),
                     // const SizedBox(height: 8.0),

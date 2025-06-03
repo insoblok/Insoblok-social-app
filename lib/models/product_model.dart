@@ -27,7 +27,7 @@ abstract class ProductModel with _$ProductModel {
     List<String>? likes,
     List<int>? rates,
     int? selles,
-    DateTime? regdate,
+    DateTime? updateDate,
     DateTime? timestamp,
     List<MediaStoryModel>? medias,
   }) = _ProductModel;

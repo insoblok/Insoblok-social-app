@@ -101,6 +101,9 @@ class AuthService with ListenableServiceMixin {
     }
   }
 
+  final _tastScoreService = TastescoreService();
+  TastescoreService get tastScoreService => _tastScoreService;
+
   Future<void> signInWithGoogle({String? walletAddress}) async {
     await FirebaseHelper.signInWithGoogle();
     var credential = FirebaseHelper.userCredential;
@@ -111,28 +114,7 @@ class AuthService with ListenableServiceMixin {
       var data = await ipAddress.getIpAddress();
       var newUser = await userService.getUser(uid);
       if (newUser != null) {
-        var reward = newUser.rewardDate ?? 0;
-        var loginedDate = newUser.updateDate ?? DateTime.now();
-
-        logger.d(kDateYMDFormatter.format(newUser.updateDate!));
-
-        var logined = DateTime(
-          loginedDate.year,
-          loginedDate.month,
-          loginedDate.day,
-        );
-        var current = DateTime(
-          DateTime.now().year,
-          DateTime.now().month,
-          DateTime.now().day,
-        );
-
-        if (current.difference(logined) == Duration(days: 1)) {
-          reward = reward + 1;
-        } else if (current.difference(logined) > Duration(days: 1)) {
-          reward = 0;
-        }
-
+        var reward = tastScoreService.loginScore(newUser);
         if (newUser.walletAddress != null) {
           newUser = newUser.copyWith(
             ipAddress: kDebugMode ? kDefaultIpAddress : data['ip'],

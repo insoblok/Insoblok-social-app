@@ -34,9 +34,6 @@ class MessageProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  final _messageService = MessageService();
-  MessageService get messageService => _messageService;
-
   final List<MessageModel> _messages = [];
   List<MessageModel> get messages => _messages;
   set messages(List<MessageModel> data) {

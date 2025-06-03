@@ -1,11 +1,13 @@
 import 'dart:convert';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
+import 'package:insoblok/utils/utils.dart';
 
 class ProductService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -60,10 +62,10 @@ class ProductService {
   // Add a product
   Future<void> addProduct({required ProductModel product}) async {
     await _firestore.collection('product').add({
-      ...product.toMap().toFirebaseJson,
+      ...product.toJson().toFirebaseJson,
       'uid': AuthHelper.user?.uid,
-      'timestamp': FieldValue.serverTimestamp(),
-      'regdate': FieldValue.serverTimestamp(),
+      'timestamp': kFirebaseFormatter.format(DateTime.now().toUtc()),
+      'update_date': kFirebaseFormatter.format(DateTime.now().toUtc()),
     });
   }
 
@@ -73,8 +75,8 @@ class ProductService {
     required ProductModel product,
   }) async {
     await _firestore.collection('product').doc(id).update({
-      ...product.toMap().toFirebaseJson,
-      'regdate': FieldValue.serverTimestamp(),
+      ...product.toJson().toFirebaseJson,
+      'update_date': kFirebaseFormatter.format(DateTime.now().toUtc()),
     });
   }
 

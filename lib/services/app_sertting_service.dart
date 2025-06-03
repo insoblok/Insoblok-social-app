@@ -8,7 +8,6 @@ import 'package:stacked/stacked.dart';
 
 import 'package:insoblok/locator.dart';
 import 'package:insoblok/models/models.dart';
-import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 
 class AppSettingService with ListenableServiceMixin {
@@ -47,7 +46,6 @@ class AppSettingService with ListenableServiceMixin {
       }
     }
     _appSettingModelRx.value = AppSettingModel.fromJson(newJson);
-    logger.d(appSettingModel?.toJson());
     notifyListeners();
   }
 

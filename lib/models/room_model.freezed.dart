@@ -18,7 +18,7 @@ mixin _$RoomModel {
   String? get id;
   String? get uid;
   List<String?>? get uids;
-  DateTime? get regdate;
+  DateTime? get updateDate;
   DateTime? get timestamp;
   String? get content;
   String? get statusSender;
@@ -42,7 +42,8 @@ mixin _$RoomModel {
             (identical(other.id, id) || other.id == id) &&
             (identical(other.uid, uid) || other.uid == uid) &&
             const DeepCollectionEquality().equals(other.uids, uids) &&
-            (identical(other.regdate, regdate) || other.regdate == regdate) &&
+            (identical(other.updateDate, updateDate) ||
+                other.updateDate == updateDate) &&
             (identical(other.timestamp, timestamp) ||
                 other.timestamp == timestamp) &&
             (identical(other.content, content) || other.content == content) &&
@@ -59,7 +60,7 @@ mixin _$RoomModel {
       id,
       uid,
       const DeepCollectionEquality().hash(uids),
-      regdate,
+      updateDate,
       timestamp,
       content,
       statusSender,
@@ -67,7 +68,7 @@ mixin _$RoomModel {
 
   @override
   String toString() {
-    return 'RoomModel(id: $id, uid: $uid, uids: $uids, regdate: $regdate, timestamp: $timestamp, content: $content, statusSender: $statusSender, statusReceiver: $statusReceiver)';
+    return 'RoomModel(id: $id, uid: $uid, uids: $uids, updateDate: $updateDate, timestamp: $timestamp, content: $content, statusSender: $statusSender, statusReceiver: $statusReceiver)';
   }
 }
 
@@ -80,7 +81,7 @@ abstract mixin class $RoomModelCopyWith<$Res> {
       {String? id,
       String? uid,
       List<String?>? uids,
-      DateTime? regdate,
+      DateTime? updateDate,
       DateTime? timestamp,
       String? content,
       String? statusSender,
@@ -102,7 +103,7 @@ class _$RoomModelCopyWithImpl<$Res> implements $RoomModelCopyWith<$Res> {
     Object? id = freezed,
     Object? uid = freezed,
     Object? uids = freezed,
-    Object? regdate = freezed,
+    Object? updateDate = freezed,
     Object? timestamp = freezed,
     Object? content = freezed,
     Object? statusSender = freezed,
@@ -121,9 +122,9 @@ class _$RoomModelCopyWithImpl<$Res> implements $RoomModelCopyWith<$Res> {
           ? _self.uids
           : uids // ignore: cast_nullable_to_non_nullable
               as List<String?>?,
-      regdate: freezed == regdate
-          ? _self.regdate
-          : regdate // ignore: cast_nullable_to_non_nullable
+      updateDate: freezed == updateDate
+          ? _self.updateDate
+          : updateDate // ignore: cast_nullable_to_non_nullable
               as DateTime?,
       timestamp: freezed == timestamp
           ? _self.timestamp
@@ -153,7 +154,7 @@ class _RoomModel implements RoomModel {
       {this.id,
       this.uid,
       final List<String?>? uids,
-      this.regdate,
+      this.updateDate,
       this.timestamp,
       this.content,
       this.statusSender,
@@ -177,7 +178,7 @@ class _RoomModel implements RoomModel {
   }
 
   @override
-  final DateTime? regdate;
+  final DateTime? updateDate;
   @override
   final DateTime? timestamp;
   @override
@@ -210,7 +211,8 @@ class _RoomModel implements RoomModel {
             (identical(other.id, id) || other.id == id) &&
             (identical(other.uid, uid) || other.uid == uid) &&
             const DeepCollectionEquality().equals(other._uids, _uids) &&
-            (identical(other.regdate, regdate) || other.regdate == regdate) &&
+            (identical(other.updateDate, updateDate) ||
+                other.updateDate == updateDate) &&
             (identical(other.timestamp, timestamp) ||
                 other.timestamp == timestamp) &&
             (identical(other.content, content) || other.content == content) &&
@@ -227,7 +229,7 @@ class _RoomModel implements RoomModel {
       id,
       uid,
       const DeepCollectionEquality().hash(_uids),
-      regdate,
+      updateDate,
       timestamp,
       content,
       statusSender,
@@ -235,7 +237,7 @@ class _RoomModel implements RoomModel {
 
   @override
   String toString() {
-    return 'RoomModel(id: $id, uid: $uid, uids: $uids, regdate: $regdate, timestamp: $timestamp, content: $content, statusSender: $statusSender, statusReceiver: $statusReceiver)';
+    return 'RoomModel(id: $id, uid: $uid, uids: $uids, updateDate: $updateDate, timestamp: $timestamp, content: $content, statusSender: $statusSender, statusReceiver: $statusReceiver)';
   }
 }
 
@@ -251,7 +253,7 @@ abstract mixin class _$RoomModelCopyWith<$Res>
       {String? id,
       String? uid,
       List<String?>? uids,
-      DateTime? regdate,
+      DateTime? updateDate,
       DateTime? timestamp,
       String? content,
       String? statusSender,
@@ -273,7 +275,7 @@ class __$RoomModelCopyWithImpl<$Res> implements _$RoomModelCopyWith<$Res> {
     Object? id = freezed,
     Object? uid = freezed,
     Object? uids = freezed,
-    Object? regdate = freezed,
+    Object? updateDate = freezed,
     Object? timestamp = freezed,
     Object? content = freezed,
     Object? statusSender = freezed,
@@ -292,9 +294,9 @@ class __$RoomModelCopyWithImpl<$Res> implements _$RoomModelCopyWith<$Res> {
           ? _self._uids
           : uids // ignore: cast_nullable_to_non_nullable
               as List<String?>?,
-      regdate: freezed == regdate
-          ? _self.regdate
-          : regdate // ignore: cast_nullable_to_non_nullable
+      updateDate: freezed == updateDate
+          ? _self.updateDate
+          : updateDate // ignore: cast_nullable_to_non_nullable
               as DateTime?,
       timestamp: freezed == timestamp
           ? _self.timestamp

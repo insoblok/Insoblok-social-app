@@ -3,18 +3,18 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
+import 'package:insoblok/utils/utils.dart';
 
 class StoryService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  CollectionReference<Map<String, dynamic>> get storyCollection =>
+      _firestore.collection('story');
 
   // Get stories
   Future<List<StoryModel>> getStories() async {
     List<StoryModel> result = [];
     var storiesSnapshot =
-        await _firestore
-            .collection('story')
-            .orderBy('timestamp', descending: true)
-            .get();
+        await storyCollection.orderBy('timestamp', descending: true).get();
     for (var doc in storiesSnapshot.docs) {
       try {
         var json = doc.data();
@@ -34,8 +34,7 @@ class StoryService {
   Future<List<StoryModel>> getStoriesByUid(String uid) async {
     List<StoryModel> result = [];
     var storiesSnapshot =
-        await _firestore
-            .collection('story')
+        await storyCollection
             .where('uid', isEqualTo: uid)
             .orderBy('timestamp', descending: false)
             .get();
@@ -58,8 +57,7 @@ class StoryService {
   Future<List<StoryModel>> getStoriesByLike(String uid) async {
     List<StoryModel> result = [];
     var storiesSnapshot =
-        await _firestore
-            .collection('story')
+        await storyCollection
             .where('likes', arrayContains: uid)
             .orderBy('timestamp', descending: false)
             .get();
@@ -82,8 +80,7 @@ class StoryService {
   Future<List<StoryModel>> getStoriesByFollow(String uid) async {
     List<StoryModel> result = [];
     var storiesSnapshot =
-        await _firestore
-            .collection('story')
+        await storyCollection
             .where('follows', arrayContains: uid)
             .orderBy('timestamp', descending: false)
             .get();
@@ -104,7 +101,7 @@ class StoryService {
 
   // Get stories updated
   Stream<UpdatedStoryModel?> getStoryUpdated() {
-    return _firestore.collection('story').doc('updated').snapshots().map((doc) {
+    return storyCollection.doc('updated').snapshots().map((doc) {
       logger.d(doc.data());
       if (doc.data() == null) return null;
       return UpdatedStoryModel.fromJson(doc.data()!);
@@ -113,14 +110,14 @@ class StoryService {
 
   // Post a story
   Future<void> postStory({required StoryModel story}) async {
-    await _firestore.collection('story').add({
-      ...story.toMap().toFirebaseJson,
+    await storyCollection.add({
+      ...story.toJson().toFirebaseJson,
       'uid': AuthHelper.user?.uid,
-      'timestamp': FieldValue.serverTimestamp(),
-      'regdate': FieldValue.serverTimestamp(),
+      'timestamp': kFirebaseFormatter.format(DateTime.now().toUtc()),
+      'update_date': kFirebaseFormatter.format(DateTime.now().toUtc()),
     });
-    await _firestore.collection('story').doc('updated').set({
-      'timestamp': FieldValue.serverTimestamp(),
+    await storyCollection.doc('updated').set({
+      'timestamp': kFirebaseFormatter.format(DateTime.now().toUtc()),
     });
   }
 
@@ -132,9 +129,9 @@ class StoryService {
     required StoryModel story,
     required UserModel? user,
   }) async {
-    await _firestore.collection('story').doc(story.id).update({
-      ...story.toMap().toFirebaseJson,
-      'regdate': FieldValue.serverTimestamp(),
+    await storyCollection.doc(story.id).update({
+      ...story.toJson().toFirebaseJson,
+      'update_date': kFirebaseFormatter.format(DateTime.now().toUtc()),
     });
     if (user != null) {
       var isUpdated = false;
@@ -157,9 +154,9 @@ class StoryService {
     required StoryModel story,
     required UserModel? user,
   }) async {
-    await _firestore.collection('story').doc(story.id).update({
-      ...story.toMap().toFirebaseJson,
-      'regdate': FieldValue.serverTimestamp(),
+    await storyCollection.doc(story.id).update({
+      ...story.toJson().toFirebaseJson,
+      'update_date': kFirebaseFormatter.format(DateTime.now().toUtc()),
     });
 
     if (user != null) {
@@ -185,9 +182,9 @@ class StoryService {
 
     required bool? isVote,
   }) async {
-    await _firestore.collection('story').doc(story.id).update({
-      ...story.toMap().toFirebaseJson,
-      'regdate': FieldValue.serverTimestamp(),
+    await storyCollection.doc(story.id).update({
+      ...story.toJson().toFirebaseJson,
+      'update_date': kFirebaseFormatter.format(DateTime.now().toUtc()),
     });
 
     if (user != null) {
@@ -221,9 +218,9 @@ class StoryService {
 
   // Add comment of story
   Future<void> addComment({required StoryModel story}) async {
-    await _firestore.collection('story').doc(story.id).update({
-      ...story.toMap().toFirebaseJson,
-      'regdate': FieldValue.serverTimestamp(),
+    await storyCollection.doc(story.id).update({
+      ...story.toJson().toFirebaseJson,
+      'update_date': kFirebaseFormatter.format(DateTime.now().toUtc()),
     });
   }
 }

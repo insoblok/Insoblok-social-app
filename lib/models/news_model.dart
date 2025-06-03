@@ -32,7 +32,7 @@ abstract class NewsModel with _$NewsModel {
     String? ai_region,
     String? ai_org,
     DateTime? timestamp,
-    DateTime? regdate,
+    DateTime? updateDate,
     bool? duplicate,
   }) = _NewsModel;
 

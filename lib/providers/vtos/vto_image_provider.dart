@@ -148,8 +148,6 @@ class VTOImageProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  final _vtoService = VTOService();
-
   Future<void> _clothingConvert() async {
     if (selectedFile == null) {
       AIHelpers.showToast(msg: 'Please select a origin photo!');
@@ -171,7 +169,7 @@ class VTOImageProvider extends InSoBlokViewModel {
           throw ('Failed origin image uploaded!');
         }
 
-        var resultUrl = await _vtoService.convertVTOClothing(
+        var resultUrl = await vtoService.convertVTOClothing(
           modelUrl: originUrl!,
           photoUrl: product.modelImage,
           type: product.type ?? 'tops',
@@ -266,7 +264,7 @@ class VTOImageProvider extends InSoBlokViewModel {
     isConverting = true;
     await runBusyFuture(() async {
       try {
-        var resultUrl = await _vtoService.getVTOJewelryModelImage(
+        var resultUrl = await vtoService.getVTOJewelryModelImage(
           modelUrl: product.modelImage!,
           type: product.type ?? 'ring',
           gender: gender,
@@ -322,9 +320,6 @@ class VTOImageProvider extends InSoBlokViewModel {
     }
   }
 
-  final _productService = ProductService();
-  ProductService get productService => _productService;
-
   Future<void> onClickShareButton() async {
     if (isBusy) return;
     clearErrors();
@@ -344,9 +339,6 @@ class VTOImageProvider extends InSoBlokViewModel {
       AIHelpers.showToast(msg: modelError.toString());
     }
   }
-
-  final _storyService = StoryService();
-  StoryService get storyService => _storyService;
 
   Future<void> savetoLookBook() async {
     if (isBusy) return;

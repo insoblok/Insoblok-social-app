@@ -94,9 +94,6 @@ class AddStoryProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  final _storyService = StoryService();
-  StoryService get storyService => _storyService;
-
   Future<void> onClickUploadButton() async {
     if (isBusy) return;
     clearErrors();

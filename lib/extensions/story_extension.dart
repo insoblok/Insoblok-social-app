@@ -36,38 +36,13 @@ extension StoryModelExt on StoryModel {
 
   String get shownDate {
     return kDateMDYFormatter.format(
-      regdate != null ? regdate! : DateTime.now(),
+      timestamp != null ? timestamp! : DateTime.now(),
     );
   }
 
   String get shownHMDate {
     return kDateHMMDYFormatter.format(
-      regdate != null ? regdate! : DateTime.now(),
+      timestamp != null ? timestamp! : DateTime.now(),
     );
-  }
-
-  Map<String, dynamic> toMap() {
-    return {
-      'uid': uid,
-      'title': title,
-      'text': text,
-      'status': status,
-      'likes': likes,
-      'follows': follows,
-      'category': category,
-      'medias': (medias ?? []).map((e) => e.toJson()).toList(),
-      'comments': (comments ?? []).map((e) => e.toMap()).toList(),
-      'votes': (votes ?? []).map((e) => e.toJson()).toList(),
-    };
-  }
-}
-
-extension StoryCommentExt on StoryCommentModel {
-  Map<String, dynamic> toMap() {
-    return {
-      'uid': uid,
-      'content': content,
-      'medias': (medias ?? []).map((e) => e.toJson()).toList(),
-    };
   }
 }

@@ -48,9 +48,6 @@ class AddProductProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  final _productService = ProductService();
-  ProductService get productService => _productService;
-
   void updateName(String s) {
     _product = product.copyWith(name: s);
     notifyListeners();

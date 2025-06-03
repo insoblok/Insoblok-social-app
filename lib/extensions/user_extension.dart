@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
-import 'package:insoblok/extensions/extensions.dart';
 
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
@@ -137,31 +136,4 @@ extension UserModelExt on UserModel {
     {'type': 'location', 'title': 'United State', 'icon': AIImages.icLocation},
     {'type': 'wallet', 'title': 'My Wallet', 'icon': Icons.wallet},
   ];
-
-  Map<String, dynamic> toMap() {
-    return {
-      'uid': uid,
-      'wallet_address': walletAddress,
-      'avatar': avatar,
-      'first_name': firstName,
-      'last_name': lastName,
-      'email': email,
-      'password': password,
-      'city': city,
-      'country': country,
-      'website': website,
-      'desc': desc,
-      'discovery': discovery,
-      'nick_id': nickId,
-      'lat': lat,
-      'lon': lon,
-      'ip_address': ipAddress,
-      'status': status,
-      'likes': likes,
-      'follows': follows,
-      'reward_date': rewardDate,
-      'update_date': updateDate,
-      'actions': (actions ?? []).map((e) => e.toJson().toFirebaseJson).toList(),
-    };
-  }
 }

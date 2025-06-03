@@ -3,6 +3,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
+import 'package:insoblok/utils/utils.dart';
 
 class UserService {
   final CollectionReference<Map<String, dynamic>> _userCollection =
@@ -11,9 +12,9 @@ class UserService {
   Future<UserModel?> createUser(UserModel user) async {
     try {
       await _userCollection.add({
-        ...user.toMap().toFirebaseJson,
-        'timestamp': FieldValue.serverTimestamp(),
-        'update_date': FieldValue.serverTimestamp(),
+        ...user.toJson().toFirebaseJson,
+        'timestamp': kFirebaseFormatter.format(DateTime.now().toUtc()),
+        'update_date': kFirebaseFormatter.format(DateTime.now().toUtc()),
       });
       return getUser(user.uid!);
     } on FirebaseException catch (e) {
@@ -54,9 +55,9 @@ class UserService {
 
   Future<void> updateUser(UserModel user, {Map<String, dynamic>? data}) async {
     await _userCollection.doc(user.id).update({
-      ...user.toMap().toFirebaseJson,
+      ...user.toJson().toFirebaseJson,
       ...(data ?? {}),
-      'update_date': FieldValue.serverTimestamp(),
+      'update_date': kFirebaseFormatter.format(DateTime.now().toUtc()),
     });
   }
 

@@ -104,9 +104,10 @@ class LoginProvider extends InSoBlokViewModel {
     await runBusyFuture(() async {
       try {
         await AuthHelper.service.signInWithGoogle();
-      } catch (e) {
+      } catch (e, s) {
         setError(e);
         logger.e(e);
+        logger.e(s);
       } finally {
         notifyListeners();
       }
