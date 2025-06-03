@@ -3,7 +3,6 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
-import 'package:insoblok/utils/utils.dart';
 
 class RoomService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -62,11 +61,7 @@ class RoomService {
   // Create a room
   Future<bool> createRoom(RoomModel room) async {
     try {
-      await _firestore.collection('room').add({
-        ...room.toJson().toFirebaseJson,
-        'timestamp': kFirebaseFormatter.format(DateTime.now().toUtc()),
-        'update_date': kFirebaseFormatter.format(DateTime.now().toUtc()),
-      });
+      await _firestore.collection('room').add(room.toMap());
       return true;
     } on FirebaseException catch (e) {
       logger.e(e.message);
@@ -79,10 +74,7 @@ class RoomService {
   // Update a room
   Future<bool> updateRoom(RoomModel room) async {
     try {
-      await _firestore.collection('room').doc(room.id).update({
-        ...room.toJson().toFirebaseJson,
-        'timestamp': kFirebaseFormatter.format(DateTime.now().toUtc()),
-      });
+      await _firestore.collection('room').doc(room.id).update(room.toMap());
       return true;
     } on FirebaseException catch (e) {
       logger.e(e.message);

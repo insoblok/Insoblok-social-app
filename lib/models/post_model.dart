@@ -1,4 +1,5 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
+
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
 

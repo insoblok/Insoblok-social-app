@@ -92,6 +92,8 @@ class AccountProvider extends InSoBlokViewModel {
               uid: user?.uid,
               uids: [user?.uid, accountUser?.uid],
               content: '${user?.firstName} have created a room',
+              updateDate: DateTime.now(),
+              timestamp: DateTime.now(),
             );
             logger.d(room.toJson());
             await roomService.createRoom(room);

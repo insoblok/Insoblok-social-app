@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -248,12 +247,7 @@ class FirebaseHelper {
         var value = firebaseJson[key];
 
         if (value != null) {
-          DateTime utcDateTime;
-          if (value is String) {
-            utcDateTime = kFirebaseFormatter.parse(value);
-          } else {
-            utcDateTime = (value as Timestamp).toDate();
-          }
+          DateTime utcDateTime = kFirebaseFormatter.parse(value);
           newJson[key] = utcDateTime.toLocal().toIso8601String();
         }
       } else {

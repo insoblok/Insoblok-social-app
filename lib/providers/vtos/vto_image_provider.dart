@@ -201,7 +201,10 @@ class VTOImageProvider extends InSoBlokViewModel {
           if (!medias.map((m) => m.link).toList().contains(serverUrl)) {
             medias.insert(0, MediaStoryModel(link: serverUrl, type: 'image'));
             logger.d(medias.length);
-            product = product.copyWith(medias: medias);
+            product = product.copyWith(
+              medias: medias,
+              updateDate: DateTime.now(),
+            );
             await productService.updateProduct(
               id: product.id!,
               product: product,
@@ -298,7 +301,10 @@ class VTOImageProvider extends InSoBlokViewModel {
           if (!medias.map((m) => m.link).toList().contains(serverUrl)) {
             medias.insert(0, MediaStoryModel(link: serverUrl, type: 'image'));
             logger.d(medias.length);
-            product = product.copyWith(medias: medias);
+            product = product.copyWith(
+              medias: medias,
+              updateDate: DateTime.now(),
+            );
             await productService.updateProduct(
               id: product.id!,
               product: product,

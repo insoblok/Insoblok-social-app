@@ -1,3 +1,4 @@
+import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
@@ -44,5 +45,33 @@ extension StoryModelExt on StoryModel {
     return kDateHMMDYFormatter.format(
       timestamp != null ? timestamp! : DateTime.now(),
     );
+  }
+
+  Map<String, dynamic> toMap() {
+    return toJson().toFirebaseJson;
+  }
+}
+
+extension StoryVoteModelExt on StoryVoteModel {
+  Map<String, dynamic> toMap() {
+    return toJson().toFirebaseJson;
+  }
+}
+
+extension MediaStoryModelExt on MediaStoryModel {
+  Map<String, dynamic> toMap() {
+    return toJson().toFirebaseJson;
+  }
+}
+
+extension StoryCommentModelExt on StoryCommentModel {
+  Map<String, dynamic> toMap() {
+    return toJson().toFirebaseJson;
+  }
+}
+
+extension UpdatedStoryModelExt on UpdatedStoryModel {
+  Map<String, dynamic> toMap() {
+    return toJson().toFirebaseJson;
   }
 }

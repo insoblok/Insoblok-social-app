@@ -155,6 +155,8 @@ class ChatProvider extends InSoBlokViewModel {
             uid: user?.uid,
             uids: [user?.uid, chatUser.uid],
             content: '${user?.firstName} have created a room',
+            updateDate: DateTime.now(),
+            timestamp: DateTime.now(),
           );
           logger.d(room.toJson());
           await roomService.createRoom(room);

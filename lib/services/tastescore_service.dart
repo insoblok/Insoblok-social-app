@@ -1,9 +1,15 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 
 class TastescoreService {
-  int loginScore(UserModel user) {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  CollectionReference<Map<String, dynamic>> get tastescoreCollection =>
+      _firestore.collection('tastescore');
+
+  Future<int> loginScore(UserModel user) async {
     try {
       var reward = user.rewardDate ?? 0;
       var loginedDate = user.updateDate ?? DateTime.now();

@@ -176,7 +176,12 @@ class AddProductProvider extends InSoBlokViewModel {
 
         if (modelLink != null) {
           _product = product.copyWith(modelImage: modelLink);
-          await productService.addProduct(product: product);
+          await productService.addProduct(
+            product: product.copyWith(
+              timestamp: DateTime.now(),
+              updateDate: DateTime.now(),
+            ),
+          );
           Navigator.of(context).pop(true);
         } else {
           setError('Failed server uploading!');

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
 
+import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
@@ -136,4 +137,20 @@ extension UserModelExt on UserModel {
     {'type': 'location', 'title': 'United State', 'icon': AIImages.icLocation},
     {'type': 'wallet', 'title': 'My Wallet', 'icon': Icons.wallet},
   ];
+
+  Map<String, dynamic> toMap() {
+    return toJson().toFirebaseJson;
+  }
+}
+
+extension UserActionModelExt on UserActionModel {
+  Map<String, dynamic> toMap() {
+    return toJson().toFirebaseJson;
+  }
+}
+
+extension UserCountryModelExt on UserCountryModel {
+  Map<String, dynamic> toMap() {
+    return toJson().toFirebaseJson;
+  }
 }

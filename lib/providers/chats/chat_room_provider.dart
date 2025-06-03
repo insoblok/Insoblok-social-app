@@ -153,6 +153,8 @@ class CreateRoomProvider extends InSoBlokViewModel {
             uid: AuthHelper.user?.uid,
             uids: [AuthHelper.user?.uid, user.uid],
             content: '${AuthHelper.user?.firstName} have created a room',
+            updateDate: DateTime.now(),
+            timestamp: DateTime.now(),
           );
           await roomService.createRoom(room);
           AIHelpers.showToast(msg: "Successfully Create Room!");

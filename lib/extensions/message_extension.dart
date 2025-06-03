@@ -333,3 +333,9 @@ class _VideoContentState extends State<VideoContent> {
     );
   }
 }
+
+extension RoomModelExt on RoomModel {
+  Map<String, dynamic> toMap() {
+    return toJson().toFirebaseJson;
+  }
+}

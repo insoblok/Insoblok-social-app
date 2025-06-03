@@ -114,17 +114,19 @@ class AuthService with ListenableServiceMixin {
       var data = await ipAddress.getIpAddress();
       var newUser = await userService.getUser(uid);
       if (newUser != null) {
-        var reward = tastScoreService.loginScore(newUser);
+        var reward = await tastScoreService.loginScore(newUser);
         if (newUser.walletAddress != null) {
           newUser = newUser.copyWith(
             ipAddress: kDebugMode ? kDefaultIpAddress : data['ip'],
             rewardDate: reward,
+            updateDate: DateTime.now(),
           );
         } else {
           newUser = newUser.copyWith(
             walletAddress: walletAddress,
             ipAddress: kDebugMode ? kDefaultIpAddress : data['ip'],
             rewardDate: reward,
+            updateDate: DateTime.now(),
           );
         }
 
@@ -142,6 +144,8 @@ class AuthService with ListenableServiceMixin {
           walletAddress: walletAddress,
           ipAddress: kDebugMode ? kDefaultIpAddress : data['ip'],
           rewardDate: 0,
+          timestamp: DateTime.now(),
+          updateDate: DateTime.now(),
         );
         newUser = await userService.createUser(newUser);
         _userRx.value = newUser;

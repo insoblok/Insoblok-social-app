@@ -1,19 +1,13 @@
 import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
 
-extension ProductExtension on ProductModel {
+extension TastescoreModelExt on TastescoreModel {
   Map<String, dynamic> toMap() {
     return toJson().toFirebaseJson;
   }
 }
 
-extension ProductTribeCategoryModelExt on ProductTribeCategoryModel {
-  Map<String, dynamic> toMap() {
-    return toJson().toFirebaseJson;
-  }
-}
-
-extension ProductSubtypeModelExt on ProductSubtypeModel {
+extension ConnectedStoryModelExt on ConnectedStoryModel {
   Map<String, dynamic> toMap() {
     return toJson().toFirebaseJson;
   }
