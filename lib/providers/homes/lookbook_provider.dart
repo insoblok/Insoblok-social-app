@@ -12,13 +12,6 @@ class LookbookProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  bool _isUpdated = false;
-  bool get isUpdated => _isUpdated;
-  set isUpdated(bool f) {
-    _isUpdated = f;
-    notifyListeners();
-  }
-
   final PageController _pageController = PageController();
   PageController get pageController => _pageController;
   int _currentPage = 0;
@@ -35,10 +28,6 @@ class LookbookProvider extends InSoBlokViewModel {
     });
 
     fetchData();
-
-    storyService.getStoryUpdated().listen((updated) {
-      isUpdated = true;
-    });
   }
 
   @override
@@ -60,7 +49,6 @@ class LookbookProvider extends InSoBlokViewModel {
         var ss = await storyService.getLookBookStories();
         logger.d(ss.length);
         _stories.addAll(ss);
-        isUpdated = false;
       } catch (e) {
         setError(e);
         logger.e(e);

@@ -84,7 +84,7 @@ class StoryListCell extends StatelessWidget {
                             ),
                             Text(
                               '@${viewModel.owner?.nickId} • ${viewModel.story.timestamp?.timeago}',
-                              style: Theme.of(context).textTheme.labelLarge,
+                              style: Theme.of(context).textTheme.labelMedium,
                             ),
                           ],
                         ),
@@ -198,17 +198,17 @@ class StoryDetailDialog extends StatelessWidget {
           children: [
             NotificationListener<ScrollNotification>(
               onNotification: (notification) {
-                if (notification is ScrollUpdateNotification) {
-                  if (viewModel.scrollController.offset < -50) {
-                    viewModel.popupDialog();
-                    return false;
+                if (notification is ScrollEndNotification) {
+                  if (viewModel.scrollController.offset == 0) {
+                    Navigator.of(context).pop();
                   }
+                  return false;
                 }
                 return true;
               },
               child: SingleChildScrollView(
                 controller: viewModel.scrollController,
-                physics: BouncingScrollPhysics(),
+                physics: ClampingScrollPhysics(),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -399,7 +399,7 @@ class StoryDetailDialog extends StatelessWidget {
                           description: 'On click on that open tastescore tab!',
                         ),
                       } else ...{
-                        for (StoryVoteModel vote
+                        for (var vote
                             in (viewModel.story.votes?.reversed.toList() ??
                                 [])) ...{
                           Padding(
@@ -407,10 +407,7 @@ class StoryDetailDialog extends StatelessWidget {
                               horizontal: 16.0,
                               vertical: 4.0,
                             ),
-                            child: VotedUserCell(
-                              key: GlobalKey(debugLabel: vote.uid),
-                              voteModel: vote,
-                            ),
+                            child: VotedUserCell(voteModel: vote),
                           ),
                         },
                       },
@@ -421,7 +418,7 @@ class StoryDetailDialog extends StatelessWidget {
                           description: 'Nobody had commented yet!',
                         ),
                       } else ...{
-                        for (StoryCommentModel comment
+                        for (var comment
                             in (viewModel.story.comments?.reversed.toList() ??
                                 [])) ...{
                           Padding(
@@ -430,10 +427,9 @@ class StoryDetailDialog extends StatelessWidget {
                               vertical: 4.0,
                             ),
                             child: StoryDetailCommentCell(
-                              key: GlobalKey(debugLabel: comment.uid),
                               comment: comment,
                               isLast:
-                                  (viewModel.story.comments ?? []).last ==
+                                  (viewModel.story.comments ?? []).length ==
                                   comment,
                             ),
                           ),

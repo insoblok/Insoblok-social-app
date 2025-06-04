@@ -19,6 +19,13 @@ class DashboardProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  bool _isUpdated = false;
+  bool get isUpdated => _isUpdated;
+  set isUpdated(bool f) {
+    _isUpdated = f;
+    notifyListeners();
+  }
+
   final PageController _pageController = PageController();
   PageController get pageController => _pageController;
   int _currentPage = 0;
@@ -34,6 +41,9 @@ class DashboardProvider extends InSoBlokViewModel {
     });
 
     fetchNewsData();
+    storyService.getStoryUpdated().listen((updated) {
+      isUpdated = true;
+    });
   }
 
   @override
@@ -90,6 +100,7 @@ class DashboardProvider extends InSoBlokViewModel {
         var ss = await storyService.getStories();
         logger.d(ss.length);
         _stories.addAll(ss);
+        isUpdated = false;
       } catch (e) {
         setError(e);
         logger.e(e);

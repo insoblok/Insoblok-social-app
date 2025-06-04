@@ -330,6 +330,16 @@ class StoryContentProvider extends InSoBlokViewModel {
     }
   }
 
+  bool containedConnect() {
+    var connects = story.connects ?? [];
+    for (var connect in connects) {
+      if (connect.postId == story.id && connect.userUid == story.uid) {
+        return true;
+      }
+    }
+    return false;
+  }
+
   Future<void> onClickRepost() async {
     if (isBusy) return;
     clearErrors();
@@ -352,6 +362,11 @@ class StoryContentProvider extends InSoBlokViewModel {
             medias: story.medias,
             updateDate: DateTime.now(),
             timestamp: DateTime.now(),
+            connects: [
+              ...(story.connects ?? []),
+              if (!containedConnect())
+                ConnectedStoryModel(postId: story.id, userUid: story.uid),
+            ],
           );
           await storyService.postStory(story: newStory);
 
