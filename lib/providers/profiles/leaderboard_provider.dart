@@ -1,9 +1,55 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 import 'package:insoblok/models/models.dart';
 
 import 'package:insoblok/utils/utils.dart';
 
-import '../../services/services.dart';
+import 'package:insoblok/services/services.dart';
+
+class UserScoreModel {
+  final String uid;
+  final List<TastescoreModel> scores;
+
+  UserScoreModel({required this.uid, required this.scores});
+
+  set date(String s) {
+    date = s;
+  }
+
+  int get xpDay {
+    var result = 0;
+    for (var score in scores) {
+      if ((score.updateDate?.year == DateTime.now().year) &&
+          (score.updateDate?.month == DateTime.now().month) &&
+          (score.updateDate?.day == DateTime.now().day)) {
+        result += score.bonus ?? 0;
+      }
+    }
+    return result;
+  }
+
+  int get xpWeek {
+    var result = 0;
+    for (var score in scores) {
+      if ((score.updateDate?.year == DateTime.now().year) &&
+          (getWeekNumber(score.updateDate!) == getWeekNumber(DateTime.now()))) {
+        result += score.bonus ?? 0;
+      }
+    }
+    return result;
+  }
+
+  int get xpMonth {
+    var result = 0;
+    for (var score in scores) {
+      if ((score.updateDate?.year == DateTime.now().year) &&
+          (score.updateDate?.month == DateTime.now().month)) {
+        result += score.bonus ?? 0;
+      }
+    }
+    return result;
+  }
+}
 
 class LeaderboardProvider extends InSoBlokViewModel {
   late BuildContext _context;
@@ -13,8 +59,17 @@ class LeaderboardProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  List<UserModel?> _users = [];
-  List<UserModel?> get users => _users;
+  final List<UserScoreModel> _leaderboard = [];
+  List<UserScoreModel> get leaderboard => _leaderboard;
+
+  List<UserScoreModel> get dailyLeaderboard =>
+      _leaderboard.sorted((b, a) => a.xpDay - b.xpDay).toList();
+
+  List<UserScoreModel> get weeklyLeaderboard =>
+      _leaderboard.sorted((b, a) => a.xpWeek - b.xpWeek).toList();
+
+  List<UserScoreModel> get monthlyLeaderboard =>
+      _leaderboard.sorted((b, a) => a.xpMonth - b.xpMonth).toList();
 
   int _tabIndex = 0;
   int get tabIndex => _tabIndex;
@@ -33,14 +88,17 @@ class LeaderboardProvider extends InSoBlokViewModel {
     clearErrors();
     await runBusyFuture(() async {
       try {
-        var s = await userService.getAllUsers();
-        _users.addAll(s);
-        _users.addAll(s);
-        _users.addAll(s);
-        _users.addAll(s);
-        _users.addAll(s);
+        var scores = await tastScoreService.getScoreList();
+        var newMap = groupBy(scores, (obj) => obj.uid);
 
-        logger.d(_users.length);
+        for (var key in newMap.keys) {
+          if (key != null) {
+            var leader = UserScoreModel(uid: key, scores: newMap[key] ?? []);
+            _leaderboard.add(leader);
+          }
+        }
+
+        logger.d(_leaderboard.length);
       } catch (e) {
         logger.e(e);
         setError(e);
@@ -51,12 +109,5 @@ class LeaderboardProvider extends InSoBlokViewModel {
     if (hasError) {
       AIHelpers.showToast(msg: modelError.toString());
     }
-  }
-
-  String selectDate() {
-    if (tabIndex == 0) return 'weekly';
-    if (tabIndex == 1) return 'weekly';
-    if (tabIndex == 2) return 'montly';
-    return ' daily';
   }
 }

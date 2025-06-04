@@ -33,8 +33,8 @@ class AccountPage extends StatelessWidget {
                       pinned: true,
                       floating: true,
                       delegate: AIPersistentHeader(
-                        minSize: MediaQuery.of(context).padding.top + 200.0,
-                        maxSize: MediaQuery.of(context).padding.top + 200.0,
+                        minSize: MediaQuery.of(context).padding.top + 212.0,
+                        maxSize: MediaQuery.of(context).padding.top + 212.0,
                         child: AccountPresentHeaderView(),
                       ),
                     ),

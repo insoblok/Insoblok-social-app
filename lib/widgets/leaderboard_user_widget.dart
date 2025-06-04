@@ -1,29 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:insoblok/widgets/widgets.dart';
 
 import 'package:stacked/stacked.dart';
 
 import 'package:insoblok/extensions/extensions.dart';
-import 'package:insoblok/models/models.dart';
 import 'package:insoblok/providers/providers.dart';
 
 const kUserAvatarSize = 56.0;
 
 class LeaderboardUserView extends StatelessWidget {
-  final UserModel user;
-  final String date;
+  final String userUid;
+  final int score;
 
   const LeaderboardUserView({
     super.key,
-    required this.user,
-    required this.date,
+    required this.userUid,
+    required this.score,
   });
 
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<UserProvider>.reactive(
       viewModelBuilder: () => UserProvider(),
-      onViewModelReady:
-          (viewModel) => viewModel.init(context, uid: user.uid!, date: date),
+      onViewModelReady: (viewModel) => viewModel.init(context, uid: userUid),
       builder: (context, viewModel, _) {
         var userData = viewModel.owner;
         return Padding(
@@ -31,46 +30,79 @@ class LeaderboardUserView extends StatelessWidget {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.start,
             children: [
-              InkWell(
-                onTap: viewModel.goToDetailPage,
-                child: user.avatarStatusView(
-                  width: kUserAvatarSize,
-                  height: kUserAvatarSize,
-                  borderWidth: 3.0,
-                  textSize: 18.0,
-                  showStatus: false,
-                ),
-              ),
+              userData == null
+                  ? ShimmerContainer(
+                    child: Container(
+                      width: kUserAvatarSize,
+                      height: kUserAvatarSize,
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        shape: BoxShape.circle,
+                      ),
+                    ),
+                  )
+                  : InkWell(
+                    onTap: viewModel.goToDetailPage,
+                    child: userData.avatarStatusView(
+                      width: kUserAvatarSize,
+                      height: kUserAvatarSize,
+                      borderWidth: 3.0,
+                      textSize: 18.0,
+                      showStatus: false,
+                    ),
+                  ),
               const SizedBox(width: 12.0),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text.rich(
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      TextSpan(
-                        children: [
-                          TextSpan(
-                            text: user.fullName,
-                            style: Theme.of(context).textTheme.bodyMedium,
+                    userData == null
+                        ? ShimmerContainer(
+                          child: Container(
+                            width: 150.0,
+                            height: 16,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
                           ),
+                        )
+                        : Text.rich(
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           TextSpan(
-                            text: ' @${user.nickId}',
-                            style: Theme.of(context).textTheme.labelMedium,
+                            children: [
+                              TextSpan(
+                                text: userData.fullName,
+                                style: Theme.of(context).textTheme.bodyMedium,
+                              ),
+                              TextSpan(
+                                text: ' @${userData.nickId}',
+                                style: Theme.of(context).textTheme.labelMedium,
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                    ),
-                    Text(
-                      userData?.timestamp?.timeago ?? '10m ago',
-                      style: Theme.of(context).textTheme.labelSmall,
-                    ),
+                        ),
+                    userData == null
+                        ? ShimmerContainer(
+                          child: Container(
+                            width: 80.0,
+                            height: 16,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                          ),
+                        )
+                        : Text(
+                          userData.timestamp?.timeago ?? '10m ago',
+                          style: Theme.of(context).textTheme.labelSmall,
+                        ),
                   ],
                 ),
               ),
               Text(
-                viewModel.userScore.toString(),
+                score.toString(),
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
             ],

@@ -52,6 +52,24 @@ class TastescoreService {
     return 0;
   }
 
+  Future<List<TastescoreModel>> getScoreList() async {
+    List<TastescoreModel> scoreList = [];
+    var scoreSnapshot = await tastescoreCollection.get();
+    for (var doc in scoreSnapshot.docs) {
+      try {
+        var json = doc.data();
+        json['id'] = doc.id;
+        var score = TastescoreModel.fromJson(json);
+        if (score.uid != null) {
+          scoreList.add(score);
+        }
+      } on FirebaseException catch (e) {
+        logger.e(e.message);
+      }
+    }
+    return scoreList;
+  }
+
   Future<int> getUserScore(String uid, String date) async {
     List<TastescoreModel> scoreList = [];
     try {

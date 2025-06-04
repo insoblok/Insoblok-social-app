@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:insoblok/services/logger_service.dart';
+import 'package:insoblok/services/services.dart';
 import 'package:insoblok/widgets/widgets.dart';
 
 import 'package:stacked/stacked.dart';
@@ -52,16 +52,33 @@ class LeaderboardPage extends StatelessWidget {
             body: ListView.separated(
               physics: BouncingScrollPhysics(),
               itemBuilder: (context, i) {
-                var user = viewModel.users[i];
-                return LeaderboardUserView(
-                  user: user!,
-                  date: viewModel.selectDate(),
-                );
+                late UserScoreModel user;
+                if (viewModel.tabIndex == 0) {
+                  user = viewModel.dailyLeaderboard[i];
+                }
+                if (viewModel.tabIndex == 1) {
+                  user = viewModel.weeklyLeaderboard[i];
+                }
+                if (viewModel.tabIndex == 2) {
+                  user = viewModel.monthlyLeaderboard[i];
+                }
+
+                var value = 0;
+                if (viewModel.tabIndex == 0) {
+                  value = user.xpDay;
+                }
+                if (viewModel.tabIndex == 1) {
+                  value = user.xpWeek;
+                }
+                if (viewModel.tabIndex == 2) {
+                  value = user.xpMonth;
+                }
+                return LeaderboardUserView(userUid: user.uid, score: value);
               },
               separatorBuilder: (context, i) {
                 return Container();
               },
-              itemCount: viewModel.users.length,
+              itemCount: viewModel.leaderboard.length,
             ),
           ),
         );

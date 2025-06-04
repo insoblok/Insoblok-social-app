@@ -17,7 +17,7 @@ class AccountPresentHeaderView extends ViewModelWidget<AccountProvider> {
     return Container(
       color: AppSettingHelper.background,
       child: SizedBox(
-        height: 200.0 + kAccountAvatarSize / 2.0,
+        height: 212.0 + kAccountAvatarSize / 2.0,
         child: Stack(
           children: [
             AIImage(
@@ -27,9 +27,9 @@ class AccountPresentHeaderView extends ViewModelWidget<AccountProvider> {
               height: 120.0,
             ),
             Align(
-              alignment: Alignment.bottomLeft,
+              alignment: Alignment.bottomCenter,
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
+                mainAxisSize: MainAxisSize.min,
                 children: [
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.end,
@@ -73,12 +73,17 @@ class AccountPresentHeaderView extends ViewModelWidget<AccountProvider> {
                   Padding(
                     padding: EdgeInsets.only(left: 20, right: 20, bottom: 8),
                     child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.end,
+                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        Text(
-                          '+30XP today',
-                          style: Theme.of(context).textTheme.bodySmall,
-                          textAlign: TextAlign.end,
+                        Row(
+                          children: [
+                            const Spacer(),
+                            Text(
+                              '+30XP today',
+                              style: Theme.of(context).textTheme.bodySmall,
+                              textAlign: TextAlign.end,
+                            ),
+                          ],
                         ),
                         const SizedBox(height: 4.0),
                         LinearProgressIndicator(
@@ -86,7 +91,7 @@ class AccountPresentHeaderView extends ViewModelWidget<AccountProvider> {
                           value: viewModel.userScore / 100,
                           backgroundColor: AIColors.borderColor,
                           minHeight: 8,
-                          borderRadius: BorderRadius.all(Radius.circular(4)),
+                          borderRadius: BorderRadius.circular(4),
                         ),
                         const SizedBox(height: 8.0),
                         Row(

@@ -14,16 +14,11 @@ class UserProvider extends InSoBlokViewModel {
   }
 
   late String _uid;
-  late String? _date;
 
-  void init(BuildContext context, {required String uid, String? date}) async {
+  void init(BuildContext context, {required String uid}) async {
     this.context = context;
     _uid = uid;
-    _date = date;
     fetchUser();
-    if (_date != null) {
-      getUserScore(_date!);
-    }
   }
 
   UserModel? _owner;
@@ -33,28 +28,9 @@ class UserProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  int _userScore = 0;
-  int get userScore => _userScore;
-  set userScore(int score) {
-    _userScore = score;
-    notifyListeners();
-  }
-
   Future<void> fetchUser() async {
     try {
       owner = await userService.getUser(_uid);
-    } catch (e) {
-      setError(e);
-      logger.e(e);
-    } finally {
-      notifyListeners();
-    }
-  }
-
-  Future<void> getUserScore(String date) async {
-    try {
-      userScore = await tastScoreService.getUserScore(_uid, date);
-      logger.d(userScore);
     } catch (e) {
       setError(e);
       logger.e(e);
