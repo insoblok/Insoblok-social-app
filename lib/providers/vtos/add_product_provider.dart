@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:image_picker/image_picker.dart';
 
+import 'package:insoblok/locator.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
@@ -24,7 +25,8 @@ class AddProductProvider extends InSoBlokViewModel {
   Future<void> init(BuildContext context) async {
     this.context = context;
 
-    _mediaPicker = MediaPickerService(context);
+    _mediaPicker = locator<MediaPickerService>();
+
     _product = product.copyWith(category: kProductCategories[0]);
     _product = product.copyWith(type: kProductTypeNames[0]);
     _product = product.copyWith(categoryName: kProductCategoryNames[0]);

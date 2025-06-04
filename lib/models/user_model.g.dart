@@ -31,6 +31,7 @@ _UserModel _$UserModelFromJson(Map<String, dynamic> json) => _UserModel(
           ? null
           : DateTime.parse(json['timestamp'] as String),
       status: json['status'] as String?,
+      hasVotePost: json['has_vote_post'] as bool?,
       rewardDate: (json['reward_date'] as num?)?.toInt(),
       likes:
           (json['likes'] as List<dynamic>?)?.map((e) => e as String).toList(),
@@ -66,6 +67,7 @@ Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
       'update_date': instance.updateDate?.toIso8601String(),
       'timestamp': instance.timestamp?.toIso8601String(),
       'status': instance.status,
+      'has_vote_post': instance.hasVotePost,
       'reward_date': instance.rewardDate,
       'likes': instance.likes,
       'follows': instance.follows,

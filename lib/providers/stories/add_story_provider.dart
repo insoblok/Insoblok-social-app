@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:insoblok/locator.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/services/services.dart';
@@ -14,13 +15,11 @@ class AddStoryProvider extends InSoBlokViewModel {
   }
 
   var scrollController = ScrollController();
-  late UploadMediaProvider provider;
+  final _mediaProvider = locator<UploadMediaProvider>();
+  UploadMediaProvider get mediaProvider => _mediaProvider;
 
   Future<void> init(BuildContext context) async {
     this.context = context;
-
-    provider = UploadMediaProvider.getInstance(context);
-    provider.reset();
   }
 
   String _title = '';
@@ -67,13 +66,13 @@ class AddStoryProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  Future<void> onClickAddMediaButton() async {
+  Future<void> onAddMedia() async {
     if (isBusy) return;
     clearErrors();
 
     await runBusyFuture(() async {
       try {
-        await provider.addMedias(context);
+        await mediaProvider.addMedias();
       } catch (e) {
         setError(e);
         logger.e(e);
@@ -85,6 +84,11 @@ class AddStoryProvider extends InSoBlokViewModel {
     if (hasError) {
       AIHelpers.showToast(msg: modelError.toString());
     }
+  }
+
+  void onRemoveMedia(UploadMediaItem media) {
+    mediaProvider.removeMedia(media);
+    notifyListeners();
   }
 
   String _txtUploadButton = 'Post Story';
@@ -101,7 +105,7 @@ class AddStoryProvider extends InSoBlokViewModel {
     await runBusyFuture(() async {
       try {
         txtUploadButton = 'Uploading Media(s)...';
-        var medias = await provider.uploadMedias();
+        var medias = await mediaProvider.uploadMedias();
         if (quillDescription == '' && medias.isEmpty) {
           throw ('Invalid story type');
         }
@@ -128,7 +132,7 @@ class AddStoryProvider extends InSoBlokViewModel {
       AIHelpers.showToast(
         msg: 'Successfully your post! Your feed is in list now!',
       );
-      provider.reset();
+      mediaProvider.reset();
       Navigator.of(context).pop(true);
     }
   }

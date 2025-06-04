@@ -1,5 +1,9 @@
-import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
+
+class TastescoreType {
+  static String LOGIN = 'daily_bonus';
+  static String WINCREATOR = 'win_creator';
+}
 
 extension TastescoreModelExt on TastescoreModel {
   Map<String, dynamic> toMap() {
@@ -10,7 +14,6 @@ extension TastescoreModelExt on TastescoreModel {
       'type': type,
       'bonus': bonus,
       'desc': desc,
-      'connects': ((connects ?? []).map((e) => e.toMap()).toList()),
       'update_date': updateDate?.toUtc().toIso8601String(),
       'timestamp': timestamp?.toUtc().toIso8601String(),
     };
@@ -18,21 +21,17 @@ extension TastescoreModelExt on TastescoreModel {
     return result;
   }
 
-  static TastescoreModel getLoginXp(int xp, String uid) {
+  static TastescoreModel creatXpModel(
+    int xp,
+    String uid, {
+    String type = 'daily_bonus',
+  }) {
     return TastescoreModel(
       uid: uid,
-      type: 'login',
+      type: type,
       bonus: xp,
       updateDate: DateTime.now(),
       timestamp: DateTime.now(),
     );
-  }
-}
-
-extension ConnectedStoryModelExt on ConnectedStoryModel {
-  Map<String, dynamic> toMap() {
-    Map<String, dynamic> result = {'post_id': postId, 'user_uid': userUid};
-    result.removeWhere((k, v) => v == null);
-    return result;
   }
 }

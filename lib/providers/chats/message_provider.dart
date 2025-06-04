@@ -103,7 +103,7 @@ class MessageProvider extends InSoBlokViewModel {
       FocusManager.instance.primaryFocus?.unfocus();
     });
 
-    _mediaPickerService = MediaPickerService(context);
+    // _mediaPickerService = locator<>;
   }
 
   String? _content;

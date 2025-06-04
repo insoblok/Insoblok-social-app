@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_quill/flutter_quill.dart';
+import 'package:insoblok/services/services.dart';
 
 import 'package:insoblok/utils/utils.dart';
 
@@ -31,8 +32,9 @@ class QuillDescriptionProvider extends InSoBlokViewModel {
       );
     }();
 
-    if (originQuill != null) {
-      quillController.document = Document.fromJson(jsonDecode(originQuill));
+    if (originQuill?.isNotEmpty ?? false) {
+      logger.d(originQuill);
+      quillController.document = Document.fromJson(jsonDecode(originQuill!));
     }
 
     notifyListeners();

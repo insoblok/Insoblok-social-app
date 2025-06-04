@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import 'package:insoblok/locator.dart';
+import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 
@@ -13,6 +15,9 @@ class AppProvider extends InSoBlokViewModel {
 
   Future<void> init(BuildContext context) async {
     this.context = context;
+
+    var uploadProvider = locator<UploadMediaProvider>();
+    uploadProvider.init(context);
   }
 
   void updateTheme() {

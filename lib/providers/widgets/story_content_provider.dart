@@ -449,4 +449,15 @@ class StoryContentProvider extends InSoBlokViewModel {
       );
     },
   );
+
+  bool alreadyPop = false;
+
+  void popupDialog() {
+    if (alreadyPop) return;
+    alreadyPop = true;
+    Navigator.of(context).pop();
+    Future.delayed(const Duration(milliseconds: 1000), () {
+      alreadyPop = false;
+    });
+  }
 }
