@@ -12,23 +12,40 @@ class DashboardProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  int _pageIndex = 0;
-  int get pageIndex => _pageIndex;
-  set pageIndex(int i) {
-    _pageIndex = i;
+  int _tabIndex = 0;
+  int get tabIndex => _tabIndex;
+  set tabIndex(int d) {
+    _tabIndex = d;
     notifyListeners();
   }
 
+  final PageController _pageController = PageController();
+  PageController get pageController => _pageController;
+  int _currentPage = 0;
+
   void init(BuildContext context) async {
     this.context = context;
+    _pageController.addListener(() {
+      var currentPage = _pageController.page?.round();
+      if (currentPage != null && currentPage != _currentPage) {
+        _currentPage = currentPage;
+        notifyListeners();
+      }
+    });
 
-    fetchData();
+    fetchNewsData();
+  }
+
+  @override
+  void dispose() {
+    _pageController.dispose();
+    super.dispose();
   }
 
   final List<NewsModel> _allNewses = [];
   List<NewsModel> get showNewses => _allNewses;
 
-  Future<void> fetchData() async {
+  Future<void> fetchNewsData() async {
     if (isBusy) return;
     clearErrors();
 
@@ -58,5 +75,36 @@ class DashboardProvider extends InSoBlokViewModel {
     if (hasError) {
       AIHelpers.showToast(msg: modelError.toString());
     }
+  }
+
+  final List<StoryModel> _stories = [];
+  List<StoryModel> get stories => _stories;
+
+  Future<void> fetchStoryData() async {
+    if (isBusy) return;
+    clearErrors();
+
+    _stories.clear();
+    await runBusyFuture(() async {
+      try {
+        var ss = await storyService.getStories();
+        logger.d(ss.length);
+        _stories.addAll(ss);
+      } catch (e) {
+        setError(e);
+        logger.e(e);
+      } finally {
+        notifyListeners();
+      }
+    }());
+
+    if (hasError) {
+      AIHelpers.showToast(msg: modelError.toString());
+    }
+  }
+
+  Future<void> onClickSettingButton() async {
+    if (isBusy) return;
+    clearErrors();
   }
 }
