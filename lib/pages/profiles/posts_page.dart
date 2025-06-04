@@ -20,7 +20,7 @@ class PostsPage extends StatelessWidget {
             physics: BouncingScrollPhysics(),
             itemBuilder: (context, i) {
               var story = viewModel.stories[i];
-              return StoryListCell(story: story);
+              return AccountStoryListCell(story: story);
             },
             separatorBuilder: (context, i) {
               return Container();

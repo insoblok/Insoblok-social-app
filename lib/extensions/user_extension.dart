@@ -61,6 +61,7 @@ extension UserModelExt on UserModel {
     double? borderWidth,
     double? textSize,
     double? statusSize,
+    bool showStatus = true,
   }) {
     return SizedBox(
       width: width ?? 60.0,
@@ -105,20 +106,25 @@ extension UserModelExt on UserModel {
                       ),
             ),
           ),
-          Align(
-            alignment: Alignment.bottomRight,
-            child: Container(
-              decoration: BoxDecoration(
-                color: AIColors.white,
-                shape: BoxShape.circle,
-              ),
-              child: AIImage(
-                Icons.brightness_1,
-                color: status == 'Online' ? AIColors.green : AIColors.lightGrey,
-                width: statusSize ?? 14.0,
-              ),
-            ),
-          ),
+          showStatus
+              ? Align(
+                alignment: Alignment.bottomRight,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: AIColors.white,
+                    shape: BoxShape.circle,
+                  ),
+                  child: AIImage(
+                    Icons.brightness_1,
+                    color:
+                        status == 'Online'
+                            ? AIColors.green
+                            : AIColors.lightGrey,
+                    width: statusSize ?? 14.0,
+                  ),
+                ),
+              )
+              : Container(),
         ],
       ),
     );

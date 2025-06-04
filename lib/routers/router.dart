@@ -130,4 +130,8 @@ class Routers {
   }) {
     return _pushToRoute(context, kRouterMediaDetail, medias);
   }
+
+  static dynamic goToLeaderboardPage(BuildContext context) {
+    return _pushToRoute(context, kRouterLeaderboard, null);
+  }
 }

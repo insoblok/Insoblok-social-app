@@ -51,4 +51,62 @@ class TastescoreService {
     }
     return 0;
   }
+
+  Future<int> getUserScore(String uid, String date) async {
+    List<TastescoreModel> scoreList = [];
+    try {
+      var scoreSnapshot =
+          await tastescoreCollection.where('uid', isEqualTo: uid).get();
+      for (var doc in scoreSnapshot.docs) {
+        try {
+          var json = doc.data();
+          json['id'] = doc.id;
+          var score = TastescoreModel.fromJson(json);
+          if (score.uid != null) {
+            scoreList.add(score);
+          }
+        } on FirebaseException catch (e) {
+          logger.e(e.message);
+        }
+      }
+      logger.d(scoreList);
+
+      int total = 0;
+      if (date == 'daily') {
+        for (var score in scoreList) {
+          if ((score.updateDate?.year == DateTime.now().year) &&
+              (score.updateDate?.month == DateTime.now().month) &&
+              (score.updateDate?.day == DateTime.now().day)) {
+            total = total + score.bonus!;
+          }
+        }
+        return total;
+      } else if (date == 'weekly') {
+        for (var score in scoreList) {
+          if ((score.updateDate?.year == DateTime.now().year) &&
+              (getWeekNumber(score.updateDate!) ==
+                  getWeekNumber(DateTime.now()))) {
+            total = total + score.bonus!;
+          }
+        }
+        return total;
+      } else if (date == 'monthly') {
+        for (var score in scoreList) {
+          if ((score.updateDate?.year == DateTime.now().year) &&
+              (score.updateDate?.month == DateTime.now().month)) {
+            total = total + score.bonus!;
+          }
+        }
+        return total;
+      } else {
+        for (var score in scoreList) {
+          total = total + score.bonus!;
+        }
+        return total;
+      }
+    } catch (e) {
+      logger.e(e);
+    }
+    return 0;
+  }
 }

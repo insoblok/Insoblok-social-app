@@ -30,11 +30,31 @@ class AccountProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  int _userScore = 0;
+  int get userScore => _userScore;
+  set userScore(int score) {
+    _userScore = score;
+    notifyListeners();
+  }
+
   void init(BuildContext context, {UserModel? model}) async {
     this.context = context;
     accountUser = model ?? AuthHelper.user;
 
     fetchStories();
+    getUserScore('all');
+  }
+
+  Future<void> getUserScore(String date) async {
+    try {
+      userScore = await tastScoreService.getUserScore(accountUser!.uid!, date);
+      logger.d(userScore);
+    } catch (e) {
+      setError(e);
+      logger.e(e);
+    } finally {
+      notifyListeners();
+    }
   }
 
   final List<StoryModel> stories = [];
