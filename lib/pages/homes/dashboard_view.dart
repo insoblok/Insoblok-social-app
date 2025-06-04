@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:insoblok/routers/router.dart';
 
 import 'package:stacked/stacked.dart';
 
@@ -27,6 +28,19 @@ class DashboardView extends StatelessWidget {
                 leading: AppLeadingView(),
                 title: Text('Home'),
                 centerTitle: true,
+                actions: [
+                  if (viewModel.tabIndex == 1) ...{
+                    IconButton(
+                      onPressed: () => Routers.goToAddStoryPage(context),
+                      icon: AIImage(
+                        AIImages.icAddLogo,
+                        width: 28.0,
+                        height: 28.0,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                    ),
+                  },
+                ],
                 bottom: TabBar(
                   indicatorSize: TabBarIndicatorSize.tab,
                   onTap: (index) {
@@ -91,6 +105,39 @@ class DashboardView extends StatelessWidget {
                   : SliverFillRemaining(
                     child: Column(
                       children: [
+                        if (viewModel.isUpdated)
+                          Padding(
+                            padding: EdgeInsets.only(top: 8),
+                            child: Row(
+                              children: [
+                                const Spacer(),
+                                InkWell(
+                                  onTap: viewModel.fetchStoryData,
+                                  child: Container(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 6.0,
+                                      vertical: 2.0,
+                                    ),
+                                    decoration: BoxDecoration(
+                                      color: AIColors.pink,
+                                      borderRadius: BorderRadius.circular(12.0),
+                                    ),
+                                    child: Text(
+                                      'New Posts',
+                                      style: TextStyle(
+                                        fontSize: 12.0,
+                                        color:
+                                            Theme.of(
+                                              context,
+                                            ).colorScheme.onPrimary,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                const Spacer(),
+                              ],
+                            ),
+                          ),
                         Expanded(
                           child: PageView.builder(
                             scrollDirection: Axis.horizontal,
