@@ -45,6 +45,7 @@ class StoryService {
         json['id'] = doc.id;
         var story = StoryModel.fromJson(json);
         if (story.uid != null &&
+            AuthHelper.user!.userActions != null &&
             AuthHelper.user!.userActions!.contains(story.id)) {
           result.add(story);
         }
