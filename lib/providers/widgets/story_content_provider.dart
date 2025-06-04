@@ -255,10 +255,14 @@ class StoryContentProvider extends InSoBlokViewModel {
         var desc = await AIHelpers.goToDescriptionView(context);
         logger.d(desc);
         if (desc != null) {
-          var comment = StoryCommentModel(uid: user?.uid, content: desc);
-          var comments = List<StoryCommentModel>.from(story.comments ?? []);
-
+          var comment = StoryCommentModel(
+            uid: user?.uid,
+            content: desc,
+            timestamp: DateTime.now(),
+          );
+          final comments = List<StoryCommentModel>.from(story.comments ?? []);
           comments.add(comment);
+
           story = story.copyWith(
             comments: comments,
             updateDate: DateTime.now(),
@@ -298,6 +302,7 @@ class StoryContentProvider extends InSoBlokViewModel {
           var comment = StoryCommentModel(
             uid: user?.uid,
             content: commentContent,
+            timestamp: DateTime.now(),
           );
           var comments = List<StoryCommentModel>.from(story.comments ?? []);
 

@@ -16,9 +16,12 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$TastescoreModel {
   String? get id;
-  String? get key;
+  String? get uid;
   String? get postId;
   String? get userUid;
+  String? get type;
+  int? get bonus;
+  String? get desc;
   List<ConnectedStoryModel>? get connects;
   DateTime? get updateDate;
   DateTime? get timestamp;
@@ -40,9 +43,12 @@ mixin _$TastescoreModel {
         (other.runtimeType == runtimeType &&
             other is TastescoreModel &&
             (identical(other.id, id) || other.id == id) &&
-            (identical(other.key, key) || other.key == key) &&
+            (identical(other.uid, uid) || other.uid == uid) &&
             (identical(other.postId, postId) || other.postId == postId) &&
             (identical(other.userUid, userUid) || other.userUid == userUid) &&
+            (identical(other.type, type) || other.type == type) &&
+            (identical(other.bonus, bonus) || other.bonus == bonus) &&
+            (identical(other.desc, desc) || other.desc == desc) &&
             const DeepCollectionEquality().equals(other.connects, connects) &&
             (identical(other.updateDate, updateDate) ||
                 other.updateDate == updateDate) &&
@@ -52,12 +58,22 @@ mixin _$TastescoreModel {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, key, postId, userUid,
-      const DeepCollectionEquality().hash(connects), updateDate, timestamp);
+  int get hashCode => Object.hash(
+      runtimeType,
+      id,
+      uid,
+      postId,
+      userUid,
+      type,
+      bonus,
+      desc,
+      const DeepCollectionEquality().hash(connects),
+      updateDate,
+      timestamp);
 
   @override
   String toString() {
-    return 'TastescoreModel(id: $id, key: $key, postId: $postId, userUid: $userUid, connects: $connects, updateDate: $updateDate, timestamp: $timestamp)';
+    return 'TastescoreModel(id: $id, uid: $uid, postId: $postId, userUid: $userUid, type: $type, bonus: $bonus, desc: $desc, connects: $connects, updateDate: $updateDate, timestamp: $timestamp)';
   }
 }
 
@@ -69,9 +85,12 @@ abstract mixin class $TastescoreModelCopyWith<$Res> {
   @useResult
   $Res call(
       {String? id,
-      String? key,
+      String? uid,
       String? postId,
       String? userUid,
+      String? type,
+      int? bonus,
+      String? desc,
       List<ConnectedStoryModel>? connects,
       DateTime? updateDate,
       DateTime? timestamp});
@@ -91,9 +110,12 @@ class _$TastescoreModelCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = freezed,
-    Object? key = freezed,
+    Object? uid = freezed,
     Object? postId = freezed,
     Object? userUid = freezed,
+    Object? type = freezed,
+    Object? bonus = freezed,
+    Object? desc = freezed,
     Object? connects = freezed,
     Object? updateDate = freezed,
     Object? timestamp = freezed,
@@ -103,9 +125,9 @@ class _$TastescoreModelCopyWithImpl<$Res>
           ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
               as String?,
-      key: freezed == key
-          ? _self.key
-          : key // ignore: cast_nullable_to_non_nullable
+      uid: freezed == uid
+          ? _self.uid
+          : uid // ignore: cast_nullable_to_non_nullable
               as String?,
       postId: freezed == postId
           ? _self.postId
@@ -114,6 +136,18 @@ class _$TastescoreModelCopyWithImpl<$Res>
       userUid: freezed == userUid
           ? _self.userUid
           : userUid // ignore: cast_nullable_to_non_nullable
+              as String?,
+      type: freezed == type
+          ? _self.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as String?,
+      bonus: freezed == bonus
+          ? _self.bonus
+          : bonus // ignore: cast_nullable_to_non_nullable
+              as int?,
+      desc: freezed == desc
+          ? _self.desc
+          : desc // ignore: cast_nullable_to_non_nullable
               as String?,
       connects: freezed == connects
           ? _self.connects
@@ -137,9 +171,12 @@ class _$TastescoreModelCopyWithImpl<$Res>
 class _TastescoreModel implements TastescoreModel {
   _TastescoreModel(
       {this.id,
-      this.key,
+      this.uid,
       this.postId,
       this.userUid,
+      this.type,
+      this.bonus,
+      this.desc,
       final List<ConnectedStoryModel>? connects,
       this.updateDate,
       this.timestamp})
@@ -150,11 +187,17 @@ class _TastescoreModel implements TastescoreModel {
   @override
   final String? id;
   @override
-  final String? key;
+  final String? uid;
   @override
   final String? postId;
   @override
   final String? userUid;
+  @override
+  final String? type;
+  @override
+  final int? bonus;
+  @override
+  final String? desc;
   final List<ConnectedStoryModel>? _connects;
   @override
   List<ConnectedStoryModel>? get connects {
@@ -191,9 +234,12 @@ class _TastescoreModel implements TastescoreModel {
         (other.runtimeType == runtimeType &&
             other is _TastescoreModel &&
             (identical(other.id, id) || other.id == id) &&
-            (identical(other.key, key) || other.key == key) &&
+            (identical(other.uid, uid) || other.uid == uid) &&
             (identical(other.postId, postId) || other.postId == postId) &&
             (identical(other.userUid, userUid) || other.userUid == userUid) &&
+            (identical(other.type, type) || other.type == type) &&
+            (identical(other.bonus, bonus) || other.bonus == bonus) &&
+            (identical(other.desc, desc) || other.desc == desc) &&
             const DeepCollectionEquality().equals(other._connects, _connects) &&
             (identical(other.updateDate, updateDate) ||
                 other.updateDate == updateDate) &&
@@ -203,12 +249,22 @@ class _TastescoreModel implements TastescoreModel {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, key, postId, userUid,
-      const DeepCollectionEquality().hash(_connects), updateDate, timestamp);
+  int get hashCode => Object.hash(
+      runtimeType,
+      id,
+      uid,
+      postId,
+      userUid,
+      type,
+      bonus,
+      desc,
+      const DeepCollectionEquality().hash(_connects),
+      updateDate,
+      timestamp);
 
   @override
   String toString() {
-    return 'TastescoreModel(id: $id, key: $key, postId: $postId, userUid: $userUid, connects: $connects, updateDate: $updateDate, timestamp: $timestamp)';
+    return 'TastescoreModel(id: $id, uid: $uid, postId: $postId, userUid: $userUid, type: $type, bonus: $bonus, desc: $desc, connects: $connects, updateDate: $updateDate, timestamp: $timestamp)';
   }
 }
 
@@ -222,9 +278,12 @@ abstract mixin class _$TastescoreModelCopyWith<$Res>
   @useResult
   $Res call(
       {String? id,
-      String? key,
+      String? uid,
       String? postId,
       String? userUid,
+      String? type,
+      int? bonus,
+      String? desc,
       List<ConnectedStoryModel>? connects,
       DateTime? updateDate,
       DateTime? timestamp});
@@ -244,9 +303,12 @@ class __$TastescoreModelCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   $Res call({
     Object? id = freezed,
-    Object? key = freezed,
+    Object? uid = freezed,
     Object? postId = freezed,
     Object? userUid = freezed,
+    Object? type = freezed,
+    Object? bonus = freezed,
+    Object? desc = freezed,
     Object? connects = freezed,
     Object? updateDate = freezed,
     Object? timestamp = freezed,
@@ -256,9 +318,9 @@ class __$TastescoreModelCopyWithImpl<$Res>
           ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
               as String?,
-      key: freezed == key
-          ? _self.key
-          : key // ignore: cast_nullable_to_non_nullable
+      uid: freezed == uid
+          ? _self.uid
+          : uid // ignore: cast_nullable_to_non_nullable
               as String?,
       postId: freezed == postId
           ? _self.postId
@@ -267,6 +329,18 @@ class __$TastescoreModelCopyWithImpl<$Res>
       userUid: freezed == userUid
           ? _self.userUid
           : userUid // ignore: cast_nullable_to_non_nullable
+              as String?,
+      type: freezed == type
+          ? _self.type
+          : type // ignore: cast_nullable_to_non_nullable
+              as String?,
+      bonus: freezed == bonus
+          ? _self.bonus
+          : bonus // ignore: cast_nullable_to_non_nullable
+              as int?,
+      desc: freezed == desc
+          ? _self.desc
+          : desc // ignore: cast_nullable_to_non_nullable
               as String?,
       connects: freezed == connects
           ? _self._connects

@@ -9,6 +9,11 @@ class StoryService {
   CollectionReference<Map<String, dynamic>> get storyCollection =>
       _firestore.collection('story');
 
+  Future<StoryModel> getStory(String id) async {
+    var doc = await storyCollection.doc(id).get();
+    return StoryModel.fromJson({'id': doc.id, ...(doc.data() ?? {})});
+  }
+
   // Get stories
   Future<List<StoryModel>> getStories() async {
     List<StoryModel> result = [];

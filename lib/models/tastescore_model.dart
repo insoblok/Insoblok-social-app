@@ -8,9 +8,12 @@ abstract class TastescoreModel with _$TastescoreModel {
   @JsonSerializable(fieldRename: FieldRename.snake)
   factory TastescoreModel({
     String? id,
-    String? key,
+    String? uid,
     String? postId,
     String? userUid,
+    String? type,
+    int? bonus,
+    String? desc,
     List<ConnectedStoryModel>? connects,
     DateTime? updateDate,
     DateTime? timestamp,

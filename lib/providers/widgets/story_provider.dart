@@ -28,6 +28,17 @@ class StoryProvider extends InSoBlokViewModel {
     fetchUser();
   }
 
+  Future<void> fetchStory() async {
+    try {
+      story = await storyService.getStory(story.id!);
+    } catch (e, s) {
+      logger.e(e);
+      logger.e(s);
+    } finally {
+      notifyListeners();
+    }
+  }
+
   UserModel? _owner;
   UserModel? get owner => _owner;
   set owner(UserModel? model) {

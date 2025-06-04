@@ -12,7 +12,7 @@ import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
 
-const kStoryDetailAvatarSize = 55.0;
+const kStoryDetailAvatarSize = 44.0;
 
 class StoryDetailPage extends StatelessWidget {
   final StoryModel story;
@@ -152,7 +152,7 @@ class StoryDetailPage extends StatelessWidget {
                         children: [
                           TextSpan(
                             text: '${(viewModel.story.likes ?? []).length}',
-                            style: Theme.of(context).textTheme.bodySmall,
+                            style: Theme.of(context).textTheme.bodyMedium,
                           ),
                           TextSpan(
                             text: ' Likes  ',
@@ -160,7 +160,7 @@ class StoryDetailPage extends StatelessWidget {
                           ),
                           TextSpan(
                             text: '${(viewModel.story.follows ?? []).length}',
-                            style: Theme.of(context).textTheme.bodySmall,
+                            style: Theme.of(context).textTheme.bodyMedium,
                           ),
                           TextSpan(
                             text: ' Followers',

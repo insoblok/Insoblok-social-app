@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
+import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
@@ -26,10 +27,22 @@ class TastescoreService {
         DateTime.now().day,
       );
 
+      var rewardValue = 0;
+
       if (current.difference(logined) == Duration(days: 1)) {
         reward = reward + 1;
+        var bonus = reward ~/ 3;
+        rewardValue =
+            AppSettingHelper.appSettingModel!.xpEarn![5].reward! + 5 * bonus;
       } else if (current.difference(logined) > Duration(days: 1)) {
         reward = 0;
+
+        rewardValue = AppSettingHelper.appSettingModel!.xpEarn![5].reward!;
+      }
+
+      if (rewardValue > 0) {
+        var tastescore = TastescoreModelExt.getLoginXp(rewardValue, user.uid!);
+        await tastescoreCollection.add(tastescore.toMap());
       }
 
       return reward;

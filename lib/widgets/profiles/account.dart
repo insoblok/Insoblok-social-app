@@ -158,6 +158,22 @@ class AccountFloatingView extends ViewModelWidget<AccountProvider> {
               ],
             ),
           ),
+          const SizedBox(height: 24.0),
+          Container(
+            width: double.infinity,
+            height: 200.0,
+            decoration: BoxDecoration(
+              color: Theme.of(context).colorScheme.onSecondary,
+              borderRadius: BorderRadius.circular(16.0),
+              boxShadow: [
+                BoxShadow(
+                  blurRadius: 2.0,
+                  spreadRadius: 3.0,
+                  color: Theme.of(context).colorScheme.secondary.withAlpha(32),
+                ),
+              ],
+            ),
+          ),
         ],
       ),
     );

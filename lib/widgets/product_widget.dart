@@ -2,7 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-import 'package:insoblok/extensions/extensions.dart';
+// import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
 
@@ -76,7 +76,7 @@ class ProductItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var category = (product.tags ?? []).isEmpty ? null : product.tags!.first;
+    // var category = (product.tags ?? []).isEmpty ? null : product.tags!.first;
     return Container(
       decoration: BoxDecoration(
         color: AppSettingHelper.background,
@@ -128,54 +128,55 @@ class ProductItemWidget extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 8.0,
-                        vertical: 4.0,
-                      ),
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Theme.of(context).primaryColor,
-                          width: 0.33,
-                        ),
-                        borderRadius: BorderRadius.circular(24.0),
-                      ),
-                      child: Text(
-                        product.categoryName ?? '',
-                        style: Theme.of(context).textTheme.bodySmall,
-                      ),
-                    ),
-                    if (category != null) ...{
-                      const SizedBox(height: 8.0),
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 8.0,
-                          vertical: 4.0,
-                        ),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Theme.of(context).primaryColor,
-                            width: 0.33,
-                          ),
-                          borderRadius: BorderRadius.circular(24.0),
-                        ),
-                        child: Text(
-                          category,
-                          style: Theme.of(context).textTheme.bodySmall,
-                        ),
-                      ),
-                    },
-                    const SizedBox(height: 8.0),
+                    // Container(
+                    //   padding: const EdgeInsets.symmetric(
+                    //     horizontal: 8.0,
+                    //     vertical: 4.0,
+                    //   ),
+                    //   decoration: BoxDecoration(
+                    //     border: Border.all(
+                    //       color: Theme.of(context).primaryColor,
+                    //       width: 0.33,
+                    //     ),
+                    //     borderRadius: BorderRadius.circular(24.0),
+                    //   ),
+                    //   child: Text(
+                    //     product.categoryName ?? '',
+                    //     style: Theme.of(context).textTheme.bodySmall,
+                    //   ),
+                    // ),
+                    // if (category != null) ...{
+                    //   const SizedBox(height: 8.0),
+                    //   Container(
+                    //     padding: const EdgeInsets.symmetric(
+                    //       horizontal: 8.0,
+                    //       vertical: 4.0,
+                    //     ),
+                    //     decoration: BoxDecoration(
+                    //       border: Border.all(
+                    //         color: Theme.of(context).primaryColor,
+                    //         width: 0.33,
+                    //       ),
+                    //       borderRadius: BorderRadius.circular(24.0),
+                    //     ),
+                    //     child: Text(
+                    //       category,
+                    //       style: Theme.of(context).textTheme.bodySmall,
+                    //     ),
+                    //   ),
+                    // },
+                    // const SizedBox(height: 8.0),
                     Text(
                       product.name ?? '',
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
+                      style: Theme.of(context).textTheme.bodyLarge,
                     ),
-                    const SizedBox(height: 2.0),
-                    Text(
-                      product.timestamp?.timeago ?? '',
-                      style: Theme.of(context).textTheme.labelSmall,
-                    ),
+                    // const SizedBox(height: 2.0),
+                    // Text(
+                    //   product.timestamp?.timeago ?? '',
+                    //   style: Theme.of(context).textTheme.labelSmall,
+                    // ),
                     // const SizedBox(height: 8.0),
                     // Container(
                     //   constraints: BoxConstraints(maxHeight: 80.0),

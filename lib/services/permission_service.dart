@@ -23,7 +23,9 @@ class PermissionService {
     PermissionStatus status;
     if (Platform.isAndroid) {
       status = await Permission.storage.request();
-      // status = await Permission.photos.request();
+      if (status.isDenied) {
+        status = await Permission.photos.request();
+      }
     } else {
       status = await Permission.photos.request();
     }
