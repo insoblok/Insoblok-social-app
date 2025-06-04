@@ -12,3 +12,14 @@ var kDateHMMDYFormatter = DateFormat('HH:mm • MM/dd/yy');
 
 var kDateMMMMYYFormatter = DateFormat('MMMM yyyy');
 var kDateWeekFormatter = DateFormat('EEE');
+
+int getWeekNumber(DateTime date) {
+  // Clone the date and reset time to midnight
+  final thursday = date.toUtc().add(Duration(days: (4 - date.weekday) % 7));
+  final firstThursday = DateTime.utc(thursday.year, 1, 4);
+
+  // Calculate the week number
+  final weekNumber =
+      ((thursday.difference(firstThursday).inDays) / 7).floor() + 1;
+  return weekNumber;
+}

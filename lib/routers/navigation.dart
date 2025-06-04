@@ -40,6 +40,8 @@ const kRouterHelpCenter = '/help-center';
 const kRouterMediaDetail = '/media-detail';
 const kRouterSetting = '/setting';
 
+const kRouterLeaderboard = '/leaderboard';
+
 class Navigation {
   final router = fluro.FluroRouter();
 
@@ -166,5 +168,8 @@ class Navigation {
       kRouterMediaDetail,
       (props) => MediaDetailPage(medias: props!),
     );
+
+    // * LeaderboardPage
+    initRoute(kRouterLeaderboard, (props) => LeaderboardPage());
   }
 }

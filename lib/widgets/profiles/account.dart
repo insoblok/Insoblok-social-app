@@ -17,32 +17,91 @@ class AccountPresentHeaderView extends ViewModelWidget<AccountProvider> {
     return Container(
       color: AppSettingHelper.background,
       child: SizedBox(
-        height: 135.0 + kAccountAvatarSize / 2.0,
+        height: 200.0 + kAccountAvatarSize / 2.0,
         child: Stack(
           children: [
             AIImage(
               viewModel.accountUser?.discovery ?? AIImages.imgBackSplash,
               fit: BoxFit.cover,
               width: double.infinity,
-              height: 135.0,
+              height: 120.0,
             ),
             Align(
               alignment: Alignment.bottomLeft,
-              child: Container(
-                margin: const EdgeInsets.only(left: 20.0),
-                width: kAccountAvatarSize,
-                height: kAccountAvatarSize,
-                decoration: BoxDecoration(
-                  border: Border.all(width: 2.0, color: AIColors.pink),
-                  borderRadius: BorderRadius.circular(kAccountAvatarSize / 2.0),
-                ),
-                child: ClipOval(
-                  child: AIAvatarImage(
-                    viewModel.accountUser?.avatar,
-                    fullname: viewModel.accountUser?.nickId ?? 'Test',
-                    textSize: 28.0,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.only(left: 20.0),
+                        width: kAccountAvatarSize,
+                        height: kAccountAvatarSize,
+                        decoration: BoxDecoration(
+                          border: Border.all(width: 2.0, color: AIColors.pink),
+                          borderRadius: BorderRadius.circular(
+                            kAccountAvatarSize / 2.0,
+                          ),
+                        ),
+                        child: ClipOval(
+                          child: AIAvatarImage(
+                            viewModel.accountUser?.avatar,
+                            fullname: viewModel.accountUser?.nickId ?? 'Test',
+                            textSize: 28.0,
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          children: [
+                            Text(
+                              viewModel.accountUser?.fullName ?? '',
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                            SizedBox(width: 8),
+                            Text(
+                              '@${viewModel.accountUser?.nickId}',
+                              style: Theme.of(context).textTheme.labelLarge,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
-                ),
+                  Padding(
+                    padding: EdgeInsets.only(left: 20, right: 20, bottom: 8),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
+                      children: [
+                        Text(
+                          '+30XP today',
+                          style: Theme.of(context).textTheme.bodySmall,
+                          textAlign: TextAlign.end,
+                        ),
+                        const SizedBox(height: 4.0),
+                        LinearProgressIndicator(
+                          color: AIColors.pink,
+                          value: viewModel.userScore / 100,
+                          backgroundColor: AIColors.borderColor,
+                          minHeight: 8,
+                          borderRadius: BorderRadius.all(Radius.circular(4)),
+                        ),
+                        const SizedBox(height: 8.0),
+                        Row(
+                          children: [
+                            Text(
+                              '${viewModel.userScore} XP / 1200',
+                              style: Theme.of(context).textTheme.bodySmall,
+                              textAlign: TextAlign.end,
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
               ),
             ),
             CustomCircleBackButton(),
@@ -93,15 +152,11 @@ class AccountFloatingView extends ViewModelWidget<AccountProvider> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            viewModel.accountUser?.fullName ?? '',
-            style: Theme.of(context).textTheme.titleLarge,
-          ),
-          Text(
-            '@${viewModel.accountUser?.nickId}',
-            style: Theme.of(context).textTheme.labelLarge,
-          ),
-          const SizedBox(height: 12.0),
+          // Text(
+          //   viewModel.accountUser?.fullName ?? '',
+          //   style: Theme.of(context).textTheme.titleLarge,
+          // ),
+          // const SizedBox(height: 16.0),
           viewModel.accountUser?.desc != null
               ? AIHelpers.htmlRender(viewModel.accountUser?.desc)
               : Text(
@@ -159,21 +214,21 @@ class AccountFloatingView extends ViewModelWidget<AccountProvider> {
             ),
           ),
           const SizedBox(height: 24.0),
-          Container(
-            width: double.infinity,
-            height: 200.0,
-            decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.onSecondary,
-              borderRadius: BorderRadius.circular(16.0),
-              boxShadow: [
-                BoxShadow(
-                  blurRadius: 2.0,
-                  spreadRadius: 3.0,
-                  color: Theme.of(context).colorScheme.secondary.withAlpha(32),
-                ),
-              ],
-            ),
-          ),
+          // Container(
+          //   width: double.infinity,
+          //   height: 200.0,
+          //   decoration: BoxDecoration(
+          //     color: Theme.of(context).colorScheme.onSecondary,
+          //     borderRadius: BorderRadius.circular(16.0),
+          //     boxShadow: [
+          //       BoxShadow(
+          //         blurRadius: 2.0,
+          //         spreadRadius: 3.0,
+          //         color: Theme.of(context).colorScheme.secondary.withAlpha(32),
+          //       ),
+          //     ],
+          //   ),
+          // ),
         ],
       ),
     );
