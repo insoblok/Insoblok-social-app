@@ -2,26 +2,22 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-import 'package:provider/provider.dart';
-
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
+import 'package:stacked/stacked.dart';
 
-class UploadMediaWidget extends StatelessWidget {
-  final void Function()? onRefresh;
-
-  final ScrollController? controller;
-
-  const UploadMediaWidget({super.key, this.controller, this.onRefresh});
+class UploadMediaWidget extends ViewModelWidget<AddStoryProvider> {
+  const UploadMediaWidget({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    var viewModel = context.read<UploadMediaProvider>();
-    if (viewModel.medias.isEmpty) return Container();
+  Widget build(BuildContext context, viewModel) {
+    var medias = viewModel.mediaProvider.medias;
+
+    if (medias.isEmpty) return Container();
     return GridView.builder(
       shrinkWrap: true,
-      controller: controller,
+      controller: viewModel.scrollController,
       padding: const EdgeInsets.symmetric(vertical: 24.0),
       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 3,
@@ -30,7 +26,7 @@ class UploadMediaWidget extends StatelessWidget {
         crossAxisSpacing: 12.0,
       ),
       itemBuilder: (context, index) {
-        var media = viewModel.medias[index];
+        var media = medias[index];
         return Container(
           key: GlobalKey(debugLabel: 'media-$index'),
           decoration: kCardDecoration,
@@ -47,12 +43,7 @@ class UploadMediaWidget extends StatelessWidget {
                 Align(
                   alignment: Alignment.topRight,
                   child: InkWell(
-                    onTap: () {
-                      viewModel.removeMedia(media);
-                      if (onRefresh != null) {
-                        onRefresh!();
-                      }
-                    },
+                    onTap: () => viewModel.onRemoveMedia(media),
                     child: Container(
                       margin: const EdgeInsets.only(top: 4.0, right: 4.0),
                       width: 28.0,
@@ -83,7 +74,7 @@ class UploadMediaWidget extends StatelessWidget {
           ),
         );
       },
-      itemCount: viewModel.medias.length,
+      itemCount: medias.length,
     );
   }
 }

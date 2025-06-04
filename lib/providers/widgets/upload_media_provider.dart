@@ -3,7 +3,9 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 import 'package:image_picker/image_picker.dart';
+import 'package:stacked/stacked.dart';
 
+import 'package:insoblok/locator.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
@@ -17,26 +19,19 @@ class UploadMediaItem {
   UploadMediaItem({this.file});
 }
 
-class UploadMediaProvider extends InSoBlokViewModel {
-  static UploadMediaProvider? _instance;
-  static UploadMediaProvider getInstance(BuildContext context) =>
-      _instance ?? UploadMediaProvider(context);
+class UploadMediaProvider extends ReactiveViewModel {
+  late BuildContext context;
+  final _mediaPicker = locator<MediaPickerService>();
 
-  UploadMediaProvider(BuildContext context) {
-    _mediaPicker = MediaPickerService(context);
-    _instance = this;
+  void init(BuildContext context) {
+    this.context = context;
+    _mediaPicker.init(context);
   }
-
-  late MediaPickerService _mediaPicker;
 
   List<UploadMediaItem> medias = [];
 
   // * PICK IMAGES FROM GALLERY
-  Future<void> addMedias(
-    BuildContext context, {
-    String? title,
-    int? maxImages,
-  }) async {
+  Future<void> addMedias({String? title, int? maxImages}) async {
     var files = await _mediaPicker.onPickerStoryMedia(
       limit: (maxImages ?? 9 - medias.length),
     );

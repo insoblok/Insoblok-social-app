@@ -24,7 +24,7 @@ class AddStoryPage extends StatelessWidget {
                 pinned: true,
                 leading: IconButton(
                   onPressed: () {
-                    viewModel.provider.reset();
+                    viewModel.mediaProvider.reset();
                     Navigator.of(context).pop();
                   },
                   icon: Icon(Icons.arrow_back),
@@ -37,20 +37,6 @@ class AddStoryPage extends StatelessWidget {
                 ),
                 sliver: SliverList(
                   delegate: SliverChildListDelegate([
-                    // Padding(
-                    //   padding: const EdgeInsets.only(left: 8.0),
-                    //   child: Text(
-                    //     'Title of Story',
-                    //     style: Theme.of(context).textTheme.labelMedium,
-                    //   ),
-                    // ),
-                    // const SizedBox(height: 12.0),
-                    // AITextField(
-                    //   prefixIcon: Icon(Icons.title),
-                    //   hintText: 'Input Feed Title...',
-                    //   onChanged: (value) => viewModel.title = value,
-                    // ),
-                    // const SizedBox(height: 40.0),
                     Padding(
                       padding: const EdgeInsets.only(left: 8.0),
                       child: Text(
@@ -90,18 +76,13 @@ class AddStoryPage extends StatelessWidget {
                           ),
                           const Spacer(),
                           IconButton(
-                            onPressed: viewModel.onClickAddMediaButton,
+                            onPressed: viewModel.onAddMedia,
                             icon: Icon(Icons.add_a_photo),
                           ),
                         ],
                       ),
                     ),
-                    UploadMediaWidget(
-                      controller: viewModel.scrollController,
-                      onRefresh: () {
-                        viewModel.notifyListeners();
-                      },
-                    ),
+                    UploadMediaWidget(),
                     const SizedBox(height: 40.0),
                     Row(
                       mainAxisSize: MainAxisSize.min,

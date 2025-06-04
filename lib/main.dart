@@ -53,7 +53,7 @@ void main() async {
     logger.d('onAppLink: $uri');
   });
 
-  runApp(const InSoBlokApp());
+  runApp(MaterialApp(home: const InSoBlokApp()));
 }
 
 final Navigation _navigation = Navigation();
@@ -64,12 +64,7 @@ class InSoBlokApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [
-        ChangeNotifierProvider(create: (context) => AppProvider()),
-        ChangeNotifierProvider(
-          create: (context) => UploadMediaProvider(context),
-        ),
-      ],
+      providers: [ChangeNotifierProvider(create: (context) => AppProvider())],
       child: ViewModelBuilder<AppProvider>.reactive(
         viewModelBuilder: () => AppProvider(),
         onViewModelReady: (viewModel) => viewModel.init(context),
@@ -89,6 +84,7 @@ class InSoBlokApp extends StatelessWidget {
               GlobalCupertinoLocalizations.delegate,
               FlutterQuillLocalizations.delegate,
             ],
+            supportedLocales: [Locale('en', 'US')],
           );
         },
       ),

@@ -82,15 +82,6 @@ extension MessageModelExt on MessageModel {
               ],
             ),
           },
-          // if (!isMe) ...{
-          //   chatUser.avatarStatusView(
-          //     width: 32,
-          //     height: 32,
-          //     borderWidth: 2.0,
-          //     textSize: 14.0,
-          //     statusSize: 10.0,
-          //   ),
-          // },
           if (isMe)
             ClipPath(
               clipper: isMe ? MessageMeClipper() : MessageChatClipper(),

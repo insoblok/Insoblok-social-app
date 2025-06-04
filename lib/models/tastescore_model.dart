@@ -14,21 +14,10 @@ abstract class TastescoreModel with _$TastescoreModel {
     String? type,
     int? bonus,
     String? desc,
-    List<ConnectedStoryModel>? connects,
     DateTime? updateDate,
     DateTime? timestamp,
   }) = _TastescoreModel;
 
   factory TastescoreModel.fromJson(Map<String, dynamic> json) =>
       _$TastescoreModelFromJson(json);
-}
-
-@freezed
-abstract class ConnectedStoryModel with _$ConnectedStoryModel {
-  @JsonSerializable(fieldRename: FieldRename.snake)
-  factory ConnectedStoryModel({String? postId, String? userUid}) =
-      _ConnectedStoryModel;
-
-  factory ConnectedStoryModel.fromJson(Map<String, dynamic> json) =>
-      _$ConnectedStoryModelFromJson(json);
 }

@@ -112,12 +112,20 @@ class StoryService {
     });
   }
 
+  final tastescoreService = TastescoreService();
+
   // Post a story
   Future<void> postStory({required StoryModel story}) async {
     await storyCollection.add({...story.toMap(), 'uid': AuthHelper.user?.uid});
     await storyCollection.doc('updated').set({
       'timestamp': DateTime.now().toUtc().toIso8601String(),
     });
+
+    // check for win_creator xp
+    if (!(AuthHelper.user?.hasVotePost ?? false)) {
+      await tastescoreService.winCreatorScore();
+      await AuthHelper.updateUser(AuthHelper.user!.copyWith(hasVotePost: true));
+    }
   }
 
   final _userService = UserService();
@@ -172,7 +180,6 @@ class StoryService {
   Future<void> updateVoteStory({
     required StoryModel story,
     required UserModel? user,
-
     required bool? isVote,
   }) async {
     await storyCollection.doc(story.id).update(story.toMap());

@@ -58,6 +58,7 @@ extension StoryModelExt on StoryModel {
       'follows': (follows),
       'update_date': updateDate?.toUtc().toIso8601String(),
       'timestamp': timestamp?.toUtc().toIso8601String(),
+      'connects': ((connects ?? []).map((e) => e.toMap()).toList()),
       'comments': ((comments ?? []).map((e) => e.toMap()).toList()),
       'votes': ((votes ?? []).map((e) => e.toMap()).toList()),
       'medias': ((medias ?? []).map((e) => e.toMap()).toList()),
@@ -105,6 +106,14 @@ extension UpdatedStoryModelExt on UpdatedStoryModel {
     Map<String, dynamic> result = {
       'timestamp': timestamp?.toUtc().toIso8601String(),
     };
+    result.removeWhere((k, v) => v == null);
+    return result;
+  }
+}
+
+extension ConnectedStoryModelExt on ConnectedStoryModel {
+  Map<String, dynamic> toMap() {
+    Map<String, dynamic> result = {'post_id': postId, 'user_uid': userUid};
     result.removeWhere((k, v) => v == null);
     return result;
   }

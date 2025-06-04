@@ -29,6 +29,7 @@ abstract class UserModel with _$UserModel {
     DateTime? updateDate,
     DateTime? timestamp,
     String? status,
+    bool? hasVotePost,
     int? rewardDate,
     List<String>? likes,
     List<String>? follows,

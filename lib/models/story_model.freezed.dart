@@ -25,6 +25,7 @@ mixin _$StoryModel {
   List<String>? get follows;
   DateTime? get updateDate;
   DateTime? get timestamp;
+  List<ConnectedStoryModel>? get connects;
   List<StoryCommentModel>? get comments;
   List<StoryVoteModel>? get votes;
   List<MediaStoryModel>? get medias;
@@ -57,6 +58,7 @@ mixin _$StoryModel {
                 other.updateDate == updateDate) &&
             (identical(other.timestamp, timestamp) ||
                 other.timestamp == timestamp) &&
+            const DeepCollectionEquality().equals(other.connects, connects) &&
             const DeepCollectionEquality().equals(other.comments, comments) &&
             const DeepCollectionEquality().equals(other.votes, votes) &&
             const DeepCollectionEquality().equals(other.medias, medias));
@@ -76,13 +78,14 @@ mixin _$StoryModel {
       const DeepCollectionEquality().hash(follows),
       updateDate,
       timestamp,
+      const DeepCollectionEquality().hash(connects),
       const DeepCollectionEquality().hash(comments),
       const DeepCollectionEquality().hash(votes),
       const DeepCollectionEquality().hash(medias));
 
   @override
   String toString() {
-    return 'StoryModel(id: $id, uid: $uid, title: $title, text: $text, status: $status, category: $category, likes: $likes, follows: $follows, updateDate: $updateDate, timestamp: $timestamp, comments: $comments, votes: $votes, medias: $medias)';
+    return 'StoryModel(id: $id, uid: $uid, title: $title, text: $text, status: $status, category: $category, likes: $likes, follows: $follows, updateDate: $updateDate, timestamp: $timestamp, connects: $connects, comments: $comments, votes: $votes, medias: $medias)';
   }
 }
 
@@ -103,6 +106,7 @@ abstract mixin class $StoryModelCopyWith<$Res> {
       List<String>? follows,
       DateTime? updateDate,
       DateTime? timestamp,
+      List<ConnectedStoryModel>? connects,
       List<StoryCommentModel>? comments,
       List<StoryVoteModel>? votes,
       List<MediaStoryModel>? medias});
@@ -130,6 +134,7 @@ class _$StoryModelCopyWithImpl<$Res> implements $StoryModelCopyWith<$Res> {
     Object? follows = freezed,
     Object? updateDate = freezed,
     Object? timestamp = freezed,
+    Object? connects = freezed,
     Object? comments = freezed,
     Object? votes = freezed,
     Object? medias = freezed,
@@ -175,6 +180,10 @@ class _$StoryModelCopyWithImpl<$Res> implements $StoryModelCopyWith<$Res> {
           ? _self.timestamp
           : timestamp // ignore: cast_nullable_to_non_nullable
               as DateTime?,
+      connects: freezed == connects
+          ? _self.connects
+          : connects // ignore: cast_nullable_to_non_nullable
+              as List<ConnectedStoryModel>?,
       comments: freezed == comments
           ? _self.comments
           : comments // ignore: cast_nullable_to_non_nullable
@@ -206,11 +215,13 @@ class _StoryModel implements StoryModel {
       final List<String>? follows,
       this.updateDate,
       this.timestamp,
+      final List<ConnectedStoryModel>? connects,
       final List<StoryCommentModel>? comments,
       final List<StoryVoteModel>? votes,
       final List<MediaStoryModel>? medias})
       : _likes = likes,
         _follows = follows,
+        _connects = connects,
         _comments = comments,
         _votes = votes,
         _medias = medias;
@@ -253,6 +264,16 @@ class _StoryModel implements StoryModel {
   final DateTime? updateDate;
   @override
   final DateTime? timestamp;
+  final List<ConnectedStoryModel>? _connects;
+  @override
+  List<ConnectedStoryModel>? get connects {
+    final value = _connects;
+    if (value == null) return null;
+    if (_connects is EqualUnmodifiableListView) return _connects;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
+
   final List<StoryCommentModel>? _comments;
   @override
   List<StoryCommentModel>? get comments {
@@ -316,6 +337,7 @@ class _StoryModel implements StoryModel {
                 other.updateDate == updateDate) &&
             (identical(other.timestamp, timestamp) ||
                 other.timestamp == timestamp) &&
+            const DeepCollectionEquality().equals(other._connects, _connects) &&
             const DeepCollectionEquality().equals(other._comments, _comments) &&
             const DeepCollectionEquality().equals(other._votes, _votes) &&
             const DeepCollectionEquality().equals(other._medias, _medias));
@@ -335,13 +357,14 @@ class _StoryModel implements StoryModel {
       const DeepCollectionEquality().hash(_follows),
       updateDate,
       timestamp,
+      const DeepCollectionEquality().hash(_connects),
       const DeepCollectionEquality().hash(_comments),
       const DeepCollectionEquality().hash(_votes),
       const DeepCollectionEquality().hash(_medias));
 
   @override
   String toString() {
-    return 'StoryModel(id: $id, uid: $uid, title: $title, text: $text, status: $status, category: $category, likes: $likes, follows: $follows, updateDate: $updateDate, timestamp: $timestamp, comments: $comments, votes: $votes, medias: $medias)';
+    return 'StoryModel(id: $id, uid: $uid, title: $title, text: $text, status: $status, category: $category, likes: $likes, follows: $follows, updateDate: $updateDate, timestamp: $timestamp, connects: $connects, comments: $comments, votes: $votes, medias: $medias)';
   }
 }
 
@@ -364,6 +387,7 @@ abstract mixin class _$StoryModelCopyWith<$Res>
       List<String>? follows,
       DateTime? updateDate,
       DateTime? timestamp,
+      List<ConnectedStoryModel>? connects,
       List<StoryCommentModel>? comments,
       List<StoryVoteModel>? votes,
       List<MediaStoryModel>? medias});
@@ -391,6 +415,7 @@ class __$StoryModelCopyWithImpl<$Res> implements _$StoryModelCopyWith<$Res> {
     Object? follows = freezed,
     Object? updateDate = freezed,
     Object? timestamp = freezed,
+    Object? connects = freezed,
     Object? comments = freezed,
     Object? votes = freezed,
     Object? medias = freezed,
@@ -436,6 +461,10 @@ class __$StoryModelCopyWithImpl<$Res> implements _$StoryModelCopyWith<$Res> {
           ? _self.timestamp
           : timestamp // ignore: cast_nullable_to_non_nullable
               as DateTime?,
+      connects: freezed == connects
+          ? _self._connects
+          : connects // ignore: cast_nullable_to_non_nullable
+              as List<ConnectedStoryModel>?,
       comments: freezed == comments
           ? _self._comments
           : comments // ignore: cast_nullable_to_non_nullable
@@ -1146,6 +1175,167 @@ class __$UpdatedStoryModelCopyWithImpl<$Res>
           ? _self.timestamp
           : timestamp // ignore: cast_nullable_to_non_nullable
               as DateTime?,
+    ));
+  }
+}
+
+/// @nodoc
+mixin _$ConnectedStoryModel {
+  String? get postId;
+  String? get userUid;
+
+  /// Create a copy of ConnectedStoryModel
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  $ConnectedStoryModelCopyWith<ConnectedStoryModel> get copyWith =>
+      _$ConnectedStoryModelCopyWithImpl<ConnectedStoryModel>(
+          this as ConnectedStoryModel, _$identity);
+
+  /// Serializes this ConnectedStoryModel to a JSON map.
+  Map<String, dynamic> toJson();
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is ConnectedStoryModel &&
+            (identical(other.postId, postId) || other.postId == postId) &&
+            (identical(other.userUid, userUid) || other.userUid == userUid));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, postId, userUid);
+
+  @override
+  String toString() {
+    return 'ConnectedStoryModel(postId: $postId, userUid: $userUid)';
+  }
+}
+
+/// @nodoc
+abstract mixin class $ConnectedStoryModelCopyWith<$Res> {
+  factory $ConnectedStoryModelCopyWith(
+          ConnectedStoryModel value, $Res Function(ConnectedStoryModel) _then) =
+      _$ConnectedStoryModelCopyWithImpl;
+  @useResult
+  $Res call({String? postId, String? userUid});
+}
+
+/// @nodoc
+class _$ConnectedStoryModelCopyWithImpl<$Res>
+    implements $ConnectedStoryModelCopyWith<$Res> {
+  _$ConnectedStoryModelCopyWithImpl(this._self, this._then);
+
+  final ConnectedStoryModel _self;
+  final $Res Function(ConnectedStoryModel) _then;
+
+  /// Create a copy of ConnectedStoryModel
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? postId = freezed,
+    Object? userUid = freezed,
+  }) {
+    return _then(_self.copyWith(
+      postId: freezed == postId
+          ? _self.postId
+          : postId // ignore: cast_nullable_to_non_nullable
+              as String?,
+      userUid: freezed == userUid
+          ? _self.userUid
+          : userUid // ignore: cast_nullable_to_non_nullable
+              as String?,
+    ));
+  }
+}
+
+/// @nodoc
+
+@JsonSerializable(fieldRename: FieldRename.snake)
+class _ConnectedStoryModel implements ConnectedStoryModel {
+  _ConnectedStoryModel({this.postId, this.userUid});
+  factory _ConnectedStoryModel.fromJson(Map<String, dynamic> json) =>
+      _$ConnectedStoryModelFromJson(json);
+
+  @override
+  final String? postId;
+  @override
+  final String? userUid;
+
+  /// Create a copy of ConnectedStoryModel
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @pragma('vm:prefer-inline')
+  _$ConnectedStoryModelCopyWith<_ConnectedStoryModel> get copyWith =>
+      __$ConnectedStoryModelCopyWithImpl<_ConnectedStoryModel>(
+          this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$ConnectedStoryModelToJson(
+      this,
+    );
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _ConnectedStoryModel &&
+            (identical(other.postId, postId) || other.postId == postId) &&
+            (identical(other.userUid, userUid) || other.userUid == userUid));
+  }
+
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  int get hashCode => Object.hash(runtimeType, postId, userUid);
+
+  @override
+  String toString() {
+    return 'ConnectedStoryModel(postId: $postId, userUid: $userUid)';
+  }
+}
+
+/// @nodoc
+abstract mixin class _$ConnectedStoryModelCopyWith<$Res>
+    implements $ConnectedStoryModelCopyWith<$Res> {
+  factory _$ConnectedStoryModelCopyWith(_ConnectedStoryModel value,
+          $Res Function(_ConnectedStoryModel) _then) =
+      __$ConnectedStoryModelCopyWithImpl;
+  @override
+  @useResult
+  $Res call({String? postId, String? userUid});
+}
+
+/// @nodoc
+class __$ConnectedStoryModelCopyWithImpl<$Res>
+    implements _$ConnectedStoryModelCopyWith<$Res> {
+  __$ConnectedStoryModelCopyWithImpl(this._self, this._then);
+
+  final _ConnectedStoryModel _self;
+  final $Res Function(_ConnectedStoryModel) _then;
+
+  /// Create a copy of ConnectedStoryModel
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @pragma('vm:prefer-inline')
+  $Res call({
+    Object? postId = freezed,
+    Object? userUid = freezed,
+  }) {
+    return _then(_ConnectedStoryModel(
+      postId: freezed == postId
+          ? _self.postId
+          : postId // ignore: cast_nullable_to_non_nullable
+              as String?,
+      userUid: freezed == userUid
+          ? _self.userUid
+          : userUid // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }

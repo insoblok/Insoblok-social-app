@@ -41,7 +41,10 @@ class TastescoreService {
       }
 
       if (rewardValue > 0) {
-        var tastescore = TastescoreModelExt.getLoginXp(rewardValue, user.uid!);
+        var tastescore = TastescoreModelExt.creatXpModel(
+          rewardValue,
+          user.uid!,
+        );
         await tastescoreCollection.add(tastescore.toMap());
       }
 
@@ -50,6 +53,15 @@ class TastescoreService {
       logger.e(e);
     }
     return 0;
+  }
+
+  Future<void> winCreatorScore() async {
+    var tastescore = TastescoreModelExt.creatXpModel(
+      AppSettingHelper.appSettingModel!.xpEarn![4].reward!,
+      AuthHelper.user!.uid!,
+      type: TastescoreType.WINCREATOR,
+    );
+    await tastescoreCollection.add(tastescore.toMap());
   }
 
   Future<List<TastescoreModel>> getScoreList() async {
@@ -70,61 +82,23 @@ class TastescoreService {
     return scoreList;
   }
 
-  Future<int> getUserScore(String uid, String date) async {
+  Future<List<TastescoreModel>> getScoresByUser(String uid) async {
     List<TastescoreModel> scoreList = [];
-    try {
-      var scoreSnapshot =
-          await tastescoreCollection.where('uid', isEqualTo: uid).get();
-      for (var doc in scoreSnapshot.docs) {
-        try {
-          var json = doc.data();
-          json['id'] = doc.id;
-          var score = TastescoreModel.fromJson(json);
-          if (score.uid != null) {
-            scoreList.add(score);
-          }
-        } on FirebaseException catch (e) {
-          logger.e(e.message);
+    var scoreSnapshot =
+        await tastescoreCollection.where('uid', isEqualTo: uid).get();
+    for (var doc in scoreSnapshot.docs) {
+      try {
+        var json = doc.data();
+        json['id'] = doc.id;
+        var score = TastescoreModel.fromJson(json);
+        if (score.uid != null) {
+          scoreList.add(score);
         }
+      } on FirebaseException catch (e) {
+        logger.e(e.message);
       }
-      logger.d(scoreList);
-
-      int total = 0;
-      if (date == 'daily') {
-        for (var score in scoreList) {
-          if ((score.updateDate?.year == DateTime.now().year) &&
-              (score.updateDate?.month == DateTime.now().month) &&
-              (score.updateDate?.day == DateTime.now().day)) {
-            total = total + score.bonus!;
-          }
-        }
-        return total;
-      } else if (date == 'weekly') {
-        for (var score in scoreList) {
-          if ((score.updateDate?.year == DateTime.now().year) &&
-              (getWeekNumber(score.updateDate!) ==
-                  getWeekNumber(DateTime.now()))) {
-            total = total + score.bonus!;
-          }
-        }
-        return total;
-      } else if (date == 'monthly') {
-        for (var score in scoreList) {
-          if ((score.updateDate?.year == DateTime.now().year) &&
-              (score.updateDate?.month == DateTime.now().month)) {
-            total = total + score.bonus!;
-          }
-        }
-        return total;
-      } else {
-        for (var score in scoreList) {
-          total = total + score.bonus!;
-        }
-        return total;
-      }
-    } catch (e) {
-      logger.e(e);
     }
-    return 0;
+    logger.d(scoreList.length);
+    return scoreList;
   }
 }

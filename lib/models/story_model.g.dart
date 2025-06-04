@@ -23,6 +23,9 @@ _StoryModel _$StoryModelFromJson(Map<String, dynamic> json) => _StoryModel(
       timestamp: json['timestamp'] == null
           ? null
           : DateTime.parse(json['timestamp'] as String),
+      connects: (json['connects'] as List<dynamic>?)
+          ?.map((e) => ConnectedStoryModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
       comments: (json['comments'] as List<dynamic>?)
           ?.map((e) => StoryCommentModel.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -46,6 +49,7 @@ Map<String, dynamic> _$StoryModelToJson(_StoryModel instance) =>
       'follows': instance.follows,
       'update_date': instance.updateDate?.toIso8601String(),
       'timestamp': instance.timestamp?.toIso8601String(),
+      'connects': instance.connects,
       'comments': instance.comments,
       'votes': instance.votes,
       'medias': instance.medias,
@@ -109,4 +113,17 @@ _UpdatedStoryModel _$UpdatedStoryModelFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$UpdatedStoryModelToJson(_UpdatedStoryModel instance) =>
     <String, dynamic>{
       'timestamp': instance.timestamp?.toIso8601String(),
+    };
+
+_ConnectedStoryModel _$ConnectedStoryModelFromJson(Map<String, dynamic> json) =>
+    _ConnectedStoryModel(
+      postId: json['post_id'] as String?,
+      userUid: json['user_uid'] as String?,
+    );
+
+Map<String, dynamic> _$ConnectedStoryModelToJson(
+        _ConnectedStoryModel instance) =>
+    <String, dynamic>{
+      'post_id': instance.postId,
+      'user_uid': instance.userUid,
     };

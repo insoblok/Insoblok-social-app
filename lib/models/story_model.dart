@@ -19,6 +19,7 @@ abstract class StoryModel with _$StoryModel {
     List<String>? follows,
     DateTime? updateDate,
     DateTime? timestamp,
+    List<ConnectedStoryModel>? connects,
     List<StoryCommentModel>? comments,
     List<StoryVoteModel>? votes,
     List<MediaStoryModel>? medias,
@@ -68,4 +69,14 @@ abstract class UpdatedStoryModel with _$UpdatedStoryModel {
 
   factory UpdatedStoryModel.fromJson(Map<String, dynamic> json) =>
       _$UpdatedStoryModelFromJson(FirebaseHelper.fromConvertJson(json));
+}
+
+@freezed
+abstract class ConnectedStoryModel with _$ConnectedStoryModel {
+  @JsonSerializable(fieldRename: FieldRename.snake)
+  factory ConnectedStoryModel({String? postId, String? userUid}) =
+      _ConnectedStoryModel;
+
+  factory ConnectedStoryModel.fromJson(Map<String, dynamic> json) =>
+      _$ConnectedStoryModelFromJson(json);
 }

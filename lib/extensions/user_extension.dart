@@ -163,6 +163,7 @@ extension UserModelExt on UserModel {
       'lon': lon,
       'ip_address': ipAddress,
       'status': status,
+      'has_vote_post': hasVotePost,
       'reward_date': rewardDate,
       'likes': (likes),
       'follows': (follows),

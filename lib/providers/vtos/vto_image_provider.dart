@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 
 import 'package:image_picker/image_picker.dart';
 
+import 'package:insoblok/locator.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
@@ -28,7 +29,7 @@ class VTOImageProvider extends InSoBlokViewModel {
     this.context = context;
 
     product = p;
-    _mediaPickerService = MediaPickerService(this.context);
+    _mediaPickerService = locator<MediaPickerService>();
 
     final String response = await rootBundle.loadString(
       'assets/data/country.json',

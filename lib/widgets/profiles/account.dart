@@ -86,21 +86,21 @@ class AccountPresentHeaderView extends ViewModelWidget<AccountProvider> {
                           ],
                         ),
                         const SizedBox(height: 4.0),
-                        LinearProgressIndicator(
-                          color: AIColors.pink,
-                          value: viewModel.userScore / 100,
-                          backgroundColor: AIColors.borderColor,
-                          minHeight: 8,
-                          borderRadius: BorderRadius.circular(4),
-                        ),
+                        // LinearProgressIndicator(
+                        //   color: AIColors.pink,
+                        //   value: viewModel.userScore / 100,
+                        //   backgroundColor: AIColors.borderColor,
+                        //   minHeight: 8,
+                        //   borderRadius: BorderRadius.circular(4),
+                        // ),
                         const SizedBox(height: 8.0),
                         Row(
                           children: [
-                            Text(
-                              '${viewModel.userScore} XP / 1200',
-                              style: Theme.of(context).textTheme.bodySmall,
-                              textAlign: TextAlign.end,
-                            ),
+                            // Text(
+                            //   '${viewModel.userScore} XP / 1200',
+                            //   style: Theme.of(context).textTheme.bodySmall,
+                            //   textAlign: TextAlign.end,
+                            // ),
                           ],
                         ),
                       ],
