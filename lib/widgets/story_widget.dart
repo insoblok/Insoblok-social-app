@@ -127,7 +127,10 @@ class StoryListCell extends StatelessWidget {
                             onTap: () {
                               viewModel.updateVote(true);
                             },
-                            text: 'Yay (${viewModel.story.cntYay})',
+                            text:
+                                viewModel.story.cntYay == 0
+                                    ? 'Yay'
+                                    : 'Yay (${viewModel.story.cntYay})',
                             textColor:
                                 viewModel.story.isVote() == true
                                     ? AIColors.white
@@ -148,7 +151,10 @@ class StoryListCell extends StatelessWidget {
                             onTap: () {
                               viewModel.updateVote(false);
                             },
-                            text: 'Nay (${viewModel.story.cntNay})',
+                            text:
+                                viewModel.story.cntNay == 0
+                                    ? 'Nay'
+                                    : 'Nay (${viewModel.story.cntNay})',
                             textColor:
                                 viewModel.story.isVote() == false
                                     ? AIColors.white
@@ -234,36 +240,93 @@ class StoryDetailDialog extends StatelessWidget {
                           ),
                           Divider(
                             thickness: 0.33,
-                            height: 24.0,
+                            height: 32.0,
                             color: AIColors.speraterColor,
                           ),
-                          Text.rich(
-                            TextSpan(
-                              children: [
-                                TextSpan(
-                                  text:
-                                      '${(viewModel.story.likes ?? []).length}',
-                                  style: Theme.of(context).textTheme.bodyMedium,
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              InkWell(
+                                onTap: viewModel.updateLike,
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    AIImage(
+                                      viewModel.story.isLike()
+                                          ? AIImages.icFavoriteFill
+                                          : AIImages.icFavorite,
+                                      width: 16.0,
+                                      height: 16.0,
+                                    ),
+                                    const SizedBox(width: 8.0),
+                                    Text.rich(
+                                      TextSpan(
+                                        children: [
+                                          TextSpan(
+                                            text:
+                                                '${(viewModel.story.likes ?? []).length}',
+                                            style:
+                                                Theme.of(
+                                                  context,
+                                                ).textTheme.bodyMedium,
+                                          ),
+                                          TextSpan(
+                                            text: '   Likes  ',
+                                            style:
+                                                Theme.of(
+                                                  context,
+                                                ).textTheme.labelLarge,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                TextSpan(
-                                  text: ' Likes  ',
-                                  style: Theme.of(context).textTheme.labelLarge,
+                              ),
+                              InkWell(
+                                onTap: viewModel.updateFollow,
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    AIImage(
+                                      AIImages.icFollow,
+                                      width: 20.0,
+                                      height: 20.0,
+                                      color:
+                                          viewModel.story.isFollow()
+                                              ? AIColors.green
+                                              : null,
+                                    ),
+                                    const SizedBox(width: 8.0),
+                                    Text.rich(
+                                      TextSpan(
+                                        children: [
+                                          TextSpan(
+                                            text:
+                                                '${(viewModel.story.follows ?? []).length}',
+                                            style:
+                                                Theme.of(
+                                                  context,
+                                                ).textTheme.bodyMedium,
+                                          ),
+                                          TextSpan(
+                                            text: '   Followers',
+                                            style:
+                                                Theme.of(
+                                                  context,
+                                                ).textTheme.labelLarge,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                TextSpan(
-                                  text:
-                                      '${(viewModel.story.follows ?? []).length}',
-                                  style: Theme.of(context).textTheme.bodyMedium,
-                                ),
-                                TextSpan(
-                                  text: ' Followers',
-                                  style: Theme.of(context).textTheme.labelLarge,
-                                ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
                           Divider(
                             thickness: 0.33,
-                            height: 24.0,
+                            height: 32.0,
                             color: AIColors.speraterColor,
                           ),
                           Row(
@@ -303,28 +366,7 @@ class StoryDetailDialog extends StatelessWidget {
                                   height: 24.0,
                                 ),
                               ),
-                              InkWell(
-                                onTap: viewModel.updateFollow,
-                                child: AIImage(
-                                  AIImages.icFollow,
-                                  width: 28.0,
-                                  height: 28.0,
-                                  color:
-                                      viewModel.story.isFollow()
-                                          ? AIColors.green
-                                          : null,
-                                ),
-                              ),
-                              InkWell(
-                                onTap: viewModel.updateLike,
-                                child: AIImage(
-                                  viewModel.story.isLike()
-                                      ? AIImages.icFavoriteFill
-                                      : AIImages.icFavorite,
-                                  width: 24.0,
-                                  height: 24.0,
-                                ),
-                              ),
+
                               InkWell(
                                 onTap: viewModel.onClickRepost,
                                 child: AIImage(
@@ -352,35 +394,46 @@ class StoryDetailDialog extends StatelessWidget {
                       color: AIColors.speraterColor,
                     ),
                     if (viewModel.isVote) ...{
-                      for (var vote
-                          in (viewModel.story.votes?.reversed.toList() ??
-                              [])) ...{
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16.0,
-                            vertical: 4.0,
-                          ),
-                          child: VotedUserCell(voteModel: vote),
+                      if ((viewModel.story.votes?.isEmpty ?? true)) ...{
+                        StoryListEmptyView(
+                          description: 'On click on that open tastescore tab!',
                         ),
+                      } else ...{
+                        for (var vote
+                            in (viewModel.story.votes?.reversed.toList() ??
+                                [])) ...{
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16.0,
+                              vertical: 4.0,
+                            ),
+                            child: VotedUserCell(voteModel: vote),
+                          ),
+                        },
                       },
                     },
-
                     if (viewModel.isComment) ...{
-                      for (var comment
-                          in (viewModel.story.comments?.reversed.toList() ??
-                              [])) ...{
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 16.0,
-                            vertical: 4.0,
-                          ),
-                          child: StoryDetailCommentCell(
-                            comment: comment,
-                            isLast:
-                                (viewModel.story.comments ?? []).length ==
-                                comment,
-                          ),
+                      if ((viewModel.story.comments?.isEmpty ?? true)) ...{
+                        StoryListEmptyView(
+                          description: 'Nobody had commented yet!',
                         ),
+                      } else ...{
+                        for (var comment
+                            in (viewModel.story.comments?.reversed.toList() ??
+                                [])) ...{
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16.0,
+                              vertical: 4.0,
+                            ),
+                            child: StoryDetailCommentCell(
+                              comment: comment,
+                              isLast:
+                                  (viewModel.story.comments ?? []).length ==
+                                  comment,
+                            ),
+                          ),
+                        },
                       },
                       const SizedBox(height: 20),
                     },
@@ -513,6 +566,22 @@ class StoryDialogMediaView extends ViewModelWidget<StoryContentProvider> {
           ),
         ),
       ),
+    );
+  }
+}
+
+class StoryListEmptyView extends StatelessWidget {
+  final String description;
+
+  const StoryListEmptyView({super.key, required this.description});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      height: 200.0,
+      alignment: Alignment.center,
+      child: Text(description),
     );
   }
 }
