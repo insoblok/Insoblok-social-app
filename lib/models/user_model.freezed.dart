@@ -39,6 +39,7 @@ mixin _$UserModel {
   int? get rewardDate;
   List<String>? get likes;
   List<String>? get follows;
+  List<String>? get userActions;
   List<UserActionModel>? get actions;
 
   /// Create a copy of UserModel
@@ -90,6 +91,8 @@ mixin _$UserModel {
                 other.rewardDate == rewardDate) &&
             const DeepCollectionEquality().equals(other.likes, likes) &&
             const DeepCollectionEquality().equals(other.follows, follows) &&
+            const DeepCollectionEquality()
+                .equals(other.userActions, userActions) &&
             const DeepCollectionEquality().equals(other.actions, actions));
   }
 
@@ -121,6 +124,7 @@ mixin _$UserModel {
         rewardDate,
         const DeepCollectionEquality().hash(likes),
         const DeepCollectionEquality().hash(follows),
+        const DeepCollectionEquality().hash(userActions),
         const DeepCollectionEquality().hash(actions)
       ]);
 
@@ -160,6 +164,7 @@ abstract mixin class $UserModelCopyWith<$Res> {
       int? rewardDate,
       List<String>? likes,
       List<String>? follows,
+      List<String>? userActions,
       List<UserActionModel>? actions});
 }
 
@@ -199,6 +204,7 @@ class _$UserModelCopyWithImpl<$Res> implements $UserModelCopyWith<$Res> {
     Object? rewardDate = freezed,
     Object? likes = freezed,
     Object? follows = freezed,
+    Object? userActions = freezed,
     Object? actions = freezed,
   }) {
     return _then(_self.copyWith(
@@ -298,6 +304,10 @@ class _$UserModelCopyWithImpl<$Res> implements $UserModelCopyWith<$Res> {
           ? _self.follows
           : follows // ignore: cast_nullable_to_non_nullable
               as List<String>?,
+      userActions: freezed == userActions
+          ? _self.userActions
+          : userActions // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
       actions: freezed == actions
           ? _self.actions
           : actions // ignore: cast_nullable_to_non_nullable
@@ -335,9 +345,11 @@ class _UserModel implements UserModel {
       this.rewardDate,
       final List<String>? likes,
       final List<String>? follows,
+      final List<String>? userActions,
       final List<UserActionModel>? actions})
       : _likes = likes,
         _follows = follows,
+        _userActions = userActions,
         _actions = actions;
   factory _UserModel.fromJson(Map<String, dynamic> json) =>
       _$UserModelFromJson(json);
@@ -406,6 +418,16 @@ class _UserModel implements UserModel {
     return EqualUnmodifiableListView(value);
   }
 
+  final List<String>? _userActions;
+  @override
+  List<String>? get userActions {
+    final value = _userActions;
+    if (value == null) return null;
+    if (_userActions is EqualUnmodifiableListView) return _userActions;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
+
   final List<UserActionModel>? _actions;
   @override
   List<UserActionModel>? get actions {
@@ -470,6 +492,8 @@ class _UserModel implements UserModel {
                 other.rewardDate == rewardDate) &&
             const DeepCollectionEquality().equals(other._likes, _likes) &&
             const DeepCollectionEquality().equals(other._follows, _follows) &&
+            const DeepCollectionEquality()
+                .equals(other._userActions, _userActions) &&
             const DeepCollectionEquality().equals(other._actions, _actions));
   }
 
@@ -501,6 +525,7 @@ class _UserModel implements UserModel {
         rewardDate,
         const DeepCollectionEquality().hash(_likes),
         const DeepCollectionEquality().hash(_follows),
+        const DeepCollectionEquality().hash(_userActions),
         const DeepCollectionEquality().hash(_actions)
       ]);
 
@@ -543,6 +568,7 @@ abstract mixin class _$UserModelCopyWith<$Res>
       int? rewardDate,
       List<String>? likes,
       List<String>? follows,
+      List<String>? userActions,
       List<UserActionModel>? actions});
 }
 
@@ -582,6 +608,7 @@ class __$UserModelCopyWithImpl<$Res> implements _$UserModelCopyWith<$Res> {
     Object? rewardDate = freezed,
     Object? likes = freezed,
     Object? follows = freezed,
+    Object? userActions = freezed,
     Object? actions = freezed,
   }) {
     return _then(_UserModel(
@@ -680,6 +707,10 @@ class __$UserModelCopyWithImpl<$Res> implements _$UserModelCopyWith<$Res> {
       follows: freezed == follows
           ? _self._follows
           : follows // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
+      userActions: freezed == userActions
+          ? _self._userActions
+          : userActions // ignore: cast_nullable_to_non_nullable
               as List<String>?,
       actions: freezed == actions
           ? _self._actions

@@ -57,7 +57,7 @@ class LookbookProvider extends InSoBlokViewModel {
     _stories.clear();
     await runBusyFuture(() async {
       try {
-        var ss = await storyService.getStories();
+        var ss = await storyService.getLookBookStories();
         logger.d(ss.length);
         _stories.addAll(ss);
         isUpdated = false;

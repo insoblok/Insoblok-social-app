@@ -41,6 +41,29 @@ class LookbookView extends StatelessWidget {
                 ),
                 if (viewModel.isBusy) ...{
                   SliverFillRemaining(child: Center(child: Loader(size: 60))),
+                },
+                if (viewModel.stories.isEmpty) ...{
+                  SliverFillRemaining(
+                    child: Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ClipOval(
+                            child: AIImage(
+                              AIImages.placehold,
+                              width: 150.0,
+                              height: 150.0,
+                            ),
+                          ),
+                          const SizedBox(height: 40.0),
+                          Text(
+                            'LookBook is Empty\nPlease try any action on Story!',
+                            textAlign: TextAlign.center,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 } else ...{
                   SliverFillRemaining(
                     child: Column(

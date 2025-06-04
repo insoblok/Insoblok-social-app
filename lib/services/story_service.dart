@@ -34,6 +34,28 @@ class StoryService {
     return result;
   }
 
+  // Get lookbook stories
+  Future<List<StoryModel>> getLookBookStories() async {
+    List<StoryModel> result = [];
+    var storiesSnapshot =
+        await storyCollection.orderBy('timestamp', descending: true).get();
+    for (var doc in storiesSnapshot.docs) {
+      try {
+        var json = doc.data();
+        json['id'] = doc.id;
+        var story = StoryModel.fromJson(json);
+        if (story.uid != null &&
+            AuthHelper.user!.userActions != null &&
+            AuthHelper.user!.userActions!.contains(story.id)) {
+          result.add(story);
+        }
+      } on FirebaseException catch (e) {
+        logger.e(e.message);
+      }
+    }
+    return result;
+  }
+
   // Get stories by uid
   Future<List<StoryModel>> getStoriesByUid(String uid) async {
     List<StoryModel> result = [];
@@ -151,6 +173,7 @@ class StoryService {
         await userService.updateUser(user);
       }
     }
+    addUserAction(story.id!);
   }
 
   // Update follow of story
@@ -174,6 +197,7 @@ class StoryService {
         await userService.updateUser(user);
       }
     }
+    addUserAction(story.id!);
   }
 
   // Update vote of story
@@ -210,11 +234,27 @@ class StoryService {
       }
       user = user.copyWith(actions: votes);
       await userService.updateUser(user);
+
+      addUserAction(story.id!);
     }
   }
 
   // Add comment of story
   Future<void> addComment({required StoryModel story}) async {
     await storyCollection.doc(story.id).update(story.toMap());
+    addUserAction(story.id!);
+  }
+
+  Future<void> addUserAction(String storyId) async {
+    var owner = AuthHelper.user;
+    var userActions = List<String>.from(owner?.userActions ?? []);
+    var actionIndex = userActions.indexWhere((action) => action == storyId);
+    if (actionIndex == -1) {
+      userActions.add(storyId);
+    } else {
+      userActions[actionIndex] = storyId;
+    }
+    owner = owner!.copyWith(userActions: userActions);
+    await AuthHelper.updateUser(owner);
   }
 }

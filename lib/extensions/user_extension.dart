@@ -167,6 +167,7 @@ extension UserModelExt on UserModel {
       'reward_date': rewardDate,
       'likes': (likes),
       'follows': (follows),
+      'userActions': (userActions),
       'actions': ((actions ?? []).map((e) => e.toMap()).toList()),
       'update_date': updateDate?.toUtc().toIso8601String(),
       'timestamp': timestamp?.toUtc().toIso8601String(),

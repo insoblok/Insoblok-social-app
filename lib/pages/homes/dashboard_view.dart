@@ -19,12 +19,40 @@ class DashboardView extends StatelessWidget {
         return CustomScrollView(
           physics: BouncingScrollPhysics(),
           slivers: [
-            AISliverAppbar(
-              context,
-              pinned: true,
-              floating: true,
-              leading: AppLeadingView(),
-              title: Text('Home'),
+            DefaultTabController(
+              length: 2,
+              child: SliverAppBar(
+                pinned: true,
+                floating: true,
+                leading: AppLeadingView(),
+                title: Text('Home'),
+                centerTitle: true,
+                bottom: TabBar(
+                  indicatorSize: TabBarIndicatorSize.tab,
+                  onTap: (index) {
+                    viewModel.tabIndex = index;
+                    if (index == 0) {
+                      viewModel.fetchNewsData();
+                    } else {
+                      viewModel.fetchStoryData();
+                    }
+                  },
+                  tabs: [
+                    Tab(
+                      child: Text(
+                        'News',
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                    ),
+                    Tab(
+                      child: Text(
+                        'Story',
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ),
             if (viewModel.isBusy) ...{
               SliverFillRemaining(child: Center(child: Loader(size: 60))),
@@ -52,13 +80,33 @@ class DashboardView extends StatelessWidget {
                 ),
               ),
             } else ...{
-              SliverList(
-                delegate: SliverChildListDelegate([
-                  for (var news in viewModel.showNewses) ...{
-                    NewsListCell(news: news),
-                  },
-                ]),
-              ),
+              viewModel.tabIndex == 0
+                  ? SliverList(
+                    delegate: SliverChildListDelegate([
+                      for (var news in viewModel.showNewses) ...{
+                        NewsListCell(news: news),
+                      },
+                    ]),
+                  )
+                  : SliverFillRemaining(
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: PageView.builder(
+                            scrollDirection: Axis.horizontal,
+                            controller: viewModel.pageController,
+                            padEnds: false,
+                            itemCount: viewModel.stories.length,
+                            itemBuilder: (_, index) {
+                              return StoryListCell(
+                                story: viewModel.stories[index],
+                              );
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
             },
           ],
         );

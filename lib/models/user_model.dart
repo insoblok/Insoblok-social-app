@@ -33,6 +33,7 @@ abstract class UserModel with _$UserModel {
     int? rewardDate,
     List<String>? likes,
     List<String>? follows,
+    List<String>? userActions,
     List<UserActionModel>? actions,
   }) = _UserModel;
 
