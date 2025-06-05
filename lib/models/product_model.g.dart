@@ -28,9 +28,9 @@ _ProductModel _$ProductModelFromJson(Map<String, dynamic> json) =>
           ?.map((e) => (e as num).toInt())
           .toList(),
       selles: (json['selles'] as num?)?.toInt(),
-      regdate: json['regdate'] == null
+      updateDate: json['update_date'] == null
           ? null
-          : DateTime.parse(json['regdate'] as String),
+          : DateTime.parse(json['update_date'] as String),
       timestamp: json['timestamp'] == null
           ? null
           : DateTime.parse(json['timestamp'] as String),
@@ -58,7 +58,7 @@ Map<String, dynamic> _$ProductModelToJson(_ProductModel instance) =>
       'likes': instance.likes,
       'rates': instance.rates,
       'selles': instance.selles,
-      'regdate': instance.regdate?.toIso8601String(),
+      'update_date': instance.updateDate?.toIso8601String(),
       'timestamp': instance.timestamp?.toIso8601String(),
       'medias': instance.medias,
     };

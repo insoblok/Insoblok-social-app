@@ -82,15 +82,6 @@ extension MessageModelExt on MessageModel {
               ],
             ),
           },
-          // if (!isMe) ...{
-          //   chatUser.avatarStatusView(
-          //     width: 32,
-          //     height: 32,
-          //     borderWidth: 2.0,
-          //     textSize: 14.0,
-          //     statusSize: 10.0,
-          //   ),
-          // },
           if (isMe)
             ClipPath(
               clipper: isMe ? MessageMeClipper() : MessageChatClipper(),
@@ -331,5 +322,21 @@ class _VideoContentState extends State<VideoContent> {
         ),
       ),
     );
+  }
+}
+
+extension RoomModelExt on RoomModel {
+  Map<String, dynamic> toMap() {
+    Map<String, dynamic> result = {
+      'uid': uid,
+      'uids': (uids),
+      'content': content,
+      'status_sender': statusSender,
+      'status_receiver': statusReceiver,
+      'update_date': updateDate?.toUtc().toIso8601String(),
+      'timestamp': timestamp?.toUtc().toIso8601String(),
+    };
+    result.removeWhere((k, v) => v == null);
+    return result;
   }
 }

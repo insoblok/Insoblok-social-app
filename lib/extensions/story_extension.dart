@@ -1,3 +1,4 @@
+import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
@@ -36,38 +37,84 @@ extension StoryModelExt on StoryModel {
 
   String get shownDate {
     return kDateMDYFormatter.format(
-      regdate != null ? regdate! : DateTime.now(),
+      timestamp != null ? timestamp! : DateTime.now(),
     );
   }
 
   String get shownHMDate {
     return kDateHMMDYFormatter.format(
-      regdate != null ? regdate! : DateTime.now(),
+      timestamp != null ? timestamp! : DateTime.now(),
     );
   }
 
   Map<String, dynamic> toMap() {
-    return {
+    Map<String, dynamic> result = {
       'uid': uid,
       'title': title,
       'text': text,
       'status': status,
-      'likes': likes,
-      'follows': follows,
       'category': category,
-      'medias': (medias ?? []).map((e) => e.toJson()).toList(),
-      'comments': (comments ?? []).map((e) => e.toMap()).toList(),
-      'votes': (votes ?? []).map((e) => e.toJson()).toList(),
+      'likes': (likes),
+      'follows': (follows),
+      'update_date': updateDate?.toUtc().toIso8601String(),
+      'timestamp': timestamp?.toUtc().toIso8601String(),
+      'connects': ((connects ?? []).map((e) => e.toMap()).toList()),
+      'comments': ((comments ?? []).map((e) => e.toMap()).toList()),
+      'votes': ((votes ?? []).map((e) => e.toMap()).toList()),
+      'medias': ((medias ?? []).map((e) => e.toMap()).toList()),
     };
+    result.removeWhere((k, v) => v == null);
+    return result;
   }
 }
 
-extension StoryCommentExt on StoryCommentModel {
+extension StoryVoteModelExt on StoryVoteModel {
   Map<String, dynamic> toMap() {
-    return {
+    Map<String, dynamic> result = {
+      'uid': uid,
+      'vote': vote,
+      'timestamp': timestamp?.toUtc().toIso8601String(),
+    };
+    result.removeWhere((k, v) => v == null);
+    return result;
+  }
+}
+
+extension MediaStoryModelExt on MediaStoryModel {
+  Map<String, dynamic> toMap() {
+    Map<String, dynamic> result = {'link': link, 'type': type};
+    result.removeWhere((k, v) => v == null);
+    return result;
+  }
+}
+
+extension StoryCommentModelExt on StoryCommentModel {
+  Map<String, dynamic> toMap() {
+    Map<String, dynamic> result = {
       'uid': uid,
       'content': content,
-      'medias': (medias ?? []).map((e) => e.toJson()).toList(),
+      'medias': ((medias ?? []).map((e) => e.toMap()).toList()),
+      'timestamp': timestamp?.toUtc().toIso8601String(),
     };
+    result.removeWhere((k, v) => v == null);
+    return result;
+  }
+}
+
+extension UpdatedStoryModelExt on UpdatedStoryModel {
+  Map<String, dynamic> toMap() {
+    Map<String, dynamic> result = {
+      'timestamp': timestamp?.toUtc().toIso8601String(),
+    };
+    result.removeWhere((k, v) => v == null);
+    return result;
+  }
+}
+
+extension ConnectedStoryModelExt on ConnectedStoryModel {
+  Map<String, dynamic> toMap() {
+    Map<String, dynamic> result = {'post_id': postId, 'user_uid': userUid};
+    result.removeWhere((k, v) => v == null);
+    return result;
   }
 }

@@ -32,11 +32,15 @@ mixin _$UserModel {
   double? get lat;
   double? get lon;
   String? get ipAddress;
-  DateTime? get regdate;
+  DateTime? get updateDate;
   DateTime? get timestamp;
   String? get status;
+  bool? get hasVotePost;
+  bool? get freeStyle;
+  int? get rewardDate;
   List<String>? get likes;
   List<String>? get follows;
+  List<String>? get userActions;
   List<UserActionModel>? get actions;
 
   /// Create a copy of UserModel
@@ -77,12 +81,21 @@ mixin _$UserModel {
             (identical(other.lon, lon) || other.lon == lon) &&
             (identical(other.ipAddress, ipAddress) ||
                 other.ipAddress == ipAddress) &&
-            (identical(other.regdate, regdate) || other.regdate == regdate) &&
+            (identical(other.updateDate, updateDate) ||
+                other.updateDate == updateDate) &&
             (identical(other.timestamp, timestamp) ||
                 other.timestamp == timestamp) &&
             (identical(other.status, status) || other.status == status) &&
+            (identical(other.hasVotePost, hasVotePost) ||
+                other.hasVotePost == hasVotePost) &&
+            (identical(other.freeStyle, freeStyle) ||
+                other.freeStyle == freeStyle) &&
+            (identical(other.rewardDate, rewardDate) ||
+                other.rewardDate == rewardDate) &&
             const DeepCollectionEquality().equals(other.likes, likes) &&
             const DeepCollectionEquality().equals(other.follows, follows) &&
+            const DeepCollectionEquality()
+                .equals(other.userActions, userActions) &&
             const DeepCollectionEquality().equals(other.actions, actions));
   }
 
@@ -107,17 +120,22 @@ mixin _$UserModel {
         lat,
         lon,
         ipAddress,
-        regdate,
+        updateDate,
         timestamp,
         status,
+        hasVotePost,
+        freeStyle,
+        rewardDate,
         const DeepCollectionEquality().hash(likes),
         const DeepCollectionEquality().hash(follows),
+        const DeepCollectionEquality().hash(userActions),
         const DeepCollectionEquality().hash(actions)
       ]);
 
   @override
   String toString() {
-    return 'UserModel(id: $id, uid: $uid, walletAddress: $walletAddress, avatar: $avatar, firstName: $firstName, lastName: $lastName, email: $email, password: $password, city: $city, country: $country, website: $website, desc: $desc, discovery: $discovery, nickId: $nickId, lat: $lat, lon: $lon, ipAddress: $ipAddress, regdate: $regdate, timestamp: $timestamp, status: $status, likes: $likes, follows: $follows, actions: $actions)';
+    return 'UserModel(id: $id, uid: $uid, walletAddress: $walletAddress, avatar: $avatar, firstName: $firstName, lastName: $lastName, email: $email, password: $password, city: $city, country: $country, website: $website, desc: $desc, discovery: $discovery, nickId: $nickId, lat: $lat, lon: $lon, ipAddress: $ipAddress, updateDate: $updateDate, timestamp: $timestamp, status: $status, hasVotePost: $hasVotePost, freeStyle: $freeStyle, rewardDate: $rewardDate, likes: $likes, follows: $follows, userActions: $userActions, actions: $actions)';
+    return 'UserModel(id: $id, uid: $uid, walletAddress: $walletAddress, avatar: $avatar, firstName: $firstName, lastName: $lastName, email: $email, password: $password, city: $city, country: $country, website: $website, desc: $desc, discovery: $discovery, nickId: $nickId, lat: $lat, lon: $lon, ipAddress: $ipAddress, updateDate: $updateDate, timestamp: $timestamp, status: $status, hasVotePost: $hasVotePost, rewardDate: $rewardDate, likes: $likes, follows: $follows, userActions: $userActions, actions: $actions)';
   }
 }
 
@@ -144,11 +162,15 @@ abstract mixin class $UserModelCopyWith<$Res> {
       double? lat,
       double? lon,
       String? ipAddress,
-      DateTime? regdate,
+      DateTime? updateDate,
       DateTime? timestamp,
       String? status,
+      bool? hasVotePost,
+      bool? freeStyle,
+      int? rewardDate,
       List<String>? likes,
       List<String>? follows,
+      List<String>? userActions,
       List<UserActionModel>? actions});
 }
 
@@ -181,11 +203,15 @@ class _$UserModelCopyWithImpl<$Res> implements $UserModelCopyWith<$Res> {
     Object? lat = freezed,
     Object? lon = freezed,
     Object? ipAddress = freezed,
-    Object? regdate = freezed,
+    Object? updateDate = freezed,
     Object? timestamp = freezed,
     Object? status = freezed,
+    Object? hasVotePost = freezed,
+    Object? freeStyle = freezed,
+    Object? rewardDate = freezed,
     Object? likes = freezed,
     Object? follows = freezed,
+    Object? userActions = freezed,
     Object? actions = freezed,
   }) {
     return _then(_self.copyWith(
@@ -257,9 +283,9 @@ class _$UserModelCopyWithImpl<$Res> implements $UserModelCopyWith<$Res> {
           ? _self.ipAddress
           : ipAddress // ignore: cast_nullable_to_non_nullable
               as String?,
-      regdate: freezed == regdate
-          ? _self.regdate
-          : regdate // ignore: cast_nullable_to_non_nullable
+      updateDate: freezed == updateDate
+          ? _self.updateDate
+          : updateDate // ignore: cast_nullable_to_non_nullable
               as DateTime?,
       timestamp: freezed == timestamp
           ? _self.timestamp
@@ -269,6 +295,18 @@ class _$UserModelCopyWithImpl<$Res> implements $UserModelCopyWith<$Res> {
           ? _self.status
           : status // ignore: cast_nullable_to_non_nullable
               as String?,
+      hasVotePost: freezed == hasVotePost
+          ? _self.hasVotePost
+          : hasVotePost // ignore: cast_nullable_to_non_nullable
+              as bool?,
+      freeStyle: freezed == freeStyle
+          ? _self.freeStyle
+          : freeStyle // ignore: cast_nullable_to_non_nullable
+              as bool?,
+      rewardDate: freezed == rewardDate
+          ? _self.rewardDate
+          : rewardDate // ignore: cast_nullable_to_non_nullable
+              as int?,
       likes: freezed == likes
           ? _self.likes
           : likes // ignore: cast_nullable_to_non_nullable
@@ -276,6 +314,10 @@ class _$UserModelCopyWithImpl<$Res> implements $UserModelCopyWith<$Res> {
       follows: freezed == follows
           ? _self.follows
           : follows // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
+      userActions: freezed == userActions
+          ? _self.userActions
+          : userActions // ignore: cast_nullable_to_non_nullable
               as List<String>?,
       actions: freezed == actions
           ? _self.actions
@@ -307,14 +349,19 @@ class _UserModel implements UserModel {
       this.lat,
       this.lon,
       this.ipAddress,
-      this.regdate,
+      this.updateDate,
       this.timestamp,
       this.status,
+      this.hasVotePost,
+      this.freeStyle,
+      this.rewardDate,
       final List<String>? likes,
       final List<String>? follows,
+      final List<String>? userActions,
       final List<UserActionModel>? actions})
       : _likes = likes,
         _follows = follows,
+        _userActions = userActions,
         _actions = actions;
   factory _UserModel.fromJson(Map<String, dynamic> json) =>
       _$UserModelFromJson(json);
@@ -354,11 +401,17 @@ class _UserModel implements UserModel {
   @override
   final String? ipAddress;
   @override
-  final DateTime? regdate;
+  final DateTime? updateDate;
   @override
   final DateTime? timestamp;
   @override
   final String? status;
+  @override
+  final bool? hasVotePost;
+  @override
+  final bool? freeStyle;
+  @override
+  final int? rewardDate;
   final List<String>? _likes;
   @override
   List<String>? get likes {
@@ -375,6 +428,16 @@ class _UserModel implements UserModel {
     final value = _follows;
     if (value == null) return null;
     if (_follows is EqualUnmodifiableListView) return _follows;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
+
+  final List<String>? _userActions;
+  @override
+  List<String>? get userActions {
+    final value = _userActions;
+    if (value == null) return null;
+    if (_userActions is EqualUnmodifiableListView) return _userActions;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(value);
   }
@@ -432,12 +495,21 @@ class _UserModel implements UserModel {
             (identical(other.lon, lon) || other.lon == lon) &&
             (identical(other.ipAddress, ipAddress) ||
                 other.ipAddress == ipAddress) &&
-            (identical(other.regdate, regdate) || other.regdate == regdate) &&
+            (identical(other.updateDate, updateDate) ||
+                other.updateDate == updateDate) &&
             (identical(other.timestamp, timestamp) ||
                 other.timestamp == timestamp) &&
             (identical(other.status, status) || other.status == status) &&
+            (identical(other.hasVotePost, hasVotePost) ||
+                other.hasVotePost == hasVotePost) &&
+            (identical(other.freeStyle, freeStyle) ||
+                other.freeStyle == freeStyle) &&
+            (identical(other.rewardDate, rewardDate) ||
+                other.rewardDate == rewardDate) &&
             const DeepCollectionEquality().equals(other._likes, _likes) &&
             const DeepCollectionEquality().equals(other._follows, _follows) &&
+            const DeepCollectionEquality()
+                .equals(other._userActions, _userActions) &&
             const DeepCollectionEquality().equals(other._actions, _actions));
   }
 
@@ -462,17 +534,21 @@ class _UserModel implements UserModel {
         lat,
         lon,
         ipAddress,
-        regdate,
+        updateDate,
         timestamp,
         status,
+        hasVotePost,
+        freeStyle,
+        rewardDate,
         const DeepCollectionEquality().hash(_likes),
         const DeepCollectionEquality().hash(_follows),
+        const DeepCollectionEquality().hash(_userActions),
         const DeepCollectionEquality().hash(_actions)
       ]);
 
   @override
   String toString() {
-    return 'UserModel(id: $id, uid: $uid, walletAddress: $walletAddress, avatar: $avatar, firstName: $firstName, lastName: $lastName, email: $email, password: $password, city: $city, country: $country, website: $website, desc: $desc, discovery: $discovery, nickId: $nickId, lat: $lat, lon: $lon, ipAddress: $ipAddress, regdate: $regdate, timestamp: $timestamp, status: $status, likes: $likes, follows: $follows, actions: $actions)';
+    return 'UserModel(id: $id, uid: $uid, walletAddress: $walletAddress, avatar: $avatar, firstName: $firstName, lastName: $lastName, email: $email, password: $password, city: $city, country: $country, website: $website, desc: $desc, discovery: $discovery, nickId: $nickId, lat: $lat, lon: $lon, ipAddress: $ipAddress, updateDate: $updateDate, timestamp: $timestamp, status: $status, hasVotePost: $hasVotePost, freeStyle: $freeStyle, rewardDate: $rewardDate, likes: $likes, follows: $follows, userActions: $userActions, actions: $actions)';
   }
 }
 
@@ -502,11 +578,15 @@ abstract mixin class _$UserModelCopyWith<$Res>
       double? lat,
       double? lon,
       String? ipAddress,
-      DateTime? regdate,
+      DateTime? updateDate,
       DateTime? timestamp,
       String? status,
+      bool? hasVotePost,
+      bool? freeStyle,
+      int? rewardDate,
       List<String>? likes,
       List<String>? follows,
+      List<String>? userActions,
       List<UserActionModel>? actions});
 }
 
@@ -539,11 +619,15 @@ class __$UserModelCopyWithImpl<$Res> implements _$UserModelCopyWith<$Res> {
     Object? lat = freezed,
     Object? lon = freezed,
     Object? ipAddress = freezed,
-    Object? regdate = freezed,
+    Object? updateDate = freezed,
     Object? timestamp = freezed,
     Object? status = freezed,
+    Object? hasVotePost = freezed,
+    Object? freeStyle = freezed,
+    Object? rewardDate = freezed,
     Object? likes = freezed,
     Object? follows = freezed,
+    Object? userActions = freezed,
     Object? actions = freezed,
   }) {
     return _then(_UserModel(
@@ -615,9 +699,9 @@ class __$UserModelCopyWithImpl<$Res> implements _$UserModelCopyWith<$Res> {
           ? _self.ipAddress
           : ipAddress // ignore: cast_nullable_to_non_nullable
               as String?,
-      regdate: freezed == regdate
-          ? _self.regdate
-          : regdate // ignore: cast_nullable_to_non_nullable
+      updateDate: freezed == updateDate
+          ? _self.updateDate
+          : updateDate // ignore: cast_nullable_to_non_nullable
               as DateTime?,
       timestamp: freezed == timestamp
           ? _self.timestamp
@@ -627,6 +711,18 @@ class __$UserModelCopyWithImpl<$Res> implements _$UserModelCopyWith<$Res> {
           ? _self.status
           : status // ignore: cast_nullable_to_non_nullable
               as String?,
+      hasVotePost: freezed == hasVotePost
+          ? _self.hasVotePost
+          : hasVotePost // ignore: cast_nullable_to_non_nullable
+              as bool?,
+      freeStyle: freezed == freeStyle
+          ? _self.freeStyle
+          : freeStyle // ignore: cast_nullable_to_non_nullable
+              as bool?,
+      rewardDate: freezed == rewardDate
+          ? _self.rewardDate
+          : rewardDate // ignore: cast_nullable_to_non_nullable
+              as int?,
       likes: freezed == likes
           ? _self._likes
           : likes // ignore: cast_nullable_to_non_nullable
@@ -634,6 +730,10 @@ class __$UserModelCopyWithImpl<$Res> implements _$UserModelCopyWith<$Res> {
       follows: freezed == follows
           ? _self._follows
           : follows // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
+      userActions: freezed == userActions
+          ? _self._userActions
+          : userActions // ignore: cast_nullable_to_non_nullable
               as List<String>?,
       actions: freezed == actions
           ? _self._actions

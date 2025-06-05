@@ -5,6 +5,7 @@ import 'package:insoblok/models/models.dart';
 import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
+import 'package:insoblok/widgets/widgets.dart';
 
 class StoryProvider extends InSoBlokViewModel {
   late BuildContext _context;
@@ -28,6 +29,17 @@ class StoryProvider extends InSoBlokViewModel {
     fetchUser();
   }
 
+  Future<void> fetchStory() async {
+    try {
+      story = await storyService.getStory(story.id!);
+    } catch (e, s) {
+      logger.e(e);
+      logger.e(s);
+    } finally {
+      notifyListeners();
+    }
+  }
+
   UserModel? _owner;
   UserModel? get owner => _owner;
   set owner(UserModel? model) {
@@ -35,8 +47,41 @@ class StoryProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  final _userService = UserService();
-  UserService get userService => _userService;
+  Offset _dragStart = Offset(0, 0);
+  Offset get dragStart => _dragStart;
+  set dragStart(Offset o) {
+    _dragStart = o;
+    notifyListeners();
+  }
+
+  bool openDialog = false;
+
+  Future<void> showDetailDialog() async {
+    if (openDialog) return;
+    openDialog = true;
+
+    await showModalBottomSheet(
+      context: context,
+      backgroundColor: AppSettingHelper.background,
+      barrierColor: Colors.transparent,
+      isScrollControlled: true,
+      constraints: BoxConstraints(
+        maxHeight:
+            MediaQuery.of(context).size.height -
+            kToolbarHeight -
+            MediaQuery.of(context).padding.top,
+        minHeight:
+            MediaQuery.of(context).size.height -
+            kToolbarHeight -
+            MediaQuery.of(context).padding.top,
+      ),
+      builder: (ctx) {
+        return StoryDetailDialog(story: story);
+      },
+    );
+    openDialog = false;
+    fetchStory();
+  }
 
   Future<void> fetchUser() async {
     try {
@@ -64,9 +109,6 @@ class StoryProvider extends InSoBlokViewModel {
     }
   }
 
-  final _storyService = StoryService();
-  StoryService get storyService => _storyService;
-
   bool _isVote = false;
   bool get isVote => _isVote;
   set isVote(bool f) {
@@ -90,7 +132,7 @@ class StoryProvider extends InSoBlokViewModel {
             StoryVoteModel(
               uid: user?.uid,
               vote: isVote,
-              // timestamp: DateTime.now(),
+              timestamp: DateTime.now(),
             ),
           );
         } else {
@@ -100,16 +142,20 @@ class StoryProvider extends InSoBlokViewModel {
               votes[i] = StoryVoteModel(
                 uid: user?.uid,
                 vote: isVote,
-                // timestamp: DateTime.now(),
+                timestamp: DateTime.now(),
               );
             }
           }
         }
         await storyService.updateVoteStory(
-          story: story.copyWith(votes: votes),
+          story: story.copyWith(votes: votes, updateDate: DateTime.now()),
           user: owner,
           isVote: isVote,
         );
+
+        if (isVote) {
+          tastScoreService.voteScore(story);
+        }
       } catch (e) {
         setError(e);
         logger.e(e);

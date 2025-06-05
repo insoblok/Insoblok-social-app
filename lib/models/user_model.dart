@@ -26,11 +26,15 @@ abstract class UserModel with _$UserModel {
     double? lat,
     double? lon,
     String? ipAddress,
-    DateTime? regdate,
+    DateTime? updateDate,
     DateTime? timestamp,
     String? status,
+    bool? hasVotePost,
+    bool? freeStyle,
+    int? rewardDate,
     List<String>? likes,
     List<String>? follows,
+    List<String>? userActions,
     List<UserActionModel>? actions,
   }) = _UserModel;
 

@@ -61,11 +61,7 @@ class RoomService {
   // Create a room
   Future<bool> createRoom(RoomModel room) async {
     try {
-      await _firestore.collection('room').add({
-        ...room.toJson().toFirebaseJson,
-        'timestamp': FieldValue.serverTimestamp(),
-        'regdate': FieldValue.serverTimestamp(),
-      });
+      await _firestore.collection('room').add(room.toMap());
       return true;
     } on FirebaseException catch (e) {
       logger.e(e.message);
@@ -78,10 +74,7 @@ class RoomService {
   // Update a room
   Future<bool> updateRoom(RoomModel room) async {
     try {
-      await _firestore.collection('room').doc(room.id).update({
-        ...room.toJson().toFirebaseJson,
-        'timestamp': FieldValue.serverTimestamp(),
-      });
+      await _firestore.collection('room').doc(room.id).update(room.toMap());
       return true;
     } on FirebaseException catch (e) {
       logger.e(e.message);

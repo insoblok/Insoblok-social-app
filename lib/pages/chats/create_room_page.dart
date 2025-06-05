@@ -23,36 +23,8 @@ class CreateRoomPage extends StatelessWidget {
             actions: [IconButton(onPressed: () {}, icon: Icon(Icons.camera))],
           ),
           body: SingleChildScrollView(
-            // padding: const EdgeInsets.symmetric(
-            //   horizontal: 18.0,
-            //   vertical: 24.0,
-            // ),
             child: Column(
               children: [
-                // Row(
-                //   children: [
-                //     Expanded(
-                //       child: AITextField(
-                //         hintText: 'First Name, Last Name, Nick ID and UID...',
-                //         onChanged: (key) => viewModel.key = key,
-                //       ),
-                //     ),
-                //     const SizedBox(width: 12.0),
-                //     InkWell(
-                //       onTap: viewModel.searchUsers,
-                //       child: Container(
-                //         width: 44.0,
-                //         height: 44.0,
-                //         decoration: BoxDecoration(
-                //           color: Theme.of(context).primaryColor,
-                //           shape: BoxShape.circle,
-                //         ),
-                //         child: Icon(Icons.search, color: AIColors.white),
-                //       ),
-                //     ),
-                //   ],
-                // ),
-                // const SizedBox(height: 24.0),
                 ...viewModel.users.map((user) {
                   return InkWell(
                     onTap: () => viewModel.onCreateRoom(user),
@@ -91,7 +63,7 @@ class CreateRoomPage extends StatelessWidget {
                                   ),
                                 ),
                                 Text(
-                                  '${user.regdate}',
+                                  '${user.timestamp?.timeago}',
                                   style: TextStyle(
                                     fontSize: 12.0,
                                     color: AIColors.grey,

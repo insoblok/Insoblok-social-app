@@ -1,11 +1,9 @@
-import 'dart:convert';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:observable_ish/observable_ish.dart';
 
 import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
-import 'package:observable_ish/value/rx/rx_value.dart';
 
 class MessageService {
   final RxValue<UserModel?> _userRx = RxValue<UserModel?>(null);
@@ -49,7 +47,7 @@ class MessageService {
           'content': text,
           'sender_id': AuthHelper.user?.uid,
           'sender_name': AuthHelper.user?.fullName ?? 'Anonymous',
-          'timestamp': FieldValue.serverTimestamp(),
+          'timestamp': DateTime.now().toUtc().toIso8601String(),
           'type': 'text',
         });
   }
@@ -67,7 +65,7 @@ class MessageService {
           'content': '[Image]',
           'sender_id': AuthHelper.user?.uid,
           'sender_name': AuthHelper.user?.fullName ?? 'Anonymous',
-          'timestamp': FieldValue.serverTimestamp(),
+          'timestamp': DateTime.now().toUtc().toIso8601String(),
           'url': imageUrl,
           'type': 'image',
         });
@@ -86,7 +84,7 @@ class MessageService {
           'content': '[Video]',
           'sender_id': AuthHelper.user?.uid,
           'sender_name': AuthHelper.user?.fullName ?? 'Anonymous',
-          'timestamp': FieldValue.serverTimestamp(),
+          'timestamp': DateTime.now().toUtc().toIso8601String(),
           'url': videoUrl,
           'type': 'video',
         });
@@ -105,7 +103,7 @@ class MessageService {
           'content': '[Audio]',
           'sender_id': AuthHelper.user?.uid,
           'sender_name': AuthHelper.user?.fullName ?? 'Anonymous',
-          'timestamp': FieldValue.serverTimestamp(),
+          'timestamp': DateTime.now().toUtc().toIso8601String(),
           'url': audioUrl,
           'type': 'audio',
         });
@@ -121,10 +119,10 @@ class MessageService {
         .doc(chatRoomId)
         .collection('messages')
         .add({
-          'content': jsonEncode(coin.toJson()),
+          'content': (coin.toJson()),
           'sender_id': AuthHelper.user?.uid,
           'sender_name': AuthHelper.user?.fullName ?? 'Anonymous',
-          'timestamp': FieldValue.serverTimestamp(),
+          'timestamp': DateTime.now().toUtc().toIso8601String(),
           'type': 'paid',
         });
   }

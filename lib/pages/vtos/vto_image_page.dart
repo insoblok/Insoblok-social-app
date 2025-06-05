@@ -510,7 +510,7 @@ class VTOInformationView extends ViewModelWidget<VTOImageProvider> {
             ),
             const Spacer(),
             Text(
-              viewModel.product.regdate?.timeago ?? '',
+              viewModel.product.timestamp?.timeago ?? '',
               style: Theme.of(context).textTheme.labelSmall,
             ),
           ],

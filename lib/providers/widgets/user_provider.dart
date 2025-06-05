@@ -28,9 +28,6 @@ class UserProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  final _userService = UserService();
-  UserService get userService => _userService;
-
   Future<void> fetchUser() async {
     try {
       owner = await userService.getUser(_uid);

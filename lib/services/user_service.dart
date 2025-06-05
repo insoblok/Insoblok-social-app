@@ -10,11 +10,7 @@ class UserService {
 
   Future<UserModel?> createUser(UserModel user) async {
     try {
-      await _userCollection.add({
-        ...user.toMap().toFirebaseJson,
-        'timestamp': FieldValue.serverTimestamp(),
-        'regdate': FieldValue.serverTimestamp(),
-      });
+      await _userCollection.add(user.toMap());
       return getUser(user.uid!);
     } on FirebaseException catch (e) {
       logger.e(e.message);
@@ -52,12 +48,8 @@ class UserService {
     return users.where((u) => u?.uid != AuthHelper.user?.uid).toList();
   }
 
-  Future<void> updateUser(UserModel user, {Map<String, dynamic>? data}) async {
-    await _userCollection.doc(user.id).update({
-      ...user.toMap().toFirebaseJson,
-      ...(data ?? {}),
-      'timestamp': FieldValue.serverTimestamp(),
-    });
+  Future<void> updateUser(UserModel user) async {
+    await _userCollection.doc(user.id).update({...user.toMap()});
   }
 
   Future<void> deleteUser(UserModel user) async {

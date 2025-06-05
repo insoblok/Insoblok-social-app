@@ -34,7 +34,7 @@ dependencies:
   flutter_staggered_grid_view: any
 
   logger: any
-  freezed_annotation: any
+  freezed_annotation: ^3.0.0
   json_annotation: any
 
   permission_handler: any
@@ -61,6 +61,7 @@ dependencies:
   firebase_storage: any
   firebase_auth: any
   firebase_app_check: any
+  collection: any
 
   dio: any
   path_provider: any
@@ -74,13 +75,12 @@ dev_dependencies:
 
   flutter_lints: ^6.0.0
   json_serializable: any
-  freezed: any
+  freezed: ^3.0.6
   build_runner: any
   web3dart_builders: any
 
 flutter:
   uses-material-design: true
-  generate: true
 
   assets:
     - assets/images/
@@ -104,7 +104,3 @@ flutter:
           weight: 600
         - asset: assets/fonts/SF-Pro-Text-Heavy.otf
           weight: 800
-
-flutter_intl:
-  main_locale: en_US
-  enabled: true

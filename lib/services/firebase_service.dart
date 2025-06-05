@@ -244,29 +244,18 @@ class FirebaseHelper {
   ) {
     Map<String, dynamic> newJson = {};
     for (var key in firebaseJson.keys) {
-      if (key == 'regdate' || key == 'timestamp') {
+      if (key == 'update_date' || key == 'timestamp') {
         var value = firebaseJson[key];
+
         if (value != null) {
           DateTime utcDateTime;
           if (value is String) {
-            utcDateTime = kFirebaseFormatter.parse(value);
+            utcDateTime = DateTime.parse(value);
           } else {
             utcDateTime = (value as Timestamp).toDate();
           }
           newJson[key] = utcDateTime.toLocal().toIso8601String();
         }
-      } else {
-        newJson[key] = firebaseJson[key];
-      }
-    }
-    return newJson;
-  }
-
-  static Map<String, dynamic> toConvertJson(Map<String, dynamic> firebaseJson) {
-    Map<String, dynamic> newJson = {};
-    for (var key in firebaseJson.keys) {
-      if (key == 'regdate' || key == 'timestamp' || key == 'id') {
-        continue;
       } else {
         newJson[key] = firebaseJson[key];
       }

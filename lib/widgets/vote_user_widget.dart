@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:insoblok/widgets/widgets.dart';
 
 import 'package:stacked/stacked.dart';
 
 import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
+import 'package:insoblok/pages/pages.dart';
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
@@ -30,8 +30,8 @@ class VotedUserCell extends StatelessWidget {
                 child: AIAvatarImage(
                   user?.avatar,
                   textSize: 22,
-                  width: kStoryDetailCommentAvatarSize,
-                  height: kStoryDetailCommentAvatarSize,
+                  width: kStoryDetailAvatarSize,
+                  height: kStoryDetailAvatarSize,
                   fullname: user?.nickId ?? 'Test',
                 ),
               ),
@@ -65,7 +65,9 @@ class VotedUserCell extends StatelessWidget {
               ),
             ),
             AIImage(
-              voteModel.vote == true ? AIImages.icYay : AIImages.icNay,
+              voteModel.vote == true
+                  ? AIImages.icYayOutline
+                  : AIImages.icNayOutline,
               width: 24.0,
               height: 24.0,
               color: voteModel.vote == true ? AIColors.green : AIColors.pink,

@@ -18,9 +18,6 @@ class TopicProvider extends InSoBlokViewModel {
     fetchStories();
   }
 
-  final _storyService = StoryService();
-  StoryService get storyService => _storyService;
-
   final List<StoryModel> stories = [];
 
   Future<void> fetchStories() async {

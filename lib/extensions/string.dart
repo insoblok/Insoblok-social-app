@@ -54,15 +54,3 @@ extension DateTimeExt on DateTime {
     return '---';
   }
 }
-
-extension MapExt on Map<String, dynamic> {
-  Map<String, dynamic> get toFirebaseJson {
-    var newJson =
-        this
-          ..remove('id')
-          ..remove('regdate')
-          ..remove('timestamp');
-
-    return newJson;
-  }
-}

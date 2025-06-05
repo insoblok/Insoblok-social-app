@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+
 import 'package:gradient_borders/box_borders/gradient_box_border.dart';
 
+import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
@@ -59,6 +61,7 @@ extension UserModelExt on UserModel {
     double? borderWidth,
     double? textSize,
     double? statusSize,
+    bool showStatus = true,
   }) {
     return SizedBox(
       width: width ?? 60.0,
@@ -103,20 +106,25 @@ extension UserModelExt on UserModel {
                       ),
             ),
           ),
-          Align(
-            alignment: Alignment.bottomRight,
-            child: Container(
-              decoration: BoxDecoration(
-                color: AIColors.white,
-                shape: BoxShape.circle,
-              ),
-              child: AIImage(
-                Icons.brightness_1,
-                color: status == 'Online' ? AIColors.green : AIColors.lightGrey,
-                width: statusSize ?? 14.0,
-              ),
-            ),
-          ),
+          showStatus
+              ? Align(
+                alignment: Alignment.bottomRight,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: AIColors.white,
+                    shape: BoxShape.circle,
+                  ),
+                  child: AIImage(
+                    Icons.brightness_1,
+                    color:
+                        status == 'Online'
+                            ? AIColors.green
+                            : AIColors.lightGrey,
+                    width: statusSize ?? 14.0,
+                  ),
+                ),
+              )
+              : Container(),
         ],
       ),
     );
@@ -124,7 +132,7 @@ extension UserModelExt on UserModel {
 
   String get sinceStr {
     return kDateMMMMYYFormatter.format(
-      regdate != null ? regdate! : DateTime.now(),
+      updateDate != null ? updateDate! : DateTime.now(),
     );
   }
 
@@ -137,7 +145,7 @@ extension UserModelExt on UserModel {
   ];
 
   Map<String, dynamic> toMap() {
-    return {
+    Map<String, dynamic> result = {
       'uid': uid,
       'wallet_address': walletAddress,
       'avatar': avatar,
@@ -155,9 +163,38 @@ extension UserModelExt on UserModel {
       'lon': lon,
       'ip_address': ipAddress,
       'status': status,
-      'likes': likes,
-      'follows': follows,
-      'actions': (actions ?? []).map((e) => e.toJson()).toList(),
+      'has_vote_post': hasVotePost,
+      'free_style': freeStyle,
+      'reward_date': rewardDate,
+      'likes': (likes),
+      'follows': (follows),
+      'user_actions': (userActions),
+      'actions': ((actions ?? []).map((e) => e.toMap()).toList()),
+      'update_date': updateDate?.toUtc().toIso8601String(),
+      'timestamp': timestamp?.toUtc().toIso8601String(),
     };
+    result.removeWhere((k, v) => v == null);
+    return result;
+  }
+}
+
+extension UserActionModelExt on UserActionModel {
+  Map<String, dynamic> toMap() {
+    Map<String, dynamic> result = {
+      'post_uid': postUid,
+      'user_uid': userUid,
+      'value': value,
+      'type': type,
+      'description': description,
+      'timestamp': timestamp?.toUtc().toIso8601String(),
+    };
+    result.removeWhere((k, v) => v == null);
+    return result;
+  }
+}
+
+extension UserCountryModelExt on UserCountryModel {
+  Map<String, dynamic> toMap() {
+    return toJson();
   }
 }

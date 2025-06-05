@@ -26,6 +26,8 @@ class StoryContentProvider extends InSoBlokViewModel {
   final _scrollController = ScrollController();
   ScrollController get scrollController => _scrollController;
 
+  final _userService = UserService();
+
   void init(BuildContext context, {required StoryModel model}) async {
     this.context = context;
     story = model;
@@ -35,6 +37,10 @@ class StoryContentProvider extends InSoBlokViewModel {
     } else {
       actionType('comment');
     }
+
+    owner = await _userService.getUser(story.uid!);
+
+    notifyListeners();
   }
 
   UserModel? _owner;
@@ -43,9 +49,6 @@ class StoryContentProvider extends InSoBlokViewModel {
     _owner = model;
     notifyListeners();
   }
-
-  final _storyService = StoryService();
-  StoryService get storyService => _storyService;
 
   bool _isLiking = false;
   bool get isLiking => _isLiking;
@@ -88,7 +91,7 @@ class StoryContentProvider extends InSoBlokViewModel {
           likes.add(user!.uid!);
         }
         await storyService.updateLikeStory(
-          story: story.copyWith(likes: likes),
+          story: story.copyWith(likes: likes, updateDate: DateTime.now()),
           user: owner,
         );
       } catch (e) {
@@ -152,7 +155,7 @@ class StoryContentProvider extends InSoBlokViewModel {
           follows.add(user!.uid!);
         }
         await storyService.updateFollowStory(
-          story: story.copyWith(follows: follows),
+          story: story.copyWith(follows: follows, updateDate: DateTime.now()),
           user: owner,
         );
       } catch (e) {
@@ -192,7 +195,7 @@ class StoryContentProvider extends InSoBlokViewModel {
             StoryVoteModel(
               uid: user?.uid,
               vote: isVote,
-              // timestamp: DateTime.now(),
+              timestamp: DateTime.now(),
             ),
           );
         } else {
@@ -202,13 +205,13 @@ class StoryContentProvider extends InSoBlokViewModel {
               votes[i] = StoryVoteModel(
                 uid: user?.uid,
                 vote: isVote,
-                // timestamp: DateTime.now(),
+                timestamp: DateTime.now(),
               );
             }
           }
         }
         await storyService.updateVoteStory(
-          story: story.copyWith(votes: votes),
+          story: story.copyWith(votes: votes, updateDate: DateTime.now()),
           user: owner,
           isVote: isVote,
         );
@@ -252,11 +255,18 @@ class StoryContentProvider extends InSoBlokViewModel {
         var desc = await AIHelpers.goToDescriptionView(context);
         logger.d(desc);
         if (desc != null) {
-          var comment = StoryCommentModel(uid: user?.uid, content: desc);
-          var comments = List<StoryCommentModel>.from(story.comments ?? []);
-
+          var comment = StoryCommentModel(
+            uid: user?.uid,
+            content: desc,
+            timestamp: DateTime.now(),
+          );
+          final comments = List<StoryCommentModel>.from(story.comments ?? []);
           comments.add(comment);
-          story = story.copyWith(comments: comments);
+
+          story = story.copyWith(
+            comments: comments,
+            updateDate: DateTime.now(),
+          );
           await storyService.addComment(story: story);
 
           AIHelpers.showToast(msg: 'Successfully add your comment!');
@@ -292,19 +302,24 @@ class StoryContentProvider extends InSoBlokViewModel {
           var comment = StoryCommentModel(
             uid: user?.uid,
             content: commentContent,
+            timestamp: DateTime.now(),
           );
           var comments = List<StoryCommentModel>.from(story.comments ?? []);
 
           comments.add(comment);
-          story = story.copyWith(comments: comments);
+          story = story.copyWith(
+            comments: comments,
+            updateDate: DateTime.now(),
+          );
           await storyService.addComment(story: story);
           textController.text = '';
         } else {
           AIHelpers.showToast(msg: 'Your comment is empty!');
         }
-      } catch (e) {
+      } catch (e, s) {
         setError(e);
         logger.e(e);
+        logger.e(s);
       } finally {
         notifyListeners();
       }
@@ -313,6 +328,16 @@ class StoryContentProvider extends InSoBlokViewModel {
     if (hasError) {
       AIHelpers.showToast(msg: modelError.toString());
     }
+  }
+
+  bool containedConnect() {
+    var connects = story.connects ?? [];
+    for (var connect in connects) {
+      if (connect.postId == story.id && connect.userUid == story.uid) {
+        return true;
+      }
+    }
+    return false;
   }
 
   Future<void> onClickRepost() async {
@@ -335,8 +360,17 @@ class StoryContentProvider extends InSoBlokViewModel {
             text: description,
             category: 'vote',
             medias: story.medias,
+            updateDate: DateTime.now(),
+            timestamp: DateTime.now(),
+            connects: [
+              ...(story.connects ?? []),
+              if (!containedConnect())
+                ConnectedStoryModel(postId: story.id, userUid: story.uid),
+            ],
           );
           await storyService.postStory(story: newStory);
+
+          await tastScoreService.repostScore(story);
 
           AIHelpers.showToast(msg: 'Successfully reposted to Lookbook!');
 
@@ -432,4 +466,15 @@ class StoryContentProvider extends InSoBlokViewModel {
       );
     },
   );
+
+  bool alreadyPop = false;
+
+  void popupDialog() {
+    if (alreadyPop) return;
+    alreadyPop = true;
+    Navigator.of(context).pop();
+    Future.delayed(const Duration(milliseconds: 1000), () {
+      alreadyPop = false;
+    });
+  }
 }

@@ -13,12 +13,6 @@ class CreateRoomProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  final RoomService _roomService = RoomService();
-  RoomService get roomService => _roomService;
-
-  final _userService = UserService();
-  UserService get userService => _userService;
-
   Future<void> init(BuildContext context) async {
     this.context = context;
     getUsers();
@@ -159,6 +153,8 @@ class CreateRoomProvider extends InSoBlokViewModel {
             uid: AuthHelper.user?.uid,
             uids: [AuthHelper.user?.uid, user.uid],
             content: '${AuthHelper.user?.firstName} have created a room',
+            updateDate: DateTime.now(),
+            timestamp: DateTime.now(),
           );
           await roomService.createRoom(room);
           AIHelpers.showToast(msg: "Successfully Create Room!");

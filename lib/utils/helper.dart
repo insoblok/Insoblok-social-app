@@ -177,7 +177,7 @@ class AIHelpers {
   }) async {
     var desc = await Routers.goToQuillDescriptionPage(
       context,
-      origin: jsonEncode(quillData),
+      origin: (quillData?.isNotEmpty ?? false) ? jsonEncode(quillData) : null,
     );
     if (desc == null) return null;
     final converter = QuillDeltaToHtmlConverter(

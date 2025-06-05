@@ -1,17 +1,52 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:observable_ish/observable_ish.dart';
 import 'package:stacked/stacked.dart';
 
 import 'package:insoblok/locator.dart';
+import 'package:insoblok/models/models.dart';
 import 'package:insoblok/utils/utils.dart';
 
 class AppSettingService with ListenableServiceMixin {
   final RxValue<ThemeMode> _themeModeRx = RxValue<ThemeMode>(ThemeMode.light);
   ThemeMode get themeMode => _themeModeRx.value;
 
+  final RxValue<AppSettingModel?> _appSettingModelRx =
+      RxValue<AppSettingModel?>(null);
+  AppSettingModel? get appSettingModel => _appSettingModelRx.value;
+
   AppSettingService() {
-    listenToReactiveValues([_themeModeRx]);
+    listenToReactiveValues([_themeModeRx, _appSettingModelRx]);
+
+    init();
+  }
+
+  Future<void> init() async {
+    final String response = await rootBundle.loadString(
+      'assets/data/tastescore.json',
+    );
+    final data = (await json.decode(response)) as Map<String, dynamic>;
+    Map<String, dynamic> newJson = {};
+    for (var key in data.keys) {
+      if (key == 'xp_earn') {
+        List<dynamic> result = [];
+        for (var k in (data[key] as Map<String, dynamic>).keys) {
+          Map<String, dynamic> r = {
+            ...(data[key] as Map<String, dynamic>)[k],
+            'key': k,
+          };
+          result.add(r);
+        }
+        newJson[key] = result;
+      } else {
+        newJson[key] = data[key];
+      }
+    }
+    _appSettingModelRx.value = AppSettingModel.fromJson(newJson);
+    notifyListeners();
   }
 
   void setTheme(ThemeMode model) {
@@ -310,6 +345,8 @@ class AppSettingHelper {
   static ThemeMode get themeMode => service.themeMode;
   static ThemeData get lightTheme => service.lightTheme;
   static ThemeData get darkTheme => service.darkTheme;
+
+  static AppSettingModel? get appSettingModel => service.appSettingModel;
 
   static void setTheme(ThemeMode model) => service.setTheme(model);
 

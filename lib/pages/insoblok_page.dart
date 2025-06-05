@@ -43,7 +43,7 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
       AIImages.icBottomUser,
     ];
 
-    var menuTitles = ['Profile', 'My Posts', 'Likes', 'Follows', 'Moments'];
+    var menuTitles = ['Profile', 'My Posts', 'Likes', 'Follows', 'Leaderboard'];
     var menuIcons = [
       AIImages.icMenuProfile,
       AIImages.icMenuLists,

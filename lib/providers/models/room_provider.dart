@@ -26,9 +26,6 @@ class RoomProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  final _userService = UserService();
-  UserService get userService => _userService;
-
   Future<void> init(BuildContext context, {required RoomModel model}) async {
     this.context = context;
     room = model;

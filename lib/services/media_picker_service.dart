@@ -9,7 +9,7 @@ class MediaPickerService {
   late BuildContext _context;
   late ImagePicker _picker;
 
-  MediaPickerService(BuildContext context) {
+  void init(BuildContext context) {
     _context = context;
     _picker = ImagePicker();
   }

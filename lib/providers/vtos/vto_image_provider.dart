@@ -6,6 +6,7 @@ import 'package:flutter/services.dart';
 
 import 'package:image_picker/image_picker.dart';
 
+import 'package:insoblok/locator.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
@@ -28,7 +29,7 @@ class VTOImageProvider extends InSoBlokViewModel {
     this.context = context;
 
     product = p;
-    _mediaPickerService = MediaPickerService(this.context);
+    _mediaPickerService = locator<MediaPickerService>();
 
     final String response = await rootBundle.loadString(
       'assets/data/country.json',
@@ -148,8 +149,6 @@ class VTOImageProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  final _vtoService = VTOService();
-
   Future<void> _clothingConvert() async {
     if (selectedFile == null) {
       AIHelpers.showToast(msg: 'Please select a origin photo!');
@@ -171,7 +170,7 @@ class VTOImageProvider extends InSoBlokViewModel {
           throw ('Failed origin image uploaded!');
         }
 
-        var resultUrl = await _vtoService.convertVTOClothing(
+        var resultUrl = await vtoService.convertVTOClothing(
           modelUrl: originUrl!,
           photoUrl: product.modelImage,
           type: product.type ?? 'tops',
@@ -203,7 +202,10 @@ class VTOImageProvider extends InSoBlokViewModel {
           if (!medias.map((m) => m.link).toList().contains(serverUrl)) {
             medias.insert(0, MediaStoryModel(link: serverUrl, type: 'image'));
             logger.d(medias.length);
-            product = product.copyWith(medias: medias);
+            product = product.copyWith(
+              medias: medias,
+              updateDate: DateTime.now(),
+            );
             await productService.updateProduct(
               id: product.id!,
               product: product,
@@ -266,7 +268,7 @@ class VTOImageProvider extends InSoBlokViewModel {
     isConverting = true;
     await runBusyFuture(() async {
       try {
-        var resultUrl = await _vtoService.getVTOJewelryModelImage(
+        var resultUrl = await vtoService.getVTOJewelryModelImage(
           modelUrl: product.modelImage!,
           type: product.type ?? 'ring',
           gender: gender,
@@ -300,7 +302,10 @@ class VTOImageProvider extends InSoBlokViewModel {
           if (!medias.map((m) => m.link).toList().contains(serverUrl)) {
             medias.insert(0, MediaStoryModel(link: serverUrl, type: 'image'));
             logger.d(medias.length);
-            product = product.copyWith(medias: medias);
+            product = product.copyWith(
+              medias: medias,
+              updateDate: DateTime.now(),
+            );
             await productService.updateProduct(
               id: product.id!,
               product: product,
@@ -322,9 +327,6 @@ class VTOImageProvider extends InSoBlokViewModel {
     }
   }
 
-  final _productService = ProductService();
-  ProductService get productService => _productService;
-
   Future<void> onClickShareButton() async {
     if (isBusy) return;
     clearErrors();
@@ -344,9 +346,6 @@ class VTOImageProvider extends InSoBlokViewModel {
       AIHelpers.showToast(msg: modelError.toString());
     }
   }
-
-  final _storyService = StoryService();
-  StoryService get storyService => _storyService;
 
   Future<void> savetoLookBook() async {
     if (isBusy) return;
@@ -370,6 +369,8 @@ class VTOImageProvider extends InSoBlokViewModel {
             MediaStoryModel(link: originUrl!, type: 'image'),
             MediaStoryModel(link: serverUrl, type: 'image'),
           ],
+          updateDate: DateTime.now(),
+          timestamp: DateTime.now(),
         );
         await storyService.postStory(story: story);
 

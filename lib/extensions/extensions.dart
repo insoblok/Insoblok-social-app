@@ -6,3 +6,5 @@ export 'string.dart';
 export 'news_extension.dart';
 export 'post_extension.dart';
 export 'product_extension.dart';
+export 'tastescore_extension.dart';
+export 'vto_extension.dart';

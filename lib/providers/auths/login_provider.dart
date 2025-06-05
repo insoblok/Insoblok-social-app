@@ -104,9 +104,10 @@ class LoginProvider extends InSoBlokViewModel {
     await runBusyFuture(() async {
       try {
         await AuthHelper.service.signInWithGoogle();
-      } catch (e) {
+      } catch (e, s) {
         setError(e);
         logger.e(e);
+        logger.e(s);
       } finally {
         notifyListeners();
       }
@@ -115,12 +116,8 @@ class LoginProvider extends InSoBlokViewModel {
     if (hasError) {
       AIHelpers.showToast(msg: modelError.toString());
     } else {
-      if (AuthHelper.user?.firstName != null) {
-        AuthHelper.updateStatus('Online');
-        Routers.goToMainPage(context);
-      } else {
-        Routers.goToRegisterPage(context);
-      }
+      AuthHelper.updateStatus('Online');
+      Routers.goToMainPage(context);
     }
   }
 }

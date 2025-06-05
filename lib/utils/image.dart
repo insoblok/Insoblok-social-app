@@ -10,12 +10,15 @@ class AIImages {
   static String imgSplash1 = 'assets/images/bg_splash_1.png';
   static String imgSplash2 = 'assets/images/bg_splash_2.png';
   static String imgSplash3 = 'assets/images/bg_splash_3.png';
+  static String imgTopLevel = 'assets/images/img_top_level_avatar.jpg';
 
   static String imgVTOClothing = 'assets/images/img_vto_clothing.jpg';
   static String imgVTOJewelry = 'assets/images/img_vto_jewelry.jpg';
 
-  static String icYay = 'assets/icons/ic_yay.png';
-  static String icNay = 'assets/icons/ic_nay.png';
+  static String icYayOutline = 'assets/icons/ic_yay_outline.svg';
+  static String icNayOutline = 'assets/icons/ic_nay_outline.svg';
+  static String icYayFill = 'assets/icons/ic_yay_fill.svg';
+  static String icNayFill = 'assets/icons/ic_nay_fill.svg';
 
   static String icEthereumGold = 'assets/images/ic_ethereum_gold.png';
 
@@ -43,7 +46,7 @@ class AIImages {
   static String icFavorite = 'assets/icons/ic_favourite.svg';
   static String icCommit = 'assets/icons/ic_commit.svg';
   static String icRetwitter = 'assets/icons/ic_retweet.svg';
-  static String icFollow = 'assets/icons/ic_follow.png';
+  static String icFollow = 'assets/icons/ic_follow.svg';
   static String icShare = 'assets/icons/ic_upload.svg';
   static String icAddLogo = 'assets/icons/ic_add_logo.svg';
   static String icCircleMore = 'assets/icons/ic_more_circle.svg';

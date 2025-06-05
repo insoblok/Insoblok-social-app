@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:insoblok/services/services.dart';
 
+import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 
 const kScrappingUrl = 'https://genimg.ai/';

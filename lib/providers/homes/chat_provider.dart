@@ -25,12 +25,6 @@ class ChatProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  final RoomService _roomService = RoomService();
-  RoomService get roomService => _roomService;
-
-  final _userService = UserService();
-  UserService get userService => _userService;
-
   Future<void> init(BuildContext context) async {
     this.context = context;
 
@@ -161,6 +155,8 @@ class ChatProvider extends InSoBlokViewModel {
             uid: user?.uid,
             uids: [user?.uid, chatUser.uid],
             content: '${user?.firstName} have created a room',
+            updateDate: DateTime.now(),
+            timestamp: DateTime.now(),
           );
           logger.d(room.toJson());
           await roomService.createRoom(room);

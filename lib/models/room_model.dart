@@ -12,7 +12,7 @@ abstract class RoomModel with _$RoomModel {
     String? id,
     String? uid,
     List<String?>? uids,
-    DateTime? regdate,
+    DateTime? updateDate,
     DateTime? timestamp,
     String? content,
     String? statusSender,

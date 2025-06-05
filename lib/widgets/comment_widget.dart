@@ -9,8 +9,6 @@ import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 
-const kStoryDetailCommentAvatarSize = 44.0;
-
 class StoryDetailCommentCell extends StatelessWidget {
   final StoryCommentModel comment;
   final bool isLast;
@@ -38,7 +36,7 @@ class StoryDetailCommentCell extends StatelessWidget {
               width: double.infinity,
               decoration: BoxDecoration(
                 border: Border(
-                  left: BorderSide(width: 0.33, color: AIColors.speraterColor),
+                  left: BorderSide(width: 0.5, color: AIColors.speraterColor),
                 ),
               ),
               child: Column(
@@ -82,8 +80,8 @@ class StoryDetailCommentCell extends StatelessWidget {
                 child: AIAvatarImage(
                   user?.avatar,
                   textSize: 22,
-                  width: kStoryDetailCommentAvatarSize,
-                  height: kStoryDetailCommentAvatarSize,
+                  width: kStoryDetailAvatarSize,
+                  height: kStoryDetailAvatarSize,
                   fullname: user?.nickId ?? 'Test',
                 ),
               ),

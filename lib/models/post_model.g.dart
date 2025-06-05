@@ -12,7 +12,9 @@ _PostModel _$PostModelFromJson(Map<String, dynamic> json) => _PostModel(
       media: json['media'] == null
           ? null
           : MediaStoryModel.fromJson(json['media'] as Map<String, dynamic>),
-      timestamp: json['timestamp'] as String?,
+      timestamp: json['timestamp'] == null
+          ? null
+          : DateTime.parse(json['timestamp'] as String),
     );
 
 Map<String, dynamic> _$PostModelToJson(_PostModel instance) =>
@@ -20,5 +22,5 @@ Map<String, dynamic> _$PostModelToJson(_PostModel instance) =>
       'id': instance.id,
       'uid': instance.uid,
       'media': instance.media,
-      'timestamp': instance.timestamp,
+      'timestamp': instance.timestamp?.toIso8601String(),
     };

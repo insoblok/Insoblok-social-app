@@ -228,7 +228,7 @@ class Loader extends StatelessWidget {
       height: size,
       child: LoadingIndicator(
         indicatorType: Indicator.ballSpinFadeLoader,
-        colors: [Theme.of(context).primaryColor],
+        colors: [color ?? Theme.of(context).primaryColor],
         strokeWidth: 2,
       ),
     );

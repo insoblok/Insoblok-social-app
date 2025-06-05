@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:image_picker/image_picker.dart';
 
+import 'package:insoblok/locator.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
@@ -26,7 +27,7 @@ class AccountPublicProvider extends InSoBlokViewModel {
   Future<void> init(BuildContext context) async {
     this.context = context;
     account = AuthHelper.user ?? UserModel();
-    _mediaPickerService = MediaPickerService(this.context);
+    _mediaPickerService = locator<MediaPickerService>();
   }
 
   void updateFirstName(String s) {

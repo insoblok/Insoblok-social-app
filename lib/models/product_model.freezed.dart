@@ -32,7 +32,7 @@ mixin _$ProductModel {
   List<String>? get likes;
   List<int>? get rates;
   int? get selles;
-  DateTime? get regdate;
+  DateTime? get updateDate;
   DateTime? get timestamp;
   List<MediaStoryModel>? get medias;
 
@@ -76,7 +76,8 @@ mixin _$ProductModel {
             const DeepCollectionEquality().equals(other.likes, likes) &&
             const DeepCollectionEquality().equals(other.rates, rates) &&
             (identical(other.selles, selles) || other.selles == selles) &&
-            (identical(other.regdate, regdate) || other.regdate == regdate) &&
+            (identical(other.updateDate, updateDate) ||
+                other.updateDate == updateDate) &&
             (identical(other.timestamp, timestamp) ||
                 other.timestamp == timestamp) &&
             const DeepCollectionEquality().equals(other.medias, medias));
@@ -103,14 +104,14 @@ mixin _$ProductModel {
         const DeepCollectionEquality().hash(likes),
         const DeepCollectionEquality().hash(rates),
         selles,
-        regdate,
+        updateDate,
         timestamp,
         const DeepCollectionEquality().hash(medias)
       ]);
 
   @override
   String toString() {
-    return 'ProductModel(id: $id, name: $name, description: $description, tags: $tags, avatarImage: $avatarImage, modelImage: $modelImage, oldPrice: $oldPrice, price: $price, off: $off, delivery: $delivery, category: $category, categoryName: $categoryName, type: $type, uid: $uid, likes: $likes, rates: $rates, selles: $selles, regdate: $regdate, timestamp: $timestamp, medias: $medias)';
+    return 'ProductModel(id: $id, name: $name, description: $description, tags: $tags, avatarImage: $avatarImage, modelImage: $modelImage, oldPrice: $oldPrice, price: $price, off: $off, delivery: $delivery, category: $category, categoryName: $categoryName, type: $type, uid: $uid, likes: $likes, rates: $rates, selles: $selles, updateDate: $updateDate, timestamp: $timestamp, medias: $medias)';
   }
 }
 
@@ -138,7 +139,7 @@ abstract mixin class $ProductModelCopyWith<$Res> {
       List<String>? likes,
       List<int>? rates,
       int? selles,
-      DateTime? regdate,
+      DateTime? updateDate,
       DateTime? timestamp,
       List<MediaStoryModel>? medias});
 }
@@ -172,7 +173,7 @@ class _$ProductModelCopyWithImpl<$Res> implements $ProductModelCopyWith<$Res> {
     Object? likes = freezed,
     Object? rates = freezed,
     Object? selles = freezed,
-    Object? regdate = freezed,
+    Object? updateDate = freezed,
     Object? timestamp = freezed,
     Object? medias = freezed,
   }) {
@@ -245,9 +246,9 @@ class _$ProductModelCopyWithImpl<$Res> implements $ProductModelCopyWith<$Res> {
           ? _self.selles
           : selles // ignore: cast_nullable_to_non_nullable
               as int?,
-      regdate: freezed == regdate
-          ? _self.regdate
-          : regdate // ignore: cast_nullable_to_non_nullable
+      updateDate: freezed == updateDate
+          ? _self.updateDate
+          : updateDate // ignore: cast_nullable_to_non_nullable
               as DateTime?,
       timestamp: freezed == timestamp
           ? _self.timestamp
@@ -283,7 +284,7 @@ class _ProductModel implements ProductModel {
       final List<String>? likes,
       final List<int>? rates,
       this.selles,
-      this.regdate,
+      this.updateDate,
       this.timestamp,
       final List<MediaStoryModel>? medias})
       : _tags = tags,
@@ -352,7 +353,7 @@ class _ProductModel implements ProductModel {
   @override
   final int? selles;
   @override
-  final DateTime? regdate;
+  final DateTime? updateDate;
   @override
   final DateTime? timestamp;
   final List<MediaStoryModel>? _medias;
@@ -409,7 +410,8 @@ class _ProductModel implements ProductModel {
             const DeepCollectionEquality().equals(other._likes, _likes) &&
             const DeepCollectionEquality().equals(other._rates, _rates) &&
             (identical(other.selles, selles) || other.selles == selles) &&
-            (identical(other.regdate, regdate) || other.regdate == regdate) &&
+            (identical(other.updateDate, updateDate) ||
+                other.updateDate == updateDate) &&
             (identical(other.timestamp, timestamp) ||
                 other.timestamp == timestamp) &&
             const DeepCollectionEquality().equals(other._medias, _medias));
@@ -436,14 +438,14 @@ class _ProductModel implements ProductModel {
         const DeepCollectionEquality().hash(_likes),
         const DeepCollectionEquality().hash(_rates),
         selles,
-        regdate,
+        updateDate,
         timestamp,
         const DeepCollectionEquality().hash(_medias)
       ]);
 
   @override
   String toString() {
-    return 'ProductModel(id: $id, name: $name, description: $description, tags: $tags, avatarImage: $avatarImage, modelImage: $modelImage, oldPrice: $oldPrice, price: $price, off: $off, delivery: $delivery, category: $category, categoryName: $categoryName, type: $type, uid: $uid, likes: $likes, rates: $rates, selles: $selles, regdate: $regdate, timestamp: $timestamp, medias: $medias)';
+    return 'ProductModel(id: $id, name: $name, description: $description, tags: $tags, avatarImage: $avatarImage, modelImage: $modelImage, oldPrice: $oldPrice, price: $price, off: $off, delivery: $delivery, category: $category, categoryName: $categoryName, type: $type, uid: $uid, likes: $likes, rates: $rates, selles: $selles, updateDate: $updateDate, timestamp: $timestamp, medias: $medias)';
   }
 }
 
@@ -473,7 +475,7 @@ abstract mixin class _$ProductModelCopyWith<$Res>
       List<String>? likes,
       List<int>? rates,
       int? selles,
-      DateTime? regdate,
+      DateTime? updateDate,
       DateTime? timestamp,
       List<MediaStoryModel>? medias});
 }
@@ -508,7 +510,7 @@ class __$ProductModelCopyWithImpl<$Res>
     Object? likes = freezed,
     Object? rates = freezed,
     Object? selles = freezed,
-    Object? regdate = freezed,
+    Object? updateDate = freezed,
     Object? timestamp = freezed,
     Object? medias = freezed,
   }) {
@@ -581,9 +583,9 @@ class __$ProductModelCopyWithImpl<$Res>
           ? _self.selles
           : selles // ignore: cast_nullable_to_non_nullable
               as int?,
-      regdate: freezed == regdate
-          ? _self.regdate
-          : regdate // ignore: cast_nullable_to_non_nullable
+      updateDate: freezed == updateDate
+          ? _self.updateDate
+          : updateDate // ignore: cast_nullable_to_non_nullable
               as DateTime?,
       timestamp: freezed == timestamp
           ? _self.timestamp

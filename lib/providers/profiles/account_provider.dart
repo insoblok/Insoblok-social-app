@@ -30,18 +30,13 @@ class AccountProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  final RoomService _roomService = RoomService();
-  RoomService get roomService => _roomService;
-
   void init(BuildContext context, {UserModel? model}) async {
     this.context = context;
     accountUser = model ?? AuthHelper.user;
 
     fetchStories();
+    getUserScore();
   }
-
-  final _storyService = StoryService();
-  StoryService get storyService => _storyService;
 
   final List<StoryModel> stories = [];
 
@@ -66,6 +61,20 @@ class AccountProvider extends InSoBlokViewModel {
 
     if (hasError) {
       AIHelpers.showToast(msg: modelError.toString());
+    }
+  }
+
+  final List<TastescoreModel> _scores = [];
+
+  Future<void> getUserScore() async {
+    try {
+      var s = await tastScoreService.getScoresByUser(accountUser!.uid!);
+      _scores.addAll(s);
+    } catch (e) {
+      setError(e);
+      logger.e(e);
+    } finally {
+      notifyListeners();
     }
   }
 
@@ -98,6 +107,8 @@ class AccountProvider extends InSoBlokViewModel {
               uid: user?.uid,
               uids: [user?.uid, accountUser?.uid],
               content: '${user?.firstName} have created a room',
+              updateDate: DateTime.now(),
+              timestamp: DateTime.now(),
             );
             logger.d(room.toJson());
             await roomService.createRoom(room);

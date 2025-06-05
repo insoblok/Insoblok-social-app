@@ -1,5 +1,5 @@
 {
-    "about": [
+    "abouts": [
         {
             "title": "XP Engine",
             "description": "Earned from voting, reposting, remixing, early minting, and accurate curation."
@@ -20,39 +20,39 @@
     "xp_earn": {
         "vote": {
             "name": "Vote Yay/Nay",
-            "bouns_description": "+2x if voted early before post reaches threshold",
-            "reword": 10,
-            "bounes": 2.0
+            "bonus_decription": "+2x if voted early before post reaches threshold",
+            "reward": 10,
+            "bonus": 2.0
         },
         "repost": {
             "name": "Repost Content",
-            "bouns_description": "+1.5x if repost drives new voters",
-            "reword": 15,
-            "bounes": 1.5
+            "bonus_decription": "+1.5x if repost drives new voters",
+            "reward": 15,
+            "bonus": 1.5
         },
         "remix": {
             "name": "Remix Content",
-            "bouns_description": "+2x if remixed look mints or hits top leaderboard",
-            "reword": 25,
-            "bounes": 2.0
+            "bonus_decription": "+2x if remixed look mints or hits top leaderboard",
+            "reward": 25,
+            "bonus": 2.0
         },
         "post_freestyle": {
             "name": "Post Freestyle Look",
-            "bouns_description": "+1.2x if receives 100+ votes",
-            "reword": 30,
-            "bounes": 1.2
+            "bonus_decription": "+1.2x if receives 100+ votes",
+            "reward": 30,
+            "bonus": 1.2
         },
         "win_creator": {
             "name": "Win Creator Challenge",
-            "bouns_description": "Flat, no multiplier",
-            "reword": 50,
-            "bounes": 0.0
+            "bonus_decription": "Flat, no multiplier",
+            "reward": 50,
+            "bonus": 0.0
         },
         "daily_bonus": {
             "name": "Daily Streak Bonus",
-            "bouns_description": "+5 XP per streak day past 3 days ",
-            "reword": 20,
-            "bounes": 5.0
+            "bonus_decription": "+5 XP per streak day past 3 days ",
+            "reward": 20,
+            "bonus": 5.0
         }
     },
     "xp_inso": [

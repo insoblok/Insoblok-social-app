@@ -1,7 +1,8 @@
 import 'dart:convert';
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/services.dart';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
@@ -9,15 +10,14 @@ import 'package:insoblok/services/services.dart';
 
 class ProductService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  CollectionReference<Map<String, dynamic>> get productCollection =>
+      _firestore.collection('product');
 
   // Get all products
   Future<List<ProductModel>> getProducts() async {
     List<ProductModel> result = [];
     var productSnapshot =
-        await _firestore
-            .collection('product')
-            .orderBy('timestamp', descending: true)
-            .get();
+        await productCollection.orderBy('timestamp', descending: true).get();
     for (var doc in productSnapshot.docs) {
       try {
         var json = doc.data();
@@ -37,8 +37,7 @@ class ProductService {
   Future<List<ProductModel>> getProductsByUid(String uid) async {
     List<ProductModel> result = [];
     var productSnapshot =
-        await _firestore
-            .collection('product')
+        await productCollection
             .where('uid', isEqualTo: uid)
             .orderBy('timestamp', descending: false)
             .get();
@@ -59,11 +58,9 @@ class ProductService {
 
   // Add a product
   Future<void> addProduct({required ProductModel product}) async {
-    await _firestore.collection('product').add({
-      ...product.toMap().toFirebaseJson,
+    await productCollection.add({
+      ...product.toMap(),
       'uid': AuthHelper.user?.uid,
-      'timestamp': FieldValue.serverTimestamp(),
-      'regdate': FieldValue.serverTimestamp(),
     });
   }
 
@@ -72,10 +69,7 @@ class ProductService {
     required String id,
     required ProductModel product,
   }) async {
-    await _firestore.collection('product').doc(id).update({
-      ...product.toMap().toFirebaseJson,
-      'regdate': FieldValue.serverTimestamp(),
-    });
+    await productCollection.doc(id).update(product.toMap());
   }
 
   Future<List<ProductTribeCategoryModel>> getProductTypes() async {

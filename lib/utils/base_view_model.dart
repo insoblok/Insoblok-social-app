@@ -8,8 +8,30 @@ abstract class InSoBlokViewModel extends ReactiveViewModel {
 
   UserModel? get user => AuthHelper.user;
 
+  final UserService _userService = UserService();
+  UserService get userService => _userService;
+
+  final _newsService = NewsService();
+  NewsService get newsService => _newsService;
+
+  final _storyService = StoryService();
+  StoryService get storyService => _storyService;
+
+  final _tastScoreService = TastescoreService();
+  TastescoreService get tastScoreService => _tastScoreService;
+
+  final _vtoService = VTOService();
+  VTOService get vtoService => _vtoService;
+
+  final _productService = ProductService();
+  ProductService get productService => _productService;
+
+  final _messageService = MessageService();
+  MessageService get messageService => _messageService;
+
+  final RoomService _roomService = RoomService();
+  RoomService get roomService => _roomService;
+
   @override
-  List<ListenableServiceMixin> get listenableServices => [
-        authService,
-      ];
+  List<ListenableServiceMixin> get listenableServices => [authService];
 }

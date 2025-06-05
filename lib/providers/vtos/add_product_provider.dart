@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:image_picker/image_picker.dart';
 
+import 'package:insoblok/locator.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
@@ -24,7 +25,8 @@ class AddProductProvider extends InSoBlokViewModel {
   Future<void> init(BuildContext context) async {
     this.context = context;
 
-    _mediaPicker = MediaPickerService(context);
+    _mediaPicker = locator<MediaPickerService>();
+
     _product = product.copyWith(category: kProductCategories[0]);
     _product = product.copyWith(type: kProductTypeNames[0]);
     _product = product.copyWith(categoryName: kProductCategoryNames[0]);
@@ -47,9 +49,6 @@ class AddProductProvider extends InSoBlokViewModel {
     }
     notifyListeners();
   }
-
-  final _productService = ProductService();
-  ProductService get productService => _productService;
 
   void updateName(String s) {
     _product = product.copyWith(name: s);
@@ -178,15 +177,20 @@ class AddProductProvider extends InSoBlokViewModel {
         );
 
         if (modelLink != null) {
-          _product = product.copyWith(modelImage: modelLink);
+          _product = product.copyWith(
+            modelImage: modelLink,
+            timestamp: DateTime.now(),
+            updateDate: DateTime.now(),
+          );
           await productService.addProduct(product: product);
           Navigator.of(context).pop(true);
         } else {
           setError('Failed server uploading!');
         }
-      } catch (e) {
+      } catch (e, s) {
         setError(e);
         logger.e(e);
+        logger.e(s);
       } finally {
         isUploading = false;
       }
