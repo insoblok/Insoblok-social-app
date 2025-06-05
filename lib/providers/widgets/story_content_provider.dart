@@ -370,6 +370,8 @@ class StoryContentProvider extends InSoBlokViewModel {
           );
           await storyService.postStory(story: newStory);
 
+          await tastScoreService.repostScore(story);
+
           AIHelpers.showToast(msg: 'Successfully reposted to Lookbook!');
 
           Navigator.of(context).pop(true);

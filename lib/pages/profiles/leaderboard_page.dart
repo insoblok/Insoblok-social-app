@@ -73,7 +73,13 @@ class LeaderboardPage extends StatelessWidget {
                 if (viewModel.tabIndex == 2) {
                   value = user.xpMonth;
                 }
-                return LeaderboardUserView(userUid: user.uid, score: value);
+                return LeaderboardUserView(
+                  key: GlobalKey(
+                    debugLabel: '${user.uid}-${viewModel.tabIndex}',
+                  ),
+                  userUid: user.uid,
+                  score: value,
+                );
               },
               separatorBuilder: (context, i) {
                 return Container();

@@ -144,7 +144,8 @@ class StoryService {
     });
 
     // check for win_creator xp
-    if (!(AuthHelper.user?.hasVotePost ?? false)) {
+    if ((!(AuthHelper.user?.hasVotePost ?? false)) &&
+        (story.category == 'vote')) {
       await tastescoreService.winCreatorScore();
       await AuthHelper.updateUser(AuthHelper.user!.copyWith(hasVotePost: true));
     }

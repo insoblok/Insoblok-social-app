@@ -5,6 +5,7 @@ import 'package:insoblok/models/models.dart';
 import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
+import 'package:insoblok/widgets/widgets.dart';
 
 class StoryProvider extends InSoBlokViewModel {
   late BuildContext _context;
@@ -44,6 +45,42 @@ class StoryProvider extends InSoBlokViewModel {
   set owner(UserModel? model) {
     _owner = model;
     notifyListeners();
+  }
+
+  Offset _dragStart = Offset(0, 0);
+  Offset get dragStart => _dragStart;
+  set dragStart(Offset o) {
+    _dragStart = o;
+    notifyListeners();
+  }
+
+  bool openDialog = false;
+
+  Future<void> showDetailDialog() async {
+    if (openDialog) return;
+    openDialog = true;
+
+    await showModalBottomSheet(
+      context: context,
+      backgroundColor: AppSettingHelper.background,
+      barrierColor: Colors.transparent,
+      isScrollControlled: true,
+      constraints: BoxConstraints(
+        maxHeight:
+            MediaQuery.of(context).size.height -
+            kToolbarHeight -
+            MediaQuery.of(context).padding.top,
+        minHeight:
+            MediaQuery.of(context).size.height -
+            kToolbarHeight -
+            MediaQuery.of(context).padding.top,
+      ),
+      builder: (ctx) {
+        return StoryDetailDialog(story: story);
+      },
+    );
+    openDialog = false;
+    fetchStory();
   }
 
   Future<void> fetchUser() async {
@@ -115,6 +152,10 @@ class StoryProvider extends InSoBlokViewModel {
           user: owner,
           isVote: isVote,
         );
+
+        if (isVote) {
+          tastScoreService.voteScore(story);
+        }
       } catch (e) {
         setError(e);
         logger.e(e);

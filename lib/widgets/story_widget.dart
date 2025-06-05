@@ -23,26 +23,13 @@ class StoryListCell extends StatelessWidget {
       builder: (context, viewModel, _) {
         return GestureDetector(
           onVerticalDragStart: (details) async {
-            await showModalBottomSheet(
-              context: context,
-              backgroundColor: AppSettingHelper.background,
-              barrierColor: Colors.transparent,
-              isScrollControlled: true,
-              constraints: BoxConstraints(
-                maxHeight:
-                    MediaQuery.of(context).size.height -
-                    kToolbarHeight -
-                    MediaQuery.of(context).padding.top,
-                minHeight:
-                    MediaQuery.of(context).size.height -
-                    kToolbarHeight -
-                    MediaQuery.of(context).padding.top,
-              ),
-              builder: (ctx) {
-                return StoryDetailDialog(story: viewModel.story);
-              },
-            );
-            viewModel.fetchStory();
+            viewModel.dragStart = details.localPosition;
+          },
+          onVerticalDragUpdate: (details) {
+            var dragPosition = details.localPosition;
+            if (dragPosition.dy + 50 < viewModel.dragStart.dy) {
+              viewModel.showDetailDialog();
+            }
           },
           child: Container(
             padding: const EdgeInsets.symmetric(
@@ -366,7 +353,6 @@ class StoryDetailDialog extends StatelessWidget {
                                   height: 24.0,
                                 ),
                               ),
-
                               InkWell(
                                 onTap: viewModel.onClickRepost,
                                 child: AIImage(

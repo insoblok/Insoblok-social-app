@@ -1,8 +1,14 @@
 import 'package:insoblok/models/models.dart';
 
 class TastescoreType {
-  static String LOGIN = 'daily_bonus';
+  static String VOTE = 'vote';
+  static String REPOST = 'repost';
+  static String REMIX = 'remix';
+  static String FREESTYLE = 'post_freestyle';
   static String WINCREATOR = 'win_creator';
+  static String LOGIN = 'daily_bonus';
+
+  static String BONUS = 'bonus';
 }
 
 extension TastescoreModelExt on TastescoreModel {
@@ -24,10 +30,14 @@ extension TastescoreModelExt on TastescoreModel {
   static TastescoreModel creatXpModel(
     int xp,
     String uid, {
+    String? userUid,
     String type = 'daily_bonus',
+    String? postId,
   }) {
     return TastescoreModel(
       uid: uid,
+      postId: postId,
+      userUid: userUid,
       type: type,
       bonus: xp,
       updateDate: DateTime.now(),

@@ -48,11 +48,8 @@ class UserService {
     return users.where((u) => u?.uid != AuthHelper.user?.uid).toList();
   }
 
-  Future<void> updateUser(UserModel user, {Map<String, dynamic>? data}) async {
-    await _userCollection.doc(user.id).update({
-      ...user.toMap(),
-      ...(data ?? {}),
-    });
+  Future<void> updateUser(UserModel user) async {
+    await _userCollection.doc(user.id).update({...user.toMap()});
   }
 
   Future<void> deleteUser(UserModel user) async {

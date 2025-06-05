@@ -24,7 +24,7 @@ class DashboardView extends StatelessWidget {
               length: 2,
               child: SliverAppBar(
                 pinned: true,
-                floating: true,
+                floating: false,
                 leading: AppLeadingView(),
                 title: Text('Home'),
                 centerTitle: true,
