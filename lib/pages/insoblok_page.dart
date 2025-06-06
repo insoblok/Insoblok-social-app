@@ -17,12 +17,11 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addObserver(this);
 
-    var titles = ['Home', 'LookBook', 'Wallet', 'Market', 'Messages', 'User'];
+    var titles = ['Home', 'LookBook', 'Wallet', 'Messages', 'User'];
     var pages = [
       DashboardView(),
       LookbookView(),
       AccountWalletPage(),
-      MarketView(),
       ChatView(),
       ProfileView(),
     ];
@@ -30,7 +29,6 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
       AIImages.icBottomHomeFill,
       AIImages.icBottomLookFill,
       AIImages.icBottomWalletFill,
-      AIImages.icBottomMarketFill,
       AIImages.icBottomMessageFill,
       AIImages.icBottomUserFill,
     ];
@@ -38,18 +36,25 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
       AIImages.icBottomHome,
       AIImages.icBottomLook,
       AIImages.icBottomWallet,
-      AIImages.icBottomMarket,
       AIImages.icBottomMessage,
       AIImages.icBottomUser,
     ];
 
-    var menuTitles = ['Profile', 'My Posts', 'Likes', 'Follows', 'Leaderboard'];
+    var menuTitles = [
+      'Profile',
+      'My Posts',
+      'Likes',
+      'Follows',
+      'Leaderboard',
+      'MarketPlace',
+    ];
     var menuIcons = [
       AIImages.icMenuProfile,
       AIImages.icMenuLists,
       AIImages.icMenuBookmarks,
       AIImages.icMenuTopics,
       AIImages.icMenuMoments,
+      AIImages.icBottomMarket,
     ];
 
     return ViewModelBuilder<InSoBlokProvider>.reactive(
@@ -143,7 +148,7 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
                     ),
                   ),
                   const Divider(thickness: 0.33),
-                  for (var i = 0; i < 5; i++) ...{
+                  for (var i = 0; i < menuTitles.length; i++) ...{
                     MenuButtonCover(
                       onTap: () => viewModel.onClickMenuItem(i),
                       child: Row(
@@ -164,14 +169,14 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
                   },
                   const Divider(thickness: 0.33),
                   MenuButtonCover(
-                    onTap: () => viewModel.onClickMenuItem(5),
+                    onTap: () => viewModel.onClickMenuItem(6),
                     child: Text(
                       'Privacy and Policy',
                       style: Theme.of(context).textTheme.displayMedium,
                     ),
                   ),
                   MenuButtonCover(
-                    onTap: () => viewModel.onClickMenuItem(6),
+                    onTap: () => viewModel.onClickMenuItem(7),
                     child: Text(
                       'Help Center',
                       style: Theme.of(context).textTheme.displayMedium,
@@ -183,14 +188,14 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         InkWell(
-                          onTap: () => viewModel.onClickMenuItem(7),
+                          onTap: () => viewModel.onClickMenuItem(8),
                           child: AIImage(
                             AIImages.icMenuUnion,
                             color: Theme.of(context).primaryColor,
                           ),
                         ),
                         InkWell(
-                          onTap: () => viewModel.onClickMenuItem(8),
+                          onTap: () => viewModel.onClickMenuItem(9),
                           child: AIImage(
                             AIImages.icMenuQrCode,
                             color: Theme.of(context).primaryColor,

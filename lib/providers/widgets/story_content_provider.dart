@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 
 import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
@@ -23,6 +24,10 @@ class StoryContentProvider extends InSoBlokViewModel {
 
   var textController = TextEditingController();
 
+  late QuillController quillController;
+  var quillScrollController = ScrollController();
+  var focusNode = FocusNode();
+
   final _scrollController = ScrollController();
   ScrollController get scrollController => _scrollController;
 
@@ -40,7 +45,37 @@ class StoryContentProvider extends InSoBlokViewModel {
 
     owner = await _userService.getUser(story.uid!);
 
+    quillController = () {
+      return QuillController.basic(
+        config: QuillControllerConfig(
+          clipboardConfig: QuillClipboardConfig(enableExternalRichPaste: true),
+        ),
+      );
+    }();
+
+    focusNode.addListener(() {
+      if (focusNode.hasFocus) {
+        Future.delayed(Duration(milliseconds: 300), () {
+          _scrollController.animateTo(
+            0.0,
+            duration: Duration(milliseconds: 300),
+            curve: Curves.easeInOut,
+          );
+        });
+      }
+    });
+
     notifyListeners();
+  }
+
+  @override
+  void dispose() {
+    quillController.dispose();
+    scrollController.dispose();
+    quillScrollController.dispose();
+    focusNode.dispose();
+
+    super.dispose();
   }
 
   UserModel? _owner;

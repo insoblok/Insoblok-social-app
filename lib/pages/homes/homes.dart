@@ -5,4 +5,3 @@ export 'profile_view.dart';
 export 'search_view.dart';
 export 'notification_view.dart';
 export 'lookbook_view.dart';
-export 'market_view.dart';

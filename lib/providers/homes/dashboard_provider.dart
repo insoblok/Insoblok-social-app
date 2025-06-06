@@ -19,6 +19,13 @@ class DashboardProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  int _feedIndex = 0;
+  int get feedIndex => _feedIndex;
+  set feedIndex(int d) {
+    _feedIndex = d;
+    notifyListeners();
+  }
+
   bool _isUpdated = false;
   bool get isUpdated => _isUpdated;
   set isUpdated(bool f) {
@@ -40,7 +47,7 @@ class DashboardProvider extends InSoBlokViewModel {
       }
     });
 
-    fetchNewsData();
+    fetchStoryData();
     storyService.getStoryUpdated().listen((updated) {
       isUpdated = true;
     });
@@ -97,9 +104,15 @@ class DashboardProvider extends InSoBlokViewModel {
     _stories.clear();
     await runBusyFuture(() async {
       try {
-        var ss = await storyService.getStories();
-        logger.d(ss.length);
-        _stories.addAll(ss);
+        List<StoryModel> storydatas = [];
+        if (feedIndex == 0) {
+          storydatas = await storyService.getFollowingStories();
+        } else {
+          storydatas = await storyService.getStories();
+        }
+
+        logger.d(storydatas.length);
+        _stories.addAll(storydatas);
         isUpdated = false;
       } catch (e) {
         setError(e);
@@ -117,5 +130,11 @@ class DashboardProvider extends InSoBlokViewModel {
   Future<void> onClickSettingButton() async {
     if (isBusy) return;
     clearErrors();
+  }
+
+  void onClickFeedOptionButton(int index) {
+    feedIndex = index;
+    fetchStoryData();
+    notifyListeners();
   }
 }

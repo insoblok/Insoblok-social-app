@@ -29,7 +29,7 @@ class DashboardView extends StatelessWidget {
                 title: Text('Home'),
                 centerTitle: true,
                 actions: [
-                  if (viewModel.tabIndex == 1) ...{
+                  if (viewModel.tabIndex == 0) ...{
                     IconButton(
                       onPressed: () => Routers.goToAddStoryPage(context),
                       icon: AIImage(
@@ -46,22 +46,22 @@ class DashboardView extends StatelessWidget {
                   onTap: (index) {
                     viewModel.tabIndex = index;
                     if (index == 0) {
-                      viewModel.fetchNewsData();
-                    } else {
                       viewModel.fetchStoryData();
+                    } else {
+                      viewModel.fetchNewsData();
                     }
                   },
                   tabs: [
                     Tab(
                       child: Text(
-                        'News',
-                        style: Theme.of(context).textTheme.bodyMedium,
+                        'Feed',
+                        style: Theme.of(context).textTheme.bodyLarge,
                       ),
                     ),
                     Tab(
                       child: Text(
-                        'Story',
-                        style: Theme.of(context).textTheme.bodyMedium,
+                        'News',
+                        style: Theme.of(context).textTheme.bodyLarge,
                       ),
                     ),
                   ],
@@ -71,7 +71,7 @@ class DashboardView extends StatelessWidget {
             if (viewModel.isBusy) ...{
               SliverFillRemaining(child: Center(child: Loader(size: 60))),
             },
-            if (viewModel.showNewses.isEmpty) ...{
+            if (viewModel.stories.isEmpty) ...{
               SliverFillRemaining(
                 child: Center(
                   child: Column(
@@ -86,7 +86,7 @@ class DashboardView extends StatelessWidget {
                       ),
                       const SizedBox(height: 40.0),
                       Text(
-                        'News data seems to be not exsited. After\nsome time, Please try again!',
+                        'Feed data seems to be not exsited. After\nsome time, Please try again!',
                         textAlign: TextAlign.center,
                       ),
                     ],
@@ -95,14 +95,7 @@ class DashboardView extends StatelessWidget {
               ),
             } else ...{
               viewModel.tabIndex == 0
-                  ? SliverList(
-                    delegate: SliverChildListDelegate([
-                      for (var news in viewModel.showNewses) ...{
-                        NewsListCell(news: news),
-                      },
-                    ]),
-                  )
-                  : SliverFillRemaining(
+                  ? SliverFillRemaining(
                     child: Column(
                       children: [
                         if (viewModel.isUpdated)
@@ -123,7 +116,7 @@ class DashboardView extends StatelessWidget {
                                       borderRadius: BorderRadius.circular(12.0),
                                     ),
                                     child: Text(
-                                      'New Posts',
+                                      'New Feeds',
                                       style: TextStyle(
                                         fontSize: 12.0,
                                         color:
@@ -138,6 +131,80 @@ class DashboardView extends StatelessWidget {
                               ],
                             ),
                           ),
+                        const SizedBox(height: 8.0),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                viewModel.onClickFeedOptionButton(0);
+                              },
+                              child: Container(
+                                height: 40.0,
+                                width: 132.0,
+                                decoration: BoxDecoration(
+                                  color:
+                                      viewModel.feedIndex == 0
+                                          ? Theme.of(context).primaryColor
+                                          : AIColors.lightGrey,
+                                  borderRadius: BorderRadius.circular(20.0),
+                                ),
+                                alignment: Alignment.center,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      'Following',
+                                      style: TextStyle(
+                                        fontSize: 16.0,
+                                        color:
+                                            viewModel.feedIndex == 0
+                                                ? AIColors.white
+                                                : AIColors.black,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            InkWell(
+                              onTap: () {
+                                viewModel.onClickFeedOptionButton(1);
+                              },
+                              child: Container(
+                                height: 40.0,
+                                width: 132.0,
+                                decoration: BoxDecoration(
+                                  color:
+                                      viewModel.feedIndex == 1
+                                          ? Theme.of(context).primaryColor
+                                          : AIColors.lightGrey,
+                                  borderRadius: BorderRadius.circular(20.0),
+                                ),
+                                alignment: Alignment.center,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(
+                                      'For you',
+                                      style: TextStyle(
+                                        fontSize: 16.0,
+                                        color:
+                                            viewModel.feedIndex == 1
+                                                ? AIColors.white
+                                                : AIColors.black,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
                         Expanded(
                           child: PageView.builder(
                             scrollDirection: Axis.horizontal,
@@ -153,6 +220,13 @@ class DashboardView extends StatelessWidget {
                         ),
                       ],
                     ),
+                  )
+                  : SliverList(
+                    delegate: SliverChildListDelegate([
+                      for (var news in viewModel.showNewses) ...{
+                        NewsListCell(news: news),
+                      },
+                    ]),
                   ),
             },
           ],
