@@ -11,7 +11,7 @@ class AIColors {
   static Color darkTransparentBackground = Colors.black54;
 
   static Color lightScaffoldBackground = Color(0xff1c2836);
-  static Color lightTransparentBackground = Colors.white;
+  static Color lightTransparentBackground = Colors.white54;
 
   static Color transparent = Colors.transparent;
   static Color placeholdBackground = Color(0xEFEFEFFF);

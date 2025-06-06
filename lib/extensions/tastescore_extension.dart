@@ -11,6 +11,15 @@ class TastescoreType {
   static String BONUS = 'bonus';
 }
 
+final kScoreDescription = {
+  TastescoreType.VOTE: 'Someone voted to your story',
+  TastescoreType.REPOST: 'Someone reposted to your story',
+  TastescoreType.REMIX: 'Someone remixed to your story',
+  TastescoreType.FREESTYLE: 'You have received 100 votes from InSoBlok',
+  TastescoreType.WINCREATOR: 'Welcome to create a voted story',
+  TastescoreType.LOGIN: 'Welcome to InSoBlok',
+};
+
 extension TastescoreModelExt on TastescoreModel {
   Map<String, dynamic> toMap() {
     Map<String, dynamic> result = {

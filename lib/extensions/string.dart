@@ -53,4 +53,13 @@ extension DateTimeExt on DateTime {
     }
     return '---';
   }
+
+  String get myFormatter {
+    try {
+      return kDateMMMMYYFormatter.format(this);
+    } catch (e) {
+      logger.e(e);
+    }
+    return '---';
+  }
 }
