@@ -66,4 +66,8 @@ class AIImages {
   static String icLink = 'assets/icons/ic_link.svg';
   static String icCalendar = 'assets/icons/ic_calendar.svg';
   static String icLocation = 'assets/icons/ic_location.svg';
+
+  static String imgLevel(int level) {
+    return 'assets/images/img_level_0$level.png';
+  }
 }

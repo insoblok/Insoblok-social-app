@@ -10,3 +10,4 @@ export 'account_public_provider.dart';
 export 'account_private_provider.dart';
 export 'account_wallet_provider.dart';
 export 'leaderboard_provider.dart';
+export 'account_reward_provider.dart';

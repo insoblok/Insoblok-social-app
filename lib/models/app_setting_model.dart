@@ -56,7 +56,7 @@ abstract class UserLevelModel with _$UserLevelModel {
   factory UserLevelModel({
     int? level,
     String? title,
-    int? mix,
+    int? min,
     int? max,
     List<String>? feature,
   }) = _UserLevelModel;

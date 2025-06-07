@@ -69,6 +69,10 @@ class Routers {
     return _pushToRoute(context, kRouterAccountWallet, null);
   }
 
+  static dynamic goToAccountRewardPage(BuildContext context) {
+    return _pushToRoute(context, kRouterAccountReward, null);
+  }
+
   static dynamic goToCreateRoomPage(BuildContext context) {
     return _pushToRoute(context, kRouterCreateRoom, null);
   }

@@ -10,3 +10,4 @@ export 'account_public_page.dart';
 export 'account_private_page.dart';
 export 'account_wallet_page.dart';
 export 'leaderboard_page.dart';
+export 'account_reward_page.dart';

@@ -76,7 +76,7 @@ _UserLevelModel _$UserLevelModelFromJson(Map<String, dynamic> json) =>
     _UserLevelModel(
       level: (json['level'] as num?)?.toInt(),
       title: json['title'] as String?,
-      mix: (json['mix'] as num?)?.toInt(),
+      min: (json['min'] as num?)?.toInt(),
       max: (json['max'] as num?)?.toInt(),
       feature:
           (json['feature'] as List<dynamic>?)?.map((e) => e as String).toList(),
@@ -86,7 +86,7 @@ Map<String, dynamic> _$UserLevelModelToJson(_UserLevelModel instance) =>
     <String, dynamic>{
       'level': instance.level,
       'title': instance.title,
-      'mix': instance.mix,
+      'min': instance.min,
       'max': instance.max,
       'feature': instance.feature,
     };

@@ -816,7 +816,7 @@ class __$XpInSoModelCopyWithImpl<$Res> implements _$XpInSoModelCopyWith<$Res> {
 mixin _$UserLevelModel {
   int? get level;
   String? get title;
-  int? get mix;
+  int? get min;
   int? get max;
   List<String>? get feature;
 
@@ -838,19 +838,19 @@ mixin _$UserLevelModel {
             other is UserLevelModel &&
             (identical(other.level, level) || other.level == level) &&
             (identical(other.title, title) || other.title == title) &&
-            (identical(other.mix, mix) || other.mix == mix) &&
+            (identical(other.min, min) || other.min == min) &&
             (identical(other.max, max) || other.max == max) &&
             const DeepCollectionEquality().equals(other.feature, feature));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, level, title, mix, max,
+  int get hashCode => Object.hash(runtimeType, level, title, min, max,
       const DeepCollectionEquality().hash(feature));
 
   @override
   String toString() {
-    return 'UserLevelModel(level: $level, title: $title, mix: $mix, max: $max, feature: $feature)';
+    return 'UserLevelModel(level: $level, title: $title, min: $min, max: $max, feature: $feature)';
   }
 }
 
@@ -861,7 +861,7 @@ abstract mixin class $UserLevelModelCopyWith<$Res> {
       _$UserLevelModelCopyWithImpl;
   @useResult
   $Res call(
-      {int? level, String? title, int? mix, int? max, List<String>? feature});
+      {int? level, String? title, int? min, int? max, List<String>? feature});
 }
 
 /// @nodoc
@@ -879,7 +879,7 @@ class _$UserLevelModelCopyWithImpl<$Res>
   $Res call({
     Object? level = freezed,
     Object? title = freezed,
-    Object? mix = freezed,
+    Object? min = freezed,
     Object? max = freezed,
     Object? feature = freezed,
   }) {
@@ -892,9 +892,9 @@ class _$UserLevelModelCopyWithImpl<$Res>
           ? _self.title
           : title // ignore: cast_nullable_to_non_nullable
               as String?,
-      mix: freezed == mix
-          ? _self.mix
-          : mix // ignore: cast_nullable_to_non_nullable
+      min: freezed == min
+          ? _self.min
+          : min // ignore: cast_nullable_to_non_nullable
               as int?,
       max: freezed == max
           ? _self.max
@@ -913,7 +913,7 @@ class _$UserLevelModelCopyWithImpl<$Res>
 @JsonSerializable(fieldRename: FieldRename.snake)
 class _UserLevelModel implements UserLevelModel {
   _UserLevelModel(
-      {this.level, this.title, this.mix, this.max, final List<String>? feature})
+      {this.level, this.title, this.min, this.max, final List<String>? feature})
       : _feature = feature;
   factory _UserLevelModel.fromJson(Map<String, dynamic> json) =>
       _$UserLevelModelFromJson(json);
@@ -923,7 +923,7 @@ class _UserLevelModel implements UserLevelModel {
   @override
   final String? title;
   @override
-  final int? mix;
+  final int? min;
   @override
   final int? max;
   final List<String>? _feature;
@@ -958,19 +958,19 @@ class _UserLevelModel implements UserLevelModel {
             other is _UserLevelModel &&
             (identical(other.level, level) || other.level == level) &&
             (identical(other.title, title) || other.title == title) &&
-            (identical(other.mix, mix) || other.mix == mix) &&
+            (identical(other.min, min) || other.min == min) &&
             (identical(other.max, max) || other.max == max) &&
             const DeepCollectionEquality().equals(other._feature, _feature));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, level, title, mix, max,
+  int get hashCode => Object.hash(runtimeType, level, title, min, max,
       const DeepCollectionEquality().hash(_feature));
 
   @override
   String toString() {
-    return 'UserLevelModel(level: $level, title: $title, mix: $mix, max: $max, feature: $feature)';
+    return 'UserLevelModel(level: $level, title: $title, min: $min, max: $max, feature: $feature)';
   }
 }
 
@@ -983,7 +983,7 @@ abstract mixin class _$UserLevelModelCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {int? level, String? title, int? mix, int? max, List<String>? feature});
+      {int? level, String? title, int? min, int? max, List<String>? feature});
 }
 
 /// @nodoc
@@ -1001,7 +1001,7 @@ class __$UserLevelModelCopyWithImpl<$Res>
   $Res call({
     Object? level = freezed,
     Object? title = freezed,
-    Object? mix = freezed,
+    Object? min = freezed,
     Object? max = freezed,
     Object? feature = freezed,
   }) {
@@ -1014,9 +1014,9 @@ class __$UserLevelModelCopyWithImpl<$Res>
           ? _self.title
           : title // ignore: cast_nullable_to_non_nullable
               as String?,
-      mix: freezed == mix
-          ? _self.mix
-          : mix // ignore: cast_nullable_to_non_nullable
+      min: freezed == min
+          ? _self.min
+          : min // ignore: cast_nullable_to_non_nullable
               as int?,
       max: freezed == max
           ? _self.max

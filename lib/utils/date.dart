@@ -12,6 +12,7 @@ var kDateHMMDYFormatter = DateFormat('HH:mm • MM/dd/yy');
 
 var kDateMMMMYYFormatter = DateFormat('MMMM yyyy');
 var kDateWeekFormatter = DateFormat('EEE');
+var kDateCounterFormatter = DateFormat('ddd');
 
 int getWeekNumber(DateTime date) {
   // Clone the date and reset time to midnight

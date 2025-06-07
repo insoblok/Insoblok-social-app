@@ -9,6 +9,8 @@ import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
 
+const kProfileDiscoverHeight = 120.0;
+
 class AccountPresentHeaderView extends ViewModelWidget<AccountProvider> {
   const AccountPresentHeaderView({super.key});
 
@@ -24,87 +26,35 @@ class AccountPresentHeaderView extends ViewModelWidget<AccountProvider> {
               viewModel.accountUser?.discovery ?? AIImages.imgBackSplash,
               fit: BoxFit.cover,
               width: double.infinity,
-              height: 120.0,
+              height: kProfileDiscoverHeight,
             ),
             Align(
               alignment: Alignment.bottomCenter,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Container(
-                        margin: const EdgeInsets.only(left: 20.0),
-                        width: kAccountAvatarSize,
-                        height: kAccountAvatarSize,
-                        decoration: BoxDecoration(
-                          border: Border.all(width: 2.0, color: AIColors.pink),
-                          borderRadius: BorderRadius.circular(
-                            kAccountAvatarSize / 2.0,
-                          ),
-                        ),
-                        child: ClipOval(
-                          child: AIAvatarImage(
-                            viewModel.accountUser?.avatar,
-                            fullname: viewModel.accountUser?.nickId ?? 'Test',
-                            textSize: 28.0,
-                          ),
-                        ),
+                  Container(
+                    margin: const EdgeInsets.only(left: 32.0),
+                    width: kAccountAvatarSize,
+                    height: kAccountAvatarSize,
+                    decoration: BoxDecoration(
+                      border: Border.all(width: 2.0, color: AIColors.pink),
+                      borderRadius: BorderRadius.circular(
+                        kAccountAvatarSize / 2.0,
                       ),
-                      Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Row(
-                          children: [
-                            Text(
-                              viewModel.accountUser?.fullName ?? '',
-                              style: Theme.of(context).textTheme.titleMedium,
-                            ),
-                            SizedBox(width: 8),
-                            Text(
-                              '@${viewModel.accountUser?.nickId}',
-                              style: Theme.of(context).textTheme.labelLarge,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  Padding(
-                    padding: EdgeInsets.only(left: 20, right: 20, bottom: 8),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Row(
-                          children: [
-                            const Spacer(),
-                            Text(
-                              '+30XP today',
-                              style: Theme.of(context).textTheme.bodySmall,
-                              textAlign: TextAlign.end,
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 4.0),
-                        // LinearProgressIndicator(
-                        //   color: AIColors.pink,
-                        //   value: viewModel.userScore / 100,
-                        //   backgroundColor: AIColors.borderColor,
-                        //   minHeight: 8,
-                        //   borderRadius: BorderRadius.circular(4),
-                        // ),
-                        const SizedBox(height: 8.0),
-                        Row(
-                          children: [
-                            // Text(
-                            //   '${viewModel.userScore} XP / 1200',
-                            //   style: Theme.of(context).textTheme.bodySmall,
-                            //   textAlign: TextAlign.end,
-                            // ),
-                          ],
-                        ),
-                      ],
                     ),
+                    child: ClipOval(
+                      child: AIAvatarImage(
+                        viewModel.accountUser?.avatar,
+                        fullname: viewModel.accountUser?.nickId ?? 'Test',
+                        textSize: 28.0,
+                      ),
+                    ),
+                  ),
+                  SizedBox(width: 8),
+                  Text(
+                    'Since: ${viewModel.accountUser?.timestamp?.myFormatter}',
+                    style: Theme.of(context).textTheme.labelMedium,
                   ),
                 ],
               ),
@@ -151,91 +101,81 @@ class AccountFloatingView extends ViewModelWidget<AccountProvider> {
 
   @override
   Widget build(BuildContext context, viewModel) {
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 12.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Text(
-          //   viewModel.accountUser?.fullName ?? '',
-          //   style: Theme.of(context).textTheme.titleLarge,
-          // ),
-          // const SizedBox(height: 16.0),
-          viewModel.accountUser?.desc != null
-              ? AIHelpers.htmlRender(viewModel.accountUser?.desc)
-              : Text(
-                'User can input your profile description if you didn\'t set that yet!. That will be shown to other and will make more user experience of InSoBlokAI.',
-                style: Theme.of(context).textTheme.labelMedium,
-              ),
-          const SizedBox(height: 16.0),
-          Wrap(
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             spacing: 12.0,
-            runSpacing: 4.0,
-            children:
-                (viewModel.accountUser?.linkInfo ?? []).map((info) {
-                  return InkWell(
-                    onTap: () => viewModel.onClickInfo(0),
-                    child: Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        AIImage(
-                          info['icon'],
-                          height: 18.0,
-                          color: AIColors.greyTextColor,
+            children: [
+              Text(
+                '${viewModel.accountUser?.fullName}',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              viewModel.accountUser?.desc != null
+                  ? AIHelpers.htmlRender(viewModel.accountUser?.desc)
+                  : Text(
+                    'User can input your profile description if you didn\'t set that yet!. That will be shown to other and will make more user experience of InSoBlokAI.',
+                    style: Theme.of(context).textTheme.labelMedium,
+                  ),
+              Wrap(
+                spacing: 12.0,
+                runSpacing: 4.0,
+                children:
+                    (viewModel.accountUser?.linkInfo ?? []).map((info) {
+                      return InkWell(
+                        onTap: () => viewModel.onClickInfo(0),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            AIImage(
+                              info['icon'],
+                              height: 18.0,
+                              color: AIColors.greyTextColor,
+                            ),
+                            const SizedBox(width: 4.0),
+                            Text(
+                              info['title']!,
+                              style: Theme.of(context).textTheme.labelMedium,
+                            ),
+                          ],
                         ),
-                        const SizedBox(width: 4.0),
-                        Text(
-                          info['title']!,
-                          style: Theme.of(context).textTheme.labelMedium,
-                        ),
-                      ],
+                      );
+                    }).toList(),
+              ),
+              Text.rich(
+                TextSpan(
+                  children: [
+                    TextSpan(
+                      text:
+                          (viewModel.accountUser?.likes?.length ?? 0)
+                              .socialValue,
+                      style: Theme.of(context).textTheme.labelLarge,
                     ),
-                  );
-                }).toList(),
+                    TextSpan(
+                      text: '  Likes  ',
+                      style: Theme.of(context).textTheme.labelLarge,
+                    ),
+                    TextSpan(
+                      text:
+                          '  ${(viewModel.accountUser?.follows?.length ?? 0).socialValue}',
+                      style: Theme.of(context).textTheme.labelLarge,
+                    ),
+                    TextSpan(
+                      text: '  Followers',
+                      style: Theme.of(context).textTheme.labelLarge,
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-          const SizedBox(height: 16.0),
-          Text.rich(
-            TextSpan(
-              children: [
-                TextSpan(
-                  text: (viewModel.accountUser?.likes?.length ?? 0).socialValue,
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-                TextSpan(
-                  text: ' Likes  ',
-                  style: Theme.of(context).textTheme.labelLarge,
-                ),
-                TextSpan(
-                  text:
-                      '  ${(viewModel.accountUser?.follows?.length ?? 0).socialValue}',
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-                TextSpan(
-                  text: ' Followers',
-                  style: Theme.of(context).textTheme.labelLarge,
-                ),
-              ],
-            ),
-          ),
-          const SizedBox(height: 24.0),
-          // Container(
-          //   width: double.infinity,
-          //   height: 200.0,
-          //   decoration: BoxDecoration(
-          //     color: Theme.of(context).colorScheme.onSecondary,
-          //     borderRadius: BorderRadius.circular(16.0),
-          //     boxShadow: [
-          //       BoxShadow(
-          //         blurRadius: 2.0,
-          //         spreadRadius: 3.0,
-          //         color: Theme.of(context).colorScheme.secondary.withAlpha(32),
-          //       ),
-          //     ],
-          //   ),
-          // ),
-        ],
-      ),
+        ),
+        const Divider(thickness: 0.5),
+        AccountXPDashboardView(),
+      ],
     );
   }
 }
@@ -492,50 +432,6 @@ class AccountPrivateInfoCover extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class AccountWalletIconCover extends StatelessWidget {
-  final Widget child;
-  final void Function()? onTap;
-
-  const AccountWalletIconCover({super.key, required this.child, this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      child: Container(
-        width: 40.0,
-        height: 40.0,
-        padding: const EdgeInsets.all(10.0),
-        decoration: BoxDecoration(
-          color: AppSettingHelper.greyBackground,
-          borderRadius: BorderRadius.circular(8.0),
-        ),
-        child: child,
-      ),
-    );
-  }
-}
-
-class AccountWalletTokenCover extends StatelessWidget {
-  final Widget child;
-
-  const AccountWalletTokenCover({super.key, required this.child});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 160.0,
-      height: 80.0,
-      padding: const EdgeInsets.all(10.0),
-      decoration: BoxDecoration(
-        color: Theme.of(context).primaryColor,
-        borderRadius: BorderRadius.circular(8.0),
-      ),
-      child: child,
     );
   }
 }

@@ -34,8 +34,8 @@ class AccountProvider extends InSoBlokViewModel {
     this.context = context;
     accountUser = model ?? AuthHelper.user;
 
-    fetchStories();
-    getUserScore();
+    await fetchStories();
+    await getUserScore();
   }
 
   final List<StoryModel> stories = [];
@@ -65,16 +65,53 @@ class AccountProvider extends InSoBlokViewModel {
   }
 
   final List<TastescoreModel> _scores = [];
+  List<TastescoreModel> get scores => _scores;
+
+  int get totalScore {
+    var result = 0;
+    for (var score in scores) {
+      result += (score.bonus ?? 0);
+    }
+    return result;
+  }
+
+  List<UserLevelModel> get userLevels =>
+      AppSettingHelper.appSettingModel?.userLevel ?? [];
+
+  UserLevelModel get userLevel {
+    for (var userLevel in userLevels) {
+      if ((userLevel.min ?? 0) <= totalScore &&
+          totalScore < (userLevel.max ?? 1000000000)) {
+        return userLevel;
+      }
+    }
+    return userLevels.first;
+  }
+
+  double get indicatorValue {
+    var min = userLevel.min ?? 0;
+    var max = userLevel.max ?? 0;
+    return (totalScore - min) / (max - min);
+  }
+
+  bool _isLoadingScore = false;
+  bool get isLoadingScore => _isLoadingScore;
+  set isLoadingScore(bool f) {
+    _isLoadingScore = f;
+    notifyListeners();
+  }
 
   Future<void> getUserScore() async {
+    _isLoadingScore = true;
     try {
+      _scores.clear();
       var s = await tastScoreService.getScoresByUser(accountUser!.uid!);
       _scores.addAll(s);
     } catch (e) {
       setError(e);
       logger.e(e);
     } finally {
-      notifyListeners();
+      isLoadingScore = false;
     }
   }
 
