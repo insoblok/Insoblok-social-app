@@ -138,4 +138,8 @@ class Routers {
   static dynamic goToLeaderboardPage(BuildContext context) {
     return _pushToRoute(context, kRouterLeaderboard, null);
   }
+
+  static dynamic goToMarketPlacePage(BuildContext context) {
+    return _pushToRoute(context, kRouterMarketPlace, null);
+  }
 }

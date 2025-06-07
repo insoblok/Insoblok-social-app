@@ -34,6 +34,27 @@ class StoryService {
     return result;
   }
 
+  // Get following stories
+  Future<List<StoryModel>> getFollowingStories() async {
+    List<StoryModel> result = [];
+    var storiesSnapshot =
+        await storyCollection.orderBy('timestamp', descending: true).get();
+    var userids = await userService.getFollowingUserIds();
+    for (var doc in storiesSnapshot.docs) {
+      try {
+        var json = doc.data();
+        json['id'] = doc.id;
+        var story = StoryModel.fromJson(json);
+        if (story.uid != null && userids.contains(story.uid)) {
+          result.add(story);
+        }
+      } on FirebaseException catch (e) {
+        logger.e(e.message);
+      }
+    }
+    return result;
+  }
+
   // Get lookbook stories
   Future<List<StoryModel>> getLookBookStories() async {
     List<StoryModel> result = [];

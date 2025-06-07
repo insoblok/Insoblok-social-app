@@ -48,6 +48,20 @@ class UserService {
     return users.where((u) => u?.uid != AuthHelper.user?.uid).toList();
   }
 
+  Future<List<String>> getFollowingUserIds() async {
+    List<String> ids = [];
+    var snapshot = await _userCollection.get();
+    var allUsers = snapshot.docs.map((doc) => _getUserFromDoc(doc));
+    for (var user in allUsers) {
+      if (user?.follows != null &&
+          user!.follows!.contains(AuthHelper.user?.uid)) {
+        ids.add(user.uid!);
+      }
+    }
+
+    return ids;
+  }
+
   Future<void> updateUser(UserModel user) async {
     await _userCollection.doc(user.id).update({...user.toMap()});
   }

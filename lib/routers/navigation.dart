@@ -4,6 +4,7 @@ import 'package:fluro/fluro.dart' as fluro;
 
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/pages/pages.dart';
+import 'package:insoblok/pages/vtos/market_page.dart';
 
 const kRouterBase = '/';
 const kRouterLogin = '/login';
@@ -42,6 +43,7 @@ const kRouterMediaDetail = '/media-detail';
 const kRouterSetting = '/setting';
 
 const kRouterLeaderboard = '/leaderboard';
+const kRouterMarketPlace = '/market-place';
 
 class Navigation {
   final router = fluro.FluroRouter();
@@ -175,5 +177,8 @@ class Navigation {
 
     // * LeaderboardPage
     initRoute(kRouterLeaderboard, (props) => LeaderboardPage());
+
+    // * MarketPlacePage
+    initRoute(kRouterMarketPlace, (props) => MarketPlacePage());
   }
 }
