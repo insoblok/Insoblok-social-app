@@ -212,7 +212,7 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
             bottomNavigationBar: BottomNavigationBar(
               currentIndex: viewModel.pageIndex,
               onTap: (value) {
-                if (value == 5) {
+                if (value == 4) {
                   Routers.goToAccountPage(context);
                 } else {
                   viewModel.pageIndex = value;
