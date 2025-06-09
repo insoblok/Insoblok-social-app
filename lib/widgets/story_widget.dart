@@ -420,6 +420,10 @@ class StoryDetailDialog extends StatelessWidget {
                                 vertical: 4.0,
                               ),
                               child: StoryDetailCommentCell(
+                                key: GlobalKey(
+                                  debugLabel:
+                                      '${comment.uid} - ${viewModel.story.comments?.reversed.toList().indexOf(comment)}',
+                                ),
                                 comment: comment,
                                 isLast:
                                     (viewModel.story.comments ?? []).length ==
@@ -430,9 +434,7 @@ class StoryDetailDialog extends StatelessWidget {
                         },
                         const SizedBox(height: 20),
                       },
-                      SizedBox(
-                        height: MediaQuery.of(context).viewInsets.bottom + 24.0,
-                      ),
+                      SizedBox(height: 94.0),
                     ],
                   ),
                 ),

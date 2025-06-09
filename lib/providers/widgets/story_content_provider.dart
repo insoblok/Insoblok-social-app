@@ -335,6 +335,8 @@ class StoryContentProvider extends InSoBlokViewModel {
     await runBusyFuture(() async {
       try {
         var quillData = quillController.document.toDelta().toJson();
+        logger.d(quillController.document);
+        logger.d(quillData);
         if (quillData.isNotEmpty) {
           var converter = QuillDeltaToHtmlConverter(
             quillData,
