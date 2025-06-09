@@ -4,6 +4,7 @@ InSoBlok Social App (Image to AI Image)
 adb connect localhost:5555
 dart run build_runner build --delete-conflicting-outputs
 flutter pub upgrade --major-versions
+dart run flutter_native_splash:create
 
 ## Provider Fetch Temp
 if (isBusy) return;
