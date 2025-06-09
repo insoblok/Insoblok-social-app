@@ -9,7 +9,7 @@ import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
 
-const kProfileDiscoverHeight = 120.0;
+const kProfileDiscoverHeight = 96.0;
 
 class AccountPresentHeaderView extends ViewModelWidget<AccountProvider> {
   const AccountPresentHeaderView({super.key});
@@ -17,80 +17,81 @@ class AccountPresentHeaderView extends ViewModelWidget<AccountProvider> {
   @override
   Widget build(BuildContext context, viewModel) {
     return Container(
+      height:
+          kProfileDiscoverHeight +
+          MediaQuery.of(context).padding.top +
+          kAccountAvatarSize / 2.0,
       color: AppSettingHelper.background,
-      child: SizedBox(
-        height: 212.0 + kAccountAvatarSize / 2.0,
-        child: Stack(
-          children: [
-            AIImage(
-              viewModel.accountUser?.discovery ?? AIImages.imgBackSplash,
-              fit: BoxFit.cover,
-              width: double.infinity,
-              height: kProfileDiscoverHeight,
-            ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  Container(
-                    margin: const EdgeInsets.only(left: 32.0),
-                    width: kAccountAvatarSize,
-                    height: kAccountAvatarSize,
-                    decoration: BoxDecoration(
-                      border: Border.all(width: 2.0, color: AIColors.pink),
-                      borderRadius: BorderRadius.circular(
-                        kAccountAvatarSize / 2.0,
-                      ),
-                    ),
-                    child: ClipOval(
-                      child: AIAvatarImage(
-                        viewModel.accountUser?.avatar,
-                        fullname: viewModel.accountUser?.nickId ?? 'Test',
-                        textSize: 28.0,
-                      ),
-                    ),
-                  ),
-                  SizedBox(width: 8),
-                  Text(
-                    'Since: ${viewModel.accountUser?.timestamp?.myFormatter}',
-                    style: Theme.of(context).textTheme.labelMedium,
-                  ),
-                ],
-              ),
-            ),
-            CustomCircleBackButton(),
-            Align(
-              alignment: Alignment.topRight,
-              child: InkWell(
-                onTap: viewModel.onClickMoreButton,
-                child: Container(
-                  width: 36.0,
-                  height: 36.0,
-                  margin: EdgeInsets.only(
-                    right: 20.0,
-                    top: MediaQuery.of(context).padding.top + 12.0,
-                  ),
+      child: Stack(
+        children: [
+          AIImage(
+            viewModel.accountUser?.discovery ?? AIImages.imgBackSplash,
+            fit: BoxFit.cover,
+            width: double.infinity,
+            height: kProfileDiscoverHeight + MediaQuery.of(context).padding.top,
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Container(
+                  margin: const EdgeInsets.only(left: 32.0),
+                  width: kAccountAvatarSize,
+                  height: kAccountAvatarSize,
                   decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: AppSettingHelper.transparentBackground,
+                    border: Border.all(width: 2.0, color: AIColors.pink),
+                    borderRadius: BorderRadius.circular(
+                      kAccountAvatarSize / 2.0,
+                    ),
                   ),
-                  child:
-                      viewModel.isMe
-                          ? Icon(Icons.edit, size: 18.0)
-                          : Center(
-                            child: AIImage(
-                              AIImages.icBottomMessage,
-                              width: 16.0,
-                              height: 16.0,
-                              color: Theme.of(context).colorScheme.onPrimary,
-                            ),
-                          ),
+                  child: ClipOval(
+                    child: AIAvatarImage(
+                      viewModel.accountUser?.avatar,
+                      fullname: viewModel.accountUser?.nickId ?? 'Test',
+                      textSize: 28.0,
+                    ),
+                  ),
                 ),
+                SizedBox(width: 8),
+                Text(
+                  'Since: ${viewModel.accountUser?.timestamp?.myFormatter}',
+                  style: Theme.of(context).textTheme.labelMedium,
+                ),
+              ],
+            ),
+          ),
+          CustomCircleBackButton(),
+          Align(
+            alignment: Alignment.topRight,
+            child: InkWell(
+              onTap: viewModel.onClickMoreButton,
+              child: Container(
+                width: 36.0,
+                height: 36.0,
+                margin: EdgeInsets.only(
+                  right: 20.0,
+                  top: MediaQuery.of(context).padding.top + 12.0,
+                ),
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: AppSettingHelper.transparentBackground,
+                ),
+                child:
+                    viewModel.isMe
+                        ? Icon(Icons.edit, size: 18.0)
+                        : Center(
+                          child: AIImage(
+                            AIImages.icBottomMessage,
+                            width: 16.0,
+                            height: 16.0,
+                            color: Theme.of(context).colorScheme.onPrimary,
+                          ),
+                        ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

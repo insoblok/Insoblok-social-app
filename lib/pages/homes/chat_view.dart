@@ -73,7 +73,7 @@ class ChatView extends StatelessWidget {
                 if (viewModel.isBusy) ...{
                   SliverFillRemaining(child: Center(child: Loader(size: 60))),
                 },
-                viewModel.rooms.isEmpty
+                (viewModel.rooms.isEmpty && !viewModel.isBusy)
                     ? SliverFillRemaining(
                       child: Center(
                         child: Column(

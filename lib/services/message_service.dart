@@ -71,7 +71,7 @@ class MessageService {
         });
   }
 
-  // Send an video message
+  // Send a video message
   Future<void> sendVideoMessage({
     required String chatRoomId,
     required String videoUrl,
@@ -109,7 +109,26 @@ class MessageService {
         });
   }
 
-  // Send an audio message
+  // Send a gif message
+  Future<void> sendGifMessage({
+    required String chatRoomId,
+    required String gifUrl,
+  }) async {
+    await _firestore
+        .collection('chatRooms')
+        .doc(chatRoomId)
+        .collection('messages')
+        .add({
+          'content': '[Gif]',
+          'sender_id': AuthHelper.user?.uid,
+          'sender_name': AuthHelper.user?.fullName ?? 'Anonymous',
+          'timestamp': DateTime.now().toUtc().toIso8601String(),
+          'url': gifUrl,
+          'type': 'gif',
+        });
+  }
+
+  // Send a paid message
   Future<void> sendPaidMessage({
     required String chatRoomId,
     required CoinModel coin,

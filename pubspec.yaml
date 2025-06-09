@@ -32,6 +32,7 @@ dependencies:
   gradient_borders: any
   loading_indicator: any
   flutter_staggered_grid_view: any
+  gif_view: any
 
   logger: any
   freezed_annotation: ^3.0.0
@@ -41,6 +42,7 @@ dependencies:
   fluttertoast: any
   get_ip_address: any
   image_picker: any
+  file_picker: any
 
   fluro: any
   sqflite: any
