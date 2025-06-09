@@ -63,6 +63,7 @@ class LookbookProvider extends InSoBlokViewModel {
         var ss = await storyService.getLookBookStories();
         logger.d(ss.length);
         _stories.addAll(ss);
+        filterList(0);
       } catch (e) {
         setError(e);
         logger.e(e);
@@ -80,17 +81,24 @@ class LookbookProvider extends InSoBlokViewModel {
     filterStories.clear();
     for (var story in stories) {
       if (index == 0) {
-        if (story.uid == AuthHelper.user?.uid) {
+        if ((story.votes ?? [])
+            .map((vote) => vote.uid)
+            .toList()
+            .contains(AuthHelper.user?.uid)) {
           filterStories.add(story);
         }
       } else if (index == 1) {
+        if (story.uid == AuthHelper.user?.uid) {
+          filterStories.add(story);
+        }
+      } else if (index == 2) {
         if ((story.comments ?? [])
             .map((comment) => comment.uid)
             .toList()
             .contains(AuthHelper.user?.uid)) {
           filterStories.add(story);
         }
-      } else if (index == 2) {
+      } else if (index == 3) {
         if (story.likes != null &&
             story.likes!.contains(AuthHelper.user?.uid)) {
           filterStories.add(story);

@@ -22,7 +22,7 @@ class LookbookView extends StatelessWidget {
               physics: NeverScrollableScrollPhysics(),
               slivers: [
                 DefaultTabController(
-                  length: 3,
+                  length: 4,
                   child: SliverAppBar(
                     leading: AppLeadingView(),
                     title: Text('LookBook'),
@@ -41,6 +41,13 @@ class LookbookView extends StatelessWidget {
                             height: 30.0,
                             child: Text(
                               'Stories',
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          ),
+                          Tab(
+                            height: 30.0,
+                            child: Text(
+                              'Posts',
                               style: Theme.of(context).textTheme.bodyMedium,
                             ),
                           ),
