@@ -41,34 +41,39 @@ class DashboardView extends StatelessWidget {
                     ),
                   },
                 ],
-                bottom: TabBar(
-                  indicatorSize: TabBarIndicatorSize.tab,
-                  onTap: (index) {
-                    viewModel.tabIndex = index;
-                    if (index == 0) {
-                      viewModel.fetchStoryData();
-                    } else {
-                      viewModel.fetchNewsData();
-                    }
-                  },
-                  tabs: [
-                    Tab(
-                      child: Text(
-                        'Feed',
-                        style: Theme.of(context).textTheme.bodyLarge,
+                bottom: PreferredSize(
+                  preferredSize: Size.fromHeight(30.0),
+                  child: TabBar(
+                    indicatorSize: TabBarIndicatorSize.tab,
+                    onTap: (index) {
+                      viewModel.tabIndex = index;
+                      if (index == 0) {
+                        viewModel.fetchStoryData();
+                      } else {
+                        viewModel.fetchNewsData();
+                      }
+                    },
+                    tabs: [
+                      Tab(
+                        height: 30.0,
+                        child: Text(
+                          'Feed',
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
                       ),
-                    ),
-                    Tab(
-                      child: Text(
-                        'News',
-                        style: Theme.of(context).textTheme.bodyLarge,
+                      Tab(
+                        height: 30.0,
+                        child: Text(
+                          'News',
+                          style: Theme.of(context).textTheme.bodyMedium,
+                        ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
-            if (viewModel.isBusy) ...{
+            if (viewModel.isBusy && viewModel.tabIndex == 1) ...{
               SliverFillRemaining(child: Center(child: Loader(size: 60))),
             },
             if (viewModel.stories.isEmpty) ...{
@@ -131,7 +136,7 @@ class DashboardView extends StatelessWidget {
                               ],
                             ),
                           ),
-                        const SizedBox(height: 8.0),
+                        const SizedBox(height: 12.0),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: [
@@ -160,7 +165,7 @@ class DashboardView extends StatelessWidget {
                                     Text(
                                       'Following',
                                       style: TextStyle(
-                                        fontSize: 16.0,
+                                        fontSize: 14.0,
                                         color:
                                             viewModel.feedIndex == 0
                                                 ? AIColors.white
@@ -196,7 +201,7 @@ class DashboardView extends StatelessWidget {
                                     Text(
                                       'For you',
                                       style: TextStyle(
-                                        fontSize: 16.0,
+                                        fontSize: 14.0,
                                         color:
                                             viewModel.feedIndex == 1
                                                 ? AIColors.white
@@ -210,17 +215,20 @@ class DashboardView extends StatelessWidget {
                           ],
                         ),
                         Expanded(
-                          child: PageView.builder(
-                            scrollDirection: Axis.horizontal,
-                            controller: viewModel.pageController,
-                            padEnds: false,
-                            itemCount: viewModel.stories.length,
-                            itemBuilder: (_, index) {
-                              return StoryListCell(
-                                story: viewModel.stories[index],
-                              );
-                            },
-                          ),
+                          child:
+                              viewModel.isBusy
+                                  ? Center(child: Loader(size: 60))
+                                  : PageView.builder(
+                                    scrollDirection: Axis.horizontal,
+                                    controller: viewModel.pageController,
+                                    padEnds: false,
+                                    itemCount: viewModel.stories.length,
+                                    itemBuilder: (_, index) {
+                                      return StoryListCell(
+                                        story: viewModel.stories[index],
+                                      );
+                                    },
+                                  ),
                         ),
                       ],
                     ),

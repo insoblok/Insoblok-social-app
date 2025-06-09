@@ -84,6 +84,13 @@ class VTOImageProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  StoryModel? _storyAddedToLookbook;
+  StoryModel? get storyAddedToLookbook => _storyAddedToLookbook;
+  set storyAddedToLookbook(StoryModel? s) {
+    _storyAddedToLookbook = s;
+    notifyListeners();
+  }
+
   Future<void> onClickAddPhoto() async {
     if (isBusy) return;
     clearErrors();
@@ -361,10 +368,11 @@ class VTOImageProvider extends InSoBlokViewModel {
           description = await AIHelpers.goToDescriptionView(context);
         }
 
-        var story = StoryModel(
+        storyAddedToLookbook = StoryModel(
           title: 'VTO',
           text: description ?? 'Virtual Try-On',
           category: 'vote',
+          status: 'private',
           medias: [
             MediaStoryModel(link: originUrl!, type: 'image'),
             MediaStoryModel(link: serverUrl, type: 'image'),
@@ -372,9 +380,60 @@ class VTOImageProvider extends InSoBlokViewModel {
           updateDate: DateTime.now(),
           timestamp: DateTime.now(),
         );
-        await storyService.postStory(story: story);
-
+        var storyId = await storyService.postStory(
+          story: storyAddedToLookbook!,
+        );
+        storyAddedToLookbook = storyAddedToLookbook!.copyWith(id: storyId);
         AIHelpers.showToast(msg: 'Successfully posted VTO to Lookbook!');
+      } catch (e, s) {
+        setError(e);
+        logger.e(e, stackTrace: s);
+      } finally {
+        isConverting = false;
+      }
+    }());
+
+    if (hasError) {
+      AIHelpers.showToast(msg: modelError.toString());
+    }
+  }
+
+  Future<void> savetoPost() async {
+    if (isBusy) return;
+    clearErrors();
+
+    isConverting = true;
+
+    await runBusyFuture(() async {
+      try {
+        var hasDescription = await _showDescriptionDialog();
+        String? description;
+        if (hasDescription == true) {
+          description = await AIHelpers.goToDescriptionView(context);
+        }
+
+        if (storyAddedToLookbook != null) {
+          storyAddedToLookbook = storyAddedToLookbook!.copyWith(
+            status: 'public',
+          );
+          await storyService.updateStory(story: storyAddedToLookbook!);
+        } else {
+          var story = StoryModel(
+            title: 'VTO',
+            text: description ?? 'Virtual Try-On',
+            category: 'vote',
+            status: 'public',
+            medias: [
+              MediaStoryModel(link: originUrl!, type: 'image'),
+              MediaStoryModel(link: serverUrl, type: 'image'),
+            ],
+            updateDate: DateTime.now(),
+            timestamp: DateTime.now(),
+          );
+          await storyService.postStory(story: story);
+        }
+
+        AIHelpers.showToast(msg: 'Successfully posted VTO to Feed!');
       } catch (e, s) {
         setError(e);
         logger.e(e, stackTrace: s);

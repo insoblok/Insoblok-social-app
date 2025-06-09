@@ -21,16 +21,52 @@ class LookbookView extends StatelessWidget {
             CustomScrollView(
               physics: NeverScrollableScrollPhysics(),
               slivers: [
-                SliverAppBar(
-                  leading: AppLeadingView(),
-                  title: Text('LookBook'),
-                  centerTitle: true,
-                  pinned: true,
+                DefaultTabController(
+                  length: 3,
+                  child: SliverAppBar(
+                    leading: AppLeadingView(),
+                    title: Text('LookBook'),
+                    centerTitle: true,
+                    pinned: true,
+                    bottom: PreferredSize(
+                      preferredSize: Size.fromHeight(30.0),
+                      child: TabBar(
+                        indicatorSize: TabBarIndicatorSize.tab,
+                        onTap: (index) {
+                          viewModel.tabIndex = index;
+                          viewModel.filterList(index);
+                        },
+                        tabs: [
+                          Tab(
+                            height: 30.0,
+                            child: Text(
+                              'Stories',
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          ),
+                          Tab(
+                            height: 30.0,
+                            child: Text(
+                              'Comments',
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          ),
+                          Tab(
+                            height: 30.0,
+                            child: Text(
+                              'Likes',
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
                 ),
                 if (viewModel.isBusy) ...{
                   SliverFillRemaining(child: Center(child: Loader(size: 60))),
                 },
-                if (viewModel.stories.isEmpty) ...{
+                if (viewModel.filterStories.isEmpty) ...{
                   SliverFillRemaining(
                     child: Center(
                       child: Column(
@@ -62,10 +98,15 @@ class LookbookView extends StatelessWidget {
                             scrollDirection: Axis.horizontal,
                             controller: viewModel.pageController,
                             padEnds: false,
-                            itemCount: viewModel.stories.length,
+                            itemCount: viewModel.filterStories.length,
                             itemBuilder: (_, index) {
+                              var story = viewModel.filterStories[index];
                               return StoryListCell(
-                                story: viewModel.stories[index],
+                                key: GlobalKey(
+                                  debugLabel:
+                                      '${story.id} - ${viewModel.tabIndex}',
+                                ),
+                                story: story,
                               );
                             },
                           ),

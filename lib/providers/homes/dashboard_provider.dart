@@ -101,7 +101,6 @@ class DashboardProvider extends InSoBlokViewModel {
     if (isBusy) return;
     clearErrors();
 
-    _stories.clear();
     await runBusyFuture(() async {
       try {
         List<StoryModel> storydatas = [];
@@ -110,7 +109,7 @@ class DashboardProvider extends InSoBlokViewModel {
         } else {
           storydatas = await storyService.getStories();
         }
-
+        _stories.clear();
         logger.d(storydatas.length);
         _stories.addAll(storydatas);
         isUpdated = false;
@@ -135,6 +134,5 @@ class DashboardProvider extends InSoBlokViewModel {
   void onClickFeedOptionButton(int index) {
     feedIndex = index;
     fetchStoryData();
-    notifyListeners();
   }
 }
