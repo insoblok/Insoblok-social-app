@@ -146,7 +146,9 @@ class DashboardView extends StatelessWidget {
                                   color:
                                       viewModel.feedIndex == 0
                                           ? Theme.of(context).primaryColor
-                                          : AIColors.lightGrey,
+                                          : Theme.of(
+                                            context,
+                                          ).colorScheme.secondary.withAlpha(16),
                                   borderRadius: BorderRadius.circular(20.0),
                                 ),
                                 alignment: Alignment.center,
@@ -180,7 +182,9 @@ class DashboardView extends StatelessWidget {
                                   color:
                                       viewModel.feedIndex == 1
                                           ? Theme.of(context).primaryColor
-                                          : AIColors.lightGrey,
+                                          : Theme.of(
+                                            context,
+                                          ).colorScheme.secondary.withAlpha(16),
                                   borderRadius: BorderRadius.circular(20.0),
                                 ),
                                 alignment: Alignment.center,
