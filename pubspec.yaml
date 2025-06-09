@@ -22,7 +22,6 @@ dependencies:
   flutter_svg: any
   shimmer: any
   animated_text_kit: any
-  flutter_native_splash: any
   video_player: any
   chewie: any
   carousel_slider: any
@@ -37,6 +36,8 @@ dependencies:
   logger: any
   freezed_annotation: ^3.0.0
   json_annotation: any
+  flutter_native_splash: any
+  flutter_launcher_icons: any
 
   permission_handler: any
   fluttertoast: any
