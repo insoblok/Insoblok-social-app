@@ -256,7 +256,8 @@ class AccountRewardPage extends StatelessWidget {
                         children: [
                           Expanded(
                             child: Text(
-                              kScoreDescription[viewModel.scores[i].type]!,
+                              kScoreDescription[viewModel.scores[i].type] ??
+                                  '---',
                               style: Theme.of(context).textTheme.labelLarge,
                             ),
                           ),

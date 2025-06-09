@@ -44,8 +44,6 @@ class StoryContentProvider extends InSoBlokViewModel {
       actionType('comment');
     }
 
-    owner = await _userService.getUser(story.uid!);
-
     quillController = () {
       return QuillController.basic(
         config: QuillControllerConfig(
@@ -65,6 +63,7 @@ class StoryContentProvider extends InSoBlokViewModel {
         });
       }
     });
+    owner = await _userService.getUser(story.uid!);
 
     notifyListeners();
   }
@@ -471,11 +470,12 @@ class StoryContentProvider extends InSoBlokViewModel {
                         alignment: Alignment.center,
                         child: Text(
                           'Add',
-                          style: Theme.of(
-                            context,
-                          ).textTheme.bodyMedium?.copyWith(
-                            color: Theme.of(context).colorScheme.onSecondary,
-                          ),
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onSecondary,
+                              ),
                         ),
                       ),
                     ),
