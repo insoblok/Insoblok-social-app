@@ -12,6 +12,13 @@ class LookbookProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  int _tabIndex = 0;
+  int get tabIndex => _tabIndex;
+  set tabIndex(int d) {
+    _tabIndex = d;
+    notifyListeners();
+  }
+
   final PageController _pageController = PageController();
   PageController get pageController => _pageController;
   int _currentPage = 0;
@@ -39,6 +46,13 @@ class LookbookProvider extends InSoBlokViewModel {
   final List<StoryModel> _stories = [];
   List<StoryModel> get stories => _stories;
 
+  List<StoryModel> _filterStories = [];
+  List<StoryModel> get filterStories => _filterStories;
+  set filterStories(List<StoryModel> d) {
+    _filterStories = d;
+    notifyListeners();
+  }
+
   Future<void> fetchData() async {
     if (isBusy) return;
     clearErrors();
@@ -60,6 +74,30 @@ class LookbookProvider extends InSoBlokViewModel {
     if (hasError) {
       AIHelpers.showToast(msg: modelError.toString());
     }
+  }
+
+  Future<void> filterList(int index) async {
+    filterStories.clear();
+    for (var story in stories) {
+      if (index == 0) {
+        if (story.uid == AuthHelper.user?.uid) {
+          filterStories.add(story);
+        }
+      } else if (index == 1) {
+        if ((story.comments ?? [])
+            .map((comment) => comment.uid)
+            .toList()
+            .contains(AuthHelper.user?.uid)) {
+          filterStories.add(story);
+        }
+      } else if (index == 2) {
+        if (story.likes != null &&
+            story.likes!.contains(AuthHelper.user?.uid)) {
+          filterStories.add(story);
+        }
+      }
+    }
+    notifyListeners();
   }
 
   Future<void> onClickSettingButton() async {

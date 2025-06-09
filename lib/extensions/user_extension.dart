@@ -166,6 +166,7 @@ extension UserModelExt on UserModel {
       'has_vote_post': hasVotePost,
       'free_style': freeStyle,
       'reward_date': rewardDate,
+      'is_premium': isPremium,
       'likes': (likes),
       'follows': (follows),
       'user_actions': (userActions),

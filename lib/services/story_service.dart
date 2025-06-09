@@ -158,8 +158,12 @@ class StoryService {
   final tastescoreService = TastescoreService();
 
   // Post a story
-  Future<void> postStory({required StoryModel story}) async {
-    await storyCollection.add({...story.toMap(), 'uid': AuthHelper.user?.uid});
+  Future<String> postStory({required StoryModel story}) async {
+    var ref = await storyCollection.add({
+      ...story.toMap(),
+      'uid': AuthHelper.user?.uid,
+    });
+
     await storyCollection.doc('updated').set({
       'timestamp': DateTime.now().toUtc().toIso8601String(),
     });
@@ -170,6 +174,30 @@ class StoryService {
       await tastescoreService.winCreatorScore();
       await AuthHelper.updateUser(AuthHelper.user!.copyWith(hasVotePost: true));
     }
+    if (story.status != null && story.status == 'private') {
+      addUserAction(ref.id);
+    }
+    return ref.id;
+  }
+
+  // Update a story
+  Future<void> updateStory({required StoryModel story}) async {
+    await storyCollection.doc(story.id).update(story.toMap());
+    // check for win_creator xp
+    if ((!(AuthHelper.user?.hasVotePost ?? false)) &&
+        (story.category == 'vote')) {
+      await tastescoreService.winCreatorScore();
+      await AuthHelper.updateUser(AuthHelper.user!.copyWith(hasVotePost: true));
+    }
+  }
+
+  // Update a story
+  Future<void> updateStoryById({
+    required String id,
+    Map<String, dynamic>? data,
+  }) async {
+    if (data == null) return;
+    await storyCollection.doc(id).update(data);
   }
 
   final _userService = UserService();

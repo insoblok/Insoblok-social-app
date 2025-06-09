@@ -6,6 +6,7 @@ import 'package:insoblok/models/models.dart';
 import 'package:insoblok/routers/router.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
+import 'package:vsc_quill_delta_to_html/vsc_quill_delta_to_html.dart';
 
 class StoryContentProvider extends InSoBlokViewModel {
   late BuildContext _context;
@@ -333,10 +334,15 @@ class StoryContentProvider extends InSoBlokViewModel {
     clearErrors();
     await runBusyFuture(() async {
       try {
-        if (commentContent != null) {
+        var quillData = quillController.document.toDelta().toJson();
+        if (quillData.isNotEmpty) {
+          var converter = QuillDeltaToHtmlConverter(
+            quillData,
+            ConverterOptions.forEmail(),
+          );
           var comment = StoryCommentModel(
             uid: user?.uid,
-            content: commentContent,
+            content: converter.convert(),
             timestamp: DateTime.now(),
           );
           var comments = List<StoryCommentModel>.from(story.comments ?? []);
@@ -347,7 +353,7 @@ class StoryContentProvider extends InSoBlokViewModel {
             updateDate: DateTime.now(),
           );
           await storyService.addComment(story: story);
-          textController.text = '';
+          quillController.document = Document();
         } else {
           AIHelpers.showToast(msg: 'Your comment is empty!');
         }

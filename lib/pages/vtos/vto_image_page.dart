@@ -155,6 +155,37 @@ class VTOImagePage extends StatelessWidget {
                                   : viewModel.onClickConvert,
                           color: Theme.of(context).primaryColor,
                         ),
+                        if (viewModel.serverUrl != null)
+                          Column(
+                            children: [
+                              const SizedBox(height: 8.0),
+                              OutlineButton(
+                                isBusy: viewModel.isConverting,
+                                onTap: viewModel.onClickShareButton,
+                                borderColor: Theme.of(context).primaryColor,
+                                child: Text(
+                                  'Share to Twitter',
+                                  style: TextStyle(
+                                    fontSize: 16.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(height: 8.0),
+                              OutlineButton(
+                                isBusy: viewModel.isConverting,
+                                onTap: viewModel.savetoPost,
+                                borderColor: Theme.of(context).primaryColor,
+                                child: Text(
+                                  'Create Yay/Nay Poll',
+                                  style: TextStyle(
+                                    fontSize: 16.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
                       ],
                     ),
                   ),

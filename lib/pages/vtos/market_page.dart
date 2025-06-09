@@ -25,15 +25,15 @@ class MarketPlacePage extends StatelessWidget {
                 title: Text('Marketplace'),
                 pinned: true,
                 actions: [
-                  kDebugMode
-                      ? IconButton(
-                        icon: Icon(Icons.add_circle),
-                        onPressed: viewModel.onTapAddProduct,
-                      )
-                      : IconButton(
-                        icon: Icon(Icons.filter_list),
-                        onPressed: viewModel.onTapFilter,
-                      ),
+                  IconButton(
+                    icon: Icon(Icons.filter_list),
+                    onPressed: viewModel.onTapFilter,
+                  ),
+                  if (kDebugMode || (viewModel.user?.isPremium ?? false))
+                    IconButton(
+                      icon: Icon(Icons.add_circle),
+                      onPressed: viewModel.onTapAddProduct,
+                    ),
                 ],
                 extendHeight: viewModel.isClickFilter ? 86 : 0,
                 extendWidget:
