@@ -33,20 +33,25 @@ class AccountPage extends StatelessWidget {
                       floating: true,
                       delegate: AIPersistentHeader(
                         minSize:
-                            kProfileDiscoverHeight + kAccountAvatarSize / 2.0,
+                            kProfileDiscoverHeight +
+                            MediaQuery.of(context).padding.top +
+                            kAccountAvatarSize / 2.0,
                         maxSize:
-                            kProfileDiscoverHeight + kAccountAvatarSize / 2.0,
+                            kProfileDiscoverHeight +
+                            MediaQuery.of(context).padding.top +
+                            kAccountAvatarSize / 2.0,
                         child: AccountPresentHeaderView(),
                       ),
                     ),
                     SliverToBoxAdapter(child: AccountFloatingView()),
                     SliverAppBar(
                       pinned: true,
-                      toolbarHeight: 44.0,
+                      toolbarHeight: 48.0,
                       backgroundColor: AppSettingHelper.background,
                       surfaceTintColor: AppSettingHelper.background,
                       elevation: 0,
                       automaticallyImplyLeading: false,
+                      primary: false,
                       title: AccountFloatingHeaderView(),
                     ),
                     SliverList(

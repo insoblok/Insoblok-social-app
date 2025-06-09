@@ -6,11 +6,12 @@ import 'package:flutter/material.dart';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:insoblok/extensions/user_extension.dart';
+import 'package:gif_view/gif_view.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 
+import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
-import 'package:loading_indicator/loading_indicator.dart';
 
 class AIImage extends StatelessWidget {
   final dynamic src;
@@ -116,6 +117,32 @@ class AIImage extends StatelessWidget {
       case ImageType.file:
         return Image.file(
           src as File,
+          width: width,
+          height: height,
+          fit: fit ?? BoxFit.none,
+          color: color,
+        );
+      case ImageType.gif:
+        if ((src as String).contains('http')) {
+          return GifView.network(
+            src,
+            width: width,
+            height: height,
+            fit: fit ?? BoxFit.none,
+            color: color,
+          );
+        }
+        if (src is File) {
+          return GifView.memory(
+            (src as File).readAsBytesSync(),
+            width: width,
+            height: height,
+            fit: fit ?? BoxFit.none,
+            color: color,
+          );
+        }
+        return GifView.memory(
+          File(src).readAsBytesSync(),
           width: width,
           height: height,
           fit: fit ?? BoxFit.none,
@@ -314,12 +341,14 @@ enum ImageType {
   binary,
   iconData,
   file,
+  gif,
   asset;
 
   static ImageType? getImageType(dynamic src) {
     if (src is String) {
       var data = src;
       if (data.isEmpty) return null;
+      if (data.contains('.gif')) return ImageType.gif;
       if (data.contains('http')) {
         return ImageType.onlineLink;
       } else {

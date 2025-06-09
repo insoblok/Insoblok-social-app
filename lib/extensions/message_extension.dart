@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 
 import 'package:chewie/chewie.dart';
+import 'package:gif_view/gif_view.dart';
 import 'package:video_player/video_player.dart';
 
 import 'package:insoblok/extensions/extensions.dart';
@@ -23,6 +24,8 @@ extension MessageModelExt on MessageModel {
         result = _imageContent();
       case MessageModelType.video:
         result = VideoContent(videoUrl: url ?? 'https://');
+      case MessageModelType.gif:
+        result = _gifContent();
       case MessageModelType.audio:
         result = Container();
       case MessageModelType.paid:
@@ -196,6 +199,13 @@ extension MessageModelExt on MessageModel {
     );
   }
 
+  Widget _gifContent() {
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(8.0),
+      child: GifView.network(url ?? 'https://', width: 180.0),
+    );
+  }
+
   String get messageTime {
     try {
       if (timestamp != null) {
@@ -208,7 +218,7 @@ extension MessageModelExt on MessageModel {
   }
 }
 
-enum MessageModelType { text, image, video, audio, paid }
+enum MessageModelType { text, image, video, gif, audio, paid }
 
 extension MessageModelTypeExt on MessageModelType {
   static MessageModelType fromString(String data) {
@@ -223,6 +233,8 @@ extension MessageModelTypeExt on MessageModelType {
         return MessageModelType.audio;
       case 'paid':
         return MessageModelType.paid;
+      case 'gif':
+        return MessageModelType.gif;
     }
     return MessageModelType.text;
   }

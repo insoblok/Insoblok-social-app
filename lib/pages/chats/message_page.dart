@@ -103,6 +103,7 @@ class MessagePage extends StatelessWidget {
                                   hintText: 'Type something',
                                   border: InputBorder.none,
                                 ),
+                                keyboardType: TextInputType.text,
                                 style: Theme.of(context).textTheme.bodySmall,
                                 maxLines: null,
                                 controller: viewModel.textController,

@@ -6,6 +6,7 @@ import 'package:chewie/chewie.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:video_player/video_player.dart';
 
+import 'package:insoblok/locator.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/pages/pages.dart';
 import 'package:insoblok/services/services.dart';
@@ -103,7 +104,7 @@ class MessageProvider extends InSoBlokViewModel {
       FocusManager.instance.primaryFocus?.unfocus();
     });
 
-    // _mediaPickerService = locator<>;
+    _mediaPickerService = locator<MediaPickerService>();
   }
 
   String? _content;
@@ -189,7 +190,26 @@ class MessageProvider extends InSoBlokViewModel {
   }
 
   Future<void> onPickGif() async {
-    AIHelpers.showToast(msg: 'No support this feature yet!');
+    if (isBusy) return;
+    clearErrors();
+
+    var gif = await _mediaPickerService.onGifPicker();
+    if (gif.isNotEmpty) {
+      var gifUrl = await FirebaseHelper.uploadFile(
+        file: File(gif.first),
+        folderName: 'message',
+      );
+      if (gifUrl != null) {
+        logger.d(gifUrl);
+        await messageService.sendGifMessage(
+          chatRoomId: room.id!,
+          gifUrl: gifUrl,
+        );
+        scrollController.jumpTo(scrollController.position.maxScrollExtent);
+      }
+    }
+
+    // AIHelpers.showToast(msg: 'No support this feature yet!');
   }
 
   Future<void> onPaidEth() async {

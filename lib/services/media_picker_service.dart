@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import 'package:file_picker/file_picker.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:insoblok/services/services.dart';
@@ -164,6 +165,30 @@ class MediaPickerService {
     var isAllowed = await PermissionService.requestGalleryPermission();
     if (isAllowed == true) {
       result = await _picker.pickMultipleMedia(limit: limit);
+    } else {
+      AIHelpers.showToast(msg: 'Permission Denided!');
+    }
+    return result;
+  }
+
+  Future<List<String>> onGifPicker() async {
+    List<String> result = [];
+    var isAllowed = await PermissionService.requestGalleryPermission();
+    if (isAllowed == true) {
+      var pickerResult = await FilePicker.platform.pickFiles(
+        allowMultiple: true,
+        type: FileType.custom,
+        allowedExtensions: ['gif'],
+      );
+      if (pickerResult != null) {
+        List<String?> files =
+            pickerResult.files.map((file) => file.path).toList();
+        for (var file in files) {
+          if (file != null) {
+            result.add(file);
+          }
+        }
+      }
     } else {
       AIHelpers.showToast(msg: 'Permission Denided!');
     }
