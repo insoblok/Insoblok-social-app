@@ -579,19 +579,6 @@ class StoryDetailDialog extends StatelessWidget {
                                   // customize other styles if needed
                                 ),
                               ),
-                              // child: TextFormField(
-                              //   decoration: InputDecoration(
-                              //     hintText: 'Comments...',
-                              //     border: InputBorder.none,
-                              //   ),
-                              //   style: Theme.of(context).textTheme.bodySmall,
-                              //   maxLines: null,
-                              //   controller: viewModel.textController,
-                              //   onChanged:
-                              //       (value) => viewModel.commentContent = value,
-                              //   onFieldSubmitted: (value) {},
-                              //   onSaved: (value) {},
-                              // ),
                             ),
                             Padding(
                               padding: const EdgeInsets.only(
@@ -664,14 +651,24 @@ class StoryDialogMediaView extends ViewModelWidget<StoryContentProvider> {
                       ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(12.0),
-                        child: AspectRatio(
-                          aspectRatio: 3 / 2,
-                          child: AIImage(
-                            viewModel.story.medias![i].link,
-                            fit: BoxFit.cover,
-                            width: double.infinity,
+                        child: Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: AIColors.grey,
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: MediaCarouselCell(
+                            media: viewModel.story.medias![i],
                           ),
                         ),
+                        // child: AspectRatio(
+                        //   aspectRatio: 3 / 2,
+                        //   child: AIImage(
+                        //     viewModel.story.medias![i].link,
+                        //     fit: BoxFit.cover,
+                        //     width: double.infinity,
+                        //   ),
+                        // ),
                       ),
                     ),
                   ),
