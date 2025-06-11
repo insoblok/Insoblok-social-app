@@ -17,7 +17,6 @@ dependencies:
   intl: any
 
   cupertino_icons: any
-  flutter_inappwebview: any
   cached_network_image: any
   flutter_svg: any
   shimmer: any
@@ -32,6 +31,7 @@ dependencies:
   loading_indicator: any
   flutter_staggered_grid_view: any
   gif_view: any
+  image_cropper: any
 
   logger: any
   freezed_annotation: ^3.0.0

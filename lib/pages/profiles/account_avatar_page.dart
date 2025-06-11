@@ -1,9 +1,5 @@
-import 'dart:convert';
-
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:stacked/stacked.dart';
 
 import 'package:insoblok/providers/providers.dart';
@@ -17,205 +13,77 @@ class AccountAvatarPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Account Setting'), centerTitle: true),
+      appBar: AppBar(title: Text('Update Avatar'), centerTitle: true),
       body: ViewModelBuilder<AvatarProvider>.reactive(
         viewModelBuilder: () => AvatarProvider(),
         onViewModelReady: (viewModel) => viewModel.init(context),
         builder: (context, viewModel, _) {
           return Stack(
             children: [
-              InAppWebView(
-                key: GlobalKey(),
-                initialUrlRequest: URLRequest(url: WebUri(kScrappingUrl)),
-                initialSettings: InAppWebViewSettings(
-                  isInspectable: kDebugMode,
-                  useOnLoadResource: true,
-                  mediaPlaybackRequiresUserGesture: false,
-                  allowsInlineMediaPlayback: false,
-                  iframeAllow: "camera; microphone",
-                  iframeAllowFullscreen: true,
-                  disableVerticalScroll: false,
-                  disableHorizontalScroll: true,
-                  allowsBackForwardNavigationGestures: false,
-                  allowsLinkPreview: false,
-                  useHybridComposition: true,
-                  supportZoom: false,
+              ListView(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20.0,
+                  vertical: 24.0,
                 ),
-                onWebViewCreated: (controller) {
-                  viewModel.webViewController = controller;
-                },
-                onLoadStart: (controller, url) {
-                  logger.d('onLoadStart: $url');
-                },
-                onPermissionRequest: (controller, request) async {
-                  return PermissionResponse(
-                    resources: request.resources,
-                    action: PermissionResponseAction.GRANT,
-                  );
-                },
-                shouldOverrideUrlLoading: (controller, navigationAction) async {
-                  return NavigationActionPolicy.ALLOW;
-                },
-                onLoadStop: (controller, url) async {
-                  logger.d('onLoadStop: $url');
-                  viewModel.setWebview();
-                },
-                onReceivedError: (controller, request, error) {
-                  logger.d('onReceivedError: $error');
-                },
-                onProgressChanged: (controller, progress) {
-                  logger.d('onProgressChanged: $progress');
-                },
-                onUpdateVisitedHistory: (controller, url, androidIsReload) {
-                  logger.d('onUpdateVisitedHistory: $url');
-                },
-                onConsoleMessage: (controller, consoleMessage) {
-                  logger.d('onUpdateVisitedHistory: $consoleMessage');
-                },
+                children: [
+                  Text(
+                    'Just Imagine It, We Can Create It. That will take a few progress step. Please follow one by one',
+                    style: Theme.of(context).textTheme.titleSmall,
+                  ),
+                  const SizedBox(height: 16.0),
+                  AvatarRatioView(),
+                  const SizedBox(height: 16.0),
+                  AvatarPromptView(),
+                  const SizedBox(height: 16.0),
+                  AvatarOriginView(),
+                  if (viewModel.hasResult) ...{
+                    const SizedBox(height: 40.0),
+                    AvatarResultView(),
+                  },
+                  const SizedBox(height: 24.0),
+                  TextFillButton(
+                    onTap:
+                        (viewModel.resultFirebaseUrl?.isNotEmpty ?? false)
+                            ? viewModel.postLookbook
+                            : viewModel.onConvert,
+                    isBusy: viewModel.pageStatus?.isNotEmpty ?? false,
+                    color: Theme.of(context).primaryColor,
+                    text:
+                        viewModel.hasResult
+                            ? 'Save to LOOKBOOK'
+                            : 'Convert to AI Image',
+                  ),
+                  SizedBox(height: MediaQuery.of(context).viewPadding.bottom),
+                ],
               ),
-              Align(
-                alignment: Alignment.topCenter,
-                child: SafeArea(
-                  child: Column(
-                    children: [
-                      ValueListenableBuilder<AccountProviderState>(
-                        valueListenable: viewModel.stateListener,
-                        builder: (context, value, _) {
-                          if (value == AccountProviderState.init) {
-                            return AccountHeaderInitView();
-                          }
-                          if (value == AccountProviderState.loaded) {
-                            return AccountHeaderLoadedView();
-                          }
-                          return AccountHeaderReadyView();
-                        },
-                      ),
-                      Expanded(
-                        child: ValueListenableBuilder<AccountProviderState>(
-                          valueListenable: viewModel.stateListener,
-                          builder: (context, value, _) {
-                            if (value == AccountProviderState.init) {
-                              return AccountBodyInitView();
-                            }
-                            return Container(
-                              width: double.infinity,
-                              color: AppSettingHelper.background,
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 58,
-                              ),
-                              child: Column(
-                                children: [
-                                  InkWell(
-                                    onTap: viewModel.onClickConvertImage,
-                                    child: Container(
-                                      width: 280.0,
-                                      height: 44.0,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(
-                                          12.0,
-                                        ),
-                                        color: AIColors.pink,
-                                      ),
-                                      alignment: Alignment.center,
-                                      child: Text(
-                                        'Create Image',
-                                        style: TextStyle(
-                                          fontSize: 16.0,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(height: 50.0),
-                                  Container(
-                                    width: double.infinity,
-                                    height: 188.0,
-                                    decoration: BoxDecoration(
-                                      border: Border.all(
-                                        width: 2.0,
-                                        color: AIColors.borderColor,
-                                      ),
-                                    ),
-                                    alignment: Alignment.center,
-                                    child:
-                                        value == AccountProviderState.done
-                                            ? AIImage(viewModel.aiImageUrl)
-                                            : Text(
-                                              'Created AI Image',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                  ),
-                                  const SizedBox(height: 50.0),
-                                  InkWell(
-                                    onTap: viewModel.onClickConfirm,
-                                    child: Container(
-                                      width: 280.0,
-                                      height: 44.0,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(
-                                          12.0,
-                                        ),
-                                        color: Colors.red,
-                                      ),
-                                      alignment: Alignment.center,
-                                      child: Text(
-                                        'Confirm',
-                                        style: TextStyle(
-                                          fontSize: 16.0,
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          },
+              if (viewModel.pageStatus?.isNotEmpty ?? false)
+                Center(
+                  child: Container(
+                    margin: EdgeInsets.symmetric(horizontal: 40.0),
+                    height: 220.0,
+                    width: double.infinity,
+                    padding: const EdgeInsets.all(40.0),
+                    decoration: BoxDecoration(
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.secondary.withAlpha(64),
+                      borderRadius: BorderRadius.circular(24.0),
+                    ),
+                    alignment: Alignment.center,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      spacing: 24.0,
+                      children: [
+                        Loader(size: 64.0),
+                        Text(
+                          viewModel.pageStatus!,
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.titleSmall,
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
-              ),
-              ValueListenableBuilder<AccountProviderState>(
-                valueListenable: viewModel.stateListener,
-                builder: (context, value, _) {
-                  return value == AccountProviderState.creating
-                      ? Align(
-                        child: Container(
-                          width: double.infinity,
-                          height: double.infinity,
-                          color: Colors.black38,
-                          alignment: Alignment.center,
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Loader(size: 60),
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 24.0,
-                                  horizontal: 60.0,
-                                ),
-                                child: Text(
-                                  'Your image will be ready in nearly 60 seconds. Thank you for your patience!',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      )
-                      : Container();
-                },
-              ),
             ],
           );
         },
@@ -224,83 +92,105 @@ class AccountAvatarPage extends StatelessWidget {
   }
 }
 
-class AccountHeaderInitView extends ViewModelWidget<AvatarProvider> {
-  const AccountHeaderInitView({super.key});
-
-  @override
-  Widget build(BuildContext context, viewModel) {
-    return Container(
-      width: double.infinity,
-      color: AppSettingHelper.background,
-      padding: const EdgeInsets.symmetric(vertical: 50.0, horizontal: 58),
-      child: ShimmerContainer(
-        child: Container(
-          width: double.infinity,
-          height: 188,
-          color: Colors.white,
-        ),
-      ),
-    );
-  }
-}
-
-class AccountHeaderLoadedView extends ViewModelWidget<AvatarProvider> {
-  const AccountHeaderLoadedView({super.key});
+class AvatarRatioView extends ViewModelWidget<AvatarProvider> {
+  const AvatarRatioView({super.key});
 
   @override
   Widget build(BuildContext context, viewModel) {
     return Column(
+      spacing: 8.0,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
       children: [
-        Container(
-          width: double.infinity,
-          height: 52.0,
-          color: AppSettingHelper.background,
-          padding: const EdgeInsets.symmetric(horizontal: 58.0),
-          alignment: Alignment.bottomCenter,
-          child: Container(
-            width: double.infinity,
-            height: 2.0,
-            color: AIColors.borderColor,
-          ),
-        ),
         Row(
           children: [
-            Container(
-              height: 184.0,
-              width: 60.0,
-              decoration: BoxDecoration(
-                color: AppSettingHelper.background,
-                border: Border(
-                  right: BorderSide(width: 2.0, color: AIColors.borderColor),
-                ),
+            Expanded(
+              child: Text(
+                '1. Choose aspect ratio of image',
+                style: Theme.of(context).textTheme.headlineMedium,
               ),
             ),
-            const Spacer(),
-            Container(
-              height: 184.0,
-              width: 60.0,
-              decoration: BoxDecoration(
-                color: AppSettingHelper.background,
-                border: Border(
-                  left: BorderSide(width: 2.0, color: AIColors.borderColor),
-                ),
-              ),
-            ),
+            if (viewModel.ratioIndex != null)
+              Icon(Icons.check_circle, color: Theme.of(context).primaryColor),
           ],
         ),
-        Container(
-          width: double.infinity,
-          height: 52.0,
-          color: AppSettingHelper.background,
-          padding: const EdgeInsets.symmetric(horizontal: 58.0),
-          child: Column(
-            children: [
-              Container(
-                width: double.infinity,
-                height: 2.0,
-                color: AIColors.borderColor,
+        Text(
+          'Image size ratio, must be one of the supported formats Possible values: [1:1, 3:2, 2:3]',
+          style: Theme.of(context).textTheme.labelMedium,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            for (var i = 0; i < kAvatarAspectRatio.length; i++) ...{
+              InkWell(
+                onTap: () => viewModel.ratioIndex = i,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12.0,
+                    vertical: 6.0,
+                  ),
+                  decoration: BoxDecoration(
+                    color:
+                        viewModel.ratioIndex == i
+                            ? Theme.of(
+                              context,
+                            ).colorScheme.primary.withAlpha(64)
+                            : Theme.of(
+                              context,
+                            ).colorScheme.secondary.withAlpha(16),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: Text(kAvatarAspectRatio[i]['title']! as String),
+                ),
               ),
-            ],
+            },
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class AvatarPromptView extends ViewModelWidget<AvatarProvider> {
+  const AvatarPromptView({super.key});
+
+  @override
+  Widget build(BuildContext context, viewModel) {
+    return Column(
+      spacing: 8.0,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: Text(
+                '2. Input prompt description (Optional)',
+                style: Theme.of(context).textTheme.headlineMedium,
+              ),
+            ),
+            Icon(Icons.check_circle, color: Theme.of(context).primaryColor),
+          ],
+        ),
+        Text(
+          'Prompt describing what you want the 4o image to generate. Example: Ghibli AI Image',
+          style: Theme.of(context).textTheme.labelMedium,
+        ),
+        Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16.0),
+          decoration: BoxDecoration(
+            border: Border.all(color: AIColors.greyTextColor, width: 0.5),
+            borderRadius: BorderRadius.circular(16.0),
+          ),
+          child: TextFormField(
+            decoration: InputDecoration(
+              hintText: 'Type something',
+              border: InputBorder.none,
+            ),
+            keyboardType: TextInputType.text,
+            style: Theme.of(context).textTheme.bodySmall,
+            maxLines: null,
+            onChanged: (value) => viewModel.prompt = value,
           ),
         ),
       ],
@@ -308,94 +198,123 @@ class AccountHeaderLoadedView extends ViewModelWidget<AvatarProvider> {
   }
 }
 
-class AccountHeaderReadyView extends ViewModelWidget<AvatarProvider> {
-  const AccountHeaderReadyView({super.key});
+class AvatarOriginView extends ViewModelWidget<AvatarProvider> {
+  const AvatarOriginView({super.key});
 
   @override
   Widget build(BuildContext context, viewModel) {
-    final cleanBase64 = viewModel.base64Org!.split(',').last;
-    final bytes = base64.decode(cleanBase64);
-
-    return Container(
-      width: double.infinity,
-      color: AppSettingHelper.background,
-      padding: const EdgeInsets.symmetric(horizontal: 58),
-      child: Column(
-        children: [
-          Container(
-            width: double.infinity,
-            height: 50.0,
-            alignment: Alignment.center,
-            child: InkWell(
-              onTap: viewModel.onClickClearButton,
+    return Column(
+      spacing: 8.0,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Row(
+          children: [
+            Expanded(
               child: Text(
-                'Clear'.toUpperCase(),
-                style: TextStyle(
-                  fontSize: 16.0,
-                  color: Colors.red,
-                  fontWeight: FontWeight.bold,
-                ),
+                '3. Choose origin image',
+                style: Theme.of(context).textTheme.headlineMedium,
+              ),
+            ),
+            if (viewModel.originPath != null)
+              Icon(Icons.check_circle, color: Theme.of(context).primaryColor),
+          ],
+        ),
+        Text(
+          'Supported file formats: .jfif, .pjpeg, .jpeg, .pjp, .jpg, .png, .webp',
+          style: Theme.of(context).textTheme.labelMedium,
+        ),
+        Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: AIColors.greyTextColor, width: 0.5),
+            borderRadius: BorderRadius.circular(16.0),
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(16.0),
+            child: AspectRatio(
+              aspectRatio: 3 / 2,
+              child: Stack(
+                children: [
+                  SizedBox(
+                    width: double.infinity,
+                    child:
+                        viewModel.originFile == null
+                            ? InkWell(
+                              onTap: viewModel.onImagePicker,
+                              child: Center(
+                                child: Column(
+                                  mainAxisSize: MainAxisSize.min,
+                                  spacing: 20.0,
+                                  children: [
+                                    AIImage(AIImages.icShare),
+                                    Text('Click to upload image'),
+                                  ],
+                                ),
+                              ),
+                            )
+                            : AIImage(
+                              viewModel.originFile,
+                              fit: BoxFit.contain,
+                            ),
+                  ),
+                  if (viewModel.originFile != null &&
+                      viewModel.resultFirebaseUrl == null)
+                    Positioned(
+                      right: 20.0,
+                      top: 12.0,
+                      child: InkWell(
+                        onTap: () => viewModel.originPath = null,
+                        child: Container(
+                          width: 32.0,
+                          height: 32.0,
+                          decoration: BoxDecoration(
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.secondary.withAlpha(16),
+                            shape: BoxShape.circle,
+                          ),
+                          child: Icon(Icons.close),
+                        ),
+                      ),
+                    ),
+                ],
               ),
             ),
           ),
-          Container(
-            width: double.infinity,
-            height: 188,
-            padding: const EdgeInsets.all(20.0),
-            decoration: BoxDecoration(
-              border: Border.all(width: 2.0, color: AIColors.borderColor),
-            ),
-            child: AIImage(bytes, fit: BoxFit.contain),
-          ),
-          const SizedBox(height: 50.0),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
 
-class AccountBodyInitView extends ViewModelWidget<AvatarProvider> {
-  const AccountBodyInitView({super.key});
+class AvatarResultView extends ViewModelWidget<AvatarProvider> {
+  const AvatarResultView({super.key});
 
   @override
   Widget build(BuildContext context, viewModel) {
-    return Container(
-      width: double.infinity,
-      color: AppSettingHelper.background,
-      padding: const EdgeInsets.symmetric(horizontal: 58),
-      child: Column(
-        children: [
-          ShimmerContainer(
-            child: Container(
-              width: 280.0,
-              height: 44.0,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12.0),
-              ),
+    return Column(
+      spacing: 8.0,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(
+          'Result of AI Avatar',
+          style: Theme.of(context).textTheme.titleSmall,
+        ),
+        Container(
+          decoration: BoxDecoration(
+            border: Border.all(color: AIColors.greyTextColor, width: 0.5),
+            borderRadius: BorderRadius.circular(16.0),
+          ),
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(16.0),
+            child: AspectRatio(
+              aspectRatio: 3 / 2,
+              child: AIImage(viewModel.resultFirebaseUrl, fit: BoxFit.contain),
             ),
           ),
-          const SizedBox(height: 50.0),
-          ShimmerContainer(
-            child: Container(
-              width: double.infinity,
-              height: 188.0,
-              color: Colors.white,
-            ),
-          ),
-          const SizedBox(height: 50.0),
-          ShimmerContainer(
-            child: Container(
-              width: 280.0,
-              height: 44.0,
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(12.0),
-              ),
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }

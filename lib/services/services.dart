@@ -15,3 +15,4 @@ export 'reown_service.dart';
 export 'product_service.dart';
 export 'user_service.dart';
 export 'tastescore_service.dart';
+export 'avatar_service.dart';

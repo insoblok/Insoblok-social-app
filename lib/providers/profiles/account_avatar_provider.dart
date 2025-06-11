@@ -1,15 +1,14 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
+import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 
-const kScrappingUrl = 'https://genimg.ai/';
-
 class AvatarProvider extends InSoBlokViewModel {
-  var stateListener = ValueNotifier(AccountProviderState.init);
-
   late BuildContext _context;
   BuildContext get context => _context;
   set context(BuildContext context) {
@@ -17,133 +16,263 @@ class AvatarProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  InAppWebViewController? webViewController;
-
   Future<void> init(BuildContext context) async {
     this.context = context;
   }
 
-  Future<void> setWebview() async {
-    webViewController?.scrollTo(x: 0, y: 650);
-
-    // Inject CSS to disable scrolling
-    await webViewController?.injectCSSCode(
-      source: """
-      html, body {
-        overflow: hidden !important;
-        overscroll-behavior: none !important;
-      }
-    """,
-    );
-
-    // Additional JavaScript to prevent touch events
-    await webViewController?.evaluateJavascript(
-      source: """
-      document.addEventListener('touchmove', function(e) {
-        e.preventDefault();
-      }, { passive: false });
-      
-      document.documentElement.style.overscrollBehavior = 'none';
-    """,
-    );
-
-    stateListener.value = AccountProviderState.loaded;
-    getOrgImageData();
+  int? _ratioIndex;
+  int? get ratioIndex => _ratioIndex;
+  set ratioIndex(int? i) {
+    _ratioIndex = i;
+    notifyListeners();
   }
 
-  String? _base64Org;
-  String? get base64Org => _base64Org;
-
-  Future<void> getOrgImageData() async {
-    var imageTag = await webViewController?.callAsyncJavaScript(
-      functionBody: """
-const images = document.getElementsByClassName("max-h-[200px] rounded-lg object-contain shadow-md");
-if (images.length > 0) {
-  const image = images[0];
-  return image.getAttribute("src");
-}
-return null;
-    """,
-    );
-    if (imageTag?.value != null) {
-      _base64Org = imageTag?.value;
-      stateListener.value = AccountProviderState.ready;
-    } else {
-      await Future.delayed(const Duration(milliseconds: 1000));
-      getOrgImageData();
-    }
+  String? _prompt;
+  String? get prompt => _prompt;
+  set prompt(String? s) {
+    _prompt = s;
+    notifyListeners();
   }
 
-  Future<void> onClickClearButton() async {
-    var receiveOnClickEvent = '''
-  const buttons = document.getElementsByClassName('inline-flex items-center justify-center gap-2 whitespace-nowrap text-sm font-medium focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0 hover:text-accent-foreground h-9 w-9 absolute -right-2 -top-2 rounded-full bg-white/80 backdrop-blur-sm border shadow hover:bg-white/90 transition-all hover:scale-105');
-  var button = buttons[0];
-  button.click();
-''';
-    await webViewController?.callAsyncJavaScript(
-      functionBody: receiveOnClickEvent,
-    );
-    stateListener.value = AccountProviderState.loaded;
-    _base64Org = null;
-    getOrgImageData();
+  String? _originPath;
+  String? get originPath => _originPath;
+  set originPath(String? s) {
+    _originPath = s;
+    notifyListeners();
   }
 
-  Future<void> onClickConvertImage() async {
-    if (_base64Org == null) {
-      AIHelpers.showToast(msg: 'Please choose an origin image.');
-      return;
-    }
-    var receiveOnClickEvent = '''
-  const buttons = document.getElementsByTagName('button');
-  var button = buttons[5];
-  button.click();
-''';
-    await webViewController?.callAsyncJavaScript(
-      functionBody: receiveOnClickEvent,
-    );
-    stateListener.value = AccountProviderState.creating;
-    Future.delayed(const Duration(seconds: 15), getAIImageData);
-  }
+  File? get originFile => originPath == null ? null : File(originPath!);
 
-  String? _aiImageUrl;
-  String? get aiImageUrl => _aiImageUrl;
+  final _avatarService = AvatarService();
 
-  Future<void> getAIImageData() async {
-    var imageTag = await webViewController?.callAsyncJavaScript(
-      functionBody: """
-const images = document.getElementsByClassName("aspect-square h-[200px] w-[200px] object-cover hover:scale-105 transition-transform duration-200 cursor-zoom-in");
-if (images.length > 0) {
-  const image = images[0];
-  return image.getAttribute("src");
-}
-return null;
-    """,
-    );
-    if (imageTag?.value != null) {
-      _aiImageUrl = imageTag?.value;
-      stateListener.value = AccountProviderState.done;
-    } else {
-      await Future.delayed(const Duration(milliseconds: 1000));
-      getAIImageData();
-    }
-  }
-
-  Future<void> onClickConfirm() async {
-    if (aiImageUrl == null) {
-      AIHelpers.showToast(
-        msg: 'We didn\'t get an AI image yet. Please try to create image',
+  Future<void> onImagePicker() async {
+    if (ratioIndex == null) {
+      Fluttertoast.showToast(
+        msg: 'Should be set aspect ratio before choose image',
       );
       return;
     }
-    var url = await FirebaseHelper.uploadImageFromUrl(imageUrl: aiImageUrl!);
-    Navigator.of(context).pop(url);
+    if (isBusy) return;
+    clearErrors();
+
+    await runBusyFuture(() async {
+      try {
+        var result = await _avatarService.pickCropImage(ratioIndex!);
+        if (result != null) {
+          originPath = result;
+        }
+      } catch (e) {
+        setError(e);
+        logger.e(e);
+      } finally {
+        notifyListeners();
+      }
+    }());
+
+    if (hasError) {
+      Fluttertoast.showToast(msg: modelError.toString());
+    }
   }
 
-  @override
-  void dispose() {
-    webViewController?.dispose();
-    super.dispose();
+  String? _pageStatus;
+  String? get pageStatus => _pageStatus;
+  set pageStatus(String? s) {
+    _pageStatus = s;
+    notifyListeners();
   }
+
+  String? _originUrl;
+  String? get originUrl => _originUrl;
+  set originUrl(String? s) {
+    _originUrl = s;
+    notifyListeners();
+  }
+
+  String? _resultFirebaseUrl;
+  String? get resultFirebaseUrl => _resultFirebaseUrl;
+  set resultFirebaseUrl(String? s) {
+    _resultFirebaseUrl = s;
+    notifyListeners();
+  }
+
+  bool get hasResult => resultFirebaseUrl?.isNotEmpty ?? false;
+
+  Future<void> onConvert() async {
+    if (originPath == null) {
+      Fluttertoast.showToast(msg: 'Please choose an origin image first');
+      return;
+    }
+
+    if (isBusy) return;
+    clearErrors();
+
+    pageStatus = 'Uploading an origin image to firebase service';
+
+    try {
+      originUrl = await _avatarService.uploadOriginAvatar(originFile!);
+      if (originUrl == null) throw ('Server error!');
+
+      pageStatus = 'Sending an origin image to ai service';
+      var taskId = await _avatarService.createTask(
+        fileUrl: originUrl!,
+        prompt: prompt,
+        size: kAvatarAspectRatio[ratioIndex!]['size'] as String,
+      );
+      if (taskId == null) throw ('AI service error!');
+      var aiResult = await _avatarService.setOnProgressListener(
+        taskId,
+        onProgressListener: (progress) {
+          pageStatus = 'Converting to ${(double.parse(progress) * 100)}%...';
+        },
+      );
+      if (aiResult['status'] != 'SUCCESS') throw (aiResult['status']);
+
+      pageStatus = 'Downloading a result image from ai service';
+      String aiUrl = (aiResult['response']['resultUrls'] as List).first;
+      var resultUrl = await _avatarService.downloadAvatar(taskId, url: aiUrl);
+      if (resultUrl == null) throw ('AI service error!');
+
+      pageStatus = 'Almost done!';
+      resultFirebaseUrl = await _avatarService.uploadResultAvatar(resultUrl);
+
+      await AuthHelper.updateUser(user!.copyWith(avatar: resultFirebaseUrl));
+    } catch (e, s) {
+      setError(e);
+      logger.e(e);
+      logger.e(s);
+    } finally {
+      pageStatus = null;
+    }
+
+    if (hasError) {
+      Fluttertoast.showToast(msg: modelError.toString());
+    }
+  }
+
+  bool _isAddOriginImage = false;
+  bool get isAddOriginImage => _isAddOriginImage;
+  set isAddOriginImage(bool f) {
+    _isAddOriginImage = f;
+    notifyListeners();
+  }
+
+  Future<void> postLookbook() async {
+    if (isBusy) return;
+    clearErrors();
+
+    try {
+      pageStatus = 'Saving to LOOKBOOK...';
+
+      var hasDescription = await _showDescriptionDialog();
+      String? description;
+      if (hasDescription == true) {
+        description = await AIHelpers.goToDescriptionView(context);
+      }
+
+      var story = StoryModel(
+        title: 'AI Avatar',
+        text: description ?? prompt,
+        category: 'vote',
+        status: 'private',
+        medias: [
+          MediaStoryModel(link: originUrl!, type: 'image'),
+          MediaStoryModel(link: resultFirebaseUrl, type: 'image'),
+        ],
+        updateDate: DateTime.now(),
+        timestamp: DateTime.now(),
+      );
+      await storyService.postStory(story: story);
+      AIHelpers.showToast(msg: 'Successfully posted Avatar to LOOKBOOK!');
+
+      Navigator.of(context).pop(resultFirebaseUrl);
+    } catch (e, s) {
+      setError(e);
+      logger.e(e);
+      logger.e(s);
+    } finally {
+      pageStatus = null;
+    }
+
+    if (hasError) {
+      Fluttertoast.showToast(msg: modelError.toString());
+    }
+  }
+
+  Future<bool?> _showDescriptionDialog() => showDialog<bool>(
+    context: context,
+    builder: (context) {
+      return Center(
+        child: Container(
+          margin: const EdgeInsets.all(40.0),
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.onSecondary,
+            borderRadius: BorderRadius.circular(20.0),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Add Description',
+                style: Theme.of(context).textTheme.titleSmall,
+              ),
+              const SizedBox(height: 16.0),
+              Text(
+                'Do you just want to add a description for LOOKBOOK post?',
+                style: Theme.of(context).textTheme.labelLarge,
+              ),
+              const SizedBox(height: 24.0),
+              Row(
+                spacing: 24.0,
+                children: [
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () => Navigator.of(context).pop(true),
+                      child: Container(
+                        height: 44.0,
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).primaryColor,
+                          borderRadius: BorderRadius.circular(16.0),
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          'Add',
+                          style: Theme.of(
+                            context,
+                          ).textTheme.bodyMedium?.copyWith(
+                            color: Theme.of(context).colorScheme.onSecondary,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () => Navigator.of(context).pop(),
+                      child: Container(
+                        height: 44.0,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            width: 2.0,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                          borderRadius: BorderRadius.circular(16.0),
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          'Skip',
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(color: Theme.of(context).primaryColor),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
 }
-
-enum AccountProviderState { init, loaded, ready, creating, done }

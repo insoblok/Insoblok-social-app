@@ -15,6 +15,7 @@
         <domain includeSubdomains="true">www.cryptologos.cc</domain>
         <domain includeSubdomains="true">www.newsdata.io</domain>
         <domain includeSubdomains="true">www.thenewblack.ai</domain>
+        <domain includeSubdomains="true">kieai.erweima.ai</domain>
     </domain-config>
 </network-security-config>
 

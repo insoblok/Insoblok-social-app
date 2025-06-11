@@ -124,8 +124,7 @@ class FirebaseService {
       var response = await dio.get(
         imageUrl,
         onReceiveProgress: (p, v) {
-          logger.d(p);
-          logger.d(v);
+          logger.d('${(p / v * 100).toStringAsFixed(2)}%');
         },
         options: Options(
           responseType: ResponseType.bytes,

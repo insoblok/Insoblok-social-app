@@ -57,7 +57,7 @@ class AccountPage extends StatelessWidget {
                     SliverList(
                       delegate: SliverChildListDelegate([
                         if (viewModel.pageIndex == 0) ...{
-                          for (var story in viewModel.stories) ...{
+                          for (var story in viewModel.stories.reversed) ...{
                             AccountStoryListCell(story: story),
                           },
                         },

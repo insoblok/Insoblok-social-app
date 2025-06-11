@@ -146,7 +146,7 @@ class VTOImagePage extends StatelessWidget {
                         TextFillButton(
                           text:
                               viewModel.serverUrl != null
-                                  ? 'Save to LookBook'
+                                  ? 'Save to LOOKBOOK'
                                   : 'Convert Now',
                           isBusy: viewModel.isConverting,
                           onTap:
@@ -174,7 +174,7 @@ class VTOImagePage extends StatelessWidget {
                               const SizedBox(height: 8.0),
                               OutlineButton(
                                 isBusy: viewModel.isConverting,
-                                onTap: viewModel.savetoPost,
+                                onTap: viewModel.saveToPost,
                                 borderColor: Theme.of(context).primaryColor,
                                 child: Text(
                                   'Create Yay/Nay Poll',

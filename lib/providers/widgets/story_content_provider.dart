@@ -414,7 +414,7 @@ class StoryContentProvider extends InSoBlokViewModel {
 
           await tastScoreService.repostScore(story);
 
-          AIHelpers.showToast(msg: 'Successfully reposted to Lookbook!');
+          AIHelpers.showToast(msg: 'Successfully reposted to LOOKBOOK!');
 
           Navigator.of(context).pop(true);
         }
@@ -451,7 +451,7 @@ class StoryContentProvider extends InSoBlokViewModel {
               ),
               const SizedBox(height: 16.0),
               Text(
-                'Do you want to repost this story to your LookBook post?',
+                'Do you want to repost this story to your LOOKBOOK post?',
                 style: Theme.of(context).textTheme.labelLarge,
               ),
               const SizedBox(height: 24.0),
@@ -470,12 +470,11 @@ class StoryContentProvider extends InSoBlokViewModel {
                         alignment: Alignment.center,
                         child: Text(
                           'Add',
-                          style: Theme.of(context).textTheme.bodyMedium
-                              ?.copyWith(
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.onSecondary,
-                              ),
+                          style: Theme.of(
+                            context,
+                          ).textTheme.bodyMedium?.copyWith(
+                            color: Theme.of(context).colorScheme.onSecondary,
+                          ),
                         ),
                       ),
                     ),

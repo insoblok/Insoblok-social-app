@@ -25,7 +25,7 @@ class LookbookView extends StatelessWidget {
                   length: 3,
                   child: SliverAppBar(
                     leading: AppLeadingView(),
-                    title: Text('LookBook'),
+                    title: Text('LOOKBOOK'),
                     centerTitle: true,
                     pinned: true,
                     bottom: PreferredSize(
@@ -66,7 +66,7 @@ class LookbookView extends StatelessWidget {
                 if (viewModel.isBusy) ...{
                   SliverFillRemaining(child: Center(child: Loader(size: 60))),
                 },
-                if (viewModel.filterStories.isEmpty) ...{
+                if (viewModel.filterStories.isEmpty && !viewModel.isBusy) ...{
                   SliverFillRemaining(
                     child: Center(
                       child: Column(
@@ -81,7 +81,7 @@ class LookbookView extends StatelessWidget {
                           ),
                           const SizedBox(height: 40.0),
                           Text(
-                            'LookBook is Empty\nPlease try any action on Story!',
+                            'LOOKBOOK is Empty\nPlease try any action on Story!',
                             textAlign: TextAlign.center,
                           ),
                         ],

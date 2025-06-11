@@ -1,11 +1,8 @@
-import 'dart:collection';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:stacked/stacked.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/services/services.dart';
@@ -23,64 +20,64 @@ class PrivacyPage extends StatelessWidget {
           body: SafeArea(
             child: Stack(
               children: [
-                InAppWebView(
-                  key: GlobalKey(),
-                  initialUrlRequest: URLRequest(
-                    url: WebUri('https://www.insoblokai.io/privacy-policy'),
-                  ),
-                  initialUserScripts: UnmodifiableListView<UserScript>([]),
-                  initialSettings: viewModel.settings,
-                  onWebViewCreated: (controller) async {
-                    viewModel.webViewController = controller;
-                  },
-                  onLoadStart: (controller, url) {
-                    logger.d(url);
-                  },
-                  onPermissionRequest: (controller, request) async {
-                    return PermissionResponse(
-                      resources: request.resources,
-                      action: PermissionResponseAction.GRANT,
-                    );
-                  },
-                  shouldOverrideUrlLoading: (
-                    controller,
-                    navigationAction,
-                  ) async {
-                    var uri = navigationAction.request.url!;
+                // InAppWebView(
+                //   key: GlobalKey(),
+                //   initialUrlRequest: URLRequest(
+                //     url: WebUri('https://www.insoblokai.io/privacy-policy'),
+                //   ),
+                //   initialUserScripts: UnmodifiableListView<UserScript>([]),
+                //   initialSettings: viewModel.settings,
+                //   onWebViewCreated: (controller) async {
+                //     viewModel.webViewController = controller;
+                //   },
+                //   onLoadStart: (controller, url) {
+                //     logger.d(url);
+                //   },
+                //   onPermissionRequest: (controller, request) async {
+                //     return PermissionResponse(
+                //       resources: request.resources,
+                //       action: PermissionResponseAction.GRANT,
+                //     );
+                //   },
+                //   shouldOverrideUrlLoading: (
+                //     controller,
+                //     navigationAction,
+                //   ) async {
+                //     var uri = navigationAction.request.url!;
 
-                    if (![
-                      "http",
-                      "https",
-                      "file",
-                      "chrome",
-                      "data",
-                      "javascript",
-                      "about",
-                    ].contains(uri.scheme)) {
-                      if (await canLaunchUrl(uri)) {
-                        await launchUrl(uri);
-                        return NavigationActionPolicy.CANCEL;
-                      }
-                    }
+                //     if (![
+                //       "http",
+                //       "https",
+                //       "file",
+                //       "chrome",
+                //       "data",
+                //       "javascript",
+                //       "about",
+                //     ].contains(uri.scheme)) {
+                //       if (await canLaunchUrl(uri)) {
+                //         await launchUrl(uri);
+                //         return NavigationActionPolicy.CANCEL;
+                //       }
+                //     }
 
-                    return NavigationActionPolicy.ALLOW;
-                  },
-                  onLoadStop: (controller, url) {
-                    logger.d('onLoadStop');
-                  },
-                  onReceivedError: (controller, request, error) {
-                    logger.d('onReceivedError');
-                  },
-                  onProgressChanged: (controller, progress) {
-                    logger.d(progress);
-                  },
-                  onUpdateVisitedHistory: (controller, url, isReload) {
-                    logger.d(url);
-                  },
-                  onConsoleMessage: (controller, consoleMessage) {
-                    logger.d(consoleMessage);
-                  },
-                ),
+                //     return NavigationActionPolicy.ALLOW;
+                //   },
+                //   onLoadStop: (controller, url) {
+                //     logger.d('onLoadStop');
+                //   },
+                //   onReceivedError: (controller, request, error) {
+                //     logger.d('onReceivedError');
+                //   },
+                //   onProgressChanged: (controller, progress) {
+                //     logger.d(progress);
+                //   },
+                //   onUpdateVisitedHistory: (controller, url, isReload) {
+                //     logger.d(url);
+                //   },
+                //   onConsoleMessage: (controller, consoleMessage) {
+                //     logger.d(consoleMessage);
+                //   },
+                // ),
                 Container(
                   width: double.infinity,
                   height: 80.0,

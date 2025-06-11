@@ -24,6 +24,9 @@ class NetworkService with ListenableServiceMixin {
   final RxValue<Dio?> _newsApiRx = RxValue<Dio?>(null);
   Dio? get newsApiDio => _newsApiRx.value;
 
+  final RxValue<Dio?> _avatarApiRx = RxValue<Dio?>(null);
+  Dio? get avatarApiDio => _avatarApiRx.value;
+
   InterceptorsWrapper get apiInterceptor => InterceptorsWrapper(
     onRequest: (RequestOptions options, handler) {
       return handler.next(options);
@@ -37,7 +40,7 @@ class NetworkService with ListenableServiceMixin {
   );
 
   NetworkService() {
-    listenToReactiveValues([_vtoApiRx, _newsApiRx]);
+    listenToReactiveValues([_vtoApiRx, _newsApiRx, _avatarApiRx]);
   }
 
   Map<String, dynamic> _nonNullJson(Map<String, dynamic>? json) {
@@ -70,6 +73,18 @@ class NetworkService with ListenableServiceMixin {
             ..options.validateStatus = ((status) => (status ?? 1) > 0)
             ..interceptors.add(LogInterceptor());
       _newsApiRx.value = newsApi;
+
+      var avatarApi =
+          Dio()
+            ..options.baseUrl = 'https://kieai.erweima.ai/api/v1/gpt4o-image/'
+            ..options.validateStatus = ((status) => (status ?? 1) > 0)
+            ..options.headers = {
+              'Content-Type': 'application/json',
+              'Accept': 'application/json',
+              'Authorization': 'Bearer $kKieAIApiKey',
+            }
+            ..interceptors.add(LogInterceptor());
+      _avatarApiRx.value = avatarApi;
 
       notifyListeners();
     } catch (e) {
@@ -155,6 +170,36 @@ class NetworkService with ListenableServiceMixin {
     return response;
   }
 
+  Future<Response> avatarApiRequest(
+    String path, {
+    String method = 'GET',
+    Map<String, dynamic>? queryParams,
+    Map<String, dynamic>? postParams,
+    Function(int, int)? onSendProgress,
+    Function(int, int)? onReceiveProgress,
+  }) async {
+    var startTime = DateTime.now();
+
+    var qParm = queryParams ?? {};
+    var pParm = postParams ?? {};
+
+    var dio =
+        avatarApiDio!
+          ..options.queryParameters = _nonNullJson(qParm)
+          ..options.method = method
+          ..interceptors.add(apiInterceptor);
+    final response = await dio.request(
+      path,
+      data: json.encode(pParm),
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+
+    var endTime = DateTime.now();
+    logger.i(endTime.difference(startTime).inMilliseconds);
+    return response;
+  }
+
   Future<File?> downloadFile(
     String link,
     String type,
@@ -226,6 +271,22 @@ class NetworkHelper {
     Function(int, int)? onSendProgress,
     Function(int, int)? onReceiveProgress,
   }) => service.newsApiRequest(
+    path,
+    method: method,
+    queryParams: queryParams,
+    postParams: postParams,
+    onSendProgress: onSendProgress,
+    onReceiveProgress: onReceiveProgress,
+  );
+
+  static Future<Response> avatarApiRequest(
+    String path, {
+    String method = 'GET',
+    Map<String, dynamic>? queryParams,
+    Map<String, dynamic>? postParams,
+    Function(int, int)? onSendProgress,
+    Function(int, int)? onReceiveProgress,
+  }) => service.avatarApiRequest(
     path,
     method: method,
     queryParams: queryParams,
