@@ -398,7 +398,7 @@ class VTOImageProvider extends InSoBlokViewModel {
     }
   }
 
-  Future<void> savetoPost() async {
+  Future<void> saveToPost() async {
     if (isBusy) return;
     clearErrors();
 

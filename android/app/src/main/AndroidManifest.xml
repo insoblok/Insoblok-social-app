@@ -89,19 +89,14 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name="com.yalantis.ucrop.UCropActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Ucrop.CropTheme"/>
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="${applicationId}.provider"
-            android:exported="false"
-            android:grantUriPermissions="true">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_path" />
-        </provider>
-
-        <provider
-            android:name="com.pichillilorenzo.flutter_inappwebview_android.InAppWebViewFileProvider"
-            android:authorities="${applicationId}.flutter_inappwebview_android.fileprovider"
             android:exported="false"
             android:grantUriPermissions="true">
             <meta-data

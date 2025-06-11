@@ -89,4 +89,70 @@ class NetworkUtil {
     }
     return null;
   }
+
+  static Future<Map<String, dynamic>?> createKieAvatar(
+    Map<String, dynamic> request,
+  ) async {
+    try {
+      var response = await NetworkHelper.avatarApiRequest(
+        'generate',
+        method: APIMETHOD.post,
+        postParams: request,
+      );
+      return response.data;
+    } on DioException catch (e) {
+      logger.e(e.message);
+    } catch (e) {
+      logger.e(e.toString());
+    }
+    return null;
+  }
+
+  static Map<String, dynamic> kieGenerateMap({
+    required String fileUrl,
+    String? prompt,
+    required String size,
+  }) => {
+    // (Optional) List of file URLs, such as image URLs. Maximum 5 images supported. Supported file formats: .jfif, .pjpeg, .jpeg, .pjp, .jpg, .png, .webp
+    "filesUrl": [fileUrl],
+    // (Optional) Prompt describing what you want the 4o image to generate. Either fileUrl/filesUrl or prompt must be provided Example: A beautiful sunset over the mountains
+    "prompt": prompt,
+    // (Required) Image size ratio, must be one of the supported formats Possible values: [1:1, 3:2, 2:3]
+    "size": size,
+    "nVariants": 1,
+  };
+
+  static Future<Map<String, dynamic>?> getKieProgress(String taskId) async {
+    try {
+      var response = await NetworkHelper.avatarApiRequest(
+        'record-info',
+        queryParams: {'taskId': taskId},
+      );
+      return response.data;
+    } on DioException catch (e) {
+      logger.e(e.message);
+    } catch (e) {
+      logger.e(e.toString());
+    }
+    return null;
+  }
+
+  static Future<Map<String, dynamic>?> downloadKieAvatar({
+    required String taskId,
+    required String url,
+  }) async {
+    try {
+      var response = await NetworkHelper.avatarApiRequest(
+        'download-url',
+        method: APIMETHOD.post,
+        postParams: {'taskId': taskId, 'url': url},
+      );
+      return response.data;
+    } on DioException catch (e) {
+      logger.e(e.message);
+    } catch (e) {
+      logger.e(e.toString());
+    }
+    return null;
+  }
 }

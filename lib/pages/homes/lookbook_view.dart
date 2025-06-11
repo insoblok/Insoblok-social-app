@@ -73,7 +73,7 @@ class LookbookView extends StatelessWidget {
                 if (viewModel.isBusy) ...{
                   SliverFillRemaining(child: Center(child: Loader(size: 60))),
                 },
-                if (viewModel.filterStories.isEmpty) ...{
+                if (viewModel.filterStories.isEmpty && !viewModel.isBusy) ...{
                   SliverFillRemaining(
                     child: Center(
                       child: Column(
