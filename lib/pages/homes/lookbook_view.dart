@@ -25,7 +25,7 @@ class LookbookView extends StatelessWidget {
                   length: 4,
                   child: SliverAppBar(
                     leading: AppLeadingView(),
-                    title: Text('LookBook'),
+                    title: Text('LOOKBOOK'),
                     centerTitle: true,
                     pinned: true,
                     bottom: PreferredSize(
@@ -41,28 +41,28 @@ class LookbookView extends StatelessWidget {
                             height: 30.0,
                             child: Text(
                               'Stories',
-                              style: Theme.of(context).textTheme.bodyMedium,
+                              style: Theme.of(context).textTheme.headlineMedium,
                             ),
                           ),
                           Tab(
                             height: 30.0,
                             child: Text(
                               'Posts',
-                              style: Theme.of(context).textTheme.bodyMedium,
+                              style: Theme.of(context).textTheme.headlineMedium,
                             ),
                           ),
                           Tab(
                             height: 30.0,
                             child: Text(
                               'Comments',
-                              style: Theme.of(context).textTheme.bodyMedium,
+                              style: Theme.of(context).textTheme.headlineMedium,
                             ),
                           ),
                           Tab(
                             height: 30.0,
                             child: Text(
                               'Likes',
-                              style: Theme.of(context).textTheme.bodyMedium,
+                              style: Theme.of(context).textTheme.headlineMedium,
                             ),
                           ),
                         ],
@@ -88,7 +88,7 @@ class LookbookView extends StatelessWidget {
                           ),
                           const SizedBox(height: 40.0),
                           Text(
-                            'LookBook is Empty\nPlease try any action on Story!',
+                            'LOOKBOOK is Empty\nPlease try any action on Story!',
                             textAlign: TextAlign.center,
                           ),
                         ],

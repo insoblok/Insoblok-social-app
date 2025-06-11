@@ -45,21 +45,9 @@ class StoryDetailCommentCell extends StatelessWidget {
                   Row(
                     children: [
                       Expanded(
-                        child: Text.rich(
-                          maxLines: 1,
-                          overflow: TextOverflow.ellipsis,
-                          TextSpan(
-                            children: [
-                              TextSpan(
-                                text: user?.fullName ?? '---',
-                                style: Theme.of(context).textTheme.bodyMedium,
-                              ),
-                              TextSpan(
-                                text: ' @${user?.nickId}',
-                                style: Theme.of(context).textTheme.labelLarge,
-                              ),
-                            ],
-                          ),
+                        child: Text(
+                          user?.fullName ?? '---',
+                          style: Theme.of(context).textTheme.headlineSmall,
                         ),
                       ),
                       Text(

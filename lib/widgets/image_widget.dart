@@ -53,17 +53,15 @@ class _StoryCarouselViewState extends State<StoryCarouselView> {
       }
     } else if (medias.length == 1) {
       var media = medias.first;
-      if (media.type == 'image') {
-        return AspectRatio(
-          aspectRatio: 3 / 2,
-          child: AIImage(
-            media.link,
-            height: widget.height,
-            fit: BoxFit.cover,
-            width: double.infinity,
-          ),
-        );
-      } else {}
+      return Container(
+        width: double.infinity,
+        height: widget.height,
+        decoration: BoxDecoration(
+          color: AIColors.grey,
+          borderRadius: BorderRadius.circular(6),
+        ),
+        child: MediaCarouselCell(media: media, height: widget.height),
+      );
     }
     return ValueListenableBuilder(
       valueListenable: indexListener,
@@ -198,14 +196,19 @@ class _MediaCarouselCellState extends State<MediaCarouselCell> {
                     height: constraints.maxHeight,
                     child: Stack(
                       children: [
-                        AspectRatio(
-                          aspectRatio: _videoPlayerController.value.aspectRatio,
-                          child: FittedBox(
-                            fit: BoxFit.cover,
-                            child: SizedBox(
-                              width: _videoPlayerController.value.size.width,
-                              height: _videoPlayerController.value.size.height,
-                              child: Chewie(controller: _chewieController),
+                        Align(
+                          alignment: Alignment.center,
+                          child: AspectRatio(
+                            aspectRatio:
+                                _videoPlayerController.value.aspectRatio,
+                            child: FittedBox(
+                              fit: BoxFit.cover,
+                              child: SizedBox(
+                                width: _videoPlayerController.value.size.width,
+                                height:
+                                    _videoPlayerController.value.size.height,
+                                child: Chewie(controller: _chewieController),
+                              ),
                             ),
                           ),
                         ),

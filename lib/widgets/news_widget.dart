@@ -49,19 +49,26 @@ class NewsListCell extends StatelessWidget {
                 spacing: 8.0,
                 runSpacing: 4.0,
                 children: [
-                  for (var category in (news.keywords ?? [])) ...{
+                  for (
+                    int i = 0;
+                    i <
+                        ((news.keywords!.length > 5)
+                            ? 5
+                            : news.keywords!.length);
+                    i++
+                  ) ...{
                     Container(
                       padding: const EdgeInsets.symmetric(
                         horizontal: 8.0,
                         vertical: 2.0,
                       ),
                       decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Theme.of(context).primaryColor,
-                        ),
-                        borderRadius: BorderRadius.circular(24.0),
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.secondary.withAlpha(16),
+                        borderRadius: BorderRadius.circular(8.0),
                       ),
-                      child: Text(category, style: TextStyle(fontSize: 12.0)),
+                      child: Text(news.keywords?[i] ?? '--'),
                     ),
                   },
                 ],

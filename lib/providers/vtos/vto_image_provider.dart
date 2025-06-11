@@ -384,7 +384,7 @@ class VTOImageProvider extends InSoBlokViewModel {
           story: storyAddedToLookbook!,
         );
         storyAddedToLookbook = storyAddedToLookbook!.copyWith(id: storyId);
-        AIHelpers.showToast(msg: 'Successfully posted VTO to Lookbook!');
+        AIHelpers.showToast(msg: 'Successfully posted VTO to LOOKBOOK!');
       } catch (e, s) {
         setError(e);
         logger.e(e, stackTrace: s);
@@ -467,7 +467,7 @@ class VTOImageProvider extends InSoBlokViewModel {
               ),
               const SizedBox(height: 16.0),
               Text(
-                'Do you just want to add a description for LookBook post?',
+                'Do you just want to add a description for LOOKBOOK post?',
                 style: Theme.of(context).textTheme.labelLarge,
               ),
               const SizedBox(height: 24.0),

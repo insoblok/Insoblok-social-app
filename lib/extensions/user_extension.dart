@@ -18,6 +18,18 @@ var kAvatarColors = [
   AIColors.red,
 ];
 
+List<Color> getGradientColors(int number) {
+  List<Color> colors = [];
+  if (number > kAvatarColors.length) {
+    colors.addAll(kAvatarColors);
+  } else {
+    for (int i = 0; i < number; i++) {
+      colors.add(kAvatarColors[i]);
+    }
+  }
+  return colors;
+}
+
 extension UserModelExt on UserModel {
   bool isLike() {
     var like = likes ?? [];
@@ -41,18 +53,6 @@ extension UserModelExt on UserModel {
     } catch (e) {
       return firstName ?? '';
     }
-  }
-
-  List<Color> getGradientColors(int number) {
-    List<Color> colors = [];
-    if (number > kAvatarColors.length) {
-      colors.addAll(kAvatarColors);
-    } else {
-      for (int i = 0; i < number; i++) {
-        colors.add(kAvatarColors[i]);
-      }
-    }
-    return colors;
   }
 
   Widget avatarStatusView({

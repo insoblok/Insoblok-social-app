@@ -53,23 +53,27 @@ class AccountStoryListCell extends StatelessWidget {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text.rich(
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            TextSpan(
-                              children: [
-                                TextSpan(
-                                  text: viewModel.owner?.fullName ?? '---',
-                                  style: Theme.of(context).textTheme.bodyMedium,
-                                ),
-                                TextSpan(
-                                  text:
-                                      ' @${viewModel.owner?.nickId} • ${viewModel.story.timestamp?.timeago}',
-                                  style: Theme.of(context).textTheme.labelLarge,
-                                ),
-                              ],
-                            ),
+                          Text(
+                            viewModel.owner?.fullName ?? '---',
+                            style: Theme.of(context).textTheme.headlineMedium,
                           ),
+                          // Text.rich(
+                          //   maxLines: 1,
+                          //   overflow: TextOverflow.ellipsis,
+                          //   TextSpan(
+                          //     children: [
+                          //       TextSpan(
+                          //         text: viewModel.owner?.fullName ?? '---',
+                          //         style: Theme.of(context).textTheme.bodyMedium,
+                          //       ),
+                          //       TextSpan(
+                          //         text:
+                          //             ' @${viewModel.owner?.nickId} • ${viewModel.story.timestamp?.timeago}',
+                          //         style: Theme.of(context).textTheme.labelLarge,
+                          //       ),
+                          //     ],
+                          //   ),
+                          // ),
                           AIHelpers.htmlRender(viewModel.story.text),
                           if (medias.isNotEmpty) ...{
                             const SizedBox(height: 8.0),

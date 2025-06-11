@@ -97,7 +97,8 @@ class StoryService {
         logger.e(e.message);
       }
     }
-    return result;
+    return result
+      ..sort((b, a) => a.timestamp!.difference(b.timestamp!).inSeconds);
   }
 
   // Get stories by like

@@ -43,7 +43,6 @@ class StoryListCell extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Column(
                         mainAxisSize: MainAxisSize.min,
@@ -68,10 +67,10 @@ class StoryListCell extends StatelessWidget {
                           children: [
                             Text(
                               viewModel.owner?.fullName ?? '---',
-                              style: Theme.of(context).textTheme.bodyMedium,
+                              style: Theme.of(context).textTheme.headlineMedium,
                             ),
                             Text(
-                              '@${viewModel.owner?.nickId} • ${viewModel.story.timestamp?.timeago}',
+                              '${viewModel.story.timestamp?.timeago}',
                               style: Theme.of(context).textTheme.labelMedium,
                             ),
                           ],
@@ -234,7 +233,7 @@ class StoryDetailDialog extends StatelessWidget {
                               color: AIColors.speraterColor,
                             ),
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 InkWell(
                                   onTap: viewModel.updateLike,
@@ -579,19 +578,6 @@ class StoryDetailDialog extends StatelessWidget {
                                   // customize other styles if needed
                                 ),
                               ),
-                              // child: TextFormField(
-                              //   decoration: InputDecoration(
-                              //     hintText: 'Comments...',
-                              //     border: InputBorder.none,
-                              //   ),
-                              //   style: Theme.of(context).textTheme.bodySmall,
-                              //   maxLines: null,
-                              //   controller: viewModel.textController,
-                              //   onChanged:
-                              //       (value) => viewModel.commentContent = value,
-                              //   onFieldSubmitted: (value) {},
-                              //   onSaved: (value) {},
-                              // ),
                             ),
                             Padding(
                               padding: const EdgeInsets.only(
@@ -664,14 +650,24 @@ class StoryDialogMediaView extends ViewModelWidget<StoryContentProvider> {
                       ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(12.0),
-                        child: AspectRatio(
-                          aspectRatio: 3 / 2,
-                          child: AIImage(
-                            viewModel.story.medias![i].link,
-                            fit: BoxFit.cover,
-                            width: double.infinity,
+                        child: Container(
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: AIColors.grey,
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: MediaCarouselCell(
+                            media: viewModel.story.medias![i],
                           ),
                         ),
+                        // child: AspectRatio(
+                        //   aspectRatio: 3 / 2,
+                        //   child: AIImage(
+                        //     viewModel.story.medias![i].link,
+                        //     fit: BoxFit.cover,
+                        //     width: double.infinity,
+                        //   ),
+                        // ),
                       ),
                     ),
                   ),
