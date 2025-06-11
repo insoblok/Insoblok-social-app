@@ -76,7 +76,7 @@ class ProductItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // var category = (product.tags ?? []).isEmpty ? null : product.tags!.first;
+    var medias = product.medias ?? [];
     return Container(
       decoration: BoxDecoration(
         color: AppSettingHelper.background,
@@ -84,8 +84,8 @@ class ProductItemWidget extends StatelessWidget {
         boxShadow: [
           BoxShadow(
             color: AppSettingHelper.greyBackground,
-            blurRadius: 2.0,
-            spreadRadius: 3.0,
+            blurRadius: 1.0,
+            spreadRadius: 2.0,
           ),
         ],
       ),
@@ -93,99 +93,31 @@ class ProductItemWidget extends StatelessWidget {
         onTap: onTap,
         child: ClipRRect(
           borderRadius: BorderRadius.circular(8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+          child: Stack(
             children: [
-              AspectRatio(
-                aspectRatio: 1,
-                child: Stack(
-                  children: [
-                    AIImage(
-                      product.avatarImage ?? product.modelImage,
-                      width: double.infinity,
-                      height: double.infinity,
-                    ),
-                    if (product.avatarImage == null &&
-                        (product.medias?.isNotEmpty ?? false))
-                      Positioned(
-                        right: 4.0,
-                        bottom: 4.0,
-                        child: ClipRRect(
-                          borderRadius: BorderRadius.circular(8.0),
-                          child: AIImage(
-                            product.medias?.first.link,
-                            width: 80.0,
-                            height: 100.0,
-                          ),
-                        ),
-                      ),
-                  ],
-                ),
+              AIImage(
+                medias.isNotEmpty
+                    ? medias.last.link
+                    : product.avatarImage ?? product.modelImage,
+                width: double.infinity,
               ),
-              const SizedBox(height: 4.0),
-              Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Container(
-                    //   padding: const EdgeInsets.symmetric(
-                    //     horizontal: 8.0,
-                    //     vertical: 4.0,
-                    //   ),
-                    //   decoration: BoxDecoration(
-                    //     border: Border.all(
-                    //       color: Theme.of(context).primaryColor,
-                    //       width: 0.33,
-                    //     ),
-                    //     borderRadius: BorderRadius.circular(24.0),
-                    //   ),
-                    //   child: Text(
-                    //     product.categoryName ?? '',
-                    //     style: Theme.of(context).textTheme.bodySmall,
-                    //   ),
-                    // ),
-                    // if (category != null) ...{
-                    //   const SizedBox(height: 8.0),
-                    //   Container(
-                    //     padding: const EdgeInsets.symmetric(
-                    //       horizontal: 8.0,
-                    //       vertical: 4.0,
-                    //     ),
-                    //     decoration: BoxDecoration(
-                    //       border: Border.all(
-                    //         color: Theme.of(context).primaryColor,
-                    //         width: 0.33,
-                    //       ),
-                    //       borderRadius: BorderRadius.circular(24.0),
-                    //     ),
-                    //     child: Text(
-                    //       category,
-                    //       style: Theme.of(context).textTheme.bodySmall,
-                    //     ),
-                    //   ),
-                    // },
-                    // const SizedBox(height: 8.0),
-                    Text(
-                      product.name ?? '',
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.bodyLarge,
+              Positioned.fill(
+                child: Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 8.0,
+                      horizontal: 4.0,
                     ),
-                    // const SizedBox(height: 2.0),
-                    // Text(
-                    //   product.timestamp?.timeago ?? '',
-                    //   style: Theme.of(context).textTheme.labelSmall,
-                    // ),
-                    // const SizedBox(height: 8.0),
-                    // Container(
-                    //   constraints: BoxConstraints(maxHeight: 80.0),
-                    //   child: AIHelpers.htmlRender(
-                    //     product.description,
-                    //     fontSize: FontSize(12.0),
-                    //   ),
-                    // ),
-                  ],
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSecondary.withAlpha(160),
+                    child: Text(
+                      product.name ?? '',
+                      style: Theme.of(context).textTheme.headlineMedium,
+                    ),
+                  ),
                 ),
               ),
             ],

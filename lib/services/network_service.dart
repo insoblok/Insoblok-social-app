@@ -219,7 +219,7 @@ class NetworkService with ListenableServiceMixin {
         savePath,
         onReceiveProgress: (received, total) {
           if (total != -1) {
-            logger.i('${(received / total * 100).toStringAsFixed(0)}%');
+            // logger.i('${(received / total * 100).toStringAsFixed(0)}%');
           }
         },
       );
