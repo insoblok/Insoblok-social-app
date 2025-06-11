@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:insoblok/routers/routers.dart';
 
 import 'package:stacked/stacked.dart';
 
@@ -498,6 +499,7 @@ class VTOResultImageView extends ViewModelWidget<VTOImageProvider> {
                                 () => AIHelpers.goToDetailView(context, [
                                   viewModel.serverUrl!,
                                 ]),
+                            // onTap: () => Routers.goToVTODetailPage(context),
                           ),
                           CircleImageButton(
                             src: Icons.share,
@@ -616,12 +618,13 @@ class VTOGalleryView extends ViewModelWidget<VTOImageProvider> {
                           ),
                           child: InkWell(
                             onTap:
-                                () => AIHelpers.goToDetailView(
-                                  context,
-                                  medias
-                                      .map((media) => media.link ?? '')
-                                      .toList(),
-                                ),
+                                // () => AIHelpers.goToDetailView(
+                                //   context,
+                                //   medias
+                                //       .map((media) => media.link ?? '')
+                                //       .toList(),
+                                // ),
+                                () => Routers.goToVTODetailPage(context),
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(8.0),
                               child: Stack(

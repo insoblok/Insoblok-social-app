@@ -93,6 +93,10 @@ class Routers {
     return _pushToRoute(context, kRouterMarketVTOImage, product);
   }
 
+  static dynamic goToVTODetailPage(BuildContext context) {
+    return _pushToRoute(context, kRouterMarketVTODetail, null);
+  }
+
   static dynamic goToVTOAddProduct(BuildContext context) {
     return _pushToRoute(context, kRouterVTOAddProduct, null);
   }
