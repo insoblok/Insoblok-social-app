@@ -52,6 +52,8 @@ void main() async {
 
 final Navigation _navigation = Navigation();
 
+final scaffoldKey = GlobalKey<ScaffoldMessengerState>();
+
 class InSoBlokApp extends StatelessWidget {
   const InSoBlokApp({super.key});
 
@@ -71,6 +73,7 @@ class InSoBlokApp extends StatelessWidget {
             darkTheme: AppSettingHelper.darkTheme,
             initialRoute: kRouterBase,
             onGenerateRoute: _navigation.router.generator,
+            scaffoldMessengerKey: scaffoldKey,
             home: LoginPage(),
             localizationsDelegates: const [
               GlobalMaterialLocalizations.delegate,

@@ -2,7 +2,6 @@ import 'dart:io';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
-import 'package:insoblok/routers/routers.dart';
 
 import 'package:stacked/stacked.dart';
 
@@ -85,48 +84,11 @@ class VTOImagePage extends StatelessWidget {
 
                     const SizedBox(height: 24.0),
                     TextFillButton(
-                      text:
-                          viewModel.serverUrl != null
-                              ? 'Save to LOOKBOOK'
-                              : 'Convert Now',
+                      text: 'Convert Now',
                       isBusy: viewModel.isConverting,
-                      onTap:
-                          viewModel.serverUrl != null
-                              ? viewModel.savetoLookBook
-                              : viewModel.onClickConvert,
+                      onTap: viewModel.onClickConvert,
                       color: Theme.of(context).primaryColor,
                     ),
-                    if (viewModel.serverUrl != null)
-                      Column(
-                        children: [
-                          const SizedBox(height: 8.0),
-                          OutlineButton(
-                            isBusy: viewModel.isConverting,
-                            onTap: viewModel.onClickShareButton,
-                            borderColor: Theme.of(context).primaryColor,
-                            child: Text(
-                              'Share to Twitter',
-                              style: TextStyle(
-                                fontSize: 16.0,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 8.0),
-                          OutlineButton(
-                            isBusy: viewModel.isConverting,
-                            onTap: viewModel.saveToPost,
-                            borderColor: Theme.of(context).primaryColor,
-                            child: Text(
-                              'Create Yay/Nay Poll',
-                              style: TextStyle(
-                                fontSize: 16.0,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
                   ],
                 ),
               ),
@@ -285,31 +247,6 @@ class VTOFashionImageView extends ViewModelWidget<VTOImageProvider> {
                           ),
                 ),
               ),
-              if (viewModel.serverUrl != null) ...{
-                Align(
-                  alignment: Alignment.topRight,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      spacing: 8.0,
-                      children: [
-                        CircleImageButton(
-                          src: Icons.fullscreen,
-                          onTap:
-                              () => AIHelpers.goToDetailView(context, [
-                                viewModel.serverUrl!,
-                              ]),
-                        ),
-                        CircleImageButton(
-                          src: Icons.share,
-                          onTap: viewModel.onClickShareButton,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              },
             ],
           ),
         ),
@@ -421,32 +358,6 @@ class VTOResultImageView extends ViewModelWidget<VTOImageProvider> {
                             ),
                   ),
                 ),
-                if (viewModel.serverUrl != null) ...{
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        spacing: 8.0,
-                        children: [
-                          CircleImageButton(
-                            src: Icons.fullscreen,
-                            onTap:
-                                () => AIHelpers.goToDetailView(context, [
-                                  viewModel.serverUrl!,
-                                ]),
-                            // onTap: () => Routers.goToVTODetailPage(context),
-                          ),
-                          CircleImageButton(
-                            src: Icons.share,
-                            onTap: viewModel.onClickShareButton,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                },
               ],
             ),
           ),
@@ -555,13 +466,12 @@ class VTOGalleryView extends ViewModelWidget<VTOImageProvider> {
                           ),
                           child: InkWell(
                             onTap:
-                                // () => AIHelpers.goToDetailView(
-                                //   context,
-                                //   medias
-                                //       .map((media) => media.link ?? '')
-                                //       .toList(),
-                                // ),
-                                () => Routers.goToVTODetailPage(context),
+                                () => AIHelpers.goToDetailView(
+                                  context,
+                                  medias
+                                      .map((media) => media.link ?? '')
+                                      .toList(),
+                                ),
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(8.0),
                               child: Stack(

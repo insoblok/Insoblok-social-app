@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/pages/pages.dart';
+import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/routers/routers.dart';
 
 class Routers {
@@ -93,8 +94,11 @@ class Routers {
     return _pushToRoute(context, kRouterMarketVTOImage, product);
   }
 
-  static dynamic goToVTODetailPage(BuildContext context) {
-    return _pushToRoute(context, kRouterMarketVTODetail, null);
+  static dynamic goToVTODetailPage(
+    BuildContext context,
+    VTODetailPageModel model,
+  ) {
+    return _pushReplacement(context, kRouterMarketVTODetail, model);
   }
 
   static dynamic goToVTOAddProduct(BuildContext context) {

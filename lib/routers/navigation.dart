@@ -4,6 +4,7 @@ import 'package:fluro/fluro.dart' as fluro;
 
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/pages/pages.dart';
+import 'package:insoblok/providers/providers.dart';
 
 const kRouterBase = '/';
 const kRouterLogin = '/login';
@@ -134,7 +135,10 @@ class Navigation {
     );
 
     // * Marketlace VTO Detail
-    initRoute(kRouterMarketVTODetail, (props) => VTODetailPage());
+    initRoute<VTODetailPageModel>(
+      kRouterMarketVTODetail,
+      (props) => VTODetailPage(model: props!),
+    );
 
     // * Marketlace Add Product
     initRoute(kRouterVTOAddProduct, (props) => AddProductPage());
