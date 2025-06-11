@@ -43,7 +43,6 @@ class StoryListCell extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Column(
                         mainAxisSize: MainAxisSize.min,
@@ -68,10 +67,10 @@ class StoryListCell extends StatelessWidget {
                           children: [
                             Text(
                               viewModel.owner?.fullName ?? '---',
-                              style: Theme.of(context).textTheme.bodyMedium,
+                              style: Theme.of(context).textTheme.headlineMedium,
                             ),
                             Text(
-                              '@${viewModel.owner?.nickId} • ${viewModel.story.timestamp?.timeago}',
+                              '${viewModel.story.timestamp?.timeago}',
                               style: Theme.of(context).textTheme.labelMedium,
                             ),
                           ],
@@ -234,7 +233,7 @@ class StoryDetailDialog extends StatelessWidget {
                               color: AIColors.speraterColor,
                             ),
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 InkWell(
                                   onTap: viewModel.updateLike,

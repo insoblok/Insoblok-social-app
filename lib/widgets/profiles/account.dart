@@ -39,17 +39,15 @@ class AccountPresentHeaderView extends ViewModelWidget<AccountProvider> {
                   margin: const EdgeInsets.only(left: 32.0),
                   width: kAccountAvatarSize,
                   height: kAccountAvatarSize,
-                  decoration: BoxDecoration(
-                    border: Border.all(width: 2.0, color: AIColors.pink),
-                    borderRadius: BorderRadius.circular(
-                      kAccountAvatarSize / 2.0,
-                    ),
-                  ),
                   child: ClipOval(
                     child: AIAvatarImage(
                       viewModel.accountUser?.avatar,
                       fullname: viewModel.accountUser?.nickId ?? 'Test',
+                      width: kAccountAvatarSize,
+                      height: kAccountAvatarSize,
                       textSize: 28.0,
+                      borderWidth: 4,
+                      borderRadius: 36,
                     ),
                   ),
                 ),
@@ -211,7 +209,7 @@ class AccountFloatingHeaderView extends ViewModelWidget<AccountProvider> {
                   kAccountPageTitles[i],
                   style:
                       viewModel.pageIndex == i
-                          ? Theme.of(context).textTheme.bodyMedium
+                          ? Theme.of(context).textTheme.headlineMedium
                           : Theme.of(context).textTheme.labelLarge,
                 ),
               ),

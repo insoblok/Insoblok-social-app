@@ -146,7 +146,7 @@ class VTOImagePage extends StatelessWidget {
                         TextFillButton(
                           text:
                               viewModel.serverUrl != null
-                                  ? 'Save to LookBook'
+                                  ? 'Save to LOOKBOOK'
                                   : 'Convert Now',
                           isBusy: viewModel.isConverting,
                           onTap:

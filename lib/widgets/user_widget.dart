@@ -244,10 +244,10 @@ class UserRelatedView extends StatelessWidget {
                         children: [
                           Text(
                             viewModel.owner?.fullName ?? '---',
-                            style: Theme.of(context).textTheme.bodyMedium,
+                            style: Theme.of(context).textTheme.headlineMedium,
                           ),
                           Text(
-                            '@${viewModel.owner?.nickId} • ${viewModel.owner?.timestamp?.mdyFormatter}',
+                            '${viewModel.owner?.timestamp?.mdyFormatter}',
                             style: Theme.of(context).textTheme.labelLarge,
                           ),
                         ],

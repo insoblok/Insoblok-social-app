@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:gif_view/gif_view.dart';
+import 'package:gradient_borders/box_borders/gradient_box_border.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 
 import 'package:insoblok/extensions/extensions.dart';
@@ -262,6 +263,59 @@ class Loader extends StatelessWidget {
   }
 }
 
+class AIAvatarDefaultView extends StatelessWidget {
+  final String fullname;
+  final double? textSize;
+  final double? width;
+  final double? height;
+  final double? borderWidth;
+  final double? borderRadius;
+
+  const AIAvatarDefaultView({
+    super.key,
+    required this.fullname,
+    this.textSize,
+    this.width,
+    this.height,
+    this.borderWidth,
+    this.borderRadius,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: width ?? 60,
+      height: height ?? 60,
+      decoration: BoxDecoration(
+        border: GradientBoxBorder(
+          gradient: LinearGradient(colors: getGradientColors(fullname.length)),
+          width: borderWidth ?? 2,
+        ),
+        borderRadius: BorderRadius.circular(borderRadius ?? 30.0),
+      ),
+
+      child: ClipOval(
+        child: Container(
+          color:
+              fullname.length > kAvatarColors.length
+                  ? AIColors.pink
+                  : kAvatarColors[fullname.length - 1],
+          child: Align(
+            alignment: Alignment.center,
+            child: Text(
+              fullname[0].toUpperCase(),
+              style: TextStyle(
+                fontSize: textSize ?? 14.0,
+                color: AIColors.white,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
 class AIAvatarImage extends StatelessWidget {
   final dynamic avatar;
   final String fullname;
@@ -270,6 +324,8 @@ class AIAvatarImage extends StatelessWidget {
   final BoxFit? fit;
   final Color? color;
   final double? textSize;
+  final double? borderWidth;
+  final double? borderRadius;
   final bool noCache;
   final Color? backgroundColor;
   final bool noTransitions;
@@ -282,6 +338,8 @@ class AIAvatarImage extends StatelessWidget {
     this.height,
     this.fit,
     this.color,
+    this.borderWidth,
+    this.borderRadius,
     this.noCache = false,
     this.backgroundColor,
     this.noTransitions = false,
@@ -300,36 +358,32 @@ class AIAvatarImage extends StatelessWidget {
           fit: fit ?? BoxFit.cover,
           fadeInDuration: Duration(milliseconds: noTransitions ? 0 : 500),
           errorWidget: (context, e, _) {
-            return AIDefaultImage(
+            return AIAvatarDefaultView(
+              fullname: fullname,
+              textSize: textSize,
               width: width,
               height: height,
-              hasSpinner: hasSpinner,
+              borderWidth: borderWidth,
+              borderRadius: borderRadius,
             );
           },
           placeholder:
-              (ctx, _) => AIDefaultImage(
+              (ctx, _) => AIAvatarDefaultView(
+                fullname: fullname,
+                textSize: textSize,
                 width: width,
                 height: height,
-                hasSpinner: hasSpinner,
+                borderWidth: borderWidth,
+                borderRadius: borderRadius,
               ),
         )
-        : Container(
+        : AIAvatarDefaultView(
+          fullname: fullname,
+          textSize: textSize,
           width: width,
           height: height,
-          color:
-              fullname.length > kAvatarColors.length
-                  ? AIColors.pink
-                  : kAvatarColors[fullname.length - 1],
-          child: Align(
-            alignment: Alignment.center,
-            child: Text(
-              fullname[0].toUpperCase(),
-              style: TextStyle(
-                fontSize: textSize ?? 14.0,
-                color: AIColors.white,
-              ),
-            ),
-          ),
+          borderWidth: borderWidth,
+          borderRadius: borderRadius,
         );
   }
 }
