@@ -44,7 +44,7 @@ class _StoryCarouselViewState extends State<StoryCarouselView> {
           child: AIImage(
             AIImages.placehold,
             height: widget.height,
-            fit: BoxFit.cover,
+            fit: BoxFit.fitHeight,
             width: double.infinity,
           ),
         );
@@ -187,7 +187,7 @@ class _MediaCarouselCellState extends State<MediaCarouselCell> {
                 widget.media.link,
                 width: double.infinity,
                 height: widget.height,
-                fit: BoxFit.cover,
+                fit: BoxFit.fitHeight,
               )
               : _videoPlayerController.value.isInitialized
               ? LayoutBuilder(

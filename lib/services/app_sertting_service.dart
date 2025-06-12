@@ -176,7 +176,7 @@ class AppSettingService with ListenableServiceMixin {
         color: AIColors.lightTextColor,
       ),
       headlineSmall: TextStyle(
-        fontSize: 12.0,
+        fontSize: 13.0,
         fontWeight: FontWeight.bold,
         color: AIColors.lightTextColor,
       ),
@@ -307,7 +307,7 @@ class AppSettingService with ListenableServiceMixin {
         color: AIColors.darkTextColor,
       ),
       headlineSmall: TextStyle(
-        fontSize: 12.0,
+        fontSize: 13.0,
         fontWeight: FontWeight.bold,
         color: AIColors.darkTextColor,
       ),

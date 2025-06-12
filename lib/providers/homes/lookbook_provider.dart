@@ -35,6 +35,7 @@ class LookbookProvider extends InSoBlokViewModel {
     });
 
     fetchData();
+    fetchMyStories();
   }
 
   @override
@@ -45,6 +46,9 @@ class LookbookProvider extends InSoBlokViewModel {
 
   final List<StoryModel> _stories = [];
   List<StoryModel> get stories => _stories;
+
+  final List<StoryModel> _myStories = [];
+  List<StoryModel> get myStories => _myStories;
 
   List<StoryModel> _filterStories = [];
   List<StoryModel> get filterStories => _filterStories;
@@ -77,34 +81,48 @@ class LookbookProvider extends InSoBlokViewModel {
     }
   }
 
+  Future<void> fetchMyStories() async {
+    _myStories.clear();
+    try {
+      var ss = await storyService.getStoriesByUid(AuthHelper.user!.uid!);
+      _myStories.addAll(ss);
+    } catch (e) {
+      setError(e);
+      logger.e(e);
+    } finally {
+      notifyListeners();
+    }
+  }
+
   Future<void> filterList(int index) async {
     filterStories.clear();
-    for (var story in stories) {
-      if (index == 0) {
-        if ((story.votes ?? [])
-            .map((vote) => vote.uid)
-            .toList()
-            .contains(AuthHelper.user?.uid)) {
-          filterStories.add(story);
-        }
-      } else if (index == 1) {
-        if (story.uid == AuthHelper.user?.uid) {
-          filterStories.add(story);
-        }
-      } else if (index == 2) {
-        if ((story.comments ?? [])
-            .map((comment) => comment.uid)
-            .toList()
-            .contains(AuthHelper.user?.uid)) {
-          filterStories.add(story);
-        }
-      } else if (index == 3) {
-        if (story.likes != null &&
-            story.likes!.contains(AuthHelper.user?.uid)) {
-          filterStories.add(story);
+    if (index == 1) {
+      filterStories.addAll(myStories);
+    } else {
+      for (var story in stories) {
+        if (index == 0) {
+          if ((story.votes ?? [])
+              .map((vote) => vote.uid)
+              .toList()
+              .contains(AuthHelper.user?.uid)) {
+            filterStories.add(story);
+          }
+        } else if (index == 2) {
+          if ((story.comments ?? [])
+              .map((comment) => comment.uid)
+              .toList()
+              .contains(AuthHelper.user?.uid)) {
+            filterStories.add(story);
+          }
+        } else if (index == 3) {
+          if (story.likes != null &&
+              story.likes!.contains(AuthHelper.user?.uid)) {
+            filterStories.add(story);
+          }
         }
       }
     }
+
     notifyListeners();
   }
 

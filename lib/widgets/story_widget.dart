@@ -78,8 +78,15 @@ class StoryListCell extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 16.0),
-                  AIHelpers.htmlRender(viewModel.story.text),
+                  if (viewModel.story.text != null &&
+                      viewModel.story.text != '')
+                    Column(
+                      children: [
+                        const SizedBox(height: 16.0),
+                        AIHelpers.htmlRender(viewModel.story.text),
+                      ],
+                    ),
+
                   const SizedBox(height: 16.0),
                   Expanded(
                     child: Container(

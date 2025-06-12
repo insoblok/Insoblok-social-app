@@ -41,28 +41,28 @@ class LookbookView extends StatelessWidget {
                             height: 30.0,
                             child: Text(
                               'Stories',
-                              style: Theme.of(context).textTheme.headlineMedium,
+                              style: Theme.of(context).textTheme.headlineSmall,
                             ),
                           ),
                           Tab(
                             height: 30.0,
                             child: Text(
                               'Posts',
-                              style: Theme.of(context).textTheme.headlineMedium,
+                              style: Theme.of(context).textTheme.headlineSmall,
                             ),
                           ),
                           Tab(
                             height: 30.0,
                             child: Text(
                               'Comments',
-                              style: Theme.of(context).textTheme.headlineMedium,
+                              style: Theme.of(context).textTheme.headlineSmall,
                             ),
                           ),
                           Tab(
                             height: 30.0,
                             child: Text(
                               'Likes',
-                              style: Theme.of(context).textTheme.headlineMedium,
+                              style: Theme.of(context).textTheme.headlineSmall,
                             ),
                           ),
                         ],
