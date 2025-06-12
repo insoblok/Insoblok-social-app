@@ -170,12 +170,14 @@ class VTOImageProvider extends InSoBlokViewModel {
     await runBusyFuture(() async {
       try {
         isConverting = true;
-        originUrl = await FirebaseHelper.uploadFile(
-          file: File(selectedFile!.path),
-          folderName: product.categoryName?.toLowerCase() ?? 'clothing',
-        );
+        if (originUrl?.isEmpty ?? true) {
+          originUrl = await FirebaseHelper.uploadFile(
+            file: File(selectedFile!.path),
+            folderName: product.categoryName?.toLowerCase() ?? 'clothing',
+          );
+        }
 
-        if (originUrl == null) {
+        if (originUrl?.isEmpty ?? true) {
           throw ('Failed origin image uploaded!');
         }
 
