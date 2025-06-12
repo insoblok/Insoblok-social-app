@@ -22,7 +22,7 @@ class MarketPlacePage extends StatelessWidget {
             slivers: [
               AISliverAppbar(
                 context,
-                title: Text('Marketplace'),
+                title: Text('MarketPlace'),
                 pinned: true,
                 actions: [
                   IconButton(
@@ -72,9 +72,9 @@ class MarketPlacePage extends StatelessWidget {
                 sliver: SliverList(
                   delegate: SliverChildListDelegate([
                     StaggeredGrid.count(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 16.0,
-                      mainAxisSpacing: 16.0,
+                      crossAxisCount: 3,
+                      crossAxisSpacing: 8.0,
+                      mainAxisSpacing: 8.0,
                       children: [
                         ...viewModel.filterProducts.map((p) {
                           return ProductItemWidget(

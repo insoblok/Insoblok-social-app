@@ -4,7 +4,7 @@ import 'package:fluro/fluro.dart' as fluro;
 
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/pages/pages.dart';
-import 'package:insoblok/pages/vtos/market_page.dart';
+import 'package:insoblok/providers/providers.dart';
 
 const kRouterBase = '/';
 const kRouterLogin = '/login';
@@ -29,6 +29,7 @@ const kRouterMessage = '/message';
 const kRouterMessageSetting = '/message-setting';
 
 const kRouterMarketVTOImage = '/vto-image';
+const kRouterMarketVTODetail = '/vto-detail';
 const kRouterVTOAddProduct = '/vto-add-product';
 
 const kRouterAddStory = '/add-story';
@@ -131,6 +132,12 @@ class Navigation {
     initRoute<ProductModel>(
       kRouterMarketVTOImage,
       (props) => VTOImagePage(product: props!),
+    );
+
+    // * Marketlace VTO Detail
+    initRoute<VTODetailPageModel>(
+      kRouterMarketVTODetail,
+      (props) => VTODetailPage(model: props!),
     );
 
     // * Marketlace Add Product

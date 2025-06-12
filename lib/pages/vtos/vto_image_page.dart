@@ -23,176 +23,76 @@ class VTOImagePage extends StatelessWidget {
       viewModelBuilder: () => VTOImageProvider(),
       onViewModelReady: (viewModel) => viewModel.init(context, p: product),
       builder: (context, viewModel, _) {
+        var medias = viewModel.product.medias ?? [];
         return Scaffold(
           appBar: AppBar(title: Text(product.name ?? 'VTO'), centerTitle: true),
-          body: Stack(
+          body: ListView(
+            physics: BouncingScrollPhysics(),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 20.0,
+              vertical: 24.0,
+            ),
             children: [
-              ListView(
-                physics: BouncingScrollPhysics(),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20.0,
-                  vertical: 24.0,
-                ),
-                children: [
-                  AIImage(
-                    viewModel.product.modelImage,
-                    width: double.infinity,
-                    height: 240.0,
-                    fit: BoxFit.contain,
-                  ),
-                  const SizedBox(height: 12.0),
-                  Row(
-                    spacing: 12.0,
-                    children: [
-                      Expanded(
-                        child: InkWell(
-                          onTap: () => viewModel.tagIndex = 0,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(vertical: 12.0),
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              border:
-                                  viewModel.tagIndex == 0
-                                      ? Border(
-                                        bottom: BorderSide(
-                                          width: 2.0,
-                                          color: AIColors.pink,
-                                        ),
-                                      )
-                                      : null,
-                            ),
-                            child: Text(
-                              'Information',
-                              style:
-                                  viewModel.tagIndex == 0
-                                      ? Theme.of(context).textTheme.bodyMedium
-                                      : Theme.of(context).textTheme.labelLarge,
-                            ),
-                          ),
-                        ),
-                      ),
-                      Expanded(
-                        child: InkWell(
-                          onTap: () => viewModel.tagIndex = 1,
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(vertical: 12.0),
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              border:
-                                  viewModel.tagIndex == 1
-                                      ? Border(
-                                        bottom: BorderSide(
-                                          width: 2.0,
-                                          color: AIColors.pink,
-                                        ),
-                                      )
-                                      : null,
-                            ),
-                            child: Text(
-                              'Uesr Gallery(s)',
-                              style:
-                                  viewModel.tagIndex == 1
-                                      ? Theme.of(context).textTheme.bodyMedium
-                                      : Theme.of(context).textTheme.labelLarge,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  viewModel.tagIndex == 0
-                      ? VTOInformationView()
-                      : VTOGalleryView(),
-                  const SizedBox(height: 24.0),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 8.0),
-                    child: Text(
-                      'Take a Model',
-                      style: Theme.of(context).textTheme.titleSmall,
-                    ),
-                  ),
-                  const SizedBox(height: 8.0),
-                  Container(
-                    padding: const EdgeInsets.all(16.0),
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Theme.of(context).primaryColor),
-                      borderRadius: BorderRadius.circular(16.0),
-                    ),
-                    child: Column(
-                      children: [
-                        Text(
-                          'Important: You will first receive an id number with this call. Then you will have to retrieve the image after 30/40 seconds during the second call using this id number (asynchronous generation).',
-                          style: Theme.of(context).textTheme.labelMedium,
-                        ),
-                        const SizedBox(height: 12.0),
-                        if (viewModel.product.category ==
-                            ProductCategory.CLOTHING) ...{
-                          Row(
-                            spacing: 12.0,
-                            children: [
-                              VTOOriginImageView(),
-                              VTOResultImageView(),
-                            ],
-                          ),
-                        },
-
-                        if (viewModel.product.category ==
-                            ProductCategory.JEWELRY) ...{
-                          VTOFashionImageView(),
-                        },
-
-                        const SizedBox(height: 24.0),
-                        TextFillButton(
-                          text:
-                              viewModel.serverUrl != null
-                                  ? 'Save to LOOKBOOK'
-                                  : 'Convert Now',
-                          isBusy: viewModel.isConverting,
-                          onTap:
-                              viewModel.serverUrl != null
-                                  ? viewModel.savetoLookBook
-                                  : viewModel.onClickConvert,
-                          color: Theme.of(context).primaryColor,
-                        ),
-                        if (viewModel.serverUrl != null)
-                          Column(
-                            children: [
-                              const SizedBox(height: 8.0),
-                              OutlineButton(
-                                isBusy: viewModel.isConverting,
-                                onTap: viewModel.onClickShareButton,
-                                borderColor: Theme.of(context).primaryColor,
-                                child: Text(
-                                  'Share to Twitter',
-                                  style: TextStyle(
-                                    fontSize: 16.0,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 8.0),
-                              OutlineButton(
-                                isBusy: viewModel.isConverting,
-                                onTap: viewModel.saveToPost,
-                                borderColor: Theme.of(context).primaryColor,
-                                child: Text(
-                                  'Create Yay/Nay Poll',
-                                  style: TextStyle(
-                                    fontSize: 16.0,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                      ],
-                    ),
-                  ),
-
-                  const SizedBox(height: 24.0),
-                ],
+              AIImage(
+                viewModel.product.modelImage,
+                width: double.infinity,
+                height: 240.0,
+                fit: BoxFit.contain,
               ),
+              if (medias.isNotEmpty) ...{
+                const SizedBox(height: 12.0),
+                Text('Uesr Gallery(s)'),
+                VTOGalleryView(),
+              },
+              const SizedBox(height: 12.0),
+              Text('Information'),
+              VTOInformationView(),
+              const SizedBox(height: 24.0),
+              Padding(
+                padding: const EdgeInsets.only(left: 8.0),
+                child: Text(
+                  'Take a Model',
+                  style: Theme.of(context).textTheme.titleSmall,
+                ),
+              ),
+              const SizedBox(height: 8.0),
+              Container(
+                padding: const EdgeInsets.all(16.0),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Theme.of(context).primaryColor),
+                  borderRadius: BorderRadius.circular(16.0),
+                ),
+                child: Column(
+                  children: [
+                    // Text(
+                    //   'Important: You will first receive an id number with this call. Then you will have to retrieve the image after 30/40 seconds during the second call using this id number (asynchronous generation).',
+                    //   style: Theme.of(context).textTheme.labelMedium,
+                    // ),
+                    // const SizedBox(height: 12.0),
+                    if (viewModel.product.category ==
+                        ProductCategory.CLOTHING) ...{
+                      Row(
+                        spacing: 12.0,
+                        children: [VTOOriginImageView(), VTOResultImageView()],
+                      ),
+                    },
+
+                    if (viewModel.product.category ==
+                        ProductCategory.JEWELRY) ...{
+                      VTOFashionImageView(),
+                    },
+
+                    const SizedBox(height: 24.0),
+                    TextFillButton(
+                      text: 'Convert Now',
+                      isBusy: viewModel.isConverting,
+                      onTap: viewModel.onClickConvert,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 24.0),
             ],
           ),
         );
@@ -347,31 +247,6 @@ class VTOFashionImageView extends ViewModelWidget<VTOImageProvider> {
                           ),
                 ),
               ),
-              if (viewModel.serverUrl != null) ...{
-                Align(
-                  alignment: Alignment.topRight,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      spacing: 8.0,
-                      children: [
-                        CircleImageButton(
-                          src: Icons.fullscreen,
-                          onTap:
-                              () => AIHelpers.goToDetailView(context, [
-                                viewModel.serverUrl!,
-                              ]),
-                        ),
-                        CircleImageButton(
-                          src: Icons.share,
-                          onTap: viewModel.onClickShareButton,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              },
             ],
           ),
         ),
@@ -483,31 +358,6 @@ class VTOResultImageView extends ViewModelWidget<VTOImageProvider> {
                             ),
                   ),
                 ),
-                if (viewModel.serverUrl != null) ...{
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        spacing: 8.0,
-                        children: [
-                          CircleImageButton(
-                            src: Icons.fullscreen,
-                            onTap:
-                                () => AIHelpers.goToDetailView(context, [
-                                  viewModel.serverUrl!,
-                                ]),
-                          ),
-                          CircleImageButton(
-                            src: Icons.share,
-                            onTap: viewModel.onClickShareButton,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                },
               ],
             ),
           ),
@@ -525,7 +375,7 @@ class VTOInformationView extends ViewModelWidget<VTOImageProvider> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const SizedBox(height: 24.0),
+        const SizedBox(height: 8.0),
         Row(
           children: [
             Container(
@@ -574,8 +424,8 @@ class VTOInformationView extends ViewModelWidget<VTOImageProvider> {
             ],
           ),
         },
-        const SizedBox(height: 12.0),
-        AIHelpers.htmlRender(viewModel.product.description),
+        // const SizedBox(height: 12.0),
+        // AIHelpers.htmlRender(viewModel.product.description),
       ],
     );
   }

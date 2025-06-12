@@ -32,6 +32,7 @@ dependencies:
   flutter_staggered_grid_view: any
   gif_view: any
   image_cropper: any
+  flutter_expandable_fab: any
 
   logger: any
   freezed_annotation: ^3.0.0

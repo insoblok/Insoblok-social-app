@@ -66,7 +66,7 @@ class AccountAvatarPage extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: Theme.of(
                         context,
-                      ).colorScheme.secondary.withAlpha(64),
+                      ).colorScheme.onSecondary.withAlpha(128),
                       borderRadius: BorderRadius.circular(24.0),
                     ),
                     alignment: Alignment.center,

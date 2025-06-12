@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:insoblok/routers/router.dart';
 
 import 'package:stacked/stacked.dart';
 
 import 'package:insoblok/providers/providers.dart';
+import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
@@ -135,23 +135,7 @@ class DashboardView extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(20.0),
                               ),
                               alignment: Alignment.center,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    'Following',
-                                    style: TextStyle(
-                                      fontSize: 14.0,
-                                      color:
-                                          viewModel.feedIndex == 0
-                                              ? AIColors.white
-                                              : AIColors.black,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                              child: Text('Following'),
                             ),
                           ),
                           InkWell(
@@ -171,23 +155,7 @@ class DashboardView extends StatelessWidget {
                                 borderRadius: BorderRadius.circular(20.0),
                               ),
                               alignment: Alignment.center,
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Text(
-                                    'For you',
-                                    style: TextStyle(
-                                      fontSize: 14.0,
-                                      color:
-                                          viewModel.feedIndex == 1
-                                              ? AIColors.white
-                                              : AIColors.black,
-                                    ),
-                                  ),
-                                ],
-                              ),
+                              child: Text('For you'),
                             ),
                           ),
                         ],

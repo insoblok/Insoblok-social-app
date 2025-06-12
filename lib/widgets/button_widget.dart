@@ -8,6 +8,7 @@ class OutlineButton extends StatelessWidget {
   final double? height;
   final Widget child;
   final Color? borderColor;
+  final Color? backgroundColor;
   final bool isBusy;
   final void Function()? onTap;
 
@@ -17,6 +18,7 @@ class OutlineButton extends StatelessWidget {
     this.width,
     this.height,
     this.borderColor,
+    this.backgroundColor,
     this.onTap,
     this.isBusy = false,
   });
@@ -29,6 +31,7 @@ class OutlineButton extends StatelessWidget {
         width: width ?? double.infinity,
         height: height ?? 52.0,
         decoration: BoxDecoration(
+          color: backgroundColor,
           borderRadius: BorderRadius.circular(12.0),
           border: Border.all(
             width: 2.0,

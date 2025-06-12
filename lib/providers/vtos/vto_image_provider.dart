@@ -8,6 +8,8 @@ import 'package:image_picker/image_picker.dart';
 
 import 'package:insoblok/locator.dart';
 import 'package:insoblok/models/models.dart';
+import 'package:insoblok/providers/providers.dart';
+import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 
@@ -217,6 +219,15 @@ class VTOImageProvider extends InSoBlokViewModel {
               id: product.id!,
               product: product,
             );
+
+            await Routers.goToVTODetailPage(
+              context,
+              VTODetailPageModel(
+                product: product,
+                originImage: originUrl!,
+                resultImage: serverUrl!,
+              ),
+            );
           }
         } else {
           throw ('Failed server error!');
@@ -333,195 +344,4 @@ class VTOImageProvider extends InSoBlokViewModel {
       AIHelpers.showToast(msg: modelError.toString());
     }
   }
-
-  Future<void> onClickShareButton() async {
-    if (isBusy) return;
-    clearErrors();
-
-    await runBusyFuture(() async {
-      try {
-        await AIHelpers.shareFileToSocial(_resultFile!.path);
-      } catch (e) {
-        setError(e);
-        logger.e(e);
-      } finally {
-        notifyListeners();
-      }
-    }());
-
-    if (hasError) {
-      AIHelpers.showToast(msg: modelError.toString());
-    }
-  }
-
-  Future<void> savetoLookBook() async {
-    if (isBusy) return;
-    clearErrors();
-
-    isConverting = true;
-
-    await runBusyFuture(() async {
-      try {
-        var hasDescription = await _showDescriptionDialog();
-        String? description;
-        if (hasDescription == true) {
-          description = await AIHelpers.goToDescriptionView(context);
-        }
-
-        storyAddedToLookbook = StoryModel(
-          title: 'VTO',
-          text: description ?? 'Virtual Try-On',
-          category: 'vote',
-          status: 'private',
-          medias: [
-            MediaStoryModel(link: originUrl!, type: 'image'),
-            MediaStoryModel(link: serverUrl, type: 'image'),
-          ],
-          updateDate: DateTime.now(),
-          timestamp: DateTime.now(),
-        );
-        var storyId = await storyService.postStory(
-          story: storyAddedToLookbook!,
-        );
-        storyAddedToLookbook = storyAddedToLookbook!.copyWith(id: storyId);
-        AIHelpers.showToast(msg: 'Successfully posted VTO to LOOKBOOK!');
-      } catch (e, s) {
-        setError(e);
-        logger.e(e, stackTrace: s);
-      } finally {
-        isConverting = false;
-      }
-    }());
-
-    if (hasError) {
-      AIHelpers.showToast(msg: modelError.toString());
-    }
-  }
-
-  Future<void> saveToPost() async {
-    if (isBusy) return;
-    clearErrors();
-
-    isConverting = true;
-
-    await runBusyFuture(() async {
-      try {
-        var hasDescription = await _showDescriptionDialog();
-        String? description;
-        if (hasDescription == true) {
-          description = await AIHelpers.goToDescriptionView(context);
-        }
-
-        if (storyAddedToLookbook != null) {
-          storyAddedToLookbook = storyAddedToLookbook!.copyWith(
-            status: 'public',
-          );
-          await storyService.updateStory(story: storyAddedToLookbook!);
-        } else {
-          var story = StoryModel(
-            title: 'VTO',
-            text: description ?? 'Virtual Try-On',
-            category: 'vote',
-            status: 'public',
-            medias: [
-              MediaStoryModel(link: originUrl!, type: 'image'),
-              MediaStoryModel(link: serverUrl, type: 'image'),
-            ],
-            updateDate: DateTime.now(),
-            timestamp: DateTime.now(),
-          );
-          await storyService.postStory(story: story);
-        }
-
-        AIHelpers.showToast(msg: 'Successfully posted VTO to Feed!');
-      } catch (e, s) {
-        setError(e);
-        logger.e(e, stackTrace: s);
-      } finally {
-        isConverting = false;
-      }
-    }());
-
-    if (hasError) {
-      AIHelpers.showToast(msg: modelError.toString());
-    }
-  }
-
-  Future<bool?> _showDescriptionDialog() => showDialog<bool>(
-    context: context,
-    builder: (context) {
-      return Center(
-        child: Container(
-          margin: const EdgeInsets.all(40.0),
-          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.onSecondary,
-            borderRadius: BorderRadius.circular(20.0),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'Add Description',
-                style: Theme.of(context).textTheme.titleSmall,
-              ),
-              const SizedBox(height: 16.0),
-              Text(
-                'Do you just want to add a description for LOOKBOOK post?',
-                style: Theme.of(context).textTheme.labelLarge,
-              ),
-              const SizedBox(height: 24.0),
-              Row(
-                spacing: 24.0,
-                children: [
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () => Navigator.of(context).pop(true),
-                      child: Container(
-                        height: 44.0,
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).primaryColor,
-                          borderRadius: BorderRadius.circular(16.0),
-                        ),
-                        alignment: Alignment.center,
-                        child: Text(
-                          'Add',
-                          style: Theme.of(
-                            context,
-                          ).textTheme.bodyMedium?.copyWith(
-                            color: Theme.of(context).colorScheme.onSecondary,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () => Navigator.of(context).pop(),
-                      child: Container(
-                        height: 44.0,
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            width: 2.0,
-                            color: Theme.of(context).primaryColor,
-                          ),
-                          borderRadius: BorderRadius.circular(16.0),
-                        ),
-                        alignment: Alignment.center,
-                        child: Text(
-                          'Skip',
-                          style: Theme.of(context).textTheme.bodyMedium
-                              ?.copyWith(color: Theme.of(context).primaryColor),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ),
-      );
-    },
-  );
 }
