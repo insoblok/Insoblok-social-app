@@ -181,6 +181,20 @@ class StoryDetailDialog extends StatelessWidget {
       viewModelBuilder: () => StoryContentProvider(),
       onViewModelReady: (viewModel) => viewModel.init(context, model: story),
       builder: (context, viewModel, _) {
+        var bottomInset = MediaQuery.of(context).viewInsets.bottom;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (bottomInset > 0) {
+            Future.delayed(Duration(milliseconds: 100), () {
+              if (viewModel.scrollController.hasClients) {
+                viewModel.scrollController.animateTo(
+                  viewModel.scrollController.position.maxScrollExtent,
+                  duration: Duration(milliseconds: 300),
+                  curve: Curves.easeOut,
+                );
+              }
+            });
+          }
+        });
         return Stack(
           children: [
             NotificationListener<ScrollNotification>(
