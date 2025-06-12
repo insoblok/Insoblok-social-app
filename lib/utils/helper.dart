@@ -61,6 +61,11 @@ class AIHelpers {
     },
   );
 
+  static String removeFirstBr(String html) {
+    final pattern = RegExp(r'<br\s*/?>', caseSensitive: false);
+    return html.replaceFirst(pattern, '');
+  }
+
   static Future<bool> loadUrl(String url) async {
     if (await canLaunchUrl(Uri.parse(url))) {
       return await launchUrl(Uri.parse(url));

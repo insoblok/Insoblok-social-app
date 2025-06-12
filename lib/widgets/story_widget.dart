@@ -79,14 +79,16 @@ class StoryListCell extends StatelessWidget {
                     ],
                   ),
                   if (viewModel.story.text != null &&
-                      viewModel.story.text != '')
+                      AIHelpers.removeFirstBr(viewModel.story.text!) !=
+                          '<p></p>')
                     Column(
                       children: [
                         const SizedBox(height: 16.0),
-                        AIHelpers.htmlRender(viewModel.story.text),
+                        AIHelpers.htmlRender(
+                          AIHelpers.removeFirstBr(viewModel.story.text!),
+                        ),
                       ],
                     ),
-
                   const SizedBox(height: 16.0),
                   Expanded(
                     child: Container(

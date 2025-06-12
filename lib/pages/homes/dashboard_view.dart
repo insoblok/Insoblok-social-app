@@ -81,40 +81,40 @@ class DashboardView extends StatelessWidget {
                 ? SliverFillRemaining(
                   child: Column(
                     children: [
-                      if (viewModel.isUpdated)
-                        Padding(
-                          padding: EdgeInsets.only(top: 8),
-                          child: Row(
-                            children: [
-                              const Spacer(),
-                              InkWell(
-                                onTap: viewModel.fetchStoryData,
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 6.0,
-                                    vertical: 2.0,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    color: AIColors.pink,
-                                    borderRadius: BorderRadius.circular(12.0),
-                                  ),
-                                  child: Text(
-                                    'New Feeds',
-                                    style: TextStyle(
-                                      fontSize: 12.0,
-                                      color:
-                                          Theme.of(
-                                            context,
-                                          ).colorScheme.onPrimary,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              const Spacer(),
-                            ],
-                          ),
-                        ),
-                      const SizedBox(height: 12.0),
+                      // if (viewModel.isUpdated)
+                      //   Padding(
+                      //     padding: EdgeInsets.only(top: 8),
+                      //     child: Row(
+                      //       children: [
+                      //         const Spacer(),
+                      //         InkWell(
+                      //           onTap: viewModel.fetchStoryData,
+                      //           child: Container(
+                      //             padding: const EdgeInsets.symmetric(
+                      //               horizontal: 6.0,
+                      //               vertical: 2.0,
+                      //             ),
+                      //             decoration: BoxDecoration(
+                      //               color: AIColors.pink,
+                      //               borderRadius: BorderRadius.circular(12.0),
+                      //             ),
+                      //             child: Text(
+                      //               'New Feeds',
+                      //               style: TextStyle(
+                      //                 fontSize: 12.0,
+                      //                 color:
+                      //                     Theme.of(
+                      //                       context,
+                      //                     ).colorScheme.onPrimary,
+                      //               ),
+                      //             ),
+                      //           ),
+                      //         ),
+                      //         const Spacer(),
+                      //       ],
+                      //     ),
+                      //   ),
+                      const SizedBox(height: 8.0),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
@@ -123,8 +123,8 @@ class DashboardView extends StatelessWidget {
                               viewModel.onClickFeedOptionButton(0);
                             },
                             child: Container(
-                              height: 40.0,
-                              width: 132.0,
+                              height: 36.0,
+                              width: 112.0,
                               decoration: BoxDecoration(
                                 color:
                                     viewModel.feedIndex == 0
@@ -132,10 +132,21 @@ class DashboardView extends StatelessWidget {
                                         : Theme.of(
                                           context,
                                         ).colorScheme.secondary.withAlpha(16),
-                                borderRadius: BorderRadius.circular(20.0),
+                                borderRadius: BorderRadius.circular(18.0),
                               ),
                               alignment: Alignment.center,
-                              child: Text('Following'),
+                              child: Text(
+                                'Following',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  color:
+                                      viewModel.feedIndex == 0
+                                          ? AIColors.white
+                                          : Theme.of(
+                                            context,
+                                          ).colorScheme.secondary,
+                                ),
+                              ),
                             ),
                           ),
                           InkWell(
@@ -143,8 +154,8 @@ class DashboardView extends StatelessWidget {
                               viewModel.onClickFeedOptionButton(1);
                             },
                             child: Container(
-                              height: 40.0,
-                              width: 132.0,
+                              height: 36.0,
+                              width: 112.0,
                               decoration: BoxDecoration(
                                 color:
                                     viewModel.feedIndex == 1
@@ -152,10 +163,21 @@ class DashboardView extends StatelessWidget {
                                         : Theme.of(
                                           context,
                                         ).colorScheme.secondary.withAlpha(16),
-                                borderRadius: BorderRadius.circular(20.0),
+                                borderRadius: BorderRadius.circular(18.0),
                               ),
                               alignment: Alignment.center,
-                              child: Text('For you'),
+                              child: Text(
+                                'For you',
+                                style: TextStyle(
+                                  fontSize: 13,
+                                  color:
+                                      viewModel.feedIndex == 1
+                                          ? AIColors.white
+                                          : Theme.of(
+                                            context,
+                                          ).colorScheme.secondary,
+                                ),
+                              ),
                             ),
                           ),
                         ],

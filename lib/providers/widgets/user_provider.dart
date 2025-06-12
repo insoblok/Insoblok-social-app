@@ -45,4 +45,11 @@ class UserProvider extends InSoBlokViewModel {
 
     await Routers.goToAccountPage(context, user: owner);
   }
+
+  Future<void> goToTastescorePage() async {
+    if (isBusy) return;
+    clearErrors();
+
+    await Routers.goToTastescorePage(context, user: owner);
+  }
 }

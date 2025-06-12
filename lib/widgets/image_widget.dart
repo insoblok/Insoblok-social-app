@@ -15,6 +15,7 @@ class StoryCarouselView extends StatefulWidget {
   final bool showPlaceholder;
   final bool autoPlay;
   final ScrollPhysics? scrollPhysics;
+  final BoxFit? boxFit;
   final void Function(int index)? onChangePage;
 
   const StoryCarouselView({
@@ -24,6 +25,7 @@ class StoryCarouselView extends StatefulWidget {
     this.showPlaceholder = false,
     this.autoPlay = false,
     this.scrollPhysics,
+    this.boxFit,
     this.onChangePage,
   });
 
@@ -44,7 +46,7 @@ class _StoryCarouselViewState extends State<StoryCarouselView> {
           child: AIImage(
             AIImages.placehold,
             height: widget.height,
-            fit: BoxFit.fitHeight,
+            fit: widget.boxFit ?? BoxFit.fitHeight,
             width: double.infinity,
           ),
         );
@@ -60,7 +62,11 @@ class _StoryCarouselViewState extends State<StoryCarouselView> {
           color: AIColors.grey,
           borderRadius: BorderRadius.circular(6),
         ),
-        child: MediaCarouselCell(media: media, height: widget.height),
+        child: MediaCarouselCell(
+          media: media,
+          height: widget.height,
+          boxFit: widget.boxFit,
+        ),
       );
     }
     return ValueListenableBuilder(
@@ -101,6 +107,7 @@ class _StoryCarouselViewState extends State<StoryCarouselView> {
                     ),
                     child: MediaCarouselCell(
                       media: media,
+                      boxFit: widget.boxFit,
                       height: widget.height,
                     ),
                   );
@@ -124,11 +131,13 @@ class _StoryCarouselViewState extends State<StoryCarouselView> {
 class MediaCarouselCell extends StatefulWidget {
   final MediaStoryModel media;
   final double? height;
+  final BoxFit? boxFit;
 
   const MediaCarouselCell({
     super.key,
     required this.media,
     this.height = 240.0,
+    this.boxFit,
   });
 
   @override
@@ -187,7 +196,7 @@ class _MediaCarouselCellState extends State<MediaCarouselCell> {
                 widget.media.link,
                 width: double.infinity,
                 height: widget.height,
-                fit: BoxFit.fitHeight,
+                fit: widget.boxFit ?? BoxFit.fitHeight,
               )
               : _videoPlayerController.value.isInitialized
               ? LayoutBuilder(

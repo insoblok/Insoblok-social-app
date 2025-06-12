@@ -26,15 +26,16 @@ class AccountXPDashboardView extends ViewModelWidget<AccountProvider> {
                 '⭐  XP Dashboard',
                 style: Theme.of(context).textTheme.titleSmall,
               ),
-              InkWell(
-                onTap: () => Routers.goToAccountRewardPage(context),
-                child: Text(
-                  'More Detail ▶',
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    color: Theme.of(context).primaryColor,
+              if (viewModel.isMe)
+                InkWell(
+                  onTap: () => Routers.goToAccountRewardPage(context),
+                  child: Text(
+                    'More Detail ▶',
+                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                      color: Theme.of(context).primaryColor,
+                    ),
                   ),
                 ),
-              ),
             ],
           ),
           const SizedBox(height: 12.0),

@@ -4,6 +4,7 @@ import 'package:fluro/fluro.dart' as fluro;
 
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/pages/pages.dart';
+import 'package:insoblok/pages/profiles/tastescore_page.dart';
 import 'package:insoblok/providers/providers.dart';
 
 const kRouterBase = '/';
@@ -44,6 +45,7 @@ const kRouterMediaDetail = '/media-detail';
 const kRouterSetting = '/setting';
 
 const kRouterLeaderboard = '/leaderboard';
+const kRouterTastescore = '/tastescore';
 const kRouterMarketPlace = '/market-place';
 
 class Navigation {
@@ -184,6 +186,12 @@ class Navigation {
 
     // * LeaderboardPage
     initRoute(kRouterLeaderboard, (props) => LeaderboardPage());
+
+    // * TastescorePage
+    initRoute<UserModel>(
+      kRouterTastescore,
+      (props) => TastescorePage(user: props),
+    );
 
     // * MarketPlacePage
     initRoute(kRouterMarketPlace, (props) => MarketPlacePage());

@@ -96,9 +96,10 @@ class ProductItemWidget extends StatelessWidget {
           child: Stack(
             children: [
               AIImage(
-                medias.isNotEmpty
-                    ? medias.last.link
-                    : product.avatarImage ?? product.modelImage,
+                product.avatarImage ??
+                    (
+                      medias.isNotEmpty ? medias.last.link : product.modelImage,
+                    ),
                 width: double.infinity,
               ),
               Positioned.fill(

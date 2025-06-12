@@ -78,6 +78,7 @@ class AccountStoryListCell extends StatelessWidget {
                           if (medias.isNotEmpty) ...{
                             const SizedBox(height: 8.0),
                             Container(
+                              width: 180,
                               decoration: BoxDecoration(
                                 border: Border.all(
                                   width: 0.33,
@@ -88,9 +89,10 @@ class AccountStoryListCell extends StatelessWidget {
                               child: ClipRRect(
                                 borderRadius: BorderRadius.circular(12.0),
                                 child: AspectRatio(
-                                  aspectRatio: 1.91,
+                                  aspectRatio: 0.8,
                                   child: StoryCarouselView(
                                     story: story,
+                                    boxFit: BoxFit.cover,
                                     onChangePage:
                                         (index) => viewModel.pageIndex = index,
                                   ),

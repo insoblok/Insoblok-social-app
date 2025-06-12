@@ -23,7 +23,7 @@ class ProductService {
         var json = doc.data();
         json['id'] = doc.id;
         var product = ProductModel.fromJson(json);
-        if (product.uid != null) {
+        if (product.uid != null && product.avatarImage != null) {
           result.add(product);
         }
       } on FirebaseException catch (e) {

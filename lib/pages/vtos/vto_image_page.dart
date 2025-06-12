@@ -39,11 +39,11 @@ class VTOImagePage extends StatelessWidget {
                 height: 240.0,
                 fit: BoxFit.contain,
               ),
-              if (medias.isNotEmpty) ...{
-                const SizedBox(height: 12.0),
-                Text('Uesr Gallery(s)'),
-                VTOGalleryView(),
-              },
+              // if (medias.isNotEmpty) ...{
+              //   const SizedBox(height: 12.0),
+              //   Text('Uesr Gallery(s)'),
+              //   VTOGalleryView(),
+              // },
               const SizedBox(height: 12.0),
               Text('Information'),
               VTOInformationView(),

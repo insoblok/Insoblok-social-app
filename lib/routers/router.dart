@@ -147,6 +147,10 @@ class Routers {
     return _pushToRoute(context, kRouterLeaderboard, null);
   }
 
+  static dynamic goToTastescorePage(BuildContext context, {UserModel? user}) {
+    return _pushToRoute(context, kRouterTastescore, user);
+  }
+
   static dynamic goToMarketPlacePage(BuildContext context) {
     return _pushToRoute(context, kRouterMarketPlace, null);
   }

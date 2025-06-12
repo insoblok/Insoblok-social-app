@@ -42,7 +42,7 @@ class LeaderboardUserView extends StatelessWidget {
                     ),
                   )
                   : InkWell(
-                    onTap: viewModel.goToDetailPage,
+                    onTap: viewModel.goToTastescorePage,
                     child: userData.avatarStatusView(
                       width: kUserAvatarSize,
                       height: kUserAvatarSize,
