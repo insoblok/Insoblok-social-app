@@ -11,16 +11,20 @@ class NetworkUtil {
   }) async {
     try {
       var response = await NetworkHelper.vtoApiRequest(
-        'vto',
+        // 'vto',
+        'run',
         method: APIMETHOD.post,
         postParams: {
-          'model_photo': model,
-          'clothing_photo': clothingModel,
-          'clothing_type': clothingType,
+          // 'model_photo': model,
+          'model_image': model,
+          // 'clothing_photo': clothingModel,
+          'garment_image': clothingModel,
+          // 'clothing_type': clothingType,
+          'category': clothingType,
         },
       );
       logger.d(response.data);
-      return response.data;
+      return response.data['id'];
     } on DioException catch (e) {
       logger.e(e.message);
     } catch (e) {
@@ -60,6 +64,19 @@ class NetworkUtil {
       logger.e(e.toString());
       throw (e.toString());
     }
+  }
+
+  static Future<dynamic> getVTOStatus({required String id}) async {
+    try {
+      var response = await NetworkHelper.vtoApiRequest('status/$id');
+      logger.d(response.data);
+      return response.data;
+    } on DioException catch (e) {
+      logger.e(e.message);
+    } catch (e) {
+      logger.e(e.toString());
+    }
+    return null;
   }
 
   static Future<String?> getVTOResult({required String id}) async {

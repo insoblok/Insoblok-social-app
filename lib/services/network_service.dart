@@ -62,8 +62,13 @@ class NetworkService with ListenableServiceMixin {
     try {
       var vtoApi =
           Dio()
-            ..options.baseUrl = 'https://thenewblack.ai/api/1.1/wf/'
+            // ..options.baseUrl = 'https://thenewblack.ai/api/1.1/wf/'
+            ..options.baseUrl = 'https://api.fashn.ai/v1/'
             ..options.validateStatus = ((status) => (status ?? 1) > 0)
+            ..options.headers = {
+              'Content-Type': 'application/json',
+              'Authorization': 'Bearer $kFashnAIApiKey',
+            }
             ..interceptors.add(LogInterceptor());
       _vtoApiRx.value = vtoApi;
 
@@ -104,15 +109,16 @@ class NetworkService with ListenableServiceMixin {
 
     queryParams ??= <String, String>{};
 
-    var pParm = {
-      'email': kDefaultVTOEmail,
-      'password': kDefaultVTOPassword,
-      ...(postParams ?? {}),
-    };
+    // var pParm = {
+    //   'email': kDefaultVTOEmail,
+    //   'password': kDefaultVTOPassword,
+    //   ...(postParams ?? {}),
+    // };
+    var pParm = postParams ?? {};
 
     logger.d(pParm);
 
-    var reqData = FormData.fromMap(pParm);
+    // var reqData = FormData.fromMap(pParm);
 
     var dio =
         vtoApiDio!
@@ -121,7 +127,7 @@ class NetworkService with ListenableServiceMixin {
           ..interceptors.add(apiInterceptor);
     final response = await dio.request(
       path,
-      data: reqData,
+      data: pParm,
       onSendProgress: onSendProgress,
       onReceiveProgress: onReceiveProgress,
     );
