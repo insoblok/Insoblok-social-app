@@ -72,12 +72,17 @@ class VTOService {
         clothingType: type,
       );
       if (id != null) {
-        await Future.delayed(const Duration(minutes: 1));
-        var result = await NetworkUtil.getVTOResult(id: id);
-        logger.d(result);
-        return result;
+        // await Future.delayed(const Duration(minutes: 1));
+        // var result = await NetworkUtil.getVTOResult(id: id);
+        // logger.d(result);
+        Map<String, dynamic> result = {};
+        while (true) {
+          result = await NetworkUtil.getVTOStatus(id: id);
+          if (result['status'] == 'completed') break;
+        }
+        return (result['output'] as List).first;
       } else {
-        logger.i('VOT Create ID Error!');
+        logger.i('VTO Create ID Error!');
       }
     } catch (e) {
       logger.e(e);
