@@ -26,6 +26,20 @@ class MessagePage extends StatelessWidget {
       viewModelBuilder: () => MessageProvider(),
       onViewModelReady: (viewModel) => viewModel.init(context, data: data),
       builder: (context, viewModel, _) {
+        var bottomInset = MediaQuery.of(context).viewInsets.bottom;
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (bottomInset > 0) {
+            Future.delayed(Duration(milliseconds: 100), () {
+              if (viewModel.scrollController.hasClients) {
+                viewModel.scrollController.animateTo(
+                  viewModel.scrollController.position.maxScrollExtent,
+                  duration: Duration(milliseconds: 300),
+                  curve: Curves.easeOut,
+                );
+              }
+            });
+          }
+        });
         return Scaffold(
           appBar: AppBar(
             title: Row(

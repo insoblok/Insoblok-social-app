@@ -76,13 +76,6 @@ class MessageProvider extends InSoBlokViewModel {
 
     messageService.getMessages(room.id!).listen((messages) {
       this.messages = messages;
-      Future.delayed(const Duration(milliseconds: 200), () {
-        try {
-          scrollController.jumpTo(scrollController.position.maxScrollExtent);
-        } catch (e) {
-          logger.e(e);
-        }
-      });
     });
 
     messageService.getUsersStream().listen((queryRooms) {
@@ -97,12 +90,15 @@ class MessageProvider extends InSoBlokViewModel {
         if (user.uid == data.chatUser.uid) chatUser = user;
       }
       notifyListeners();
+      Future.delayed(const Duration(milliseconds: 200), () {
+        scrollToBottom();
+      });
     });
 
-    scrollController.addListener(() {
-      isAddPop = false;
-      FocusManager.instance.primaryFocus?.unfocus();
-    });
+    // scrollController.addListener(() {
+    //   isAddPop = false;
+    //   FocusManager.instance.primaryFocus?.unfocus();
+    // });
 
     _mediaPickerService = locator<MediaPickerService>();
   }
@@ -118,7 +114,6 @@ class MessageProvider extends InSoBlokViewModel {
     if (content?.isNotEmpty ?? false) {
       try {
         await messageService.sendMessage(chatRoomId: room.id!, text: content!);
-        scrollController.jumpTo(scrollController.position.maxScrollExtent);
         textController.text = '';
       } catch (e) {
         ScaffoldMessenger.of(
@@ -126,6 +121,7 @@ class MessageProvider extends InSoBlokViewModel {
         ).showSnackBar(SnackBar(content: Text('Failed to send message: $e')));
       } finally {
         notifyListeners();
+        scrollToBottom();
       }
     }
   }
@@ -135,6 +131,18 @@ class MessageProvider extends InSoBlokViewModel {
   set selectedFile(XFile? f) {
     _selectedFile = f;
     notifyListeners();
+  }
+
+  void scrollToBottom() {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (scrollController.hasClients) {
+        scrollController.animateTo(
+          scrollController.position.maxScrollExtent,
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
+      }
+    });
   }
 
   Future<void> onPickerImage() async {

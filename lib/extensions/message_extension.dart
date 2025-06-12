@@ -10,7 +10,6 @@ import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
-import 'package:insoblok/widgets/widgets.dart';
 
 extension MessageModelExt on MessageModel {
   Widget item(BuildContext context, {required UserModel chatUser}) {
@@ -86,45 +85,84 @@ extension MessageModelExt on MessageModel {
             ),
           },
           if (isMe)
-            ClipPath(
-              clipper: isMe ? MessageMeClipper() : MessageChatClipper(),
-              child: Container(
-                constraints: BoxConstraints(
-                  maxWidth: MediaQuery.of(context).size.width - 120.0,
-                ),
-                padding: EdgeInsets.only(
-                  left: isMe ? 8.0 : 20.0,
-                  right: isMe ? 20.0 : 8.0,
-                  top: 8.0,
-                  bottom: 8.0,
-                ),
-                decoration: BoxDecoration(
-                  color: AIColors.blue.withAlpha(196),
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    result,
-                    SizedBox(height: 4),
+                    type == MessageModelType.text
+                        ? Container(
+                          constraints: BoxConstraints(
+                            maxWidth: MediaQuery.of(context).size.width - 120.0,
+                          ),
+                          padding: EdgeInsets.all(8.0),
+                          decoration: BoxDecoration(
+                            color: AIColors.lightBlue,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: result,
+                        )
+                        : result,
                     Text(
                       messageTime,
-                      style: TextStyle(fontSize: 9, color: Colors.white70),
+                      style: TextStyle(
+                        fontSize: 9,
+                        color: AIColors.greyTextColor,
+                      ),
                     ),
                   ],
                 ),
-              ),
+                SizedBox(width: 8),
+                AuthHelper.user!.avatarStatusView(
+                  width: 32,
+                  height: 32,
+                  borderWidth: 2.0,
+                  textSize: 14.0,
+                  statusSize: 10.0,
+                ),
+              ],
             ),
-          if (isMe) ...{
-            AuthHelper.user!.avatarStatusView(
-              width: 32,
-              height: 32,
-              borderWidth: 2.0,
-              textSize: 14.0,
-              statusSize: 10.0,
-            ),
-          },
+          // if (isMe)
+          //   ClipPath(
+          //     clipper: isMe ? MessageMeClipper() : MessageChatClipper(),
+          //     child: Container(
+          //       constraints: BoxConstraints(
+          //         maxWidth: MediaQuery.of(context).size.width - 120.0,
+          //       ),
+          //       padding: EdgeInsets.only(
+          //         left: isMe ? 8.0 : 20.0,
+          //         right: isMe ? 20.0 : 8.0,
+          //         top: 8.0,
+          //         bottom: 8.0,
+          //       ),
+          //       decoration: BoxDecoration(
+          //         color: AIColors.blue.withAlpha(196),
+          //         borderRadius: BorderRadius.circular(12),
+          //       ),
+          //       child: Column(
+          //         mainAxisSize: MainAxisSize.min,
+          //         crossAxisAlignment: CrossAxisAlignment.end,
+          //         children: [
+          //           result,
+          //           SizedBox(height: 4),
+          //           Text(
+          //             messageTime,
+          //             style: TextStyle(fontSize: 9, color: Colors.white70),
+          //           ),
+          //         ],
+          //       ),
+          //     ),
+          //   ),
+          // if (isMe) ...{
+          //   AuthHelper.user!.avatarStatusView(
+          //     width: 32,
+          //     height: 32,
+          //     borderWidth: 2.0,
+          //     textSize: 14.0,
+          //     statusSize: 10.0,
+          //   ),
+          // },
         ],
       ),
     );
