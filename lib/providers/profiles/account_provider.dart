@@ -14,6 +14,14 @@ class AccountProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  final controller = ScrollController();
+
+  @override
+  void dispose() {
+    super.dispose();
+    controller.dispose();
+  }
+
   UserModel? _accountUser;
   UserModel? get accountUser => _accountUser;
   set accountUser(UserModel? model) {
@@ -36,6 +44,7 @@ class AccountProvider extends InSoBlokViewModel {
 
     await fetchStories();
     await getUserScore();
+    await getGalleries();
   }
 
   final List<StoryModel> stories = [];
@@ -112,6 +121,34 @@ class AccountProvider extends InSoBlokViewModel {
       logger.e(e);
     } finally {
       isLoadingScore = false;
+    }
+  }
+
+  final List<String> _galleries = [];
+  List<String> get galleries => _galleries;
+
+  bool _isFetchingGallery = false;
+  bool get isFetchingGallery => _isFetchingGallery;
+  set isFetchingGallery(bool f) {
+    _isFetchingGallery = f;
+    notifyListeners();
+  }
+
+  Future<void> getGalleries() async {
+    if (isBusy) return;
+    clearErrors();
+
+    isFetchingGallery = true;
+    try {
+      _galleries.clear();
+      var gs = await FirebaseHelper.service.fetchGalleries();
+      _galleries.addAll(gs);
+      notifyListeners();
+    } catch (e) {
+      logger.e(e);
+      setError(e);
+    } finally {
+      isFetchingGallery = false;
     }
   }
 

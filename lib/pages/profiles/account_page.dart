@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:insoblok/utils/utils.dart';
 
 import 'package:stacked/stacked.dart';
 
@@ -26,6 +27,7 @@ class AccountPage extends StatelessWidget {
             child: Stack(
               children: [
                 CustomScrollView(
+                  controller: viewModel.controller,
                   physics: BouncingScrollPhysics(),
                   slivers: [
                     SliverPersistentHeader(
@@ -74,9 +76,43 @@ class AccountPage extends StatelessWidget {
                           },
                         },
                         if (viewModel.pageIndex == 3) ...{
-                          for (var uid
-                              in (viewModel.accountUser?.follows ?? [])) ...{
-                            UserRelatedView(uid: uid),
+                          if (viewModel.isFetchingGallery) ...{
+                            Container(
+                              width: double.infinity,
+                              height: 200.0,
+                              alignment: Alignment.center,
+                              child: Loader(size: 60.0),
+                            ),
+                          } else ...{
+                            GridView.count(
+                              shrinkWrap: true,
+                              controller: viewModel.controller,
+                              crossAxisCount: 3,
+                              mainAxisSpacing: 4.0,
+                              crossAxisSpacing: 4.0,
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 20.0,
+                                vertical: 4.0,
+                              ),
+                              children: [
+                                for (var gallery in viewModel.galleries) ...{
+                                  AspectRatio(
+                                    aspectRatio: 1,
+                                    child: InkWell(
+                                      onTap:
+                                          () => AIHelpers.goToDetailView(
+                                            context,
+                                            medias: viewModel.galleries,
+                                            index: viewModel.galleries.indexOf(
+                                              gallery,
+                                            ),
+                                          ),
+                                      child: AIImage(gallery),
+                                    ),
+                                  ),
+                                },
+                              ],
+                            ),
                           },
                         },
                         SizedBox(

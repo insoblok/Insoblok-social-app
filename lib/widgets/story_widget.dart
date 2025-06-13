@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_quill/flutter_quill.dart';
 
+import 'package:flutter_quill/flutter_quill.dart';
 import 'package:stacked/stacked.dart';
 
 import 'package:insoblok/extensions/extensions.dart';
@@ -660,9 +660,14 @@ class StoryDialogMediaView extends ViewModelWidget<StoryContentProvider> {
                   aspectRatio: 0.6,
                   child: InkWell(
                     onTap:
-                        () => AIHelpers.goToDetailView(context, [
-                          viewModel.story.medias![i].link!,
-                        ]),
+                        () => AIHelpers.goToDetailView(
+                          context,
+                          medias:
+                              (viewModel.story.medias ?? [])
+                                  .map((media) => media.link!)
+                                  .toList(),
+                          index: i,
+                        ),
                     child: Container(
                       decoration: BoxDecoration(
                         border: Border.all(

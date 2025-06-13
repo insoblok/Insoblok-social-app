@@ -1,31 +1,83 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
-import 'package:insoblok/services/image_service.dart';
-import 'package:insoblok/utils/utils.dart';
-import 'package:insoblok/widgets/widgets.dart';
 
 import 'package:stacked/stacked.dart';
 
 import 'package:insoblok/providers/providers.dart';
+import 'package:insoblok/services/services.dart';
+import 'package:insoblok/utils/utils.dart';
+import 'package:insoblok/widgets/widgets.dart';
 
 class MediaDetailPage extends StatelessWidget {
-  final List<String> medias;
-  const MediaDetailPage({super.key, required this.medias});
+  final MediaDetailModel model;
+  const MediaDetailPage({super.key, required this.model});
 
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<MediaDetailProvider>.reactive(
       viewModelBuilder: () => MediaDetailProvider(),
-      onViewModelReady: (viewModel) => viewModel.init(context),
+      onViewModelReady: (viewModel) => viewModel.init(context, model: model),
       builder: (context, viewModel, _) {
         return Scaffold(
           body: Stack(
             children: [
               AIImage(
-                medias.first,
+                viewModel.medias[viewModel.index],
                 width: double.infinity,
                 height: double.infinity,
-                fit: BoxFit.contain,
               ),
+
+              BackdropFilter(
+                filter: ImageFilter.blur(sigmaX: 20.0, sigmaY: 20.0),
+                child: PageView(
+                  scrollDirection: Axis.horizontal,
+                  controller: viewModel.controller,
+                  onPageChanged: (num) => viewModel.index = num,
+                  children: [
+                    for (var media in viewModel.medias) ...{
+                      Center(
+                        child: Container(
+                          margin: EdgeInsets.all(40.0),
+                          decoration: BoxDecoration(
+                            border: Border.all(
+                              color: Theme.of(context).colorScheme.onSecondary,
+                              width: 2.0,
+                            ),
+                            borderRadius: BorderRadius.circular(24.0),
+                          ),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(20.0),
+                            child: AIImage(media, fit: BoxFit.contain),
+                          ),
+                        ),
+                      ),
+                    },
+                  ],
+                ),
+              ),
+
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  margin: EdgeInsets.only(bottom: 40.0),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0,
+                    vertical: 4.0,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSecondary.withAlpha(32),
+                    borderRadius: BorderRadius.circular(16.0),
+                  ),
+                  child: Text(
+                    '${viewModel.index + 1} / ${viewModel.medias.length}',
+                    style: Theme.of(context).textTheme.displayMedium,
+                  ),
+                ),
+              ),
+
               CustomCircleBackButton(),
               Align(
                 alignment: Alignment.topRight,
@@ -37,7 +89,10 @@ class MediaDetailPage extends StatelessWidget {
                   child: CircleImageButton(
                     src: Icons.share,
                     size: 36.0,
-                    onTap: () => AIHelpers.shareFileToSocial(medias.first),
+                    onTap:
+                        () => AIHelpers.shareFileToSocial(
+                          viewModel.medias[viewModel.index],
+                        ),
                   ),
                 ),
               ),

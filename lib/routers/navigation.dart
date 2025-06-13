@@ -24,6 +24,7 @@ const kRouterAccountBookmark = '/account-bookmark';
 const kRouterAccountMoment = '/account-moment';
 const kRouterAccountWallet = '/account-Wallet';
 const kRouterAccountReward = '/account-reward';
+const kRouterRewardDetail = '/reward-detail';
 
 const kRouterCreateRoom = '/create-room';
 const kRouterMessage = '/message';
@@ -118,6 +119,9 @@ class Navigation {
     // * AccountRewardPage
     initRoute(kRouterAccountReward, (props) => AccountRewardPage());
 
+    // * RewardDetailPage
+    initRoute(kRouterRewardDetail, (props) => RewardDetailPage());
+
     // * CreateRoomPage
     initRoute(kRouterCreateRoom, (props) => CreateRoomPage());
 
@@ -179,9 +183,9 @@ class Navigation {
     initRoute(kRouterHelpCenter, (props) => HelpPage());
 
     // * MediaDetailPage
-    initRoute<List<String>>(
+    initRoute<MediaDetailModel>(
       kRouterMediaDetail,
-      (props) => MediaDetailPage(medias: props!),
+      (props) => MediaDetailPage(model: props!),
     );
 
     // * LeaderboardPage
