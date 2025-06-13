@@ -49,6 +49,14 @@ class UserScoreModel {
     }
     return result;
   }
+
+  int get xpTotal {
+    var result = 0;
+    for (var score in scores) {
+      result += score.bonus ?? 0;
+    }
+    return result;
+  }
 }
 
 class LeaderboardProvider extends InSoBlokViewModel {

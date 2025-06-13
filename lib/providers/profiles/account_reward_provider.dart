@@ -1,8 +1,11 @@
+import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
+
+import 'leaderboard_provider.dart';
 
 class AccountRewardProvider extends InSoBlokViewModel {
   late BuildContext _context;
@@ -23,6 +26,7 @@ class AccountRewardProvider extends InSoBlokViewModel {
     _owner = user ?? AuthHelper.user;
 
     await getUserScore();
+    await getUsersScoreList();
   }
 
   final List<TastescoreModel> _scores = [];
@@ -90,6 +94,57 @@ class AccountRewardProvider extends InSoBlokViewModel {
       logger.e(e);
     } finally {
       isLoadingScore = false;
+    }
+  }
+
+  Future<void> getUserRank() async {}
+
+  final List<UserScoreModel> _usersScoreList = [];
+  List<UserScoreModel> get usersScoreList => _usersScoreList;
+
+  List<UserScoreModel> get userTotalScores =>
+      _usersScoreList.sorted((b, a) => a.xpTotal - b.xpTotal).toList();
+
+  int _userRank = 0;
+  int get userRank => _userRank;
+  set userRank(int f) {
+    _userRank = f;
+    notifyListeners();
+  }
+
+  double get rankIndicatorValue {
+    return userRank / 100;
+  }
+
+  Future<void> getUsersScoreList() async {
+    try {
+      var scores = await tastScoreService.getScoreList();
+      var newMap = groupBy(scores, (obj) => obj.uid);
+
+      for (var key in newMap.keys) {
+        if (key != null) {
+          var score = UserScoreModel(uid: key, scores: newMap[key] ?? []);
+          _usersScoreList.add(score);
+        }
+      }
+      var userRankIndex = 0;
+      for (int i = 0; i < userTotalScores.length; i++) {
+        logger.d(userTotalScores[i].uid);
+        if (userTotalScores[i].uid == owner!.uid) {
+          userRankIndex = i;
+          break;
+        }
+      }
+      userRank =
+          ((userTotalScores.length - userRankIndex) *
+                  100 /
+                  userTotalScores.length)
+              .toInt();
+    } catch (e) {
+      logger.e(e);
+      setError(e);
+    } finally {
+      notifyListeners();
     }
   }
 }
