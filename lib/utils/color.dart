@@ -36,6 +36,8 @@ class AIColors {
 
   static Color speraterColor = Color(0xFFCED5DC);
 
+  static Color lightBlueBackground = Color.fromARGB(255, 159, 185, 224);
+
   static Color white = Color(0xFFFFFFFF);
   static Color black = Color(0xFF141619);
   static Color grey = Color(0xFF687684);

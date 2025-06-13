@@ -248,7 +248,7 @@ class StoryDetailDialog extends StatelessWidget {
                             const SizedBox(height: 16.0),
                             Text(
                               viewModel.story.shownHMDate,
-                              style: Theme.of(context).textTheme.labelLarge,
+                              style: Theme.of(context).textTheme.labelMedium,
                             ),
                             Divider(
                               thickness: 0.33,
@@ -283,11 +283,11 @@ class StoryDetailDialog extends StatelessWidget {
                                                   ).textTheme.bodyMedium,
                                             ),
                                             TextSpan(
-                                              text: '   Likes  ',
+                                              text: '  Likes  ',
                                               style:
                                                   Theme.of(
                                                     context,
-                                                  ).textTheme.labelLarge,
+                                                  ).textTheme.labelMedium,
                                             ),
                                           ],
                                         ),
@@ -322,11 +322,11 @@ class StoryDetailDialog extends StatelessWidget {
                                                   ).textTheme.bodyMedium,
                                             ),
                                             TextSpan(
-                                              text: '   Followers',
+                                              text: '  Followers',
                                               style:
                                                   Theme.of(
                                                     context,
-                                                  ).textTheme.labelLarge,
+                                                  ).textTheme.labelMedium,
                                             ),
                                           ],
                                         ),
@@ -334,6 +334,31 @@ class StoryDetailDialog extends StatelessWidget {
                                     ],
                                   ),
                                 ),
+                                if (viewModel.isMine) SizedBox(width: 12),
+                                if (viewModel.isMine)
+                                  InkWell(
+                                    onTap: viewModel.onClickSaveToLookBook,
+                                    child: Container(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 12,
+                                        vertical: 4,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: AIColors.pink,
+                                        borderRadius: BorderRadius.circular(
+                                          12.0,
+                                        ),
+                                      ),
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        'Save to LOOKBOOK',
+                                        style: TextStyle(
+                                          fontSize: 12.0,
+                                          color: AIColors.white,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
                               ],
                             ),
                             Divider(

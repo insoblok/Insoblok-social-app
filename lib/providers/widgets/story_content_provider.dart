@@ -85,6 +85,8 @@ class StoryContentProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  bool get isMine => owner?.uid == AuthHelper.user?.uid;
+
   bool _isLiking = false;
   bool get isLiking => _isLiking;
   set isLiking(bool f) {
@@ -437,6 +439,32 @@ class StoryContentProvider extends InSoBlokViewModel {
 
     if (hasError) {
       AIHelpers.showToast(msg: modelError.toString());
+    }
+  }
+
+  Future<void> onClickSaveToLookBook() async {
+    if (isBusy) return;
+    clearErrors();
+    if (story.status != null && story.status == 'public') {
+      AIHelpers.showToast(msg: 'This post saved to LOOKBOOK already!');
+      return;
+    }
+
+    await runBusyFuture(() async {
+      try {
+        story = story.copyWith(status: 'public', updateDate: DateTime.now());
+        await storyService.updateStory(story: story);
+      } catch (e) {
+        setError(e);
+        logger.e(e);
+      }
+    }());
+
+    if (hasError) {
+      AIHelpers.showToast(msg: modelError.toString());
+    } else {
+      AIHelpers.showToast(msg: 'You saved this post to LOOKBOOK');
+      notifyListeners();
     }
   }
 
