@@ -19,6 +19,7 @@ class AccountRewardProvider extends InSoBlokViewModel {
   UserModel? get owner => _owner;
   set owner(UserModel? u) {
     _owner = u;
+    notifyListeners();
   }
 
   Future<void> init(BuildContext context, UserModel? user) async {
@@ -87,7 +88,7 @@ class AccountRewardProvider extends InSoBlokViewModel {
     _isLoadingScore = true;
     try {
       _scores.clear();
-      var s = await tastScoreService.getScoresByUser(_owner!.uid!);
+      var s = await tastScoreService.getScoresByUser(owner!.uid!);
       _scores.addAll(s);
     } catch (e) {
       setError(e);

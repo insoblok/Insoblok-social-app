@@ -18,6 +18,7 @@ final kScoreDescription = {
   TastescoreType.FREESTYLE: 'You have received 100 votes from InSoBlok',
   TastescoreType.WINCREATOR: 'Welcome to create a voted story',
   TastescoreType.LOGIN: 'Welcome to InSoBlok',
+  'login': 'Welcome to InSoBlok',
   '${TastescoreType.REPOST}-${TastescoreType.BONUS}':
       'Someone have given a vote to your fork story.',
   '${TastescoreType.FREESTYLE}-${TastescoreType.BONUS}':

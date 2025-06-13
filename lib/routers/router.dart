@@ -74,6 +74,10 @@ class Routers {
     return _pushToRoute(context, kRouterAccountReward, null);
   }
 
+  static dynamic goToRewardDetailPage(BuildContext context) {
+    return _pushToRoute(context, kRouterRewardDetail, null);
+  }
+
   static dynamic goToCreateRoomPage(BuildContext context) {
     return _pushToRoute(context, kRouterCreateRoom, null);
   }
@@ -138,9 +142,9 @@ class Routers {
 
   static dynamic goToMediaDetailPage(
     BuildContext context, {
-    required List<String> medias,
+    required MediaDetailModel model,
   }) {
-    return _pushToRoute(context, kRouterMediaDetail, medias);
+    return _pushToRoute(context, kRouterMediaDetail, model);
   }
 
   static dynamic goToLeaderboardPage(BuildContext context) {

@@ -23,7 +23,6 @@ class VTOImagePage extends StatelessWidget {
       viewModelBuilder: () => VTOImageProvider(),
       onViewModelReady: (viewModel) => viewModel.init(context, p: product),
       builder: (context, viewModel, _) {
-        var medias = viewModel.product.medias ?? [];
         return Scaffold(
           appBar: AppBar(title: Text(product.name ?? 'VTO'), centerTitle: true),
           body: ListView(
@@ -468,9 +467,11 @@ class VTOGalleryView extends ViewModelWidget<VTOImageProvider> {
                             onTap:
                                 () => AIHelpers.goToDetailView(
                                   context,
-                                  medias
-                                      .map((media) => media.link ?? '')
-                                      .toList(),
+                                  medias:
+                                      medias
+                                          .map((media) => media.link ?? '')
+                                          .toList(),
+                                  index: i,
                                 ),
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(8.0),
