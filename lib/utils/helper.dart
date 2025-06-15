@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:insoblok/providers/providers.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -170,10 +171,14 @@ class AIHelpers {
   }
 
   static Future<void> goToDetailView(
-    BuildContext context,
-    List<String> medias,
-  ) async {
-    Routers.goToMediaDetailPage(context, medias: medias);
+    BuildContext context, {
+    required List<String> medias,
+    int index = 0,
+  }) async {
+    Routers.goToMediaDetailPage(
+      context,
+      model: MediaDetailModel(medias: medias, index: index),
+    );
   }
 
   static Future<String?> goToDescriptionView(

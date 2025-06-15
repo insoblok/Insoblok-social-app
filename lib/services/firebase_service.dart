@@ -198,6 +198,23 @@ class FirebaseService {
       logger.e('Error deleting image: $e');
     }
   }
+
+  Future<List<String>> fetchGalleries() async {
+    List<String> result = [];
+    final ref = _storage.ref('users/${AuthHelper.user?.uid}');
+
+    var folders = await ref.listAll();
+    for (var folder in folders.prefixes) {
+      var items = await folder.listAll();
+      for (var item in items.items) {
+        var value = await item.getDownloadURL();
+        result.add(value);
+      }
+    }
+    logger.d(result.length);
+
+    return result;
+  }
 }
 
 class FirebaseHelper {

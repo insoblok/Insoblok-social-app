@@ -1,12 +1,14 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:insoblok/widgets/widgets.dart';
 
 import 'package:stacked/stacked.dart';
 
 import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/providers/providers.dart';
+import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 
@@ -229,7 +231,7 @@ class AccountRewardPage extends StatelessWidget {
                         style: Theme.of(context).textTheme.titleSmall,
                       ),
                       InkWell(
-                        // onTap: () => Routers.goToAccountRewardPage(context),
+                        onTap: () => Routers.goToRewardDetailPage(context),
                         child: Text(
                           'View All ▶',
                           style: Theme.of(context).textTheme.headlineMedium
@@ -239,41 +241,7 @@ class AccountRewardPage extends StatelessWidget {
                     ],
                   ),
                   for (var i = 0; i < min(3, viewModel.scores.length); i++) ...{
-                    Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16.0,
-                        vertical: 8.0,
-                      ),
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: Theme.of(context).primaryColor,
-                          width: 0.33,
-                        ),
-                        borderRadius: BorderRadius.circular(16.0),
-                      ),
-                      child: Row(
-                        spacing: 12.0,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              kScoreDescription[viewModel.scores[i].type] ??
-                                  '---',
-                              style: Theme.of(context).textTheme.labelLarge,
-                            ),
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Text('+${viewModel.scores[i].bonus} XP'),
-                              Text(
-                                '${viewModel.scores[i].timestamp?.timeago}',
-                                style: Theme.of(context).textTheme.labelSmall,
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
+                    ScoreItemView(score: viewModel.scores[i]),
                   },
                 ],
               ),
