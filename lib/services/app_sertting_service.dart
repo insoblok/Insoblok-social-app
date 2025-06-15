@@ -57,7 +57,7 @@ class AppSettingService with ListenableServiceMixin {
   ThemeData get theme => themeMode == ThemeMode.light ? lightTheme : darkTheme;
 
   ThemeData get lightTheme => ThemeData(
-    fontFamily: 'SFProText',
+    fontFamily: 'Geist',
     colorScheme: ColorScheme.fromSeed(
       seedColor: AIColors.pink,
       primary: AIColors.pink,
@@ -77,7 +77,7 @@ class AppSettingService with ListenableServiceMixin {
         color: AIColors.lightTextColor,
         fontSize: 17.0,
         fontWeight: FontWeight.w800,
-        letterSpacing: -0.3,
+        letterSpacing: 1.3,
       ),
     ),
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
@@ -93,70 +93,59 @@ class AppSettingService with ListenableServiceMixin {
         color: AIColors.lightTextColor,
         fontSize: 22.0,
         fontWeight: FontWeight.w800,
-        letterSpacing: 0.15,
       ),
       titleMedium: TextStyle(
         color: AIColors.lightTextColor,
         fontSize: 19.0,
         fontWeight: FontWeight.w800,
-        letterSpacing: -0.3,
       ),
       titleSmall: TextStyle(
         color: AIColors.lightTextColor,
         fontSize: 17.0,
         fontWeight: FontWeight.w800,
-        letterSpacing: -0.3,
       ),
 
       bodyLarge: TextStyle(
         fontSize: 17.0,
         color: AIColors.lightTextColor,
         fontWeight: FontWeight.w700,
-        letterSpacing: -0.1,
       ),
       bodyMedium: TextStyle(
         fontSize: 14.0,
         color: AIColors.lightTextColor,
         fontWeight: FontWeight.w500,
-        letterSpacing: -0.3,
       ),
       bodySmall: TextStyle(
         fontSize: 12.0,
         color: AIColors.lightTextColor,
         fontWeight: FontWeight.w500,
-        letterSpacing: -0.3,
       ),
 
       labelLarge: TextStyle(
         fontSize: 16.0,
         color: AIColors.greyTextColor,
         fontWeight: FontWeight.w400,
-        letterSpacing: -0.3,
       ),
       labelMedium: TextStyle(
         fontSize: 14.0,
         color: AIColors.greyTextColor,
         fontWeight: FontWeight.w400,
-        letterSpacing: -0.15,
       ),
       labelSmall: TextStyle(
         fontSize: 12.0,
         color: AIColors.greyTextColor,
         fontWeight: FontWeight.w400,
-        letterSpacing: -0.3,
       ),
 
       displayLarge: TextStyle(
         fontSize: 19.0,
         color: AIColors.lightTextColor,
         fontWeight: FontWeight.w700,
-        letterSpacing: -0.1,
       ),
       displayMedium: TextStyle(
         fontSize: 18.0,
         color: AIColors.lightTextColor,
         fontWeight: FontWeight.w400,
-        letterSpacing: -0.1,
       ),
       displaySmall: TextStyle(
         fontSize: 10.0,
@@ -168,7 +157,6 @@ class AppSettingService with ListenableServiceMixin {
         fontSize: 19.0,
         color: AIColors.lightTextColor,
         fontWeight: FontWeight.w700,
-        letterSpacing: -0.1,
       ),
       headlineMedium: TextStyle(
         fontSize: 15.0,
@@ -188,7 +176,7 @@ class AppSettingService with ListenableServiceMixin {
   );
 
   ThemeData get darkTheme => ThemeData(
-    fontFamily: 'SFProText',
+    fontFamily: 'Geist',
     colorScheme: ColorScheme.fromSeed(
       seedColor: AIColors.pink,
       primary: AIColors.pink,
@@ -208,7 +196,7 @@ class AppSettingService with ListenableServiceMixin {
         color: AIColors.darkTextColor,
         fontSize: 17.0,
         fontWeight: FontWeight.w800,
-        letterSpacing: -0.3,
+        letterSpacing: 1.3,
       ),
     ),
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
@@ -224,70 +212,59 @@ class AppSettingService with ListenableServiceMixin {
         color: AIColors.darkTextColor,
         fontSize: 22.0,
         fontWeight: FontWeight.w800,
-        letterSpacing: 0.15,
       ),
       titleMedium: TextStyle(
         color: AIColors.darkTextColor,
         fontSize: 19.0,
         fontWeight: FontWeight.w800,
-        letterSpacing: -0.3,
       ),
       titleSmall: TextStyle(
         color: AIColors.darkTextColor,
         fontSize: 17.0,
         fontWeight: FontWeight.w800,
-        letterSpacing: -0.3,
       ),
 
       bodyLarge: TextStyle(
         fontSize: 17.0,
         color: AIColors.darkTextColor,
         fontWeight: FontWeight.w700,
-        letterSpacing: -0.1,
       ),
       bodyMedium: TextStyle(
         fontSize: 14.0,
         color: AIColors.darkTextColor,
         fontWeight: FontWeight.w500,
-        letterSpacing: -0.3,
       ),
       bodySmall: TextStyle(
         fontSize: 12.0,
         color: AIColors.darkTextColor,
         fontWeight: FontWeight.w500,
-        letterSpacing: -0.3,
       ),
 
       labelLarge: TextStyle(
         fontSize: 16.0,
         color: AIColors.greyTextColor,
         fontWeight: FontWeight.w400,
-        letterSpacing: -0.3,
       ),
       labelMedium: TextStyle(
         fontSize: 14.0,
         color: AIColors.greyTextColor,
         fontWeight: FontWeight.w400,
-        letterSpacing: -0.15,
       ),
       labelSmall: TextStyle(
         fontSize: 12.0,
         color: AIColors.greyTextColor,
         fontWeight: FontWeight.w400,
-        letterSpacing: -0.3,
       ),
 
       displayLarge: TextStyle(
         fontSize: 19.0,
         color: AIColors.darkTextColor,
         fontWeight: FontWeight.w700,
-        letterSpacing: -0.1,
       ),
       displayMedium: TextStyle(
         fontSize: 18.0,
         color: AIColors.darkTextColor,
         fontWeight: FontWeight.w400,
-        letterSpacing: -0.1,
       ),
       displaySmall: TextStyle(
         fontSize: 10.0,
@@ -299,7 +276,6 @@ class AppSettingService with ListenableServiceMixin {
         fontSize: 19.0,
         color: AIColors.darkTextColor,
         fontWeight: FontWeight.w700,
-        letterSpacing: -0.1,
       ),
       headlineMedium: TextStyle(
         fontSize: 15.0,

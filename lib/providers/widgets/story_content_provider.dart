@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+
 import 'package:flutter_quill/flutter_quill.dart';
+import 'package:vsc_quill_delta_to_html/vsc_quill_delta_to_html.dart';
 
 import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/routers/router.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
-import 'package:vsc_quill_delta_to_html/vsc_quill_delta_to_html.dart';
 
 class StoryContentProvider extends InSoBlokViewModel {
   late BuildContext _context;
@@ -401,34 +402,32 @@ class StoryContentProvider extends InSoBlokViewModel {
       try {
         var hasDescription = await _showDescriptionDialog();
 
+        String? description;
         if (hasDescription == true) {
-          String? description;
           description = await AIHelpers.goToDescriptionView(context);
           if (description == null) {
             throw ('empty description!');
           }
-
-          var newStory = StoryModel(
-            title: 'Repost',
-            text: description,
-            category: 'vote',
-            medias: story.medias,
-            updateDate: DateTime.now(),
-            timestamp: DateTime.now(),
-            connects: [
-              ...(story.connects ?? []),
-              if (!containedConnect())
-                ConnectedStoryModel(postId: story.id, userUid: story.uid),
-            ],
-          );
-          await storyService.postStory(story: newStory);
-
-          await tastScoreService.repostScore(story);
-
-          AIHelpers.showToast(msg: 'Successfully reposted to LOOKBOOK!');
-
-          Navigator.of(context).pop(true);
         }
+        var newStory = StoryModel(
+          title: 'Repost',
+          text: description,
+          category: 'vote',
+          medias: story.medias,
+          updateDate: DateTime.now(),
+          timestamp: DateTime.now(),
+          connects: [
+            ...(story.connects ?? []),
+            if (!containedConnect())
+              ConnectedStoryModel(postId: story.id, userUid: story.uid),
+          ],
+        );
+
+        await storyService.postStory(story: newStory);
+        await tastScoreService.repostScore(story);
+        AIHelpers.showToast(msg: 'Successfully reposted to LOOKBOOK!');
+
+        Navigator.of(context).pop(true);
       } catch (e) {
         setError(e);
         logger.e(e);
