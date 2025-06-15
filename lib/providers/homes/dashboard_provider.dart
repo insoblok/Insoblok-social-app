@@ -19,7 +19,7 @@ class DashboardProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  int _feedIndex = 0;
+  int _feedIndex = 1;
   int get feedIndex => _feedIndex;
   set feedIndex(int d) {
     _feedIndex = d;
