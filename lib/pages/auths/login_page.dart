@@ -10,21 +10,21 @@ import 'package:insoblok/widgets/widgets.dart';
 
 final kLandingPageData = [
   {
-    'title': 'Unlock Your World',
+    'title': 'Unlock Your World.',
     'description':
-        'No forms. Just you. Tap in, explore, and own your vibe - your way',
+        'No forms. Just you. Tap in, explore and own your vibe - your way.',
     'image': AIImages.imgSplash1,
   },
   {
-    'title': 'Speak Your Vibe. Stay on Lock',
+    'title': 'Speak Your Vibe. Stay on Lock.',
     'description':
-        'Yay/Nay chats with friends. Private. Encrypted. Untouchable',
+        'Yay/Nay chats with friends. Private. Encrypted. Untouchable.',
     'image': AIImages.imgSplash2,
   },
   {
-    'title': 'Unlock Your World',
+    'title': 'Unlock Your World.',
     'description':
-        'No forms. Just you. Tap in, explore, and own your vibe - your way',
+        'No forms. Just you. Tap in, explore and own your vibe - your way.',
     'image': AIImages.imgSplash3,
   },
 ];
