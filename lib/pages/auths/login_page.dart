@@ -21,12 +21,6 @@ final kLandingPageData = [
         'Yay/Nay chats with friends. Private. Encrypted. Untouchable.',
     'image': AIImages.imgSplash2,
   },
-  {
-    'title': 'Unlock Your World.',
-    'description':
-        'No forms. Just you. Tap in, explore and own your vibe - your way.',
-    'image': AIImages.imgSplash3,
-  },
 ];
 
 class LoginPage extends StatelessWidget {
