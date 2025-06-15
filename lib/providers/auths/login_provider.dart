@@ -38,7 +38,7 @@ class LoginProvider extends InSoBlokViewModel {
     FlutterNativeSplash.remove();
 
     _timer = Timer.periodic(Duration(seconds: 3), (Timer timer) {
-      if (_currentPage < 2) {
+      if (_currentPage < 1) {
         _currentPage++;
       } else {
         _currentPage = 0;

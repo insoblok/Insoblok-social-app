@@ -23,7 +23,7 @@ class VTOImagePage extends StatelessWidget {
       viewModelBuilder: () => VTOImageProvider(),
       onViewModelReady: (viewModel) => viewModel.init(context, p: product),
       builder: (context, viewModel, _) {
-        var medias = viewModel.product.medias ?? [];
+        // var medias = viewModel.product.medias ?? [];
         return Scaffold(
           appBar: AppBar(title: Text(product.name ?? 'VTO'), centerTitle: true),
           body: ListView(

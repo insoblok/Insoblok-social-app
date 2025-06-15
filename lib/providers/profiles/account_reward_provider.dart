@@ -19,6 +19,7 @@ class AccountRewardProvider extends InSoBlokViewModel {
   UserModel? get owner => _owner;
   set owner(UserModel? u) {
     _owner = u;
+    notifyListeners();
   }
 
   Future<void> init(BuildContext context, UserModel? user) async {

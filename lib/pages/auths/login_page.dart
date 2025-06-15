@@ -54,7 +54,7 @@ class LoginPage extends StatelessWidget {
                 children: [
                   SmoothPageIndicator(
                     controller: viewModel.pageController,
-                    count: 3,
+                    count: 2,
                     effect: ExpandingDotsEffect(
                       dotWidth: 36.0,
                       dotHeight: 4.0,

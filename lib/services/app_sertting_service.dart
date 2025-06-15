@@ -57,7 +57,7 @@ class AppSettingService with ListenableServiceMixin {
   ThemeData get theme => themeMode == ThemeMode.light ? lightTheme : darkTheme;
 
   ThemeData get lightTheme => ThemeData(
-    fontFamily: 'SFProText',
+    fontFamily: 'Geist',
     colorScheme: ColorScheme.fromSeed(
       seedColor: AIColors.pink,
       primary: AIColors.pink,
@@ -188,7 +188,7 @@ class AppSettingService with ListenableServiceMixin {
   );
 
   ThemeData get darkTheme => ThemeData(
-    fontFamily: 'SFProText',
+    fontFamily: 'Geist',
     colorScheme: ColorScheme.fromSeed(
       seedColor: AIColors.pink,
       primary: AIColors.pink,
