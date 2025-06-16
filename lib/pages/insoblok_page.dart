@@ -17,7 +17,7 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addObserver(this);
 
-    var titles = ['Home', 'LOOKBOOK', 'Wallet', 'Messages', 'User'];
+    var titles = ['Home', 'Vybe', 'Closet', 'Messages', 'Profile'];
     var pages = [
       DashboardView(),
       LookbookView(),
@@ -65,6 +65,7 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
           canPop: false,
           child: Scaffold(
             drawer: Drawer(
+              width: MediaQuery.of(context).size.width / 2,
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
               child: Column(
                 children: [
@@ -155,31 +156,29 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
                         children: [
                           AIImage(
                             menuIcons[i],
-                            width: 20.0,
+                            width: 18.0,
                             color: Theme.of(context).primaryColor,
                           ),
                           const SizedBox(width: 20.0),
-                          Text(
-                            menuTitles[i],
-                            style: Theme.of(context).textTheme.displayMedium,
-                          ),
+                          Text(menuTitles[i], style: TextStyle(fontSize: 16.0)),
                         ],
                       ),
                     ),
                   },
                   const Divider(thickness: 0.33),
+                  const SizedBox(height: 12.0),
                   MenuButtonCover(
-                    onTap: () => viewModel.onClickMenuItem(6),
+                    onTap: () => viewModel.onClickPrivacy(),
                     child: Text(
                       'Privacy and Policy',
-                      style: Theme.of(context).textTheme.displayMedium,
+                      style: TextStyle(fontSize: 16.0),
                     ),
                   ),
                   MenuButtonCover(
                     onTap: () => viewModel.onClickMenuItem(7),
                     child: Text(
                       'Help Center',
-                      style: Theme.of(context).textTheme.displayMedium,
+                      style: TextStyle(fontSize: 16.0),
                     ),
                   ),
                   const Spacer(),
@@ -210,6 +209,8 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
             ),
             body: pages[viewModel.pageIndex],
             bottomNavigationBar: BottomNavigationBar(
+              showSelectedLabels: true,
+              showUnselectedLabels: true,
               currentIndex: viewModel.pageIndex,
               onTap: (value) {
                 if (value == 4) {
@@ -222,9 +223,13 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
                 for (var i = 0; i < selectedIcon.length; i++) ...{
                   BottomNavigationBarItem(
                     icon: AIImage(
-                      viewModel.pageIndex == i
-                          ? selectedIcon[i]
-                          : unselectedIcon[i],
+                      unselectedIcon[i],
+                      width: 18.0,
+                      height: 18.0,
+                      color: AIColors.lightGrey,
+                    ),
+                    activeIcon: AIImage(
+                      selectedIcon[i],
                       width: 18.0,
                       height: 18.0,
                       color: AIColors.pink,

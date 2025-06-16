@@ -110,7 +110,7 @@ class VTODetailProvider extends InSoBlokViewModel {
         if (_saveModel == null) {
           var story = StoryModel(
             title: 'VTO',
-            text: description ?? 'Virtual Try-On',
+            text: description ?? 'Vote to Earn – Vybe Virtual Try-On',
             category: 'vote',
             status: 'public',
             medias: [
@@ -159,7 +159,7 @@ class VTODetailProvider extends InSoBlokViewModel {
         } else {
           var story = StoryModel(
             title: 'VTO',
-            text: description ?? 'Virtual Try-On',
+            text: description ?? 'Vote to Earn – Vybe Virtual Try-On',
             category: 'vote',
             status: 'public',
             medias: [
