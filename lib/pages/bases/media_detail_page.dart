@@ -33,7 +33,7 @@ class MediaDetailPage extends StatelessWidget {
                 child: PageView(
                   scrollDirection: Axis.horizontal,
                   controller: viewModel.controller,
-                  onPageChanged: (num) => viewModel.index = num,
+                  onPageChanged: (int num) => viewModel.index = num,
                   children: [
                     for (var media in viewModel.medias) ...{
                       Center(
