@@ -76,109 +76,23 @@ class DashboardView extends StatelessWidget {
             if (viewModel.isBusy && viewModel.tabIndex == 1) ...{
               SliverFillRemaining(child: Center(child: Loader(size: 60))),
             },
-
             viewModel.tabIndex == 0
                 ? SliverFillRemaining(
                   child: Column(
                     children: [
-                      // if (viewModel.isUpdated)
-                      //   Padding(
-                      //     padding: EdgeInsets.only(top: 8),
-                      //     child: Row(
-                      //       children: [
-                      //         const Spacer(),
-                      //         InkWell(
-                      //           onTap: viewModel.fetchStoryData,
-                      //           child: Container(
-                      //             padding: const EdgeInsets.symmetric(
-                      //               horizontal: 6.0,
-                      //               vertical: 2.0,
-                      //             ),
-                      //             decoration: BoxDecoration(
-                      //               color: AIColors.pink,
-                      //               borderRadius: BorderRadius.circular(12.0),
-                      //             ),
-                      //             child: Text(
-                      //               'New Feeds',
-                      //               style: TextStyle(
-                      //                 fontSize: 12.0,
-                      //                 color:
-                      //                     Theme.of(
-                      //                       context,
-                      //                     ).colorScheme.onPrimary,
-                      //               ),
-                      //             ),
-                      //           ),
-                      //         ),
-                      //         const Spacer(),
-                      //       ],
-                      //     ),
-                      //   ),
                       const SizedBox(height: 8.0),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          InkWell(
-                            onTap: () {
-                              viewModel.onClickFeedOptionButton(0);
-                            },
-                            child: Container(
-                              height: 36.0,
-                              width: 112.0,
-                              decoration: BoxDecoration(
-                                color:
-                                    viewModel.feedIndex == 0
-                                        ? Theme.of(context).primaryColor
-                                        : Theme.of(
-                                          context,
-                                        ).colorScheme.secondary.withAlpha(16),
-                                borderRadius: BorderRadius.circular(18.0),
-                              ),
-                              alignment: Alignment.center,
-                              child: Text(
-                                'Following',
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  color:
-                                      viewModel.feedIndex == 0
-                                          ? AIColors.white
-                                          : Theme.of(
-                                            context,
-                                          ).colorScheme.secondary,
-                                ),
-                              ),
-                            ),
+                          SubTabButton(
+                            title: 'For you',
+                            selected: viewModel.feedIndex == 1,
+                            onTap: () => viewModel.onClickFeedOptionButton(1),
                           ),
-                          InkWell(
-                            onTap: () {
-                              viewModel.onClickFeedOptionButton(1);
-                            },
-                            child: Container(
-                              height: 36.0,
-                              width: 112.0,
-                              decoration: BoxDecoration(
-                                color:
-                                    viewModel.feedIndex == 1
-                                        ? Theme.of(context).primaryColor
-                                        : Theme.of(
-                                          context,
-                                        ).colorScheme.secondary.withAlpha(16),
-                                borderRadius: BorderRadius.circular(18.0),
-                              ),
-                              alignment: Alignment.center,
-                              child: Text(
-                                'For you',
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  color:
-                                      viewModel.feedIndex == 1
-                                          ? AIColors.white
-                                          : Theme.of(
-                                            context,
-                                          ).colorScheme.secondary,
-                                ),
-                              ),
-                            ),
+                          SubTabButton(
+                            title: 'Following',
+                            selected: viewModel.feedIndex == 0,
+                            onTap: () => viewModel.onClickFeedOptionButton(0),
                           ),
                         ],
                       ),
@@ -187,25 +101,23 @@ class DashboardView extends StatelessWidget {
                             viewModel.isBusy
                                 ? Center(child: Loader(size: 60))
                                 : viewModel.stories.isEmpty
-                                ? SliverFillRemaining(
-                                  child: Center(
-                                    child: Column(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        ClipOval(
-                                          child: AIImage(
-                                            AIImages.placehold,
-                                            width: 150.0,
-                                            height: 150.0,
-                                          ),
+                                ? Center(
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      ClipOval(
+                                        child: AIImage(
+                                          AIImages.placehold,
+                                          width: 150.0,
+                                          height: 150.0,
                                         ),
-                                        const SizedBox(height: 40.0),
-                                        Text(
-                                          'Feed data seems to be not exsited. After\nsome time, Please try again!',
-                                          textAlign: TextAlign.center,
-                                        ),
-                                      ],
-                                    ),
+                                      ),
+                                      const SizedBox(height: 40.0),
+                                      Text(
+                                        'Feed data seems to be not exsited. After\nsome time, Please try again!',
+                                        textAlign: TextAlign.center,
+                                      ),
+                                    ],
                                   ),
                                 )
                                 : PageView.builder(

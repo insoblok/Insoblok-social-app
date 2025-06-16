@@ -146,59 +146,62 @@ class StoryListCell extends StatelessWidget {
                   const SizedBox(height: 16),
                   if (viewModel.story.category != null &&
                       viewModel.story.category == 'vote') ...{
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      spacing: 12.0,
-                      children: [
-                        Expanded(
-                          child: VoteFloatingButton(
-                            onTap: () {
-                              viewModel.updateVote(true);
-                            },
-                            text:
-                                viewModel.story.cntYay == 0
-                                    ? 'Yay'
-                                    : 'Yay (${viewModel.story.cntYay})',
-                            textColor:
-                                viewModel.story.isVote() == true
-                                    ? AIColors.white
-                                    : AIColors.green,
-                            src:
-                                viewModel.story.isVote() == true
-                                    ? AIImages.icYayFill
-                                    : AIImages.icYayOutline,
-                            backgroundColor:
-                                viewModel.story.isVote() == true
-                                    ? AIColors.green
-                                    : Colors.transparent,
-                            borderColor: AIColors.green,
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        spacing: 40.0,
+                        children: [
+                          Expanded(
+                            child: VoteFloatingButton(
+                              onTap: () {
+                                viewModel.updateVote(true);
+                              },
+                              text:
+                                  viewModel.story.cntYay == 0
+                                      ? 'Yay'
+                                      : 'Yay (${viewModel.story.cntYay})',
+                              textColor:
+                                  viewModel.story.isVote() == true
+                                      ? AIColors.white
+                                      : AIColors.green,
+                              src:
+                                  viewModel.story.isVote() == true
+                                      ? AIImages.icYayFill
+                                      : AIImages.icYayOutline,
+                              backgroundColor:
+                                  viewModel.story.isVote() == true
+                                      ? AIColors.green
+                                      : Colors.transparent,
+                              borderColor: AIColors.green,
+                            ),
                           ),
-                        ),
-                        Expanded(
-                          child: VoteFloatingButton(
-                            onTap: () {
-                              viewModel.updateVote(false);
-                            },
-                            text:
-                                viewModel.story.cntNay == 0
-                                    ? 'Nay'
-                                    : 'Nay (${viewModel.story.cntNay})',
-                            textColor:
-                                viewModel.story.isVote() == false
-                                    ? AIColors.white
-                                    : AIColors.pink,
-                            src:
-                                viewModel.story.isVote() == false
-                                    ? AIImages.icNayFill
-                                    : AIImages.icNayOutline,
-                            backgroundColor:
-                                viewModel.story.isVote() == false
-                                    ? AIColors.pink
-                                    : AIColors.transparent,
-                            borderColor: AIColors.pink,
+                          Expanded(
+                            child: VoteFloatingButton(
+                              onTap: () {
+                                viewModel.updateVote(false);
+                              },
+                              text:
+                                  viewModel.story.cntNay == 0
+                                      ? 'Nay'
+                                      : 'Nay (${viewModel.story.cntNay})',
+                              textColor:
+                                  viewModel.story.isVote() == false
+                                      ? AIColors.white
+                                      : AIColors.pink,
+                              src:
+                                  viewModel.story.isVote() == false
+                                      ? AIImages.icNayFill
+                                      : AIImages.icNayOutline,
+                              backgroundColor:
+                                  viewModel.story.isVote() == false
+                                      ? AIColors.pink
+                                      : AIColors.transparent,
+                              borderColor: AIColors.pink,
+                            ),
                           ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   },
                 ],

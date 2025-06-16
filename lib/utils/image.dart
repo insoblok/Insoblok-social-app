@@ -63,6 +63,7 @@ class AIImages {
   static String icMenuMoments = 'assets/icons/ic_light.svg';
   static String icMenuUnion = 'assets/icons/ic_union.svg';
   static String icMenuQrCode = 'assets/icons/ic_qrcode.svg';
+  static String icMenuMarketPlace = 'assets/icons/ic_marketplace.svg';
   static String icAddMessage = 'assets/icons/ic_message_new.svg';
   static String icLink = 'assets/icons/ic_link.svg';
   static String icCalendar = 'assets/icons/ic_calendar.svg';

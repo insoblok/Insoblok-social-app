@@ -293,7 +293,7 @@ class _VoteFloatingButton extends State<VoteFloatingButton>
         duration: Duration(milliseconds: 200),
         transform: Matrix4.identity()..scale(scale),
         child: Container(
-          height: 52.0,
+          height: 44.0,
           decoration: BoxDecoration(
             color: widget.backgroundColor ?? Theme.of(context).primaryColor,
             borderRadius: BorderRadius.circular(widget.borderRadius ?? 24.0),
@@ -322,6 +322,48 @@ class _VoteFloatingButton extends State<VoteFloatingButton>
                 ),
               ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class SubTabButton extends StatelessWidget {
+  final void Function()? onTap;
+  final bool selected;
+  final String title;
+
+  const SubTabButton({
+    super.key,
+    required this.selected,
+    required this.title,
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        height: 36.0,
+        width: 112.0,
+        decoration: BoxDecoration(
+          color:
+              selected
+                  ? Theme.of(context).primaryColor
+                  : Theme.of(context).colorScheme.secondary.withAlpha(16),
+          borderRadius: BorderRadius.circular(18.0),
+        ),
+        alignment: Alignment.center,
+        child: Text(
+          title,
+          style: TextStyle(
+            fontSize: 13,
+            color:
+                selected
+                    ? AIColors.white
+                    : Theme.of(context).colorScheme.secondary,
           ),
         ),
       ),

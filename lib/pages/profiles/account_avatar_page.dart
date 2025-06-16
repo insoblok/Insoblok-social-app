@@ -106,7 +106,7 @@ class AvatarRatioView extends ViewModelWidget<AvatarProvider> {
           children: [
             Expanded(
               child: Text(
-                '1. Choose aspect ratio of image',
+                '1. Choose aspect ratio of image.',
                 style: Theme.of(context).textTheme.headlineMedium,
               ),
             ),
@@ -115,7 +115,7 @@ class AvatarRatioView extends ViewModelWidget<AvatarProvider> {
           ],
         ),
         Text(
-          'Image size ratio, must be one of the supported formats Possible values: [1:1, 3:2, 2:3]',
+          'Image size ratio, must be one of the supported formats Possible values: [1:1, 3:2, 2:3].',
           style: Theme.of(context).textTheme.labelMedium,
         ),
         Row(
@@ -165,7 +165,7 @@ class AvatarPromptView extends ViewModelWidget<AvatarProvider> {
           children: [
             Expanded(
               child: Text(
-                '2. Input prompt description (Optional)',
+                '2. Input prompt description. (Optional)',
                 style: Theme.of(context).textTheme.headlineMedium,
               ),
             ),
@@ -173,7 +173,7 @@ class AvatarPromptView extends ViewModelWidget<AvatarProvider> {
           ],
         ),
         Text(
-          'Prompt describing what you want the 4o image to generate. Example: Ghibli AI Image',
+          'What you want the 4o image to generate?',
           style: Theme.of(context).textTheme.labelMedium,
         ),
         Container(
@@ -212,7 +212,7 @@ class AvatarOriginView extends ViewModelWidget<AvatarProvider> {
           children: [
             Expanded(
               child: Text(
-                '3. Choose origin image',
+                '3. Choose origin image.',
                 style: Theme.of(context).textTheme.headlineMedium,
               ),
             ),
@@ -221,7 +221,7 @@ class AvatarOriginView extends ViewModelWidget<AvatarProvider> {
           ],
         ),
         Text(
-          'Supported file formats: .jfif, .pjpeg, .jpeg, .pjp, .jpg, .png, .webp',
+          'Formats: *.jpeg, *.jpg, *.png.',
           style: Theme.of(context).textTheme.labelMedium,
         ),
         Container(

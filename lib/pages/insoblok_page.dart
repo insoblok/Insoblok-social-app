@@ -54,7 +54,7 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
       AIImages.icMenuBookmarks,
       AIImages.icMenuTopics,
       AIImages.icMenuMoments,
-      AIImages.icBottomMarket,
+      AIImages.icMenuMarketPlace,
     ];
 
     return ViewModelBuilder<InSoBlokProvider>.reactive(
@@ -154,10 +154,14 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
                       onTap: () => viewModel.onClickMenuItem(i),
                       child: Row(
                         children: [
-                          AIImage(
-                            menuIcons[i],
-                            width: 18.0,
-                            color: Theme.of(context).primaryColor,
+                          Container(
+                            width: 24.0,
+                            alignment: Alignment.center,
+                            child: AIImage(
+                              menuIcons[i],
+                              height: 24.0,
+                              color: Theme.of(context).primaryColor,
+                            ),
                           ),
                           const SizedBox(width: 20.0),
                           Text(menuTitles[i], style: TextStyle(fontSize: 16.0)),
