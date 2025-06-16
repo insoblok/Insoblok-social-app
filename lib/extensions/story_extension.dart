@@ -25,6 +25,13 @@ extension StoryModelExt on StoryModel {
     return vs.where((v) => v.vote == false).toList().length;
   }
 
+  int get cntLooksToday {
+    var vs = votes ?? [];
+    int cnt =
+        vs.where((v) => v.timestamp!.day == DateTime.now().day).toList().length;
+    return cnt > 5 ? 5 : cnt;
+  }
+
   bool isLike() {
     var like = likes ?? [];
     return like.contains(AuthHelper.user!.uid);

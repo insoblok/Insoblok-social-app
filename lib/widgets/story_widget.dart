@@ -5,11 +5,12 @@ import 'package:stacked/stacked.dart';
 
 import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
-import 'package:insoblok/pages/pages.dart';
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
+
+const kStoryAvatarSize = 50.0;
 
 class StoryListCell extends StatelessWidget {
   final StoryModel story;
@@ -51,15 +52,15 @@ class StoryListCell extends StatelessWidget {
                             child: AIAvatarImage(
                               // key: GlobalKey(debugLabel: 'story-${story.uid}'),
                               viewModel.owner?.avatar,
-                              width: kStoryDetailAvatarSize,
-                              height: kStoryDetailAvatarSize,
+                              width: kStoryAvatarSize,
+                              height: kStoryAvatarSize,
                               fullname: viewModel.owner?.nickId ?? 'Test',
                               textSize: 24,
                             ),
                           ),
                         ],
                       ),
-                      const SizedBox(width: 8.0),
+                      const SizedBox(width: 12.0),
                       Expanded(
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -69,6 +70,7 @@ class StoryListCell extends StatelessWidget {
                               viewModel.owner?.fullName ?? '---',
                               style: Theme.of(context).textTheme.headlineMedium,
                             ),
+                            const SizedBox(height: 4),
                             Text(
                               '${viewModel.story.timestamp?.timeago}',
                               style: Theme.of(context).textTheme.labelMedium,
@@ -78,18 +80,48 @@ class StoryListCell extends StatelessWidget {
                       ),
                     ],
                   ),
-                  if (viewModel.story.text != null &&
-                      AIHelpers.removeFirstBr(viewModel.story.text!) !=
-                          '<p></p>')
+                  if (viewModel.story.category != null &&
+                      viewModel.story.category == 'vote')
                     Column(
                       children: [
-                        const SizedBox(height: 16.0),
-                        AIHelpers.htmlRender(
-                          AIHelpers.removeFirstBr(viewModel.story.text!),
+                        const SizedBox(height: 8.0),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Vybe VTO Try-On',
+                              style: TextStyle(
+                                fontSize: 13.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 8.0,
+                                vertical: 2.0,
+                              ),
+                              decoration: BoxDecoration(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.secondary.withAlpha(16),
+                                borderRadius: BorderRadius.circular(16.0),
+                              ),
+                              child: Row(
+                                children: [
+                                  Icon(Icons.leaderboard_outlined, size: 18),
+                                  Text(
+                                    ' ${viewModel.story.cntLooksToday}/5 Looks Today',
+                                    style:
+                                        Theme.of(context).textTheme.bodySmall,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
                         ),
                       ],
                     ),
-                  const SizedBox(height: 16.0),
+                  const SizedBox(height: 8.0),
                   Expanded(
                     child: Container(
                       decoration: BoxDecoration(
@@ -243,7 +275,12 @@ class StoryDetailDialog extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            AIHelpers.htmlRender(viewModel.story.text),
+                            if (viewModel.story.text != null &&
+                                AIHelpers.removeFirstBr(
+                                      viewModel.story.text!,
+                                    ) !=
+                                    '<p></p>')
+                              AIHelpers.htmlRender(viewModel.story.text),
                             if ((viewModel.story.medias ?? []).isNotEmpty) ...{
                               const SizedBox(height: 8.0),
                               StoryDialogMediaView(),

@@ -168,9 +168,9 @@ class StoryProvider extends InSoBlokViewModel {
     } else {
       story = story.copyWith(votes: votes);
       if (story.isVote() != null && story.isVote() == true) {
-        AIHelpers.showToast(msg: 'Yay!');
+        AIHelpers.showToast(msg: 'Vote Yes. Earn +1 TasteScore');
       } else {
-        AIHelpers.showToast(msg: 'Nay!');
+        AIHelpers.showToast(msg: 'Vote No. Feedback stays private');
       }
       notifyListeners();
     }

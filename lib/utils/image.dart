@@ -4,6 +4,7 @@ class AIImages {
   static String logo = 'assets/images/logo.png';
   static String placehold = 'assets/images/placehold.svg';
 
+  static String imgDiscover = 'assets/images/img_discover.jpg';
   static String imgMetamask = 'assets/images/metamask.svg';
   static String imgGoogle = 'assets/images/google_icon.png';
   static String imgBackSplash = 'assets/images/back_splash.jpg';
