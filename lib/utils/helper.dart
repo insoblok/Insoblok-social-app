@@ -32,7 +32,7 @@ class AIHelpers {
   }
 
   static Widget htmlRender(String? data, {FontSize? fontSize}) => Html(
-    data: data,
+    data: data ?? '',
     shrinkWrap: true,
     style: {
       'body': Style(margin: Margins.all(0), padding: HtmlPaddings.all(0)),

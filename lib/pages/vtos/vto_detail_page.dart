@@ -80,7 +80,7 @@ class VTODetailPage extends StatelessWidget {
                       if (viewModel.isShownText) ...{
                         const SizedBox(height: 4.0),
                         Text(
-                          'Virtual Try-On',
+                          'Vote to Earn – Vybe Virtual Try-On',
                           style: Theme.of(context).textTheme.titleLarge,
                         ),
                       },

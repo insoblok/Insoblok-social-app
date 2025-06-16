@@ -9,7 +9,7 @@ import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
 
-const kProfileDiscoverHeight = 96.0;
+const kProfileDiscoverHeight = 126.0;
 
 class AccountPresentHeaderView extends ViewModelWidget<AccountProvider> {
   const AccountPresentHeaderView({super.key});
@@ -25,7 +25,7 @@ class AccountPresentHeaderView extends ViewModelWidget<AccountProvider> {
       child: Stack(
         children: [
           AIImage(
-            viewModel.accountUser?.discovery ?? AIImages.imgBackSplash,
+            viewModel.accountUser?.discovery ?? AIImages.imgDiscover,
             fit: BoxFit.cover,
             width: double.infinity,
             height: kProfileDiscoverHeight + MediaQuery.of(context).padding.top,

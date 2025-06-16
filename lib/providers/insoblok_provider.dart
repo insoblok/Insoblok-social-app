@@ -39,6 +39,10 @@ class InSoBlokProvider extends InSoBlokViewModel {
     Routers.goToSettingPage(context);
   }
 
+  Future<void> onClickPrivacy() async {
+    AIHelpers.loadUrl(kPrivacyUrl);
+  }
+
   Future<void> onClickMenuItem(int index) async {
     Navigator.of(context).pop();
     logger.d(index);
