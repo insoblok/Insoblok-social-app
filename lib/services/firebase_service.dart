@@ -112,7 +112,7 @@ class FirebaseService {
 
   Future<String?> uploadImageFromUrl({
     required String imageUrl,
-    String? uid,
+    String? id,
     String? folderName,
   }) async {
     try {
@@ -144,8 +144,8 @@ class FirebaseService {
           "${AuthHelper.user?.id}_${kFullFormatter.format(DateTime.now())}.jpg";
       final String storagePath =
           folderName != null
-              ? 'users/${uid ?? AuthHelper.user?.uid}/$folderName/$fileName'
-              : 'users/${uid ?? AuthHelper.user?.uid}/$fileName';
+              ? 'users/${id ?? AuthHelper.user?.id}/$folderName/$fileName'
+              : 'users/${id ?? AuthHelper.user?.id}/$fileName';
 
       final Reference storageRef = _storage.ref().child(storagePath);
 
@@ -164,7 +164,7 @@ class FirebaseService {
 
   Future<String?> uploadFile({
     required File file,
-    String? uid,
+    String? id,
     String? folderName,
   }) async {
     try {
@@ -172,8 +172,8 @@ class FirebaseService {
           "${AuthHelper.user?.id}_${kFullFormatter.format(DateTime.now())}.jpg";
       final String storagePath =
           folderName != null
-              ? 'users/${uid ?? AuthHelper.user?.uid}/$folderName/$fileName'
-              : 'users/${uid ?? AuthHelper.user?.uid}/$fileName';
+              ? 'users/${id ?? AuthHelper.user?.id}/$folderName/$fileName'
+              : 'users/${id ?? AuthHelper.user?.id}/$fileName';
 
       final Reference storageRef = _storage.ref().child(storagePath);
 
@@ -201,7 +201,7 @@ class FirebaseService {
 
   Future<List<String>> fetchGalleries() async {
     List<String> result = [];
-    final ref = _storage.ref('users/${AuthHelper.user?.uid}');
+    final ref = _storage.ref('users/${AuthHelper.user?.id}');
 
     var folders = await ref.listAll();
     for (var folder in folders.prefixes) {
@@ -238,19 +238,19 @@ class FirebaseHelper {
 
   static Future<String?> uploadImageFromUrl({
     required String imageUrl,
-    String? uid,
+    String? id,
     String? folderName,
   }) => service.uploadImageFromUrl(
     imageUrl: imageUrl,
-    uid: uid,
+    id: id,
     folderName: folderName,
   );
 
   static Future<String?> uploadFile({
     required File file,
-    String? uid,
+    String? id,
     String? folderName,
-  }) => service.uploadFile(file: file, uid: uid, folderName: folderName);
+  }) => service.uploadFile(file: file, id: id, folderName: folderName);
 
   static Future<void> deleteImage(String imageUrl) =>
       service.deleteImage(imageUrl);

@@ -144,14 +144,14 @@ class CreateRoomProvider extends InSoBlokViewModel {
     await runBusyFuture(() async {
       try {
         var existedRoom = await roomService.getRoomByChatUesr(
-          uid: user.uid ?? '',
+          id: user.id ?? '',
         );
         if (existedRoom != null) {
           AIHelpers.showToast(msg: 'You already created user\'s chat.');
         } else {
           var room = RoomModel(
-            uid: AuthHelper.user?.uid,
-            uids: [AuthHelper.user?.uid, user.uid],
+            userId: AuthHelper.user?.id,
+            userIds: [AuthHelper.user?.id, user.id],
             content: '${AuthHelper.user?.firstName} have created a room',
             updateDate: DateTime.now(),
             timestamp: DateTime.now(),

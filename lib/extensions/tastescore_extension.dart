@@ -28,9 +28,9 @@ final kScoreDescription = {
 extension TastescoreModelExt on TastescoreModel {
   Map<String, dynamic> toMap() {
     Map<String, dynamic> result = {
-      'uid': uid,
+      'user_id': userId,
       'post_id': postId,
-      'user_uid': userUid,
+      'post_user_id': postUserId,
       'type': type,
       'bonus': bonus,
       'desc': desc,
@@ -43,15 +43,15 @@ extension TastescoreModelExt on TastescoreModel {
 
   static TastescoreModel creatXpModel(
     int xp,
-    String uid, {
-    String? userUid,
+    String userId, {
+    String? postUserId,
     String type = 'daily_bonus',
     String? postId,
   }) {
     return TastescoreModel(
-      uid: uid,
+      userId: userId,
       postId: postId,
-      userUid: userUid,
+      postUserId: postUserId,
       type: type,
       bonus: xp,
       updateDate: DateTime.now(),

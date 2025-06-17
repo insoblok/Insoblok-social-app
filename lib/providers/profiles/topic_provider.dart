@@ -26,7 +26,7 @@ class TopicProvider extends InSoBlokViewModel {
 
     await runBusyFuture(() async {
       try {
-        var s = await storyService.getStoriesByLike(user!.uid!);
+        var s = await storyService.getStoriesByLike(user!.id!);
         if (s.isNotEmpty) {
           stories.clear();
           stories.addAll(s);

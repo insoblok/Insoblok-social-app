@@ -296,14 +296,11 @@ class AIAvatarDefaultView extends StatelessWidget {
 
       child: ClipOval(
         child: Container(
-          color:
-              fullname.length > kAvatarColors.length
-                  ? AIColors.pink
-                  : kAvatarColors[fullname.length - 1],
+          color: kAvatarColors[(fullname.trim().length) % 8],
           child: Align(
             alignment: Alignment.center,
             child: Text(
-              fullname[0].toUpperCase(),
+              fullname.trim()[0].toUpperCase(),
               style: TextStyle(
                 fontSize: textSize ?? 14.0,
                 color: AIColors.white,

@@ -81,8 +81,8 @@ Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
 
 _UserActionModel _$UserActionModelFromJson(Map<String, dynamic> json) =>
     _UserActionModel(
-      postUid: json['post_uid'] as String?,
-      userUid: json['user_uid'] as String?,
+      postId: json['post_id'] as String?,
+      postUserId: json['post_user_id'] as String?,
       value: json['value'] as bool?,
       type: json['type'] as String?,
       description: json['description'] as String?,
@@ -93,8 +93,8 @@ _UserActionModel _$UserActionModelFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$UserActionModelToJson(_UserActionModel instance) =>
     <String, dynamic>{
-      'post_uid': instance.postUid,
-      'user_uid': instance.userUid,
+      'post_id': instance.postId,
+      'post_user_id': instance.postUserId,
       'value': instance.value,
       'type': instance.type,
       'description': instance.description,

@@ -18,12 +18,8 @@ class Routers {
     _pushReplacement(context, kRouterLogin, null);
   }
 
-  static dynamic goToAuthPage(BuildContext context) {
-    _pushToRoute(context, kRouterAuth, null);
-  }
-
-  static dynamic goToRegisterPage(BuildContext context) {
-    _pushReplacement(context, kRouterRegister, null);
+  static dynamic goToRegisterPage(BuildContext context, String walletAddress) {
+    _pushReplacement(context, kRouterRegister, walletAddress);
   }
 
   static dynamic goToMainPage(BuildContext context) {

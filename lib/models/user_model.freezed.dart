@@ -766,8 +766,8 @@ class __$UserModelCopyWithImpl<$Res> implements _$UserModelCopyWith<$Res> {
 
 /// @nodoc
 mixin _$UserActionModel {
-  String? get postUid;
-  String? get userUid;
+  String? get postId;
+  String? get postUserId;
   bool? get value;
   String? get type;
   String? get description;
@@ -789,8 +789,9 @@ mixin _$UserActionModel {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is UserActionModel &&
-            (identical(other.postUid, postUid) || other.postUid == postUid) &&
-            (identical(other.userUid, userUid) || other.userUid == userUid) &&
+            (identical(other.postId, postId) || other.postId == postId) &&
+            (identical(other.postUserId, postUserId) ||
+                other.postUserId == postUserId) &&
             (identical(other.value, value) || other.value == value) &&
             (identical(other.type, type) || other.type == type) &&
             (identical(other.description, description) ||
@@ -802,11 +803,11 @@ mixin _$UserActionModel {
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
-      runtimeType, postUid, userUid, value, type, description, timestamp);
+      runtimeType, postId, postUserId, value, type, description, timestamp);
 
   @override
   String toString() {
-    return 'UserActionModel(postUid: $postUid, userUid: $userUid, value: $value, type: $type, description: $description, timestamp: $timestamp)';
+    return 'UserActionModel(postId: $postId, postUserId: $postUserId, value: $value, type: $type, description: $description, timestamp: $timestamp)';
   }
 }
 
@@ -817,8 +818,8 @@ abstract mixin class $UserActionModelCopyWith<$Res> {
       _$UserActionModelCopyWithImpl;
   @useResult
   $Res call(
-      {String? postUid,
-      String? userUid,
+      {String? postId,
+      String? postUserId,
       bool? value,
       String? type,
       String? description,
@@ -838,21 +839,21 @@ class _$UserActionModelCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? postUid = freezed,
-    Object? userUid = freezed,
+    Object? postId = freezed,
+    Object? postUserId = freezed,
     Object? value = freezed,
     Object? type = freezed,
     Object? description = freezed,
     Object? timestamp = freezed,
   }) {
     return _then(_self.copyWith(
-      postUid: freezed == postUid
-          ? _self.postUid
-          : postUid // ignore: cast_nullable_to_non_nullable
+      postId: freezed == postId
+          ? _self.postId
+          : postId // ignore: cast_nullable_to_non_nullable
               as String?,
-      userUid: freezed == userUid
-          ? _self.userUid
-          : userUid // ignore: cast_nullable_to_non_nullable
+      postUserId: freezed == postUserId
+          ? _self.postUserId
+          : postUserId // ignore: cast_nullable_to_non_nullable
               as String?,
       value: freezed == value
           ? _self.value
@@ -879,8 +880,8 @@ class _$UserActionModelCopyWithImpl<$Res>
 @JsonSerializable(fieldRename: FieldRename.snake)
 class _UserActionModel implements UserActionModel {
   _UserActionModel(
-      {this.postUid,
-      this.userUid,
+      {this.postId,
+      this.postUserId,
       this.value,
       this.type,
       this.description,
@@ -889,9 +890,9 @@ class _UserActionModel implements UserActionModel {
       _$UserActionModelFromJson(json);
 
   @override
-  final String? postUid;
+  final String? postId;
   @override
-  final String? userUid;
+  final String? postUserId;
   @override
   final bool? value;
   @override
@@ -921,8 +922,9 @@ class _UserActionModel implements UserActionModel {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _UserActionModel &&
-            (identical(other.postUid, postUid) || other.postUid == postUid) &&
-            (identical(other.userUid, userUid) || other.userUid == userUid) &&
+            (identical(other.postId, postId) || other.postId == postId) &&
+            (identical(other.postUserId, postUserId) ||
+                other.postUserId == postUserId) &&
             (identical(other.value, value) || other.value == value) &&
             (identical(other.type, type) || other.type == type) &&
             (identical(other.description, description) ||
@@ -934,11 +936,11 @@ class _UserActionModel implements UserActionModel {
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   int get hashCode => Object.hash(
-      runtimeType, postUid, userUid, value, type, description, timestamp);
+      runtimeType, postId, postUserId, value, type, description, timestamp);
 
   @override
   String toString() {
-    return 'UserActionModel(postUid: $postUid, userUid: $userUid, value: $value, type: $type, description: $description, timestamp: $timestamp)';
+    return 'UserActionModel(postId: $postId, postUserId: $postUserId, value: $value, type: $type, description: $description, timestamp: $timestamp)';
   }
 }
 
@@ -951,8 +953,8 @@ abstract mixin class _$UserActionModelCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String? postUid,
-      String? userUid,
+      {String? postId,
+      String? postUserId,
       bool? value,
       String? type,
       String? description,
@@ -972,21 +974,21 @@ class __$UserActionModelCopyWithImpl<$Res>
   @override
   @pragma('vm:prefer-inline')
   $Res call({
-    Object? postUid = freezed,
-    Object? userUid = freezed,
+    Object? postId = freezed,
+    Object? postUserId = freezed,
     Object? value = freezed,
     Object? type = freezed,
     Object? description = freezed,
     Object? timestamp = freezed,
   }) {
     return _then(_UserActionModel(
-      postUid: freezed == postUid
-          ? _self.postUid
-          : postUid // ignore: cast_nullable_to_non_nullable
+      postId: freezed == postId
+          ? _self.postId
+          : postId // ignore: cast_nullable_to_non_nullable
               as String?,
-      userUid: freezed == userUid
-          ? _self.userUid
-          : userUid // ignore: cast_nullable_to_non_nullable
+      postUserId: freezed == postUserId
+          ? _self.postUserId
+          : postUserId // ignore: cast_nullable_to_non_nullable
               as String?,
       value: freezed == value
           ? _self.value

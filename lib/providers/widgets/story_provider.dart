@@ -85,7 +85,8 @@ class StoryProvider extends InSoBlokViewModel {
 
   Future<void> fetchUser() async {
     try {
-      owner = await userService.getUser(story.uid!);
+      owner = await userService.getUser(story.userId!);
+      logger.d(owner);
     } catch (e) {
       setError(e);
       logger.e(e);
@@ -120,7 +121,7 @@ class StoryProvider extends InSoBlokViewModel {
     if (isBusy) return;
     clearErrors();
 
-    if (story.uid == user?.uid) {
+    if (story.userId == user?.id) {
       AIHelpers.showToast(msg: 'You can\'t vote to your feed!');
       return;
     }
@@ -130,7 +131,7 @@ class StoryProvider extends InSoBlokViewModel {
         if (story.isVote() == null) {
           votes.add(
             StoryVoteModel(
-              uid: user?.uid,
+              userId: user?.id,
               vote: isVote,
               timestamp: DateTime.now(),
             ),
@@ -138,9 +139,9 @@ class StoryProvider extends InSoBlokViewModel {
         } else {
           for (var i = 0; i < votes.length; i++) {
             var vote = votes[i];
-            if (vote.uid == user?.uid) {
+            if (vote.userId == user?.id) {
               votes[i] = StoryVoteModel(
-                uid: user?.uid,
+                userId: user?.id,
                 vote: isVote,
                 timestamp: DateTime.now(),
               );

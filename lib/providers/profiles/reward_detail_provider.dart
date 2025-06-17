@@ -38,7 +38,7 @@ class RewardDetailProvider extends InSoBlokViewModel {
     isLoadingScore = true;
     try {
       _scores.clear();
-      var s = await tastScoreService.getScoresByUser(user!.uid!);
+      var s = await tastScoreService.getScoresByUser(user!.id!);
       _scores.addAll(s);
     } catch (e) {
       setError(e);

@@ -7,7 +7,7 @@ extension StoryModelExt on StoryModel {
   bool? isVote() {
     try {
       var vs = votes ?? [];
-      var vote = vs.firstWhere((v) => v.uid == AuthHelper.user!.uid);
+      var vote = vs.firstWhere((v) => v.userId == AuthHelper.user!.id);
 
       return vote.vote;
     } catch (e) {
@@ -34,12 +34,12 @@ extension StoryModelExt on StoryModel {
 
   bool isLike() {
     var like = likes ?? [];
-    return like.contains(AuthHelper.user!.uid);
+    return like.contains(AuthHelper.user!.id);
   }
 
   bool isFollow() {
     var follow = follows ?? [];
-    return follow.contains(AuthHelper.user!.uid);
+    return follow.contains(AuthHelper.user!.id);
   }
 
   String get shownDate {
@@ -56,7 +56,7 @@ extension StoryModelExt on StoryModel {
 
   Map<String, dynamic> toMap() {
     Map<String, dynamic> result = {
-      'uid': uid,
+      'user_id': userId,
       'title': title,
       'text': text,
       'status': status,
@@ -78,7 +78,7 @@ extension StoryModelExt on StoryModel {
 extension StoryVoteModelExt on StoryVoteModel {
   Map<String, dynamic> toMap() {
     Map<String, dynamic> result = {
-      'uid': uid,
+      'user_id': userId,
       'vote': vote,
       'timestamp': timestamp?.toUtc().toIso8601String(),
     };
@@ -98,7 +98,7 @@ extension MediaStoryModelExt on MediaStoryModel {
 extension StoryCommentModelExt on StoryCommentModel {
   Map<String, dynamic> toMap() {
     Map<String, dynamic> result = {
-      'uid': uid,
+      'user_id': userId,
       'content': content,
       'medias': ((medias ?? []).map((e) => e.toMap()).toList()),
       'timestamp': timestamp?.toUtc().toIso8601String(),
@@ -120,7 +120,7 @@ extension UpdatedStoryModelExt on UpdatedStoryModel {
 
 extension ConnectedStoryModelExt on ConnectedStoryModel {
   Map<String, dynamic> toMap() {
-    Map<String, dynamic> result = {'post_id': postId, 'user_uid': userUid};
+    Map<String, dynamic> result = {'post_id': postId, 'user_id': userId};
     result.removeWhere((k, v) => v == null);
     return result;
   }

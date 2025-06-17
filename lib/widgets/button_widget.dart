@@ -72,7 +72,7 @@ class TextFillButton extends StatelessWidget {
       onTap: onTap,
       child: Container(
         width: width ?? double.infinity,
-        height: height ?? 52.0,
+        height: height ?? 48.0,
         decoration: BoxDecoration(
           color: color ?? AIColors.borderColor,
           borderRadius: BorderRadius.circular(12.0),

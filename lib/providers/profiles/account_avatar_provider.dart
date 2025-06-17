@@ -122,7 +122,8 @@ class AvatarProvider extends InSoBlokViewModel {
       var aiResult = await _avatarService.setOnProgressListener(
         taskId,
         onProgressListener: (progress) {
-          pageStatus = 'Converting to ${(double.parse(progress) * 100)}%...';
+          pageStatus =
+              'Converting to ${(double.parse(progress) * 100).toInt()}%...';
         },
       );
       if (aiResult['status'] != 'SUCCESS') throw (aiResult['status']);

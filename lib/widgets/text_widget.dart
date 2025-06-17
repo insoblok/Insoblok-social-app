@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:insoblok/utils/utils.dart';
 
 class AITextField extends StatelessWidget {
   final String? initialValue;
@@ -7,6 +8,7 @@ class AITextField extends StatelessWidget {
   final double? height;
   final Widget? prefixIcon;
   final Widget? suffix;
+  final Widget? suffixIcon;
   final bool autofocus;
   final void Function(String)? onChanged;
   final void Function(PointerDownEvent)? onTapOutside;
@@ -24,6 +26,7 @@ class AITextField extends StatelessWidget {
     this.controller,
     this.prefixIcon,
     this.suffix,
+    this.suffixIcon,
     this.autofocus = false,
     this.onChanged,
     this.onTapOutside,
@@ -48,9 +51,21 @@ class AITextField extends StatelessWidget {
           hintText: hintText,
           prefixIcon: prefixIcon,
           suffix: suffix,
+          suffixIcon: suffixIcon,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(32.0),
             borderSide: BorderSide(width: 0.33),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(32.0),
+            borderSide: BorderSide(width: 0.33, color: AIColors.borderColor),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(32.0),
+            borderSide: BorderSide(
+              width: 0.33,
+              color: Theme.of(context).primaryColor,
+            ),
           ),
         ),
         onChanged: onChanged,

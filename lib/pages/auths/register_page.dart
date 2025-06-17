@@ -8,105 +8,89 @@ import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
 
 class RegisterPage extends StatelessWidget {
-  const RegisterPage({super.key});
+  final String walletAddress;
+
+  const RegisterPage({super.key, required this.walletAddress});
 
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<RegisterProvider>.reactive(
       viewModelBuilder: () => RegisterProvider(),
-      onViewModelReady: (viewModel) => viewModel.init(context),
+      onViewModelReady:
+          (viewModel) => viewModel.init(context, walletAddress: walletAddress),
       builder: (context, viewModel, _) {
         return Scaffold(
-          body: ListView(
-            physics: BouncingScrollPhysics(),
-            padding: const EdgeInsets.symmetric(
-              horizontal: 24.0,
-              vertical: 80.0,
-            ),
-            children: [
-              Center(
-                child: ClipOval(
+          body: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              spacing: 24.0,
+              children: [
+                SizedBox(height: MediaQuery.of(context).viewPadding.top),
+                ClipOval(
                   child: AIImage(AIImages.logo, width: 120.0, height: 120.0),
                 ),
-              ),
-              const SizedBox(width: double.infinity, height: 40.0),
-              Center(
-                child: Text(
-                  'Please complete your information!',
-                  style: Theme.of(context).textTheme.labelLarge,
-                ),
-              ),
-              const SizedBox(height: 48.0),
-              Row(
-                children: [
-                  Expanded(
-                    child: AITextField(
-                      hintText: "First Name",
-                      prefixIcon: Icon(Icons.account_circle),
-                      onChanged: viewModel.updateFirstName,
-                    ),
-                  ),
-                  const SizedBox(width: 8.0),
-                  Expanded(
-                    child: AITextField(
-                      hintText: "Last Name",
-                      prefixIcon: Icon(Icons.account_circle),
-                      onChanged: viewModel.updateLastName,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 24.0),
-              Row(
-                children: [
-                  Expanded(
-                    child: AITextField(
-                      hintText: 'Bio (Optional)',
-                      prefixIcon: Icon(Icons.biotech),
-                      onChanged: (value) => viewModel.biometric = value,
-                    ),
-                  ),
-                  const SizedBox(width: 8.0),
-                  Expanded(
-                    child: AITextField(
-                      hintText: 'URL (Optional)',
-                      prefixIcon: Icon(Icons.link),
-                      onChanged: (value) => viewModel.website = value,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 24.0),
-              Row(
-                children: [
-                  Expanded(
-                    child: AITextField(
-                      hintText: 'City (Optional)',
-                      prefixIcon: Icon(Icons.location_city),
-                      onChanged: viewModel.updateCity,
-                    ),
-                  ),
-                  const SizedBox(width: 8.0),
-                  Expanded(
-                    child: AITextField(
-                      hintText: 'Country (Optional)',
-                      prefixIcon: Icon(Icons.location_city),
-                      onChanged: viewModel.updateCountry,
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 40.0),
-              TextFillButton(
-                text: "Confirm",
-                color: AIColors.pink,
-                isBusy: viewModel.isBusy,
-                onTap: viewModel.onClickConfirm,
-              ),
-            ],
+                AuthRegisterView(),
+                SizedBox(height: MediaQuery.of(context).viewPadding.bottom),
+              ],
+            ),
           ),
         );
       },
+    );
+  }
+}
+
+class AuthRegisterView extends ViewModelWidget<RegisterProvider> {
+  const AuthRegisterView({super.key});
+
+  @override
+  Widget build(BuildContext context, viewModel) {
+    return Padding(
+      padding: const EdgeInsets.all(20),
+      child: Column(
+        spacing: 16.0,
+        children: [
+          Text('Please complete your information!'),
+          const SizedBox(height: 8.0),
+          AITextField(
+            hintText: "First Name",
+            prefixIcon: Icon(Icons.account_circle_outlined),
+            onChanged: viewModel.updateFirstName,
+          ),
+          AITextField(
+            hintText: "Last Name",
+            prefixIcon: Icon(Icons.account_circle_outlined),
+            onChanged: viewModel.updateLastName,
+          ),
+          AITextField(
+            hintText: 'Bio (Optional)',
+            prefixIcon: Icon(Icons.biotech),
+            onChanged: (value) => viewModel.biometric = value,
+          ),
+          AITextField(
+            hintText: 'URL (Optional)',
+            prefixIcon: Icon(Icons.link),
+            onChanged: (value) => viewModel.website = value,
+          ),
+          AITextField(
+            hintText: 'City (Optional)',
+            prefixIcon: Icon(Icons.location_city),
+            onChanged: viewModel.updateCity,
+          ),
+          AITextField(
+            hintText: 'Country (Optional)',
+            prefixIcon: Icon(Icons.location_city),
+            onChanged: viewModel.updateCountry,
+          ),
+          const SizedBox(height: 16.0),
+          TextFillButton(
+            text: "Register",
+            color: AIColors.pink,
+            isBusy: viewModel.isBusy,
+            onTap: viewModel.onClickRegister,
+          ),
+        ],
+      ),
     );
   }
 }

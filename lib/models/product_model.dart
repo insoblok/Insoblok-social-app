@@ -23,7 +23,7 @@ abstract class ProductModel with _$ProductModel {
     String? category,
     String? categoryName,
     String? type,
-    String? uid,
+    String? userId,
     List<String>? likes,
     List<int>? rates,
     int? selles,

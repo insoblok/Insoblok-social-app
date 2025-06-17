@@ -21,7 +21,7 @@ _ProductModel _$ProductModelFromJson(Map<String, dynamic> json) =>
       category: json['category'] as String?,
       categoryName: json['category_name'] as String?,
       type: json['type'] as String?,
-      uid: json['uid'] as String?,
+      userId: json['user_id'] as String?,
       likes:
           (json['likes'] as List<dynamic>?)?.map((e) => e as String).toList(),
       rates: (json['rates'] as List<dynamic>?)
@@ -54,7 +54,7 @@ Map<String, dynamic> _$ProductModelToJson(_ProductModel instance) =>
       'category': instance.category,
       'category_name': instance.categoryName,
       'type': instance.type,
-      'uid': instance.uid,
+      'user_id': instance.userId,
       'likes': instance.likes,
       'rates': instance.rates,
       'selles': instance.selles,

@@ -11,6 +11,7 @@ void setupLocator() {
   locator.registerSingleton(AppSettingService());
   locator.registerSingleton(NetworkService());
   locator.registerSingleton(MediaPickerService());
+  locator.registerSingleton(ReownService());
 
   locator.registerFactory(() => UploadMediaProvider());
 }

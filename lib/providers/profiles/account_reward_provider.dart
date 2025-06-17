@@ -88,7 +88,7 @@ class AccountRewardProvider extends InSoBlokViewModel {
     _isLoadingScore = true;
     try {
       _scores.clear();
-      var s = await tastScoreService.getScoresByUser(owner!.uid!);
+      var s = await tastScoreService.getScoresByUser(owner!.id!);
       _scores.addAll(s);
     } catch (e) {
       setError(e);
@@ -120,18 +120,17 @@ class AccountRewardProvider extends InSoBlokViewModel {
   Future<void> getUsersScoreList() async {
     try {
       var scores = await tastScoreService.getScoreList();
-      var newMap = groupBy(scores, (obj) => obj.uid);
+      var newMap = groupBy(scores, (obj) => obj.userId);
 
       for (var key in newMap.keys) {
         if (key != null) {
-          var score = UserScoreModel(uid: key, scores: newMap[key] ?? []);
+          var score = UserScoreModel(id: key, scores: newMap[key] ?? []);
           _usersScoreList.add(score);
         }
       }
       var userRankIndex = 0;
       for (int i = 0; i < userTotalScores.length; i++) {
-        logger.d(userTotalScores[i].uid);
-        if (userTotalScores[i].uid == owner!.uid) {
+        if (userTotalScores[i].id == owner!.id) {
           userRankIndex = i;
           break;
         }

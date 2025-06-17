@@ -8,8 +8,10 @@ part of 'room_model.dart';
 
 _RoomModel _$RoomModelFromJson(Map<String, dynamic> json) => _RoomModel(
       id: json['id'] as String?,
-      uid: json['uid'] as String?,
-      uids: (json['uids'] as List<dynamic>?)?.map((e) => e as String?).toList(),
+      userId: json['user_id'] as String?,
+      userIds: (json['user_ids'] as List<dynamic>?)
+          ?.map((e) => e as String?)
+          .toList(),
       updateDate: json['update_date'] == null
           ? null
           : DateTime.parse(json['update_date'] as String),
@@ -24,8 +26,8 @@ _RoomModel _$RoomModelFromJson(Map<String, dynamic> json) => _RoomModel(
 Map<String, dynamic> _$RoomModelToJson(_RoomModel instance) =>
     <String, dynamic>{
       'id': instance.id,
-      'uid': instance.uid,
-      'uids': instance.uids,
+      'user_id': instance.userId,
+      'user_ids': instance.userIds,
       'update_date': instance.updateDate?.toIso8601String(),
       'timestamp': instance.timestamp?.toIso8601String(),
       'content': instance.content,

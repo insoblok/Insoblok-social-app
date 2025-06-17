@@ -8,7 +8,7 @@ part of 'story_model.dart';
 
 _StoryModel _$StoryModelFromJson(Map<String, dynamic> json) => _StoryModel(
       id: json['id'] as String?,
-      uid: json['uid'] as String?,
+      userId: json['user_id'] as String?,
       title: json['title'] as String?,
       text: json['text'] as String?,
       status: json['status'] as String?,
@@ -40,7 +40,7 @@ _StoryModel _$StoryModelFromJson(Map<String, dynamic> json) => _StoryModel(
 Map<String, dynamic> _$StoryModelToJson(_StoryModel instance) =>
     <String, dynamic>{
       'id': instance.id,
-      'uid': instance.uid,
+      'user_id': instance.userId,
       'title': instance.title,
       'text': instance.text,
       'status': instance.status,
@@ -57,7 +57,7 @@ Map<String, dynamic> _$StoryModelToJson(_StoryModel instance) =>
 
 _StoryVoteModel _$StoryVoteModelFromJson(Map<String, dynamic> json) =>
     _StoryVoteModel(
-      uid: json['uid'] as String?,
+      userId: json['user_id'] as String?,
       vote: json['vote'] as bool?,
       timestamp: json['timestamp'] == null
           ? null
@@ -66,7 +66,7 @@ _StoryVoteModel _$StoryVoteModelFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$StoryVoteModelToJson(_StoryVoteModel instance) =>
     <String, dynamic>{
-      'uid': instance.uid,
+      'user_id': instance.userId,
       'vote': instance.vote,
       'timestamp': instance.timestamp?.toIso8601String(),
     };
@@ -85,7 +85,7 @@ Map<String, dynamic> _$MediaStoryModelToJson(_MediaStoryModel instance) =>
 
 _StoryCommentModel _$StoryCommentModelFromJson(Map<String, dynamic> json) =>
     _StoryCommentModel(
-      uid: json['uid'] as String?,
+      userId: json['user_id'] as String?,
       content: json['content'] as String?,
       timestamp: json['timestamp'] == null
           ? null
@@ -97,7 +97,7 @@ _StoryCommentModel _$StoryCommentModelFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$StoryCommentModelToJson(_StoryCommentModel instance) =>
     <String, dynamic>{
-      'uid': instance.uid,
+      'user_id': instance.userId,
       'content': instance.content,
       'timestamp': instance.timestamp?.toIso8601String(),
       'medias': instance.medias,
@@ -118,12 +118,12 @@ Map<String, dynamic> _$UpdatedStoryModelToJson(_UpdatedStoryModel instance) =>
 _ConnectedStoryModel _$ConnectedStoryModelFromJson(Map<String, dynamic> json) =>
     _ConnectedStoryModel(
       postId: json['post_id'] as String?,
-      userUid: json['user_uid'] as String?,
+      userId: json['user_id'] as String?,
     );
 
 Map<String, dynamic> _$ConnectedStoryModelToJson(
         _ConnectedStoryModel instance) =>
     <String, dynamic>{
       'post_id': instance.postId,
-      'user_uid': instance.userUid,
+      'user_id': instance.userId,
     };

@@ -16,9 +16,9 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$TastescoreModel {
   String? get id;
-  String? get uid;
+  String? get userId;
   String? get postId;
-  String? get userUid;
+  String? get postUserId;
   String? get type;
   int? get bonus;
   String? get desc;
@@ -42,9 +42,10 @@ mixin _$TastescoreModel {
         (other.runtimeType == runtimeType &&
             other is TastescoreModel &&
             (identical(other.id, id) || other.id == id) &&
-            (identical(other.uid, uid) || other.uid == uid) &&
+            (identical(other.userId, userId) || other.userId == userId) &&
             (identical(other.postId, postId) || other.postId == postId) &&
-            (identical(other.userUid, userUid) || other.userUid == userUid) &&
+            (identical(other.postUserId, postUserId) ||
+                other.postUserId == postUserId) &&
             (identical(other.type, type) || other.type == type) &&
             (identical(other.bonus, bonus) || other.bonus == bonus) &&
             (identical(other.desc, desc) || other.desc == desc) &&
@@ -56,12 +57,12 @@ mixin _$TastescoreModel {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, uid, postId, userUid, type,
-      bonus, desc, updateDate, timestamp);
+  int get hashCode => Object.hash(runtimeType, id, userId, postId, postUserId,
+      type, bonus, desc, updateDate, timestamp);
 
   @override
   String toString() {
-    return 'TastescoreModel(id: $id, uid: $uid, postId: $postId, userUid: $userUid, type: $type, bonus: $bonus, desc: $desc, updateDate: $updateDate, timestamp: $timestamp)';
+    return 'TastescoreModel(id: $id, userId: $userId, postId: $postId, postUserId: $postUserId, type: $type, bonus: $bonus, desc: $desc, updateDate: $updateDate, timestamp: $timestamp)';
   }
 }
 
@@ -73,9 +74,9 @@ abstract mixin class $TastescoreModelCopyWith<$Res> {
   @useResult
   $Res call(
       {String? id,
-      String? uid,
+      String? userId,
       String? postId,
-      String? userUid,
+      String? postUserId,
       String? type,
       int? bonus,
       String? desc,
@@ -97,9 +98,9 @@ class _$TastescoreModelCopyWithImpl<$Res>
   @override
   $Res call({
     Object? id = freezed,
-    Object? uid = freezed,
+    Object? userId = freezed,
     Object? postId = freezed,
-    Object? userUid = freezed,
+    Object? postUserId = freezed,
     Object? type = freezed,
     Object? bonus = freezed,
     Object? desc = freezed,
@@ -111,17 +112,17 @@ class _$TastescoreModelCopyWithImpl<$Res>
           ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
               as String?,
-      uid: freezed == uid
-          ? _self.uid
-          : uid // ignore: cast_nullable_to_non_nullable
+      userId: freezed == userId
+          ? _self.userId
+          : userId // ignore: cast_nullable_to_non_nullable
               as String?,
       postId: freezed == postId
           ? _self.postId
           : postId // ignore: cast_nullable_to_non_nullable
               as String?,
-      userUid: freezed == userUid
-          ? _self.userUid
-          : userUid // ignore: cast_nullable_to_non_nullable
+      postUserId: freezed == postUserId
+          ? _self.postUserId
+          : postUserId // ignore: cast_nullable_to_non_nullable
               as String?,
       type: freezed == type
           ? _self.type
@@ -153,9 +154,9 @@ class _$TastescoreModelCopyWithImpl<$Res>
 class _TastescoreModel implements TastescoreModel {
   _TastescoreModel(
       {this.id,
-      this.uid,
+      this.userId,
       this.postId,
-      this.userUid,
+      this.postUserId,
       this.type,
       this.bonus,
       this.desc,
@@ -167,11 +168,11 @@ class _TastescoreModel implements TastescoreModel {
   @override
   final String? id;
   @override
-  final String? uid;
+  final String? userId;
   @override
   final String? postId;
   @override
-  final String? userUid;
+  final String? postUserId;
   @override
   final String? type;
   @override
@@ -204,9 +205,10 @@ class _TastescoreModel implements TastescoreModel {
         (other.runtimeType == runtimeType &&
             other is _TastescoreModel &&
             (identical(other.id, id) || other.id == id) &&
-            (identical(other.uid, uid) || other.uid == uid) &&
+            (identical(other.userId, userId) || other.userId == userId) &&
             (identical(other.postId, postId) || other.postId == postId) &&
-            (identical(other.userUid, userUid) || other.userUid == userUid) &&
+            (identical(other.postUserId, postUserId) ||
+                other.postUserId == postUserId) &&
             (identical(other.type, type) || other.type == type) &&
             (identical(other.bonus, bonus) || other.bonus == bonus) &&
             (identical(other.desc, desc) || other.desc == desc) &&
@@ -218,12 +220,12 @@ class _TastescoreModel implements TastescoreModel {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, uid, postId, userUid, type,
-      bonus, desc, updateDate, timestamp);
+  int get hashCode => Object.hash(runtimeType, id, userId, postId, postUserId,
+      type, bonus, desc, updateDate, timestamp);
 
   @override
   String toString() {
-    return 'TastescoreModel(id: $id, uid: $uid, postId: $postId, userUid: $userUid, type: $type, bonus: $bonus, desc: $desc, updateDate: $updateDate, timestamp: $timestamp)';
+    return 'TastescoreModel(id: $id, userId: $userId, postId: $postId, postUserId: $postUserId, type: $type, bonus: $bonus, desc: $desc, updateDate: $updateDate, timestamp: $timestamp)';
   }
 }
 
@@ -237,9 +239,9 @@ abstract mixin class _$TastescoreModelCopyWith<$Res>
   @useResult
   $Res call(
       {String? id,
-      String? uid,
+      String? userId,
       String? postId,
-      String? userUid,
+      String? postUserId,
       String? type,
       int? bonus,
       String? desc,
@@ -261,9 +263,9 @@ class __$TastescoreModelCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   $Res call({
     Object? id = freezed,
-    Object? uid = freezed,
+    Object? userId = freezed,
     Object? postId = freezed,
-    Object? userUid = freezed,
+    Object? postUserId = freezed,
     Object? type = freezed,
     Object? bonus = freezed,
     Object? desc = freezed,
@@ -275,17 +277,17 @@ class __$TastescoreModelCopyWithImpl<$Res>
           ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
               as String?,
-      uid: freezed == uid
-          ? _self.uid
-          : uid // ignore: cast_nullable_to_non_nullable
+      userId: freezed == userId
+          ? _self.userId
+          : userId // ignore: cast_nullable_to_non_nullable
               as String?,
       postId: freezed == postId
           ? _self.postId
           : postId // ignore: cast_nullable_to_non_nullable
               as String?,
-      userUid: freezed == userUid
-          ? _self.userUid
-          : userUid // ignore: cast_nullable_to_non_nullable
+      postUserId: freezed == postUserId
+          ? _self.postUserId
+          : postUserId // ignore: cast_nullable_to_non_nullable
               as String?,
       type: freezed == type
           ? _self.type

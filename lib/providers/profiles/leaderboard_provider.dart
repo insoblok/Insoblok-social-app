@@ -7,10 +7,10 @@ import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/services/services.dart';
 
 class UserScoreModel {
-  final String uid;
+  final String id;
   final List<TastescoreModel> scores;
 
-  UserScoreModel({required this.uid, required this.scores});
+  UserScoreModel({required this.id, required this.scores});
 
   set date(String s) {
     date = s;
@@ -97,11 +97,11 @@ class LeaderboardProvider extends InSoBlokViewModel {
     await runBusyFuture(() async {
       try {
         var scores = await tastScoreService.getScoreList();
-        var newMap = groupBy(scores, (obj) => obj.uid);
+        var newMap = groupBy(scores, (obj) => obj.userId);
 
         for (var key in newMap.keys) {
           if (key != null) {
-            var leader = UserScoreModel(uid: key, scores: newMap[key] ?? []);
+            var leader = UserScoreModel(id: key, scores: newMap[key] ?? []);
             _leaderboard.add(leader);
           }
         }

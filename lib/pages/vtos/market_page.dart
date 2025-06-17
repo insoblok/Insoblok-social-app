@@ -2,6 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
+import 'package:insoblok/utils/image.dart';
 import 'package:stacked/stacked.dart';
 
 import 'package:insoblok/providers/providers.dart';
@@ -69,23 +70,59 @@ class MarketPlacePage extends StatelessWidget {
                   horizontal: 20.0,
                   vertical: 24.0,
                 ),
-                sliver: SliverList(
-                  delegate: SliverChildListDelegate([
-                    StaggeredGrid.count(
-                      crossAxisCount: 3,
-                      crossAxisSpacing: 8.0,
-                      mainAxisSpacing: 8.0,
-                      children: [
-                        ...viewModel.filterProducts.map((p) {
-                          return ProductItemWidget(
-                            product: p,
-                            onTap: () => viewModel.onTapVTOList(p),
-                          );
-                        }),
-                      ],
-                    ),
-                  ]),
-                ),
+                sliver:
+                    viewModel.filterProducts.isNotEmpty
+                        ? SliverList(
+                          delegate: SliverChildListDelegate([
+                            StaggeredGrid.count(
+                              crossAxisCount: 3,
+                              crossAxisSpacing: 8.0,
+                              mainAxisSpacing: 8.0,
+                              children: [
+                                ...viewModel.filterProducts.map((p) {
+                                  return ProductItemWidget(
+                                    product: p,
+                                    onTap: () => viewModel.onTapVTOList(p),
+                                  );
+                                }),
+                              ],
+                            ),
+                          ]),
+                        )
+                        : SliverFillRemaining(
+                          child: Center(
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                ClipOval(
+                                  child: AIImage(
+                                    AIImages.placehold,
+                                    width: 160.0,
+                                    height: 160.0,
+                                  ),
+                                ),
+                                const SizedBox(height: 40.0),
+                                Text(
+                                  "Empty!",
+                                  style: TextStyle(
+                                    fontSize: 18.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                                const SizedBox(height: 8.0),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 60.0,
+                                  ),
+                                  child: Text(
+                                    "There is no any products yet.",
+                                    textAlign: TextAlign.center,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
               ),
             ],
           ),

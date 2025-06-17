@@ -41,10 +41,7 @@ class TastescoreService {
       }
 
       if (rewardValue > 0) {
-        var tastescore = TastescoreModelExt.creatXpModel(
-          rewardValue,
-          user.uid!,
-        );
+        var tastescore = TastescoreModelExt.creatXpModel(rewardValue, user.id!);
         await tastescoreCollection.add(tastescore.toMap());
       }
 
@@ -58,18 +55,18 @@ class TastescoreService {
   Future<void> winCreatorScore() async {
     var tastescore = TastescoreModelExt.creatXpModel(
       AppSettingHelper.appSettingModel!.xpEarn![4].reward!,
-      AuthHelper.user!.uid!,
+      AuthHelper.user!.id!,
       type: TastescoreType.WINCREATOR,
     );
     await tastescoreCollection.add(tastescore.toMap());
   }
 
   Future<void> voteScore(StoryModel story) async {
-    var scores = await getScoresByUser(story.uid!);
+    var scores = await getScoresByUser(story.userId!);
     var contained = false;
     for (var score in scores) {
       if (score.postId == story.id &&
-          score.userUid == AuthHelper.user?.id &&
+          score.userId == AuthHelper.user?.id &&
           score.type != TastescoreType.VOTE) {
         contained = true;
         break;
@@ -77,7 +74,7 @@ class TastescoreService {
     }
     if (!contained) {
       var userService = UserService();
-      var owner = await userService.getUser(story.uid!);
+      var owner = await userService.getUser(story.id!);
       var rewardVote =
           (AppSettingHelper.appSettingModel?.xpEarn?[0].reward ?? 0);
       if (owner?.freeStyle == true) {
@@ -88,8 +85,8 @@ class TastescoreService {
       }
       var scoreVote = TastescoreModelExt.creatXpModel(
         rewardVote,
-        story.uid!,
-        userUid: AuthHelper.user?.uid,
+        story.userId!,
+        postUserId: AuthHelper.user?.id,
         postId: story.id,
         type:
             (owner?.freeStyle == true)
@@ -104,7 +101,7 @@ class TastescoreService {
             (AppSettingHelper.appSettingModel?.xpEarn?[3].reward ?? 0);
         var scoreFreeStyle = TastescoreModelExt.creatXpModel(
           rewardFreeStyle,
-          story.uid!,
+          story.userId!,
           type: TastescoreType.FREESTYLE,
         );
         await tastescoreCollection.add(scoreFreeStyle.toMap());
@@ -117,8 +114,8 @@ class TastescoreService {
                 .toInt();
         var scoreRepost = TastescoreModelExt.creatXpModel(
           rewardRepost,
-          connect.userUid!,
-          userUid: AuthHelper.user?.uid,
+          connect.userId!,
+          postUserId: AuthHelper.user?.id,
           postId: connect.postId,
           type: '${TastescoreType.REPOST}-${TastescoreType.BONUS}',
         );
@@ -132,8 +129,8 @@ class TastescoreService {
         (AppSettingHelper.appSettingModel?.xpEarn?[1].reward ?? 0);
     var scoreRepost = TastescoreModelExt.creatXpModel(
       rewardRepost,
-      story.uid!,
-      userUid: AuthHelper.user?.uid,
+      story.userId!,
+      postUserId: AuthHelper.user?.id,
       postId: story.id,
       type: TastescoreType.REPOST,
     );
@@ -142,8 +139,8 @@ class TastescoreService {
     for (ConnectedStoryModel connect in (story.connects ?? [])) {
       var scoreConnect = TastescoreModelExt.creatXpModel(
         rewardRepost,
-        connect.userUid!,
-        userUid: AuthHelper.user?.uid,
+        connect.userId!,
+        postUserId: AuthHelper.user?.id,
         postId: connect.postId,
         type: TastescoreType.REPOST,
       );
@@ -159,7 +156,7 @@ class TastescoreService {
         var json = doc.data();
         json['id'] = doc.id;
         var score = TastescoreModel.fromJson(json);
-        if (score.uid != null) {
+        if (score.userId != null) {
           scoreList.add(score);
         }
       } on FirebaseException catch (e) {
@@ -169,16 +166,16 @@ class TastescoreService {
     return scoreList;
   }
 
-  Future<List<TastescoreModel>> getScoresByUser(String uid) async {
+  Future<List<TastescoreModel>> getScoresByUser(String id) async {
     List<TastescoreModel> scoreList = [];
     var scoreSnapshot =
-        await tastescoreCollection.where('uid', isEqualTo: uid).get();
+        await tastescoreCollection.where('user_id', isEqualTo: id).get();
     for (var doc in scoreSnapshot.docs) {
       try {
         var json = doc.data();
         json['id'] = doc.id;
         var score = TastescoreModel.fromJson(json);
-        if (score.uid != null) {
+        if (score.userId != null) {
           scoreList.add(score);
         }
       } on FirebaseException catch (e) {
@@ -193,7 +190,7 @@ class TastescoreService {
     List<TastescoreModel> scoreList = [];
     var scoreSnapshot =
         await tastescoreCollection
-            .where('uid', isEqualTo: story.uid)
+            .where('user_id', isEqualTo: story.userId)
             .where('post_id', isEqualTo: story.id)
             .get();
     for (var doc in scoreSnapshot.docs) {
@@ -201,7 +198,7 @@ class TastescoreService {
         var json = doc.data();
         json['id'] = doc.id;
         var score = TastescoreModel.fromJson(json);
-        if (score.uid != null) {
+        if (score.userId != null) {
           scoreList.add(score);
         }
       } on FirebaseException catch (e) {

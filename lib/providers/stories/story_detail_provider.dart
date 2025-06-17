@@ -44,7 +44,7 @@ class StoryDetailProvider extends InSoBlokViewModel {
 
   Future<void> fetchUser() async {
     try {
-      owner = await userService.getUser(story.uid!);
+      owner = await userService.getUser(story.id!);
     } catch (e) {
       setError(e);
       logger.e(e);
@@ -68,7 +68,7 @@ class StoryDetailProvider extends InSoBlokViewModel {
     if (isBusy) return;
     clearErrors();
 
-    if (story.uid == user?.uid) {
+    if (story.userId == user?.id) {
       AIHelpers.showToast(msg: 'You can\'t like to your feed!');
       return;
     }
@@ -78,9 +78,9 @@ class StoryDetailProvider extends InSoBlokViewModel {
     await runBusyFuture(() async {
       try {
         if (story.isLike()) {
-          likes.remove(user!.uid);
+          likes.remove(user!.id);
         } else {
-          likes.add(user!.uid!);
+          likes.add(user!.id!);
         }
         await storyService.updateLikeStory(
           story: story.copyWith(likes: likes, updateDate: DateTime.now()),
@@ -118,7 +118,7 @@ class StoryDetailProvider extends InSoBlokViewModel {
     if (isBusy) return;
     clearErrors();
 
-    if (story.uid == user?.uid) {
+    if (story.userId == user?.id) {
       AIHelpers.showToast(msg: 'You can\'t follow to your feed!');
       return;
     }
@@ -128,9 +128,9 @@ class StoryDetailProvider extends InSoBlokViewModel {
     await runBusyFuture(() async {
       try {
         if (story.isFollow()) {
-          follows.remove(user!.uid);
+          follows.remove(user!.id);
         } else {
-          follows.add(user!.uid!);
+          follows.add(user!.id!);
         }
         await storyService.updateFollowStory(
           story: story.copyWith(follows: follows, updateDate: DateTime.now()),
@@ -166,7 +166,7 @@ class StoryDetailProvider extends InSoBlokViewModel {
         var desc = await AIHelpers.goToDescriptionView(context);
         if (desc != null) {
           var comment = StoryCommentModel(
-            uid: user?.uid,
+            userId: user?.id,
             content: desc,
             timestamp: DateTime.now(),
           );

@@ -24,7 +24,7 @@ class StoryService {
         var json = doc.data();
         json['id'] = doc.id;
         var story = StoryModel.fromJson(json);
-        if (story.uid != null) {
+        if (story.userId != null) {
           result.add(story);
         }
       } on FirebaseException catch (e) {
@@ -39,13 +39,13 @@ class StoryService {
     List<StoryModel> result = [];
     var storiesSnapshot =
         await storyCollection.orderBy('timestamp', descending: true).get();
-    var userids = await userService.getFollowingUserIds();
+    var userIds = await userService.getFollowingUserIds();
     for (var doc in storiesSnapshot.docs) {
       try {
         var json = doc.data();
         json['id'] = doc.id;
         var story = StoryModel.fromJson(json);
-        if (story.uid != null && userids.contains(story.uid)) {
+        if (story.userId != null && userIds.contains(story.userId)) {
           result.add(story);
         }
       } on FirebaseException catch (e) {
@@ -65,7 +65,7 @@ class StoryService {
         var json = doc.data();
         json['id'] = doc.id;
         var story = StoryModel.fromJson(json);
-        if (story.uid != null &&
+        if (story.userId != null &&
             AuthHelper.user!.userActions != null &&
             AuthHelper.user!.userActions!.contains(story.id)) {
           result.add(story);
@@ -77,12 +77,12 @@ class StoryService {
     return result;
   }
 
-  // Get stories by uid
-  Future<List<StoryModel>> getStoriesByUid(String uid) async {
+  // Get stories by id
+  Future<List<StoryModel>> getStoriesById(String id) async {
     List<StoryModel> result = [];
     var storiesSnapshot =
         await storyCollection
-            .where('uid', isEqualTo: uid)
+            .where('user_id', isEqualTo: id)
             .orderBy('timestamp', descending: false)
             .get();
     for (var doc in storiesSnapshot.docs) {
@@ -90,7 +90,7 @@ class StoryService {
         var json = doc.data();
         json['id'] = doc.id;
         var story = StoryModel.fromJson(json);
-        if (story.uid != null) {
+        if (story.userId != null) {
           result.add(story);
         }
       } on FirebaseException catch (e) {
@@ -102,11 +102,11 @@ class StoryService {
   }
 
   // Get stories by like
-  Future<List<StoryModel>> getStoriesByLike(String uid) async {
+  Future<List<StoryModel>> getStoriesByLike(String id) async {
     List<StoryModel> result = [];
     var storiesSnapshot =
         await storyCollection
-            .where('likes', arrayContains: uid)
+            .where('likes', arrayContains: id)
             .orderBy('timestamp', descending: false)
             .get();
     for (var doc in storiesSnapshot.docs) {
@@ -114,7 +114,7 @@ class StoryService {
         var json = doc.data();
         json['id'] = doc.id;
         var story = StoryModel.fromJson(json);
-        if (story.uid != null) {
+        if (story.userId != null) {
           result.add(story);
         }
       } on FirebaseException catch (e) {
@@ -125,11 +125,11 @@ class StoryService {
   }
 
   // Get stories by follow
-  Future<List<StoryModel>> getStoriesByFollow(String uid) async {
+  Future<List<StoryModel>> getStoriesByFollow(String id) async {
     List<StoryModel> result = [];
     var storiesSnapshot =
         await storyCollection
-            .where('follows', arrayContains: uid)
+            .where('follows', arrayContains: id)
             .orderBy('timestamp', descending: false)
             .get();
     for (var doc in storiesSnapshot.docs) {
@@ -137,7 +137,7 @@ class StoryService {
         var json = doc.data();
         json['id'] = doc.id;
         var story = StoryModel.fromJson(json);
-        if (story.uid != null) {
+        if (story.userId != null) {
           result.add(story);
         }
       } on FirebaseException catch (e) {
@@ -162,7 +162,7 @@ class StoryService {
   Future<String> postStory({required StoryModel story}) async {
     var ref = await storyCollection.add({
       ...story.toMap(),
-      'uid': AuthHelper.user?.uid,
+      'user_id': AuthHelper.user?.id,
     });
 
     await storyCollection.doc('updated').set({
@@ -215,7 +215,7 @@ class StoryService {
       var likes = List<String>.from(user.likes ?? []);
       if (story.isLike()) {
         if (!user.isLike()) {
-          likes.add(AuthHelper.user!.uid!);
+          likes.add(AuthHelper.user!.id!);
           isUpdated = true;
         }
       }
@@ -239,7 +239,7 @@ class StoryService {
       var follows = List<String>.from(user.follows ?? []);
       if (story.isFollow()) {
         if (!user.isFollow()) {
-          follows.add(AuthHelper.user!.uid!);
+          follows.add(AuthHelper.user!.id!);
           isUpdated = true;
         }
       }
@@ -263,22 +263,22 @@ class StoryService {
       var votes = List<UserActionModel>.from(user.actions ?? []);
       var index = votes.indexWhere(
         (vote) =>
-            vote.userUid == AuthHelper.user?.uid && vote.postUid == story.id,
+            vote.postUserId == AuthHelper.user?.id && vote.postId == story.id,
       );
 
       if (index == -1) {
         votes.add(
           UserActionModel(
-            postUid: story.id,
-            userUid: AuthHelper.user!.uid!,
+            postId: story.id,
+            postUserId: AuthHelper.user!.id!,
             value: isVote,
             type: 'vote',
           ),
         );
       } else {
         votes[index] = UserActionModel(
-          postUid: story.id,
-          userUid: AuthHelper.user!.uid!,
+          postId: story.id,
+          postUserId: AuthHelper.user!.id!,
           value: isVote,
           type: 'vote',
         );
