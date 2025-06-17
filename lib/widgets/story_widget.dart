@@ -124,13 +124,13 @@ class StoryListCell extends StatelessWidget {
                   const SizedBox(height: 8.0),
                   Expanded(
                     child: Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          width: 0.33,
-                          color: AIColors.speraterColor,
-                        ),
-                        borderRadius: BorderRadius.circular(12.0),
-                      ),
+                      // decoration: BoxDecoration(
+                      //   border: Border.all(
+                      //     width: 0.33,
+                      //     color: AIColors.speraterColor,
+                      //   ),
+                      //   borderRadius: BorderRadius.circular(12.0),
+                      // ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(12.0),
                         child: StoryCarouselView(
@@ -718,7 +718,7 @@ class StoryDialogMediaView extends ViewModelWidget<StoryContentProvider> {
           scrollDirection: Axis.horizontal,
           padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
           child: Row(
-            spacing: 8.0,
+            spacing: 16.0,
             children: [
               for (var i = 0; i < viewModel.story.medias!.length; i++) ...{
                 AspectRatio(

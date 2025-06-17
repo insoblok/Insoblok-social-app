@@ -59,7 +59,7 @@ class _StoryCarouselViewState extends State<StoryCarouselView> {
         width: double.infinity,
         height: widget.height,
         decoration: BoxDecoration(
-          color: Theme.of(context).colorScheme.secondary.withAlpha(32),
+          // color: Theme.of(context).colorScheme.secondary.withAlpha(32),
           borderRadius: BorderRadius.circular(6),
         ),
         child: MediaCarouselCell(
@@ -102,9 +102,9 @@ class _StoryCarouselViewState extends State<StoryCarouselView> {
                     width: double.infinity,
                     height: widget.height,
                     decoration: BoxDecoration(
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.secondary.withAlpha(32),
+                      // color: Theme.of(
+                      //   context,
+                      // ).colorScheme.secondary.withAlpha(32),
                       borderRadius: BorderRadius.circular(6),
                     ),
                     child: MediaCarouselCell(
