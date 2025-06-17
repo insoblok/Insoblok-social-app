@@ -55,7 +55,9 @@ class AccountProvider extends InSoBlokViewModel {
 
     await runBusyFuture(() async {
       try {
+        logger.d(accountUser?.id);
         var s = await storyService.getStoriesById(accountUser!.id!);
+
         if (s.isNotEmpty) {
           stories.clear();
           stories.addAll(s);

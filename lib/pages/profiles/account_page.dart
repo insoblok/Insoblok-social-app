@@ -59,20 +59,43 @@ class AccountPage extends StatelessWidget {
                     SliverList(
                       delegate: SliverChildListDelegate([
                         if (viewModel.pageIndex == 0) ...{
-                          for (var story in viewModel.stories) ...{
-                            AccountStoryListCell(story: story),
+                          if (viewModel.stories.isNotEmpty) ...{
+                            for (var story in viewModel.stories) ...{
+                              AccountStoryListCell(story: story),
+                            },
+                          } else ...{
+                            EmptyView(
+                              title: 'Empty!',
+                              des: 'There is no any Posts',
+                            ),
                           },
                         },
                         if (viewModel.pageIndex == 1) ...{
-                          for (var id
-                              in (viewModel.accountUser?.likes ?? [])) ...{
-                            UserRelatedView(id: id),
+                          if ((viewModel.accountUser?.likes ?? [])
+                              .isNotEmpty) ...{
+                            for (var id
+                                in (viewModel.accountUser?.likes ?? [])) ...{
+                              UserRelatedView(id: id),
+                            },
+                          } else ...{
+                            EmptyView(
+                              title: 'Empty!',
+                              des: 'There is no any posts user liked.',
+                            ),
                           },
                         },
                         if (viewModel.pageIndex == 2) ...{
-                          for (var id
-                              in (viewModel.accountUser?.follows ?? [])) ...{
-                            UserRelatedView(id: id),
+                          if ((viewModel.accountUser?.follows ?? [])
+                              .isNotEmpty) ...{
+                            for (var id
+                                in (viewModel.accountUser?.follows ?? [])) ...{
+                              UserRelatedView(id: id),
+                            },
+                          } else ...{
+                            EmptyView(
+                              title: 'Empty!',
+                              des: 'There is no any posts user followed.',
+                            ),
                           },
                         },
                         if (viewModel.pageIndex == 3) ...{
@@ -84,35 +107,40 @@ class AccountPage extends StatelessWidget {
                               child: Loader(size: 60.0),
                             ),
                           } else ...{
-                            GridView.count(
-                              shrinkWrap: true,
-                              controller: viewModel.controller,
-                              crossAxisCount: 3,
-                              mainAxisSpacing: 4.0,
-                              crossAxisSpacing: 4.0,
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 20.0,
-                                vertical: 4.0,
-                              ),
-                              children: [
-                                for (var gallery in viewModel.galleries) ...{
-                                  AspectRatio(
-                                    aspectRatio: 1,
-                                    child: InkWell(
-                                      onTap:
-                                          () => AIHelpers.goToDetailView(
-                                            context,
-                                            medias: viewModel.galleries,
-                                            index: viewModel.galleries.indexOf(
-                                              gallery,
-                                            ),
-                                          ),
-                                      child: AIImage(gallery),
-                                    ),
+                            viewModel.galleries.isNotEmpty
+                                ? GridView.count(
+                                  shrinkWrap: true,
+                                  controller: viewModel.controller,
+                                  crossAxisCount: 3,
+                                  mainAxisSpacing: 4.0,
+                                  crossAxisSpacing: 4.0,
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 20.0,
+                                    vertical: 4.0,
                                   ),
-                                },
-                              ],
-                            ),
+                                  children: [
+                                    for (var gallery
+                                        in viewModel.galleries) ...{
+                                      AspectRatio(
+                                        aspectRatio: 1,
+                                        child: InkWell(
+                                          onTap:
+                                              () => AIHelpers.goToDetailView(
+                                                context,
+                                                medias: viewModel.galleries,
+                                                index: viewModel.galleries
+                                                    .indexOf(gallery),
+                                              ),
+                                          child: AIImage(gallery),
+                                        ),
+                                      ),
+                                    },
+                                  ],
+                                )
+                                : EmptyView(
+                                  title: 'Empty!',
+                                  des: 'There is no any Galleries.',
+                                ),
                           },
                         },
                         SizedBox(

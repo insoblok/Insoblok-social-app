@@ -23,7 +23,7 @@ class UserService {
   Future<UserModel?> getUser(String id) async {
     try {
       var doc = await _userCollection.doc(id).get();
-      if (doc.exists) return null;
+      // if (doc.exists) return null;
       return _getUserFromDoc(doc);
     } on FirebaseException catch (e) {
       logger.e(e.message);

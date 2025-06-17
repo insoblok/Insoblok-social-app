@@ -379,7 +379,7 @@ extension RoomModelExt on RoomModel {
   Map<String, dynamic> toMap() {
     Map<String, dynamic> result = {
       'user_id': userId,
-      'userIds': (userIds),
+      'user_ids': (userIds),
       'content': content,
       'status_sender': statusSender,
       'status_receiver': statusReceiver,

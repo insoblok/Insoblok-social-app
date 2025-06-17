@@ -13,7 +13,7 @@ class RoomService {
     var roomSnapshot =
         await _firestore
             .collection('room')
-            .orderBy('timestamp', descending: false)
+            // .orderBy('timestamp', descending: false)
             .where('user_ids', arrayContains: AuthHelper.user?.id)
             .get();
     for (var doc in roomSnapshot.docs) {

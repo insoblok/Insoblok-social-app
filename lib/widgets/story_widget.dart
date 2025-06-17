@@ -121,16 +121,16 @@ class StoryListCell extends StatelessWidget {
                         ),
                       ],
                     ),
-                  const SizedBox(height: 8.0),
+                  const SizedBox(height: 12.0),
                   Expanded(
                     child: Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          width: 0.33,
-                          color: AIColors.speraterColor,
-                        ),
-                        borderRadius: BorderRadius.circular(12.0),
-                      ),
+                      // decoration: BoxDecoration(
+                      //   border: Border.all(
+                      //     width: 0.33,
+                      //     color: AIColors.speraterColor,
+                      //   ),
+                      //   borderRadius: BorderRadius.circular(12.0),
+                      // ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(12.0),
                         child: StoryCarouselView(
@@ -509,7 +509,7 @@ class StoryDetailDialog extends StatelessWidget {
                               child: StoryDetailCommentCell(
                                 key: GlobalKey(
                                   debugLabel:
-                                      '${comment.id} - ${viewModel.story.comments?.reversed.toList().indexOf(comment)}',
+                                      '${comment.userId} - ${viewModel.story.comments?.reversed.toList().indexOf(comment)}',
                                 ),
                                 comment: comment,
                                 isLast:

@@ -64,7 +64,7 @@ class StoryContentProvider extends InSoBlokViewModel {
         });
       }
     });
-    owner = await _userService.getUser(story.id!);
+    owner = await _userService.getUser(story.userId!);
 
     notifyListeners();
   }
