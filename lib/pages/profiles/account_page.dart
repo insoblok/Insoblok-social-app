@@ -64,15 +64,15 @@ class AccountPage extends StatelessWidget {
                           },
                         },
                         if (viewModel.pageIndex == 1) ...{
-                          for (var uid
+                          for (var id
                               in (viewModel.accountUser?.likes ?? [])) ...{
-                            UserRelatedView(uid: uid),
+                            UserRelatedView(id: id),
                           },
                         },
                         if (viewModel.pageIndex == 2) ...{
-                          for (var uid
+                          for (var id
                               in (viewModel.accountUser?.follows ?? [])) ...{
-                            UserRelatedView(uid: uid),
+                            UserRelatedView(id: id),
                           },
                         },
                         if (viewModel.pageIndex == 3) ...{

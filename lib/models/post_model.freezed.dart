@@ -16,7 +16,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$PostModel {
   String? get id;
-  String? get uid;
+  String? get userId;
   MediaStoryModel? get media;
   DateTime? get timestamp;
 
@@ -36,7 +36,7 @@ mixin _$PostModel {
         (other.runtimeType == runtimeType &&
             other is PostModel &&
             (identical(other.id, id) || other.id == id) &&
-            (identical(other.uid, uid) || other.uid == uid) &&
+            (identical(other.userId, userId) || other.userId == userId) &&
             (identical(other.media, media) || other.media == media) &&
             (identical(other.timestamp, timestamp) ||
                 other.timestamp == timestamp));
@@ -44,11 +44,11 @@ mixin _$PostModel {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, uid, media, timestamp);
+  int get hashCode => Object.hash(runtimeType, id, userId, media, timestamp);
 
   @override
   String toString() {
-    return 'PostModel(id: $id, uid: $uid, media: $media, timestamp: $timestamp)';
+    return 'PostModel(id: $id, userId: $userId, media: $media, timestamp: $timestamp)';
   }
 }
 
@@ -58,7 +58,10 @@ abstract mixin class $PostModelCopyWith<$Res> {
       _$PostModelCopyWithImpl;
   @useResult
   $Res call(
-      {String? id, String? uid, MediaStoryModel? media, DateTime? timestamp});
+      {String? id,
+      String? userId,
+      MediaStoryModel? media,
+      DateTime? timestamp});
 
   $MediaStoryModelCopyWith<$Res>? get media;
 }
@@ -76,7 +79,7 @@ class _$PostModelCopyWithImpl<$Res> implements $PostModelCopyWith<$Res> {
   @override
   $Res call({
     Object? id = freezed,
-    Object? uid = freezed,
+    Object? userId = freezed,
     Object? media = freezed,
     Object? timestamp = freezed,
   }) {
@@ -85,9 +88,9 @@ class _$PostModelCopyWithImpl<$Res> implements $PostModelCopyWith<$Res> {
           ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
               as String?,
-      uid: freezed == uid
-          ? _self.uid
-          : uid // ignore: cast_nullable_to_non_nullable
+      userId: freezed == userId
+          ? _self.userId
+          : userId // ignore: cast_nullable_to_non_nullable
               as String?,
       media: freezed == media
           ? _self.media
@@ -119,14 +122,14 @@ class _$PostModelCopyWithImpl<$Res> implements $PostModelCopyWith<$Res> {
 
 @JsonSerializable(fieldRename: FieldRename.snake)
 class _PostModel implements PostModel {
-  _PostModel({this.id, this.uid, this.media, this.timestamp});
+  _PostModel({this.id, this.userId, this.media, this.timestamp});
   factory _PostModel.fromJson(Map<String, dynamic> json) =>
       _$PostModelFromJson(json);
 
   @override
   final String? id;
   @override
-  final String? uid;
+  final String? userId;
   @override
   final MediaStoryModel? media;
   @override
@@ -153,7 +156,7 @@ class _PostModel implements PostModel {
         (other.runtimeType == runtimeType &&
             other is _PostModel &&
             (identical(other.id, id) || other.id == id) &&
-            (identical(other.uid, uid) || other.uid == uid) &&
+            (identical(other.userId, userId) || other.userId == userId) &&
             (identical(other.media, media) || other.media == media) &&
             (identical(other.timestamp, timestamp) ||
                 other.timestamp == timestamp));
@@ -161,11 +164,11 @@ class _PostModel implements PostModel {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, id, uid, media, timestamp);
+  int get hashCode => Object.hash(runtimeType, id, userId, media, timestamp);
 
   @override
   String toString() {
-    return 'PostModel(id: $id, uid: $uid, media: $media, timestamp: $timestamp)';
+    return 'PostModel(id: $id, userId: $userId, media: $media, timestamp: $timestamp)';
   }
 }
 
@@ -178,7 +181,10 @@ abstract mixin class _$PostModelCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {String? id, String? uid, MediaStoryModel? media, DateTime? timestamp});
+      {String? id,
+      String? userId,
+      MediaStoryModel? media,
+      DateTime? timestamp});
 
   @override
   $MediaStoryModelCopyWith<$Res>? get media;
@@ -197,7 +203,7 @@ class __$PostModelCopyWithImpl<$Res> implements _$PostModelCopyWith<$Res> {
   @pragma('vm:prefer-inline')
   $Res call({
     Object? id = freezed,
-    Object? uid = freezed,
+    Object? userId = freezed,
     Object? media = freezed,
     Object? timestamp = freezed,
   }) {
@@ -206,9 +212,9 @@ class __$PostModelCopyWithImpl<$Res> implements _$PostModelCopyWith<$Res> {
           ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
               as String?,
-      uid: freezed == uid
-          ? _self.uid
-          : uid // ignore: cast_nullable_to_non_nullable
+      userId: freezed == userId
+          ? _self.userId
+          : userId // ignore: cast_nullable_to_non_nullable
               as String?,
       media: freezed == media
           ? _self.media

@@ -13,7 +13,7 @@ import 'package:insoblok/utils/utils.dart';
 
 extension MessageModelExt on MessageModel {
   Widget item(BuildContext context, {required UserModel chatUser}) {
-    final isMe = senderId == AuthHelper.user?.uid;
+    final isMe = senderId == AuthHelper.user?.id;
     Widget result = Container();
     var type = MessageModelTypeExt.fromString(this.type ?? 'text');
     switch (type) {
@@ -169,7 +169,7 @@ extension MessageModelExt on MessageModel {
   }
 
   Widget _textContent(BuildContext context) {
-    final isMe = senderId == AuthHelper.user?.uid;
+    final isMe = senderId == AuthHelper.user?.id;
     return Text(
       '$content',
       style:
@@ -378,8 +378,8 @@ class _VideoContentState extends State<VideoContent> {
 extension RoomModelExt on RoomModel {
   Map<String, dynamic> toMap() {
     Map<String, dynamic> result = {
-      'uid': uid,
-      'uids': (uids),
+      'user_id': userId,
+      'userIds': (userIds),
       'content': content,
       'status_sender': statusSender,
       'status_receiver': statusReceiver,

@@ -19,7 +19,7 @@ class VotedUserCell extends StatelessWidget {
     return ViewModelBuilder<UserProvider>.reactive(
       viewModelBuilder: () => UserProvider(),
       onViewModelReady:
-          (viewModel) => viewModel.init(context, uid: voteModel.uid!),
+          (viewModel) => viewModel.init(context, id: voteModel.userId!),
       builder: (context, viewModel, _) {
         var user = viewModel.owner;
         return Row(

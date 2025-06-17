@@ -50,7 +50,7 @@ class StoryListCell extends StatelessWidget {
                         children: [
                           ClipOval(
                             child: AIAvatarImage(
-                              // key: GlobalKey(debugLabel: 'story-${story.uid}'),
+                              // key: GlobalKey(debugLabel: 'story-${story.id}'),
                               viewModel.owner?.avatar,
                               width: kStoryAvatarSize,
                               height: kStoryAvatarSize,
@@ -509,7 +509,7 @@ class StoryDetailDialog extends StatelessWidget {
                               child: StoryDetailCommentCell(
                                 key: GlobalKey(
                                   debugLabel:
-                                      '${comment.uid} - ${viewModel.story.comments?.reversed.toList().indexOf(comment)}',
+                                      '${comment.id} - ${viewModel.story.comments?.reversed.toList().indexOf(comment)}',
                                 ),
                                 comment: comment,
                                 isLast:

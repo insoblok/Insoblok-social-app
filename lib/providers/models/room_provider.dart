@@ -39,9 +39,9 @@ class RoomProvider extends InSoBlokViewModel {
 
     await runBusyFuture(() async {
       try {
-        var chatUserId = room.uid;
-        if (room.uid == user?.uid) {
-          chatUserId = (room.uids ?? [])[1];
+        var chatUserId = room.userId;
+        if (room.userId == user?.id) {
+          chatUserId = (room.userIds ?? [])[1];
         }
         chatUser = await userService.getUser(chatUserId!);
         if (chatUser == null) {

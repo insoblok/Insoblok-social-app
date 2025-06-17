@@ -4,7 +4,7 @@ import 'package:insoblok/models/models.dart';
 extension ProductExtension on ProductModel {
   Map<String, dynamic> toMap() {
     Map<String, dynamic> result = {
-      'uid': uid,
+      'user_id': userId,
       'name': name,
       'description': description,
       'avatar_image': avatarImage,

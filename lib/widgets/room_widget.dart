@@ -77,7 +77,7 @@ class RoomItemView extends StatelessWidget {
                         ],
                       ),
                       Text(
-                        // room.content ?? '@${room.uid}',
+                        // room.content ?? '@${room.id}',
                         room.content ?? 'New User',
                         style: TextStyle(
                           fontSize: 12.0,

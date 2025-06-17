@@ -9,9 +9,9 @@ part of 'tastescore_model.dart';
 _TastescoreModel _$TastescoreModelFromJson(Map<String, dynamic> json) =>
     _TastescoreModel(
       id: json['id'] as String?,
-      uid: json['uid'] as String?,
+      userId: json['user_id'] as String?,
       postId: json['post_id'] as String?,
-      userUid: json['user_uid'] as String?,
+      postUserId: json['post_user_id'] as String?,
       type: json['type'] as String?,
       bonus: (json['bonus'] as num?)?.toInt(),
       desc: json['desc'] as String?,
@@ -26,9 +26,9 @@ _TastescoreModel _$TastescoreModelFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$TastescoreModelToJson(_TastescoreModel instance) =>
     <String, dynamic>{
       'id': instance.id,
-      'uid': instance.uid,
+      'user_id': instance.userId,
       'post_id': instance.postId,
-      'user_uid': instance.userUid,
+      'post_user_id': instance.postUserId,
       'type': instance.type,
       'bonus': instance.bonus,
       'desc': instance.desc,

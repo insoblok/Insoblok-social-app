@@ -40,7 +40,8 @@ class ChatProvider extends InSoBlokViewModel {
         if (rooms.map((r) => r.id).toList().contains(room.id)) {
           continue;
         }
-        if (room.uids != null && room.uids!.contains(AuthHelper.user?.uid)) {
+        if ((room.userIds?.isNotEmpty ?? false) &&
+            room.userIds!.contains(AuthHelper.user?.id)) {
           _rooms.add(room);
         }
       }
@@ -60,14 +61,14 @@ class ChatProvider extends InSoBlokViewModel {
       List<RoomModel> newUsers = [];
 
       var keyUsers = await userService.getAllUsers();
-      List<String?> userUids = [];
+      List<String?> userIds = [];
       for (var room in _rooms) {
-        userUids.addAll(room.uids ?? []);
+        userIds.addAll(room.userIds ?? []);
       }
       for (var user in keyUsers) {
         if (user != null) {
-          if (userUids.contains(user.uid)) continue;
-          newUsers.add(RoomModel(uid: user.uid));
+          if (userIds.contains(user.id)) continue;
+          newUsers.add(RoomModel(userId: user.id));
         }
       }
       _rooms.addAll(newUsers);
@@ -88,7 +89,7 @@ class ChatProvider extends InSoBlokViewModel {
 
     await runBusyFuture(() async {
       try {
-        existedRoom = await roomService.getRoomByChatUesr(uid: chatUser.uid!);
+        existedRoom = await roomService.getRoomByChatUesr(id: chatUser.id!);
         if (existedRoom == null) {
           var dialog = await showDialog<bool>(
             context: context,
@@ -152,15 +153,15 @@ class ChatProvider extends InSoBlokViewModel {
           if (dialog != true) return;
 
           var room = RoomModel(
-            uid: user?.uid,
-            uids: [user?.uid, chatUser.uid],
+            userId: user?.id,
+            userIds: [user?.id, chatUser.id],
             content: '${user?.firstName} have created a room',
             updateDate: DateTime.now(),
             timestamp: DateTime.now(),
           );
           logger.d(room.toJson());
           await roomService.createRoom(room);
-          existedRoom = await roomService.getRoomByChatUesr(uid: chatUser.uid!);
+          existedRoom = await roomService.getRoomByChatUesr(id: chatUser.id!);
         }
       } catch (e) {
         logger.e(e);

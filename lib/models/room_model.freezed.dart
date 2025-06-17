@@ -16,8 +16,8 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$RoomModel {
   String? get id;
-  String? get uid;
-  List<String?>? get uids;
+  String? get userId;
+  List<String?>? get userIds;
   DateTime? get updateDate;
   DateTime? get timestamp;
   String? get content;
@@ -40,8 +40,8 @@ mixin _$RoomModel {
         (other.runtimeType == runtimeType &&
             other is RoomModel &&
             (identical(other.id, id) || other.id == id) &&
-            (identical(other.uid, uid) || other.uid == uid) &&
-            const DeepCollectionEquality().equals(other.uids, uids) &&
+            (identical(other.userId, userId) || other.userId == userId) &&
+            const DeepCollectionEquality().equals(other.userIds, userIds) &&
             (identical(other.updateDate, updateDate) ||
                 other.updateDate == updateDate) &&
             (identical(other.timestamp, timestamp) ||
@@ -58,8 +58,8 @@ mixin _$RoomModel {
   int get hashCode => Object.hash(
       runtimeType,
       id,
-      uid,
-      const DeepCollectionEquality().hash(uids),
+      userId,
+      const DeepCollectionEquality().hash(userIds),
       updateDate,
       timestamp,
       content,
@@ -68,7 +68,7 @@ mixin _$RoomModel {
 
   @override
   String toString() {
-    return 'RoomModel(id: $id, uid: $uid, uids: $uids, updateDate: $updateDate, timestamp: $timestamp, content: $content, statusSender: $statusSender, statusReceiver: $statusReceiver)';
+    return 'RoomModel(id: $id, userId: $userId, userIds: $userIds, updateDate: $updateDate, timestamp: $timestamp, content: $content, statusSender: $statusSender, statusReceiver: $statusReceiver)';
   }
 }
 
@@ -79,8 +79,8 @@ abstract mixin class $RoomModelCopyWith<$Res> {
   @useResult
   $Res call(
       {String? id,
-      String? uid,
-      List<String?>? uids,
+      String? userId,
+      List<String?>? userIds,
       DateTime? updateDate,
       DateTime? timestamp,
       String? content,
@@ -101,8 +101,8 @@ class _$RoomModelCopyWithImpl<$Res> implements $RoomModelCopyWith<$Res> {
   @override
   $Res call({
     Object? id = freezed,
-    Object? uid = freezed,
-    Object? uids = freezed,
+    Object? userId = freezed,
+    Object? userIds = freezed,
     Object? updateDate = freezed,
     Object? timestamp = freezed,
     Object? content = freezed,
@@ -114,13 +114,13 @@ class _$RoomModelCopyWithImpl<$Res> implements $RoomModelCopyWith<$Res> {
           ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
               as String?,
-      uid: freezed == uid
-          ? _self.uid
-          : uid // ignore: cast_nullable_to_non_nullable
+      userId: freezed == userId
+          ? _self.userId
+          : userId // ignore: cast_nullable_to_non_nullable
               as String?,
-      uids: freezed == uids
-          ? _self.uids
-          : uids // ignore: cast_nullable_to_non_nullable
+      userIds: freezed == userIds
+          ? _self.userIds
+          : userIds // ignore: cast_nullable_to_non_nullable
               as List<String?>?,
       updateDate: freezed == updateDate
           ? _self.updateDate
@@ -152,27 +152,27 @@ class _$RoomModelCopyWithImpl<$Res> implements $RoomModelCopyWith<$Res> {
 class _RoomModel implements RoomModel {
   _RoomModel(
       {this.id,
-      this.uid,
-      final List<String?>? uids,
+      this.userId,
+      final List<String?>? userIds,
       this.updateDate,
       this.timestamp,
       this.content,
       this.statusSender,
       this.statusReceiver})
-      : _uids = uids;
+      : _userIds = userIds;
   factory _RoomModel.fromJson(Map<String, dynamic> json) =>
       _$RoomModelFromJson(json);
 
   @override
   final String? id;
   @override
-  final String? uid;
-  final List<String?>? _uids;
+  final String? userId;
+  final List<String?>? _userIds;
   @override
-  List<String?>? get uids {
-    final value = _uids;
+  List<String?>? get userIds {
+    final value = _userIds;
     if (value == null) return null;
-    if (_uids is EqualUnmodifiableListView) return _uids;
+    if (_userIds is EqualUnmodifiableListView) return _userIds;
     // ignore: implicit_dynamic_type
     return EqualUnmodifiableListView(value);
   }
@@ -209,8 +209,8 @@ class _RoomModel implements RoomModel {
         (other.runtimeType == runtimeType &&
             other is _RoomModel &&
             (identical(other.id, id) || other.id == id) &&
-            (identical(other.uid, uid) || other.uid == uid) &&
-            const DeepCollectionEquality().equals(other._uids, _uids) &&
+            (identical(other.userId, userId) || other.userId == userId) &&
+            const DeepCollectionEquality().equals(other._userIds, _userIds) &&
             (identical(other.updateDate, updateDate) ||
                 other.updateDate == updateDate) &&
             (identical(other.timestamp, timestamp) ||
@@ -227,8 +227,8 @@ class _RoomModel implements RoomModel {
   int get hashCode => Object.hash(
       runtimeType,
       id,
-      uid,
-      const DeepCollectionEquality().hash(_uids),
+      userId,
+      const DeepCollectionEquality().hash(_userIds),
       updateDate,
       timestamp,
       content,
@@ -237,7 +237,7 @@ class _RoomModel implements RoomModel {
 
   @override
   String toString() {
-    return 'RoomModel(id: $id, uid: $uid, uids: $uids, updateDate: $updateDate, timestamp: $timestamp, content: $content, statusSender: $statusSender, statusReceiver: $statusReceiver)';
+    return 'RoomModel(id: $id, userId: $userId, userIds: $userIds, updateDate: $updateDate, timestamp: $timestamp, content: $content, statusSender: $statusSender, statusReceiver: $statusReceiver)';
   }
 }
 
@@ -251,8 +251,8 @@ abstract mixin class _$RoomModelCopyWith<$Res>
   @useResult
   $Res call(
       {String? id,
-      String? uid,
-      List<String?>? uids,
+      String? userId,
+      List<String?>? userIds,
       DateTime? updateDate,
       DateTime? timestamp,
       String? content,
@@ -273,8 +273,8 @@ class __$RoomModelCopyWithImpl<$Res> implements _$RoomModelCopyWith<$Res> {
   @pragma('vm:prefer-inline')
   $Res call({
     Object? id = freezed,
-    Object? uid = freezed,
-    Object? uids = freezed,
+    Object? userId = freezed,
+    Object? userIds = freezed,
     Object? updateDate = freezed,
     Object? timestamp = freezed,
     Object? content = freezed,
@@ -286,13 +286,13 @@ class __$RoomModelCopyWithImpl<$Res> implements _$RoomModelCopyWith<$Res> {
           ? _self.id
           : id // ignore: cast_nullable_to_non_nullable
               as String?,
-      uid: freezed == uid
-          ? _self.uid
-          : uid // ignore: cast_nullable_to_non_nullable
+      userId: freezed == userId
+          ? _self.userId
+          : userId // ignore: cast_nullable_to_non_nullable
               as String?,
-      uids: freezed == uids
-          ? _self._uids
-          : uids // ignore: cast_nullable_to_non_nullable
+      userIds: freezed == userIds
+          ? _self._userIds
+          : userIds // ignore: cast_nullable_to_non_nullable
               as List<String?>?,
       updateDate: freezed == updateDate
           ? _self.updateDate

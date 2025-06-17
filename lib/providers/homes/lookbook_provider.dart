@@ -84,7 +84,7 @@ class LookbookProvider extends InSoBlokViewModel {
   Future<void> fetchMyStories() async {
     _myStories.clear();
     try {
-      var ss = await storyService.getStoriesByUid(AuthHelper.user!.uid!);
+      var ss = await storyService.getStoriesById(AuthHelper.user!.id!);
       _myStories.addAll(ss);
     } catch (e) {
       setError(e);
@@ -102,21 +102,21 @@ class LookbookProvider extends InSoBlokViewModel {
       for (var story in stories) {
         if (index == 0) {
           if ((story.votes ?? [])
-              .map((vote) => vote.uid)
+              .map((vote) => vote.userId)
               .toList()
-              .contains(AuthHelper.user?.uid)) {
+              .contains(AuthHelper.user?.id)) {
             filterStories.add(story);
           }
         } else if (index == 2) {
           if ((story.comments ?? [])
-              .map((comment) => comment.uid)
+              .map((comment) => comment.userId)
               .toList()
-              .contains(AuthHelper.user?.uid)) {
+              .contains(AuthHelper.user?.id)) {
             filterStories.add(story);
           }
         } else if (index == 3) {
           if (story.likes != null &&
-              story.likes!.contains(AuthHelper.user?.uid)) {
+              story.likes!.contains(AuthHelper.user?.id)) {
             filterStories.add(story);
           }
         }

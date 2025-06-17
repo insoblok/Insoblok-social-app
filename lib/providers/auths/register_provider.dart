@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
@@ -14,11 +13,22 @@ class RegisterProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  int _pageIndex = 0;
+  int get pageIndex => _pageIndex;
+  set pageIndex(int i) {
+    _pageIndex = i;
+    obscureText = true;
+    notifyListeners();
+  }
+
   late UserModel _user;
 
-  Future<void> init(BuildContext context) async {
+  Future<void> init(
+    BuildContext context, {
+    required String walletAddress,
+  }) async {
     this.context = context;
-    _user = AuthHelper.user!;
+    _user = UserModel(walletAddress: walletAddress);
   }
 
   void updateFirstName(String name) {
@@ -50,10 +60,8 @@ class RegisterProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  String _website = '';
-  String get website => _website;
   set website(String s) {
-    _website = s;
+    _user = _user.copyWith(website: s);
     notifyListeners();
   }
 
@@ -67,29 +75,19 @@ class RegisterProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  Future<void> onClickConfirm() async {
+  Future<void> onClickRegister() async {
     if ((_user.firstName?.isEmpty ?? true) ||
         (_user.lastName?.isEmpty ?? true)) {
       AIHelpers.showToast(msg: "Please input your name!");
-      return;
-    }
-    if (!(_user.email?.isEmailValid ?? false)) {
-      AIHelpers.showToast(msg: 'No matched email!');
       return;
     }
 
     if (isBusy) return;
     clearErrors();
 
-    logger.d(_user.toJson());
-
     await runBusyFuture(() async {
       try {
-        await AuthHelper.updateUser(
-          _user.copyWith(
-            nickId: _user.fullName.replaceAll(' ', '').toLowerCase(),
-          ),
-        );
+        await AuthHelper.signUp(_user);
         Routers.goToMainPage(context);
       } catch (e) {
         setError(e);

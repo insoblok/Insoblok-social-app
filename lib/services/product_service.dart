@@ -23,7 +23,7 @@ class ProductService {
         var json = doc.data();
         json['id'] = doc.id;
         var product = ProductModel.fromJson(json);
-        if (product.uid != null && product.avatarImage != null) {
+        if (product.userId != null && product.avatarImage != null) {
           result.add(product);
         }
       } on FirebaseException catch (e) {
@@ -33,12 +33,12 @@ class ProductService {
     return result;
   }
 
-  // Get products by uid
-  Future<List<ProductModel>> getProductsByUid(String uid) async {
+  // Get products by id
+  Future<List<ProductModel>> getProductsById(String id) async {
     List<ProductModel> result = [];
     var productSnapshot =
         await productCollection
-            .where('uid', isEqualTo: uid)
+            .where('uesr_id', isEqualTo: id)
             .orderBy('timestamp', descending: false)
             .get();
     for (var doc in productSnapshot.docs) {
@@ -46,7 +46,7 @@ class ProductService {
         var json = doc.data();
         json['id'] = doc.id;
         var product = ProductModel.fromJson(json);
-        if (product.uid != null) {
+        if (product.userId != null) {
           result.add(product);
         }
       } on FirebaseException catch (e) {
@@ -60,7 +60,7 @@ class ProductService {
   Future<void> addProduct({required ProductModel product}) async {
     await productCollection.add({
       ...product.toMap(),
-      'uid': AuthHelper.user?.uid,
+      'user_id': AuthHelper.user?.id,
     });
   }
 

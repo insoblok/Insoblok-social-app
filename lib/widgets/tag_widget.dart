@@ -51,3 +51,44 @@ class TagView extends StatelessWidget {
     );
   }
 }
+
+class TabCoverView extends StatelessWidget {
+  final String title;
+  final bool selected;
+  final double? width;
+  final void Function()? onTap;
+
+  const TabCoverView(
+    this.title, {
+    super.key,
+    required this.selected,
+    this.width,
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        width: width,
+        padding: const EdgeInsets.symmetric(vertical: 8.0),
+
+        decoration: BoxDecoration(
+          border:
+              selected
+                  ? Border(bottom: BorderSide(width: 2.0, color: AIColors.pink))
+                  : null,
+        ),
+        alignment: Alignment.center,
+        child: Text(
+          title,
+          style:
+              selected
+                  ? Theme.of(context).textTheme.headlineMedium
+                  : Theme.of(context).textTheme.labelLarge,
+        ),
+      ),
+    );
+  }
+}

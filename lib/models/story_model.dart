@@ -10,7 +10,7 @@ abstract class StoryModel with _$StoryModel {
   @JsonSerializable(fieldRename: FieldRename.snake)
   factory StoryModel({
     String? id,
-    String? uid,
+    String? userId,
     String? title,
     String? text,
     String? status,
@@ -32,7 +32,7 @@ abstract class StoryModel with _$StoryModel {
 @freezed
 abstract class StoryVoteModel with _$StoryVoteModel {
   @JsonSerializable(fieldRename: FieldRename.snake)
-  factory StoryVoteModel({String? uid, bool? vote, DateTime? timestamp}) =
+  factory StoryVoteModel({String? userId, bool? vote, DateTime? timestamp}) =
       _StoryVoteModel;
 
   factory StoryVoteModel.fromJson(Map<String, dynamic> json) =>
@@ -52,7 +52,7 @@ abstract class MediaStoryModel with _$MediaStoryModel {
 abstract class StoryCommentModel with _$StoryCommentModel {
   @JsonSerializable(fieldRename: FieldRename.snake)
   factory StoryCommentModel({
-    String? uid,
+    String? userId,
     String? content,
     DateTime? timestamp,
     List<MediaStoryModel>? medias,
@@ -74,7 +74,7 @@ abstract class UpdatedStoryModel with _$UpdatedStoryModel {
 @freezed
 abstract class ConnectedStoryModel with _$ConnectedStoryModel {
   @JsonSerializable(fieldRename: FieldRename.snake)
-  factory ConnectedStoryModel({String? postId, String? userUid}) =
+  factory ConnectedStoryModel({String? postId, String? userId}) =
       _ConnectedStoryModel;
 
   factory ConnectedStoryModel.fromJson(Map<String, dynamic> json) =>

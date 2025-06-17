@@ -61,9 +61,6 @@ class MessageProvider extends InSoBlokViewModel {
   var scrollController = ScrollController();
   late MediaPickerService _mediaPickerService;
 
-  late ReownService _reownService;
-  ReownService get reownService => _reownService;
-
   Future<void> init(
     BuildContext context, {
     required MessagePageData data,
@@ -71,8 +68,6 @@ class MessageProvider extends InSoBlokViewModel {
     this.context = context;
     room = data.room;
     chatUser = data.chatUser;
-
-    _reownService = ReownService(context);
 
     messageService.getMessages(room.id!).listen((messages) {
       this.messages = messages;
@@ -87,7 +82,7 @@ class MessageProvider extends InSoBlokViewModel {
       }
       logger.d(userList.length);
       for (UserModel user in userList) {
-        if (user.uid == data.chatUser.uid) chatUser = user;
+        if (user.id == data.chatUser.id) chatUser = user;
       }
       notifyListeners();
       Future.delayed(const Duration(milliseconds: 200), () {
@@ -229,7 +224,8 @@ class MessageProvider extends InSoBlokViewModel {
     var coin = await _showCoinOption();
     if (coin != null) {
       try {
-        await reownService.init();
+        final reownService = locator<ReownService>();
+
         await reownService.connect();
         if (reownService.isConnected) {
           if (chatUser.walletAddress == null) {

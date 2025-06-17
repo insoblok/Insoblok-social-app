@@ -4,7 +4,7 @@ import 'package:insoblok/models/models.dart';
 extension PostExtension on PostModel {
   Map<String, dynamic> toMap() {
     Map<String, dynamic> result = {
-      'uid': uid,
+      'user_id': userId,
       'media': media?.toMap(),
       'timestamp': timestamp?.toUtc().toIso8601String(),
     };

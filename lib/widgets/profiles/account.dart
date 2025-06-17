@@ -189,30 +189,10 @@ class AccountFloatingHeaderView extends ViewModelWidget<AccountProvider> {
       children: [
         for (var i = 0; i < 4; i++) ...{
           Expanded(
-            child: InkWell(
+            child: TabCoverView(
+              kAccountPageTitles[i],
               onTap: () => viewModel.pageIndex = i,
-              child: Container(
-                padding: const EdgeInsets.symmetric(vertical: 8.0),
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                  border:
-                      viewModel.pageIndex == i
-                          ? Border(
-                            bottom: BorderSide(
-                              width: 2.0,
-                              color: AIColors.pink,
-                            ),
-                          )
-                          : null,
-                ),
-                child: Text(
-                  kAccountPageTitles[i],
-                  style:
-                      viewModel.pageIndex == i
-                          ? Theme.of(context).textTheme.headlineMedium
-                          : Theme.of(context).textTheme.labelLarge,
-                ),
-              ),
+              selected: viewModel.pageIndex == i,
             ),
           ),
         },

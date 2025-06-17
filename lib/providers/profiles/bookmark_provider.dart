@@ -26,7 +26,7 @@ class BookmarkProvider extends InSoBlokViewModel {
 
     await runBusyFuture(() async {
       try {
-        var s = await storyService.getStoriesByFollow(user!.uid!);
+        var s = await storyService.getStoriesByFollow(user!.id!);
         if (s.isNotEmpty) {
           stories.clear();
           stories.addAll(s);

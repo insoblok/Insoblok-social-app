@@ -26,7 +26,7 @@ class PostProvider extends InSoBlokViewModel {
 
     await runBusyFuture(() async {
       try {
-        var s = await storyService.getStoriesByUid(user!.uid!);
+        var s = await storyService.getStoriesById(user!.id!);
         if (s.isNotEmpty) {
           stories.clear();
           stories.addAll(s);

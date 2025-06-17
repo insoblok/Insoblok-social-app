@@ -28,7 +28,7 @@ mixin _$ProductModel {
   String? get category;
   String? get categoryName;
   String? get type;
-  String? get uid;
+  String? get userId;
   List<String>? get likes;
   List<int>? get rates;
   int? get selles;
@@ -72,7 +72,7 @@ mixin _$ProductModel {
             (identical(other.categoryName, categoryName) ||
                 other.categoryName == categoryName) &&
             (identical(other.type, type) || other.type == type) &&
-            (identical(other.uid, uid) || other.uid == uid) &&
+            (identical(other.userId, userId) || other.userId == userId) &&
             const DeepCollectionEquality().equals(other.likes, likes) &&
             const DeepCollectionEquality().equals(other.rates, rates) &&
             (identical(other.selles, selles) || other.selles == selles) &&
@@ -100,7 +100,7 @@ mixin _$ProductModel {
         category,
         categoryName,
         type,
-        uid,
+        userId,
         const DeepCollectionEquality().hash(likes),
         const DeepCollectionEquality().hash(rates),
         selles,
@@ -111,7 +111,7 @@ mixin _$ProductModel {
 
   @override
   String toString() {
-    return 'ProductModel(id: $id, name: $name, description: $description, tags: $tags, avatarImage: $avatarImage, modelImage: $modelImage, oldPrice: $oldPrice, price: $price, off: $off, delivery: $delivery, category: $category, categoryName: $categoryName, type: $type, uid: $uid, likes: $likes, rates: $rates, selles: $selles, updateDate: $updateDate, timestamp: $timestamp, medias: $medias)';
+    return 'ProductModel(id: $id, name: $name, description: $description, tags: $tags, avatarImage: $avatarImage, modelImage: $modelImage, oldPrice: $oldPrice, price: $price, off: $off, delivery: $delivery, category: $category, categoryName: $categoryName, type: $type, userId: $userId, likes: $likes, rates: $rates, selles: $selles, updateDate: $updateDate, timestamp: $timestamp, medias: $medias)';
   }
 }
 
@@ -135,7 +135,7 @@ abstract mixin class $ProductModelCopyWith<$Res> {
       String? category,
       String? categoryName,
       String? type,
-      String? uid,
+      String? userId,
       List<String>? likes,
       List<int>? rates,
       int? selles,
@@ -169,7 +169,7 @@ class _$ProductModelCopyWithImpl<$Res> implements $ProductModelCopyWith<$Res> {
     Object? category = freezed,
     Object? categoryName = freezed,
     Object? type = freezed,
-    Object? uid = freezed,
+    Object? userId = freezed,
     Object? likes = freezed,
     Object? rates = freezed,
     Object? selles = freezed,
@@ -230,9 +230,9 @@ class _$ProductModelCopyWithImpl<$Res> implements $ProductModelCopyWith<$Res> {
           ? _self.type
           : type // ignore: cast_nullable_to_non_nullable
               as String?,
-      uid: freezed == uid
-          ? _self.uid
-          : uid // ignore: cast_nullable_to_non_nullable
+      userId: freezed == userId
+          ? _self.userId
+          : userId // ignore: cast_nullable_to_non_nullable
               as String?,
       likes: freezed == likes
           ? _self.likes
@@ -280,7 +280,7 @@ class _ProductModel implements ProductModel {
       this.category,
       this.categoryName,
       this.type,
-      this.uid,
+      this.userId,
       final List<String>? likes,
       final List<int>? rates,
       this.selles,
@@ -329,7 +329,7 @@ class _ProductModel implements ProductModel {
   @override
   final String? type;
   @override
-  final String? uid;
+  final String? userId;
   final List<String>? _likes;
   @override
   List<String>? get likes {
@@ -406,7 +406,7 @@ class _ProductModel implements ProductModel {
             (identical(other.categoryName, categoryName) ||
                 other.categoryName == categoryName) &&
             (identical(other.type, type) || other.type == type) &&
-            (identical(other.uid, uid) || other.uid == uid) &&
+            (identical(other.userId, userId) || other.userId == userId) &&
             const DeepCollectionEquality().equals(other._likes, _likes) &&
             const DeepCollectionEquality().equals(other._rates, _rates) &&
             (identical(other.selles, selles) || other.selles == selles) &&
@@ -434,7 +434,7 @@ class _ProductModel implements ProductModel {
         category,
         categoryName,
         type,
-        uid,
+        userId,
         const DeepCollectionEquality().hash(_likes),
         const DeepCollectionEquality().hash(_rates),
         selles,
@@ -445,7 +445,7 @@ class _ProductModel implements ProductModel {
 
   @override
   String toString() {
-    return 'ProductModel(id: $id, name: $name, description: $description, tags: $tags, avatarImage: $avatarImage, modelImage: $modelImage, oldPrice: $oldPrice, price: $price, off: $off, delivery: $delivery, category: $category, categoryName: $categoryName, type: $type, uid: $uid, likes: $likes, rates: $rates, selles: $selles, updateDate: $updateDate, timestamp: $timestamp, medias: $medias)';
+    return 'ProductModel(id: $id, name: $name, description: $description, tags: $tags, avatarImage: $avatarImage, modelImage: $modelImage, oldPrice: $oldPrice, price: $price, off: $off, delivery: $delivery, category: $category, categoryName: $categoryName, type: $type, userId: $userId, likes: $likes, rates: $rates, selles: $selles, updateDate: $updateDate, timestamp: $timestamp, medias: $medias)';
   }
 }
 
@@ -471,7 +471,7 @@ abstract mixin class _$ProductModelCopyWith<$Res>
       String? category,
       String? categoryName,
       String? type,
-      String? uid,
+      String? userId,
       List<String>? likes,
       List<int>? rates,
       int? selles,
@@ -506,7 +506,7 @@ class __$ProductModelCopyWithImpl<$Res>
     Object? category = freezed,
     Object? categoryName = freezed,
     Object? type = freezed,
-    Object? uid = freezed,
+    Object? userId = freezed,
     Object? likes = freezed,
     Object? rates = freezed,
     Object? selles = freezed,
@@ -567,9 +567,9 @@ class __$ProductModelCopyWithImpl<$Res>
           ? _self.type
           : type // ignore: cast_nullable_to_non_nullable
               as String?,
-      uid: freezed == uid
-          ? _self.uid
-          : uid // ignore: cast_nullable_to_non_nullable
+      userId: freezed == userId
+          ? _self.userId
+          : userId // ignore: cast_nullable_to_non_nullable
               as String?,
       likes: freezed == likes
           ? _self._likes

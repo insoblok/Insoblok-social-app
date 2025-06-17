@@ -33,12 +33,12 @@ List<Color> getGradientColors(int number) {
 extension UserModelExt on UserModel {
   bool isLike() {
     var like = likes ?? [];
-    return like.contains(AuthHelper.user!.uid);
+    return like.contains(AuthHelper.user!.id);
   }
 
   bool isFollow() {
     var follow = follows ?? [];
-    return follow.contains(AuthHelper.user!.uid);
+    return follow.contains(AuthHelper.user!.id);
   }
 
   String get fullName {
@@ -182,8 +182,8 @@ extension UserModelExt on UserModel {
 extension UserActionModelExt on UserActionModel {
   Map<String, dynamic> toMap() {
     Map<String, dynamic> result = {
-      'post_uid': postUid,
-      'user_uid': userUid,
+      'post_id': postId,
+      'post_user_id': postUserId,
       'value': value,
       'type': type,
       'description': description,

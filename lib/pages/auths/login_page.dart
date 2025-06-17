@@ -33,109 +33,62 @@ class LoginPage extends StatelessWidget {
       onViewModelReady: (viewModel) => viewModel.init(context),
       builder: (context, viewModel, _) {
         return Scaffold(
-          body: Stack(
-            fit: StackFit.expand,
+          backgroundColor: AIColors.landingBackgroundColor,
+          body: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              Container(
-                width: double.infinity,
-                height: double.infinity,
-                color: AIColors.landingBackgroundColor,
+              SizedBox(
+                height: 512.0,
+                child: PageView(
+                  controller: viewModel.pageController,
+                  children: [
+                    for (var data in kLandingPageData) ...{
+                      LoginPageView(data: data),
+                    },
+                  ],
+                ),
               ),
-              PageView(
+              SmoothPageIndicator(
                 controller: viewModel.pageController,
-                children: [
-                  for (var data in kLandingPageData) ...{
-                    LoginPageView(data: data),
-                  },
-                ],
+                count: 2,
+                effect: ExpandingDotsEffect(
+                  dotWidth: 36.0,
+                  dotHeight: 4.0,
+                  spacing: 4.0,
+                  dotColor: AIColors.white,
+                  activeDotColor: AIColors.pink,
+                ),
+              ),
+              Container(
+                color: AIColors.darkScaffoldBackground.withAlpha(48),
+                margin: const EdgeInsets.symmetric(horizontal: 40.0),
+                child: OutlineButton(
+                  isBusy: viewModel.isClickWallet,
+                  borderColor: AIColors.pink,
+                  onTap: viewModel.login,
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      AIImage(AIImages.imgMetamask, width: 28.0),
+                      const SizedBox(width: 24.0),
+                      Text(
+                        'Start with MetaMask',
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold,
+                          color: AIColors.pink,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               ),
               Column(
-                mainAxisAlignment: MainAxisAlignment.end,
                 children: [
-                  SmoothPageIndicator(
-                    controller: viewModel.pageController,
-                    count: 2,
-                    effect: ExpandingDotsEffect(
-                      dotWidth: 36.0,
-                      dotHeight: 4.0,
-                      spacing: 4.0,
-                      dotColor: AIColors.white,
-                      activeDotColor: AIColors.pink,
-                    ),
-                  ),
-                  const SizedBox(height: 32),
-                  Row(
-                    children: [
-                      const SizedBox(width: 48.0),
-                      Expanded(
-                        child: Container(
-                          color: AIColors.darkScaffoldBackground.withAlpha(48),
-                          child: OutlineButton(
-                            isBusy: viewModel.isClickWallet,
-                            borderColor: AIColors.pink,
-                            onTap: viewModel.login,
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                AIImage(AIImages.imgMetamask, width: 28.0),
-                                const SizedBox(width: 24.0),
-                                Text(
-                                  'Start with MetaMask',
-                                  style: TextStyle(
-                                    fontSize: 16.0,
-                                    fontWeight: FontWeight.bold,
-                                    color: AIColors.pink,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 48.0),
-                    ],
-                  ),
-                  const SizedBox(height: 16.0),
-                  Row(
-                    children: [
-                      const SizedBox(width: 48.0),
-                      Expanded(
-                        child: Container(
-                          color: AIColors.darkScaffoldBackground.withAlpha(48),
-                          child: OutlineButton(
-                            isBusy: viewModel.isBusy,
-                            borderColor: AIColors.pink,
-                            onTap: viewModel.googleSignin,
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                AIImage(AIImages.imgGoogle, width: 28.0),
-                                const SizedBox(width: 26.0),
-                                Text(
-                                  'Sign in with Google',
-                                  style: TextStyle(
-                                    fontSize: 16.0,
-                                    fontWeight: FontWeight.bold,
-                                    color: AIColors.pink,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(width: 48.0),
-                    ],
-                  ),
-                  const SizedBox(height: 36.0),
                   Text(
                     'By proceeding you accept InSoBlok',
                     style: TextStyle(color: AIColors.white, fontSize: 14.0),
                   ),
-                  // Text(
-                  //   'If you already have an account?',
-                  //   style: TextStyle(color: AIColors.white, fontSize: 14.0),
-                  // ),
                   const SizedBox(height: 8.0),
                   Row(
                     crossAxisAlignment: CrossAxisAlignment.center,
@@ -175,7 +128,6 @@ class LoginPage extends StatelessWidget {
                       ),
                     ],
                   ),
-                  const SizedBox(height: 24.0),
                 ],
               ),
             ],
@@ -197,6 +149,8 @@ class LoginPageView extends StatelessWidget {
       padding: const EdgeInsets.only(left: 24.0, right: 24.0, top: 60.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        spacing: 12.0,
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -219,8 +173,7 @@ class LoginPageView extends StatelessWidget {
               ],
             ),
           ),
-          const SizedBox(height: 12.0),
-          AIImage(data['image']),
+          AspectRatio(aspectRatio: 1, child: AIImage(data['image'])),
         ],
       ),
     );

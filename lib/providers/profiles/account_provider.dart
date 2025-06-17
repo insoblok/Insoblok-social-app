@@ -29,7 +29,7 @@ class AccountProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  bool get isMe => accountUser?.uid == AuthHelper.user?.uid;
+  bool get isMe => accountUser?.id == AuthHelper.user?.id;
 
   int _pageIndex = 0;
   int get pageIndex => _pageIndex;
@@ -55,7 +55,7 @@ class AccountProvider extends InSoBlokViewModel {
 
     await runBusyFuture(() async {
       try {
-        var s = await storyService.getStoriesByUid(accountUser!.uid!);
+        var s = await storyService.getStoriesById(accountUser!.id!);
         if (s.isNotEmpty) {
           stories.clear();
           stories.addAll(s);
@@ -114,7 +114,7 @@ class AccountProvider extends InSoBlokViewModel {
     _isLoadingScore = true;
     try {
       _scores.clear();
-      var s = await tastScoreService.getScoresByUser(accountUser!.uid!);
+      var s = await tastScoreService.getScoresByUser(accountUser!.id!);
       _scores.addAll(s);
     } catch (e) {
       setError(e);
@@ -174,12 +174,12 @@ class AccountProvider extends InSoBlokViewModel {
       await runBusyFuture(() async {
         try {
           var existedRoom = await roomService.getRoomByChatUesr(
-            uid: accountUser!.uid!,
+            id: accountUser!.id!,
           );
           if (existedRoom == null) {
             var room = RoomModel(
-              uid: user?.uid,
-              uids: [user?.uid, accountUser?.uid],
+              userId: user?.id,
+              userIds: [user?.id, accountUser?.id],
               content: '${user?.firstName} have created a room',
               updateDate: DateTime.now(),
               timestamp: DateTime.now(),
@@ -187,7 +187,7 @@ class AccountProvider extends InSoBlokViewModel {
             logger.d(room.toJson());
             await roomService.createRoom(room);
             existedRoom = await roomService.getRoomByChatUesr(
-              uid: accountUser!.uid!,
+              id: accountUser!.id!,
             );
           }
           Routers.goToMessagePage(

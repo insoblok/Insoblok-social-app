@@ -13,11 +13,11 @@ class UserProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  late String _uid;
+  late String _id;
 
-  void init(BuildContext context, {required String uid}) async {
+  void init(BuildContext context, {required String id}) async {
     this.context = context;
-    _uid = uid;
+    _id = id;
     fetchUser();
   }
 
@@ -30,7 +30,7 @@ class UserProvider extends InSoBlokViewModel {
 
   Future<void> fetchUser() async {
     try {
-      owner = await userService.getUser(_uid);
+      owner = await userService.getUser(_id);
     } catch (e) {
       setError(e);
       logger.e(e);

@@ -9,12 +9,12 @@ import 'package:insoblok/providers/providers.dart';
 const kUserAvatarSize = 56.0;
 
 class LeaderboardUserView extends StatelessWidget {
-  final String userUid;
+  final String userId;
   final int score;
 
   const LeaderboardUserView({
     super.key,
-    required this.userUid,
+    required this.userId,
     required this.score,
   });
 
@@ -22,7 +22,7 @@ class LeaderboardUserView extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewModelBuilder<UserProvider>.reactive(
       viewModelBuilder: () => UserProvider(),
-      onViewModelReady: (viewModel) => viewModel.init(context, uid: userUid),
+      onViewModelReady: (viewModel) => viewModel.init(context, id: userId),
       builder: (context, viewModel, _) {
         var userData = viewModel.owner;
         return Padding(

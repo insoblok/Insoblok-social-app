@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
+import 'package:insoblok/locator.dart';
 import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
@@ -29,11 +30,14 @@ class LoginProvider extends InSoBlokViewModel {
     super.dispose();
   }
 
+  late ReownService _reownService;
+  ReownService get reownService => _reownService;
+
   Future<void> init(BuildContext context) async {
     this.context = context;
 
-    _reownService = ReownService(context);
-    await _reownService.init();
+    _reownService = locator<ReownService>();
+    await _reownService.init(context);
 
     FlutterNativeSplash.remove();
 
@@ -61,20 +65,23 @@ class LoginProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  late ReownService _reownService;
-  ReownService get reownService => _reownService;
-
   Future<void> login() async {
     if (isClickWallet) return;
     clearErrors();
+
     isClickWallet = true;
     try {
       await reownService.connect();
       if (reownService.isConnected) {
         logger.d(reownService.walletAddress);
-        await AuthHelper.service.signIn(
-          walletAddress: reownService.walletAddress,
-        );
+
+        var authUser = await AuthHelper.signIn(reownService.walletAddress!);
+        if (authUser?.firstName?.isEmpty ?? true) {
+          Routers.goToRegisterPage(context, reownService.walletAddress!);
+        } else {
+          logger.d(authUser?.toJson());
+          Routers.goToMainPage(context);
+        }
       } else {
         setError('Failed wallet connected!');
       }
@@ -82,18 +89,11 @@ class LoginProvider extends InSoBlokViewModel {
       setError(e);
       logger.e(e);
     } finally {
-      notifyListeners();
+      isClickWallet = false;
     }
 
     if (hasError) {
       AIHelpers.showToast(msg: modelError.toString());
-    } else {
-      if (AuthHelper.user?.firstName != null) {
-        AuthHelper.updateStatus('Online');
-        Routers.goToMainPage(context);
-      } else {
-        Routers.goToRegisterPage(context);
-      }
     }
   }
 
@@ -103,7 +103,7 @@ class LoginProvider extends InSoBlokViewModel {
 
     await runBusyFuture(() async {
       try {
-        await AuthHelper.service.signInWithGoogle();
+        await AuthHelper.signInWithGoogle();
       } catch (e, s) {
         setError(e);
         logger.e(e);

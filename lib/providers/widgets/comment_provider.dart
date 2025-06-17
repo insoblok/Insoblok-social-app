@@ -36,7 +36,7 @@ class CommentProvider extends InSoBlokViewModel {
 
   Future<void> fetchUser() async {
     try {
-      owner = await userService.getUser(comment.uid!);
+      owner = await userService.getUser(comment.userId!);
     } catch (e) {
       setError(e);
       logger.e(e);

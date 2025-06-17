@@ -14,14 +14,15 @@ class RoomService {
         await _firestore
             .collection('room')
             .orderBy('timestamp', descending: false)
-            .where('uids', arrayContains: AuthHelper.user?.uid)
+            .where('user_ids', arrayContains: AuthHelper.user?.id)
             .get();
     for (var doc in roomSnapshot.docs) {
       try {
         var json = doc.data();
         json['id'] = doc.id;
         var room = RoomModel.fromJson(json);
-        if (room.uids != null && room.uids!.contains(AuthHelper.user?.uid)) {
+        if (room.userId != null &&
+            room.userIds!.contains(AuthHelper.user?.id)) {
           result.add(room);
         }
       } on FirebaseException catch (e) {
@@ -32,17 +33,17 @@ class RoomService {
   }
 
   // Find a room
-  Future<RoomModel?> getRoomByChatUesr({required String uid}) async {
+  Future<RoomModel?> getRoomByChatUesr({required String id}) async {
     try {
       var roomSnapshot =
           await _firestore
               .collection('room')
-              .where('uids', isEqualTo: [AuthHelper.user?.uid, uid])
+              .where('user_ids', isEqualTo: [AuthHelper.user?.id, id])
               .get();
       var roomSnapshot1 =
           await _firestore
               .collection('room')
-              .where('uids', isEqualTo: [uid, AuthHelper.user?.uid])
+              .where('user_ids', isEqualTo: [id, AuthHelper.user?.id])
               .get();
       if (roomSnapshot.docs.isEmpty && roomSnapshot1.docs.isEmpty) return null;
       var doc =

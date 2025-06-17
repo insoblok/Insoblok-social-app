@@ -198,15 +198,15 @@ class AppLeadingView extends StatelessWidget {
 }
 
 class UserRelatedView extends StatelessWidget {
-  final String uid;
+  final String id;
 
-  const UserRelatedView({super.key, required this.uid});
+  const UserRelatedView({super.key, required this.id});
 
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<UserProvider>.reactive(
       viewModelBuilder: () => UserProvider(),
-      onViewModelReady: (viewModel) => viewModel.init(context, uid: uid),
+      onViewModelReady: (viewModel) => viewModel.init(context, id: id),
       builder: (context, viewModel, _) {
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),

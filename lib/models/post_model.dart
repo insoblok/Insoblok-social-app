@@ -11,7 +11,7 @@ abstract class PostModel with _$PostModel {
   @JsonSerializable(fieldRename: FieldRename.snake)
   factory PostModel({
     String? id,
-    String? uid,
+    String? userId,
     MediaStoryModel? media,
     DateTime? timestamp,
   }) = _PostModel;

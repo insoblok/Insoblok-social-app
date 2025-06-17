@@ -64,7 +64,7 @@ class StoryContentProvider extends InSoBlokViewModel {
         });
       }
     });
-    owner = await _userService.getUser(story.uid!);
+    owner = await _userService.getUser(story.id!);
 
     notifyListeners();
   }
@@ -86,7 +86,7 @@ class StoryContentProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  bool get isMine => owner?.uid == AuthHelper.user?.uid;
+  bool get isMine => owner?.id == AuthHelper.user?.id;
 
   bool _isLiking = false;
   bool get isLiking => _isLiking;
@@ -114,7 +114,7 @@ class StoryContentProvider extends InSoBlokViewModel {
     if (isBusy) return;
     clearErrors();
 
-    if (story.uid == user?.uid) {
+    if (story.userId == user?.id) {
       AIHelpers.showToast(msg: 'You can\'t like to your feed!');
       return;
     }
@@ -124,9 +124,9 @@ class StoryContentProvider extends InSoBlokViewModel {
     await runBusyFuture(() async {
       try {
         if (story.isLike()) {
-          likes.remove(user!.uid);
+          likes.remove(user!.id);
         } else {
-          likes.add(user!.uid!);
+          likes.add(user!.id!);
         }
         await storyService.updateLikeStory(
           story: story.copyWith(likes: likes, updateDate: DateTime.now()),
@@ -178,7 +178,7 @@ class StoryContentProvider extends InSoBlokViewModel {
     if (isBusy) return;
     clearErrors();
 
-    if (story.uid == user?.uid) {
+    if (story.userId == user?.id) {
       AIHelpers.showToast(msg: 'You can\'t follow to your feed!');
       return;
     }
@@ -188,9 +188,9 @@ class StoryContentProvider extends InSoBlokViewModel {
     await runBusyFuture(() async {
       try {
         if (story.isFollow()) {
-          follows.remove(user!.uid);
+          follows.remove(user!.id);
         } else {
-          follows.add(user!.uid!);
+          follows.add(user!.id!);
         }
         await storyService.updateFollowStory(
           story: story.copyWith(follows: follows, updateDate: DateTime.now()),
@@ -221,7 +221,7 @@ class StoryContentProvider extends InSoBlokViewModel {
     if (isBusy) return;
     clearErrors();
 
-    if (story.uid == user?.uid) {
+    if (story.userId == user?.id) {
       AIHelpers.showToast(msg: 'You can\'t vote to your feed!');
       return;
     }
@@ -231,7 +231,7 @@ class StoryContentProvider extends InSoBlokViewModel {
         if (story.isVote() == null) {
           votes.add(
             StoryVoteModel(
-              uid: user?.uid,
+              userId: user?.id,
               vote: isVote,
               timestamp: DateTime.now(),
             ),
@@ -239,9 +239,9 @@ class StoryContentProvider extends InSoBlokViewModel {
         } else {
           for (var i = 0; i < votes.length; i++) {
             var vote = votes[i];
-            if (vote.uid == user?.uid) {
+            if (vote.userId == user?.id) {
               votes[i] = StoryVoteModel(
-                uid: user?.uid,
+                userId: user?.id,
                 vote: isVote,
                 timestamp: DateTime.now(),
               );
@@ -294,7 +294,7 @@ class StoryContentProvider extends InSoBlokViewModel {
         logger.d(desc);
         if (desc != null) {
           var comment = StoryCommentModel(
-            uid: user?.uid,
+            userId: user?.id,
             content: desc,
             timestamp: DateTime.now(),
           );
@@ -345,7 +345,7 @@ class StoryContentProvider extends InSoBlokViewModel {
             ConverterOptions.forEmail(),
           );
           var comment = StoryCommentModel(
-            uid: user?.uid,
+            userId: user?.id,
             content: converter.convert(),
             timestamp: DateTime.now(),
           );
@@ -387,7 +387,7 @@ class StoryContentProvider extends InSoBlokViewModel {
   bool containedConnect() {
     var connects = story.connects ?? [];
     for (var connect in connects) {
-      if (connect.postId == story.id && connect.userUid == story.uid) {
+      if (connect.postId == story.id && connect.userId == story.userId) {
         return true;
       }
     }
@@ -419,7 +419,7 @@ class StoryContentProvider extends InSoBlokViewModel {
           connects: [
             ...(story.connects ?? []),
             if (!containedConnect())
-              ConnectedStoryModel(postId: story.id, userUid: story.uid),
+              ConnectedStoryModel(postId: story.id, userId: story.userId),
           ],
         );
 

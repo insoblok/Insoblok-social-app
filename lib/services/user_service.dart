@@ -10,8 +10,8 @@ class UserService {
 
   Future<UserModel?> createUser(UserModel user) async {
     try {
-      await _userCollection.add(user.toMap());
-      return getUser(user.uid!);
+      var doc = await _userCollection.add(user.toMap());
+      return user.copyWith(id: doc.id);
     } on FirebaseException catch (e) {
       logger.e(e.message);
     } catch (e) {
@@ -20,9 +20,25 @@ class UserService {
     return null;
   }
 
-  Future<UserModel?> getUser(String uid) async {
+  Future<UserModel?> getUser(String id) async {
     try {
-      var doc = await _userCollection.queryBy(UserQuery.uid, value: uid).get();
+      var doc = await _userCollection.doc(id).get();
+      if (doc.exists) return null;
+      return _getUserFromDoc(doc);
+    } on FirebaseException catch (e) {
+      logger.e(e.message);
+    } catch (e) {
+      logger.e(e.toString());
+    }
+    return null;
+  }
+
+  Future<UserModel?> getUserByWalletAddress(String address) async {
+    try {
+      var doc =
+          await _userCollection
+              .queryBy(UserQuery.walletAddress, value: address)
+              .get();
       if (doc.docs.isEmpty) return null;
       return _getUserFromDoc(doc.docs.first);
     } on FirebaseException catch (e) {
@@ -45,7 +61,7 @@ class UserService {
       users.add(user);
     }
 
-    return users.where((u) => u?.uid != AuthHelper.user?.uid).toList();
+    return users.where((u) => u?.id != AuthHelper.user?.id).toList();
   }
 
   Future<List<String>> getFollowingUserIds() async {
@@ -54,8 +70,8 @@ class UserService {
     var allUsers = snapshot.docs.map((doc) => _getUserFromDoc(doc));
     for (var user in allUsers) {
       if (user?.follows != null &&
-          user!.follows!.contains(AuthHelper.user?.uid)) {
-        ids.add(user.uid!);
+          user!.follows!.contains(AuthHelper.user?.id)) {
+        ids.add(user.id!);
       }
     }
 
@@ -76,9 +92,6 @@ class UserService {
 
   Future<List<UserModel?>> findUsersByKey(String key) async {
     List<UserModel?> users = [];
-    var uidSnapshot =
-        await _userCollection.queryBy(UserQuery.uid, value: key).get();
-    users.addAll(uidSnapshot.docs.map((doc) => _getUserFromDoc(doc)));
 
     var firstSnapshot =
         await _userCollection.queryBy(UserQuery.firstName, value: key).get();
@@ -113,7 +126,7 @@ class UserService {
       users.add(user);
     }
 
-    return users.where((u) => u?.uid != AuthHelper.user?.uid).toList();
+    return users.where((u) => u?.id != AuthHelper.user?.id).toList();
   }
 
   UserModel? _getUserFromDoc(DocumentSnapshot<Map<String, dynamic>> doc) {
@@ -126,15 +139,15 @@ class UserService {
   }
 }
 
-enum UserQuery { firstName, lastName, uid, nickID }
+enum UserQuery { firstName, lastName, nickID, walletAddress }
 
 extension on Query<Map<String, dynamic>> {
   Query<Map<String, dynamic>> queryBy(UserQuery query, {String? value}) {
     return switch (query) {
       UserQuery.firstName => where('first_name', isEqualTo: value),
       UserQuery.lastName => where('last_name', isEqualTo: value),
-      UserQuery.uid => where('uid', isEqualTo: value),
       UserQuery.nickID => where('nick_id', isEqualTo: value),
+      UserQuery.walletAddress => where('wallet_address', isEqualTo: value),
     };
   }
 }

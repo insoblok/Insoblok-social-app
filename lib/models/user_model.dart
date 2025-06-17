@@ -47,8 +47,8 @@ abstract class UserModel with _$UserModel {
 abstract class UserActionModel with _$UserActionModel {
   @JsonSerializable(fieldRename: FieldRename.snake)
   factory UserActionModel({
-    String? postUid,
-    String? userUid,
+    String? postId,
+    String? postUserId,
     bool? value,
     String? type,
     String? description,

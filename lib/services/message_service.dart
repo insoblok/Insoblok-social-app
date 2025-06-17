@@ -45,7 +45,7 @@ class MessageService {
         .collection('messages')
         .add({
           'content': text,
-          'sender_id': AuthHelper.user?.uid,
+          'sender_id': AuthHelper.user?.id,
           'sender_name': AuthHelper.user?.fullName ?? 'Anonymous',
           'timestamp': DateTime.now().toUtc().toIso8601String(),
           'type': 'text',
@@ -63,7 +63,7 @@ class MessageService {
         .collection('messages')
         .add({
           'content': '[Image]',
-          'sender_id': AuthHelper.user?.uid,
+          'sender_id': AuthHelper.user?.id,
           'sender_name': AuthHelper.user?.fullName ?? 'Anonymous',
           'timestamp': DateTime.now().toUtc().toIso8601String(),
           'url': imageUrl,
@@ -82,7 +82,7 @@ class MessageService {
         .collection('messages')
         .add({
           'content': '[Video]',
-          'sender_id': AuthHelper.user?.uid,
+          'sender_id': AuthHelper.user?.id,
           'sender_name': AuthHelper.user?.fullName ?? 'Anonymous',
           'timestamp': DateTime.now().toUtc().toIso8601String(),
           'url': videoUrl,
@@ -101,7 +101,7 @@ class MessageService {
         .collection('messages')
         .add({
           'content': '[Audio]',
-          'sender_id': AuthHelper.user?.uid,
+          'sender_id': AuthHelper.user?.id,
           'sender_name': AuthHelper.user?.fullName ?? 'Anonymous',
           'timestamp': DateTime.now().toUtc().toIso8601String(),
           'url': audioUrl,
@@ -120,7 +120,7 @@ class MessageService {
         .collection('messages')
         .add({
           'content': '[Gif]',
-          'sender_id': AuthHelper.user?.uid,
+          'sender_id': AuthHelper.user?.id,
           'sender_name': AuthHelper.user?.fullName ?? 'Anonymous',
           'timestamp': DateTime.now().toUtc().toIso8601String(),
           'url': gifUrl,
@@ -139,7 +139,7 @@ class MessageService {
         .collection('messages')
         .add({
           'content': (coin.toJson()),
-          'sender_id': AuthHelper.user?.uid,
+          'sender_id': AuthHelper.user?.id,
           'sender_name': AuthHelper.user?.fullName ?? 'Anonymous',
           'timestamp': DateTime.now().toUtc().toIso8601String(),
           'type': 'paid',
@@ -148,7 +148,7 @@ class MessageService {
 
   Future<void> setTyping(String chatRoomId, bool isTyping) async {
     await _firestore.collection('chatRooms').doc(chatRoomId).update({
-      'typing.${AuthHelper.user?.uid}': isTyping,
+      'typing.${AuthHelper.user?.id}': isTyping,
     });
   }
 
@@ -166,7 +166,7 @@ class MessageService {
             .collection('chatRooms')
             .doc(chatRoomId)
             .collection('messages')
-            .where('sender_id', isNotEqualTo: AuthHelper.user?.uid)
+            .where('sender_id', isNotEqualTo: AuthHelper.user?.id)
             .where('is_read', isEqualTo: false)
             .get();
 

@@ -75,9 +75,9 @@ class LeaderboardPage extends StatelessWidget {
                 }
                 return LeaderboardUserView(
                   key: GlobalKey(
-                    debugLabel: '${user.uid}-${viewModel.tabIndex}',
+                    debugLabel: '${user.id}-${viewModel.tabIndex}',
                   ),
-                  userUid: user.uid,
+                  userId: user.id,
                   score: value,
                 );
               },
