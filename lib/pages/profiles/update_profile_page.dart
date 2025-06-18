@@ -28,11 +28,7 @@ class UpdateProfilePage extends StatelessWidget {
             physics: BouncingScrollPhysics(),
             children: [
               AccountPublicInfoView(),
-              Divider(
-                height: 1,
-                color: AIColors.greyTextColor,
-                thickness: 0.33,
-              ),
+              Divider(height: 1, color: AIColors.greyTextColor, thickness: 0.2),
               AccountPrivateInfoView(),
               // Padding(
               //   padding: const EdgeInsets.all(24.0),

@@ -10,6 +10,8 @@ import 'package:insoblok/providers/providers.dart';
 const kRouterBase = '/';
 const kRouterLogin = '/login';
 const kRouterRegister = '/register';
+const kRouterRegisterFirst = '/register-first';
+const kRouterRegisterSecond = '/register-second';
 const kRouterMain = '/main';
 
 const kRouterAccount = '/account';
@@ -77,9 +79,21 @@ class Navigation {
     initRoute(kRouterLogin, (props) => LoginPage());
 
     // * RegisterPage
-    initRoute<String>(
+    initRoute<UserModel>(
       kRouterRegister,
-      (props) => RegisterPage(walletAddress: props!),
+      (props) => RegisterPage(user: props!),
+    );
+
+    // * RegisterFirstPage
+    initRoute<UserModel>(
+      kRouterRegisterFirst,
+      (props) => RegisterFirstPage(user: props!),
+    );
+
+    // * RegisterSecondPage
+    initRoute<UserModel>(
+      kRouterRegisterSecond,
+      (props) => RegisterSecondPage(user: props!),
     );
 
     // * MainPage

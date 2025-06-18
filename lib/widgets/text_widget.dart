@@ -40,7 +40,7 @@ class AITextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: height ?? 48.0,
+      height: height ?? 44.0,
       child: TextFormField(
         initialValue: initialValue,
         controller: controller,

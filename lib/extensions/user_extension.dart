@@ -43,6 +43,14 @@ extension UserModelExt on UserModel {
 
   String get fullName {
     try {
+      if (firstName == null ||
+          firstName == '' ||
+          lastName == null ||
+          lastName == '') {
+        var address =
+            '${walletAddress!.substring(0, 5)}..${walletAddress!.substring(walletAddress!.length - 4)}';
+        return address;
+      }
       if (lastName?.isEmpty ?? true) {
         var f = (firstName ?? '--').trim();
         return '${f[0].toUpperCase()}${f.substring(1)}';
@@ -51,7 +59,7 @@ extension UserModelExt on UserModel {
       var l = (lastName ?? '--').trim();
       return '${f[0].toUpperCase()}${f.substring(1)} ${l[0].toUpperCase()}${l.substring(1)}';
     } catch (e) {
-      return firstName ?? '';
+      return walletAddress ?? 'Temp';
     }
   }
 

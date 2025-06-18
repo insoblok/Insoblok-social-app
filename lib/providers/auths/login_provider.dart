@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 import 'package:insoblok/locator.dart';
+import 'package:insoblok/models/models.dart';
 import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
@@ -76,8 +77,12 @@ class LoginProvider extends InSoBlokViewModel {
         logger.d(reownService.walletAddress);
 
         var authUser = await AuthHelper.signIn(reownService.walletAddress!);
-        if (authUser?.firstName?.isEmpty ?? true) {
-          Routers.goToRegisterPage(context, reownService.walletAddress!);
+
+        if (authUser?.walletAddress?.isEmpty ?? true) {
+          Routers.goToRegisterFirstPage(
+            context,
+            user: UserModel(walletAddress: reownService.walletAddress!),
+          );
         } else {
           logger.d(authUser?.toJson());
           Routers.goToMainPage(context);

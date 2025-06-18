@@ -41,7 +41,7 @@ class AccountPresentHeaderView extends ViewModelWidget<AccountProvider> {
                   height: kAccountAvatarSize,
                   child: AIAvatarImage(
                     viewModel.accountUser?.avatar,
-                    fullname: viewModel.accountUser?.nickId ?? 'Test',
+                    fullname: viewModel.accountUser?.fullName ?? 'Test',
                     width: kAccountAvatarSize,
                     height: kAccountAvatarSize,
                     textSize: 28.0,

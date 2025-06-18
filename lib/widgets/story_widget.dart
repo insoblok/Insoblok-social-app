@@ -53,7 +53,7 @@ class StoryListCell extends StatelessWidget {
                             viewModel.owner?.avatar,
                             width: kStoryAvatarSize,
                             height: kStoryAvatarSize,
-                            fullname: viewModel.owner?.nickId ?? 'Test',
+                            fullname: viewModel.owner?.fullName ?? 'Test',
                             textSize: 24,
                             isBorder: true,
                             borderWidth: 2,
@@ -292,7 +292,7 @@ class StoryDetailDialog extends StatelessWidget {
                               style: Theme.of(context).textTheme.labelMedium,
                             ),
                             Divider(
-                              thickness: 0.33,
+                              thickness: 0.2,
                               height: 24.0,
                               color: AIColors.speraterColor,
                             ),
@@ -403,7 +403,7 @@ class StoryDetailDialog extends StatelessWidget {
                               ],
                             ),
                             Divider(
-                              thickness: 0.33,
+                              thickness: 0.2,
                               height: 24.0,
                               color: AIColors.speraterColor,
                             ),
@@ -463,7 +463,7 @@ class StoryDetailDialog extends StatelessWidget {
                               ],
                             ),
                             Divider(
-                              thickness: 0.33,
+                              thickness: 0.2,
                               height: 24.0,
                               color: AIColors.speraterColor,
                             ),

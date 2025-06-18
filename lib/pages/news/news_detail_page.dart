@@ -109,11 +109,7 @@ class NewsDetailPage extends StatelessWidget {
                   ],
                 ),
               ),
-              Divider(
-                height: 1,
-                color: AIColors.greyTextColor,
-                thickness: 0.33,
-              ),
+              Divider(height: 1, color: AIColors.greyTextColor, thickness: 0.2),
               Container(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 20.0,

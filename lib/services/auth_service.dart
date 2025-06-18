@@ -44,6 +44,7 @@ class AuthService with ListenableServiceMixin {
   Future<UserModel?> signIn(String walletAddress) async {
     await FirebaseHelper.signInFirebase();
     var credential = FirebaseHelper.userCredential;
+    logger.d(credential);
     _credentialRx.value = credential;
 
     var uid = credential.user?.uid;

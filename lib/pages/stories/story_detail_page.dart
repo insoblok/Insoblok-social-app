@@ -63,7 +63,7 @@ class StoryDetailPage extends StatelessWidget {
                                 width: kStoryDetailAvatarSize,
                                 height: kStoryDetailAvatarSize,
                                 textSize: 24,
-                                fullname: viewModel.owner?.nickId ?? '---',
+                                fullname: viewModel.owner?.nickId ?? 'Temp',
                                 isBorder: true,
                                 borderRadius: kStoryDetailAvatarSize / 2,
                               ),
@@ -124,7 +124,7 @@ class StoryDetailPage extends StatelessWidget {
                       style: Theme.of(context).textTheme.labelMedium,
                     ),
                     Divider(
-                      thickness: 0.33,
+                      thickness: 0.2,
                       height: 24.0,
                       color: AIColors.speraterColor,
                     ),
@@ -151,7 +151,7 @@ class StoryDetailPage extends StatelessWidget {
                       ),
                     ),
                     Divider(
-                      thickness: 0.33,
+                      thickness: 0.2,
                       height: 24.0,
                       color: AIColors.speraterColor,
                     ),
@@ -199,7 +199,7 @@ class StoryDetailPage extends StatelessWidget {
                       ],
                     ),
                     Divider(
-                      thickness: 0.33,
+                      thickness: 0.2,
                       height: 24.0,
                       color: AIColors.speraterColor,
                     ),
