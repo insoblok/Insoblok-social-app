@@ -2,18 +2,12 @@ import 'package:flutter/material.dart';
 
 import 'package:stacked/stacked.dart';
 
-import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
 
 final kWalletTokenList = [
-  // {
-  //   'name': 'Ethereum',
-  //   'short_name': 'ETH',
-  //   'icon': 'https://cryptologos.cc/logos/ethereum-eth-logo.png?v=040',
-  // },
   {'name': 'INSO', 'short_name': 'INSO', 'icon': AIImages.logoInsoblok},
   {'name': 'USDT', 'short_name': 'USDT', 'icon': AIImages.icUsdt},
   {'name': 'XRP', 'short_name': 'XRP', 'icon': AIImages.icXrp},
@@ -47,10 +41,15 @@ class AccountWalletPage extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  SizedBox(
-                    width: 60.0,
-                    height: 60.0,
-                    child: viewModel.user!.avatarStatusView(),
+                  AIAvatarImage(
+                    viewModel.user?.avatar,
+                    width: 60,
+                    height: 60,
+                    fullname: viewModel.user?.nickId ?? 'Test',
+                    textSize: 24,
+                    isBorder: true,
+                    borderWidth: 3,
+                    borderRadius: 30,
                   ),
                   Expanded(
                     child: Row(

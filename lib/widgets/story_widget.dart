@@ -48,15 +48,16 @@ class StoryListCell extends StatelessWidget {
                       Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          ClipOval(
-                            child: AIAvatarImage(
-                              // key: GlobalKey(debugLabel: 'story-${story.id}'),
-                              viewModel.owner?.avatar,
-                              width: kStoryAvatarSize,
-                              height: kStoryAvatarSize,
-                              fullname: viewModel.owner?.nickId ?? 'Test',
-                              textSize: 24,
-                            ),
+                          AIAvatarImage(
+                            // key: GlobalKey(debugLabel: 'story-${story.id}'),
+                            viewModel.owner?.avatar,
+                            width: kStoryAvatarSize,
+                            height: kStoryAvatarSize,
+                            fullname: viewModel.owner?.nickId ?? 'Test',
+                            textSize: 24,
+                            isBorder: true,
+                            borderWidth: 2,
+                            borderRadius: kStoryAvatarSize / 2,
                           ),
                         ],
                       ),
@@ -285,14 +286,14 @@ class StoryDetailDialog extends StatelessWidget {
                               const SizedBox(height: 8.0),
                               StoryDialogMediaView(),
                             },
-                            const SizedBox(height: 16.0),
+                            const SizedBox(height: 8.0),
                             Text(
                               viewModel.story.shownHMDate,
                               style: Theme.of(context).textTheme.labelMedium,
                             ),
                             Divider(
                               thickness: 0.33,
-                              height: 32.0,
+                              height: 24.0,
                               color: AIColors.speraterColor,
                             ),
                             Row(
@@ -403,7 +404,7 @@ class StoryDetailDialog extends StatelessWidget {
                             ),
                             Divider(
                               thickness: 0.33,
-                              height: 32.0,
+                              height: 24.0,
                               color: AIColors.speraterColor,
                             ),
                             Row(
@@ -423,8 +424,8 @@ class StoryDetailDialog extends StatelessWidget {
                                           viewModel.isVote
                                               ? AIColors.pink
                                               : AIColors.grey,
-                                      width: 28.0,
-                                      height: 28.0,
+                                      width: 20.0,
+                                      height: 20.0,
                                     ),
                                   ),
                                 },
@@ -439,36 +440,37 @@ class StoryDetailDialog extends StatelessWidget {
                                         viewModel.isComment
                                             ? AIColors.pink
                                             : AIColors.grey,
-                                    width: 24.0,
-                                    height: 24.0,
+                                    width: 20.0,
+                                    height: 20.0,
                                   ),
                                 ),
                                 InkWell(
                                   onTap: viewModel.onClickRepost,
                                   child: AIImage(
                                     AIImages.icRetwitter,
-                                    width: 28.0,
-                                    height: 28.0,
+                                    width: 20.0,
+                                    height: 20.0,
                                   ),
                                 ),
                                 InkWell(
                                   onTap: () {},
                                   child: AIImage(
                                     AIImages.icShare,
-                                    width: 28.0,
-                                    height: 28.0,
+                                    width: 20.0,
+                                    height: 20.0,
                                   ),
                                 ),
                               ],
                             ),
+                            Divider(
+                              thickness: 0.33,
+                              height: 24.0,
+                              color: AIColors.speraterColor,
+                            ),
                           ],
                         ),
                       ),
-                      Divider(
-                        thickness: 0.33,
-                        height: 24.0,
-                        color: AIColors.speraterColor,
-                      ),
+
                       if (viewModel.isVote) ...{
                         if ((viewModel.story.votes?.isEmpty ?? true)) ...{
                           StoryListEmptyView(

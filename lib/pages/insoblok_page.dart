@@ -87,15 +87,14 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
                               children: [
                                 InkWell(
                                   onTap: viewModel.onClickMenuAvatar,
-                                  child: ClipOval(
-                                    child: AIAvatarImage(
-                                      viewModel.user?.avatar,
-                                      width: kStoryDetailAvatarSize,
-                                      height: kStoryDetailAvatarSize,
-                                      fullname:
-                                          viewModel.user?.nickId ?? 'Test',
-                                      textSize: 24,
-                                    ),
+                                  child: AIAvatarImage(
+                                    viewModel.user?.avatar,
+                                    width: kStoryDetailAvatarSize,
+                                    height: kStoryDetailAvatarSize,
+                                    fullname: viewModel.user?.nickId ?? 'Test',
+                                    textSize: 24,
+                                    isBorder: true,
+                                    borderRadius: kStoryDetailAvatarSize / 2,
                                   ),
                                 ),
                                 const SizedBox(height: 8.0),

@@ -184,13 +184,13 @@ class AppLeadingView extends StatelessWidget {
     return Center(
       child: InkWell(
         onTap: () => Scaffold.of(context).openDrawer(),
-        child: ClipOval(
-          child: AIAvatarImage(
-            AuthHelper.user?.avatar,
-            width: 32.0,
-            height: 32.0,
-            fullname: AuthHelper.user?.nickId ?? 'Test',
-          ),
+        child: AIAvatarImage(
+          AuthHelper.user?.avatar,
+          width: 32.0,
+          height: 32.0,
+          fullname: AuthHelper.user?.nickId ?? 'Test',
+          isBorder: true,
+          borderRadius: 16,
         ),
       ),
     );
@@ -255,14 +255,14 @@ class UserRelatedView extends StatelessWidget {
                     Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        ClipOval(
-                          child: AIAvatarImage(
-                            viewModel.owner?.avatar,
-                            width: kStoryDetailAvatarSize,
-                            height: kStoryDetailAvatarSize,
-                            textSize: 24.0,
-                            fullname: viewModel.owner?.nickId ?? 'Test',
-                          ),
+                        AIAvatarImage(
+                          viewModel.owner?.avatar,
+                          width: kStoryDetailAvatarSize,
+                          height: kStoryDetailAvatarSize,
+                          textSize: 24.0,
+                          fullname: viewModel.owner?.nickId ?? 'Test',
+                          isBorder: true,
+                          borderRadius: kStoryDetailAvatarSize / 2,
                         ),
                       ],
                     ),

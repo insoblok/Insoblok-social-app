@@ -26,14 +26,14 @@ class VotedUserCell extends StatelessWidget {
           children: [
             InkWell(
               onTap: viewModel.goToDetailPage,
-              child: ClipOval(
-                child: AIAvatarImage(
-                  user?.avatar,
-                  textSize: 22,
-                  width: kStoryDetailAvatarSize,
-                  height: kStoryDetailAvatarSize,
-                  fullname: user?.nickId ?? 'Test',
-                ),
+              child: AIAvatarImage(
+                user?.avatar,
+                textSize: 22,
+                width: kStoryDetailAvatarSize,
+                height: kStoryDetailAvatarSize,
+                fullname: user?.nickId ?? 'Test',
+                isBorder: true,
+                borderRadius: kStoryDetailAvatarSize / 2,
               ),
             ),
             const SizedBox(width: 12.0),

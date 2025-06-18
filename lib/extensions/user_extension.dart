@@ -111,9 +111,20 @@ extension UserModelExt on UserModel {
                 alignment: Alignment.bottomRight,
                 child: Container(
                   decoration: BoxDecoration(
-                    color: AIColors.white,
-                    shape: BoxShape.circle,
+                    border: GradientBoxBorder(
+                      gradient: LinearGradient(
+                        colors: getGradientColors(fullName.length),
+                      ),
+                      width: 1,
+                    ),
+                    borderRadius: BorderRadius.circular(
+                      statusSize != null ? statusSize / 2 : 7,
+                    ),
                   ),
+                  // decoration: BoxDecoration(
+                  //   color: AIColors.white,
+                  //   shape: BoxShape.circle,
+                  // ),
                   child: AIImage(
                     Icons.brightness_1,
                     color:

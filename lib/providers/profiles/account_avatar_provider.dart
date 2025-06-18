@@ -18,6 +18,7 @@ class AvatarProvider extends InSoBlokViewModel {
 
   Future<void> init(BuildContext context) async {
     this.context = context;
+    ratioIndex = 0;
   }
 
   int? _ratioIndex;
@@ -106,13 +107,13 @@ class AvatarProvider extends InSoBlokViewModel {
     if (isBusy) return;
     clearErrors();
 
-    pageStatus = 'Uploading an origin image to firebase service';
+    pageStatus = 'Generating...';
 
     try {
       originUrl = await _avatarService.uploadOriginAvatar(originFile!);
       if (originUrl == null) throw ('Server error!');
 
-      pageStatus = 'Sending an origin image to ai service';
+      // pageStatus = 'Sending an origin image to ai service';
       var taskId = await _avatarService.createTask(
         fileUrl: originUrl!,
         prompt: prompt,
@@ -122,18 +123,18 @@ class AvatarProvider extends InSoBlokViewModel {
       var aiResult = await _avatarService.setOnProgressListener(
         taskId,
         onProgressListener: (progress) {
-          pageStatus =
-              'Converting to ${(double.parse(progress) * 100).toInt()}%...';
+          // pageStatus =
+          //     'Generating... ${(double.parse(progress) * 100).toInt()}%...';
         },
       );
       if (aiResult['status'] != 'SUCCESS') throw (aiResult['status']);
 
-      pageStatus = 'Downloading a result image from ai service';
+      // pageStatus = 'Downloading a result image from ai service';
       String aiUrl = (aiResult['response']['resultUrls'] as List).first;
       var resultUrl = await _avatarService.downloadAvatar(taskId, url: aiUrl);
       if (resultUrl == null) throw ('AI service error!');
 
-      pageStatus = 'Almost done!';
+      // pageStatus = 'Almost done!';
       resultFirebaseUrl = await _avatarService.uploadResultAvatar(resultUrl);
 
       await AuthHelper.updateUser(user!.copyWith(avatar: resultFirebaseUrl));
@@ -220,7 +221,7 @@ class AvatarProvider extends InSoBlokViewModel {
               const SizedBox(height: 16.0),
               Text(
                 'Do you just want to add a description for LOOKBOOK post?',
-                style: Theme.of(context).textTheme.labelLarge,
+                style: Theme.of(context).textTheme.labelMedium,
               ),
               const SizedBox(height: 24.0),
               Row(

@@ -327,6 +327,7 @@ class AIAvatarImage extends StatelessWidget {
   final Color? backgroundColor;
   final bool noTransitions;
   final bool hasSpinner;
+  final bool isBorder;
 
   const AIAvatarImage(
     this.avatar, {
@@ -343,36 +344,55 @@ class AIAvatarImage extends StatelessWidget {
     this.hasSpinner = false,
     required this.fullname,
     this.textSize,
+    this.isBorder = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return ImageType.getImageType(avatar) == ImageType.onlineLink
-        ? CachedNetworkImage(
-          imageUrl: avatar as String,
-          width: width,
-          height: height,
-          fit: fit ?? BoxFit.cover,
-          fadeInDuration: Duration(milliseconds: noTransitions ? 0 : 500),
-          errorWidget: (context, e, _) {
-            return AIAvatarDefaultView(
-              fullname: fullname,
-              textSize: textSize,
+        ? Container(
+          width: width ?? 60,
+          height: height ?? 60,
+          decoration:
+              isBorder
+                  ? BoxDecoration(
+                    border: GradientBoxBorder(
+                      gradient: LinearGradient(
+                        colors: getGradientColors(fullname.length),
+                      ),
+                      width: borderWidth ?? 2,
+                    ),
+                    borderRadius: BorderRadius.circular(borderRadius ?? 30.0),
+                  )
+                  : BoxDecoration(),
+          child: ClipOval(
+            child: CachedNetworkImage(
+              imageUrl: avatar as String,
               width: width,
               height: height,
-              borderWidth: borderWidth,
-              borderRadius: borderRadius,
-            );
-          },
-          placeholder:
-              (ctx, _) => AIAvatarDefaultView(
-                fullname: fullname,
-                textSize: textSize,
-                width: width,
-                height: height,
-                borderWidth: borderWidth,
-                borderRadius: borderRadius,
-              ),
+              fit: fit ?? BoxFit.cover,
+              fadeInDuration: Duration(milliseconds: noTransitions ? 0 : 500),
+              errorWidget: (context, e, _) {
+                return AIAvatarDefaultView(
+                  fullname: fullname,
+                  textSize: textSize,
+                  width: width,
+                  height: height,
+                  borderWidth: borderWidth,
+                  borderRadius: borderRadius,
+                );
+              },
+              placeholder:
+                  (ctx, _) => AIAvatarDefaultView(
+                    fullname: fullname,
+                    textSize: textSize,
+                    width: width,
+                    height: height,
+                    borderWidth: borderWidth,
+                    borderRadius: borderRadius,
+                  ),
+            ),
+          ),
         )
         : AIAvatarDefaultView(
           fullname: fullname,

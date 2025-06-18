@@ -50,14 +50,14 @@ class AccountRewardPage extends StatelessWidget {
                       children: [
                         Stack(
                           children: [
-                            ClipOval(
-                              child: AIAvatarImage(
-                                viewModel.user?.avatar,
-                                width: kRewardAvatarSize,
-                                height: kRewardAvatarSize,
-                                fullname: viewModel.user?.nickId ?? 'Test',
-                                textSize: 20.0,
-                              ),
+                            AIAvatarImage(
+                              viewModel.user?.avatar,
+                              width: kRewardAvatarSize,
+                              height: kRewardAvatarSize,
+                              fullname: viewModel.user?.nickId ?? 'Test',
+                              textSize: 20.0,
+                              isBorder: true,
+                              borderRadius: kRewardAvatarSize / 2,
                             ),
                             Container(
                               width: 24.0,
