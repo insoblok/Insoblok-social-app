@@ -124,23 +124,14 @@ class StoryListCell extends StatelessWidget {
                     ),
                   const SizedBox(height: 12.0),
                   Expanded(
-                    child: Container(
-                      // decoration: BoxDecoration(
-                      //   border: Border.all(
-                      //     width: 0.33,
-                      //     color: AIColors.speraterColor,
-                      //   ),
-                      //   borderRadius: BorderRadius.circular(12.0),
-                      // ),
-                      child: ClipRRect(
-                        borderRadius: BorderRadius.circular(12.0),
-                        child: StoryCarouselView(
-                          story: story,
-                          height: double.infinity,
-                          autoPlay: true,
-                          scrollPhysics: NeverScrollableScrollPhysics(),
-                          onChangePage: (index) => viewModel.pageIndex = index,
-                        ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(12.0),
+                      child: StoryCarouselView(
+                        story: story,
+                        height: double.infinity,
+                        autoPlay: true,
+                        scrollPhysics: NeverScrollableScrollPhysics(),
+                        onChangePage: (index) => viewModel.pageIndex = index,
                       ),
                     ),
                   ),

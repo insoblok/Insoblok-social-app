@@ -7,6 +7,41 @@ import 'package:reown_appkit/reown_appkit.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 
+enum SupportedMethods {
+  personalSign,
+  ethSendTransaction,
+  requestAccounts,
+  ethSignTypedData,
+  ethSignTypedDataV3,
+  ethSignTypedDataV4,
+  ethSignTransaction,
+  walletWatchAsset,
+  solanaSignMessage;
+
+  String get name {
+    switch (this) {
+      case personalSign:
+        return 'personal_sign';
+      case ethSignTypedDataV4:
+        return 'eth_signTypedData_v4';
+      case ethSendTransaction:
+        return 'eth_sendTransaction';
+      case requestAccounts:
+        return 'eth_requestAccounts';
+      case ethSignTypedDataV3:
+        return 'eth_signTypedData_v3';
+      case ethSignTypedData:
+        return 'eth_signTypedData';
+      case ethSignTransaction:
+        return 'eth_signTransaction';
+      case walletWatchAsset:
+        return 'wallet_watchAsset';
+      case solanaSignMessage:
+        return 'solana_signMessage';
+    }
+  }
+}
+
 class ReownService {
   late ReownAppKitModal _appKitModel;
   ReownAppKitModal get appKitModel => _appKitModel;
@@ -20,8 +55,7 @@ class ReownService {
         description: 'insoblokai.io',
         url: 'https://www.insoblokai.io/',
         icons: [
-          'https://gblobscdn.gitbook.com/spaces%2F-LJJeCjcLrr53DcT1Ml7%2Favatar.png?alt=media',
-          // 'https://imagedelivery.net/_aTEfDRm7z3tKgu9JhfeKA/66fc1a08-80b1-4867-3563-33a8d803f200/lg',
+          'https://firebasestorage.googleapis.com/v0/b/insoblokai.firebasestorage.app/o/ic_inso.png?alt=media&token=78ee384d-c7c3-4d8f-b7c1-5fcecbe0e202',
         ],
         redirect: Redirect(
           native: 'insoblokai://',
@@ -42,23 +76,18 @@ class ReownService {
   }
 
   bool get isConnected => appKitModel.isConnected;
-  // bool get isConnected => true;
 
   String? get chainID => appKitModel.selectedChain?.chainId;
   String? get namespace =>
       chainID == null ? null : NamespaceUtils.getNamespaceFromChain(chainID!);
   String? get walletAddress =>
       namespace == null ? null : appKitModel.session?.getAddress(namespace!);
-  // String? get walletAddress => '0xffffffffffffffffffffffffffffffffffffffff';
 
   DeployedContract? get deployedContract =>
       walletAddress == null
           ? null
           : DeployedContract(
-            ContractAbi.fromJson(
-              jsonEncode(contractABI), // ABI object
-              'Tether USD',
-            ),
+            ContractAbi.fromJson(jsonEncode(contractABI), namespace ?? 'ETH'),
             EthereumAddress.fromHex(walletAddress!),
           );
 
@@ -77,110 +106,103 @@ class ReownService {
     functionName: 'totalSupply',
   );
 
-  Future<void> transferToken(String recipientAddress) async {
-    if (!appKitModel.isConnected) return;
-
-    if (deployedContract == null) return;
-
-    final decimals = await appKitModel.requestReadContract(
-      topic: appKitModel.session!.topic,
-      chainId: chainID!,
-      deployedContract: deployedContract!,
-      functionName: 'decimals',
-    );
-    final decimalUnits = (decimals.first as BigInt);
-    final transferValue = _formatValue(
-      0.1,
-      decimals: decimalUnits,
-    ); // your format value function
-
-    final result = await appKitModel.requestWriteContract(
-      topic: appKitModel.session!.topic,
-      chainId: chainID!,
-      deployedContract: deployedContract!,
-      functionName: 'transfer',
-      transaction: Transaction(from: EthereumAddress.fromHex(walletAddress!)),
-      parameters: [EthereumAddress.fromHex(recipientAddress), transferValue],
-    );
-
-    logger.d(result);
-  }
-
-  BigInt _formatValue(num value, {required BigInt decimals}) {
-    final multiplier = _multiplier(decimals);
-    final result = EtherAmount.fromInt(
-      EtherUnit.ether,
-      (value * multiplier).toInt(),
-    );
-    return result.getInEther;
-  }
-
-  int _multiplier(BigInt decimals) {
-    final d = decimals.toInt();
-    final pad = '1'.padRight(d + 1, '0');
-    return int.parse(pad);
-  }
-
-  Future<bool?> showWallet(BuildContext context) {
-    return showModalBottomSheet<bool>(
-      context: context,
-      builder: (context) {
-        return SafeArea(
-          child: Container(
-            width: double.infinity,
-            color: AIColors.darkScaffoldBackground,
-            padding: const EdgeInsets.symmetric(
-              horizontal: 18.0,
-              vertical: 24.0,
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text(
-                  'Do you want to connect your wallet to INSOBLOK?',
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.bold,
-                    color: AIColors.pink,
-                  ),
-                ),
-                const SizedBox(height: 24.0),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    InkWell(
-                      onTap: () => Navigator.of(context).pop(true),
-                      child: Text(
-                        'Yes',
-                        style: TextStyle(
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.bold,
-                          color: AIColors.pink,
-                        ),
-                      ),
-                    ),
-                    InkWell(
-                      onTap: () => Navigator.of(context).pop(false),
-                      child: Text(
-                        'Skip',
-                        style: TextStyle(
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.bold,
-                          color: AIColors.pink,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        );
-      },
+  Future<dynamic> ethSendTransaction({
+    required String recipientAddress,
+    required int amount,
+    EtherUnit unit = EtherUnit.szabo,
+  }) async {
+    logger.d(walletAddress);
+    logger.d(recipientAddress);
+    return await _appKitModel.request(
+      topic: _appKitModel.session!.topic,
+      chainId: _appKitModel.selectedChain!.chainId,
+      request: SessionRequestParams(
+        method: SupportedMethods.ethSendTransaction.name,
+        params: [
+          Transaction(
+            from: EthereumAddress.fromHex(walletAddress ?? ''),
+            to: EthereumAddress.fromHex(recipientAddress),
+            value: EtherAmount.fromInt(unit, amount),
+            data: utf8.encode('0x'),
+          ).toJson(),
+        ],
+      ),
     );
   }
+
+  String typedData =
+      r'''{"types":{"EIP712Domain":[{"type":"string","name":"name"},{"type":"string","name":"version"},{"type":"uint256","name":"chainId"},{"type":"address","name":"verifyingContract"}],"Part":[{"name":"account","type":"address"},{"name":"value","type":"uint96"}],"Mint721":[{"name":"tokenId","type":"uint256"},{"name":"tokenURI","type":"string"},{"name":"creators","type":"Part[]"},{"name":"royalties","type":"Part[]"}]},"domain":{"name":"Mint721","version":"1","chainId":4,"verifyingContract":"0x2547760120aed692eb19d22a5d9ccfe0f7872fce"},"primaryType":"Mint721","message":{"@type":"ERC721","contract":"0x2547760120aed692eb19d22a5d9ccfe0f7872fce","tokenId":"1","uri":"ipfs://ipfs/hash","creators":[{"account":"0xc5eac3488524d577a1495492599e8013b1f91efa","value":10000}],"royalties":[],"tokenURI":"ipfs://ipfs/hash"}}''';
+
+  // Map<String, dynamic> typeDataV3(int chainId) => {
+  //   'types': {
+  //     'EIP712Domain': [
+  //       {'name': 'name', 'type': 'string'},
+  //       {'name': 'version', 'type': 'string'},
+  //       {'name': 'chainId', 'type': 'uint256'},
+  //       {'name': 'verifyingContract', 'type': 'address'},
+  //     ],
+  //     'Person': [
+  //       {'name': 'name', 'type': 'string'},
+  //       {'name': 'wallet', 'type': 'address'},
+  //     ],
+  //     'Mail': [
+  //       {'name': 'from', 'type': 'Person'},
+  //       {'name': 'to', 'type': 'Person'},
+  //       {'name': 'contents', 'type': 'string'},
+  //     ],
+  //   },
+  //   'primaryType': 'Mail',
+  //   'domain': {
+  //     'name': 'Ether Mail',
+  //     'version': '1',
+  //     'chainId': chainId,
+  //     'verifyingContract': walletAddress,
+  //   },
+  //   'message': {
+  //     'from': {'name': 'Cow', 'wallet': walletAddress},
+  //     'to': {'name': 'Bob', 'wallet': walletAddress},
+  //     'contents': 'Hello, Bob!',
+  //   },
+  // };
+
+  // Map<String, dynamic> typeDataV4(int chainId) => {
+  //   'types': {
+  //     'EIP712Domain': [
+  //       {'type': 'string', 'name': 'name'},
+  //       {'type': 'string', 'name': 'version'},
+  //       {'type': 'uint256', 'name': 'chainId'},
+  //       {'type': 'address', 'name': 'verifyingContract'},
+  //     ],
+  //     'Part': [
+  //       {'name': 'account', 'type': 'address'},
+  //       {'name': 'value', 'type': 'uint96'},
+  //     ],
+  //     'Mint721': [
+  //       {'name': 'tokenId', 'type': 'uint256'},
+  //       {'name': 'tokenURI', 'type': 'string'},
+  //       {'name': 'creators', 'type': 'Part[]'},
+  //       {'name': 'royalties', 'type': 'Part[]'},
+  //     ],
+  //   },
+  //   'domain': {
+  //     'name': 'Mint721',
+  //     'version': '1',
+  //     'chainId': chainId,
+  //     'verifyingContract': walletAddress,
+  //   },
+  //   'primaryType': 'Mint721',
+  //   'message': {
+  //     '@type': 'ERC721',
+  //     'contract': walletAddress,
+  //     'tokenId': '1',
+  //     'uri': 'ipfs://ipfs/hash',
+  //     'creators': [
+  //       {'account': walletAddress, 'value': 10000},
+  //     ],
+  //     'royalties': [],
+  //     'tokenURI': 'ipfs://ipfs/hash',
+  //   },
+  // };
 
   List<Map<String, dynamic>> get contractABI => [
     {
