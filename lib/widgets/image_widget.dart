@@ -62,7 +62,7 @@ class _StoryCarouselViewState extends State<StoryCarouselView> {
               medias: medias.map((media) => media.link!).toList(),
               index: 0,
             ),
-        child: Container(
+        child: SizedBox(
           width: double.infinity,
           height: widget.height,
           // decoration: BoxDecoration(
@@ -113,7 +113,7 @@ class _StoryCarouselViewState extends State<StoryCarouselView> {
                           medias: medias.map((media) => media.link!).toList(),
                           index: index,
                         ),
-                    child: Container(
+                    child: SizedBox(
                       width: double.infinity,
                       height: widget.height,
                       // decoration: BoxDecoration(

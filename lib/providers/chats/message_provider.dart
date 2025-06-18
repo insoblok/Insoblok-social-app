@@ -231,7 +231,7 @@ class MessageProvider extends InSoBlokViewModel {
           if (chatUser.walletAddress == null) {
             setError('Chat user has not wallet!');
           } else {
-            await reownService.transferToken(chatUser.walletAddress!);
+            // await reownService.transferToken(chatUser.walletAddress!);
           }
         } else {
           setError('Failed wallet connected!');
