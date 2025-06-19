@@ -2,21 +2,15 @@ import 'package:flutter/material.dart';
 
 import 'package:stacked/stacked.dart';
 
-import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
 
 final kWalletTokenList = [
-  // {
-  //   'name': 'Ethereum',
-  //   'short_name': 'ETH',
-  //   'icon': 'https://cryptologos.cc/logos/ethereum-eth-logo.png?v=040',
-  // },
-  {'name': 'INSO', 'short_name': 'INSO', 'icon': AIImages.logoInsoblok},
-  {'name': 'USDT', 'short_name': 'USDT', 'icon': AIImages.icUsdt},
-  {'name': 'XRP', 'short_name': 'XRP', 'icon': AIImages.icXrp},
+  {'name': 'INSO', 'short_name': 'INSO', 'icon': AIImages.icCoinInso},
+  {'name': 'USDT', 'short_name': 'USDT', 'icon': AIImages.icCoinUsdt},
+  {'name': 'XRP', 'short_name': 'XRP', 'icon': AIImages.icCoinXrp},
 ];
 
 const kWalletActionList = [
@@ -47,10 +41,15 @@ class AccountWalletPage extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  SizedBox(
-                    width: 60.0,
-                    height: 60.0,
-                    child: viewModel.user!.avatarStatusView(),
+                  AIAvatarImage(
+                    viewModel.user?.avatar,
+                    width: 60,
+                    height: 60,
+                    fullname: viewModel.user?.nickId ?? 'Test',
+                    textSize: 24,
+                    isBorder: true,
+                    borderWidth: 3,
+                    borderRadius: 30,
                   ),
                   Expanded(
                     child: Row(
@@ -125,22 +124,28 @@ class AccountWalletPage extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
                   for (var item in kWalletActionList) ...{
-                    Column(
-                      children: [
-                        Container(
-                          width: 40.0,
-                          height: 40.0,
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: Theme.of(context).primaryColor,
-                            ),
-                            borderRadius: BorderRadius.circular(8.0),
+                    InkWell(
+                      onTap:
+                          () => viewModel.onClickActions(
+                            kWalletActionList.indexOf(item),
                           ),
-                          child: AIImage(item['icon']),
-                        ),
-                        const SizedBox(height: 8.0),
-                        Text(item['name'] as String),
-                      ],
+                      child: Column(
+                        children: [
+                          Container(
+                            width: 40.0,
+                            height: 40.0,
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                color: Theme.of(context).primaryColor,
+                              ),
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            child: AIImage(item['icon']),
+                          ),
+                          const SizedBox(height: 8.0),
+                          Text(item['name'] as String),
+                        ],
+                      ),
                     ),
                   },
                 ],
@@ -189,7 +194,9 @@ class AccountWalletPage extends StatelessWidget {
                     child: Container(
                       padding: const EdgeInsets.all(12.0),
                       decoration: BoxDecoration(
-                        color: Colors.black12,
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.secondary.withAlpha(16),
                         borderRadius: BorderRadius.circular(12.0),
                       ),
                       alignment: Alignment.centerLeft,
@@ -199,7 +206,7 @@ class AccountWalletPage extends StatelessWidget {
                         spacing: 4.0,
                         children: [
                           AIImage(
-                            AIImages.logoInsoblok,
+                            AIImages.icCoinInso,
                             width: 36.0,
                             height: 36.0,
                           ),
@@ -216,7 +223,9 @@ class AccountWalletPage extends StatelessWidget {
                     child: Container(
                       padding: const EdgeInsets.all(12.0),
                       decoration: BoxDecoration(
-                        color: Colors.black12,
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.secondary.withAlpha(16),
                         borderRadius: BorderRadius.circular(12.0),
                       ),
                       alignment: Alignment.centerLeft,
@@ -226,7 +235,7 @@ class AccountWalletPage extends StatelessWidget {
                         spacing: 4.0,
                         children: [
                           AIImage(
-                            AIImages.logoInsoblok,
+                            AIImages.icCoinInso,
                             width: 36.0,
                             height: 36.0,
                           ),

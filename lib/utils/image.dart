@@ -72,4 +72,8 @@ class AIImages {
   static String imgLevel(int level) {
     return 'assets/images/img_level_0$level.png';
   }
+
+  static String icCoinUsdt = 'assets/icons/ic_usdt.png';
+  static String icCoinXrp = 'assets/icons/ic_xrp.png';
+  static String icCoinInso = 'assets/icons/ic_inso.png';
 }

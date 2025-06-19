@@ -85,8 +85,8 @@ class TabCoverView extends StatelessWidget {
           title,
           style:
               selected
-                  ? Theme.of(context).textTheme.headlineMedium
-                  : Theme.of(context).textTheme.labelLarge,
+                  ? Theme.of(context).textTheme.headlineSmall
+                  : Theme.of(context).textTheme.labelMedium,
         ),
       ),
     );

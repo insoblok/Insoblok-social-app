@@ -38,14 +38,14 @@ class AccountStoryListCell extends StatelessWidget {
                 Row(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    ClipOval(
-                      child: AIAvatarImage(
-                        viewModel.owner?.avatar,
-                        width: kStoryDetailAvatarSize,
-                        height: kStoryDetailAvatarSize,
-                        fullname: viewModel.owner?.nickId ?? 'Test',
-                        textSize: 24,
-                      ),
+                    AIAvatarImage(
+                      viewModel.owner?.avatar,
+                      width: kStoryDetailAvatarSize,
+                      height: kStoryDetailAvatarSize,
+                      fullname: viewModel.owner?.nickId ?? 'Test',
+                      textSize: 24,
+                      isBorder: true,
+                      borderRadius: kStoryDetailAvatarSize / 2,
                     ),
                     const SizedBox(width: 8.0),
                     Expanded(

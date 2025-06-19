@@ -7,7 +7,7 @@ class TastescoreType {
   static String FREESTYLE = 'post_freestyle';
   static String WINCREATOR = 'win_creator';
   static String LOGIN = 'daily_bonus';
-
+  static String REGISTER = 'register';
   static String BONUS = 'bonus';
 }
 
@@ -18,6 +18,7 @@ final kScoreDescription = {
   TastescoreType.FREESTYLE: 'You have received 100 votes from InSoBlok',
   TastescoreType.WINCREATOR: 'Welcome to create a voted story',
   TastescoreType.LOGIN: 'Welcome to InSoBlok',
+  TastescoreType.REGISTER: 'Welcome to InSoBlok',
   'login': 'Welcome to InSoBlok',
   '${TastescoreType.REPOST}-${TastescoreType.BONUS}':
       'Someone have given a vote to your fork story.',

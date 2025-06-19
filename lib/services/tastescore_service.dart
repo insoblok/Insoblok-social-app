@@ -52,6 +52,15 @@ class TastescoreService {
     return 0;
   }
 
+  Future<void> registerScore(int score) async {
+    var tastescore = TastescoreModelExt.creatXpModel(
+      score,
+      AuthHelper.user!.id!,
+      type: TastescoreType.REGISTER,
+    );
+    await tastescoreCollection.add(tastescore.toMap());
+  }
+
   Future<void> winCreatorScore() async {
     var tastescore = TastescoreModelExt.creatXpModel(
       AppSettingHelper.appSettingModel!.xpEarn![4].reward!,

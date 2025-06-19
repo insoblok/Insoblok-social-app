@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:stacked/stacked.dart';
@@ -52,28 +51,6 @@ class StoryDetailPage extends StatelessWidget {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    if (kDebugMode)
-                      Row(
-                        children: [
-                          Container(
-                            width: kStoryDetailAvatarSize,
-                            alignment: Alignment.centerRight,
-                            child: AIImage(
-                              AIImages.icFavoriteFill,
-                              color: AIColors.grey,
-                              width: 12.0,
-                              height: 12.0,
-                            ),
-                          ),
-                          const SizedBox(width: 8.0),
-                          Expanded(
-                            child: Text(
-                              'Kieron Dotson and Zack John liked',
-                              style: Theme.of(context).textTheme.labelMedium,
-                            ),
-                          ),
-                        ],
-                      ),
                     InkWell(
                       onTap: viewModel.onTapAvatar,
                       child: Row(
@@ -81,14 +58,14 @@ class StoryDetailPage extends StatelessWidget {
                         children: [
                           Row(
                             children: [
-                              ClipOval(
-                                child: AIAvatarImage(
-                                  viewModel.owner?.avatar,
-                                  width: kStoryDetailAvatarSize,
-                                  height: kStoryDetailAvatarSize,
-                                  textSize: 24,
-                                  fullname: viewModel.owner?.fullName ?? '---',
-                                ),
+                              AIAvatarImage(
+                                viewModel.owner?.avatar,
+                                width: kStoryDetailAvatarSize,
+                                height: kStoryDetailAvatarSize,
+                                textSize: 24,
+                                fullname: viewModel.owner?.nickId ?? 'Temp',
+                                isBorder: true,
+                                borderRadius: kStoryDetailAvatarSize / 2,
                               ),
                               const SizedBox(width: 8.0),
                               Column(
@@ -97,8 +74,10 @@ class StoryDetailPage extends StatelessWidget {
                                 children: [
                                   Text(
                                     viewModel.owner?.fullName ?? '---',
-                                    style:
-                                        Theme.of(context).textTheme.bodyMedium,
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                   Text(
                                     '@${viewModel.owner?.nickId}',
@@ -112,7 +91,7 @@ class StoryDetailPage extends StatelessWidget {
                         ],
                       ),
                     ),
-                    const SizedBox(height: 24.0),
+                    const SizedBox(height: 16.0),
                     AIHelpers.htmlRender(viewModel.story.text),
                     if ((viewModel.story.medias ?? []).isNotEmpty) ...{
                       const SizedBox(height: 8.0),
@@ -131,6 +110,8 @@ class StoryDetailPage extends StatelessWidget {
                             child: StoryCarouselView(
                               story: story,
                               height: double.infinity,
+                              boxFit: BoxFit.cover,
+                              autoPlay: true,
                               onChangePage: (index) {},
                             ),
                           ),
@@ -140,11 +121,11 @@ class StoryDetailPage extends StatelessWidget {
                     const SizedBox(height: 16.0),
                     Text(
                       viewModel.story.shownHMDate,
-                      style: Theme.of(context).textTheme.labelLarge,
+                      style: Theme.of(context).textTheme.labelMedium,
                     ),
                     Divider(
-                      thickness: 0.33,
-                      height: 32.0,
+                      thickness: 0.2,
+                      height: 24.0,
                       color: AIColors.speraterColor,
                     ),
                     Text.rich(
@@ -156,7 +137,7 @@ class StoryDetailPage extends StatelessWidget {
                           ),
                           TextSpan(
                             text: ' Likes  ',
-                            style: Theme.of(context).textTheme.labelLarge,
+                            style: Theme.of(context).textTheme.labelMedium,
                           ),
                           TextSpan(
                             text: '${(viewModel.story.follows ?? []).length}',
@@ -164,14 +145,14 @@ class StoryDetailPage extends StatelessWidget {
                           ),
                           TextSpan(
                             text: ' Followers',
-                            style: Theme.of(context).textTheme.labelLarge,
+                            style: Theme.of(context).textTheme.labelMedium,
                           ),
                         ],
                       ),
                     ),
                     Divider(
-                      thickness: 0.33,
-                      height: 32.0,
+                      thickness: 0.2,
+                      height: 24.0,
                       color: AIColors.speraterColor,
                     ),
                     Row(
@@ -181,16 +162,16 @@ class StoryDetailPage extends StatelessWidget {
                           onTap: viewModel.addComment,
                           child: AIImage(
                             AIImages.icCommit,
-                            width: 20.0,
-                            height: 20.0,
+                            width: 18.0,
+                            height: 18.0,
                           ),
                         ),
                         InkWell(
                           onTap: viewModel.updateFollow,
                           child: AIImage(
                             AIImages.icRetwitter,
-                            width: 20.0,
-                            height: 20.0,
+                            width: 18.0,
+                            height: 18.0,
                             color:
                                 viewModel.story.isFollow()
                                     ? AIColors.green
@@ -203,28 +184,29 @@ class StoryDetailPage extends StatelessWidget {
                             viewModel.story.isLike()
                                 ? AIImages.icFavoriteFill
                                 : AIImages.icFavorite,
-                            width: 20.0,
-                            height: 20.0,
+                            width: 18.0,
+                            height: 18.0,
                           ),
                         ),
                         InkWell(
                           onTap: viewModel.shareFeed,
                           child: AIImage(
                             AIImages.icShare,
-                            width: 20.0,
-                            height: 20.0,
+                            width: 18.0,
+                            height: 18.0,
                           ),
                         ),
                       ],
                     ),
+                    Divider(
+                      thickness: 0.2,
+                      height: 24.0,
+                      color: AIColors.speraterColor,
+                    ),
                   ],
                 ),
               ),
-              Divider(
-                thickness: 0.33,
-                height: 32.0,
-                color: AIColors.speraterColor,
-              ),
+
               for (var comment
                   in (viewModel.story.comments?.reversed.toList() ?? [])) ...{
                 Padding(

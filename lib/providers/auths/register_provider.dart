@@ -13,44 +13,14 @@ class RegisterProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  int _pageIndex = 0;
-  int get pageIndex => _pageIndex;
-  set pageIndex(int i) {
-    _pageIndex = i;
-    obscureText = true;
-    notifyListeners();
-  }
-
   late UserModel _user;
 
   Future<void> init(
     BuildContext context, {
-    required String walletAddress,
+    required UserModel userModel,
   }) async {
     this.context = context;
-    _user = UserModel(walletAddress: walletAddress);
-  }
-
-  void updateFirstName(String name) {
-    _user = _user.copyWith(firstName: name);
-    notifyListeners();
-  }
-
-  void updateLastName(String name) {
-    _user = _user.copyWith(lastName: name);
-    notifyListeners();
-  }
-
-  void updateEmailAddress(String s) {
-    _user = _user.copyWith(email: s);
-    notifyListeners();
-  }
-
-  bool _obscureText = true;
-  bool get obscureText => _obscureText;
-  set obscureText(bool f) {
-    _obscureText = f;
-    notifyListeners();
+    _user = userModel;
   }
 
   String _biometric = '';
@@ -65,29 +35,31 @@ class RegisterProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  void updateCity(String s) {
-    _user = _user.copyWith(city: s);
-    notifyListeners();
-  }
-
-  void updateCountry(String s) {
-    _user = _user.copyWith(country: s);
-    notifyListeners();
-  }
-
   Future<void> onClickRegister() async {
-    if ((_user.firstName?.isEmpty ?? true) ||
-        (_user.lastName?.isEmpty ?? true)) {
-      AIHelpers.showToast(msg: "Please input your name!");
-      return;
-    }
-
     if (isBusy) return;
     clearErrors();
+
+    int xpScore = 0;
+    if (_user.firstName != null && _user.firstName != '') {
+      xpScore = xpScore + 50;
+    }
+    if (_user.lastName != null && _user.lastName != '') {
+      xpScore = xpScore + 50;
+    }
+    if (_user.country != null &&
+        _user.country != '' &&
+        _user.city != null &&
+        _user.city != '') {
+      xpScore = xpScore + 75;
+    }
+    if (_user.website != null && _user.website != '') {
+      xpScore = xpScore + 25;
+    }
 
     await runBusyFuture(() async {
       try {
         await AuthHelper.signUp(_user);
+        if (xpScore > 0) await tastScoreService.registerScore(xpScore);
         Routers.goToMainPage(context);
       } catch (e) {
         setError(e);

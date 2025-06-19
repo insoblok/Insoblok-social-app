@@ -87,15 +87,15 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
                               children: [
                                 InkWell(
                                   onTap: viewModel.onClickMenuAvatar,
-                                  child: ClipOval(
-                                    child: AIAvatarImage(
-                                      viewModel.user?.avatar,
-                                      width: kStoryDetailAvatarSize,
-                                      height: kStoryDetailAvatarSize,
-                                      fullname:
-                                          viewModel.user?.nickId ?? 'Test',
-                                      textSize: 24,
-                                    ),
+                                  child: AIAvatarImage(
+                                    viewModel.user?.avatar,
+                                    width: kStoryDetailAvatarSize,
+                                    height: kStoryDetailAvatarSize,
+                                    fullname:
+                                        viewModel.user?.fullName ?? 'Test',
+                                    textSize: 24,
+                                    isBorder: true,
+                                    borderRadius: kStoryDetailAvatarSize / 2,
                                   ),
                                 ),
                                 const SizedBox(height: 8.0),
@@ -105,7 +105,9 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
                                       Theme.of(context).textTheme.displayLarge,
                                 ),
                                 Text(
-                                  '@${viewModel.user?.nickId}',
+                                  viewModel.user!.nickId!.isEmpty
+                                      ? '@${viewModel.user?.fullName}'
+                                      : '@${viewModel.user?.nickId}',
                                   style: Theme.of(context).textTheme.labelLarge,
                                 ),
                               ],
@@ -148,7 +150,7 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
                       ],
                     ),
                   ),
-                  const Divider(thickness: 0.33),
+                  const Divider(thickness: 0.2),
                   for (var i = 0; i < menuTitles.length; i++) ...{
                     MenuButtonCover(
                       onTap: () => viewModel.onClickMenuItem(i),
@@ -169,7 +171,7 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
                       ),
                     ),
                   },
-                  const Divider(thickness: 0.33),
+                  const Divider(thickness: 0.2),
                   const SizedBox(height: 12.0),
                   MenuButtonCover(
                     onTap: () => viewModel.onClickPrivacy(),

@@ -55,17 +55,25 @@ class _StoryCarouselViewState extends State<StoryCarouselView> {
       }
     } else if (medias.length == 1) {
       var media = medias.first;
-      return Container(
-        width: double.infinity,
-        height: widget.height,
-        // decoration: BoxDecoration(
-        //   color: Theme.of(context).colorScheme.secondary.withAlpha(32),
-        //   borderRadius: BorderRadius.circular(6),
-        // ),
-        child: MediaCarouselCell(
-          media: media,
+      return InkWell(
+        onTap:
+            () => AIHelpers.goToDetailView(
+              context,
+              medias: medias.map((media) => media.link!).toList(),
+              index: 0,
+            ),
+        child: SizedBox(
+          width: double.infinity,
           height: widget.height,
-          boxFit: widget.boxFit,
+          // decoration: BoxDecoration(
+          //   color: Theme.of(context).colorScheme.secondary.withAlpha(32),
+          //   borderRadius: BorderRadius.circular(6),
+          // ),
+          child: MediaCarouselCell(
+            media: media,
+            height: widget.height,
+            boxFit: widget.boxFit,
+          ),
         ),
       );
     }
@@ -98,19 +106,27 @@ class _StoryCarouselViewState extends State<StoryCarouselView> {
                 ),
                 itemBuilder: (context, index, realIdx) {
                   var media = medias[index];
-                  return Container(
-                    width: double.infinity,
-                    height: widget.height,
-                    // decoration: BoxDecoration(
-                    //   color: Theme.of(
-                    //     context,
-                    //   ).colorScheme.secondary.withAlpha(32),
-                    //   borderRadius: BorderRadius.circular(6),
-                    // ),
-                    child: MediaCarouselCell(
-                      media: media,
-                      boxFit: widget.boxFit,
+                  return InkWell(
+                    onTap:
+                        () => AIHelpers.goToDetailView(
+                          context,
+                          medias: medias.map((media) => media.link!).toList(),
+                          index: index,
+                        ),
+                    child: SizedBox(
+                      width: double.infinity,
                       height: widget.height,
+                      // decoration: BoxDecoration(
+                      //   color: Theme.of(
+                      //     context,
+                      //   ).colorScheme.secondary.withAlpha(32),
+                      //   borderRadius: BorderRadius.circular(6),
+                      // ),
+                      child: MediaCarouselCell(
+                        media: media,
+                        boxFit: widget.boxFit,
+                        height: widget.height,
+                      ),
                     ),
                   );
                 },
