@@ -11,7 +11,6 @@ import 'package:insoblok/models/models.dart';
 import 'package:insoblok/pages/pages.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
-import 'package:insoblok/widgets/widgets.dart';
 
 class MessageProvider extends InSoBlokViewModel {
   late BuildContext _context;
@@ -221,17 +220,21 @@ class MessageProvider extends InSoBlokViewModel {
 
     isAddPop = false;
 
-    var coin = await _showCoinOption();
-    if (coin != null) {
-      try {
-        final reownService = locator<ReownService>();
+    final reownService = locator<ReownService>();
 
+    var req = await reownService.onShowTransferModal(
+      context,
+      address: chatUser.walletAddress,
+    );
+    if (req != null) {
+      try {
         await reownService.connect();
         if (reownService.isConnected) {
           if (chatUser.walletAddress == null) {
             setError('Chat user has not wallet!');
           } else {
-            // await reownService.transferToken(chatUser.walletAddress!);
+            var result = await reownService.ethSendTransaction(req: req);
+            logger.d(result);
           }
         } else {
           setError('Failed wallet connected!');
@@ -246,7 +249,15 @@ class MessageProvider extends InSoBlokViewModel {
       if (hasError) {
         AIHelpers.showToast(msg: modelError.toString());
       } else {
-        await messageService.sendPaidMessage(chatRoomId: room.id!, coin: coin);
+        await messageService.sendPaidMessage(
+          chatRoomId: room.id!,
+          coin: CoinModel(
+            icon: AIImages.icEthereumGold,
+            type: 'ETH',
+            amount: '${req.amount}',
+            unit: '${req.unit}',
+          ),
+        );
         scrollController.jumpTo(scrollController.position.maxScrollExtent);
       }
     }
@@ -321,74 +332,6 @@ class MessageProvider extends InSoBlokViewModel {
           },
         ) ??
         false;
-  }
-
-  Future<CoinModel?> _showCoinOption() async {
-    return await showDialog<CoinModel>(
-      context: context,
-      builder: (context) {
-        var coin = CoinModel(
-          icon: AIImages.icEthereumGold,
-          type: 'ETH',
-          amount: '1',
-          unit: 'szabo',
-        );
-        return Scaffold(
-          backgroundColor: Colors.transparent,
-          body: Center(
-            child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 24.0),
-              padding: const EdgeInsets.all(24),
-              decoration: BoxDecoration(
-                color: AIColors.darkBar,
-                borderRadius: BorderRadius.circular(12.0),
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Row(
-                    children: [
-                      AIImage(coin.icon, width: 32.0, height: 32.0),
-                      const SizedBox(width: 8.0),
-                      Text(
-                        coin.type ?? 'ETH',
-                        style: TextStyle(
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.white,
-                        ),
-                      ),
-                      const Spacer(),
-                      IconButton(
-                        onPressed: () => Navigator.of(context).pop(),
-                        icon: Icon(Icons.close, color: Colors.white),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 16.0),
-                  Row(
-                    children: [
-                      Text(
-                        'Unit : szabo',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      const Spacer(),
-                      Text('Amount : 1', style: TextStyle(color: Colors.white)),
-                    ],
-                  ),
-                  const SizedBox(height: 16.0),
-                  TextFillButton(
-                    text: 'Confirm',
-                    color: AIColors.darkScaffoldBackground,
-                    onTap: () => Navigator.of(context).pop(coin),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    );
   }
 }
 

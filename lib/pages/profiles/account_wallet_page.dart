@@ -80,7 +80,16 @@ class AccountWalletPage extends StatelessWidget {
                 ],
               ),
               const SizedBox(height: 40.0),
-              Text('\$ 0.00', style: Theme.of(context).textTheme.titleLarge),
+              ValueListenableBuilder<String>(
+                valueListenable:
+                    viewModel.reownService.appKitModel.balanceNotifier,
+                builder: (_, balance, _) {
+                  return Text(
+                    balance,
+                    style: Theme.of(context).textTheme.titleLarge,
+                  );
+                },
+              ),
               const SizedBox(height: 40.0),
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,

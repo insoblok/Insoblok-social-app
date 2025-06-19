@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -272,6 +273,11 @@ class FirebaseHelper {
           }
           newJson[key] = utcDateTime.toLocal().toIso8601String();
         }
+      } else if (key == 'content') {
+        newJson[key] =
+            (firebaseJson[key] is String)
+                ? firebaseJson[key]
+                : jsonEncode(firebaseJson[key]);
       } else {
         newJson[key] = firebaseJson[key];
       }

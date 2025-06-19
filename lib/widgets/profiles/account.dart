@@ -120,7 +120,7 @@ class AccountFloatingView extends ViewModelWidget<AccountProvider> {
                   ),
               Wrap(
                 spacing: 12.0,
-                runSpacing: 4.0,
+                runSpacing: 8.0,
                 children:
                     (viewModel.accountUser?.linkInfo ?? []).map((info) {
                       return InkWell(

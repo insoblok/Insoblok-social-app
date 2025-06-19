@@ -1,6 +1,9 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:insoblok/extensions/extensions.dart';
+import 'package:insoblok/models/models.dart';
+import 'package:insoblok/widgets/widgets.dart';
 
 import 'package:reown_appkit/reown_appkit.dart';
 
@@ -40,6 +43,41 @@ enum SupportedMethods {
         return 'solana_signMessage';
     }
   }
+}
+
+final kEthUnitInfor = [
+  {
+    'title': 'Wei',
+    'unit': EtherUnit.wei,
+    'desc': 'The smallest and atomic amount of Ether',
+  },
+  {'title': 'kwei', 'unit': EtherUnit.kwei, 'desc': 'Kwei, 1000 wei'},
+  {'title': 'mwei', 'unit': EtherUnit.mwei, 'desc': 'Mwei, one million wei'},
+  {
+    'title': 'gwei',
+    'unit': EtherUnit.gwei,
+    'desc':
+        'Gwei, one billion wei. Typically a reasonable unit to measure gas prices.',
+  },
+  {
+    'title': 'szabo',
+    'unit': EtherUnit.szabo,
+    'desc': 'Szabo, 10^12 wei or 1 μEther',
+  },
+  {
+    'title': 'finney',
+    'unit': EtherUnit.finney,
+    'desc': 'Finney, 10^15 wei or 1 mEther',
+  },
+  {'title': 'ether', 'unit': EtherUnit.ether, 'desc': '1 Ether'},
+];
+
+class EthTransferRequest {
+  String? recipientAddress;
+  int? amount;
+  EtherUnit? unit;
+
+  EthTransferRequest({this.recipientAddress, this.amount, this.unit});
 }
 
 class ReownService {
@@ -106,13 +144,241 @@ class ReownService {
     functionName: 'totalSupply',
   );
 
-  Future<dynamic> ethSendTransaction({
-    required String recipientAddress,
-    required int amount,
-    EtherUnit unit = EtherUnit.szabo,
+  Future<EthTransferRequest?> onShowTransferModal(
+    BuildContext context, {
+    String? address,
   }) async {
-    logger.d(walletAddress);
-    logger.d(recipientAddress);
+    List<UserModel?> allUsers = [];
+    if (address == null) {
+      allUsers.addAll(await UserService().getAllUsers());
+    }
+
+    return showModalBottomSheet<EthTransferRequest>(
+      context: context,
+      isScrollControlled: true,
+      builder: (context) {
+        var result = EthTransferRequest(
+          recipientAddress: address,
+          unit: EtherUnit.wei,
+          amount: 1,
+        );
+        var userNotifier = ValueNotifier<UserModel?>(
+          allUsers.isNotEmpty ? allUsers.first : null,
+        );
+        var unitNotifier = ValueNotifier(kEthUnitInfor.first);
+        var amountNotifier = ValueNotifier(1);
+        return Container(
+          decoration: BoxDecoration(
+            color: Theme.of(context).scaffoldBackgroundColor,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(24.0),
+              topRight: Radius.circular(24.0),
+            ),
+          ),
+          padding: EdgeInsets.only(
+            left: 20.0,
+            right: 20.0,
+            top: 24.0,
+            bottom: 24.0 + MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: Column(
+            spacing: 24.0,
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('Etherium', style: Theme.of(context).textTheme.titleSmall),
+              if (address == null)
+                ValueListenableBuilder<UserModel?>(
+                  valueListenable: userNotifier,
+                  builder: (context, value, _) {
+                    return Column(
+                      spacing: 12.0,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Wallet Address'),
+                        Container(
+                          decoration: kNoBorderDecoration,
+                          padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                          child: DropdownButton<UserModel>(
+                            isExpanded: true,
+                            value: value,
+                            dropdownColor:
+                                Theme.of(context).colorScheme.onSecondary,
+                            icon: const Icon(Icons.keyboard_arrow_down),
+                            underline: Container(),
+                            items:
+                                allUsers.map((user) {
+                                  return DropdownMenuItem(
+                                    value: user,
+                                    child: Text(
+                                      user!.fullName,
+                                      style:
+                                          Theme.of(context).textTheme.bodySmall,
+                                    ),
+                                  );
+                                }).toList(),
+                            onChanged: (value) {
+                              userNotifier.value = value;
+                              result.recipientAddress = value?.walletAddress;
+                            },
+                          ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
+              ValueListenableBuilder<dynamic>(
+                valueListenable: unitNotifier,
+                builder: (context, value, _) {
+                  return Column(
+                    spacing: 12.0,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Etherium Unit'),
+                      Container(
+                        decoration: kNoBorderDecoration,
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                        child: DropdownButton<dynamic>(
+                          isExpanded: true,
+                          value: value,
+                          dropdownColor:
+                              Theme.of(context).colorScheme.onSecondary,
+                          icon: const Icon(Icons.keyboard_arrow_down),
+                          underline: Container(),
+                          items:
+                              kEthUnitInfor.map((ethInfo) {
+                                return DropdownMenuItem(
+                                  value: ethInfo,
+                                  child: Text(
+                                    (ethInfo['title'] as String).toUpperCase(),
+                                    style:
+                                        Theme.of(context).textTheme.bodySmall,
+                                  ),
+                                );
+                              }).toList(),
+                          onChanged: (value) {
+                            unitNotifier.value = value;
+                            result.unit = value['unit'];
+                          },
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 12.0),
+                        child: Text(
+                          value['desc'],
+                          style: Theme.of(context).textTheme.labelLarge,
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
+              ValueListenableBuilder(
+                valueListenable: amountNotifier,
+                builder: (context, value, _) {
+                  return Column(
+                    spacing: 12.0,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Transfer Amount'),
+                      Container(
+                        width: double.infinity,
+                        decoration: kNoBorderDecoration,
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 20.0,
+                          vertical: 12.0,
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(value.toString()),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          InkWell(
+                            onTap: () {
+                              var updated = value - 100;
+                              if (updated < 1) {
+                                updated = 1;
+                              }
+                              amountNotifier.value = updated;
+                              result.amount = updated;
+                            },
+                            child: Text('-100'),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              var updated = value - 10;
+                              if (updated < 1) {
+                                updated = 1;
+                              }
+                              amountNotifier.value = updated;
+                              result.amount = updated;
+                            },
+                            child: Text('-10'),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              var updated = value - 1;
+                              if (updated < 1) {
+                                updated = 1;
+                              }
+                              amountNotifier.value = updated;
+                              result.amount = updated;
+                            },
+                            child: Text('-1'),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              result.amount = value + 1;
+                              amountNotifier.value = value + 1;
+                            },
+                            child: Text('+1'),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              result.amount = value + 10;
+                              amountNotifier.value = value + 10;
+                            },
+                            child: Text('+10'),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              result.amount = value + 100;
+                              amountNotifier.value = value + 100;
+                            },
+                            child: Text('+100'),
+                          ),
+                        ],
+                      ),
+                    ],
+                  );
+                },
+              ),
+              Row(
+                spacing: 24.0,
+                children: [
+                  Expanded(
+                    child: TextFillButton(
+                      text: "Send",
+                      color: AIColors.pink,
+                      onTap: () => Navigator.of(context).pop(result),
+                    ),
+                  ),
+                  Expanded(
+                    child: OutlineButton(
+                      onTap: () => Navigator.of(context).pop(),
+                      child: Text('Cancel'),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Future<dynamic> ethSendTransaction({required EthTransferRequest req}) async {
     return await _appKitModel.request(
       topic: _appKitModel.session!.topic,
       chainId: _appKitModel.selectedChain!.chainId,
@@ -121,8 +387,8 @@ class ReownService {
         params: [
           Transaction(
             from: EthereumAddress.fromHex(walletAddress ?? ''),
-            to: EthereumAddress.fromHex(recipientAddress),
-            value: EtherAmount.fromInt(unit, amount),
+            to: EthereumAddress.fromHex(req.recipientAddress!),
+            value: EtherAmount.fromInt(req.unit!, req.amount!),
             data: utf8.encode('0x'),
           ).toJson(),
         ],
@@ -132,77 +398,6 @@ class ReownService {
 
   String typedData =
       r'''{"types":{"EIP712Domain":[{"type":"string","name":"name"},{"type":"string","name":"version"},{"type":"uint256","name":"chainId"},{"type":"address","name":"verifyingContract"}],"Part":[{"name":"account","type":"address"},{"name":"value","type":"uint96"}],"Mint721":[{"name":"tokenId","type":"uint256"},{"name":"tokenURI","type":"string"},{"name":"creators","type":"Part[]"},{"name":"royalties","type":"Part[]"}]},"domain":{"name":"Mint721","version":"1","chainId":4,"verifyingContract":"0x2547760120aed692eb19d22a5d9ccfe0f7872fce"},"primaryType":"Mint721","message":{"@type":"ERC721","contract":"0x2547760120aed692eb19d22a5d9ccfe0f7872fce","tokenId":"1","uri":"ipfs://ipfs/hash","creators":[{"account":"0xc5eac3488524d577a1495492599e8013b1f91efa","value":10000}],"royalties":[],"tokenURI":"ipfs://ipfs/hash"}}''';
-
-  // Map<String, dynamic> typeDataV3(int chainId) => {
-  //   'types': {
-  //     'EIP712Domain': [
-  //       {'name': 'name', 'type': 'string'},
-  //       {'name': 'version', 'type': 'string'},
-  //       {'name': 'chainId', 'type': 'uint256'},
-  //       {'name': 'verifyingContract', 'type': 'address'},
-  //     ],
-  //     'Person': [
-  //       {'name': 'name', 'type': 'string'},
-  //       {'name': 'wallet', 'type': 'address'},
-  //     ],
-  //     'Mail': [
-  //       {'name': 'from', 'type': 'Person'},
-  //       {'name': 'to', 'type': 'Person'},
-  //       {'name': 'contents', 'type': 'string'},
-  //     ],
-  //   },
-  //   'primaryType': 'Mail',
-  //   'domain': {
-  //     'name': 'Ether Mail',
-  //     'version': '1',
-  //     'chainId': chainId,
-  //     'verifyingContract': walletAddress,
-  //   },
-  //   'message': {
-  //     'from': {'name': 'Cow', 'wallet': walletAddress},
-  //     'to': {'name': 'Bob', 'wallet': walletAddress},
-  //     'contents': 'Hello, Bob!',
-  //   },
-  // };
-
-  // Map<String, dynamic> typeDataV4(int chainId) => {
-  //   'types': {
-  //     'EIP712Domain': [
-  //       {'type': 'string', 'name': 'name'},
-  //       {'type': 'string', 'name': 'version'},
-  //       {'type': 'uint256', 'name': 'chainId'},
-  //       {'type': 'address', 'name': 'verifyingContract'},
-  //     ],
-  //     'Part': [
-  //       {'name': 'account', 'type': 'address'},
-  //       {'name': 'value', 'type': 'uint96'},
-  //     ],
-  //     'Mint721': [
-  //       {'name': 'tokenId', 'type': 'uint256'},
-  //       {'name': 'tokenURI', 'type': 'string'},
-  //       {'name': 'creators', 'type': 'Part[]'},
-  //       {'name': 'royalties', 'type': 'Part[]'},
-  //     ],
-  //   },
-  //   'domain': {
-  //     'name': 'Mint721',
-  //     'version': '1',
-  //     'chainId': chainId,
-  //     'verifyingContract': walletAddress,
-  //   },
-  //   'primaryType': 'Mint721',
-  //   'message': {
-  //     '@type': 'ERC721',
-  //     'contract': walletAddress,
-  //     'tokenId': '1',
-  //     'uri': 'ipfs://ipfs/hash',
-  //     'creators': [
-  //       {'account': walletAddress, 'value': 10000},
-  //     ],
-  //     'royalties': [],
-  //     'tokenURI': 'ipfs://ipfs/hash',
-  //   },
-  // };
 
   List<Map<String, dynamic>> get contractABI => [
     {
