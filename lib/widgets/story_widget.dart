@@ -90,7 +90,7 @@ class StoryListCell extends StatelessWidget {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              'Vybe VTO Try-On',
+                              'Vybe Virtual Try-On',
                               style: TextStyle(
                                 fontSize: 13.0,
                                 fontWeight: FontWeight.bold,
@@ -111,7 +111,7 @@ class StoryListCell extends StatelessWidget {
                                 children: [
                                   Icon(Icons.leaderboard_outlined, size: 18),
                                   Text(
-                                    ' ${viewModel.story.cntLooksToday}/5 Looks Today',
+                                    ' ${viewModel.story.votes?.length ?? 0} / 5 Looks Today',
                                     style:
                                         Theme.of(context).textTheme.bodySmall,
                                   ),
