@@ -210,7 +210,7 @@ class AccountPublicInfoView extends ViewModelWidget<UpdateProfileProvider> {
   @override
   Widget build(BuildContext context, viewModel) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
+      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
       child: Column(
         children: [
           Row(
@@ -302,7 +302,7 @@ class AccountPrivateInfoView extends ViewModelWidget<UpdateProfileProvider> {
   @override
   Widget build(BuildContext context, viewModel) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
+      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -343,7 +343,6 @@ class AccountPrivateInfoView extends ViewModelWidget<UpdateProfileProvider> {
           Container(
             height: 180.0,
             margin: const EdgeInsets.only(top: 24.0),
-            padding: const EdgeInsets.symmetric(horizontal: 22.0),
             decoration: BoxDecoration(
               border: Border.all(
                 width: 0.33,
@@ -366,10 +365,14 @@ class AccountPrivateInfoView extends ViewModelWidget<UpdateProfileProvider> {
                         ],
                       ),
                     )
-                    : AIImage(
-                      viewModel.account.discovery,
-                      width: double.infinity,
-                      height: double.infinity,
+                    : ClipRRect(
+                      borderRadius: BorderRadius.circular(24.0),
+                      child: AIImage(
+                        viewModel.account.discovery,
+                        width: double.infinity,
+                        height: double.infinity,
+                        fit: BoxFit.cover,
+                      ),
                     ),
           ),
         ],

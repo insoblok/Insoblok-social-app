@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
 import 'package:image_picker/image_picker.dart';
@@ -103,6 +105,12 @@ class AccountPublicProvider extends InSoBlokViewModel {
 
     await runBusyFuture(() async {
       try {
+        if (selectedFile != null) {
+          var discoverImg = await FirebaseHelper.uploadFile(
+            file: File(selectedFile!.path),
+          );
+          account = account.copyWith(discovery: discoverImg);
+        }
         await AuthHelper.updateUser(account);
         AIHelpers.showToast(msg: 'Successfully updated user profile!');
         Navigator.of(context).pop(account);
