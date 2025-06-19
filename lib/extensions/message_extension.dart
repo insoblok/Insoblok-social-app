@@ -91,7 +91,8 @@ extension MessageModelExt on MessageModel {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    type == MessageModelType.text
+                    (type == MessageModelType.text ||
+                            type == MessageModelType.paid)
                         ? Container(
                           constraints: BoxConstraints(
                             maxWidth: MediaQuery.of(context).size.width - 120.0,
@@ -195,10 +196,7 @@ extension MessageModelExt on MessageModel {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Transaction',
-          style: TextStyle(fontSize: 11.0, color: Colors.white),
-        ),
+        Text('Transaction', style: TextStyle(fontSize: 11.0)),
         const SizedBox(height: 8.0),
         Row(
           mainAxisSize: MainAxisSize.min,
@@ -210,16 +208,9 @@ extension MessageModelExt on MessageModel {
               children: [
                 Text(
                   '${coin.amount} ${coin.unit?.toUpperCase()}',
-                  style: TextStyle(
-                    fontSize: 14.0,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
+                  style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
                 ),
-                Text(
-                  '0.0016 USD',
-                  style: TextStyle(fontSize: 11.0, color: Colors.white),
-                ),
+                Text('0.0016 USD', style: TextStyle(fontSize: 11.0)),
               ],
             ),
           ],

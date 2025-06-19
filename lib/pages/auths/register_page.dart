@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:insoblok/models/models.dart';
 
 import 'package:stacked/stacked.dart';
 
+import 'package:insoblok/models/models.dart';
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
@@ -72,58 +72,3 @@ class RegisterPage extends StatelessWidget {
     );
   }
 }
-
-// class AuthRegisterView extends ViewModelWidget<RegisterProvider> {
-//   const AuthRegisterView({super.key});
-
-//   @override
-//   Widget build(BuildContext context, viewModel) {
-//     return Padding(
-//       padding: const EdgeInsets.all(20),
-//       child: Column(
-//         spacing: 16.0,
-//         children: [
-//           Text('Please complete your information!'),
-//           const SizedBox(height: 8.0),
-//           AITextField(
-//             hintText: "First Name",
-//             prefixIcon: Icon(Icons.account_circle_outlined),
-//             onChanged: viewModel.updateFirstName,
-//           ),
-//           AITextField(
-//             hintText: "Last Name",
-//             prefixIcon: Icon(Icons.account_circle_outlined),
-//             onChanged: viewModel.updateLastName,
-//           ),
-          // AITextField(
-          //   hintText: 'Bio (Optional)',
-          //   prefixIcon: Icon(Icons.biotech),
-          //   onChanged: (value) => viewModel.biometric = value,
-          // ),
-          // AITextField(
-          //   hintText: 'URL (Optional)',
-          //   prefixIcon: Icon(Icons.link),
-          //   onChanged: (value) => viewModel.website = value,
-          // ),
-//           AITextField(
-//             hintText: 'City (Optional)',
-//             prefixIcon: Icon(Icons.location_city),
-//             onChanged: viewModel.updateCity,
-//           ),
-//           AITextField(
-//             hintText: 'Country (Optional)',
-//             prefixIcon: Icon(Icons.location_city),
-//             onChanged: viewModel.updateCountry,
-//           ),
-//           const SizedBox(height: 16.0),
-//           TextFillButton(
-//             text: "Register",
-//             color: AIColors.pink,
-//             isBusy: viewModel.isBusy,
-//             onTap: viewModel.onClickRegister,
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
