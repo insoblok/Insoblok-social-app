@@ -278,7 +278,7 @@ class UserRelatedView extends StatelessWidget {
                           ),
                           Text(
                             '${viewModel.owner?.timestamp?.mdyFormatter}',
-                            style: Theme.of(context).textTheme.labelLarge,
+                            style: Theme.of(context).textTheme.labelMedium,
                           ),
                         ],
                       ),

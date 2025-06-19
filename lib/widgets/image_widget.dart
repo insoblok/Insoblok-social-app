@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
 import 'package:carousel_slider/carousel_slider.dart';
@@ -65,10 +67,6 @@ class _StoryCarouselViewState extends State<StoryCarouselView> {
         child: SizedBox(
           width: double.infinity,
           height: widget.height,
-          // decoration: BoxDecoration(
-          //   color: Theme.of(context).colorScheme.secondary.withAlpha(32),
-          //   borderRadius: BorderRadius.circular(6),
-          // ),
           child: MediaCarouselCell(
             media: media,
             height: widget.height,
@@ -116,12 +114,6 @@ class _StoryCarouselViewState extends State<StoryCarouselView> {
                     child: SizedBox(
                       width: double.infinity,
                       height: widget.height,
-                      // decoration: BoxDecoration(
-                      //   color: Theme.of(
-                      //     context,
-                      //   ).colorScheme.secondary.withAlpha(32),
-                      //   borderRadius: BorderRadius.circular(6),
-                      // ),
                       child: MediaCarouselCell(
                         media: media,
                         boxFit: widget.boxFit,
@@ -210,11 +202,33 @@ class _MediaCarouselCellState extends State<MediaCarouselCell> {
       aspectRatio: 3 / 2,
       child:
           widget.media.type == 'image'
-              ? AIImage(
-                widget.media.link,
-                width: double.infinity,
-                height: widget.height,
-                fit: widget.boxFit ?? BoxFit.fitHeight,
+              ? Stack(
+                children: [
+                  AIImage(
+                    widget.media.link,
+                    width: double.infinity,
+                    height: double.infinity,
+                  ),
+                  BackdropFilter(
+                    filter: ImageFilter.blur(sigmaX: 20.0, sigmaY: 20.0),
+                    child: Center(
+                      child: Container(
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(12.0),
+                        ),
+                        child: ClipRRect(
+                          borderRadius: BorderRadius.circular(12.0),
+                          child: AIImage(
+                            widget.media.link,
+                            width: double.infinity,
+                            height: widget.height,
+                            fit: widget.boxFit ?? BoxFit.fitHeight,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               )
               : _videoPlayerController.value.isInitialized
               ? LayoutBuilder(

@@ -15,7 +15,7 @@ class AccountXPDashboardView extends ViewModelWidget<AccountProvider> {
     }
     var level = viewModel.userLevel;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
+      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 4.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

@@ -103,7 +103,7 @@ class AccountFloatingView extends ViewModelWidget<AccountProvider> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
+          padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             spacing: 12.0,
@@ -124,7 +124,11 @@ class AccountFloatingView extends ViewModelWidget<AccountProvider> {
                 children:
                     (viewModel.accountUser?.linkInfo ?? []).map((info) {
                       return InkWell(
-                        onTap: () => viewModel.onClickInfo(0),
+                        onTap: () {
+                          if (info['type'] == 'wallet') {
+                            viewModel.onClickInfo(0);
+                          }
+                        },
                         child: Row(
                           mainAxisSize: MainAxisSize.min,
                           children: [

@@ -199,9 +199,9 @@ class FirebaseService {
     }
   }
 
-  Future<List<String>> fetchGalleries() async {
+  Future<List<String>> fetchGalleries(String id) async {
     List<String> result = [];
-    final ref = _storage.ref('users/${AuthHelper.user?.id}');
+    final ref = _storage.ref('users/$id');
 
     var folders = await ref.listAll();
     for (var folder in folders.prefixes) {

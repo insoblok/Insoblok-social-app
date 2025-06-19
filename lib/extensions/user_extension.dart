@@ -164,7 +164,8 @@ extension UserModelExt on UserModel {
       'title': country ?? 'United State',
       'icon': AIImages.icLocation,
     },
-    {'type': 'wallet', 'title': 'My Wallet', 'icon': Icons.wallet},
+    if (id == AuthHelper.user?.id)
+      {'type': 'wallet', 'title': 'My Wallet', 'icon': Icons.wallet},
   ];
 
   Map<String, dynamic> toMap() {

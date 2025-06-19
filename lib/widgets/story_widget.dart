@@ -45,21 +45,19 @@ class StoryListCell extends StatelessWidget {
                 children: [
                   Row(
                     children: [
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          AIAvatarImage(
-                            // key: GlobalKey(debugLabel: 'story-${story.id}'),
-                            viewModel.owner?.avatar,
-                            width: kStoryAvatarSize,
-                            height: kStoryAvatarSize,
-                            fullname: viewModel.owner?.fullName ?? 'Test',
-                            textSize: 24,
-                            isBorder: true,
-                            borderWidth: 2,
-                            borderRadius: kStoryAvatarSize / 2,
-                          ),
-                        ],
+                      InkWell(
+                        onTap: viewModel.onTapUserAvatar,
+                        child: AIAvatarImage(
+                          // key: GlobalKey(debugLabel: 'story-${story.id}'),
+                          viewModel.owner?.avatar,
+                          width: kStoryAvatarSize,
+                          height: kStoryAvatarSize,
+                          fullname: viewModel.owner?.fullName ?? 'Test',
+                          textSize: 24,
+                          isBorder: true,
+                          borderWidth: 2,
+                          borderRadius: kStoryAvatarSize / 2,
+                        ),
                       ),
                       const SizedBox(width: 12.0),
                       Expanded(
@@ -236,7 +234,7 @@ class StoryDetailDialog extends StatelessWidget {
             NotificationListener<ScrollNotification>(
               onNotification: (notification) {
                 if (notification is ScrollEndNotification) {
-                  if (viewModel.scrollController.offset == 0) {
+                  if (viewModel.scrollController.offset == -50) {
                     Navigator.of(context).pop();
                   }
                   return false;

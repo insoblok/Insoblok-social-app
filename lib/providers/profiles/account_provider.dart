@@ -143,7 +143,7 @@ class AccountProvider extends InSoBlokViewModel {
     isFetchingGallery = true;
     try {
       _galleries.clear();
-      var gs = await FirebaseHelper.service.fetchGalleries();
+      var gs = await FirebaseHelper.service.fetchGalleries(accountUser!.id!);
       _galleries.addAll(gs);
       notifyListeners();
     } catch (e) {
@@ -194,7 +194,7 @@ class AccountProvider extends InSoBlokViewModel {
           }
           Routers.goToMessagePage(
             context,
-            MessagePageData(room: existedRoom!, chatUser: user!),
+            MessagePageData(room: existedRoom!, chatUser: accountUser!),
           );
         } catch (e) {
           logger.e(e);
