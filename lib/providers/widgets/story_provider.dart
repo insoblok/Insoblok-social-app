@@ -110,6 +110,10 @@ class StoryProvider extends InSoBlokViewModel {
     }
   }
 
+  Future<void> onTapUserAvatar() async {
+    Routers.goToAccountPage(context, user: owner);
+  }
+
   bool _isVote = false;
   bool get isVote => _isVote;
   set isVote(bool f) {

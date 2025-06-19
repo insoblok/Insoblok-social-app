@@ -9,7 +9,7 @@ import 'package:insoblok/services/services.dart';
 import 'package:insoblok/widgets/widgets.dart';
 
 const kAccountAvatarSize = 72.0;
-const kAccountPageTitles = ['My Posts', 'Like', 'Follow', 'Gallery'];
+const kAccountPageTitles = ['Posts', 'Like', 'Follow', 'Gallery'];
 
 class AccountPage extends StatelessWidget {
   final UserModel? user;

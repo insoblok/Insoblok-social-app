@@ -31,7 +31,7 @@ class VotedUserCell extends StatelessWidget {
                 textSize: 22,
                 width: kStoryDetailAvatarSize,
                 height: kStoryDetailAvatarSize,
-                fullname: user?.nickId ?? 'Test',
+                fullname: user?.fullName ?? 'Test',
                 isBorder: true,
                 borderRadius: kStoryDetailAvatarSize / 2,
               ),
