@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:insoblok/extensions/extensions.dart';
 
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/pages/pages.dart';
@@ -154,13 +155,13 @@ class ChatProvider extends InSoBlokViewModel {
           var room = RoomModel(
             userId: user?.id,
             userIds: [user?.id, chatUser.id],
-            content: '${user?.firstName} have created a room',
+            content: '${user?.fullName} have created a room',
             updateDate: DateTime.now(),
             timestamp: DateTime.now(),
           );
-          logger.d(room.toJson());
           await roomService.createRoom(room);
           existedRoom = await roomService.getRoomByChatUesr(id: chatUser.id!);
+          messageService.setInitialTypeStatus(existedRoom!.id!, chatUser.id!);
         }
       } catch (e) {
         logger.e(e);

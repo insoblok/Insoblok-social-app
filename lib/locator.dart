@@ -14,4 +14,5 @@ void setupLocator() {
   locator.registerSingleton(ReownService());
 
   locator.registerFactory(() => UploadMediaProvider());
+  locator.registerFactory(() => MessageProvider());
 }

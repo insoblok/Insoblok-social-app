@@ -33,13 +33,28 @@ class RoomProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  bool _isTyping = false;
+  bool get isTyping => _isTyping;
+  set isTyping(bool f) {
+    _isTyping = f;
+    notifyListeners();
+  }
+
   Future<void> init(BuildContext context, {required RoomModel model}) async {
     this.context = context;
     room = model;
 
     fetchUser();
+
     if (room.id != null) {
       getUnreadMessageCount();
+      messageService.getTypingStatus(room.id!).listen((data) {
+        var chatUserId = room.userId;
+        if (room.userId == user?.id) {
+          chatUserId = (room.userIds ?? [])[1];
+        }
+        isTyping = data[chatUserId] ?? false;
+      });
     }
   }
 
