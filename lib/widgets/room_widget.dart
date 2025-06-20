@@ -88,21 +88,22 @@ class RoomItemView extends StatelessWidget {
                     ],
                   ),
                 ),
-                Container(
-                  padding: const EdgeInsets.all(6),
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: Theme.of(context).primaryColor,
-                  ),
-                  child: Text(
-                    '${viewModel.unreadMsgCnt}',
-                    style: TextStyle(
-                      fontSize: 12.0,
-                      color: AIColors.white,
-                      fontWeight: FontWeight.normal,
+                if (viewModel.unreadMsgCnt > 0)
+                  Container(
+                    padding: const EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                    child: Text(
+                      '${viewModel.unreadMsgCnt}',
+                      style: TextStyle(
+                        fontSize: 12.0,
+                        color: AIColors.white,
+                        fontWeight: FontWeight.normal,
+                      ),
                     ),
                   ),
-                ),
               ],
             ),
           ),

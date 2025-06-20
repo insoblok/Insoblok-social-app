@@ -188,7 +188,7 @@ class MessageService {
             .where('sender_id', isNotEqualTo: AuthHelper.user?.id)
             .where('is_read', isEqualTo: false)
             .get();
-    return 10;
+    return messages.docs.length;
   }
 
   Future<void> markMessagesAsRead(String chatRoomId) async {

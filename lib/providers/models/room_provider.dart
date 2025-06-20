@@ -38,7 +38,9 @@ class RoomProvider extends InSoBlokViewModel {
     room = model;
 
     fetchUser();
-    getUnreadMessageCount();
+    if (room.id != null) {
+      getUnreadMessageCount();
+    }
   }
 
   Future<void> fetchUser() async {
@@ -78,7 +80,6 @@ class RoomProvider extends InSoBlokViewModel {
 
   Future<void> getUnreadMessageCount() async {
     try {
-      logger.d(room.id);
       unreadMsgCnt = await messageService.getUnreadMessageCount(room.id!);
     } catch (e) {
       logger.e(e);
