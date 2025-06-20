@@ -30,7 +30,7 @@ class AddProductPage extends StatelessWidget {
                 child: Text('Name of Product'),
               ),
               Container(
-                decoration: kNoBorderDecoration,
+                decoration: kTextFieldDecoration,
                 child: AINoBorderTextField(
                   hintText: 'Input product name',
                   initialValue: viewModel.product.name,

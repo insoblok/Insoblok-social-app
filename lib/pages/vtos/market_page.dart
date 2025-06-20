@@ -101,7 +101,7 @@ class MarketPlacePage extends StatelessWidget {
                                     height: 160.0,
                                   ),
                                 ),
-                                const SizedBox(height: 40.0),
+                                const SizedBox(height: 24.0),
                                 Text(
                                   "Empty!",
                                   style: TextStyle(

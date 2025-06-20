@@ -62,7 +62,7 @@ class MessagePage extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      viewModel.chatUser.status ?? 'Online',
+                      viewModel.chatUser.status ?? 'Offline',
                       style: TextStyle(
                         fontSize: 10.0,
                         color: AIColors.greyTextColor,

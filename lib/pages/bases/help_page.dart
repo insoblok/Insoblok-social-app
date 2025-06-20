@@ -35,7 +35,7 @@ class HelpPage extends StatelessWidget {
               ),
               const SizedBox(height: 8.0),
               Container(
-                decoration: kNoBorderDecoration,
+                decoration: kTextFieldDecoration,
                 child: AINoBorderTextField(
                   hintText: 'Emter your name',
                   onChanged: (value) => viewModel.name = value,
@@ -48,7 +48,7 @@ class HelpPage extends StatelessWidget {
               ),
               const SizedBox(height: 8.0),
               Container(
-                decoration: kNoBorderDecoration,
+                decoration: kTextFieldDecoration,
                 child: AINoBorderTextField(
                   hintText: 'Enter your email',
                   onChanged: (value) => viewModel.email = value,
@@ -63,7 +63,7 @@ class HelpPage extends StatelessWidget {
               Container(
                 height: 144.0,
                 padding: const EdgeInsets.symmetric(vertical: 12.0),
-                decoration: kNoBorderDecoration,
+                decoration: kTextFieldDecoration,
                 child: AINoBorderTextField(
                   minLines: 5,
                   maxLines: 5,

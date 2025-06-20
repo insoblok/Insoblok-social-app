@@ -49,7 +49,9 @@ class MessageService {
           'sender_name': AuthHelper.user?.fullName ?? 'Anonymous',
           'timestamp': DateTime.now().toUtc().toIso8601String(),
           'type': 'text',
+          'is_read': false,
         });
+    setLastMessage(chatRoomId, text);
   }
 
   // Send an image message
@@ -68,7 +70,9 @@ class MessageService {
           'timestamp': DateTime.now().toUtc().toIso8601String(),
           'url': imageUrl,
           'type': 'image',
+          'is_read': false,
         });
+    setLastMessage(chatRoomId, 'Image');
   }
 
   // Send a video message
@@ -87,7 +91,9 @@ class MessageService {
           'timestamp': DateTime.now().toUtc().toIso8601String(),
           'url': videoUrl,
           'type': 'video',
+          'is_read': false,
         });
+    setLastMessage(chatRoomId, 'Video');
   }
 
   // Send an audio message
@@ -106,7 +112,9 @@ class MessageService {
           'timestamp': DateTime.now().toUtc().toIso8601String(),
           'url': audioUrl,
           'type': 'audio',
+          'is_read': false,
         });
+    setLastMessage(chatRoomId, 'Audio');
   }
 
   // Send a gif message
@@ -125,7 +133,9 @@ class MessageService {
           'timestamp': DateTime.now().toUtc().toIso8601String(),
           'url': gifUrl,
           'type': 'gif',
+          'is_read': false,
         });
+    setLastMessage(chatRoomId, 'Gif');
   }
 
   // Send a paid message
@@ -143,7 +153,16 @@ class MessageService {
           'sender_name': AuthHelper.user?.fullName ?? 'Anonymous',
           'timestamp': DateTime.now().toUtc().toIso8601String(),
           'type': 'paid',
+          'is_read': false,
         });
+    setLastMessage(chatRoomId, 'Paid');
+  }
+
+  Future<void> setLastMessage(String chatRoomId, String msg) async {
+    await _firestore.collection('room').doc(chatRoomId).update({
+      'content': msg,
+      'update_date': DateTime.now().toUtc().toIso8601String(),
+    });
   }
 
   Future<void> setTyping(String chatRoomId, bool isTyping) async {
@@ -158,6 +177,18 @@ class MessageService {
         .doc(chatRoomId)
         .snapshots()
         .map((doc) => Map<String, bool>.from(doc.data()?['typing'] ?? {}));
+  }
+
+  Future<int> getUnreadMessageCount(String chatRoomId) async {
+    final messages =
+        await _firestore
+            .collection('chatRooms')
+            .doc(chatRoomId)
+            .collection('messages')
+            .where('sender_id', isNotEqualTo: AuthHelper.user?.id)
+            .where('is_read', isEqualTo: false)
+            .get();
+    return 10;
   }
 
   Future<void> markMessagesAsRead(String chatRoomId) async {
