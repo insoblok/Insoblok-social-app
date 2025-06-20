@@ -2,10 +2,10 @@ import 'package:flutter/foundation.dart';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:get_ip_address/get_ip_address.dart';
-import 'package:insoblok/extensions/extensions.dart';
 import 'package:observable_ish/observable_ish.dart';
 import 'package:stacked/stacked.dart';
 
+import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/locator.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
@@ -52,7 +52,14 @@ class AuthService with ListenableServiceMixin {
     var authUser = await userService.getUserByWalletAddress(walletAddress);
 
     if (authUser != null) {
-      var newUser = authUser.copyWith(uid: uid, updateDate: DateTime.now());
+      var tastescoreService = TastescoreService();
+      var rewardDate = await tastescoreService.loginScore(authUser);
+
+      var newUser = authUser.copyWith(
+        uid: uid,
+        updateDate: DateTime.now(),
+        rewardDate: rewardDate,
+      );
       await userService.updateUser(newUser);
       _userRx.value = newUser;
       return newUser;

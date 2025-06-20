@@ -240,8 +240,16 @@ class AccountRewardPage extends StatelessWidget {
                       ),
                     ],
                   ),
-                  for (var i = 0; i < min(3, viewModel.scores.length); i++) ...{
-                    ScoreItemView(score: viewModel.scores[i]),
+                  if (viewModel.scores.isEmpty) ...{
+                    SafeArea(
+                      child: InSoBlokEmptyView(desc: 'XRP History is empty!'),
+                    ),
+                  } else ...{
+                    for (
+                      var i = 0;
+                      i < min(3, viewModel.scores.length);
+                      i++
+                    ) ...{ScoreItemView(score: viewModel.scores[i])},
                   },
                 ],
               ),

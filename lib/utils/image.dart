@@ -76,4 +76,6 @@ class AIImages {
   static String icCoinUsdt = 'assets/icons/ic_usdt.png';
   static String icCoinXrp = 'assets/icons/ic_xrp.png';
   static String icCoinInso = 'assets/icons/ic_inso.png';
+
+  static String imgEmptyList = 'assets/images/gif_empty_list.gif';
 }

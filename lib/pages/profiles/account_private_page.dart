@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:insoblok/extensions/user_extension.dart';
 
 import 'package:stacked/stacked.dart';
 
@@ -33,10 +34,6 @@ class AccountPrivatePage extends StatelessWidget {
               vertical: 24.0,
             ),
             children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 12.0, bottom: 16.0),
-                child: Text('Email Address'),
-              ),
               Container(
                 decoration: kTextFieldDecoration,
                 child: AINoBorderTextField(
@@ -47,10 +44,6 @@ class AccountPrivatePage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 24.0),
-              Padding(
-                padding: const EdgeInsets.only(left: 12.0, bottom: 16.0),
-                child: Text('Update Password'),
-              ),
               Container(
                 decoration: kTextFieldDecoration,
                 child: AINoBorderTextField(
@@ -69,10 +62,6 @@ class AccountPrivatePage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 24.0),
-              Padding(
-                padding: const EdgeInsets.only(left: 12.0, bottom: 16.0),
-                child: Text('Your city'),
-              ),
               Container(
                 decoration: kTextFieldDecoration,
                 child: AINoBorderTextField(
@@ -82,10 +71,6 @@ class AccountPrivatePage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 24.0),
-              Padding(
-                padding: const EdgeInsets.only(left: 12.0, bottom: 16.0),
-                child: Text('Your Country'),
-              ),
               Container(
                 height: 48,
                 decoration: kTextFieldDecoration,
@@ -102,7 +87,7 @@ class AccountPrivatePage extends StatelessWidget {
                           value: country,
                           child: Text(
                             country.name ?? '',
-                            style: Theme.of(context).textTheme.bodySmall,
+                            style: Theme.of(context).textTheme.bodyLarge,
                           ),
                         );
                       }).toList(),
@@ -110,15 +95,15 @@ class AccountPrivatePage extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 24.0),
-              Padding(
-                padding: const EdgeInsets.only(left: 12.0, bottom: 16.0),
-                child: Text('Connect to Wallet'),
-              ),
               Container(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16.0,
+                  vertical: 16.0,
+                ),
                 decoration: kTextFieldDecoration,
-                child: AINoBorderTextField(
-                  hintText: 'Connect to Wallet',
-                  onChanged: viewModel.updateWallet,
+                child: Text(
+                  viewModel.user?.privateWalletAddress ?? 'Connect to Wallet',
+                  style: Theme.of(context).textTheme.bodyLarge,
                 ),
               ),
               const SizedBox(height: 24.0),

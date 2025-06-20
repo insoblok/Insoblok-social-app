@@ -258,8 +258,6 @@ class MessageProvider extends InSoBlokViewModel {
         scrollController.jumpTo(scrollController.position.maxScrollExtent);
       }
     }
-
-    // AIHelpers.showToast(msg: 'No support this feature yet!');
   }
 
   Future<void> onPaidEth() async {
@@ -283,9 +281,12 @@ class MessageProvider extends InSoBlokViewModel {
           } else {
             var result = await reownService.ethSendTransaction(req: req);
             logger.d(result);
+            if (result['code'] != 200) {
+              throw (result['message']);
+            }
           }
         } else {
-          setError('Failed wallet connected!');
+          throw ('Failed wallet connected!');
         }
       } catch (e) {
         logger.e(e);

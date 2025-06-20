@@ -207,7 +207,7 @@ extension MessageModelExt on MessageModel {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  '${coin.amount} ${coin.unit?.toUpperCase()}',
+                  '${coin.amount} ${coin.unit?.toUpperCase().replaceAll('ETHERUNIT.', '')}',
                   style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
                 ),
                 Text('0.0016 USD', style: TextStyle(fontSize: 11.0)),

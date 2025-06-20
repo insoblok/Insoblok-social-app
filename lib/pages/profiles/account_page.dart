@@ -64,9 +64,10 @@ class AccountPage extends StatelessWidget {
                               AccountStoryListCell(story: story),
                             },
                           } else ...{
-                            EmptyView(
-                              title: 'Empty!',
-                              des: 'There is no any Posts',
+                            SafeArea(
+                              child: InSoBlokEmptyView(
+                                desc: 'There is no any Posts.',
+                              ),
                             ),
                           },
                         },
@@ -78,9 +79,10 @@ class AccountPage extends StatelessWidget {
                               UserRelatedView(id: id),
                             },
                           } else ...{
-                            EmptyView(
-                              title: 'Empty!',
-                              des: 'There is no any posts user liked.',
+                            SafeArea(
+                              child: InSoBlokEmptyView(
+                                desc: 'There is no any posts user liked.',
+                              ),
                             ),
                           },
                         },
@@ -92,9 +94,10 @@ class AccountPage extends StatelessWidget {
                               UserRelatedView(id: id),
                             },
                           } else ...{
-                            EmptyView(
-                              title: 'Empty!',
-                              des: 'There is no any posts user followed.',
+                            SafeArea(
+                              child: InSoBlokEmptyView(
+                                desc: 'There is no any posts user followed.',
+                              ),
                             ),
                           },
                         },
@@ -137,9 +140,10 @@ class AccountPage extends StatelessWidget {
                                     },
                                   ],
                                 )
-                                : EmptyView(
-                                  title: 'Empty!',
-                                  des: 'There is no any Galleries.',
+                                : SafeArea(
+                                  child: InSoBlokEmptyView(
+                                    desc: 'There is no any Galleries.',
+                                  ),
                                 ),
                           },
                         },
