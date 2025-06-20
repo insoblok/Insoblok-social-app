@@ -16,7 +16,7 @@ abstract class MessageModel with _$MessageModel {
     DateTime? timestamp,
     String? url,
     String? type,
-    String? isRead,
+    bool? isRead,
   }) = _MessageModel;
 
   factory MessageModel.fromJson(Map<String, dynamic> json) {

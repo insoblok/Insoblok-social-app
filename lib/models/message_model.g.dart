@@ -17,7 +17,7 @@ _MessageModel _$MessageModelFromJson(Map<String, dynamic> json) =>
           : DateTime.parse(json['timestamp'] as String),
       url: json['url'] as String?,
       type: json['type'] as String?,
-      isRead: json['is_read'] as String?,
+      isRead: json['is_read'] as bool?,
     );
 
 Map<String, dynamic> _$MessageModelToJson(_MessageModel instance) =>
