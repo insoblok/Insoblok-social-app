@@ -254,10 +254,11 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
-    // if (state == AppLifecycleState.resumed) {
-    //   AuthHelper.updateStatus('Online');
-    // } else {
-    //   AuthHelper.updateStatus('Offline');
-    // }
+    if (state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.paused ||
+        state == AppLifecycleState.detached) {
+      // MessageHelper.updateTypingStatus(false);
+      AuthHelper.updateStatus('Offline');
+    }
   }
 }

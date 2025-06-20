@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 
 import 'package:stacked/stacked.dart';
 
@@ -43,6 +44,7 @@ class RoomItemView extends StatelessWidget {
             ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 viewModel.chatUser!.avatarStatusView(
                   width: kAvatarSize,
@@ -88,21 +90,36 @@ class RoomItemView extends StatelessWidget {
                     ],
                   ),
                 ),
+                if (viewModel.isTyping)
+                  SizedBox(
+                    width: 30,
+                    height: 30,
+                    child: LoadingIndicator(
+                      indicatorType: Indicator.ballPulse,
+                      colors: [Theme.of(context).primaryColor],
+                      strokeWidth: 2,
+                    ),
+                  ),
                 if (viewModel.unreadMsgCnt > 0)
-                  Container(
-                    padding: const EdgeInsets.all(6),
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: Theme.of(context).primaryColor,
-                    ),
-                    child: Text(
-                      '${viewModel.unreadMsgCnt}',
-                      style: TextStyle(
-                        fontSize: 12.0,
-                        color: AIColors.white,
-                        fontWeight: FontWeight.normal,
+                  Row(
+                    children: [
+                      const SizedBox(width: 12),
+                      Container(
+                        padding: const EdgeInsets.all(6),
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                        child: Text(
+                          '${viewModel.unreadMsgCnt}',
+                          style: TextStyle(
+                            fontSize: 12.0,
+                            color: AIColors.white,
+                            fontWeight: FontWeight.normal,
+                          ),
+                        ),
                       ),
-                    ),
+                    ],
                   ),
               ],
             ),

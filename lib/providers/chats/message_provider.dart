@@ -49,6 +49,20 @@ class MessageProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  bool _isShowButton = false;
+  bool get isShowButton => _isShowButton;
+  set isShowButton(bool f) {
+    _isShowButton = f;
+    notifyListeners();
+  }
+
+  bool _isTyping = false;
+  bool get isTyping => _isTyping;
+  set isTyping(bool f) {
+    _isTyping = f;
+    notifyListeners();
+  }
+
   String? _balance;
   String? get balance => _balance;
   set balance(String? s) {
@@ -58,6 +72,7 @@ class MessageProvider extends InSoBlokViewModel {
 
   var textController = TextEditingController();
   var scrollController = ScrollController();
+  late FocusNode focusNode;
   late MediaPickerService _mediaPickerService;
 
   Future<void> init(
@@ -67,6 +82,26 @@ class MessageProvider extends InSoBlokViewModel {
     this.context = context;
     room = data.room;
     chatUser = data.chatUser;
+
+    AuthHelper.updateStatus('Online');
+
+    focusNode = FocusNode();
+    focusNode.addListener(() {
+      if (focusNode.hasFocus) {
+        setTypingStatus(true);
+      } else {
+        setTypingStatus(false);
+      }
+    });
+
+    textController.addListener(() {
+      if (textController.text.isNotEmpty) {
+        isShowButton = true;
+      } else {
+        isShowButton = false;
+      }
+      notifyListeners();
+    });
 
     messageService.getMessages(room.id!).listen((messages) {
       this.messages = messages;
@@ -89,9 +124,21 @@ class MessageProvider extends InSoBlokViewModel {
       });
     });
 
+    messageService.getTypingStatus(room.id!).listen((data) {
+      logger.d(data);
+      isTyping = data[chatUser.id] ?? false;
+    });
+
     messageService.markMessagesAsRead(room.id!);
 
     _mediaPickerService = locator<MediaPickerService>();
+  }
+
+  @override
+  void dispose() {
+    focusNode.dispose();
+    setTypingStatus(false);
+    super.dispose();
   }
 
   String? _content;
@@ -99,6 +146,10 @@ class MessageProvider extends InSoBlokViewModel {
   set content(String? s) {
     _content = s;
     notifyListeners();
+  }
+
+  void setTypingStatus(bool typing) {
+    messageService.setTyping(room.id!, typing);
   }
 
   void sendMessage() async {
@@ -418,6 +469,7 @@ class _VideoPreviewState extends State<VideoPreview> {
       _videoPlayerController.dispose();
       _chewieController.dispose();
     }
+
     super.dispose();
   }
 }

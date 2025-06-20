@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:insoblok/locator.dart';
 import 'package:observable_ish/observable_ish.dart';
 
 import 'package:insoblok/extensions/extensions.dart';
@@ -167,7 +168,32 @@ class MessageService {
 
   Future<void> setTyping(String chatRoomId, bool isTyping) async {
     await _firestore.collection('chatRooms').doc(chatRoomId).update({
-      'typing.${AuthHelper.user?.id}': isTyping,
+      '${AuthHelper.user?.id}': isTyping,
+    });
+  }
+
+  Future<void> clearTypingStatus(bool isTyping) async {
+    logger.d(isTyping);
+    // var roomSnapshot =
+    //     await _firestore
+    //         .collection('room')
+    //         .where('user_ids', arrayContains: AuthHelper.user?.id)
+    //         .get();
+    // for (var doc in roomSnapshot.docs) {
+    //   logger.d(doc.id);
+    //   await _firestore.collection('chatRooms').doc(doc.id).update({
+    //     '${AuthHelper.user?.id}': isTyping,
+    //   });
+    // }
+  }
+
+  Future<void> setInitialTypeStatus(
+    String chatRoomId,
+    String chatUserid,
+  ) async {
+    await _firestore.collection('chatRooms').doc(chatRoomId).set({
+      '${AuthHelper.user?.id}': false,
+      chatUserid: false,
     });
   }
 
@@ -176,7 +202,7 @@ class MessageService {
         .collection('chatRooms')
         .doc(chatRoomId)
         .snapshots()
-        .map((doc) => Map<String, bool>.from(doc.data()?['typing'] ?? {}));
+        .map((doc) => Map<String, bool>.from(doc.data() ?? {}));
   }
 
   Future<int> getUnreadMessageCount(String chatRoomId) async {
@@ -207,4 +233,10 @@ class MessageService {
     }
     await batch.commit();
   }
+}
+
+class MessageHelper {
+  static MessageService get service => locator<MessageService>();
+  static Future<void> updateTypingStatus(bool isTyping) =>
+      service.clearTypingStatus(isTyping);
 }

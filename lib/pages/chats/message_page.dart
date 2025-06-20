@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:loading_indicator/loading_indicator.dart';
 
 import 'package:stacked/stacked.dart';
 
@@ -61,15 +62,40 @@ class MessagePage extends StatelessWidget {
                         fontWeight: FontWeight.bold,
                       ),
                     ),
-                    Text(
-                      viewModel.chatUser.status ?? 'Offline',
-                      style: TextStyle(
-                        fontSize: 10.0,
-                        color: AIColors.greyTextColor,
-                        fontWeight: FontWeight.normal,
-                        letterSpacing: 0.3,
+                    if (viewModel.isTyping)
+                      Row(
+                        children: [
+                          Text(
+                            'Typing',
+                            style: TextStyle(
+                              fontSize: 11.0,
+                              color: AIColors.greyTextColor,
+                              fontWeight: FontWeight.normal,
+                              letterSpacing: 0.3,
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: LoadingIndicator(
+                              indicatorType: Indicator.ballPulse,
+                              colors: [AIColors.greyTextColor],
+                              strokeWidth: 2,
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
+                    if (!viewModel.isTyping)
+                      Text(
+                        viewModel.chatUser.status ?? 'Online',
+                        style: TextStyle(
+                          fontSize: 11.0,
+                          color: AIColors.greyTextColor,
+                          fontWeight: FontWeight.normal,
+                          letterSpacing: 0.3,
+                        ),
+                      ),
                   ],
                 ),
               ],
@@ -113,6 +139,7 @@ class MessagePage extends StatelessWidget {
                             child: ConstrainedBox(
                               constraints: BoxConstraints(maxHeight: 100.0),
                               child: TextFormField(
+                                focusNode: viewModel.focusNode,
                                 decoration: InputDecoration(
                                   hintText: 'Type something',
                                   border: InputBorder.none,
@@ -123,7 +150,9 @@ class MessagePage extends StatelessWidget {
                                 controller: viewModel.textController,
                                 onChanged: (value) => viewModel.content = value,
                                 onFieldSubmitted: (value) {
-                                  viewModel.sendMessage();
+                                  if (viewModel.isShowButton) {
+                                    viewModel.sendMessage();
+                                  }
                                 },
                                 onSaved: (value) {
                                   logger.d('onSaved');
@@ -185,11 +214,18 @@ class MessagePage extends StatelessWidget {
                             height: 36.0,
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
-                              color: AIColors.pink,
+                              color:
+                                  viewModel.isShowButton
+                                      ? AIColors.pink
+                                      : AIColors.grey,
                               borderRadius: BorderRadius.circular(18.0),
                             ),
                             child: IconButton(
-                              onPressed: viewModel.sendMessage,
+                              onPressed: () {
+                                if (viewModel.isShowButton) {
+                                  viewModel.sendMessage();
+                                }
+                              },
                               icon: Icon(
                                 Icons.arrow_upward_outlined,
                                 color: AIColors.white,
