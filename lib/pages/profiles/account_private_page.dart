@@ -38,7 +38,7 @@ class AccountPrivatePage extends StatelessWidget {
                 child: Text('Email Address'),
               ),
               Container(
-                decoration: kNoBorderDecoration,
+                decoration: kTextFieldDecoration,
                 child: AINoBorderTextField(
                   hintText: 'Emter your email',
                   initialValue: viewModel.account.email,
@@ -52,7 +52,7 @@ class AccountPrivatePage extends StatelessWidget {
                 child: Text('Update Password'),
               ),
               Container(
-                decoration: kNoBorderDecoration,
+                decoration: kTextFieldDecoration,
                 child: AINoBorderTextField(
                   hintText: 'New password',
                   onChanged: viewModel.updatePassword,
@@ -61,7 +61,7 @@ class AccountPrivatePage extends StatelessWidget {
               ),
               const SizedBox(height: 12.0),
               Container(
-                decoration: kNoBorderDecoration,
+                decoration: kTextFieldDecoration,
                 child: AINoBorderTextField(
                   hintText: 'Confirm password',
                   onChanged: viewModel.updateConfirm,
@@ -74,7 +74,7 @@ class AccountPrivatePage extends StatelessWidget {
                 child: Text('Your city'),
               ),
               Container(
-                decoration: kNoBorderDecoration,
+                decoration: kTextFieldDecoration,
                 child: AINoBorderTextField(
                   hintText: 'Enter your city',
                   initialValue: viewModel.account.city,
@@ -87,7 +87,8 @@ class AccountPrivatePage extends StatelessWidget {
                 child: Text('Your Country'),
               ),
               Container(
-                decoration: kNoBorderDecoration,
+                height: 48,
+                decoration: kTextFieldDecoration,
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: DropdownButton<UserCountryModel>(
                   isExpanded: true,
@@ -114,7 +115,7 @@ class AccountPrivatePage extends StatelessWidget {
                 child: Text('Connect to Wallet'),
               ),
               Container(
-                decoration: kNoBorderDecoration,
+                decoration: kTextFieldDecoration,
                 child: AINoBorderTextField(
                   hintText: 'Connect to Wallet',
                   onChanged: viewModel.updateWallet,

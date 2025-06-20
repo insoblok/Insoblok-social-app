@@ -89,10 +89,7 @@ class MessageProvider extends InSoBlokViewModel {
       });
     });
 
-    // scrollController.addListener(() {
-    //   isAddPop = false;
-    //   FocusManager.instance.primaryFocus?.unfocus();
-    // });
+    messageService.markMessagesAsRead(room.id!);
 
     _mediaPickerService = locator<MediaPickerService>();
   }

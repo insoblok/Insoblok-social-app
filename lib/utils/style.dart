@@ -26,3 +26,8 @@ BoxDecoration kNoBorderDecoration = BoxDecoration(
   border: Border.all(width: 0.33, color: AIColors.pink),
   borderRadius: BorderRadius.circular(24.0),
 );
+
+BoxDecoration kTextFieldDecoration = BoxDecoration(
+  border: Border.all(width: 0.33, color: AIColors.pink),
+  borderRadius: BorderRadius.circular(8.0),
+);

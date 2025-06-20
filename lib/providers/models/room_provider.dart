@@ -26,11 +26,21 @@ class RoomProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  int _unreadMsgCnt = 0;
+  int get unreadMsgCnt => _unreadMsgCnt;
+  set unreadMsgCnt(int s) {
+    _unreadMsgCnt = s;
+    notifyListeners();
+  }
+
   Future<void> init(BuildContext context, {required RoomModel model}) async {
     this.context = context;
     room = model;
 
     fetchUser();
+    if (room.id != null) {
+      getUnreadMessageCount();
+    }
   }
 
   Future<void> fetchUser() async {
@@ -65,6 +75,16 @@ class RoomProvider extends InSoBlokViewModel {
 
     if (hasError) {
       AIHelpers.showToast(msg: modelError.toString());
+    }
+  }
+
+  Future<void> getUnreadMessageCount() async {
+    try {
+      unreadMsgCnt = await messageService.getUnreadMessageCount(room.id!);
+    } catch (e) {
+      logger.e(e);
+    } finally {
+      notifyListeners();
     }
   }
 }

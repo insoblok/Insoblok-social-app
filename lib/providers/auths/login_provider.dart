@@ -84,7 +84,7 @@ class LoginProvider extends InSoBlokViewModel {
             user: UserModel(walletAddress: reownService.walletAddress!),
           );
         } else {
-          logger.d(authUser?.toJson());
+          AuthHelper.updateStatus('Online');
           Routers.goToMainPage(context);
         }
       } else {

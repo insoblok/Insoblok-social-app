@@ -184,7 +184,7 @@ class AvatarPromptView extends ViewModelWidget<AvatarProvider> {
           ),
           child: TextFormField(
             decoration: InputDecoration(
-              hintText: 'Type something',
+              labelText: 'Type something',
               border: InputBorder.none,
             ),
             keyboardType: TextInputType.text,

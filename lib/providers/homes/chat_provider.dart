@@ -42,10 +42,10 @@ class ChatProvider extends InSoBlokViewModel {
         }
         if ((room.userIds?.isNotEmpty ?? false) &&
             room.userIds!.contains(AuthHelper.user?.id)) {
+          logger.d(room.id);
           _rooms.add(room);
         }
       }
-      logger.d(_rooms.length);
       fetchData();
     });
   }
@@ -72,7 +72,6 @@ class ChatProvider extends InSoBlokViewModel {
         }
       }
       _rooms.addAll(newUsers);
-      logger.d(_rooms.length);
     } catch (e) {
       logger.e(e);
       setError(e);

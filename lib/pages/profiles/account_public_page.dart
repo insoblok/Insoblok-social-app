@@ -43,7 +43,7 @@ class AccountPublicPage extends StatelessWidget {
                     child: Text('First Name'),
                   ),
                   Container(
-                    decoration: kNoBorderDecoration,
+                    decoration: kTextFieldDecoration,
                     child: AINoBorderTextField(
                       hintText: 'Emter your first name',
                       initialValue: viewModel.account.firstName,
@@ -56,7 +56,7 @@ class AccountPublicPage extends StatelessWidget {
                     child: Text('Last Name'),
                   ),
                   Container(
-                    decoration: kNoBorderDecoration,
+                    decoration: kTextFieldDecoration,
                     child: AINoBorderTextField(
                       hintText: 'Emter your last name',
                       initialValue: viewModel.account.lastName,
@@ -69,7 +69,7 @@ class AccountPublicPage extends StatelessWidget {
                     child: Text('Nick ID'),
                   ),
                   Container(
-                    decoration: kNoBorderDecoration,
+                    decoration: kTextFieldDecoration,
                     child: AINoBorderTextField(
                       hintText: 'Emter your nick ID',
                       initialValue: viewModel.account.nickId,

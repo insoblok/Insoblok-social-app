@@ -67,7 +67,7 @@ class RoomItemView extends StatelessWidget {
                           ),
                           const SizedBox(width: 8.0),
                           Text(
-                            room.timestamp?.timeago ?? '',
+                            room.updateDate?.timeago ?? '',
                             style: TextStyle(
                               fontSize: 10.0,
                               color: AIColors.grey,
@@ -88,6 +88,22 @@ class RoomItemView extends StatelessWidget {
                     ],
                   ),
                 ),
+                if (viewModel.unreadMsgCnt > 0)
+                  Container(
+                    padding: const EdgeInsets.all(6),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Theme.of(context).primaryColor,
+                    ),
+                    child: Text(
+                      '${viewModel.unreadMsgCnt}',
+                      style: TextStyle(
+                        fontSize: 12.0,
+                        color: AIColors.white,
+                        fontWeight: FontWeight.normal,
+                      ),
+                    ),
+                  ),
               ],
             ),
           ),

@@ -22,7 +22,7 @@ mixin _$MessageModel {
   DateTime? get timestamp;
   String? get url;
   String? get type;
-  String? get isRead;
+  bool? get isRead;
 
   /// Create a copy of MessageModel
   /// with the given fields replaced by the non-null parameter values.
@@ -74,7 +74,7 @@ abstract mixin class $MessageModelCopyWith<$Res> {
       DateTime? timestamp,
       String? url,
       String? type,
-      String? isRead});
+      bool? isRead});
 }
 
 /// @nodoc
@@ -130,7 +130,7 @@ class _$MessageModelCopyWithImpl<$Res> implements $MessageModelCopyWith<$Res> {
       isRead: freezed == isRead
           ? _self.isRead
           : isRead // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as bool?,
     ));
   }
 }
@@ -164,7 +164,7 @@ class _MessageModel implements MessageModel {
   @override
   final String? type;
   @override
-  final String? isRead;
+  final bool? isRead;
 
   /// Create a copy of MessageModel
   /// with the given fields replaced by the non-null parameter values.
@@ -218,7 +218,7 @@ abstract mixin class _$MessageModelCopyWith<$Res>
       DateTime? timestamp,
       String? url,
       String? type,
-      String? isRead});
+      bool? isRead});
 }
 
 /// @nodoc
@@ -275,7 +275,7 @@ class __$MessageModelCopyWithImpl<$Res>
       isRead: freezed == isRead
           ? _self.isRead
           : isRead // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as bool?,
     ));
   }
 }
