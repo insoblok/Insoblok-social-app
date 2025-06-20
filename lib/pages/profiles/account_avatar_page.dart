@@ -26,13 +26,6 @@ class AccountAvatarPage extends StatelessWidget {
                   vertical: 24.0,
                 ),
                 children: [
-                  // Text(
-                  //   'Just Imagine It, We Can Create It. That will take a few progress step. Please follow one by one',
-                  //   style: Theme.of(context).textTheme.titleSmall,
-                  // ),
-                  // const SizedBox(height: 16.0),
-                  // AvatarRatioView(),
-                  // const SizedBox(height: 16.0),
                   AvatarPromptView(),
                   const SizedBox(height: 16.0),
                   AvatarOriginView(),
@@ -91,65 +84,6 @@ class AccountAvatarPage extends StatelessWidget {
     );
   }
 }
-
-// class AvatarRatioView extends ViewModelWidget<AvatarProvider> {
-//   const AvatarRatioView({super.key});
-
-//   @override
-//   Widget build(BuildContext context, viewModel) {
-//     return Column(
-//       spacing: 8.0,
-//       crossAxisAlignment: CrossAxisAlignment.start,
-//       mainAxisSize: MainAxisSize.min,
-//       children: [
-//         Row(
-//           children: [
-//             Expanded(
-//               child: Text(
-//                 '1. Choose aspect ratio of image.',
-//                 style: Theme.of(context).textTheme.headlineMedium,
-//               ),
-//             ),
-//             if (viewModel.ratioIndex != null)
-//               Icon(Icons.check_circle, color: Theme.of(context).primaryColor),
-//           ],
-//         ),
-//         Text(
-//           'Image size ratio, must be one of the supported formats Possible values: [1:1, 3:2, 2:3].',
-//           style: Theme.of(context).textTheme.labelMedium,
-//         ),
-//         Row(
-//           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-//           children: [
-//             for (var i = 0; i < kAvatarAspectRatio.length; i++) ...{
-//               InkWell(
-//                 onTap: () => viewModel.ratioIndex = i,
-//                 child: Container(
-//                   padding: const EdgeInsets.symmetric(
-//                     horizontal: 12.0,
-//                     vertical: 6.0,
-//                   ),
-//                   decoration: BoxDecoration(
-//                     color:
-//                         viewModel.ratioIndex == i
-//                             ? Theme.of(
-//                               context,
-//                             ).colorScheme.primary.withAlpha(64)
-//                             : Theme.of(
-//                               context,
-//                             ).colorScheme.secondary.withAlpha(16),
-//                     borderRadius: BorderRadius.circular(8.0),
-//                   ),
-//                   child: Text(kAvatarAspectRatio[i]['title']! as String),
-//                 ),
-//               ),
-//             },
-//           ],
-//         ),
-//       ],
-//     );
-//   }
-// }
 
 class AvatarPromptView extends ViewModelWidget<AvatarProvider> {
   const AvatarPromptView({super.key});

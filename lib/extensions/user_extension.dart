@@ -63,6 +63,11 @@ extension UserModelExt on UserModel {
     }
   }
 
+  String? get privateWalletAddress =>
+      walletAddress == null
+          ? null
+          : '${walletAddress!.substring(0, 5)}***${walletAddress!.substring(walletAddress!.length - 4)}';
+
   Widget avatarStatusView({
     double? width,
     double? height,

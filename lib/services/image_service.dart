@@ -142,8 +142,8 @@ class AIImage extends StatelessWidget {
             color: color,
           );
         }
-        return GifView.memory(
-          File(src).readAsBytesSync(),
+        return GifView.asset(
+          src,
           width: width,
           height: height,
           fit: fit ?? BoxFit.none,

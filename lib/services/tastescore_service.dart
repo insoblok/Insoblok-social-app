@@ -29,6 +29,8 @@ class TastescoreService {
 
       var rewardValue = 0;
 
+      logger.d(current.difference(logined).inSeconds);
+
       if (current.difference(logined) == Duration(days: 1)) {
         reward = reward + 1;
         var bonus = reward ~/ 3;

@@ -197,36 +197,6 @@ class AppLeadingView extends StatelessWidget {
   }
 }
 
-class EmptyView extends StatelessWidget {
-  final String title;
-  final String des;
-  const EmptyView({super.key, required this.title, required this.des});
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          ClipOval(
-            child: AIImage(AIImages.placehold, width: 80.0, height: 80.0),
-          ),
-          const SizedBox(height: 24.0),
-          Text(
-            title,
-            style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 8.0),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 60.0),
-            child: Text(des, textAlign: TextAlign.center),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
 class UserRelatedView extends StatelessWidget {
   final String id;
 

@@ -4,7 +4,6 @@ import 'package:stacked/stacked.dart';
 
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/services/services.dart';
-import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
 
 class LookbookView extends StatelessWidget {
@@ -75,24 +74,9 @@ class LookbookView extends StatelessWidget {
                 },
                 if (viewModel.filterStories.isEmpty && !viewModel.isBusy) ...{
                   SliverFillRemaining(
-                    child: Center(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          ClipOval(
-                            child: AIImage(
-                              AIImages.placehold,
-                              width: 150.0,
-                              height: 150.0,
-                            ),
-                          ),
-                          const SizedBox(height: 40.0),
-                          Text(
-                            'LOOKBOOK is Empty\nPlease try any action on Story!',
-                            textAlign: TextAlign.center,
-                          ),
-                        ],
-                      ),
+                    child: InSoBlokEmptyView(
+                      desc:
+                          'LOOKBOOK is Empty\nPlease try any action on Story!',
                     ),
                   ),
                 } else ...{
