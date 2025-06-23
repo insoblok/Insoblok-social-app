@@ -132,10 +132,10 @@ class AINoBorderTextField extends StatelessWidget {
         controller: controller,
         autofocus: autofocus,
         readOnly: readOnly,
-        style: Theme.of(context).textTheme.bodyLarge,
+        style: Theme.of(context).textTheme.bodyMedium,
         decoration: InputDecoration(
           contentPadding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-          hintText: hintText,
+          labelText: hintText,
           hintStyle: Theme.of(context).textTheme.labelLarge,
           prefixIcon: prefixIcon,
           suffixIcon: suffixIcon,

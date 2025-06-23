@@ -41,15 +41,16 @@ class AIColors {
   static Color grey = Color(0xFF687684);
   static Color lightGrey = Color.fromARGB(255, 152, 164, 175);
   static Color blue = Color.fromARGB(255, 0, 0, 255);
-  static Color lightBlue = Color(0xFF2367CD);
+  static Color lightBlue = Color(0xFF8EC5FC);
   static Color pink = Color(0xFFEC226C);
   static Color lightPink = Color.fromARGB(255, 236, 131, 170);
   static Color purple = Color(0xFF724DBD);
-  static Color lightPurple = Color.fromARGB(255, 138, 113, 187);
+  static Color lightPurple = Color(0xFFE0C3FC);
   static Color red = Color(0xFFCE395F);
   static Color lightRed = Color.fromARGB(255, 194, 118, 137);
   static Color green = Color(0xFF59BC6C);
   static Color lightGreen = Color.fromARGB(255, 145, 179, 151);
   static Color yellow = const Color.fromARGB(255, 214, 195, 18);
   static Color lightYellow = Color(0xFFE38734);
+  static Color lightTeal = Color(0xFF91EAE4);
 }

@@ -21,6 +21,7 @@ class AccountPrivatePage extends StatelessWidget {
           appBar: AppBar(
             title: Text('Private Information'),
             centerTitle: true,
+            flexibleSpace: AppBackgroundView(),
             actions: [
               IconButton(
                 onPressed: viewModel.onClickUpdateProfile,
@@ -28,86 +29,88 @@ class AccountPrivatePage extends StatelessWidget {
               ),
             ],
           ),
-          body: ListView(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 20.0,
-              vertical: 24.0,
+          body: AppBackgroundView(
+            child: ListView(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20.0,
+                vertical: 24.0,
+              ),
+              children: [
+                Container(
+                  decoration: kTextFieldDecoration,
+                  child: AINoBorderTextField(
+                    hintText: 'Email',
+                    initialValue: viewModel.account.email,
+                    onChanged: viewModel.updateEmail,
+                    readOnly: (viewModel.account.email?.isNotEmpty ?? false),
+                  ),
+                ),
+                const SizedBox(height: 24.0),
+                Container(
+                  decoration: kTextFieldDecoration,
+                  child: AINoBorderTextField(
+                    hintText: 'New password',
+                    onChanged: viewModel.updatePassword,
+                    readOnly: (viewModel.account.email?.isNotEmpty ?? false),
+                  ),
+                ),
+                const SizedBox(height: 12.0),
+                Container(
+                  decoration: kTextFieldDecoration,
+                  child: AINoBorderTextField(
+                    hintText: 'Confirm password',
+                    onChanged: viewModel.updateConfirm,
+                    readOnly: (viewModel.account.email?.isNotEmpty ?? false),
+                  ),
+                ),
+                const SizedBox(height: 24.0),
+                Container(
+                  decoration: kTextFieldDecoration,
+                  child: AINoBorderTextField(
+                    hintText: 'City',
+                    initialValue: viewModel.account.city,
+                    onChanged: viewModel.updateCity,
+                  ),
+                ),
+                const SizedBox(height: 24.0),
+                Container(
+                  height: 48,
+                  decoration: kTextFieldDecoration,
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: DropdownButton<UserCountryModel>(
+                    isExpanded: true,
+                    value: viewModel.country,
+                    dropdownColor: Theme.of(context).colorScheme.onSecondary,
+                    icon: const Icon(Icons.keyboard_arrow_down),
+                    underline: Container(),
+                    items:
+                        viewModel.countries.map((country) {
+                          return DropdownMenuItem(
+                            value: country,
+                            child: Text(
+                              country.name ?? '',
+                              style: Theme.of(context).textTheme.bodyLarge,
+                            ),
+                          );
+                        }).toList(),
+                    onChanged: viewModel.updateCountry,
+                  ),
+                ),
+                const SizedBox(height: 24.0),
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0,
+                    vertical: 16.0,
+                  ),
+                  decoration: kTextFieldDecoration,
+                  child: Text(
+                    viewModel.user?.privateWalletAddress ?? 'Connect to Wallet',
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
+                ),
+                const SizedBox(height: 24.0),
+              ],
             ),
-            children: [
-              Container(
-                decoration: kTextFieldDecoration,
-                child: AINoBorderTextField(
-                  hintText: 'Emter your email',
-                  initialValue: viewModel.account.email,
-                  onChanged: viewModel.updateEmail,
-                  readOnly: (viewModel.account.email?.isNotEmpty ?? false),
-                ),
-              ),
-              const SizedBox(height: 24.0),
-              Container(
-                decoration: kTextFieldDecoration,
-                child: AINoBorderTextField(
-                  hintText: 'New password',
-                  onChanged: viewModel.updatePassword,
-                  readOnly: (viewModel.account.email?.isNotEmpty ?? false),
-                ),
-              ),
-              const SizedBox(height: 12.0),
-              Container(
-                decoration: kTextFieldDecoration,
-                child: AINoBorderTextField(
-                  hintText: 'Confirm password',
-                  onChanged: viewModel.updateConfirm,
-                  readOnly: (viewModel.account.email?.isNotEmpty ?? false),
-                ),
-              ),
-              const SizedBox(height: 24.0),
-              Container(
-                decoration: kTextFieldDecoration,
-                child: AINoBorderTextField(
-                  hintText: 'Enter your city',
-                  initialValue: viewModel.account.city,
-                  onChanged: viewModel.updateCity,
-                ),
-              ),
-              const SizedBox(height: 24.0),
-              Container(
-                height: 48,
-                decoration: kTextFieldDecoration,
-                padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                child: DropdownButton<UserCountryModel>(
-                  isExpanded: true,
-                  value: viewModel.country,
-                  dropdownColor: Theme.of(context).colorScheme.onSecondary,
-                  icon: const Icon(Icons.keyboard_arrow_down),
-                  underline: Container(),
-                  items:
-                      viewModel.countries.map((country) {
-                        return DropdownMenuItem(
-                          value: country,
-                          child: Text(
-                            country.name ?? '',
-                            style: Theme.of(context).textTheme.bodyLarge,
-                          ),
-                        );
-                      }).toList(),
-                  onChanged: viewModel.updateCountry,
-                ),
-              ),
-              const SizedBox(height: 24.0),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 16.0,
-                  vertical: 16.0,
-                ),
-                decoration: kTextFieldDecoration,
-                child: Text(
-                  viewModel.user?.privateWalletAddress ?? 'Connect to Wallet',
-                  style: Theme.of(context).textTheme.bodyLarge,
-                ),
-              ),
-              const SizedBox(height: 24.0),
-            ],
           ),
         );
       },

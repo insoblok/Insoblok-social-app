@@ -21,6 +21,7 @@ class LeaderboardPage extends StatelessWidget {
             appBar: AppBar(
               title: Text('Leaderboard'),
               centerTitle: true,
+              flexibleSpace: AppBackgroundView(),
               bottom: TabBar(
                 indicatorSize: TabBarIndicatorSize.tab,
                 onTap: (index) {
@@ -49,42 +50,44 @@ class LeaderboardPage extends StatelessWidget {
                 ],
               ),
             ),
-            body: ListView.separated(
-              physics: BouncingScrollPhysics(),
-              itemBuilder: (context, i) {
-                late UserScoreModel user;
-                if (viewModel.tabIndex == 0) {
-                  user = viewModel.dailyLeaderboard[i];
-                }
-                if (viewModel.tabIndex == 1) {
-                  user = viewModel.weeklyLeaderboard[i];
-                }
-                if (viewModel.tabIndex == 2) {
-                  user = viewModel.monthlyLeaderboard[i];
-                }
+            body: AppBackgroundView(
+              child: ListView.separated(
+                physics: BouncingScrollPhysics(),
+                itemBuilder: (context, i) {
+                  late UserScoreModel user;
+                  if (viewModel.tabIndex == 0) {
+                    user = viewModel.dailyLeaderboard[i];
+                  }
+                  if (viewModel.tabIndex == 1) {
+                    user = viewModel.weeklyLeaderboard[i];
+                  }
+                  if (viewModel.tabIndex == 2) {
+                    user = viewModel.monthlyLeaderboard[i];
+                  }
 
-                var value = 0;
-                if (viewModel.tabIndex == 0) {
-                  value = user.xpDay;
-                }
-                if (viewModel.tabIndex == 1) {
-                  value = user.xpWeek;
-                }
-                if (viewModel.tabIndex == 2) {
-                  value = user.xpMonth;
-                }
-                return LeaderboardUserView(
-                  key: GlobalKey(
-                    debugLabel: '${user.id}-${viewModel.tabIndex}',
-                  ),
-                  userId: user.id,
-                  score: value,
-                );
-              },
-              separatorBuilder: (context, i) {
-                return Container();
-              },
-              itemCount: viewModel.leaderboard.length,
+                  var value = 0;
+                  if (viewModel.tabIndex == 0) {
+                    value = user.xpDay;
+                  }
+                  if (viewModel.tabIndex == 1) {
+                    value = user.xpWeek;
+                  }
+                  if (viewModel.tabIndex == 2) {
+                    value = user.xpMonth;
+                  }
+                  return LeaderboardUserView(
+                    key: GlobalKey(
+                      debugLabel: '${user.id}-${viewModel.tabIndex}',
+                    ),
+                    userId: user.id,
+                    score: value,
+                  );
+                },
+                separatorBuilder: (context, i) {
+                  return Container();
+                },
+                itemCount: viewModel.leaderboard.length,
+              ),
             ),
           ),
         );

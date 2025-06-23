@@ -34,7 +34,7 @@ class RoomItemView extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.symmetric(
               horizontal: 16.0,
-              vertical: 6.0,
+              vertical: 4.0,
             ),
             child: Container(
               padding: const EdgeInsets.symmetric(
@@ -42,15 +42,15 @@ class RoomItemView extends StatelessWidget {
                 vertical: 12.0,
               ),
               decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.onPrimaryContainer,
+                color: Theme.of(context).colorScheme.secondary.withAlpha(16),
                 borderRadius: BorderRadius.circular(12.0),
                 boxShadow: [
                   BoxShadow(
                     color: Theme.of(
                       context,
-                    ).colorScheme.onPrimary.withAlpha(96),
-                    spreadRadius: 1,
-                    blurRadius: 1,
+                    ).colorScheme.onSecondary.withAlpha(16),
+                    spreadRadius: 3,
+                    blurRadius: 5,
                     offset: Offset(0, 1), // changes position of shadow
                   ),
                 ],

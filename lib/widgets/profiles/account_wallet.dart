@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:insoblok/services/services.dart';
-
 class AccountWalletIconCover extends StatelessWidget {
   final Widget child;
   final void Function()? onTap;
@@ -17,7 +15,7 @@ class AccountWalletIconCover extends StatelessWidget {
         height: 40.0,
         padding: const EdgeInsets.all(10.0),
         decoration: BoxDecoration(
-          color: AppSettingHelper.greyBackground,
+          color: Theme.of(context).colorScheme.secondary.withAlpha(16),
           borderRadius: BorderRadius.circular(8.0),
         ),
         child: child,
@@ -38,7 +36,7 @@ class AccountWalletTokenCover extends StatelessWidget {
       height: 80.0,
       padding: const EdgeInsets.all(10.0),
       decoration: BoxDecoration(
-        color: Theme.of(context).primaryColor,
+        color: Theme.of(context).colorScheme.secondary.withAlpha(16),
         borderRadius: BorderRadius.circular(8.0),
       ),
       child: child,

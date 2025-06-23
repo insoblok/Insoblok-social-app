@@ -198,6 +198,33 @@ class AppLeadingView extends StatelessWidget {
   }
 }
 
+class AppBackgroundView extends StatelessWidget {
+  final Widget? child;
+  final double? height;
+  const AppBackgroundView({super.key, this.child, this.height});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: height,
+      decoration: BoxDecoration(
+        gradient: LinearGradient(
+          colors: [
+            AIColors.lightPurple.withAlpha(128),
+            AIColors.lightBlue.withAlpha(128),
+            AIColors.lightPurple.withAlpha(128),
+            AIColors.lightTeal.withAlpha(128),
+          ],
+          stops: [0.0, 0.4, 0.7, 1.0],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
+      ),
+      child: child,
+    );
+  }
+}
+
 class UserRelatedView extends StatelessWidget {
   final String id;
 

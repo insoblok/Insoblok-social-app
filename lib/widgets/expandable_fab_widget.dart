@@ -84,8 +84,8 @@ class _FanExpandableFabState extends State<FanExpandableFab>
             borderRadius: BorderRadius.circular(44),
           ),
           mini: false,
-          elevation: 0.0,
-          highlightElevation: 0.0,
+          // elevation: 0.0,
+          // highlightElevation: 0.0,
           onPressed: () {
             setState(() {
               _toggle();
