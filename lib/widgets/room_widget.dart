@@ -31,97 +31,111 @@ class RoomItemView extends StatelessWidget {
               onTap!(viewModel.chatUser!);
             }
           },
-          child: Container(
-            height: 80.0,
+          child: Padding(
             padding: const EdgeInsets.symmetric(
-              horizontal: 20.0,
-              vertical: 12.0,
+              horizontal: 16.0,
+              vertical: 6.0,
             ),
-            decoration: BoxDecoration(
-              border: Border(
-                top: BorderSide(color: AIColors.speraterColor, width: 0.33),
+            child: Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16.0,
+                vertical: 12.0,
               ),
-            ),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                viewModel.chatUser!.avatarStatusView(
-                  width: kAvatarSize,
-                  height: kAvatarSize,
-                  borderWidth: 2.0,
-                  textSize: 18.0,
-                ),
-                const SizedBox(width: 12.0),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Row(
-                        children: [
-                          Text(
-                            viewModel.chatUser?.fullName ?? '---',
-                            style: TextStyle(
-                              fontSize: 14.0,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(width: 8.0),
-                          Text(
-                            room.updateDate?.timeago ?? '',
-                            style: TextStyle(
-                              fontSize: 10.0,
-                              color: AIColors.grey,
-                              fontWeight: FontWeight.normal,
-                            ),
-                          ),
-                        ],
-                      ),
-                      Text(
-                        // room.content ?? '@${room.id}',
-                        room.content ?? 'New User',
-                        style: TextStyle(
-                          fontSize: 12.0,
-                          color: AIColors.grey,
-                          fontWeight: FontWeight.normal,
-                        ),
-                      ),
-                    ],
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.onPrimaryContainer,
+                borderRadius: BorderRadius.circular(12.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onPrimary.withAlpha(96),
+                    spreadRadius: 1,
+                    blurRadius: 1,
+                    offset: Offset(0, 1), // changes position of shadow
                   ),
-                ),
-                if (viewModel.isTyping)
-                  SizedBox(
-                    width: 30,
-                    height: 30,
-                    child: LoadingIndicator(
-                      indicatorType: Indicator.ballPulse,
-                      colors: [Theme.of(context).primaryColor],
-                      strokeWidth: 2,
-                    ),
+                ],
+              ),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  viewModel.chatUser!.avatarStatusView(
+                    width: kAvatarSize,
+                    height: kAvatarSize,
+                    borderWidth: 2.0,
+                    textSize: 18.0,
                   ),
-                if (viewModel.unreadMsgCnt > 0)
-                  Row(
-                    children: [
-                      const SizedBox(width: 12),
-                      Container(
-                        padding: const EdgeInsets.all(6),
-                        decoration: BoxDecoration(
-                          shape: BoxShape.circle,
-                          color: Theme.of(context).primaryColor,
+                  const SizedBox(width: 12.0),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Row(
+                          children: [
+                            Text(
+                              viewModel.chatUser?.fullName ?? '---',
+                              style: TextStyle(
+                                fontSize: 14.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                            const SizedBox(width: 8.0),
+                            Text(
+                              room.updateDate?.timeago ?? '',
+                              style: TextStyle(
+                                fontSize: 10.0,
+                                color: AIColors.grey,
+                                fontWeight: FontWeight.normal,
+                              ),
+                            ),
+                          ],
                         ),
-                        child: Text(
-                          '${viewModel.unreadMsgCnt}',
+                        Text(
+                          // room.content ?? '@${room.id}',
+                          room.content ?? 'New User',
                           style: TextStyle(
                             fontSize: 12.0,
-                            color: AIColors.white,
+                            color: AIColors.grey,
                             fontWeight: FontWeight.normal,
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
-              ],
+                  if (viewModel.isTyping)
+                    SizedBox(
+                      width: 30,
+                      height: 30,
+                      child: LoadingIndicator(
+                        indicatorType: Indicator.ballPulse,
+                        colors: [Theme.of(context).primaryColor],
+                        strokeWidth: 2,
+                      ),
+                    ),
+                  if (viewModel.unreadMsgCnt > 0)
+                    Row(
+                      children: [
+                        const SizedBox(width: 12),
+                        Container(
+                          padding: const EdgeInsets.all(6),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                          child: Text(
+                            '${viewModel.unreadMsgCnt}',
+                            style: TextStyle(
+                              fontSize: 12.0,
+                              color: AIColors.white,
+                              fontWeight: FontWeight.normal,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                ],
+              ),
             ),
           ),
         );

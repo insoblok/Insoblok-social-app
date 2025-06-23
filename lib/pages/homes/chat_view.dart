@@ -27,23 +27,10 @@ class ChatView extends StatelessWidget {
                   leading: AppLeadingView(),
                   pinned: true,
                   floating: false,
-                  title: Text('Messages'),
-                  actions: [
-                    IconButton(
-                      onPressed: () => Routers.goToMessageSettingPage(context),
-                      icon: AIImage(
-                        AIImages.icSetting,
-                        width: 24.0,
-                        height: 24.0,
-                        color: Theme.of(context).primaryColor,
-                      ),
-                    ),
-                  ],
-                  extendWidget: Container(
-                    margin: const EdgeInsets.symmetric(vertical: 4.0),
+                  title: Container(
                     padding: const EdgeInsets.symmetric(
                       horizontal: 16.0,
-                      vertical: 4.0,
+                      vertical: 12.0,
                     ),
                     decoration: BoxDecoration(
                       color: AppSettingHelper.greyBackground,
@@ -61,7 +48,7 @@ class ChatView extends StatelessWidget {
                         Text(
                           'Search for people and groups',
                           style: TextStyle(
-                            fontSize: 14.0,
+                            fontSize: 12.0,
                             color: AIColors.greyTextColor,
                             fontWeight: FontWeight.normal,
                           ),
@@ -69,6 +56,17 @@ class ChatView extends StatelessWidget {
                       ],
                     ),
                   ),
+                  actions: [
+                    IconButton(
+                      onPressed: () => Routers.goToMessageSettingPage(context),
+                      icon: AIImage(
+                        AIImages.icSetting,
+                        width: 24.0,
+                        height: 24.0,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                    ),
+                  ],
                 ),
                 if (viewModel.isBusy) ...{
                   SliverFillRemaining(child: Center(child: Loader(size: 60))),

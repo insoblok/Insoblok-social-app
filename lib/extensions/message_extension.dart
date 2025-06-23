@@ -101,6 +101,19 @@ extension MessageModelExt on MessageModel {
                           decoration: BoxDecoration(
                             color: AIColors.lightBlue,
                             borderRadius: BorderRadius.circular(12),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Theme.of(
+                                  context,
+                                ).colorScheme.onPrimary.withAlpha(96),
+                                spreadRadius: 1,
+                                blurRadius: 2,
+                                offset: Offset(
+                                  0,
+                                  1,
+                                ), // changes position of shadow
+                              ),
+                            ],
                           ),
                           child: result,
                         )

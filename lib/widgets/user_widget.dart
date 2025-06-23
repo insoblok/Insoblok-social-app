@@ -190,6 +190,7 @@ class AppLeadingView extends StatelessWidget {
           height: 32.0,
           fullname: AuthHelper.user?.nickId ?? 'Test',
           isBorder: true,
+          borderWidth: 1,
           borderRadius: 16,
         ),
       ),

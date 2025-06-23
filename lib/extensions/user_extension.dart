@@ -9,13 +9,17 @@ import 'package:insoblok/utils/utils.dart';
 
 var kAvatarColors = [
   AIColors.blue,
+  AIColors.lightPurple,
   AIColors.pink,
+  AIColors.lightRed,
   AIColors.yellow,
   AIColors.green,
-  AIColors.grey,
-  AIColors.black,
+  AIColors.lightBlue,
+  AIColors.lightPink,
   AIColors.purple,
+  AIColors.lightYellow,
   AIColors.red,
+  AIColors.lightGreen,
 ];
 
 List<Color> getGradientColors(int number) {
@@ -104,7 +108,8 @@ extension UserModelExt on UserModel {
                       : Container(
                         color:
                             fullName.length > kAvatarColors.length
-                                ? AIColors.pink
+                                ? kAvatarColors[fullName.length %
+                                    kAvatarColors.length]
                                 : kAvatarColors[fullName.length - 1],
                         child: Align(
                           alignment: Alignment.center,

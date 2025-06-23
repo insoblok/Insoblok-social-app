@@ -95,6 +95,7 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
                                         viewModel.user?.fullName ?? 'Test',
                                     textSize: 24,
                                     isBorder: true,
+                                    borderWidth: 1.5,
                                     borderRadius: kStoryDetailAvatarSize / 2,
                                   ),
                                 ),
@@ -214,37 +215,45 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
               ),
             ),
             body: pages[viewModel.pageIndex],
-            bottomNavigationBar: BottomNavigationBar(
-              showSelectedLabels: true,
-              showUnselectedLabels: true,
-              currentIndex: viewModel.pageIndex,
-              onTap: (value) {
-                if (value == 4) {
-                  Routers.goToAccountPage(context);
-                } else {
-                  viewModel.pageIndex = value;
-                }
-              },
-              items: [
-                for (var i = 0; i < selectedIcon.length; i++) ...{
-                  BottomNavigationBarItem(
-                    icon: AIImage(
-                      unselectedIcon[i],
-                      width: 18.0,
-                      height: 18.0,
-                      color: AIColors.lightGrey,
-                    ),
-                    activeIcon: AIImage(
-                      selectedIcon[i],
-                      width: 18.0,
-                      height: 18.0,
-                      color: AIColors.pink,
-                    ),
-                    label: titles[i],
-                    backgroundColor: AIColors.pink,
-                  ),
+            bottomNavigationBar: ClipRRect(
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(24),
+                topRight: Radius.circular(24),
+              ),
+              child: BottomNavigationBar(
+                backgroundColor:
+                    Theme.of(context).colorScheme.onPrimaryContainer,
+                showSelectedLabels: true,
+                showUnselectedLabels: true,
+                currentIndex: viewModel.pageIndex,
+                onTap: (value) {
+                  if (value == 4) {
+                    Routers.goToAccountPage(context);
+                  } else {
+                    viewModel.pageIndex = value;
+                  }
                 },
-              ],
+                items: [
+                  for (var i = 0; i < selectedIcon.length; i++) ...{
+                    BottomNavigationBarItem(
+                      icon: AIImage(
+                        unselectedIcon[i],
+                        width: 18.0,
+                        height: 18.0,
+                        color: AIColors.lightGrey,
+                      ),
+                      activeIcon: AIImage(
+                        selectedIcon[i],
+                        width: 18.0,
+                        height: 18.0,
+                        color: AIColors.pink,
+                      ),
+                      label: titles[i],
+                      backgroundColor: AIColors.pink,
+                    ),
+                  },
+                ],
+              ),
             ),
           ),
         );

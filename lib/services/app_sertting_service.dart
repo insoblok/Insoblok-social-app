@@ -11,7 +11,7 @@ import 'package:insoblok/models/models.dart';
 import 'package:insoblok/utils/utils.dart';
 
 class AppSettingService with ListenableServiceMixin {
-  final RxValue<ThemeMode> _themeModeRx = RxValue<ThemeMode>(ThemeMode.dark);
+  final RxValue<ThemeMode> _themeModeRx = RxValue<ThemeMode>(ThemeMode.light);
   ThemeMode get themeMode => _themeModeRx.value;
 
   final RxValue<AppSettingModel?> _appSettingModelRx =
@@ -65,7 +65,7 @@ class AppSettingService with ListenableServiceMixin {
       secondary: AIColors.black,
       onSecondary: AIColors.white,
       primaryContainer: AIColors.lightBackground,
-      onPrimaryContainer: AIColors.lightBackground,
+      onPrimaryContainer: AIColors.lightGreyBackground,
     ),
     scaffoldBackgroundColor: AIColors.lightBackground,
     useMaterial3: true,
@@ -184,7 +184,7 @@ class AppSettingService with ListenableServiceMixin {
       secondary: AIColors.white,
       onSecondary: AIColors.black,
       primaryContainer: AIColors.darkBackground,
-      onPrimaryContainer: AIColors.lightBackground,
+      onPrimaryContainer: AIColors.darkGreyBackground,
     ),
     scaffoldBackgroundColor: AIColors.darkBackground,
     useMaterial3: true,

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:insoblok/widgets/widgets.dart';
 import 'package:loading_indicator/loading_indicator.dart';
 
 import 'package:stacked/stacked.dart';
@@ -122,13 +123,22 @@ class MessagePage extends StatelessWidget {
                   itemCount: viewModel.messages.length,
                 ),
               ),
-              Container(
-                color: AppSettingHelper.greyBackground,
-                alignment: Alignment.center,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Row(
+              Stack(
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(
+                      right: 12.0,
+                      bottom: 24.0,
+                      top: 12.0,
+                      left: 76.0,
+                    ),
+                    padding: const EdgeInsets.all(2.0),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: AppSettingHelper.greyBackground.withAlpha(64),
+                      borderRadius: BorderRadius.circular(24.0),
+                    ),
+                    child: Row(
                       children: [
                         Expanded(
                           child: Container(
@@ -164,51 +174,8 @@ class MessagePage extends StatelessWidget {
                             ),
                           ),
                         ),
-                      ],
-                    ),
-                    Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          child: Row(
-                            children: [
-                              IconButton(
-                                onPressed: viewModel.onPickerImage,
-                                icon: AIImage(
-                                  AIImages.icImage,
-                                  color: AIColors.grey,
-                                  width: 20,
-                                ),
-                              ),
-                              IconButton(
-                                onPressed: viewModel.onPickerVideo,
-                                icon: AIImage(
-                                  AIImages.icCamera,
-                                  color: AIColors.grey,
-                                  width: 20,
-                                ),
-                              ),
-                              IconButton(
-                                onPressed: viewModel.onPickGif,
-                                icon: AIImage(
-                                  AIImages.icGif,
-                                  color: AIColors.grey,
-                                  width: 20,
-                                ),
-                              ),
-                              IconButton(
-                                onPressed: viewModel.onPaidEth,
-                                icon: Icon(
-                                  Icons.wallet,
-                                  size: 28,
-                                  color: AIColors.grey,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
                         Padding(
-                          padding: const EdgeInsets.only(right: 12.0),
+                          padding: const EdgeInsets.only(right: 8.0),
                           child: Container(
                             width: 36.0,
                             height: 36.0,
@@ -217,7 +184,9 @@ class MessagePage extends StatelessWidget {
                               color:
                                   viewModel.isShowButton
                                       ? AIColors.pink
-                                      : AIColors.grey,
+                                      : Theme.of(
+                                        context,
+                                      ).colorScheme.onPrimaryContainer,
                               borderRadius: BorderRadius.circular(18.0),
                             ),
                             child: IconButton(
@@ -227,8 +196,13 @@ class MessagePage extends StatelessWidget {
                                 }
                               },
                               icon: Icon(
-                                Icons.arrow_upward_outlined,
-                                color: AIColors.white,
+                                Icons.send,
+                                color:
+                                    viewModel.isShowButton
+                                        ? AIColors.white
+                                        : Theme.of(
+                                          context,
+                                        ).colorScheme.secondary,
                                 size: 20.0,
                               ),
                             ),
@@ -236,8 +210,95 @@ class MessagePage extends StatelessWidget {
                         ),
                       ],
                     ),
-                  ],
-                ),
+                  ),
+                  Positioned(
+                    bottom: 22,
+                    child: Container(
+                      margin: const EdgeInsets.only(left: 12.0),
+                      child: FanExpandableFab(
+                        radius: 120,
+                        startAngle: 90,
+                        sweepAngle: 90,
+                        icon: Icon(
+                          Icons.add_outlined,
+                          color: Theme.of(context).colorScheme.secondary,
+                          size: 24.0,
+                        ),
+                        closeIcon: Icon(
+                          Icons.close,
+                          color: Theme.of(context).colorScheme.secondary,
+                          size: 24.0,
+                        ),
+                        children: [
+                          FloatingActionButton(
+                            backgroundColor:
+                                Theme.of(
+                                  context,
+                                ).colorScheme.onPrimaryContainer,
+                            // elevation: 0.0,
+                            // highlightElevation: 0.0,
+                            shape: const CircleBorder(),
+                            heroTag: null,
+                            child: AIImage(
+                              AIImages.icImage,
+                              color: Theme.of(context).colorScheme.secondary,
+                              width: 20,
+                            ),
+                            onPressed: () => viewModel.onPickerImage,
+                          ),
+                          FloatingActionButton(
+                            backgroundColor:
+                                Theme.of(
+                                  context,
+                                ).colorScheme.onPrimaryContainer,
+                            // elevation: 0.0,
+                            // highlightElevation: 0.0,
+                            shape: const CircleBorder(),
+                            heroTag: null,
+                            child: AIImage(
+                              AIImages.icCamera,
+                              color: Theme.of(context).colorScheme.secondary,
+                              width: 20,
+                            ),
+                            onPressed: () => viewModel.onPickerVideo,
+                          ),
+                          FloatingActionButton(
+                            backgroundColor:
+                                Theme.of(
+                                  context,
+                                ).colorScheme.onPrimaryContainer,
+                            // elevation: 0.0,
+                            // highlightElevation: 0.0,
+                            shape: const CircleBorder(),
+                            heroTag: null,
+                            child: AIImage(
+                              AIImages.icGif,
+                              color: Theme.of(context).colorScheme.secondary,
+                              width: 20,
+                            ),
+                            onPressed: () => viewModel.onPickGif,
+                          ),
+                          FloatingActionButton(
+                            backgroundColor:
+                                Theme.of(
+                                  context,
+                                ).colorScheme.onPrimaryContainer,
+                            // elevation: 0.0,
+                            // highlightElevation: 0.0,
+                            shape: const CircleBorder(),
+                            heroTag: null,
+                            child: Icon(
+                              Icons.wallet,
+                              size: 28,
+                              color: Theme.of(context).colorScheme.secondary,
+                            ),
+                            onPressed: () => viewModel.onPaidEth,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ],
           ),
