@@ -215,44 +215,60 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
               ),
             ),
             body: pages[viewModel.pageIndex],
-            bottomNavigationBar: ClipRRect(
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(24),
-                topRight: Radius.circular(24),
-              ),
-              child: BottomNavigationBar(
-                backgroundColor:
-                    Theme.of(context).colorScheme.onPrimaryContainer,
-                showSelectedLabels: true,
-                showUnselectedLabels: true,
-                currentIndex: viewModel.pageIndex,
-                onTap: (value) {
-                  if (value == 4) {
-                    Routers.goToAccountPage(context);
-                  } else {
-                    viewModel.pageIndex = value;
-                  }
-                },
-                items: [
-                  for (var i = 0; i < selectedIcon.length; i++) ...{
-                    BottomNavigationBarItem(
-                      icon: AIImage(
-                        unselectedIcon[i],
-                        width: 18.0,
-                        height: 18.0,
-                        color: AIColors.lightGrey,
-                      ),
-                      activeIcon: AIImage(
-                        selectedIcon[i],
-                        width: 18.0,
-                        height: 18.0,
-                        color: AIColors.pink,
-                      ),
-                      label: titles[i],
-                      backgroundColor: AIColors.pink,
+            bottomNavigationBar: AppBackgroundView(
+              child: ClipRRect(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(24),
+                  topRight: Radius.circular(24),
+                ),
+                child: Stack(
+                  children: [
+                    AppBackgroundView(height: kBottomNavigationBarHeight),
+                    // Container(
+                    //   height: kBottomNavigationBarHeight,
+                    //   decoration: BoxDecoration(
+                    //     image: DecorationImage(
+                    //       image: AssetImage(AIImages.imgBackground),
+                    //       fit: BoxFit.cover,
+                    //     ),
+                    //   ),
+                    // ),
+                    BottomNavigationBar(
+                      backgroundColor: AIColors.transparent,
+                      elevation: 0.0,
+                      showSelectedLabels: true,
+                      showUnselectedLabels: true,
+                      currentIndex: viewModel.pageIndex,
+                      onTap: (value) {
+                        if (value == 4) {
+                          Routers.goToAccountPage(context);
+                        } else {
+                          viewModel.pageIndex = value;
+                        }
+                      },
+                      items: [
+                        for (var i = 0; i < selectedIcon.length; i++) ...{
+                          BottomNavigationBarItem(
+                            icon: AIImage(
+                              unselectedIcon[i],
+                              width: 18.0,
+                              height: 18.0,
+                              color: AIColors.lightGrey,
+                            ),
+                            activeIcon: AIImage(
+                              selectedIcon[i],
+                              width: 18.0,
+                              height: 18.0,
+                              color: AIColors.pink,
+                            ),
+                            label: titles[i],
+                            backgroundColor: AIColors.pink,
+                          ),
+                        },
+                      ],
                     ),
-                  },
-                ],
+                  ],
+                ),
               ),
             ),
           ),

@@ -19,27 +19,34 @@ class UpdateProfilePage extends StatelessWidget {
           appBar: AppBar(
             title: Text('Update Profile'),
             centerTitle: true,
+            flexibleSpace: AppBackgroundView(),
             leading: IconButton(
               onPressed: () => Navigator.of(context).pop(viewModel.account),
               icon: Icon(Icons.arrow_back),
             ),
           ),
-          body: ListView(
-            physics: BouncingScrollPhysics(),
-            children: [
-              AccountPublicInfoView(),
-              Divider(height: 1, color: AIColors.greyTextColor, thickness: 0.2),
-              AccountPrivateInfoView(),
-              // Padding(
-              //   padding: const EdgeInsets.all(24.0),
-              //   child: TextFillButton(
-              //     onTap: viewModel.onClickUpdated,
-              //     isBusy: viewModel.isBusy,
-              //     text: 'Update Profile',
-              //     color: Theme.of(context).primaryColor,
-              //   ),
-              // ),
-            ],
+          body: AppBackgroundView(
+            child: ListView(
+              physics: BouncingScrollPhysics(),
+              children: [
+                AccountPublicInfoView(),
+                Divider(
+                  height: 1,
+                  color: AIColors.greyTextColor,
+                  thickness: 0.2,
+                ),
+                AccountPrivateInfoView(),
+                // Padding(
+                //   padding: const EdgeInsets.all(24.0),
+                //   child: TextFillButton(
+                //     onTap: viewModel.onClickUpdated,
+                //     isBusy: viewModel.isBusy,
+                //     text: 'Update Profile',
+                //     color: Theme.of(context).primaryColor,
+                //   ),
+                // ),
+              ],
+            ),
           ),
         );
       },

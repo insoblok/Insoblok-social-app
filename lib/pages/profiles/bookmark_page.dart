@@ -15,17 +15,23 @@ class BookmarkPage extends StatelessWidget {
       onViewModelReady: (viewModel) => viewModel.init(context),
       builder: (context, viewModel, _) {
         return Scaffold(
-          appBar: AppBar(title: Text('My Follows'), centerTitle: true),
-          body: ListView.separated(
-            physics: BouncingScrollPhysics(),
-            itemBuilder: (context, i) {
-              var story = viewModel.stories[i];
-              return AccountStoryListCell(story: story);
-            },
-            separatorBuilder: (context, i) {
-              return Container();
-            },
-            itemCount: viewModel.stories.length,
+          appBar: AppBar(
+            title: Text('My Follows'),
+            centerTitle: true,
+            flexibleSpace: AppBackgroundView(),
+          ),
+          body: AppBackgroundView(
+            child: ListView.separated(
+              physics: BouncingScrollPhysics(),
+              itemBuilder: (context, i) {
+                var story = viewModel.stories[i];
+                return AccountStoryListCell(story: story);
+              },
+              separatorBuilder: (context, i) {
+                return Container();
+              },
+              itemCount: viewModel.stories.length,
+            ),
           ),
         );
       },

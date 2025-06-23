@@ -15,20 +15,28 @@ class RewardDetailPage extends StatelessWidget {
       onViewModelReady: (viewModel) => viewModel.init(context),
       builder: (context, viewModel, _) {
         return Scaffold(
-          appBar: AppBar(title: Text('XP Histories'), centerTitle: true),
+          appBar: AppBar(
+            title: Text('XP Histories'),
+            centerTitle: true,
+            flexibleSpace: AppBackgroundView(),
+          ),
           body:
               viewModel.scores.isEmpty
                   ? SafeArea(
-                    child: InSoBlokEmptyView(desc: 'XRP History is empty!'),
+                    child: AppBackgroundView(
+                      child: InSoBlokEmptyView(desc: 'XRP History is empty!'),
+                    ),
                   )
-                  : ListView.separated(
-                    itemCount: viewModel.scores.length,
-                    itemBuilder: (context, index) {
-                      var score = viewModel.scores[index];
-                      return ScoreItemExtView(score: score);
-                    },
-                    separatorBuilder:
-                        (context, index) => const Divider(thickness: 0.5),
+                  : AppBackgroundView(
+                    child: ListView.separated(
+                      itemCount: viewModel.scores.length,
+                      itemBuilder: (context, index) {
+                        var score = viewModel.scores[index];
+                        return ScoreItemExtView(score: score);
+                      },
+                      separatorBuilder:
+                          (context, index) => const Divider(thickness: 0.5),
+                    ),
                   ),
         );
       },

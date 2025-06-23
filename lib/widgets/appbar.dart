@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:insoblok/utils/utils.dart';
+import 'package:insoblok/widgets/user_widget.dart';
 
 const kCustomAppbarHeight = 45.0;
 const kExtendAppbarHeight = 45.0;
@@ -26,21 +27,23 @@ class AISliverAppbar extends SliverAppBar {
          centerTitle: true,
          flexibleSpace:
              extendWidget != null
-                 ? FlexibleSpaceBar(
-                   collapseMode: CollapseMode.none,
-                   background: Container(
-                     margin: EdgeInsets.only(
-                       top:
-                           (kExtendAppbarHeight) +
-                           MediaQuery.of(context).padding.top +
-                           10.0,
+                 ? AppBackgroundView(
+                   child: FlexibleSpaceBar(
+                     collapseMode: CollapseMode.none,
+                     background: Container(
+                       margin: EdgeInsets.only(
+                         top:
+                             (kExtendAppbarHeight) +
+                             MediaQuery.of(context).padding.top +
+                             10.0,
+                       ),
+                       padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                       height: (extendHeight ?? kExtendAppbarHeight),
+                       child: extendWidget,
                      ),
-                     padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                     height: (extendHeight ?? kExtendAppbarHeight),
-                     child: extendWidget,
                    ),
                  )
-                 : null,
+                 : AppBackgroundView(),
        );
 }
 

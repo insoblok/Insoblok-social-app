@@ -12,6 +12,7 @@ class AIImages {
   static String imgSplash2 = 'assets/images/bg_splash_2.png';
   static String imgSplash3 = 'assets/images/bg_splash_3.png';
   static String imgTopLevel = 'assets/images/img_top_level_avatar.jpg';
+  static String imgBackground = 'assets/images/img_background.jpeg';
 
   static String imgVTOClothing = 'assets/images/img_vto_clothing.jpg';
   static String imgVTOJewelry = 'assets/images/img_vto_jewelry.jpg';

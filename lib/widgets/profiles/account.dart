@@ -16,12 +16,11 @@ class AccountPresentHeaderView extends ViewModelWidget<AccountProvider> {
 
   @override
   Widget build(BuildContext context, viewModel) {
-    return Container(
+    return SizedBox(
       height:
           kProfileDiscoverHeight +
           MediaQuery.of(context).padding.top +
           kAccountAvatarSize / 2.0,
-      color: AppSettingHelper.background,
       child: Stack(
         children: [
           AIImage(
@@ -51,10 +50,10 @@ class AccountPresentHeaderView extends ViewModelWidget<AccountProvider> {
                   ),
                 ),
                 SizedBox(width: 8),
-                Text(
-                  'Since: ${viewModel.accountUser?.timestamp?.myFormatter}',
-                  style: Theme.of(context).textTheme.labelMedium,
-                ),
+                // Text(
+                //   'Since: ${viewModel.accountUser?.timestamp?.myFormatter}',
+                //   style: Theme.of(context).textTheme.labelMedium,
+                // ),
               ],
             ),
           ),

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 
 List<BoxShadow> kContainerDarkShadow = [
@@ -17,7 +16,6 @@ List<BoxShadow> kContainerDarkShadow = [
 ];
 
 BoxDecoration kCardDecoration = BoxDecoration(
-  color: AppSettingHelper.background,
   borderRadius: BorderRadius.circular(16.0),
   border: Border.all(width: 0.33, color: AIColors.pink),
 );
