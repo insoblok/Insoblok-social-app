@@ -95,6 +95,31 @@ class NetworkUtil {
     return null;
   }
 
+  static Future<String?> getVTOEditImage({
+    required String model,
+    required String clothingType,
+    required String prompt,
+  }) async {
+    try {
+      var response = await NetworkHelper.vtoApiRequest(
+        'edit',
+        method: APIMETHOD.post,
+        postParams: {
+          '1_model_image': model,
+          '1_prompt': prompt,
+          'category': clothingType,
+        },
+      );
+      logger.d(response.data);
+      return response.data['id'];
+    } on DioException catch (e) {
+      logger.e(e.message);
+    } catch (e) {
+      logger.e(e.toString());
+    }
+    return null;
+  }
+
   static Future<dynamic> getNewsLatest() async {
     try {
       var response = await NetworkHelper.newsApiRequest('latest');

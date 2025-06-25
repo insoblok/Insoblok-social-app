@@ -27,7 +27,6 @@ class MediaDetailPage extends StatelessWidget {
                 width: double.infinity,
                 height: double.infinity,
               ),
-
               BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 20.0, sigmaY: 20.0),
                 child: PageView(
@@ -56,11 +55,12 @@ class MediaDetailPage extends StatelessWidget {
                   ],
                 ),
               ),
-
               Align(
-                alignment: Alignment.bottomCenter,
+                alignment: Alignment.topCenter,
                 child: Container(
-                  margin: EdgeInsets.only(bottom: 40.0),
+                  margin: EdgeInsets.only(
+                    top: MediaQuery.of(context).padding.top + 16.0,
+                  ),
                   padding: const EdgeInsets.symmetric(
                     horizontal: 16.0,
                     vertical: 4.0,
@@ -77,7 +77,6 @@ class MediaDetailPage extends StatelessWidget {
                   ),
                 ),
               ),
-
               CustomCircleBackButton(),
               Align(
                 alignment: Alignment.topRight,
@@ -93,6 +92,52 @@ class MediaDetailPage extends StatelessWidget {
                         () => AIHelpers.shareFileToSocial(
                           viewModel.medias[viewModel.index],
                         ),
+                  ),
+                ),
+              ),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Container(
+                  margin: EdgeInsets.only(bottom: 40.0),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24.0,
+                    vertical: 8.0,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSecondary.withAlpha(32),
+                    border: Border.all(color: Theme.of(context).primaryColor),
+                    borderRadius: BorderRadius.circular(16.0),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    spacing: 40.0,
+                    children: [
+                      for (var data in kMediaDetailIconData) ...{
+                        InkWell(
+                          onTap:
+                              () => viewModel.onClickActionButton(
+                                kMediaDetailIconData.indexOf(data),
+                              ),
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              AIImage(
+                                data['icon'],
+                                height: 24.0,
+                                color: Theme.of(context).primaryColor,
+                              ),
+                              Text(
+                                data['title'] as String,
+                                style:
+                                    Theme.of(context).textTheme.headlineSmall,
+                              ),
+                            ],
+                          ),
+                        ),
+                      },
+                    ],
                   ),
                 ),
               ),

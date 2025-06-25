@@ -246,274 +246,280 @@ class StoryDetailDialog extends StatelessWidget {
                 body: SingleChildScrollView(
                   controller: viewModel.scrollController,
                   physics: BouncingScrollPhysics(),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 20.0,
-                          vertical: 8.0,
-                        ),
-                        decoration: BoxDecoration(
-                          border: Border(
-                            top: BorderSide(
-                              color: AIColors.speraterColor,
-                              width: 0.33,
+                  child: AppBackgroundView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20.0,
+                            vertical: 8.0,
+                          ),
+                          decoration: BoxDecoration(
+                            border: Border(
+                              top: BorderSide(
+                                color: AIColors.speraterColor,
+                                width: 0.33,
+                              ),
                             ),
                           ),
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            if (viewModel.story.text != null &&
-                                AIHelpers.removeFirstBr(
-                                      viewModel.story.text!,
-                                    ) !=
-                                    '<p></p>')
-                              AIHelpers.htmlRender(viewModel.story.text),
-                            if ((viewModel.story.medias ?? []).isNotEmpty) ...{
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              if (viewModel.story.text != null &&
+                                  AIHelpers.removeFirstBr(
+                                        viewModel.story.text!,
+                                      ) !=
+                                      '<p></p>')
+                                AIHelpers.htmlRender(viewModel.story.text),
+                              if ((viewModel.story.medias ?? [])
+                                  .isNotEmpty) ...{
+                                const SizedBox(height: 8.0),
+                                StoryDialogMediaView(),
+                              },
                               const SizedBox(height: 8.0),
-                              StoryDialogMediaView(),
-                            },
-                            const SizedBox(height: 8.0),
-                            Text(
-                              viewModel.story.shownHMDate,
-                              style: Theme.of(context).textTheme.labelMedium,
-                            ),
-                            Divider(
-                              thickness: 0.2,
-                              height: 24.0,
-                              color: AIColors.speraterColor,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                InkWell(
-                                  onTap: viewModel.updateLike,
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      AIImage(
-                                        viewModel.story.isLike()
-                                            ? AIImages.icFavoriteFill
-                                            : AIImages.icFavorite,
-                                        width: 16.0,
-                                        height: 16.0,
-                                      ),
-                                      const SizedBox(width: 8.0),
-                                      Text.rich(
-                                        TextSpan(
-                                          children: [
-                                            TextSpan(
-                                              text:
-                                                  '${(viewModel.story.likes ?? []).length}',
-                                              style:
-                                                  Theme.of(
-                                                    context,
-                                                  ).textTheme.bodyMedium,
-                                            ),
-                                            TextSpan(
-                                              text: '  Likes  ',
-                                              style:
-                                                  Theme.of(
-                                                    context,
-                                                  ).textTheme.labelMedium,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                InkWell(
-                                  onTap: viewModel.updateFollow,
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      AIImage(
-                                        AIImages.icFollow,
-                                        width: 20.0,
-                                        height: 20.0,
-                                        color:
-                                            viewModel.story.isFollow()
-                                                ? AIColors.green
-                                                : null,
-                                      ),
-                                      const SizedBox(width: 8.0),
-                                      Text.rich(
-                                        TextSpan(
-                                          children: [
-                                            TextSpan(
-                                              text:
-                                                  '${(viewModel.story.follows ?? []).length}',
-                                              style:
-                                                  Theme.of(
-                                                    context,
-                                                  ).textTheme.bodyMedium,
-                                            ),
-                                            TextSpan(
-                                              text: '  Followers',
-                                              style:
-                                                  Theme.of(
-                                                    context,
-                                                  ).textTheme.labelMedium,
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                if (viewModel.isMine) SizedBox(width: 12),
-                                if (viewModel.isMine)
+                              Text(
+                                viewModel.story.shownHMDate,
+                                style: Theme.of(context).textTheme.labelMedium,
+                              ),
+                              Divider(
+                                thickness: 0.2,
+                                height: 24.0,
+                                color: AIColors.speraterColor,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
+                                children: [
                                   InkWell(
-                                    onTap: viewModel.onClickSaveToLookBook,
-                                    child: Container(
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 12,
-                                        vertical: 4,
-                                      ),
-                                      decoration: BoxDecoration(
-                                        color: AIColors.pink,
-                                        borderRadius: BorderRadius.circular(
-                                          12.0,
+                                    onTap: viewModel.updateLike,
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        AIImage(
+                                          viewModel.story.isLike()
+                                              ? AIImages.icFavoriteFill
+                                              : AIImages.icFavorite,
+                                          width: 16.0,
+                                          height: 16.0,
                                         ),
-                                      ),
-                                      alignment: Alignment.center,
-                                      child: Text(
-                                        'Save to LOOKBOOK',
-                                        style: TextStyle(
-                                          fontSize: 12.0,
-                                          color: AIColors.white,
+                                        const SizedBox(width: 8.0),
+                                        Text.rich(
+                                          TextSpan(
+                                            children: [
+                                              TextSpan(
+                                                text:
+                                                    '${(viewModel.story.likes ?? []).length}',
+                                                style:
+                                                    Theme.of(
+                                                      context,
+                                                    ).textTheme.bodyMedium,
+                                              ),
+                                              TextSpan(
+                                                text: '  Likes  ',
+                                                style:
+                                                    Theme.of(
+                                                      context,
+                                                    ).textTheme.labelMedium,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  InkWell(
+                                    onTap: viewModel.updateFollow,
+                                    child: Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        AIImage(
+                                          AIImages.icFollow,
+                                          width: 20.0,
+                                          height: 20.0,
+                                          color:
+                                              viewModel.story.isFollow()
+                                                  ? AIColors.green
+                                                  : null,
+                                        ),
+                                        const SizedBox(width: 8.0),
+                                        Text.rich(
+                                          TextSpan(
+                                            children: [
+                                              TextSpan(
+                                                text:
+                                                    '${(viewModel.story.follows ?? []).length}',
+                                                style:
+                                                    Theme.of(
+                                                      context,
+                                                    ).textTheme.bodyMedium,
+                                              ),
+                                              TextSpan(
+                                                text: '  Followers',
+                                                style:
+                                                    Theme.of(
+                                                      context,
+                                                    ).textTheme.labelMedium,
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                  if (viewModel.isMine) SizedBox(width: 12),
+                                  if (viewModel.isMine)
+                                    InkWell(
+                                      onTap: viewModel.onClickSaveToLookBook,
+                                      child: Container(
+                                        padding: EdgeInsets.symmetric(
+                                          horizontal: 12,
+                                          vertical: 4,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: AIColors.pink,
+                                          borderRadius: BorderRadius.circular(
+                                            12.0,
+                                          ),
+                                        ),
+                                        alignment: Alignment.center,
+                                        child: Text(
+                                          'Save to LOOKBOOK',
+                                          style: TextStyle(
+                                            fontSize: 12.0,
+                                            color: AIColors.white,
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                              ],
-                            ),
-                            Divider(
-                              thickness: 0.2,
-                              height: 24.0,
-                              color: AIColors.speraterColor,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              children: [
-                                if (viewModel.story.category != null &&
-                                    viewModel.story.category == 'vote') ...{
+                                ],
+                              ),
+                              Divider(
+                                thickness: 0.2,
+                                height: 24.0,
+                                color: AIColors.speraterColor,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  if (viewModel.story.category != null &&
+                                      viewModel.story.category == 'vote') ...{
+                                    InkWell(
+                                      onTap: () {
+                                        viewModel.actionType('vote');
+                                      },
+                                      child: AIImage(
+                                        viewModel.isVote
+                                            ? AIImages.icYayFill
+                                            : AIImages.icYayOutline,
+                                        color:
+                                            viewModel.isVote
+                                                ? AIColors.pink
+                                                : AIColors.grey,
+                                        width: 20.0,
+                                        height: 20.0,
+                                      ),
+                                    ),
+                                  },
                                   InkWell(
                                     onTap: () {
-                                      viewModel.actionType('vote');
+                                      viewModel.actionType('comment');
+                                      // viewModel.addComment();
                                     },
                                     child: AIImage(
-                                      viewModel.isVote
-                                          ? AIImages.icYayFill
-                                          : AIImages.icYayOutline,
+                                      AIImages.icCommit,
                                       color:
-                                          viewModel.isVote
+                                          viewModel.isComment
                                               ? AIColors.pink
                                               : AIColors.grey,
                                       width: 20.0,
                                       height: 20.0,
                                     ),
                                   ),
-                                },
-                                InkWell(
-                                  onTap: () {
-                                    viewModel.actionType('comment');
-                                    // viewModel.addComment();
-                                  },
-                                  child: AIImage(
-                                    AIImages.icCommit,
-                                    color:
-                                        viewModel.isComment
-                                            ? AIColors.pink
-                                            : AIColors.grey,
-                                    width: 20.0,
-                                    height: 20.0,
+                                  InkWell(
+                                    onTap: viewModel.onClickRepost,
+                                    child: AIImage(
+                                      AIImages.icRetwitter,
+                                      width: 20.0,
+                                      height: 20.0,
+                                    ),
                                   ),
-                                ),
-                                InkWell(
-                                  onTap: viewModel.onClickRepost,
-                                  child: AIImage(
-                                    AIImages.icRetwitter,
-                                    width: 20.0,
-                                    height: 20.0,
+                                  InkWell(
+                                    onTap: () {},
+                                    child: AIImage(
+                                      AIImages.icShare,
+                                      width: 20.0,
+                                      height: 20.0,
+                                    ),
                                   ),
-                                ),
-                                InkWell(
-                                  onTap: () {},
-                                  child: AIImage(
-                                    AIImages.icShare,
-                                    width: 20.0,
-                                    height: 20.0,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Divider(
-                              thickness: 0.2,
-                              height: 24.0,
-                              color: AIColors.speraterColor,
-                            ),
-                          ],
+                                ],
+                              ),
+                              Divider(
+                                thickness: 0.2,
+                                height: 24.0,
+                                color: AIColors.speraterColor,
+                              ),
+                            ],
+                          ),
                         ),
-                      ),
 
-                      if (viewModel.isVote) ...{
-                        if ((viewModel.story.votes?.isEmpty ?? true)) ...{
-                          StoryListEmptyView(
-                            description:
-                                'On click on that open tastescore tab!',
-                          ),
-                        } else ...{
-                          for (var vote
-                              in (viewModel.story.votes?.reversed.toList() ??
-                                  [])) ...{
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16.0,
-                                vertical: 4.0,
-                              ),
-                              child: VotedUserCell(voteModel: vote),
+                        if (viewModel.isVote) ...{
+                          if ((viewModel.story.votes?.isEmpty ?? true)) ...{
+                            StoryListEmptyView(
+                              description:
+                                  'On click on that open tastescore tab!',
                             ),
-                          },
-                        },
-                      },
-                      if (viewModel.isComment) ...{
-                        if ((viewModel.story.comments?.isEmpty ?? true)) ...{
-                          StoryListEmptyView(
-                            description: 'Nobody had commented yet!',
-                          ),
-                          // SizedBox(
-                          //   height: MediaQuery.of(context).viewInsets.bottom,
-                          // ),
-                        } else ...{
-                          for (var comment
-                              in (viewModel.story.comments?.reversed.toList() ??
-                                  [])) ...{
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 16.0,
-                                vertical: 4.0,
-                              ),
-                              child: StoryDetailCommentCell(
-                                key: GlobalKey(
-                                  debugLabel:
-                                      '${comment.userId} - ${viewModel.story.comments?.reversed.toList().indexOf(comment)}',
+                          } else ...{
+                            for (var vote
+                                in (viewModel.story.votes?.reversed.toList() ??
+                                    [])) ...{
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16.0,
+                                  vertical: 4.0,
                                 ),
-                                comment: comment,
-                                isLast:
-                                    (viewModel.story.comments ?? []).length ==
-                                    comment,
+                                child: VotedUserCell(voteModel: vote),
                               ),
-                            ),
+                            },
                           },
                         },
-                        const SizedBox(height: 20),
-                      },
-                      SizedBox(height: 198.0),
-                    ],
+                        if (viewModel.isComment) ...{
+                          if ((viewModel.story.comments?.isEmpty ?? true)) ...{
+                            StoryListEmptyView(
+                              description: 'Nobody had commented yet!',
+                            ),
+                            // SizedBox(
+                            //   height: MediaQuery.of(context).viewInsets.bottom,
+                            // ),
+                          } else ...{
+                            for (var comment
+                                in (viewModel.story.comments?.reversed
+                                        .toList() ??
+                                    [])) ...{
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16.0,
+                                  vertical: 4.0,
+                                ),
+                                child: StoryDetailCommentCell(
+                                  key: GlobalKey(
+                                    debugLabel:
+                                        '${comment.userId} - ${viewModel.story.comments?.reversed.toList().indexOf(comment)}',
+                                  ),
+                                  comment: comment,
+                                  isLast:
+                                      (viewModel.story.comments ?? []).length ==
+                                      comment,
+                                ),
+                              ),
+                            },
+                          },
+                          const SizedBox(height: 20),
+                        },
+                        SizedBox(height: 198.0),
+                      ],
+                    ),
                   ),
                 ),
               ),

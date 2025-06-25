@@ -21,6 +21,9 @@ class NetworkService with ListenableServiceMixin {
   final RxValue<Dio?> _vtoApiRx = RxValue<Dio?>(null);
   Dio? get vtoApiDio => _vtoApiRx.value;
 
+  final RxValue<Dio?> _theneApiRx = RxValue<Dio?>(null);
+  Dio? get theneApiRx => _theneApiRx.value;
+
   final RxValue<Dio?> _newsApiRx = RxValue<Dio?>(null);
   Dio? get newsApiDio => _newsApiRx.value;
 
@@ -71,6 +74,14 @@ class NetworkService with ListenableServiceMixin {
             }
             ..interceptors.add(LogInterceptor());
       _vtoApiRx.value = vtoApi;
+
+      var theneApi =
+          Dio()
+            ..options.baseUrl = 'https://thenewblack.ai/api/1.1/wf/'
+            ..options.validateStatus = ((status) => (status ?? 1) > 0)
+            ..options.headers = {'Content-Type': 'application/json'}
+            ..interceptors.add(LogInterceptor());
+      _theneApiRx.value = theneApi;
 
       var newsApi =
           Dio()
@@ -128,6 +139,45 @@ class NetworkService with ListenableServiceMixin {
     final response = await dio.request(
       path,
       data: pParm,
+      onSendProgress: onSendProgress,
+      onReceiveProgress: onReceiveProgress,
+    );
+
+    var endTime = DateTime.now();
+    logger.i(endTime.difference(startTime).inMilliseconds);
+    return response;
+  }
+
+  Future<Response> theneApiRequest(
+    String path, {
+    String method = 'GET',
+    Map<String, dynamic>? queryParams,
+    Map<String, dynamic>? postParams,
+    Function(int, int)? onSendProgress,
+    Function(int, int)? onReceiveProgress,
+  }) async {
+    var startTime = DateTime.now();
+
+    queryParams ??= <String, String>{};
+
+    var pParm = {
+      'email': kDefaultVTOEmail,
+      'password': kDefaultVTOPassword,
+      ...(postParams ?? {}),
+    };
+
+    logger.d(pParm);
+
+    var reqData = FormData.fromMap(pParm);
+
+    var dio =
+        vtoApiDio!
+          ..options.queryParameters = _nonNullJson(queryParams)
+          ..options.method = method
+          ..interceptors.add(apiInterceptor);
+    final response = await dio.request(
+      path,
+      data: reqData,
       onSendProgress: onSendProgress,
       onReceiveProgress: onReceiveProgress,
     );
