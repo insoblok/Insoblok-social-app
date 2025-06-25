@@ -268,48 +268,48 @@ class MessageProvider extends InSoBlokViewModel {
 
     final reownService = locator<ReownService>();
 
-    var req = await reownService.onShowTransferModal(
-      context,
-      address: chatUser.walletAddress,
-    );
-    if (req != null) {
-      try {
-        await reownService.connect();
-        if (reownService.isConnected) {
-          if (chatUser.walletAddress == null) {
-            setError('Chat user has not wallet!');
-          } else {
-            var result = await reownService.ethSendTransaction(req: req);
-            logger.d(result);
-            if (result['code'] != 200) {
-              throw (result['message']);
-            }
-          }
-        } else {
-          throw ('Failed wallet connected!');
-        }
-      } catch (e) {
-        logger.e(e);
-        setError(e);
-      } finally {
-        notifyListeners();
-      }
+    // var req = await reownService.onShowTransferModal(
+    //   context,
+    //   address: chatUser.walletAddress,
+    // );
+    // if (req != null) {
+    //   try {
+    //     await reownService.connect();
+    //     if (reownService.isConnected) {
+    //       if (chatUser.walletAddress == null) {
+    //         setError('Chat user has not wallet!');
+    //       } else {
+    //         var result = await reownService.ethSendTransaction(req: req);
+    //         logger.d(result);
+    //         if (result['code'] != 200) {
+    //           throw (result['message']);
+    //         }
+    //       }
+    //     } else {
+    //       throw ('Failed wallet connected!');
+    //     }
+    //   } catch (e) {
+    //     logger.e(e);
+    //     setError(e);
+    //   } finally {
+    //     notifyListeners();
+    //   }
 
-      if (hasError) {
-        AIHelpers.showToast(msg: modelError.toString());
-      } else {
-        await messageService.sendPaidMessage(
-          chatRoomId: room.id!,
-          coin: CoinModel(
-            icon: AIImages.icEthereumGold,
-            type: 'ETH',
-            amount: '${req.amount}',
-            unit: '${req.unit}',
-          ),
-        );
-        scrollController.jumpTo(scrollController.position.maxScrollExtent);
-      }
-    }
+    //   if (hasError) {
+    //     AIHelpers.showToast(msg: modelError.toString());
+    //   } else {
+    //     await messageService.sendPaidMessage(
+    //       chatRoomId: room.id!,
+    //       coin: CoinModel(
+    //         icon: AIImages.icEthereumGold,
+    //         type: 'ETH',
+    //         amount: '${req.amount}',
+    //         unit: '${req.unit}',
+    //       ),
+    //     );
+    //     scrollController.jumpTo(scrollController.position.maxScrollExtent);
+    //   }
+    // }
   }
 
   Future<bool> _showPreview({bool isImage = true}) async {

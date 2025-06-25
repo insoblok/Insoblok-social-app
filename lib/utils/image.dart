@@ -11,11 +11,6 @@ class AIImages {
   static String imgSplash1 = 'assets/images/bg_splash_1.png';
   static String imgSplash2 = 'assets/images/bg_splash_2.png';
   static String imgSplash3 = 'assets/images/bg_splash_3.png';
-  static String imgTopLevel = 'assets/images/img_top_level_avatar.jpg';
-  static String imgBackground = 'assets/images/img_background.jpeg';
-
-  static String imgVTOClothing = 'assets/images/img_vto_clothing.jpg';
-  static String imgVTOJewelry = 'assets/images/img_vto_jewelry.jpg';
 
   static String icYayOutline = 'assets/icons/ic_yay_outline.svg';
   static String icNayOutline = 'assets/icons/ic_nay_outline.svg';
@@ -56,6 +51,7 @@ class AIImages {
   static String icImage = 'assets/icons/ic_image.svg';
   static String icGif = 'assets/icons/ic_gif.svg';
   static String icCamera = 'assets/icons/ic_camera.svg';
+  static String icFire = 'assets/icons/ic_fire.png';
 
   static String icMenuProfile = 'assets/icons/ic_user.svg';
   static String icMenuLists = 'assets/icons/ic_list.svg';

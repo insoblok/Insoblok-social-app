@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:insoblok/widgets/widgets.dart';
-import 'package:loading_indicator/loading_indicator.dart';
 
+import 'package:loading_indicator/loading_indicator.dart';
 import 'package:stacked/stacked.dart';
 
 import 'package:insoblok/extensions/extensions.dart';
@@ -9,6 +8,7 @@ import 'package:insoblok/models/models.dart';
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
+import 'package:insoblok/widgets/widgets.dart';
 
 class MessagePageData {
   MessagePageData({required this.room, required this.chatUser});
@@ -101,213 +101,140 @@ class MessagePage extends StatelessWidget {
                 ),
               ],
             ),
-            flexibleSpace: AppBackgroundView(),
             actions: [
               IconButton(onPressed: () {}, icon: Icon(Icons.more_horiz)),
             ],
           ),
-          body: AppBackgroundView(
-            child: Column(
-              children: [
-                Expanded(
-                  child: ListView.separated(
-                    controller: viewModel.scrollController,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12.0,
-                      vertical: 24.0,
-                    ),
-                    itemBuilder: (context, index) {
-                      var message = viewModel.messages[index];
-                      return message.item(
-                        context,
-                        chatUser: viewModel.chatUser,
-                      );
-                    },
-                    separatorBuilder:
-                        (context, index) => const SizedBox(height: 8.0),
-                    itemCount: viewModel.messages.length,
+          body: Column(
+            children: [
+              Expanded(
+                child: ListView.separated(
+                  controller: viewModel.scrollController,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12.0,
+                    vertical: 24.0,
                   ),
+                  itemBuilder: (context, index) {
+                    var message = viewModel.messages[index];
+                    return message.item(context, chatUser: viewModel.chatUser);
+                  },
+                  separatorBuilder:
+                      (context, index) => const SizedBox(height: 8.0),
+                  itemCount: viewModel.messages.length,
                 ),
-                Stack(
+              ),
+              Container(
+                margin: EdgeInsets.all(12.0),
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                alignment: Alignment.center,
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.secondary.withAlpha(16),
+                  borderRadius: BorderRadius.circular(24.0),
+                ),
+                child: Row(
                   children: [
-                    Container(
-                      margin: EdgeInsets.only(
-                        right: 12.0,
-                        bottom: 24.0,
-                        top: 12.0,
-                        left: 76.0,
-                      ),
-                      padding: const EdgeInsets.all(2.0),
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: AppSettingHelper.background.withAlpha(96),
-                        borderRadius: BorderRadius.circular(24.0),
-                      ),
-                      child: Row(
+                    SizedBox(
+                      width: 36.0,
+                      height: 36.0,
+                      child: FanExpandableFab(
+                        radius: 110,
+                        startAngle: 90,
+                        sweepAngle: 66,
+                        icon: Icon(
+                          Icons.add_outlined,
+                          color: Theme.of(context).colorScheme.secondary,
+                          size: 24.0,
+                        ),
+                        closeIcon: Icon(
+                          Icons.close,
+                          color: Theme.of(context).colorScheme.secondary,
+                          size: 24.0,
+                        ),
                         children: [
-                          Expanded(
-                            child: Container(
-                              padding: const EdgeInsets.only(
-                                left: 12.0,
-                                right: 12.0,
-                              ),
-                              child: ConstrainedBox(
-                                constraints: BoxConstraints(maxHeight: 100.0),
-                                child: TextFormField(
-                                  focusNode: viewModel.focusNode,
-                                  decoration: InputDecoration(
-                                    hintText: 'Type something',
-                                    border: InputBorder.none,
-                                  ),
-                                  keyboardType: TextInputType.text,
-                                  style: Theme.of(context).textTheme.bodySmall,
-                                  maxLines: null,
-                                  controller: viewModel.textController,
-                                  onChanged:
-                                      (value) => viewModel.content = value,
-                                  onFieldSubmitted: (value) {
-                                    if (viewModel.isShowButton) {
-                                      viewModel.sendMessage();
-                                    }
-                                  },
-                                  onSaved: (value) {
-                                    logger.d('onSaved');
-                                  },
-                                  onEditingComplete: () {
-                                    logger.d('onEditingComplete');
-                                  },
-                                ),
-                              ),
+                          MessageActionButton(
+                            child: AIImage(
+                              AIImages.icImage,
+                              color: Theme.of(context).colorScheme.secondary,
+                              width: 20,
                             ),
+                            onPressed: () => viewModel.onPickerImage,
                           ),
-                          Padding(
-                            padding: const EdgeInsets.only(right: 8.0),
-                            child: Container(
-                              width: 36.0,
-                              height: 36.0,
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                color:
-                                    viewModel.isShowButton
-                                        ? AIColors.pink
-                                        : Theme.of(
-                                          context,
-                                        ).colorScheme.onPrimaryContainer,
-                                borderRadius: BorderRadius.circular(18.0),
-                              ),
-                              child: IconButton(
-                                onPressed: () {
-                                  if (viewModel.isShowButton) {
-                                    viewModel.sendMessage();
-                                  }
-                                },
-                                icon: Icon(
-                                  Icons.send,
-                                  color:
-                                      viewModel.isShowButton
-                                          ? AIColors.white
-                                          : Theme.of(
-                                            context,
-                                          ).colorScheme.secondary,
-                                  size: 20.0,
-                                ),
-                              ),
+                          MessageActionButton(
+                            child: AIImage(
+                              AIImages.icCamera,
+                              color: Theme.of(context).colorScheme.secondary,
+                              width: 20,
                             ),
+                            onPressed: () => viewModel.onPickerVideo,
+                          ),
+                          MessageActionButton(
+                            child: AIImage(
+                              AIImages.icGif,
+                              color: Theme.of(context).colorScheme.secondary,
+                              width: 20,
+                            ),
+                            onPressed: () => viewModel.onPickGif,
+                          ),
+                          MessageActionButton(
+                            child: Icon(
+                              Icons.wallet,
+                              size: 20,
+                              color: Theme.of(context).colorScheme.secondary,
+                            ),
+                            onPressed: () => viewModel.onPaidEth,
                           ),
                         ],
                       ),
                     ),
-                    Positioned(
-                      bottom: 24,
+                    Expanded(
                       child: Container(
-                        margin: const EdgeInsets.only(left: 12.0),
-                        child: FanExpandableFab(
-                          radius: 120,
-                          startAngle: 90,
-                          sweepAngle: 90,
-                          icon: Icon(
-                            Icons.add_outlined,
-                            color: Theme.of(context).colorScheme.secondary,
-                            size: 24.0,
+                        padding: const EdgeInsets.only(left: 12.0, right: 12.0),
+                        constraints: BoxConstraints(maxHeight: 100.0),
+                        child: TextFormField(
+                          focusNode: viewModel.focusNode,
+                          decoration: InputDecoration(
+                            hintText: 'Type something',
+                            border: InputBorder.none,
                           ),
-                          closeIcon: Icon(
-                            Icons.close,
-                            color: Theme.of(context).colorScheme.secondary,
-                            size: 24.0,
-                          ),
-                          children: [
-                            FloatingActionButton(
-                              backgroundColor:
-                                  Theme.of(
-                                    context,
-                                  ).colorScheme.onPrimaryContainer,
-                              // elevation: 0.0,
-                              // highlightElevation: 0.0,
-                              shape: const CircleBorder(),
-                              heroTag: null,
-                              child: AIImage(
-                                AIImages.icImage,
-                                color: Theme.of(context).colorScheme.secondary,
-                                width: 20,
-                              ),
-                              onPressed: () => viewModel.onPickerImage,
-                            ),
-                            FloatingActionButton(
-                              backgroundColor:
-                                  Theme.of(
-                                    context,
-                                  ).colorScheme.onPrimaryContainer,
-                              // elevation: 0.0,
-                              // highlightElevation: 0.0,
-                              shape: const CircleBorder(),
-                              heroTag: null,
-                              child: AIImage(
-                                AIImages.icCamera,
-                                color: Theme.of(context).colorScheme.secondary,
-                                width: 20,
-                              ),
-                              onPressed: () => viewModel.onPickerVideo,
-                            ),
-                            FloatingActionButton(
-                              backgroundColor:
-                                  Theme.of(
-                                    context,
-                                  ).colorScheme.onPrimaryContainer,
-                              // elevation: 0.0,
-                              // highlightElevation: 0.0,
-                              shape: const CircleBorder(),
-                              heroTag: null,
-                              child: AIImage(
-                                AIImages.icGif,
-                                color: Theme.of(context).colorScheme.secondary,
-                                width: 20,
-                              ),
-                              onPressed: () => viewModel.onPickGif,
-                            ),
-                            FloatingActionButton(
-                              backgroundColor:
-                                  Theme.of(
-                                    context,
-                                  ).colorScheme.onPrimaryContainer,
-                              // elevation: 0.0,
-                              // highlightElevation: 0.0,
-                              shape: const CircleBorder(),
-                              heroTag: null,
-                              child: Icon(
-                                Icons.wallet,
-                                size: 28,
-                                color: Theme.of(context).colorScheme.secondary,
-                              ),
-                              onPressed: () => viewModel.onPaidEth,
-                            ),
-                          ],
+                          keyboardType: TextInputType.text,
+                          style: Theme.of(context).textTheme.bodySmall,
+                          maxLines: null,
+                          controller: viewModel.textController,
+                          onChanged: (value) => viewModel.content = value,
+                          onFieldSubmitted: (value) {
+                            if (viewModel.isShowButton) {
+                              viewModel.sendMessage();
+                            }
+                          },
+                          onSaved: (value) {
+                            logger.d('onSaved');
+                          },
+                          onEditingComplete: () {
+                            logger.d('onEditingComplete');
+                          },
                         ),
                       ),
                     ),
+                    InkWell(
+                      onTap: () {
+                        if (viewModel.isShowButton) {
+                          viewModel.sendMessage();
+                        }
+                      },
+                      child: Icon(
+                        Icons.send,
+                        color:
+                            viewModel.isShowButton
+                                ? AIColors.white
+                                : Theme.of(context).colorScheme.secondary,
+                        size: 20.0,
+                      ),
+                    ),
+                    const SizedBox(width: 8.0),
                   ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         );
       },

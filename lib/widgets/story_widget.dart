@@ -233,9 +233,9 @@ class StoryDetailDialog extends StatelessWidget {
           children: [
             NotificationListener<ScrollNotification>(
               onNotification: (notification) {
-                if (notification is ScrollEndNotification) {
-                  if (viewModel.scrollController.offset == -50) {
-                    Navigator.of(context).pop();
+                if (notification is ScrollUpdateNotification) {
+                  if (viewModel.scrollController.offset < -50) {
+                    viewModel.popupDialog();
                   }
                   return false;
                 }
@@ -245,281 +245,275 @@ class StoryDetailDialog extends StatelessWidget {
                 resizeToAvoidBottomInset: true,
                 body: SingleChildScrollView(
                   controller: viewModel.scrollController,
-                  physics: ClampingScrollPhysics(),
-                  child: AppBackgroundView(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 20.0,
-                            vertical: 8.0,
-                          ),
-                          decoration: BoxDecoration(
-                            border: Border(
-                              top: BorderSide(
-                                color: AIColors.speraterColor,
-                                width: 0.33,
-                              ),
+                  physics: BouncingScrollPhysics(),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 20.0,
+                          vertical: 8.0,
+                        ),
+                        decoration: BoxDecoration(
+                          border: Border(
+                            top: BorderSide(
+                              color: AIColors.speraterColor,
+                              width: 0.33,
                             ),
                           ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              if (viewModel.story.text != null &&
-                                  AIHelpers.removeFirstBr(
-                                        viewModel.story.text!,
-                                      ) !=
-                                      '<p></p>')
-                                AIHelpers.htmlRender(viewModel.story.text),
-                              if ((viewModel.story.medias ?? [])
-                                  .isNotEmpty) ...{
-                                const SizedBox(height: 8.0),
-                                StoryDialogMediaView(),
-                              },
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            if (viewModel.story.text != null &&
+                                AIHelpers.removeFirstBr(
+                                      viewModel.story.text!,
+                                    ) !=
+                                    '<p></p>')
+                              AIHelpers.htmlRender(viewModel.story.text),
+                            if ((viewModel.story.medias ?? []).isNotEmpty) ...{
                               const SizedBox(height: 8.0),
-                              Text(
-                                viewModel.story.shownHMDate,
-                                style: Theme.of(context).textTheme.labelMedium,
-                              ),
-                              Divider(
-                                thickness: 0.2,
-                                height: 24.0,
-                                color: AIColors.speraterColor,
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  InkWell(
-                                    onTap: viewModel.updateLike,
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        AIImage(
-                                          viewModel.story.isLike()
-                                              ? AIImages.icFavoriteFill
-                                              : AIImages.icFavorite,
-                                          width: 16.0,
-                                          height: 16.0,
-                                        ),
-                                        const SizedBox(width: 8.0),
-                                        Text.rich(
-                                          TextSpan(
-                                            children: [
-                                              TextSpan(
-                                                text:
-                                                    '${(viewModel.story.likes ?? []).length}',
-                                                style:
-                                                    Theme.of(
-                                                      context,
-                                                    ).textTheme.bodyMedium,
-                                              ),
-                                              TextSpan(
-                                                text: '  Likes  ',
-                                                style:
-                                                    Theme.of(
-                                                      context,
-                                                    ).textTheme.labelMedium,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  InkWell(
-                                    onTap: viewModel.updateFollow,
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        AIImage(
-                                          AIImages.icFollow,
-                                          width: 20.0,
-                                          height: 20.0,
-                                          color:
-                                              viewModel.story.isFollow()
-                                                  ? AIColors.green
-                                                  : null,
-                                        ),
-                                        const SizedBox(width: 8.0),
-                                        Text.rich(
-                                          TextSpan(
-                                            children: [
-                                              TextSpan(
-                                                text:
-                                                    '${(viewModel.story.follows ?? []).length}',
-                                                style:
-                                                    Theme.of(
-                                                      context,
-                                                    ).textTheme.bodyMedium,
-                                              ),
-                                              TextSpan(
-                                                text: '  Followers',
-                                                style:
-                                                    Theme.of(
-                                                      context,
-                                                    ).textTheme.labelMedium,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  if (viewModel.isMine) SizedBox(width: 12),
-                                  if (viewModel.isMine)
-                                    InkWell(
-                                      onTap: viewModel.onClickSaveToLookBook,
-                                      child: Container(
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: 12,
-                                          vertical: 4,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: AIColors.pink,
-                                          borderRadius: BorderRadius.circular(
-                                            12.0,
-                                          ),
-                                        ),
-                                        alignment: Alignment.center,
-                                        child: Text(
-                                          'Save to LOOKBOOK',
-                                          style: TextStyle(
-                                            fontSize: 12.0,
-                                            color: AIColors.white,
-                                          ),
+                              StoryDialogMediaView(),
+                            },
+                            const SizedBox(height: 8.0),
+                            Text(
+                              viewModel.story.shownHMDate,
+                              style: Theme.of(context).textTheme.labelMedium,
+                            ),
+                            Divider(
+                              thickness: 0.2,
+                              height: 24.0,
+                              color: AIColors.speraterColor,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                InkWell(
+                                  onTap: viewModel.updateLike,
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      AIImage(
+                                        viewModel.story.isLike()
+                                            ? AIImages.icFavoriteFill
+                                            : AIImages.icFavorite,
+                                        width: 16.0,
+                                        height: 16.0,
+                                      ),
+                                      const SizedBox(width: 8.0),
+                                      Text.rich(
+                                        TextSpan(
+                                          children: [
+                                            TextSpan(
+                                              text:
+                                                  '${(viewModel.story.likes ?? []).length}',
+                                              style:
+                                                  Theme.of(
+                                                    context,
+                                                  ).textTheme.bodyMedium,
+                                            ),
+                                            TextSpan(
+                                              text: '  Likes  ',
+                                              style:
+                                                  Theme.of(
+                                                    context,
+                                                  ).textTheme.labelMedium,
+                                            ),
+                                          ],
                                         ),
                                       ),
-                                    ),
-                                ],
-                              ),
-                              Divider(
-                                thickness: 0.2,
-                                height: 24.0,
-                                color: AIColors.speraterColor,
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  if (viewModel.story.category != null &&
-                                      viewModel.story.category == 'vote') ...{
-                                    InkWell(
-                                      onTap: () {
-                                        viewModel.actionType('vote');
-                                      },
-                                      child: AIImage(
-                                        viewModel.isVote
-                                            ? AIImages.icYayFill
-                                            : AIImages.icYayOutline,
-                                        color:
-                                            viewModel.isVote
-                                                ? AIColors.pink
-                                                : AIColors.grey,
+                                    ],
+                                  ),
+                                ),
+                                InkWell(
+                                  onTap: viewModel.updateFollow,
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      AIImage(
+                                        AIImages.icFollow,
                                         width: 20.0,
                                         height: 20.0,
+                                        color:
+                                            viewModel.story.isFollow()
+                                                ? AIColors.green
+                                                : null,
+                                      ),
+                                      const SizedBox(width: 8.0),
+                                      Text.rich(
+                                        TextSpan(
+                                          children: [
+                                            TextSpan(
+                                              text:
+                                                  '${(viewModel.story.follows ?? []).length}',
+                                              style:
+                                                  Theme.of(
+                                                    context,
+                                                  ).textTheme.bodyMedium,
+                                            ),
+                                            TextSpan(
+                                              text: '  Followers',
+                                              style:
+                                                  Theme.of(
+                                                    context,
+                                                  ).textTheme.labelMedium,
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                if (viewModel.isMine) SizedBox(width: 12),
+                                if (viewModel.isMine)
+                                  InkWell(
+                                    onTap: viewModel.onClickSaveToLookBook,
+                                    child: Container(
+                                      padding: EdgeInsets.symmetric(
+                                        horizontal: 12,
+                                        vertical: 4,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: AIColors.pink,
+                                        borderRadius: BorderRadius.circular(
+                                          12.0,
+                                        ),
+                                      ),
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        'Save to LOOKBOOK',
+                                        style: TextStyle(
+                                          fontSize: 12.0,
+                                          color: AIColors.white,
+                                        ),
                                       ),
                                     ),
-                                  },
+                                  ),
+                              ],
+                            ),
+                            Divider(
+                              thickness: 0.2,
+                              height: 24.0,
+                              color: AIColors.speraterColor,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceAround,
+                              children: [
+                                if (viewModel.story.category != null &&
+                                    viewModel.story.category == 'vote') ...{
                                   InkWell(
                                     onTap: () {
-                                      viewModel.actionType('comment');
-                                      // viewModel.addComment();
+                                      viewModel.actionType('vote');
                                     },
                                     child: AIImage(
-                                      AIImages.icCommit,
+                                      viewModel.isVote
+                                          ? AIImages.icYayFill
+                                          : AIImages.icYayOutline,
                                       color:
-                                          viewModel.isComment
+                                          viewModel.isVote
                                               ? AIColors.pink
                                               : AIColors.grey,
                                       width: 20.0,
                                       height: 20.0,
                                     ),
                                   ),
-                                  InkWell(
-                                    onTap: viewModel.onClickRepost,
-                                    child: AIImage(
-                                      AIImages.icRetwitter,
-                                      width: 20.0,
-                                      height: 20.0,
-                                    ),
+                                },
+                                InkWell(
+                                  onTap: () {
+                                    viewModel.actionType('comment');
+                                    // viewModel.addComment();
+                                  },
+                                  child: AIImage(
+                                    AIImages.icCommit,
+                                    color:
+                                        viewModel.isComment
+                                            ? AIColors.pink
+                                            : AIColors.grey,
+                                    width: 20.0,
+                                    height: 20.0,
                                   ),
-                                  InkWell(
-                                    onTap: () {},
-                                    child: AIImage(
-                                      AIImages.icShare,
-                                      width: 20.0,
-                                      height: 20.0,
-                                    ),
+                                ),
+                                InkWell(
+                                  onTap: viewModel.onClickRepost,
+                                  child: AIImage(
+                                    AIImages.icRetwitter,
+                                    width: 20.0,
+                                    height: 20.0,
                                   ),
-                                ],
-                              ),
-                              Divider(
-                                thickness: 0.2,
-                                height: 24.0,
-                                color: AIColors.speraterColor,
-                              ),
-                            ],
-                          ),
+                                ),
+                                InkWell(
+                                  onTap: () {},
+                                  child: AIImage(
+                                    AIImages.icShare,
+                                    width: 20.0,
+                                    height: 20.0,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            Divider(
+                              thickness: 0.2,
+                              height: 24.0,
+                              color: AIColors.speraterColor,
+                            ),
+                          ],
                         ),
+                      ),
 
-                        if (viewModel.isVote) ...{
-                          if ((viewModel.story.votes?.isEmpty ?? true)) ...{
-                            StoryListEmptyView(
-                              description:
-                                  'On click on that open tastescore tab!',
-                            ),
-                          } else ...{
-                            for (var vote
-                                in (viewModel.story.votes?.reversed.toList() ??
-                                    [])) ...{
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 16.0,
-                                  vertical: 4.0,
-                                ),
-                                child: VotedUserCell(voteModel: vote),
+                      if (viewModel.isVote) ...{
+                        if ((viewModel.story.votes?.isEmpty ?? true)) ...{
+                          StoryListEmptyView(
+                            description:
+                                'On click on that open tastescore tab!',
+                          ),
+                        } else ...{
+                          for (var vote
+                              in (viewModel.story.votes?.reversed.toList() ??
+                                  [])) ...{
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16.0,
+                                vertical: 4.0,
                               ),
-                            },
+                              child: VotedUserCell(voteModel: vote),
+                            ),
                           },
                         },
-                        if (viewModel.isComment) ...{
-                          if ((viewModel.story.comments?.isEmpty ?? true)) ...{
-                            StoryListEmptyView(
-                              description: 'Nobody had commented yet!',
-                            ),
-                            // SizedBox(
-                            //   height: MediaQuery.of(context).viewInsets.bottom,
-                            // ),
-                          } else ...{
-                            for (var comment
-                                in (viewModel.story.comments?.reversed
-                                        .toList() ??
-                                    [])) ...{
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 16.0,
-                                  vertical: 4.0,
-                                ),
-                                child: StoryDetailCommentCell(
-                                  key: GlobalKey(
-                                    debugLabel:
-                                        '${comment.userId} - ${viewModel.story.comments?.reversed.toList().indexOf(comment)}',
-                                  ),
-                                  comment: comment,
-                                  isLast:
-                                      (viewModel.story.comments ?? []).length ==
-                                      comment,
-                                ),
+                      },
+                      if (viewModel.isComment) ...{
+                        if ((viewModel.story.comments?.isEmpty ?? true)) ...{
+                          StoryListEmptyView(
+                            description: 'Nobody had commented yet!',
+                          ),
+                          // SizedBox(
+                          //   height: MediaQuery.of(context).viewInsets.bottom,
+                          // ),
+                        } else ...{
+                          for (var comment
+                              in (viewModel.story.comments?.reversed.toList() ??
+                                  [])) ...{
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 16.0,
+                                vertical: 4.0,
                               ),
-                            },
+                              child: StoryDetailCommentCell(
+                                key: GlobalKey(
+                                  debugLabel:
+                                      '${comment.userId} - ${viewModel.story.comments?.reversed.toList().indexOf(comment)}',
+                                ),
+                                comment: comment,
+                                isLast:
+                                    (viewModel.story.comments ?? []).length ==
+                                    comment,
+                              ),
+                            ),
                           },
-                          const SizedBox(height: 20),
                         },
-                        SizedBox(height: 198.0),
-                      ],
-                    ),
+                        const SizedBox(height: 20),
+                      },
+                      SizedBox(height: 198.0),
+                    ],
                   ),
                 ),
               ),
@@ -536,163 +530,161 @@ class StoryDetailDialog extends StatelessWidget {
                 bottom: MediaQuery.of(context).viewInsets.bottom,
                 left: 0,
                 right: 0,
-                child: AppBackgroundView(
-                  child: Container(
-                    padding: EdgeInsets.only(
-                      left: 12.0,
-                      right: 12.0,
-                      bottom: MediaQuery.of(context).padding.bottom,
-                    ),
-                    decoration: BoxDecoration(
-                      // color: Theme.of(context).colorScheme.onSecondary,
-                      border: Border(
-                        top: BorderSide(
-                          color: AIColors.speraterColor,
-                          width: 0.33,
-                        ),
+                child: Container(
+                  padding: EdgeInsets.only(
+                    left: 12.0,
+                    right: 12.0,
+                    bottom: MediaQuery.of(context).padding.bottom,
+                  ),
+                  decoration: BoxDecoration(
+                    // color: Theme.of(context).colorScheme.onSecondary,
+                    border: Border(
+                      top: BorderSide(
+                        color: AIColors.speraterColor,
+                        width: 0.33,
                       ),
                     ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Row(
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Row(
+                        children: [
+                          IconButton(
+                            onPressed: () {},
+                            icon: AIImage(
+                              AIImages.icImage,
+                              color: AIColors.grey,
+                              width: 20,
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: () {},
+                            icon: AIImage(
+                              AIImages.icCamera,
+                              color: AIColors.grey,
+                              width: 20,
+                            ),
+                          ),
+                          Expanded(
+                            child: QuillSimpleToolbar(
+                              controller: viewModel.quillController,
+                              config: QuillSimpleToolbarConfig(
+                                toolbarIconAlignment: WrapAlignment.start,
+                                showDividers: false,
+                                showFontFamily: false,
+                                showFontSize: false,
+                                showColorButton: false,
+                                showBackgroundColorButton: false,
+                                showHeaderStyle: false,
+                                showCodeBlock: false,
+                                showInlineCode: false,
+                                showIndent: false,
+                                showSearchButton: false,
+                                showUndo: false,
+                                showRedo: false,
+                                showQuote: false,
+                                showSubscript: false,
+                                showSuperscript: false,
+                                showListCheck: false,
+                                showClearFormat: false,
+                                showAlignmentButtons: false,
+                                showCenterAlignment: false,
+                                showLeftAlignment: false,
+                                showLink: false,
+                                showJustifyAlignment: false,
+                                showRightAlignment: false,
+                                showListNumbers: false,
+                                showListBullets: false,
+                                showStrikeThrough: false,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Container(
+                        padding: const EdgeInsets.only(
+                          left: 12.0,
+                          right: 12.0,
+                          // bottom: 8.0,
+                        ),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(24.0),
+                          border: Border.all(color: AIColors.speraterColor),
+                        ),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            IconButton(
-                              onPressed: () {},
-                              icon: AIImage(
-                                AIImages.icImage,
-                                color: AIColors.grey,
-                                width: 20,
-                              ),
-                            ),
-                            IconButton(
-                              onPressed: () {},
-                              icon: AIImage(
-                                AIImages.icCamera,
-                                color: AIColors.grey,
-                                width: 20,
-                              ),
-                            ),
                             Expanded(
-                              child: QuillSimpleToolbar(
+                              child: QuillEditor(
+                                focusNode: viewModel.focusNode,
+                                scrollController:
+                                    viewModel.quillScrollController,
                                 controller: viewModel.quillController,
-                                config: QuillSimpleToolbarConfig(
-                                  toolbarIconAlignment: WrapAlignment.start,
-                                  showDividers: false,
-                                  showFontFamily: false,
-                                  showFontSize: false,
-                                  showColorButton: false,
-                                  showBackgroundColorButton: false,
-                                  showHeaderStyle: false,
-                                  showCodeBlock: false,
-                                  showInlineCode: false,
-                                  showIndent: false,
-                                  showSearchButton: false,
-                                  showUndo: false,
-                                  showRedo: false,
-                                  showQuote: false,
-                                  showSubscript: false,
-                                  showSuperscript: false,
-                                  showListCheck: false,
-                                  showClearFormat: false,
-                                  showAlignmentButtons: false,
-                                  showCenterAlignment: false,
-                                  showLeftAlignment: false,
-                                  showLink: false,
-                                  showJustifyAlignment: false,
-                                  showRightAlignment: false,
-                                  showListNumbers: false,
-                                  showListBullets: false,
-                                  showStrikeThrough: false,
+
+                                config: QuillEditorConfig(
+                                  autoFocus: false,
+                                  expands: false,
+                                  placeholder: 'Comments...',
+
+                                  padding: const EdgeInsets.all(16),
+                                  customStyles: DefaultStyles(
+                                    placeHolder: DefaultTextBlockStyle(
+                                      TextStyle(
+                                        fontSize: 16,
+                                        color: AIColors.grey,
+                                      ),
+                                      HorizontalSpacing.zero,
+                                      VerticalSpacing.zero,
+                                      VerticalSpacing.zero,
+                                      null,
+                                    ),
+                                    paragraph: DefaultTextBlockStyle(
+                                      TextStyle(
+                                        fontSize: 16,
+                                        color:
+                                            Theme.of(
+                                              context,
+                                            ).colorScheme.onPrimary,
+                                      ),
+                                      HorizontalSpacing.zero,
+                                      VerticalSpacing.zero,
+                                      VerticalSpacing.zero,
+                                      null,
+                                    ),
+                                  ),
+
+                                  // customize other styles if needed
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                left: 8.0,
+                                bottom: 8.0,
+                              ),
+                              child: Container(
+                                width: 30.0,
+                                height: 30.0,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  color: AIColors.pink,
+                                  borderRadius: BorderRadius.circular(15.0),
+                                ),
+                                child: IconButton(
+                                  onPressed: viewModel.sendComment,
+                                  icon: Icon(
+                                    Icons.arrow_upward_outlined,
+                                    color: AIColors.white,
+                                    size: 15.0,
+                                  ),
                                 ),
                               ),
                             ),
                           ],
                         ),
-                        Container(
-                          padding: const EdgeInsets.only(
-                            left: 12.0,
-                            right: 12.0,
-                            // bottom: 8.0,
-                          ),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(24.0),
-                            border: Border.all(color: AIColors.speraterColor),
-                          ),
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Expanded(
-                                child: QuillEditor(
-                                  focusNode: viewModel.focusNode,
-                                  scrollController:
-                                      viewModel.quillScrollController,
-                                  controller: viewModel.quillController,
-
-                                  config: QuillEditorConfig(
-                                    autoFocus: false,
-                                    expands: false,
-                                    placeholder: 'Comments...',
-
-                                    padding: const EdgeInsets.all(16),
-                                    customStyles: DefaultStyles(
-                                      placeHolder: DefaultTextBlockStyle(
-                                        TextStyle(
-                                          fontSize: 16,
-                                          color: AIColors.grey,
-                                        ),
-                                        HorizontalSpacing.zero,
-                                        VerticalSpacing.zero,
-                                        VerticalSpacing.zero,
-                                        null,
-                                      ),
-                                      paragraph: DefaultTextBlockStyle(
-                                        TextStyle(
-                                          fontSize: 16,
-                                          color:
-                                              Theme.of(
-                                                context,
-                                              ).colorScheme.onPrimary,
-                                        ),
-                                        HorizontalSpacing.zero,
-                                        VerticalSpacing.zero,
-                                        VerticalSpacing.zero,
-                                        null,
-                                      ),
-                                    ),
-
-                                    // customize other styles if needed
-                                  ),
-                                ),
-                              ),
-                              Padding(
-                                padding: const EdgeInsets.only(
-                                  left: 8.0,
-                                  bottom: 8.0,
-                                ),
-                                child: Container(
-                                  width: 30.0,
-                                  height: 30.0,
-                                  alignment: Alignment.center,
-                                  decoration: BoxDecoration(
-                                    color: AIColors.pink,
-                                    borderRadius: BorderRadius.circular(15.0),
-                                  ),
-                                  child: IconButton(
-                                    onPressed: viewModel.sendComment,
-                                    icon: Icon(
-                                      Icons.arrow_upward_outlined,
-                                      color: AIColors.white,
-                                      size: 15.0,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),

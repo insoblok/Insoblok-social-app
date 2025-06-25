@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:stacked/stacked.dart';
+import 'package:syncfusion_flutter_gauges/gauges.dart';
 
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/providers/providers.dart';
@@ -31,17 +32,97 @@ class TastescorePage extends StatelessWidget {
               Column(
                 spacing: 8.0,
                 children: [
-                  Text(
-                    '${viewModel.totalScore} XP',
-                    style: TextStyle(
-                      fontSize: 36.0,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  Text(
-                    'Gain points by\nvoting\'s new looks',
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.bodyLarge,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    children: [
+                      SizedBox(
+                        width: 60.0,
+                        child: Column(
+                          spacing: 12.0,
+                          children: [
+                            AIImage(AIImages.icFire, width: 24.0, height: 24.0),
+                            Text(
+                              '${viewModel.todayScore} XP',
+                              style: Theme.of(context).textTheme.headlineLarge,
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        width: 200.0,
+                        height: 200.0,
+                        child: SfRadialGauge(
+                          axes: <RadialAxis>[
+                            RadialAxis(
+                              minimum:
+                                  (viewModel.userLevel.min ?? 0).toDouble(),
+                              maximum:
+                                  (viewModel.userLevel.max ?? 0).toDouble(),
+                              pointers: <GaugePointer>[],
+                              showLabels: false,
+                              showTicks: false,
+                              showFirstLabel: true,
+                              showLastLabel: true,
+                              ranges: <GaugeRange>[
+                                GaugeRange(
+                                  startValue:
+                                      (viewModel.userLevel.min ?? 0).toDouble(),
+                                  endValue: viewModel.totalScore.toDouble(),
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                                GaugeRange(
+                                  startValue: viewModel.totalScore.toDouble(),
+                                  endValue:
+                                      (viewModel.userLevel.max ?? 0).toDouble(),
+                                  color: Colors.grey,
+                                ),
+                              ],
+                              annotations: <GaugeAnnotation>[
+                                GaugeAnnotation(
+                                  widget: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      Text('Your', textAlign: TextAlign.center),
+                                      Text(
+                                        'Tastescore'.toUpperCase(),
+                                        textAlign: TextAlign.center,
+                                        style:
+                                            Theme.of(
+                                              context,
+                                            ).textTheme.titleSmall,
+                                      ),
+                                      Text(
+                                        '${viewModel.totalScore}',
+                                        style: TextStyle(
+                                          fontSize: 36.0,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                      SizedBox(
+                        width: 60.0,
+                        child: Column(
+                          spacing: 12.0,
+                          children: [
+                            Icon(
+                              Icons.trending_up,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                            Text(
+                              'Top ${100 - viewModel.userRank + 1}%\nglobally',
+                              textAlign: TextAlign.center,
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -154,6 +235,7 @@ class TastescorePage extends StatelessWidget {
                     if ((viewModel.userLevel.level ?? 0) < 5) ...{
                       LinearProgressIndicator(
                         value: viewModel.indicatorValue,
+                        backgroundColor: AIColors.pink.withAlpha(32),
                         minHeight: 16.0,
                         borderRadius: BorderRadius.circular(8.0),
                       ),
@@ -196,14 +278,14 @@ class TastescorePage extends StatelessWidget {
                         value: viewModel.rankIndicatorValue,
                         minHeight: 16.0,
                         color: AIColors.blue,
-                        backgroundColor: AIColors.lightBlueBackground,
+                        backgroundColor: AIColors.blue.withAlpha(32),
                         borderRadius: BorderRadius.circular(8.0),
                       ),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text(
-                            'Top ${viewModel.userRank} %',
+                            'Top ${100 - viewModel.userRank + 1} %',
                             style: Theme.of(context).textTheme.labelSmall,
                           ),
                           Text(

@@ -35,11 +35,11 @@ class AccountWalletProvider extends InSoBlokViewModel {
 
     await runBusyFuture(() async {
       try {
-        var req = await reownService.onShowTransferModal(context);
-        if (req?.recipientAddress != null) {
-          var result = await reownService.ethSendTransaction(req: req!);
-          logger.d(result);
-        }
+        // var req = await reownService.onShowTransferModal(context);
+        // if (req?.recipientAddress != null) {
+        //   var result = await reownService.ethSendTransaction(req: req!);
+        //   logger.d(result);
+        // }
       } catch (e) {
         logger.e(e);
       } finally {
