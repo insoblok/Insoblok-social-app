@@ -63,7 +63,7 @@ class MessageSettingPage extends StatelessWidget {
                         children: [
                           Text(
                             kMessageSetting[i]['title'] ?? '',
-                            style: Theme.of(context).textTheme.bodySmall,
+                            style: Theme.of(context).textTheme.headlineMedium,
                           ),
                           CupertinoSwitch(value: true, onChanged: (value) {}),
                         ],

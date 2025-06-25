@@ -20,7 +20,7 @@ class AIColors {
   static Color shadowDarkColor = Colors.black26;
 
   static Color darkBackground = Color(0xFF1F1F1F);
-  static Color lightBackground = Color(0xffffffff);
+  static Color lightBackground = Color(0xfff8f8f8);
 
   static Color greyTextColor = Color(0xFF687684);
 
@@ -33,8 +33,6 @@ class AIColors {
   static Color lightGreyBackground = Color(0xFFE7ECF0);
 
   static Color speraterColor = Color(0xFFCED5DC);
-
-  static Color lightBlueBackground = Color.fromARGB(255, 159, 185, 224);
 
   static Color white = Color(0xFFFFFFFF);
   static Color black = Color(0xFF141619);

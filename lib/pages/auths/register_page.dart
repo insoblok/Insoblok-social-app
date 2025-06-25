@@ -21,12 +21,8 @@ class RegisterPage extends StatelessWidget {
       builder: (context, viewModel, _) {
         return Scaffold(
           appBar: AppBar(title: Text('Register'), centerTitle: true),
-          body: SingleChildScrollView(
+          body: SafeArea(
             child: Container(
-              height:
-                  MediaQuery.of(context).size.height -
-                  MediaQuery.of(context).viewPadding.top -
-                  MediaQuery.of(context).viewPadding.bottom,
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
               child: Column(
                 mainAxisSize: MainAxisSize.min,

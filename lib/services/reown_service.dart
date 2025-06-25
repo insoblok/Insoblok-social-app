@@ -1,14 +1,14 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
-import 'package:insoblok/extensions/extensions.dart';
-import 'package:insoblok/models/models.dart';
-import 'package:insoblok/widgets/widgets.dart';
 
 import 'package:reown_appkit/reown_appkit.dart';
 
+import 'package:insoblok/extensions/extensions.dart';
+import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
+import 'package:insoblok/widgets/widgets.dart';
 
 enum SupportedMethods {
   personalSign,
@@ -114,12 +114,15 @@ class ReownService {
   }
 
   bool get isConnected => appKitModel.isConnected;
+  // bool get isConnected => true;
 
   String? get chainID => appKitModel.selectedChain?.chainId;
   String? get namespace =>
       chainID == null ? null : NamespaceUtils.getNamespaceFromChain(chainID!);
+
   String? get walletAddress =>
       namespace == null ? null : appKitModel.session?.getAddress(namespace!);
+  // String? get walletAddress => '0xffffffffffffffffffffffffffffffffffffffff';
 
   DeployedContract? get deployedContract =>
       walletAddress == null

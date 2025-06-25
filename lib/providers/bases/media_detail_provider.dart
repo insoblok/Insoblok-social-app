@@ -1,6 +1,15 @@
 import 'package:flutter/material.dart';
 
+import 'package:fluttertoast/fluttertoast.dart';
+
+import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
+
+final kMediaDetailIconData = [
+  {'title': 'Remix', 'icon': AIImages.icBottomLook},
+  {'title': 'Repost', 'icon': AIImages.icRetwitter},
+  {'title': 'Boost', 'icon': AIImages.icMenuMoments},
+];
 
 class MediaDetailModel {
   final List<String> medias;
@@ -42,4 +51,51 @@ class MediaDetailProvider extends InSoBlokViewModel {
       controller.jumpToPage(index);
     });
   }
+
+  void onClickActionButton(int index) {
+    switch (index) {
+      case 0:
+        onEventRemix();
+      case 1:
+        onEventRepost();
+      case 2:
+        onEventBoost();
+    }
+  }
+
+  bool _isRemixing = false;
+  bool get isRemixing => _isRemixing;
+  set isRemixing(bool f) {
+    _isRemixing = f;
+    notifyListeners();
+  }
+
+  Future<void> onEventRemix() async {
+    if (isBusy) return;
+    clearErrors();
+
+    isRemixing = true;
+    await runBusyFuture(() async {
+      try {
+        var result = await NetworkUtil.getVTOEditImage(
+          model: _medias[index],
+          clothingType: 'auto',
+          prompt: 'Change the garment color to blue',
+        );
+      } catch (e) {
+        setError(e);
+        logger.e(e);
+      } finally {
+        isRemixing = false;
+      }
+    }());
+
+    if (hasError) {
+      Fluttertoast.showToast(msg: modelError.toString());
+    }
+  }
+
+  Future<void> onEventRepost() async {}
+
+  Future<void> onEventBoost() async {}
 }

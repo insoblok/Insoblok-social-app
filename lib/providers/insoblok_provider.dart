@@ -73,7 +73,7 @@ class InSoBlokProvider extends InSoBlokViewModel {
         Routers.goToHelpCenterPage(context);
         break;
       case 8:
-        _appProvider.updateTheme();
+        // _appProvider.updateTheme();
         break;
       case 9:
         break;

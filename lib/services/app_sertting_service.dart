@@ -70,7 +70,7 @@ class AppSettingService with ListenableServiceMixin {
     scaffoldBackgroundColor: AIColors.lightBackground,
     useMaterial3: true,
     appBarTheme: AppBarTheme(
-      backgroundColor: AIColors.lightBackground,
+      backgroundColor: AIColors.white,
       toolbarHeight: 45.0,
       iconTheme: IconThemeData(color: AIColors.lightIconColor),
       titleTextStyle: TextStyle(
@@ -81,12 +81,13 @@ class AppSettingService with ListenableServiceMixin {
       ),
     ),
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
-      backgroundColor: AIColors.lightBackground,
+      backgroundColor: AIColors.white,
       selectedItemColor: AIColors.pink,
       unselectedItemColor: AIColors.grey,
       showSelectedLabels: false,
       showUnselectedLabels: false,
       type: BottomNavigationBarType.fixed,
+      elevation: 3.0,
     ),
     textTheme: TextTheme(
       titleLarge: TextStyle(
@@ -189,7 +190,7 @@ class AppSettingService with ListenableServiceMixin {
     scaffoldBackgroundColor: AIColors.darkBackground,
     useMaterial3: true,
     appBarTheme: AppBarTheme(
-      backgroundColor: AIColors.darkBackground,
+      backgroundColor: AIColors.black,
       toolbarHeight: 45.0,
       iconTheme: IconThemeData(color: AIColors.darkIconColor),
       titleTextStyle: TextStyle(
@@ -200,11 +201,12 @@ class AppSettingService with ListenableServiceMixin {
       ),
     ),
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
-      backgroundColor: AIColors.darkBackground,
+      backgroundColor: AIColors.black,
       selectedItemColor: AIColors.pink,
       unselectedItemColor: AIColors.grey,
       showSelectedLabels: false,
       showUnselectedLabels: false,
+      elevation: 3.0,
       type: BottomNavigationBarType.fixed,
     ),
     textTheme: TextTheme(
