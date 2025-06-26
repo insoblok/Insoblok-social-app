@@ -39,6 +39,17 @@ class UserProvider extends InSoBlokViewModel {
     }
   }
 
+  Color getRankColor(int pos) {
+    if (pos == 0) {
+      return AIColors.gold;
+    } else if (pos == 1) {
+      return AIColors.silver;
+    } else if (pos == 2) {
+      return AIColors.bronze;
+    }
+    return Theme.of(context).colorScheme.secondary.withAlpha(16);
+  }
+
   Future<void> goToDetailPage() async {
     if (isBusy) return;
     clearErrors();

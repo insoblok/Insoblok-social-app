@@ -1,6 +1,7 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:insoblok/widgets/linear_progress_widget.dart';
 import 'package:insoblok/widgets/widgets.dart';
 
 import 'package:stacked/stacked.dart';
@@ -117,10 +118,10 @@ class AccountRewardPage extends StatelessWidget {
                       ),
                       if ((viewModel.userLevel.level ?? 0) < 5) ...{
                         const SizedBox(height: 2.0),
-                        LinearProgressIndicator(
+                        AnimatiedLinearProgressIndicator(
                           value: viewModel.indicatorValue,
                           minHeight: 8.0,
-                          borderRadius: BorderRadius.circular(4.0),
+                          borderRadius: 4.0,
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -136,6 +137,135 @@ class AccountRewardPage extends StatelessWidget {
                           ],
                         ),
                       },
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 8),
+                Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16.0,
+                    vertical: 12.0,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.secondary.withAlpha(16),
+                    borderRadius: BorderRadius.circular(8.0),
+                  ),
+                  child: Column(
+                    spacing: 12.0,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Expanded(
+                            child: SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                spacing: 4,
+                                children: [
+                                  for (XpInSoModel inSoModel
+                                      in (AppSettingHelper
+                                              .appSettingModel
+                                              ?.xpInso ??
+                                          [])) ...{
+                                    InkWell(
+                                      onTap: () {
+                                        viewModel.selectXpInSo = inSoModel;
+                                      },
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 16.0,
+                                          vertical: 4.0,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color:
+                                              viewModel.selectXpInSo ==
+                                                      inSoModel
+                                                  ? AIColors.pink
+                                                  : Theme.of(context)
+                                                      .colorScheme
+                                                      .secondary
+                                                      .withAlpha(16),
+                                          borderRadius: BorderRadius.circular(
+                                            8.0,
+                                          ),
+                                        ),
+                                        child: Text(
+                                          '${inSoModel.min}',
+                                          style: TextStyle(
+                                            color:
+                                                viewModel.selectXpInSo ==
+                                                        inSoModel
+                                                    ? AIColors.white
+                                                    : Theme.of(
+                                                      context,
+                                                    ).colorScheme.onPrimary,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  },
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      Column(
+                        children: [
+                          Padding(
+                            padding: const EdgeInsets.only(bottom: 8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Row(
+                                  children: [
+                                    Text(
+                                      '${viewModel.selectXpInSo?.min ?? 0}',
+                                      style: TextStyle(
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+
+                                    Text(
+                                      '  XP',
+                                      style: TextStyle(fontSize: 16),
+                                    ),
+                                  ],
+                                ),
+                                Text('to', style: TextStyle(fontSize: 16)),
+                                Row(
+                                  children: [
+                                    Text(
+                                      '${viewModel.convertedInSo()}',
+                                      style: TextStyle(
+                                        fontSize: 24,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Text(
+                                      '  INSO',
+                                      style: TextStyle(fontSize: 16),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                          TextFillButton(
+                            onTap: () {},
+                            height: 36,
+                            isBusy: viewModel.isBusy,
+                            color: Theme.of(context).primaryColor,
+                            text: 'Convert XP to INSO',
+                          ),
+                        ],
+                      ),
                     ],
                   ),
                 ),

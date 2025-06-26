@@ -51,4 +51,8 @@ class AIColors {
   static Color yellow = const Color.fromARGB(255, 214, 195, 18);
   static Color lightYellow = Color(0xFFE38734);
   static Color lightTeal = Color(0xFF91EAE4);
+
+  static Color gold = Color(0xFFFFD700);
+  static Color silver = Color(0xFFC0C0C0);
+  static Color bronze = Color(0xFFCD7F32);
 }

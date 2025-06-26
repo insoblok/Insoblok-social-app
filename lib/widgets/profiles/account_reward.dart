@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:insoblok/widgets/linear_progress_widget.dart';
 
 import 'package:stacked/stacked.dart';
 
@@ -89,7 +90,7 @@ class AccountXPDashboardView extends ViewModelWidget<AccountProvider> {
                       ),
                       if ((viewModel.userLevel.level ?? 0) < 5) ...{
                         const SizedBox(height: 2.0),
-                        LinearProgressIndicator(
+                        AnimatiedLinearProgressIndicator(
                           value: viewModel.indicatorValue,
                         ),
                         Row(

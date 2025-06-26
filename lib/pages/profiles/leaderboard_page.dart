@@ -81,6 +81,7 @@ class LeaderboardPage extends StatelessWidget {
                     ),
                     userId: user.id,
                     score: value,
+                    cellIndex: i,
                   );
                 },
                 separatorBuilder: (context, i) {
