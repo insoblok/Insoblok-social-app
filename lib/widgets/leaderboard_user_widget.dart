@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:insoblok/utils/color.dart';
 
 import 'package:stacked/stacked.dart';
 
@@ -11,11 +12,13 @@ const kUserAvatarSize = 56.0;
 class LeaderboardUserView extends StatelessWidget {
   final String userId;
   final int score;
+  final int cellIndex;
 
   const LeaderboardUserView({
     super.key,
     required this.userId,
     required this.score,
+    required this.cellIndex,
   });
 
   @override
@@ -26,87 +29,107 @@ class LeaderboardUserView extends StatelessWidget {
       builder: (context, viewModel, _) {
         var userData = viewModel.owner;
         return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 8.0),
+          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
           child: InkWell(
             onTap: viewModel.goToTastescorePage,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                userData == null
-                    ? ShimmerContainer(
-                      child: Container(
+            child: Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16.0,
+                vertical: 12.0,
+              ),
+              decoration: BoxDecoration(
+                color: viewModel.getRankColor(cellIndex),
+                borderRadius: BorderRadius.circular(12.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSecondary.withAlpha(16),
+                    spreadRadius: 3,
+                    blurRadius: 5,
+                    offset: Offset(0, 1), // changes position of shadow
+                  ),
+                ],
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  userData == null
+                      ? ShimmerContainer(
+                        child: Container(
+                          width: kUserAvatarSize,
+                          height: kUserAvatarSize,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                      )
+                      : userData.avatarStatusView(
                         width: kUserAvatarSize,
                         height: kUserAvatarSize,
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          shape: BoxShape.circle,
+                        borderWidth: 3.0,
+                        textSize: 18.0,
+                        showStatus: false,
+                      ),
+                  const SizedBox(width: 12.0),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      spacing: 4.0,
+                      children: [
+                        userData == null
+                            ? ShimmerContainer(
+                              child: Container(
+                                width: 150.0,
+                                height: 16,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                              ),
+                            )
+                            : Text(
+                              userData.fullName,
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                        userData == null
+                            ? ShimmerContainer(
+                              child: Container(
+                                width: 80.0,
+                                height: 16,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                              ),
+                            )
+                            : Text(
+                              userData.timestamp?.timeago ?? '10m ago',
+                              style: Theme.of(context).textTheme.labelSmall,
+                            ),
+                      ],
+                    ),
+                  ),
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        score.toString(),
+                        style: TextStyle(
+                          fontSize: 26.0,
+                          color: AIColors.pink,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                    )
-                    : userData.avatarStatusView(
-                      width: kUserAvatarSize,
-                      height: kUserAvatarSize,
-                      borderWidth: 3.0,
-                      textSize: 18.0,
-                      showStatus: false,
-                    ),
-                const SizedBox(width: 12.0),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    spacing: 12.0,
-                    children: [
-                      userData == null
-                          ? ShimmerContainer(
-                            child: Container(
-                              width: 150.0,
-                              height: 16,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(8.0),
-                              ),
-                            ),
-                          )
-                          : Text.rich(
-                            maxLines: 1,
-                            overflow: TextOverflow.ellipsis,
-                            TextSpan(
-                              children: [
-                                TextSpan(
-                                  text: userData.fullName,
-                                  style: Theme.of(context).textTheme.bodyMedium,
-                                ),
-                                TextSpan(
-                                  text: ' @${userData.nickId}',
-                                  style:
-                                      Theme.of(context).textTheme.labelMedium,
-                                ),
-                              ],
-                            ),
-                          ),
-                      userData == null
-                          ? ShimmerContainer(
-                            child: Container(
-                              width: 80.0,
-                              height: 16,
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(8.0),
-                              ),
-                            ),
-                          )
-                          : Text(
-                            userData.timestamp?.timeago ?? '10m ago',
-                            style: Theme.of(context).textTheme.labelSmall,
-                          ),
+                      Text(
+                        ' XP',
+                        style: TextStyle(fontSize: 18.0, color: AIColors.pink),
+                      ),
                     ],
                   ),
-                ),
-                Text(
-                  score.toString(),
-                  style: Theme.of(context).textTheme.bodyMedium,
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         );

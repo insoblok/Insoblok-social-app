@@ -118,6 +118,7 @@ extension MessageModelExt on MessageModel {
                           child: result,
                         )
                         : result,
+                    const SizedBox(height: 4),
                     Text(
                       messageTime,
                       style: TextStyle(
@@ -191,7 +192,7 @@ extension MessageModelExt on MessageModel {
               ? TextStyle(
                 fontSize: 14.0,
                 fontWeight: FontWeight.normal,
-                color: AIColors.white,
+                color: AIColors.black,
               )
               : Theme.of(context).textTheme.bodyMedium,
     );
@@ -231,11 +232,7 @@ extension MessageModelExt on MessageModel {
         const SizedBox(height: 8.0),
         Text(
           'Paid',
-          style: TextStyle(
-            fontSize: 11.0,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
-          ),
+          style: TextStyle(fontSize: 11.0, fontWeight: FontWeight.bold),
         ),
       ],
     );

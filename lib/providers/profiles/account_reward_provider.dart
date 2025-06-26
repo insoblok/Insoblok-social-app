@@ -84,6 +84,13 @@ class AccountRewardProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  XpInSoModel? _selectXpInSo;
+  XpInSoModel? get selectXpInSo => _selectXpInSo;
+  set selectXpInSo(XpInSoModel? model) {
+    _selectXpInSo = model;
+    notifyListeners();
+  }
+
   Future<void> getUserScore() async {
     _isLoadingScore = true;
     try {
@@ -146,5 +153,32 @@ class AccountRewardProvider extends InSoBlokViewModel {
     } finally {
       notifyListeners();
     }
+  }
+
+  Future<void> convertXPtoINSO() async {
+    if (isBusy) return;
+    clearErrors();
+
+    await runBusyFuture(() async {
+      try {
+        // int oldXP = AuthHelper.user.
+        // await userService.updateUser();
+      } catch (e) {
+        setError(e);
+        logger.e(e);
+      } finally {
+        notifyListeners();
+      }
+    }());
+
+    if (hasError) {
+      AIHelpers.showToast(msg: modelError.toString());
+    }
+  }
+
+  int convertedInSo() {
+    if (selectXpInSo == null) return 0;
+    int insoValue = (selectXpInSo!.min! * selectXpInSo!.rate! / 100).toInt();
+    return insoValue;
   }
 }

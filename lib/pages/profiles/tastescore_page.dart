@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:insoblok/widgets/linear_progress_widget.dart';
 
 import 'package:stacked/stacked.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';
@@ -63,6 +64,8 @@ class TastescorePage extends StatelessWidget {
                           width: 200.0,
                           height: 200.0,
                           child: SfRadialGauge(
+                            animationDuration: 3000,
+                            enableLoadingAnimation: true,
                             axes: <RadialAxis>[
                               RadialAxis(
                                 minimum:
@@ -251,11 +254,11 @@ class TastescorePage extends StatelessWidget {
                         textAlign: TextAlign.end,
                       ),
                       if ((viewModel.userLevel.level ?? 0) < 5) ...{
-                        LinearProgressIndicator(
+                        AnimatiedLinearProgressIndicator(
                           value: viewModel.indicatorValue,
                           backgroundColor: AIColors.pink.withAlpha(32),
                           minHeight: 16.0,
-                          borderRadius: BorderRadius.circular(8.0),
+                          borderRadius: 8.0,
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -294,12 +297,12 @@ class TastescorePage extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       if ((viewModel.userLevel.level ?? 0) < 5) ...{
-                        LinearProgressIndicator(
+                        AnimatiedLinearProgressIndicator(
                           value: viewModel.rankIndicatorValue,
                           minHeight: 16.0,
                           color: AIColors.blue,
                           backgroundColor: AIColors.blue.withAlpha(32),
-                          borderRadius: BorderRadius.circular(8.0),
+                          borderRadius: 8.0,
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
