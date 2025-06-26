@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
+import 'package:reown_appkit/modal/pages/preview_send/utils.dart';
+import 'package:reown_appkit/reown_appkit.dart';
 
 import 'leaderboard_provider.dart';
 
@@ -91,6 +93,8 @@ class AccountRewardProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  var textController = TextEditingController();
+
   Future<void> getUserScore() async {
     _isLoadingScore = true;
     try {
@@ -156,24 +160,40 @@ class AccountRewardProvider extends InSoBlokViewModel {
   }
 
   Future<void> convertXPtoINSO() async {
-    if (isBusy) return;
-    clearErrors();
+    var content = textController.text;
+    if (content.isNotEmpty && (content.toDouble() > 0)) {
+      if (isBusy) return;
+      clearErrors();
 
-    await runBusyFuture(() async {
-      try {
-        // int oldXP = AuthHelper.user.
-        // await userService.updateUser();
-      } catch (e) {
-        setError(e);
-        logger.e(e);
-      } finally {
-        notifyListeners();
+      await runBusyFuture(() async {
+        try {
+          if (AuthHelper.user != null) {
+            var oldXP = AuthHelper.user?.transferedXP;
+            var amount = content.toInt();
+            await AuthHelper.updateUser(
+              AuthHelper.user!.copyWith(
+                transferedXP: (oldXP ?? 0) + (amount ?? 0),
+              ),
+            );
+          }
+        } catch (e) {
+          setError(e);
+          logger.e(e);
+        } finally {
+          notifyListeners();
+        }
+      }());
+
+      if (hasError) {
+        AIHelpers.showToast(msg: modelError.toString());
       }
-    }());
-
-    if (hasError) {
-      AIHelpers.showToast(msg: modelError.toString());
     }
+  }
+
+  void selectInSo(XpInSoModel? value) {
+    selectXpInSo = value;
+    textController.text = '${value?.min ?? 0}';
+    notifyListeners();
   }
 
   int convertedInSo() {

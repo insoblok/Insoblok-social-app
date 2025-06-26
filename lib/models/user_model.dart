@@ -33,6 +33,7 @@ abstract class UserModel with _$UserModel {
     bool? freeStyle,
     bool? isPremium,
     int? rewardDate,
+    int? transferedXP,
     List<String>? likes,
     List<String>? follows,
     List<String>? userActions,

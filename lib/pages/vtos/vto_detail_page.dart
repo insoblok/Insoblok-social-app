@@ -121,7 +121,7 @@ class VTODetailPage extends StatelessWidget {
           floatingActionButton: ExpandableFab(
             key: viewModel.key,
             type: ExpandableFabType.fan,
-            afterOpen: () {
+            onOpen: () {
               viewModel.isShownText = true;
             },
             onClose: () {

@@ -174,7 +174,7 @@ class AccountRewardPage extends StatelessWidget {
                                           [])) ...{
                                     InkWell(
                                       onTap: () {
-                                        viewModel.selectXpInSo = inSoModel;
+                                        viewModel.selectInSo(inSoModel);
                                       },
                                       child: Container(
                                         padding: const EdgeInsets.symmetric(
@@ -224,14 +224,32 @@ class AccountRewardPage extends StatelessWidget {
                               children: [
                                 Row(
                                   children: [
-                                    Text(
-                                      '${viewModel.selectXpInSo?.min ?? 0}',
-                                      style: TextStyle(
-                                        fontSize: 24,
-                                        fontWeight: FontWeight.bold,
+                                    SizedBox(
+                                      width: 80,
+                                      child: TextFormField(
+                                        decoration: InputDecoration(
+                                          hintText: '0',
+                                          hintTextDirection: TextDirection.rtl,
+                                          hintStyle: TextStyle(
+                                            color:
+                                                Theme.of(
+                                                  context,
+                                                ).colorScheme.onPrimary,
+                                            fontSize: 24,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                          border: InputBorder.none,
+                                        ),
+                                        keyboardType: TextInputType.number,
+                                        style: TextStyle(
+                                          fontSize: 24,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        maxLines: 1,
+                                        textDirection: TextDirection.rtl,
+                                        controller: viewModel.textController,
                                       ),
                                     ),
-
                                     Text(
                                       '  XP',
                                       style: TextStyle(fontSize: 16),
@@ -258,7 +276,9 @@ class AccountRewardPage extends StatelessWidget {
                             ),
                           ),
                           TextFillButton(
-                            onTap: () {},
+                            onTap: () {
+                              viewModel.convertXPtoINSO();
+                            },
                             height: 36,
                             isBusy: viewModel.isBusy,
                             color: Theme.of(context).primaryColor,
