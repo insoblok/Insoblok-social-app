@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:insoblok/utils/color.dart';
-
+import 'package:insoblok/services/services.dart';
+import 'package:insoblok/utils/utils.dart';
 import 'package:stacked/stacked.dart';
-
 import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/widgets/widgets.dart';
@@ -25,7 +24,8 @@ class LeaderboardUserView extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewModelBuilder<UserProvider>.reactive(
       viewModelBuilder: () => UserProvider(),
-      onViewModelReady: (viewModel) => viewModel.init(context, id: userId),
+      onViewModelReady:
+          (viewModel) => viewModel.init(context, id: userId, score: score),
       builder: (context, viewModel, _) {
         var userData = viewModel.owner;
         return Padding(
@@ -65,12 +65,38 @@ class LeaderboardUserView extends StatelessWidget {
                           ),
                         ),
                       )
-                      : userData.avatarStatusView(
-                        width: kUserAvatarSize,
-                        height: kUserAvatarSize,
-                        borderWidth: 3.0,
-                        textSize: 18.0,
-                        showStatus: false,
+                      : Stack(
+                        children: [
+                          userData.avatarStatusView(
+                            width: kUserAvatarSize,
+                            height: kUserAvatarSize,
+                            borderWidth: 3.0,
+                            textSize: 18.0,
+                            showStatus: false,
+                          ),
+                          Positioned(
+                            bottom: 0.0,
+                            right: 0.0,
+                            child: Container(
+                              width: 24.0,
+                              height: 24.0,
+                              padding: EdgeInsets.all(1),
+                              decoration: BoxDecoration(
+                                border: Border.all(
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                                color:
+                                    Theme.of(context).scaffoldBackgroundColor,
+                                shape: BoxShape.circle,
+                              ),
+                              child: AIImage(
+                                AIImages.imgLevel(
+                                  viewModel.userLevel.level ?? 1,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                   const SizedBox(width: 12.0),
                   Expanded(

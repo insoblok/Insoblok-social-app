@@ -14,10 +14,12 @@ class UserProvider extends InSoBlokViewModel {
   }
 
   late String _id;
+  int? _score;
 
-  void init(BuildContext context, {required String id}) async {
+  void init(BuildContext context, {required String id, int? score}) async {
     this.context = context;
     _id = id;
+    _score = score;
     fetchUser();
   }
 
@@ -26,6 +28,19 @@ class UserProvider extends InSoBlokViewModel {
   set owner(UserModel? model) {
     _owner = model;
     notifyListeners();
+  }
+
+  List<UserLevelModel> get userLevels =>
+      AppSettingHelper.appSettingModel?.userLevel ?? [];
+
+  UserLevelModel get userLevel {
+    for (var userLevel in userLevels) {
+      if ((userLevel.min ?? 0) <= (_score ?? 0) &&
+          (_score ?? 0) < (userLevel.max ?? 1000000000)) {
+        return userLevel;
+      }
+    }
+    return userLevels.first;
   }
 
   Future<void> fetchUser() async {
