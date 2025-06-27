@@ -102,19 +102,54 @@ class AccountWalletPage extends StatelessWidget {
                   child: Row(
                     spacing: 12.0,
                     children: [
-                      for (var item in kWalletTokenList) ...{
-                        AccountWalletTokenCover(
-                          child: Column(
-                            children: [
-                              Text(
-                                item['name']!,
-                                style: Theme.of(context).textTheme.titleMedium,
-                              ),
-                              Text('${item['short_name']} 0.00'),
-                            ],
-                          ),
+                      // for (var item in kWalletTokenList) ...{
+                      //   AccountWalletTokenCover(
+                      //     child: Column(
+                      //       children: [
+                      //         Text(
+                      //           item['name']!,
+                      //           style: Theme.of(context).textTheme.titleMedium,
+                      //         ),
+                      //         Text('${item['short_name']} 0.00'),
+                      //       ],
+                      //     ),
+                      //   ),
+                      // },
+                      AccountWalletTokenCover(
+                        child: Column(
+                          children: [
+                            Text(
+                              'INSO',
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                            Text(
+                              'INSO ${(viewModel.user?.transferedInSo ?? 0)}',
+                            ),
+                          ],
                         ),
-                      },
+                      ),
+                      AccountWalletTokenCover(
+                        child: Column(
+                          children: [
+                            Text(
+                              'USDT',
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                            Text('USDT 0'),
+                          ],
+                        ),
+                      ),
+                      AccountWalletTokenCover(
+                        child: Column(
+                          children: [
+                            Text(
+                              'XRP',
+                              style: Theme.of(context).textTheme.titleMedium,
+                            ),
+                            Text('XRP 0'),
+                          ],
+                        ),
+                      ),
                       Container(
                         width: 160.0,
                         height: 80.0,
@@ -268,31 +303,100 @@ class AccountWalletPage extends StatelessWidget {
                   ],
                 ),
 
-                for (var item in kWalletTokenList) ...{
-                  const SizedBox(height: 24.0),
-                  Row(
-                    spacing: 12.0,
-                    children: [
-                      AIImage(item['icon'], width: 36.0, height: 36.0),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(item['name'] as String),
-                            Text(
-                              '0 ${item['short_name']}',
-                              style: Theme.of(context).textTheme.labelSmall,
-                            ),
-                          ],
-                        ),
+                // for (var item in kWalletTokenList) ...{
+                //   const SizedBox(height: 24.0),
+                //   Row(
+                //     spacing: 12.0,
+                //     children: [
+                //       AIImage(item['icon'], width: 36.0, height: 36.0),
+                //       Expanded(
+                //         child: Column(
+                //           crossAxisAlignment: CrossAxisAlignment.start,
+                //           children: [
+                //             Text(item['name'] as String),
+                //             Text(
+                //               '0 ${item['short_name']}',
+                //               style: Theme.of(context).textTheme.labelSmall,
+                //             ),
+                //           ],
+                //         ),
+                //       ),
+                //       Text(
+                //         '\$0.00',
+                //         style: Theme.of(context).textTheme.headlineMedium,
+                //       ),
+                //     ],
+                //   ),
+                // },
+                const SizedBox(height: 24.0),
+                Row(
+                  spacing: 12.0,
+                  children: [
+                    AIImage(AIImages.icCoinInso, width: 36.0, height: 36.0),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('INSO'),
+                          Text(
+                            '${viewModel.user?.transferedInSo ?? 0} INSO',
+                            style: Theme.of(context).textTheme.labelSmall,
+                          ),
+                        ],
                       ),
-                      Text(
-                        '\$0.00',
-                        style: Theme.of(context).textTheme.headlineMedium,
+                    ),
+                    Text(
+                      '\$${(viewModel.user?.transferedInSo ?? 0) / 400}',
+                      style: Theme.of(context).textTheme.headlineMedium,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 24.0),
+                Row(
+                  spacing: 12.0,
+                  children: [
+                    AIImage(AIImages.icCoinUsdt, width: 36.0, height: 36.0),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('USDT'),
+                          Text(
+                            '0 USDT',
+                            style: Theme.of(context).textTheme.labelSmall,
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                },
+                    ),
+                    Text(
+                      '\$0.00',
+                      style: Theme.of(context).textTheme.headlineMedium,
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 24.0),
+                Row(
+                  spacing: 12.0,
+                  children: [
+                    AIImage(AIImages.icCoinXrp, width: 36.0, height: 36.0),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('XRP'),
+                          Text(
+                            '0 XRP',
+                            style: Theme.of(context).textTheme.labelSmall,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Text(
+                      '\$0.00',
+                      style: Theme.of(context).textTheme.headlineMedium,
+                    ),
+                  ],
+                ),
               ],
             ),
           ),

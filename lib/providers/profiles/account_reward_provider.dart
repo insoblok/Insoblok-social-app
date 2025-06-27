@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
+import 'package:reown_appkit/modal/pages/preview_send/utils.dart';
+import 'package:reown_appkit/reown_appkit.dart';
 
 import 'leaderboard_provider.dart';
 
@@ -41,6 +43,10 @@ class AccountRewardProvider extends InSoBlokViewModel {
       result += (score.bonus ?? 0);
     }
     return result;
+  }
+
+  int get availableXP {
+    return totalScore - (AuthHelper.user?.transferedXP ?? 0);
   }
 
   int get todayScore {
@@ -90,6 +96,8 @@ class AccountRewardProvider extends InSoBlokViewModel {
     _selectXpInSo = model;
     notifyListeners();
   }
+
+  var textController = TextEditingController();
 
   Future<void> getUserScore() async {
     _isLoadingScore = true;
@@ -156,29 +164,110 @@ class AccountRewardProvider extends InSoBlokViewModel {
   }
 
   Future<void> convertXPtoINSO() async {
-    if (isBusy) return;
-    clearErrors();
+    var content = textController.text;
+    if (content.isNotEmpty && (content.toDouble() > 0) && isPossibleConvert) {
+      if (isBusy) return;
+      clearErrors();
 
-    await runBusyFuture(() async {
-      try {
-        // int oldXP = AuthHelper.user.
-        // await userService.updateUser();
-      } catch (e) {
-        setError(e);
-        logger.e(e);
-      } finally {
-        notifyListeners();
+      await runBusyFuture(() async {
+        try {
+          if (AuthHelper.user != null) {
+            var currentXP = AuthHelper.user?.transferedXP;
+            var xpValue = content.toInt();
+
+            var currentInso = AuthHelper.user?.transferedInSo;
+            var inSoValue = convertedInSo();
+
+            await AuthHelper.updateUser(
+              AuthHelper.user!.copyWith(
+                transferedXP: (currentXP ?? 0) + (xpValue ?? 0),
+                transferedInSo: (currentInso ?? 0) + inSoValue,
+              ),
+            );
+            AIHelpers.showToast(msg: 'Successfully converted your XP!');
+          }
+        } catch (e) {
+          setError(e);
+          logger.e(e);
+        } finally {
+          textController.text = '';
+          selectXpInSo = null;
+          xpValue = null;
+          isPossibleConvert = false;
+          notifyListeners();
+        }
+      }());
+
+      if (hasError) {
+        AIHelpers.showToast(msg: modelError.toString());
       }
-    }());
-
-    if (hasError) {
-      AIHelpers.showToast(msg: modelError.toString());
     }
   }
 
+  String? _xpValue;
+  String? get xpValue => _xpValue;
+  set xpValue(String? f) {
+    _xpValue = f;
+    notifyListeners();
+  }
+
+  bool _isTypingXp = false;
+  bool get isTypingXp => _isTypingXp;
+  set isTypingXp(bool f) {
+    _isTypingXp = f;
+    notifyListeners();
+  }
+
+  bool _isPossibleConvert = false;
+  bool get isPossibleConvert => _isPossibleConvert;
+  set isPossibleConvert(bool f) {
+    _isPossibleConvert = f;
+    notifyListeners();
+  }
+
+  void selectInSo(XpInSoModel? value) {
+    if ((value?.max ?? 0) > availableXP) {
+      isPossibleConvert = false;
+      return;
+    }
+    isTypingXp = false;
+    isPossibleConvert = true;
+    selectXpInSo = value;
+    xpValue = null;
+    textController.text = '${value?.max ?? 0}';
+    notifyListeners();
+  }
+
+  void setXpValue(String? xp) {
+    if (xp == null) return;
+    isTypingXp = true;
+    if ((xp.toInt() ?? 0) > availableXP) {
+      isPossibleConvert = false;
+      return;
+    }
+    selectXpInSo = null;
+    isPossibleConvert = true;
+    xpValue = xp;
+    textController.text = xp;
+    notifyListeners();
+  }
+
   int convertedInSo() {
-    if (selectXpInSo == null) return 0;
-    int insoValue = (selectXpInSo!.min! * selectXpInSo!.rate! / 100).toInt();
-    return insoValue;
+    if (isTypingXp) {
+      var xp = xpValue.toInt() ?? 0;
+      var rate = 0;
+      for (XpInSoModel inSoModel
+          in (AppSettingHelper.appSettingModel?.xpInso ?? [])) {
+        if ((xp >= (inSoModel.min ?? 0)) && (xp < (inSoModel.max ?? 0))) {
+          rate = inSoModel.rate ?? 0;
+        }
+      }
+      int insoValue = (xp * rate / 100).toInt();
+      return insoValue;
+    } else {
+      if (selectXpInSo == null) return 0;
+      int insoValue = (selectXpInSo!.max! * selectXpInSo!.rate! / 100).toInt();
+      return insoValue;
+    }
   }
 }

@@ -39,6 +39,8 @@ mixin _$UserModel {
   bool? get freeStyle;
   bool? get isPremium;
   int? get rewardDate;
+  int? get transferedXP;
+  int? get transferedInSo;
   List<String>? get likes;
   List<String>? get follows;
   List<String>? get userActions;
@@ -95,6 +97,10 @@ mixin _$UserModel {
                 other.isPremium == isPremium) &&
             (identical(other.rewardDate, rewardDate) ||
                 other.rewardDate == rewardDate) &&
+            (identical(other.transferedXP, transferedXP) ||
+                other.transferedXP == transferedXP) &&
+            (identical(other.transferedInSo, transferedInSo) ||
+                other.transferedInSo == transferedInSo) &&
             const DeepCollectionEquality().equals(other.likes, likes) &&
             const DeepCollectionEquality().equals(other.follows, follows) &&
             const DeepCollectionEquality()
@@ -130,6 +136,8 @@ mixin _$UserModel {
         freeStyle,
         isPremium,
         rewardDate,
+        transferedXP,
+        transferedInSo,
         const DeepCollectionEquality().hash(likes),
         const DeepCollectionEquality().hash(follows),
         const DeepCollectionEquality().hash(userActions),
@@ -138,7 +146,7 @@ mixin _$UserModel {
 
   @override
   String toString() {
-    return 'UserModel(id: $id, uid: $uid, walletAddress: $walletAddress, avatar: $avatar, firstName: $firstName, lastName: $lastName, email: $email, password: $password, city: $city, country: $country, website: $website, desc: $desc, discovery: $discovery, nickId: $nickId, lat: $lat, lon: $lon, ipAddress: $ipAddress, updateDate: $updateDate, timestamp: $timestamp, status: $status, hasVotePost: $hasVotePost, freeStyle: $freeStyle, isPremium: $isPremium, rewardDate: $rewardDate, likes: $likes, follows: $follows, userActions: $userActions, actions: $actions)';
+    return 'UserModel(id: $id, uid: $uid, walletAddress: $walletAddress, avatar: $avatar, firstName: $firstName, lastName: $lastName, email: $email, password: $password, city: $city, country: $country, website: $website, desc: $desc, discovery: $discovery, nickId: $nickId, lat: $lat, lon: $lon, ipAddress: $ipAddress, updateDate: $updateDate, timestamp: $timestamp, status: $status, hasVotePost: $hasVotePost, freeStyle: $freeStyle, isPremium: $isPremium, rewardDate: $rewardDate, transferedXP: $transferedXP, transferedInSo: $transferedInSo, likes: $likes, follows: $follows, userActions: $userActions, actions: $actions)';
   }
 }
 
@@ -172,6 +180,8 @@ abstract mixin class $UserModelCopyWith<$Res> {
       bool? freeStyle,
       bool? isPremium,
       int? rewardDate,
+      int? transferedXP,
+      int? transferedInSo,
       List<String>? likes,
       List<String>? follows,
       List<String>? userActions,
@@ -214,6 +224,8 @@ class _$UserModelCopyWithImpl<$Res> implements $UserModelCopyWith<$Res> {
     Object? freeStyle = freezed,
     Object? isPremium = freezed,
     Object? rewardDate = freezed,
+    Object? transferedXP = freezed,
+    Object? transferedInSo = freezed,
     Object? likes = freezed,
     Object? follows = freezed,
     Object? userActions = freezed,
@@ -316,6 +328,14 @@ class _$UserModelCopyWithImpl<$Res> implements $UserModelCopyWith<$Res> {
           ? _self.rewardDate
           : rewardDate // ignore: cast_nullable_to_non_nullable
               as int?,
+      transferedXP: freezed == transferedXP
+          ? _self.transferedXP
+          : transferedXP // ignore: cast_nullable_to_non_nullable
+              as int?,
+      transferedInSo: freezed == transferedInSo
+          ? _self.transferedInSo
+          : transferedInSo // ignore: cast_nullable_to_non_nullable
+              as int?,            
       likes: freezed == likes
           ? _self.likes
           : likes // ignore: cast_nullable_to_non_nullable
@@ -365,6 +385,8 @@ class _UserModel implements UserModel {
       this.freeStyle,
       this.isPremium,
       this.rewardDate,
+      this.transferedXP,
+      this.transferedInSo,
       final List<String>? likes,
       final List<String>? follows,
       final List<String>? userActions,
@@ -424,6 +446,10 @@ class _UserModel implements UserModel {
   final bool? isPremium;
   @override
   final int? rewardDate;
+  @override
+  final int? transferedXP;
+  @override
+  final int? transferedInSo;
   final List<String>? _likes;
   @override
   List<String>? get likes {
@@ -520,6 +546,10 @@ class _UserModel implements UserModel {
                 other.isPremium == isPremium) &&
             (identical(other.rewardDate, rewardDate) ||
                 other.rewardDate == rewardDate) &&
+            (identical(other.transferedXP, transferedXP) ||
+            other.transferedXP == transferedXP) &&
+            (identical(other.transferedInSo, transferedInSo) ||
+            other.transferedInSo == transferedInSo) &&
             const DeepCollectionEquality().equals(other._likes, _likes) &&
             const DeepCollectionEquality().equals(other._follows, _follows) &&
             const DeepCollectionEquality()
@@ -555,6 +585,8 @@ class _UserModel implements UserModel {
         freeStyle,
         isPremium,
         rewardDate,
+        transferedXP,
+        transferedInSo,
         const DeepCollectionEquality().hash(_likes),
         const DeepCollectionEquality().hash(_follows),
         const DeepCollectionEquality().hash(_userActions),
@@ -563,7 +595,7 @@ class _UserModel implements UserModel {
 
   @override
   String toString() {
-    return 'UserModel(id: $id, uid: $uid, walletAddress: $walletAddress, avatar: $avatar, firstName: $firstName, lastName: $lastName, email: $email, password: $password, city: $city, country: $country, website: $website, desc: $desc, discovery: $discovery, nickId: $nickId, lat: $lat, lon: $lon, ipAddress: $ipAddress, updateDate: $updateDate, timestamp: $timestamp, status: $status, hasVotePost: $hasVotePost, freeStyle: $freeStyle, isPremium: $isPremium, rewardDate: $rewardDate, likes: $likes, follows: $follows, userActions: $userActions, actions: $actions)';
+    return 'UserModel(id: $id, uid: $uid, walletAddress: $walletAddress, avatar: $avatar, firstName: $firstName, lastName: $lastName, email: $email, password: $password, city: $city, country: $country, website: $website, desc: $desc, discovery: $discovery, nickId: $nickId, lat: $lat, lon: $lon, ipAddress: $ipAddress, updateDate: $updateDate, timestamp: $timestamp, status: $status, hasVotePost: $hasVotePost, freeStyle: $freeStyle, isPremium: $isPremium, rewardDate: $rewardDate, transferedXP: $transferedXP, transferedInSo: $transferedInSo, likes: $likes, follows: $follows, userActions: $userActions, actions: $actions)';
   }
 }
 
@@ -600,6 +632,8 @@ abstract mixin class _$UserModelCopyWith<$Res>
       bool? freeStyle,
       bool? isPremium,
       int? rewardDate,
+      int? transferedXP,
+      int? transferedInSo,
       List<String>? likes,
       List<String>? follows,
       List<String>? userActions,
@@ -642,6 +676,8 @@ class __$UserModelCopyWithImpl<$Res> implements _$UserModelCopyWith<$Res> {
     Object? freeStyle = freezed,
     Object? isPremium = freezed,
     Object? rewardDate = freezed,
+    Object? transferedXP = freezed,
+    Object? transferedInSo = freezed,
     Object? likes = freezed,
     Object? follows = freezed,
     Object? userActions = freezed,
@@ -744,6 +780,14 @@ class __$UserModelCopyWithImpl<$Res> implements _$UserModelCopyWith<$Res> {
           ? _self.rewardDate
           : rewardDate // ignore: cast_nullable_to_non_nullable
               as int?,
+      transferedXP: freezed == transferedXP
+          ? _self.transferedXP
+          : transferedXP // ignore: cast_nullable_to_non_nullable
+      as int?,
+      transferedInSo: freezed == transferedInSo
+          ? _self.transferedInSo
+          : transferedInSo // ignore: cast_nullable_to_non_nullable
+      as int?,
       likes: freezed == likes
           ? _self._likes
           : likes // ignore: cast_nullable_to_non_nullable

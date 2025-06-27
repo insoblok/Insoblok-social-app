@@ -200,6 +200,8 @@ extension UserModelExt on UserModel {
       'has_vote_post': hasVotePost,
       'free_style': freeStyle,
       'reward_date': rewardDate,
+      'transfered_xp': transferedXP,
+      'transfered_inso': transferedInSo,
       'is_premium': isPremium,
       'likes': (likes),
       'follows': (follows),
