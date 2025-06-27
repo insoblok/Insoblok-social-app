@@ -119,9 +119,7 @@ class MessageProvider extends InSoBlokViewModel {
         if (user.id == data.chatUser.id) chatUser = user;
       }
       notifyListeners();
-      Future.delayed(const Duration(milliseconds: 200), () {
-        scrollToBottom();
-      });
+      scrollToBottom();
     });
 
     messageService.getTypingStatus(room.id!).listen((data) {
@@ -176,14 +174,17 @@ class MessageProvider extends InSoBlokViewModel {
   }
 
   void scrollToBottom() {
+    logger.d('scroll to bottom');
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (scrollController.hasClients) {
-        scrollController.animateTo(
-          scrollController.position.maxScrollExtent,
-          duration: Duration(milliseconds: 300),
-          curve: Curves.easeOut,
-        );
-      }
+      Future.delayed(const Duration(milliseconds: 300), () {
+        if (scrollController.hasClients) {
+          scrollController.animateTo(
+            scrollController.position.maxScrollExtent,
+            duration: Duration(milliseconds: 300),
+            curve: Curves.easeOut,
+          );
+        }
+      });
     });
   }
 

@@ -122,7 +122,9 @@ class AccountWalletPage extends StatelessWidget {
                               'INSO',
                               style: Theme.of(context).textTheme.titleMedium,
                             ),
-                            Text('INSO ${(viewModel.user?.transferedXP ?? 0)}'),
+                            Text(
+                              'INSO ${(viewModel.user?.transferedInSo ?? 0)}',
+                            ),
                           ],
                         ),
                       ),
@@ -337,14 +339,14 @@ class AccountWalletPage extends StatelessWidget {
                         children: [
                           Text('INSO'),
                           Text(
-                            '${viewModel.user?.transferedXP ?? 0} INSO',
+                            '${viewModel.user?.transferedInSo ?? 0} INSO',
                             style: Theme.of(context).textTheme.labelSmall,
                           ),
                         ],
                       ),
                     ),
                     Text(
-                      '\$${(viewModel.user?.transferedXP ?? 0) / 400}',
+                      '\$${(viewModel.user?.transferedInSo ?? 0) / 400}',
                       style: Theme.of(context).textTheme.headlineMedium,
                     ),
                   ],

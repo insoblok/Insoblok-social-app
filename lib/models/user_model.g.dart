@@ -38,6 +38,7 @@ _UserModel _$UserModelFromJson(Map<String, dynamic> json) => _UserModel(
   isPremium: json['is_premium'] as bool?,
   rewardDate: (json['reward_date'] as num?)?.toInt(),
   transferedXP: (json['transfered_xp'] as num?)?.toInt(),
+  transferedInSo: (json['transfered_inso'] as num?)?.toInt(),
   likes: (json['likes'] as List<dynamic>?)?.map((e) => e as String).toList(),
   follows:
       (json['follows'] as List<dynamic>?)?.map((e) => e as String).toList(),
@@ -78,6 +79,7 @@ Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
       'is_premium': instance.isPremium,
       'reward_date': instance.rewardDate,
       'transfered_xp': instance.transferedXP,
+      'transfered_inso': instance.transferedInSo,
       'likes': instance.likes,
       'follows': instance.follows,
       'user_actions': instance.userActions,

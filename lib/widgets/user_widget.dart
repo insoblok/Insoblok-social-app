@@ -205,22 +205,27 @@ class AppBackgroundView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: height,
-      decoration: BoxDecoration(
-        gradient: LinearGradient(
-          colors: [
-            AIColors.lightPurple.withAlpha(128),
-            AIColors.lightBlue.withAlpha(128),
-            AIColors.lightPurple.withAlpha(128),
-            AIColors.lightTeal.withAlpha(128),
-          ],
-          stops: [0.0, 0.4, 0.7, 1.0],
-          begin: Alignment.topLeft,
-          end: Alignment.bottomRight,
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Container(
+        height: height,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              AIColors.lightPurple.withAlpha(128),
+              AIColors.lightBlue.withAlpha(128),
+              AIColors.lightPurple.withAlpha(128),
+              AIColors.lightTeal.withAlpha(128),
+            ],
+            stops: [0.0, 0.4, 0.7, 1.0],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
         ),
+        child: child,
       ),
-      child: child,
     );
   }
 }
