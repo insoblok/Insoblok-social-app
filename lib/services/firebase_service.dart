@@ -72,18 +72,18 @@ class FirebaseService {
   }
 
   Future<void> signInWithGoogle() async {
-    // final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-    // final GoogleSignInAuthentication? googleAuth =
-    //     await googleUser?.authentication;
+    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+    final GoogleSignInAuthentication? googleAuth =
+        await googleUser?.authentication;
 
-    // // Create a new credential
-    // final credential = GoogleAuthProvider.credential(
-    //   accessToken: googleAuth?.accessToken,
-    //   idToken: googleAuth?.idToken,
-    // );
-    // _userCredential = await FirebaseAuth.instance.signInWithCredential(
-    //   credential,
-    // );
+    // Create a new credential
+    final credential = GoogleAuthProvider.credential(
+      accessToken: googleAuth?.accessToken,
+      idToken: googleAuth?.idToken,
+    );
+    _userCredential = await FirebaseAuth.instance.signInWithCredential(
+      credential,
+    );
   }
 
   Future<void> convertAnonymousToPermanent({
