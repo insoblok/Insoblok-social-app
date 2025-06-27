@@ -97,21 +97,20 @@ class NetworkUtil {
 
   static Future<String?> getVTOEditImage({
     required String model,
-    required String clothingType,
     required String prompt,
   }) async {
     try {
-      var response = await NetworkHelper.vtoApiRequest(
+      var response = await NetworkHelper.theneApiRequest(
         'edit',
         method: APIMETHOD.post,
         postParams: {
-          '1_model_image': model,
-          '1_prompt': prompt,
-          'category': clothingType,
+          'image': model,
+          'prompt': prompt,
+          'negative': 'poor details',
         },
       );
       logger.d(response.data);
-      return response.data['id'];
+      return response.data;
     } on DioException catch (e) {
       logger.e(e.message);
     } catch (e) {

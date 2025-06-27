@@ -22,7 +22,7 @@ class NetworkService with ListenableServiceMixin {
   Dio? get vtoApiDio => _vtoApiRx.value;
 
   final RxValue<Dio?> _theneApiRx = RxValue<Dio?>(null);
-  Dio? get theneApiRx => _theneApiRx.value;
+  Dio? get theneApiDio => _theneApiRx.value;
 
   final RxValue<Dio?> _newsApiRx = RxValue<Dio?>(null);
   Dio? get newsApiDio => _newsApiRx.value;
@@ -171,7 +171,7 @@ class NetworkService with ListenableServiceMixin {
     var reqData = FormData.fromMap(pParm);
 
     var dio =
-        vtoApiDio!
+        theneApiDio!
           ..options.queryParameters = _nonNullJson(queryParams)
           ..options.method = method
           ..interceptors.add(apiInterceptor);
@@ -311,6 +311,22 @@ class NetworkHelper {
     Function(int, int)? onSendProgress,
     Function(int, int)? onReceiveProgress,
   }) => service.vtoApiRequest(
+    path,
+    method: method,
+    queryParams: queryParams,
+    postParams: postParams,
+    onSendProgress: onSendProgress,
+    onReceiveProgress: onReceiveProgress,
+  );
+
+  static Future<Response> theneApiRequest(
+    String path, {
+    String method = 'GET',
+    Map<String, dynamic>? queryParams,
+    Map<String, dynamic>? postParams,
+    Function(int, int)? onSendProgress,
+    Function(int, int)? onReceiveProgress,
+  }) => service.theneApiRequest(
     path,
     method: method,
     queryParams: queryParams,

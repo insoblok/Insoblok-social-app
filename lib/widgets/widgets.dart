@@ -20,3 +20,4 @@ export 'score_widget.dart';
 export 'view.dart';
 export 'expandable_fab_widget.dart';
 export 'message_widget.dart';
+export 'media_detail_widget.dart';

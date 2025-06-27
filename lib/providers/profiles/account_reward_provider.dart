@@ -1,13 +1,11 @@
-import 'package:collection/collection.dart';
 import 'package:flutter/material.dart';
 
+import 'package:collection/collection.dart';
+
 import 'package:insoblok/models/models.dart';
+import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
-import 'package:reown_appkit/modal/pages/preview_send/utils.dart';
-import 'package:reown_appkit/reown_appkit.dart';
-
-import 'leaderboard_provider.dart';
 
 class AccountRewardProvider extends InSoBlokViewModel {
   late BuildContext _context;
@@ -165,7 +163,9 @@ class AccountRewardProvider extends InSoBlokViewModel {
 
   Future<void> convertXPtoINSO() async {
     var content = textController.text;
-    if (content.isNotEmpty && (content.toDouble() > 0) && isPossibleConvert) {
+    if (content.isNotEmpty &&
+        ((double.tryParse(content) ?? 0) > 0) &&
+        isPossibleConvert) {
       if (isBusy) return;
       clearErrors();
 
@@ -173,7 +173,7 @@ class AccountRewardProvider extends InSoBlokViewModel {
         try {
           if (AuthHelper.user != null) {
             var currentXP = AuthHelper.user?.transferedXP;
-            var xpValue = content.toInt();
+            var xpValue = int.tryParse(content);
 
             var currentInso = AuthHelper.user?.transferedInSo;
             var inSoValue = convertedInSo();
@@ -241,7 +241,7 @@ class AccountRewardProvider extends InSoBlokViewModel {
   void setXpValue(String? xp) {
     if (xp == null) return;
     isTypingXp = true;
-    if ((xp.toInt() ?? 0) > availableXP) {
+    if ((int.tryParse(xp) ?? 0) > availableXP) {
       isPossibleConvert = false;
       return;
     }
@@ -254,7 +254,7 @@ class AccountRewardProvider extends InSoBlokViewModel {
 
   int convertedInSo() {
     if (isTypingXp) {
-      var xp = xpValue.toInt() ?? 0;
+      var xp = int.tryParse(xpValue!) ?? 0;
       var rate = 0;
       for (XpInSoModel inSoModel
           in (AppSettingHelper.appSettingModel?.xpInso ?? [])) {
