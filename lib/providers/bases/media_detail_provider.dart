@@ -71,6 +71,42 @@ class MediaDetailProvider extends InSoBlokViewModel {
     Future.delayed(const Duration(milliseconds: 300), () {
       controller.jumpToPage(index);
     });
+
+    fetchData();
+  }
+
+  final List<ProductModel> _products = [];
+  List<ProductModel> get products => _products;
+
+  ProductModel? _selectedProduct;
+  ProductModel? get selectedProduct => _selectedProduct;
+  set selectedProduct(ProductModel? m) {
+    _selectedProduct = m;
+    notifyListeners();
+  }
+
+  Future<void> fetchData() async {
+    if (isBusy) return;
+    clearErrors();
+
+    await runBusyFuture(() async {
+      try {
+        var ps = await productService.getProducts();
+        if (ps.isNotEmpty) {
+          _products.clear();
+          _products.addAll(ps);
+        }
+        logger.d(products.length);
+      } catch (e) {
+        setError(e);
+      } finally {
+        notifyListeners();
+      }
+    }());
+
+    if (hasError) {
+      AIHelpers.showToast(msg: modelError.toString());
+    }
   }
 
   var globalkey = GlobalKey();
@@ -83,6 +119,8 @@ class MediaDetailProvider extends InSoBlokViewModel {
   }
 
   void onClickActionButton(int index) {
+    if (isBusy) return;
+
     switch (index) {
       case 0:
         isRemixingDialog = true;
@@ -118,7 +156,7 @@ class MediaDetailProvider extends InSoBlokViewModel {
   }
 
   Future<void> onEventRemix() async {
-    if (remixKey.isEmpty) return;
+    if (remixKey.isEmpty && selectedProduct == null) return;
 
     if (isBusy) return;
     clearErrors();
@@ -126,18 +164,26 @@ class MediaDetailProvider extends InSoBlokViewModel {
     isRemixingDialog = false;
     isRemixing = true;
 
+    String? resultVTO;
+    String? resultColor;
+
     await runBusyFuture(() async {
       try {
-        var result = await NetworkUtil.getVTOEditImage(
-          model: _medias[index],
-          prompt: 'Change the garment color to $remixKey',
-        );
-
-        if (result != null) {
-          imgRemix = result;
-        } else {
-          setError('Remix service error!');
+        if (selectedProduct != null) {
+          resultVTO = await vtoService.convertVTOClothing(
+            modelUrl: _medias[index],
+            photoUrl: selectedProduct!.modelImage!,
+            type: selectedProduct!.type ?? 'tops',
+          );
         }
+        if (remixKey.isNotEmpty) {
+          resultColor = await NetworkUtil.getVTOEditImage(
+            model: resultVTO ?? _medias[index],
+            prompt: 'Change the garment color to $remixKey',
+          );
+        }
+
+        imgRemix = resultColor ?? resultVTO!;
       } catch (e) {
         setError(e);
         logger.e(e);

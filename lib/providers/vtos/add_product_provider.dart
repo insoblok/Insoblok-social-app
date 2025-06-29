@@ -142,10 +142,10 @@ class AddProductProvider extends InSoBlokViewModel {
       AIHelpers.showToast(msg: 'Product name should be not empty!');
       return;
     }
-    if (product.description?.isEmpty ?? true) {
-      AIHelpers.showToast(msg: 'Product description should be not empty!');
-      return;
-    }
+    // if (product.description?.isEmpty ?? true) {
+    //   AIHelpers.showToast(msg: 'Product description should be not empty!');
+    //   return;
+    // }
     if (modelImage == null) {
       AIHelpers.showToast(msg: 'Model image should be not empty!');
       return;

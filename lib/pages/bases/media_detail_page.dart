@@ -103,7 +103,7 @@ class MediaDetailPage extends StatelessWidget {
               ),
               Align(
                 alignment: Alignment.bottomCenter,
-                child: RemixColorPalletView(),
+                child: RemixActionView(),
               ),
               if (viewModel.isRemixing)
                 Align(

@@ -7,50 +7,47 @@ part of 'user_model.dart';
 // **************************************************************************
 
 _UserModel _$UserModelFromJson(Map<String, dynamic> json) => _UserModel(
-  id: json['id'] as String?,
-  uid: json['uid'] as String?,
-  walletAddress: json['wallet_address'] as String?,
-  avatar: json['avatar'] as String?,
-  firstName: json['first_name'] as String?,
-  lastName: json['last_name'] as String?,
-  email: json['email'] as String?,
-  password: json['password'] as String?,
-  city: json['city'] as String?,
-  country: json['country'] as String?,
-  website: json['website'] as String?,
-  desc: json['desc'] as String?,
-  discovery: json['discovery'] as String?,
-  nickId: json['nick_id'] as String?,
-  lat: (json['lat'] as num?)?.toDouble(),
-  lon: (json['lon'] as num?)?.toDouble(),
-  ipAddress: json['ip_address'] as String?,
-  updateDate:
-      json['update_date'] == null
+      id: json['id'] as String?,
+      uid: json['uid'] as String?,
+      walletAddress: json['wallet_address'] as String?,
+      avatar: json['avatar'] as String?,
+      firstName: json['first_name'] as String?,
+      lastName: json['last_name'] as String?,
+      email: json['email'] as String?,
+      password: json['password'] as String?,
+      city: json['city'] as String?,
+      country: json['country'] as String?,
+      website: json['website'] as String?,
+      desc: json['desc'] as String?,
+      discovery: json['discovery'] as String?,
+      nickId: json['nick_id'] as String?,
+      lat: (json['lat'] as num?)?.toDouble(),
+      lon: (json['lon'] as num?)?.toDouble(),
+      ipAddress: json['ip_address'] as String?,
+      updateDate: json['update_date'] == null
           ? null
           : DateTime.parse(json['update_date'] as String),
-  timestamp:
-      json['timestamp'] == null
+      timestamp: json['timestamp'] == null
           ? null
           : DateTime.parse(json['timestamp'] as String),
-  status: json['status'] as String?,
-  hasVotePost: json['has_vote_post'] as bool?,
-  freeStyle: json['free_style'] as bool?,
-  isPremium: json['is_premium'] as bool?,
-  rewardDate: (json['reward_date'] as num?)?.toInt(),
-  transferedXP: (json['transfered_xp'] as num?)?.toInt(),
-  transferedInSo: (json['transfered_inso'] as num?)?.toInt(),
-  likes: (json['likes'] as List<dynamic>?)?.map((e) => e as String).toList(),
-  follows:
-      (json['follows'] as List<dynamic>?)?.map((e) => e as String).toList(),
-  userActions:
-      (json['user_actions'] as List<dynamic>?)
+      status: json['status'] as String?,
+      hasVotePost: json['has_vote_post'] as bool?,
+      freeStyle: json['free_style'] as bool?,
+      isPremium: json['is_premium'] as bool?,
+      rewardDate: (json['reward_date'] as num?)?.toInt(),
+      transferedXP: (json['transfered_x_p'] as num?)?.toInt(),
+      transferedInSo: (json['transfered_in_so'] as num?)?.toInt(),
+      likes:
+          (json['likes'] as List<dynamic>?)?.map((e) => e as String).toList(),
+      follows:
+          (json['follows'] as List<dynamic>?)?.map((e) => e as String).toList(),
+      userActions: (json['user_actions'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList(),
-  actions:
-      (json['actions'] as List<dynamic>?)
+      actions: (json['actions'] as List<dynamic>?)
           ?.map((e) => UserActionModel.fromJson(e as Map<String, dynamic>))
           .toList(),
-);
+    );
 
 Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
     <String, dynamic>{
@@ -78,8 +75,8 @@ Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
       'free_style': instance.freeStyle,
       'is_premium': instance.isPremium,
       'reward_date': instance.rewardDate,
-      'transfered_xp': instance.transferedXP,
-      'transfered_inso': instance.transferedInSo,
+      'transfered_x_p': instance.transferedXP,
+      'transfered_in_so': instance.transferedInSo,
       'likes': instance.likes,
       'follows': instance.follows,
       'user_actions': instance.userActions,
@@ -93,10 +90,9 @@ _UserActionModel _$UserActionModelFromJson(Map<String, dynamic> json) =>
       value: json['value'] as bool?,
       type: json['type'] as String?,
       description: json['description'] as String?,
-      timestamp:
-          json['timestamp'] == null
-              ? null
-              : DateTime.parse(json['timestamp'] as String),
+      timestamp: json['timestamp'] == null
+          ? null
+          : DateTime.parse(json['timestamp'] as String),
     );
 
 Map<String, dynamic> _$UserActionModelToJson(_UserActionModel instance) =>
@@ -116,4 +112,7 @@ _UserCountryModel _$UserCountryModelFromJson(Map<String, dynamic> json) =>
     );
 
 Map<String, dynamic> _$UserCountryModelToJson(_UserCountryModel instance) =>
-    <String, dynamic>{'name': instance.name, 'code': instance.code};
+    <String, dynamic>{
+      'name': instance.name,
+      'code': instance.code,
+    };

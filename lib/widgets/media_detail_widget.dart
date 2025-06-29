@@ -108,8 +108,8 @@ class MediaRemixWidget extends ViewModelWidget<MediaDetailProvider> {
   }
 }
 
-class RemixColorPalletView extends ViewModelWidget<MediaDetailProvider> {
-  const RemixColorPalletView({super.key});
+class RemixActionView extends ViewModelWidget<MediaDetailProvider> {
+  const RemixActionView({super.key});
 
   @override
   Widget build(BuildContext context, viewModel) {
@@ -155,82 +155,133 @@ class RemixColorPalletView extends ViewModelWidget<MediaDetailProvider> {
         ),
         if (viewModel.isRemixingDialog)
           Container(
-            margin: EdgeInsets.only(left: 40.0, right: 40.0),
+            margin: EdgeInsets.only(left: 24.0, right: 24.0),
             padding: const EdgeInsets.all(8.0),
             decoration: BoxDecoration(
               color: Theme.of(context).colorScheme.onSecondary.withAlpha(32),
               border: Border.all(color: Theme.of(context).primaryColor),
               borderRadius: BorderRadius.circular(16.0),
             ),
-            child: Wrap(
-              runSpacing: 8.0,
-              spacing: 8.0,
-              alignment: WrapAlignment.center,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              spacing: 12.0,
               children: [
-                for (var key in kRemixColorSet.keys) ...{
-                  InkWell(
-                    onTap: () {
-                      viewModel.remixKey = key;
-                    },
-                    child: Container(
-                      width: 32.0,
-                      height: 32.0,
-                      decoration: BoxDecoration(
-                        color: kRemixColorSet[key],
-                        shape: BoxShape.circle,
-                      ),
-                      alignment: Alignment.center,
-                      child:
-                          viewModel.remixKey == key
-                              ? AIImage(
-                                AIImages.icColorSet,
-                                width: 24.0,
-                                height: 24.0,
-                              )
-                              : null,
+                SizedBox(
+                  height: 120.0,
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12.0,
+                      vertical: 8.0,
                     ),
-                  ),
-                },
-                InkWell(
-                  onTap: viewModel.onEventRemix,
-                  child: Container(
-                    height: 32.0,
-                    width: 64.0,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).primaryColor,
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    child: Text(
-                      'Set'.toUpperCase(),
-                      style: TextStyle(
-                        color: Theme.of(context).colorScheme.onSecondary,
-                        fontWeight: FontWeight.w800,
-                      ),
+                    child: Row(
+                      spacing: 8.0,
+                      children: [
+                        for (var product in viewModel.products) ...{
+                          AspectRatio(
+                            aspectRatio: 0.75,
+                            child: InkWell(
+                              onTap: () => viewModel.selectedProduct = product,
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(12.0),
+                                child: Stack(
+                                  children: [
+                                    AIImage(
+                                      product.avatarImage ?? product.modelImage,
+                                      height: double.infinity,
+                                    ),
+                                    if (product == viewModel.selectedProduct)
+                                      Align(
+                                        alignment: Alignment.center,
+                                        child: AIImage(
+                                          AIImages.icColorSet,
+                                          width: 24.0,
+                                          height: 24.0,
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        },
+                      ],
                     ),
                   ),
                 ),
-                InkWell(
-                  onTap: () {
-                    viewModel.isRemixingDialog = false;
-                    viewModel.remixKey = '';
-                  },
-                  child: Container(
-                    height: 32.0,
-                    width: 64.0,
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                      border: Border.all(color: Theme.of(context).primaryColor),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    child: Text(
-                      'Cancel'.toUpperCase(),
-                      style: TextStyle(
-                        color: Theme.of(context).primaryColor,
-                        fontWeight: FontWeight.w800,
+                Wrap(
+                  runSpacing: 8.0,
+                  spacing: 8.0,
+                  alignment: WrapAlignment.center,
+                  children: [
+                    for (var key in kRemixColorSet.keys) ...{
+                      InkWell(
+                        onTap: () {
+                          viewModel.remixKey = key;
+                        },
+                        child: Container(
+                          width: 32.0,
+                          height: 32.0,
+                          decoration: BoxDecoration(
+                            color: kRemixColorSet[key],
+                            shape: BoxShape.circle,
+                          ),
+                          alignment: Alignment.center,
+                          child:
+                              viewModel.remixKey == key
+                                  ? AIImage(
+                                    AIImages.icColorSet,
+                                    width: 24.0,
+                                    height: 24.0,
+                                  )
+                                  : null,
+                        ),
+                      ),
+                    },
+                    InkWell(
+                      onTap: viewModel.onEventRemix,
+                      child: Container(
+                        height: 32.0,
+                        width: 64.0,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).primaryColor,
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        child: Text(
+                          'Set'.toUpperCase(),
+                          style: TextStyle(
+                            color: Theme.of(context).colorScheme.onSecondary,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
+                    InkWell(
+                      onTap: () {
+                        viewModel.isRemixingDialog = false;
+                        viewModel.remixKey = '';
+                      },
+                      child: Container(
+                        height: 32.0,
+                        width: 64.0,
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Theme.of(context).primaryColor,
+                          ),
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        child: Text(
+                          'Cancel'.toUpperCase(),
+                          style: TextStyle(
+                            color: Theme.of(context).primaryColor,
+                            fontWeight: FontWeight.w800,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
               ],
             ),
