@@ -18,10 +18,10 @@ class RewardDetailProvider extends InSoBlokViewModel {
     await getUserScore();
   }
 
-  bool _isLoadingScore = false;
-  bool get isLoadingScore => _isLoadingScore;
-  set isLoadingScore(bool f) {
-    _isLoadingScore = f;
+  bool _isInitLoading = false;
+  bool get isInitLoading => _isInitLoading;
+  set isInitLoading(bool f) {
+    _isInitLoading = f;
     notifyListeners();
   }
 
@@ -35,7 +35,7 @@ class RewardDetailProvider extends InSoBlokViewModel {
       });
 
   Future<void> getUserScore() async {
-    isLoadingScore = true;
+    isInitLoading = true;
     try {
       _scores.clear();
       var s = await tastScoreService.getScoresByUser(user!.id!);
@@ -44,7 +44,7 @@ class RewardDetailProvider extends InSoBlokViewModel {
       setError(e);
       logger.e(e);
     } finally {
-      isLoadingScore = false;
+      isInitLoading = false;
     }
   }
 }

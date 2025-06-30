@@ -22,12 +22,33 @@ class AccountRewardProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  Future<void> init(BuildContext context, UserModel? user) async {
+  void init(BuildContext context, UserModel? user) async {
     this.context = context;
     _owner = user ?? AuthHelper.user;
 
-    await getUserScore();
-    await getUsersScoreList();
+    fetchData();
+  }
+
+  Future<void> fetchData() async {
+    if (isBusy) return;
+    clearErrors();
+
+    await runBusyFuture(() async {
+      try {
+        await getUserScore();
+        await getUsersScoreList();
+        await getTransfers();
+      } catch (e) {
+        setError(e);
+        logger.e(e);
+      } finally {
+        notifyListeners();
+      }
+    }());
+
+    if (hasError) {
+      AIHelpers.showToast(msg: modelError.toString());
+    }
   }
 
   final List<TastescoreModel> _scores = [];
@@ -44,7 +65,7 @@ class AccountRewardProvider extends InSoBlokViewModel {
   }
 
   int get availableXP {
-    return totalScore - (AuthHelper.user?.transferedXP ?? 0);
+    return totalScore - transferValues[0];
   }
 
   int get todayScore {
@@ -158,6 +179,50 @@ class AccountRewardProvider extends InSoBlokViewModel {
       setError(e);
     } finally {
       notifyListeners();
+    }
+  }
+
+  final List<TransferModel> _transfers = [];
+
+  List<int> get transferValues =>
+      transferService.getXpToInsoBalance(_transfers);
+
+  bool _isInitLoading = false;
+  bool get isInitLoading => _isInitLoading;
+  set isInitLoading(bool f) {
+    _isInitLoading = f;
+    notifyListeners();
+  }
+
+  Future<void> getTransfers() async {
+    isInitLoading = true;
+    try {
+      _transfers.clear();
+      var t = await transferService.getTransfers(user!.id!);
+      _transfers.addAll(t);
+    } catch (e) {
+      setError(e);
+      logger.e(e);
+    } finally {
+      isInitLoading = false;
+    }
+  }
+
+  Future<void> makeTransfer() async {
+    if (isBusy) return;
+    clearErrors();
+
+    await runBusyFuture(() async {
+      try {} catch (e) {
+        setError(e);
+        logger.e(e);
+      } finally {
+        notifyListeners();
+      }
+    }());
+
+    if (hasError) {
+      AIHelpers.showToast(msg: modelError.toString());
     }
   }
 
