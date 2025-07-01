@@ -8,14 +8,16 @@ class MessageActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      width: 36.0,
-      height: 36.0,
-      child: FloatingActionButton(
-        backgroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
-        shape: const CircleBorder(),
-        heroTag: null,
-        onPressed: onPressed,
+    return InkWell(
+      onTap: onPressed,
+      child: Container(
+        width: 36.0,
+        height: 36.0,
+        padding: const EdgeInsets.all(8.0),
+        decoration: BoxDecoration(
+          color: Theme.of(context).primaryColor,
+          shape: BoxShape.circle,
+        ),
         child: child,
       ),
     );

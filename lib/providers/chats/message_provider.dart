@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 import 'package:chewie/chewie.dart';
+import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:video_player/video_player.dart';
 
@@ -19,6 +20,9 @@ class MessageProvider extends InSoBlokViewModel {
     _context = context;
     notifyListeners();
   }
+
+  final _key = GlobalKey<ExpandableFabState>();
+  GlobalKey<ExpandableFabState> get key => _key;
 
   late RoomModel _room;
   RoomModel get room => _room;
@@ -189,6 +193,8 @@ class MessageProvider extends InSoBlokViewModel {
   }
 
   Future<void> onPickerImage() async {
+    logger.d('onPickerImage');
+
     if (isBusy) return;
     clearErrors();
 
