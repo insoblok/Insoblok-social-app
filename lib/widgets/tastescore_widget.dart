@@ -121,10 +121,7 @@ class TastescoreAvatarView extends ViewModelWidget<AccountRewardProvider> {
               spacing: 12.0,
               children: [
                 ClipRRect(
-                  borderRadius: BorderRadiusGeometry.only(
-                    topLeft: Radius.circular(16.0),
-                    topRight: Radius.circular(16.0),
-                  ),
+                  borderRadius: BorderRadiusGeometry.circular(16.0),
                   child: AIImage(viewModel.owner?.avatar, width: 240.0),
                 ),
               ],
