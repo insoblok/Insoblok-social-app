@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:provider/provider.dart';
-
-import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
@@ -22,11 +19,11 @@ class InSoBlokProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  late AppProvider _appProvider;
+  // late AppProvider _appProvider;
 
   Future<void> init(BuildContext context) async {
     this.context = context;
-    _appProvider = context.read<AppProvider>();
+    // _appProvider = context.read<AppProvider>();
   }
 
   Future<void> onClickMenuAvatar() async {
@@ -61,7 +58,6 @@ class InSoBlokProvider extends InSoBlokViewModel {
         break;
       case 4:
         Routers.goToLeaderboardPage(context);
-        // Routers.goToAccountMomentPage(context);
         break;
       case 5:
         Routers.goToMarketPlacePage(context);
