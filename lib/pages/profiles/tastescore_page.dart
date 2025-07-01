@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:insoblok/widgets/linear_progress_widget.dart';
 
 import 'package:stacked/stacked.dart';
 import 'package:syncfusion_flutter_gauges/gauges.dart';

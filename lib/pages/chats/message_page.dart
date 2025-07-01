@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:loading_indicator/loading_indicator.dart';
-import 'package:stacked/stacked.dart';
+import 'package:stacked/stacked.dart' hide FloatingActionButtonBuilder;
 
 import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
@@ -9,6 +9,8 @@ import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
+
+const kRadiuMessagePicker = 120.0;
 
 class MessagePageData {
   MessagePageData({required this.room, required this.chatUser});
@@ -128,121 +130,155 @@ class MessagePage extends StatelessWidget {
                     itemCount: viewModel.messages.length,
                   ),
                 ),
-                Container(
-                  margin: EdgeInsets.all(12.0),
-                  padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.secondary.withAlpha(16),
-                    borderRadius: BorderRadius.circular(24.0),
-                  ),
-                  child: Row(
-                    children: [
-                      SizedBox(
-                        width: 36.0,
-                        height: 36.0,
-                        child: FanExpandableFab(
-                          radius: 110,
-                          startAngle: 90,
-                          sweepAngle: 66,
-                          icon: Icon(
-                            Icons.add_outlined,
-                            color: Theme.of(context).colorScheme.secondary,
-                            size: 24.0,
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (viewModel.isAddPop) ...{
+                      Padding(
+                        padding: const EdgeInsets.only(left: 12),
+                        child: MessageActionButton(
+                          onPressed: viewModel.onPickerImage,
+                          child: AIImage(
+                            AIImages.icImage,
+                            color: Theme.of(context).colorScheme.onSecondary,
+                            width: 20,
+                            height: 20,
                           ),
-                          closeIcon: Icon(
-                            Icons.close,
-                            color: Theme.of(context).colorScheme.secondary,
-                            size: 24.0,
-                          ),
-                          children: [
-                            MessageActionButton(
-                              child: AIImage(
-                                AIImages.icImage,
-                                color: Theme.of(context).colorScheme.secondary,
-                                width: 20,
-                              ),
-                              onPressed: () => viewModel.onPickerImage,
-                            ),
-                            MessageActionButton(
-                              child: AIImage(
-                                AIImages.icCamera,
-                                color: Theme.of(context).colorScheme.secondary,
-                                width: 20,
-                              ),
-                              onPressed: () => viewModel.onPickerVideo,
-                            ),
-                            MessageActionButton(
-                              child: AIImage(
-                                AIImages.icGif,
-                                color: Theme.of(context).colorScheme.secondary,
-                                width: 20,
-                              ),
-                              onPressed: () => viewModel.onPickGif,
-                            ),
-                            MessageActionButton(
-                              child: Icon(
-                                Icons.wallet,
-                                size: 20,
-                                color: Theme.of(context).colorScheme.secondary,
-                              ),
-                              onPressed: () => viewModel.onPaidEth,
-                            ),
-                          ],
                         ),
                       ),
-                      Expanded(
-                        child: Container(
-                          padding: const EdgeInsets.only(
-                            left: 12.0,
-                            right: 12.0,
+
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          left: kRadiuMessagePicker * 0.33 + 12,
+                        ),
+                        child: MessageActionButton(
+                          onPressed: viewModel.onPickerVideo,
+                          child: AIImage(
+                            AIImages.icCamera,
+                            color: Theme.of(context).colorScheme.onSecondary,
+                            width: 20.0,
+                            height: 20.0,
                           ),
-                          constraints: BoxConstraints(maxHeight: 100.0),
-                          child: TextFormField(
-                            focusNode: viewModel.focusNode,
-                            decoration: InputDecoration(
-                              hintText: 'Type something',
-                              border: InputBorder.none,
+                        ),
+                      ),
+
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          left: kRadiuMessagePicker * 0.66 + 12,
+                        ),
+                        child: MessageActionButton(
+                          onPressed: viewModel.onPickGif,
+                          child: AIImage(
+                            AIImages.icGif,
+                            color: Theme.of(context).colorScheme.onSecondary,
+                            width: 20.0,
+                            height: 20.0,
+                          ),
+                        ),
+                      ),
+
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          left: kRadiuMessagePicker + 12,
+                        ),
+                        child: MessageActionButton(
+                          onPressed: viewModel.onPaidEth,
+                          child: Icon(
+                            Icons.wallet,
+                            size: 20.0,
+                            color: Theme.of(context).colorScheme.onSecondary,
+                          ),
+                        ),
+                      ),
+                    },
+                    Container(
+                      margin: EdgeInsets.only(
+                        left: 12.0,
+                        right: 12.0,
+                        bottom: MediaQuery.of(context).viewPadding.bottom,
+                      ),
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.secondary.withAlpha(16),
+                        borderRadius: BorderRadius.circular(24.0),
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 36.0,
+                            height: 36.0,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Theme.of(context).primaryColor,
                             ),
-                            keyboardType: TextInputType.text,
-                            style: Theme.of(context).textTheme.bodySmall,
-                            maxLines: null,
-                            controller: viewModel.textController,
-                            onChanged: (value) => viewModel.content = value,
-                            onFieldSubmitted: (value) {
+                            child: InkWell(
+                              onTap: () {
+                                viewModel.isAddPop = !viewModel.isAddPop;
+                              },
+                              child: Icon(
+                                viewModel.isAddPop
+                                    ? Icons.close
+                                    : Icons.add_outlined,
+                                color:
+                                    Theme.of(context).colorScheme.onSecondary,
+                              ),
+                            ),
+                          ),
+                          Expanded(
+                            child: Container(
+                              padding: const EdgeInsets.only(
+                                left: 12.0,
+                                right: 12.0,
+                              ),
+                              constraints: BoxConstraints(maxHeight: 100.0),
+                              child: TextFormField(
+                                focusNode: viewModel.focusNode,
+                                decoration: InputDecoration(
+                                  hintText: 'Type something',
+                                  border: InputBorder.none,
+                                ),
+                                keyboardType: TextInputType.text,
+                                style: Theme.of(context).textTheme.bodySmall,
+                                maxLines: null,
+                                controller: viewModel.textController,
+                                onChanged: (value) => viewModel.content = value,
+                                onFieldSubmitted: (value) {
+                                  if (viewModel.isShowButton) {
+                                    viewModel.sendMessage();
+                                  }
+                                },
+                                onSaved: (value) {
+                                  logger.d('onSaved');
+                                },
+                                onEditingComplete: () {
+                                  logger.d('onEditingComplete');
+                                },
+                              ),
+                            ),
+                          ),
+                          InkWell(
+                            onTap: () {
                               if (viewModel.isShowButton) {
                                 viewModel.sendMessage();
                               }
                             },
-                            onSaved: (value) {
-                              logger.d('onSaved');
-                            },
-                            onEditingComplete: () {
-                              logger.d('onEditingComplete');
-                            },
+                            child: Icon(
+                              Icons.send,
+                              color:
+                                  viewModel.isShowButton
+                                      ? Theme.of(context).primaryColor
+                                      : Theme.of(context).colorScheme.secondary,
+                              size: 20.0,
+                            ),
                           ),
-                        ),
+                          const SizedBox(width: 8.0),
+                        ],
                       ),
-                      InkWell(
-                        onTap: () {
-                          if (viewModel.isShowButton) {
-                            viewModel.sendMessage();
-                          }
-                        },
-                        child: Icon(
-                          Icons.send,
-                          color:
-                              viewModel.isShowButton
-                                  ? AIColors.white
-                                  : Theme.of(context).colorScheme.secondary,
-                          size: 20.0,
-                        ),
-                      ),
-                      const SizedBox(width: 8.0),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ],
             ),

@@ -246,6 +246,8 @@ class AccountRewardProvider extends InSoBlokViewModel {
 
       if (hasError) {
         AIHelpers.showToast(msg: modelError.toString());
+      } else {
+        fetchData();
       }
     }
   }

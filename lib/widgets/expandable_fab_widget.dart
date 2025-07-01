@@ -2,6 +2,8 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 
+import 'package:insoblok/services/services.dart';
+
 class FanExpandableFab extends StatefulWidget {
   final Widget icon; // Main FAB icon
   final Widget closeIcon;
@@ -9,6 +11,7 @@ class FanExpandableFab extends StatefulWidget {
   final double radius; // How far the buttons spread
   final double startAngle; // Starting angle in degrees
   final double sweepAngle; // Total angle of the fan in degrees
+  final void Function(int index)? onTapIndex;
 
   const FanExpandableFab({
     super.key,
@@ -18,10 +21,11 @@ class FanExpandableFab extends StatefulWidget {
     this.radius = 150.0,
     this.startAngle = 90.0,
     this.sweepAngle = 90.0,
+    this.onTapIndex,
   });
 
   @override
-  _FanExpandableFabState createState() => _FanExpandableFabState();
+  State<FanExpandableFab> createState() => _FanExpandableFabState();
 }
 
 class _FanExpandableFabState extends State<FanExpandableFab>
@@ -71,10 +75,29 @@ class _FanExpandableFabState extends State<FanExpandableFab>
               return Positioned(
                 bottom: dy, // 56 is default FAB height
                 right: dx,
-                child: Opacity(opacity: _animation.value, child: child),
+                child: Opacity(
+                  opacity: _animation.value,
+                  child: InkWell(
+                    onTap: () {
+                      logger.d(i);
+                      if (widget.onTapIndex != null) {
+                        widget.onTapIndex!(i);
+                      }
+                    },
+                    child: child,
+                  ),
+                ),
               );
             },
-            child: widget.children[i],
+            child: InkWell(
+              onTap: () {
+                logger.d(i);
+                if (widget.onTapIndex != null) {
+                  widget.onTapIndex!(i);
+                }
+              },
+              child: widget.children[i],
+            ),
           ),
 
         // Main FAB
