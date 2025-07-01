@@ -20,7 +20,7 @@ class TransferService {
     List<TransferModel> result = [];
     var transferSnapshot =
         await transferCollection
-            .where('uesr_id', isEqualTo: userId)
+            .where('user_id', isEqualTo: userId)
             .orderBy('timestamp', descending: false)
             .get();
     for (var doc in transferSnapshot.docs) {
@@ -70,5 +70,29 @@ class TransferService {
       }
     }
     return [resultFrom, resultTo];
+  }
+
+  TransferModel getXpToInsoModel({required int from, required int to}) {
+    return TransferModel(
+      userId: AuthHelper.user?.id,
+      fromCurrency: TransferTokenName.XP,
+      toCurrency: TransferTokenName.INSO,
+      fromBalance: from,
+      toBalance: to,
+      updateDate: DateTime.now(),
+      timestamp: DateTime.now(),
+    );
+  }
+
+  TransferModel getInsoToUsdtModel({required int from, required int to}) {
+    return TransferModel(
+      userId: AuthHelper.user?.id,
+      fromCurrency: TransferTokenName.INSO,
+      toCurrency: TransferTokenName.USDT,
+      fromBalance: from,
+      toBalance: to,
+      updateDate: DateTime.now(),
+      timestamp: DateTime.now(),
+    );
   }
 }

@@ -102,19 +102,19 @@ class AccountWalletPage extends StatelessWidget {
                   child: Row(
                     spacing: 12.0,
                     children: [
-                      for (var item in kWalletTokenList) ...{
-                        AccountWalletTokenCover(
-                          child: Column(
-                            children: [
-                              Text(
-                                item['name']!,
-                                style: Theme.of(context).textTheme.titleMedium,
-                              ),
-                              Text('${item['short_name']} 0.00'),
-                            ],
-                          ),
-                        ),
-                      },
+                      // for (var item in kWalletTokenList) ...{
+                      //   AccountWalletTokenCover(
+                      //     child: Column(
+                      //       children: [
+                      //         Text(
+                      //           item['name']!,
+                      //           style: Theme.of(context).textTheme.titleMedium,
+                      //         ),
+                      //         Text('${item['short_name']} 0.00'),
+                      //       ],
+                      //     ),
+                      //   ),
+                      // },
                       AccountWalletTokenCover(
                         child: Column(
                           children: [
@@ -123,7 +123,7 @@ class AccountWalletPage extends StatelessWidget {
                               style: Theme.of(context).textTheme.titleMedium,
                             ),
                             Text(
-                              'INSO ${(viewModel.user?.transferedInSo ?? 0)}',
+                              'INSO ${viewModel.balanceInso.toStringAsFixed(2)}',
                             ),
                           ],
                         ),
@@ -135,7 +135,9 @@ class AccountWalletPage extends StatelessWidget {
                               'USDT',
                               style: Theme.of(context).textTheme.titleMedium,
                             ),
-                            Text('USDT 0'),
+                            Text(
+                              'USDT ${viewModel.balanceUsdt.toStringAsFixed(2)}',
+                            ),
                           ],
                         ),
                       ),
@@ -339,14 +341,14 @@ class AccountWalletPage extends StatelessWidget {
                         children: [
                           Text('INSO'),
                           Text(
-                            '${viewModel.user?.transferedInSo ?? 0} INSO',
+                            '${viewModel.balanceInso} INSO',
                             style: Theme.of(context).textTheme.labelSmall,
                           ),
                         ],
                       ),
                     ),
                     Text(
-                      '\$${(viewModel.user?.transferedInSo ?? 0) / 400}',
+                      '\$${viewModel.balanceInso / 100}',
                       style: Theme.of(context).textTheme.headlineMedium,
                     ),
                   ],

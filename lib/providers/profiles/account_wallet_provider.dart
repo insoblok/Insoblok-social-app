@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:insoblok/locator.dart';
+import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 
@@ -18,6 +19,41 @@ class AccountWalletProvider extends InSoBlokViewModel {
     this.context = context;
 
     reownService = locator<ReownService>();
+
+    getTransfers();
+  }
+
+  final List<TransferModel> _transfers = [];
+
+  List<int> get transferXpToInsoValues =>
+      transferService.getXpToInsoBalance(_transfers);
+
+  List<int> get transferInsoToUsdtValues =>
+      transferService.getInsoToUsdtBalance(_transfers);
+
+  int get balanceInso =>
+      transferXpToInsoValues[1] - transferInsoToUsdtValues[0];
+  int get balanceUsdt => transferInsoToUsdtValues[1];
+
+  bool _isInitLoading = false;
+  bool get isInitLoading => _isInitLoading;
+  set isInitLoading(bool f) {
+    _isInitLoading = f;
+    notifyListeners();
+  }
+
+  Future<void> getTransfers() async {
+    isInitLoading = true;
+    try {
+      _transfers.clear();
+      var t = await transferService.getTransfers(user!.id!);
+      _transfers.addAll(t);
+    } catch (e) {
+      setError(e);
+      logger.e(e);
+    } finally {
+      isInitLoading = false;
+    }
   }
 
   Future<void> onClickActions(int index) async {
@@ -34,13 +70,7 @@ class AccountWalletProvider extends InSoBlokViewModel {
     clearErrors();
 
     await runBusyFuture(() async {
-      try {
-        // var req = await reownService.onShowTransferModal(context);
-        // if (req?.recipientAddress != null) {
-        //   var result = await reownService.ethSendTransaction(req: req!);
-        //   logger.d(result);
-        // }
-      } catch (e) {
+      try {} catch (e) {
         logger.e(e);
       } finally {
         notifyListeners();

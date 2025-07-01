@@ -187,6 +187,9 @@ class AccountRewardProvider extends InSoBlokViewModel {
   List<int> get transferValues =>
       transferService.getXpToInsoBalance(_transfers);
 
+  List<int> get transferValues1 =>
+      transferService.getInsoToUsdtBalance(_transfers);
+
   bool _isInitLoading = false;
   bool get isInitLoading => _isInitLoading;
   set isInitLoading(bool f) {
@@ -208,24 +211,6 @@ class AccountRewardProvider extends InSoBlokViewModel {
     }
   }
 
-  Future<void> makeTransfer() async {
-    if (isBusy) return;
-    clearErrors();
-
-    await runBusyFuture(() async {
-      try {} catch (e) {
-        setError(e);
-        logger.e(e);
-      } finally {
-        notifyListeners();
-      }
-    }());
-
-    if (hasError) {
-      AIHelpers.showToast(msg: modelError.toString());
-    }
-  }
-
   Future<void> convertXPtoINSO() async {
     var content = textController.text;
     if (content.isNotEmpty &&
@@ -237,18 +222,13 @@ class AccountRewardProvider extends InSoBlokViewModel {
       await runBusyFuture(() async {
         try {
           if (AuthHelper.user != null) {
-            var currentXP = AuthHelper.user?.transferedXP;
             var xpValue = int.tryParse(content);
-
-            var currentInso = AuthHelper.user?.transferedInSo;
             var inSoValue = convertedInSo();
-
-            await AuthHelper.updateUser(
-              AuthHelper.user!.copyWith(
-                transferedXP: (currentXP ?? 0) + (xpValue ?? 0),
-                transferedInSo: (currentInso ?? 0) + inSoValue,
-              ),
+            var model = transferService.getXpToInsoModel(
+              from: xpValue ?? 0,
+              to: inSoValue,
             );
+            await transferService.addTransfer(transfer: model);
             AIHelpers.showToast(msg: 'Successfully converted your XP!');
           }
         } catch (e) {
@@ -258,6 +238,7 @@ class AccountRewardProvider extends InSoBlokViewModel {
           textController.text = '';
           selectXpInSo = null;
           xpValue = null;
+          isTypingXp = false;
           isPossibleConvert = false;
           notifyListeners();
         }
@@ -327,7 +308,7 @@ class AccountRewardProvider extends InSoBlokViewModel {
           rate = inSoModel.rate ?? 0;
         }
       }
-      int insoValue = (xp * rate / 100).toInt();
+      int insoValue = (xp / rate).toInt();
       return insoValue;
     } else {
       if (selectXpInSo == null) return 0;
