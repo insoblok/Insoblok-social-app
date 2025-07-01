@@ -43,38 +43,38 @@ class AddProductPage extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: 24.0),
-                Padding(
-                  padding: const EdgeInsets.only(left: 12.0, bottom: 16.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text('Description of Product'),
-                      InkWell(
-                        onTap: viewModel.updateDescription,
-                        child: Container(
-                          width: 32.0,
-                          height: 32.0,
-                          decoration: BoxDecoration(
-                            color: Theme.of(context).primaryColor,
-                            shape: BoxShape.circle,
-                          ),
-                          child: Center(child: Icon(Icons.edit, size: 18.0)),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                Container(
-                  width: double.infinity,
-                  height: 160.0,
-                  padding: const EdgeInsets.all(16.0),
-                  decoration: kCardDecoration,
-                  child:
-                      viewModel.product.description != null
-                          ? AIHelpers.htmlRender(viewModel.product.description)
-                          : Column(children: []),
-                ),
-                const SizedBox(height: 24.0),
+                // Padding(
+                //   padding: const EdgeInsets.only(left: 12.0, bottom: 16.0),
+                //   child: Row(
+                //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //     children: [
+                //       Text('Description of Product'),
+                //       InkWell(
+                //         onTap: viewModel.updateDescription,
+                //         child: Container(
+                //           width: 32.0,
+                //           height: 32.0,
+                //           decoration: BoxDecoration(
+                //             color: Theme.of(context).primaryColor,
+                //             shape: BoxShape.circle,
+                //           ),
+                //           child: Center(child: Icon(Icons.edit, size: 18.0)),
+                //         ),
+                //       ),
+                //     ],
+                //   ),
+                // ),
+                // Container(
+                //   width: double.infinity,
+                //   height: 160.0,
+                //   padding: const EdgeInsets.all(16.0),
+                //   decoration: kCardDecoration,
+                //   child:
+                //       viewModel.product.description != null
+                //           ? AIHelpers.htmlRender(viewModel.product.description)
+                //           : Column(children: []),
+                // ),
+                // const SizedBox(height: 24.0),
                 Padding(
                   padding: const EdgeInsets.only(left: 12.0, bottom: 16.0),
                   child: Text('Category of Product'),

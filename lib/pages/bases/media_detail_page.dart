@@ -29,31 +29,37 @@ class MediaDetailPage extends StatelessWidget {
               ),
               BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 20.0, sigmaY: 20.0),
-                child: PageView(
-                  scrollDirection: Axis.horizontal,
-                  controller: viewModel.controller,
-                  onPageChanged: (int num) => viewModel.index = num,
-                  children: [
-                    for (var media in viewModel.medias) ...{
-                      Center(
-                        child: Container(
-                          margin: EdgeInsets.all(40.0),
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color: Theme.of(context).colorScheme.onSecondary,
-                              width: 2.0,
-                            ),
-                            borderRadius: BorderRadius.circular(24.0),
-                          ),
-                          child: ClipRRect(
-                            borderRadius: BorderRadius.circular(20.0),
-                            child: AIImage(media, fit: BoxFit.contain),
-                          ),
-                        ),
-                      ),
-                    },
-                  ],
-                ),
+                child:
+                    viewModel.imgRemix.isEmpty
+                        ? PageView(
+                          scrollDirection: Axis.horizontal,
+                          controller: viewModel.controller,
+                          onPageChanged: (int num) => viewModel.index = num,
+                          children: [
+                            for (var media in viewModel.medias) ...{
+                              Center(
+                                child: Container(
+                                  margin: EdgeInsets.all(40.0),
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color:
+                                          Theme.of(
+                                            context,
+                                          ).colorScheme.onSecondary,
+                                      width: 2.0,
+                                    ),
+                                    borderRadius: BorderRadius.circular(24.0),
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(20.0),
+                                    child: AIImage(media, fit: BoxFit.contain),
+                                  ),
+                                ),
+                              ),
+                            },
+                          ],
+                        )
+                        : MediaRemixWidget(),
               ),
               Align(
                 alignment: Alignment.topCenter,
@@ -97,50 +103,13 @@ class MediaDetailPage extends StatelessWidget {
               ),
               Align(
                 alignment: Alignment.bottomCenter,
-                child: Container(
-                  margin: EdgeInsets.only(bottom: 40.0),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 24.0,
-                    vertical: 8.0,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.onSecondary.withAlpha(32),
-                    border: Border.all(color: Theme.of(context).primaryColor),
-                    borderRadius: BorderRadius.circular(16.0),
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    spacing: 40.0,
-                    children: [
-                      for (var data in kMediaDetailIconData) ...{
-                        InkWell(
-                          onTap:
-                              () => viewModel.onClickActionButton(
-                                kMediaDetailIconData.indexOf(data),
-                              ),
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              AIImage(
-                                data['icon'],
-                                height: 24.0,
-                                color: Theme.of(context).primaryColor,
-                              ),
-                              Text(
-                                data['title'] as String,
-                                style:
-                                    Theme.of(context).textTheme.headlineSmall,
-                              ),
-                            ],
-                          ),
-                        ),
-                      },
-                    ],
-                  ),
-                ),
+                child: RemixActionView(),
               ),
+              if (viewModel.isRemixing)
+                Align(
+                  alignment: Alignment.center,
+                  child: Center(child: Loader(size: 40.0)),
+                ),
             ],
           ),
         );

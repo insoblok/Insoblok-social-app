@@ -335,7 +335,7 @@ class _$UserModelCopyWithImpl<$Res> implements $UserModelCopyWith<$Res> {
       transferedInSo: freezed == transferedInSo
           ? _self.transferedInSo
           : transferedInSo // ignore: cast_nullable_to_non_nullable
-              as int?,            
+              as int?,
       likes: freezed == likes
           ? _self.likes
           : likes // ignore: cast_nullable_to_non_nullable
@@ -547,9 +547,9 @@ class _UserModel implements UserModel {
             (identical(other.rewardDate, rewardDate) ||
                 other.rewardDate == rewardDate) &&
             (identical(other.transferedXP, transferedXP) ||
-            other.transferedXP == transferedXP) &&
+                other.transferedXP == transferedXP) &&
             (identical(other.transferedInSo, transferedInSo) ||
-            other.transferedInSo == transferedInSo) &&
+                other.transferedInSo == transferedInSo) &&
             const DeepCollectionEquality().equals(other._likes, _likes) &&
             const DeepCollectionEquality().equals(other._follows, _follows) &&
             const DeepCollectionEquality()
@@ -783,11 +783,11 @@ class __$UserModelCopyWithImpl<$Res> implements _$UserModelCopyWith<$Res> {
       transferedXP: freezed == transferedXP
           ? _self.transferedXP
           : transferedXP // ignore: cast_nullable_to_non_nullable
-      as int?,
+              as int?,
       transferedInSo: freezed == transferedInSo
           ? _self.transferedInSo
           : transferedInSo // ignore: cast_nullable_to_non_nullable
-      as int?,
+              as int?,
       likes: freezed == likes
           ? _self._likes
           : likes // ignore: cast_nullable_to_non_nullable

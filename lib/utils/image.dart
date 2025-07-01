@@ -75,4 +75,6 @@ class AIImages {
   static String icCoinInso = 'assets/icons/ic_inso.png';
 
   static String imgEmptyList = 'assets/images/gif_empty_list.gif';
+
+  static String icColorSet = 'assets/icons/ic_color_set.svg';
 }
