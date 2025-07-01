@@ -88,6 +88,10 @@ class Routers {
     return _pushToRoute(context, kRouterRewardDetail, null);
   }
 
+  static dynamic goToWalletSwapPage(BuildContext context) {
+    return _pushToRoute(context, kRouterWalletSwap, null);
+  }
+
   static dynamic goToCreateRoomPage(BuildContext context) {
     return _pushToRoute(context, kRouterCreateRoom, null);
   }

@@ -102,19 +102,6 @@ class AccountWalletPage extends StatelessWidget {
                   child: Row(
                     spacing: 12.0,
                     children: [
-                      // for (var item in kWalletTokenList) ...{
-                      //   AccountWalletTokenCover(
-                      //     child: Column(
-                      //       children: [
-                      //         Text(
-                      //           item['name']!,
-                      //           style: Theme.of(context).textTheme.titleMedium,
-                      //         ),
-                      //         Text('${item['short_name']} 0.00'),
-                      //       ],
-                      //     ),
-                      //   ),
-                      // },
                       AccountWalletTokenCover(
                         child: Column(
                           children: [
@@ -304,32 +291,6 @@ class AccountWalletPage extends StatelessWidget {
                     ),
                   ],
                 ),
-
-                // for (var item in kWalletTokenList) ...{
-                //   const SizedBox(height: 24.0),
-                //   Row(
-                //     spacing: 12.0,
-                //     children: [
-                //       AIImage(item['icon'], width: 36.0, height: 36.0),
-                //       Expanded(
-                //         child: Column(
-                //           crossAxisAlignment: CrossAxisAlignment.start,
-                //           children: [
-                //             Text(item['name'] as String),
-                //             Text(
-                //               '0 ${item['short_name']}',
-                //               style: Theme.of(context).textTheme.labelSmall,
-                //             ),
-                //           ],
-                //         ),
-                //       ),
-                //       Text(
-                //         '\$0.00',
-                //         style: Theme.of(context).textTheme.headlineMedium,
-                //       ),
-                //     ],
-                //   ),
-                // },
                 const SizedBox(height: 24.0),
                 Row(
                   spacing: 12.0,
@@ -364,14 +325,14 @@ class AccountWalletPage extends StatelessWidget {
                         children: [
                           Text('USDT'),
                           Text(
-                            '0 USDT',
+                            '${viewModel.balanceUsdt.toStringAsFixed(2)} USDT',
                             style: Theme.of(context).textTheme.labelSmall,
                           ),
                         ],
                       ),
                     ),
                     Text(
-                      '\$0.00',
+                      '\$${viewModel.balanceUsdt.toStringAsFixed(2)}',
                       style: Theme.of(context).textTheme.headlineMedium,
                     ),
                   ],

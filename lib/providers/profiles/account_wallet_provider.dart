@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:insoblok/locator.dart';
 import 'package:insoblok/models/models.dart';
+import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 
@@ -25,15 +26,15 @@ class AccountWalletProvider extends InSoBlokViewModel {
 
   final List<TransferModel> _transfers = [];
 
-  List<int> get transferXpToInsoValues =>
+  List<double> get transferXpToInsoValues =>
       transferService.getXpToInsoBalance(_transfers);
 
-  List<int> get transferInsoToUsdtValues =>
+  List<double> get transferInsoToUsdtValues =>
       transferService.getInsoToUsdtBalance(_transfers);
 
-  int get balanceInso =>
+  double get balanceInso =>
       transferXpToInsoValues[1] - transferInsoToUsdtValues[0];
-  int get balanceUsdt => transferInsoToUsdtValues[1];
+  double get balanceUsdt => transferInsoToUsdtValues[1];
 
   bool _isInitLoading = false;
   bool get isInitLoading => _isInitLoading;
@@ -57,10 +58,13 @@ class AccountWalletProvider extends InSoBlokViewModel {
   }
 
   Future<void> onClickActions(int index) async {
-    logger.d(index);
     switch (index) {
       case 1:
         await onClickSend();
+        break;
+      case 3:
+        await Routers.goToWalletSwapPage(context);
+        getTransfers();
         break;
     }
   }

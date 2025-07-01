@@ -8,6 +8,7 @@ class TransferTokenName {
   static String USDT = 'USDT';
   static String XP = 'XP';
   static String INSO = 'INSO';
+  static String XRP = 'XRP';
 }
 
 class TransferService {
@@ -46,9 +47,9 @@ class TransferService {
     });
   }
 
-  List<int> getXpToInsoBalance(List<TransferModel> list) {
-    int resultFrom = 0;
-    int resultTo = 0;
+  List<double> getXpToInsoBalance(List<TransferModel> list) {
+    double resultFrom = 0;
+    double resultTo = 0;
     for (var t in list) {
       if (t.fromCurrency == TransferTokenName.XP &&
           t.toCurrency == TransferTokenName.INSO) {
@@ -59,9 +60,9 @@ class TransferService {
     return [resultFrom, resultTo];
   }
 
-  List<int> getInsoToUsdtBalance(List<TransferModel> list) {
-    int resultFrom = 0;
-    int resultTo = 0;
+  List<double> getInsoToUsdtBalance(List<TransferModel> list) {
+    double resultFrom = 0;
+    double resultTo = 0;
     for (var t in list) {
       if (t.fromCurrency == TransferTokenName.INSO &&
           t.toCurrency == TransferTokenName.USDT) {
@@ -72,23 +73,16 @@ class TransferService {
     return [resultFrom, resultTo];
   }
 
-  TransferModel getXpToInsoModel({required int from, required int to}) {
+  TransferModel getTransferModel({
+    required String fromToken,
+    required String toToken,
+    required double from,
+    required double to,
+  }) {
     return TransferModel(
       userId: AuthHelper.user?.id,
-      fromCurrency: TransferTokenName.XP,
-      toCurrency: TransferTokenName.INSO,
-      fromBalance: from,
-      toBalance: to,
-      updateDate: DateTime.now(),
-      timestamp: DateTime.now(),
-    );
-  }
-
-  TransferModel getInsoToUsdtModel({required int from, required int to}) {
-    return TransferModel(
-      userId: AuthHelper.user?.id,
-      fromCurrency: TransferTokenName.INSO,
-      toCurrency: TransferTokenName.USDT,
+      fromCurrency: fromToken,
+      toCurrency: toToken,
       fromBalance: from,
       toBalance: to,
       updateDate: DateTime.now(),
