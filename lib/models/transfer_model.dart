@@ -13,8 +13,8 @@ abstract class TransferModel with _$TransferModel {
     String? userId,
     String? fromCurrency,
     String? toCurrency,
-    int? fromBalance,
-    int? toBalance,
+    double? fromBalance,
+    double? toBalance,
     DateTime? updateDate,
     DateTime? timestamp,
   }) = _TransferModel;

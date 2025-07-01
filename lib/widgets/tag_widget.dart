@@ -7,6 +7,7 @@ class TagView extends StatelessWidget {
   final Color? borderColor;
   final Color? backGroundColor;
   final String tag;
+  final double? textSize;
   final bool isSelected;
   final void Function()? onTap;
 
@@ -19,6 +20,7 @@ class TagView extends StatelessWidget {
     this.borderColor,
     this.backGroundColor,
     this.onTap,
+    this.textSize,
   });
 
   @override
@@ -33,18 +35,20 @@ class TagView extends StatelessWidget {
           color: isSelected ? backGroundColor ?? AIColors.pink : AIColors.white,
           borderRadius: BorderRadius.circular(12.0),
           border: Border.all(
-            width: 2.0,
+            width: 1.0,
             color:
                 isSelected
                     ? AIColors.transparent
                     : borderColor ?? AIColors.pink,
           ),
         ),
-        child: Text(
-          tag,
-          style: TextStyle(
-            color: isSelected ? AIColors.white : AIColors.pink,
-            fontSize: 12.0,
+        child: Center(
+          child: Text(
+            tag,
+            style: TextStyle(
+              color: isSelected ? AIColors.white : AIColors.pink,
+              fontSize: textSize ?? 12.0,
+            ),
           ),
         ),
       ),

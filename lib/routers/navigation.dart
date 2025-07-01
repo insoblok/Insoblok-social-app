@@ -5,6 +5,7 @@ import 'package:fluro/fluro.dart' as fluro;
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/pages/pages.dart';
 import 'package:insoblok/pages/profiles/tastescore_page.dart';
+import 'package:insoblok/pages/profiles/wallet_swap_page.dart';
 import 'package:insoblok/providers/providers.dart';
 
 const kRouterBase = '/';
@@ -26,6 +27,7 @@ const kRouterAccountMoment = '/account-moment';
 const kRouterAccountWallet = '/account-Wallet';
 const kRouterAccountReward = '/account-reward';
 const kRouterRewardDetail = '/reward-detail';
+const kRouterWalletSwap = '/wallet-swap';
 
 const kRouterCreateRoom = '/create-room';
 const kRouterMessage = '/message';
@@ -134,6 +136,9 @@ class Navigation {
 
     // * RewardDetailPage
     initRoute(kRouterRewardDetail, (props) => RewardDetailPage());
+
+    // * WalletSwapPage
+    initRoute(kRouterWalletSwap, (props) => WalletSwapPage());
 
     // * CreateRoomPage
     initRoute(kRouterCreateRoom, (props) => CreateRoomPage());

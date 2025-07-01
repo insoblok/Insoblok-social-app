@@ -65,7 +65,7 @@ class AccountRewardProvider extends InSoBlokViewModel {
   }
 
   int get availableXP {
-    return totalScore - transferValues[0];
+    return totalScore - transferValues[0].toInt();
   }
 
   int get todayScore {
@@ -184,10 +184,10 @@ class AccountRewardProvider extends InSoBlokViewModel {
 
   final List<TransferModel> _transfers = [];
 
-  List<int> get transferValues =>
+  List<double> get transferValues =>
       transferService.getXpToInsoBalance(_transfers);
 
-  List<int> get transferValues1 =>
+  List<double> get transferValues1 =>
       transferService.getInsoToUsdtBalance(_transfers);
 
   bool _isInitLoading = false;
@@ -222,9 +222,11 @@ class AccountRewardProvider extends InSoBlokViewModel {
       await runBusyFuture(() async {
         try {
           if (AuthHelper.user != null) {
-            var xpValue = int.tryParse(content);
+            var xpValue = double.tryParse(content);
             var inSoValue = convertedInSo();
-            var model = transferService.getXpToInsoModel(
+            var model = transferService.getTransferModel(
+              fromToken: TransferTokenName.XP,
+              toToken: TransferTokenName.INSO,
               from: xpValue ?? 0,
               to: inSoValue,
             );
@@ -298,9 +300,9 @@ class AccountRewardProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  int convertedInSo() {
+  double convertedInSo() {
     if (isTypingXp) {
-      var xp = int.tryParse(xpValue!) ?? 0;
+      var xp = double.tryParse(xpValue!) ?? 0;
       var rate = 0;
       for (XpInSoModel inSoModel
           in (AppSettingHelper.appSettingModel?.xpInso ?? [])) {
@@ -308,11 +310,11 @@ class AccountRewardProvider extends InSoBlokViewModel {
           rate = inSoModel.rate ?? 0;
         }
       }
-      int insoValue = (xp / rate).toInt();
+      double insoValue = xp / rate;
       return insoValue;
     } else {
       if (selectXpInSo == null) return 0;
-      int insoValue = (selectXpInSo!.max! * selectXpInSo!.rate! / 100).toInt();
+      double insoValue = selectXpInSo!.max! * selectXpInSo!.rate! / 100;
       return insoValue;
     }
   }
