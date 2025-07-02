@@ -17,6 +17,7 @@ abstract class RoomModel with _$RoomModel {
     String? content,
     String? statusSender,
     String? statusReceiver,
+    bool? isGroup,
   }) = _RoomModel;
 
   factory RoomModel.fromJson(Map<String, dynamic> json) =>

@@ -21,6 +21,7 @@ _RoomModel _$RoomModelFromJson(Map<String, dynamic> json) => _RoomModel(
       content: json['content'] as String?,
       statusSender: json['status_sender'] as String?,
       statusReceiver: json['status_receiver'] as String?,
+      isGroup: json['is_group'] as bool?,
     );
 
 Map<String, dynamic> _$RoomModelToJson(_RoomModel instance) =>
@@ -33,4 +34,5 @@ Map<String, dynamic> _$RoomModelToJson(_RoomModel instance) =>
       'content': instance.content,
       'status_sender': instance.statusSender,
       'status_receiver': instance.statusReceiver,
+      'is_group': instance.isGroup,
     };

@@ -23,6 +23,7 @@ mixin _$RoomModel {
   String? get content;
   String? get statusSender;
   String? get statusReceiver;
+  bool? get isGroup;
 
   /// Create a copy of RoomModel
   /// with the given fields replaced by the non-null parameter values.
@@ -50,7 +51,8 @@ mixin _$RoomModel {
             (identical(other.statusSender, statusSender) ||
                 other.statusSender == statusSender) &&
             (identical(other.statusReceiver, statusReceiver) ||
-                other.statusReceiver == statusReceiver));
+                other.statusReceiver == statusReceiver) &&
+            (identical(other.isGroup, isGroup) || other.isGroup == isGroup));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -64,11 +66,12 @@ mixin _$RoomModel {
       timestamp,
       content,
       statusSender,
-      statusReceiver);
+      statusReceiver,
+      isGroup);
 
   @override
   String toString() {
-    return 'RoomModel(id: $id, userId: $userId, userIds: $userIds, updateDate: $updateDate, timestamp: $timestamp, content: $content, statusSender: $statusSender, statusReceiver: $statusReceiver)';
+    return 'RoomModel(id: $id, userId: $userId, userIds: $userIds, updateDate: $updateDate, timestamp: $timestamp, content: $content, statusSender: $statusSender, statusReceiver: $statusReceiver, isGroup: $isGroup)';
   }
 }
 
@@ -85,7 +88,8 @@ abstract mixin class $RoomModelCopyWith<$Res> {
       DateTime? timestamp,
       String? content,
       String? statusSender,
-      String? statusReceiver});
+      String? statusReceiver,
+      bool? isGroup});
 }
 
 /// @nodoc
@@ -108,6 +112,7 @@ class _$RoomModelCopyWithImpl<$Res> implements $RoomModelCopyWith<$Res> {
     Object? content = freezed,
     Object? statusSender = freezed,
     Object? statusReceiver = freezed,
+    Object? isGroup = freezed,
   }) {
     return _then(_self.copyWith(
       id: freezed == id
@@ -142,6 +147,10 @@ class _$RoomModelCopyWithImpl<$Res> implements $RoomModelCopyWith<$Res> {
           ? _self.statusReceiver
           : statusReceiver // ignore: cast_nullable_to_non_nullable
               as String?,
+      isGroup: freezed == isGroup
+          ? _self.isGroup
+          : isGroup // ignore: cast_nullable_to_non_nullable
+              as bool?,
     ));
   }
 }
@@ -158,7 +167,8 @@ class _RoomModel implements RoomModel {
       this.timestamp,
       this.content,
       this.statusSender,
-      this.statusReceiver})
+      this.statusReceiver,
+      this.isGroup})
       : _userIds = userIds;
   factory _RoomModel.fromJson(Map<String, dynamic> json) =>
       _$RoomModelFromJson(json);
@@ -187,6 +197,8 @@ class _RoomModel implements RoomModel {
   final String? statusSender;
   @override
   final String? statusReceiver;
+  @override
+  final bool? isGroup;
 
   /// Create a copy of RoomModel
   /// with the given fields replaced by the non-null parameter values.
@@ -219,7 +231,8 @@ class _RoomModel implements RoomModel {
             (identical(other.statusSender, statusSender) ||
                 other.statusSender == statusSender) &&
             (identical(other.statusReceiver, statusReceiver) ||
-                other.statusReceiver == statusReceiver));
+                other.statusReceiver == statusReceiver) &&
+            (identical(other.isGroup, isGroup) || other.isGroup == isGroup));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -233,11 +246,12 @@ class _RoomModel implements RoomModel {
       timestamp,
       content,
       statusSender,
-      statusReceiver);
+      statusReceiver,
+      isGroup);
 
   @override
   String toString() {
-    return 'RoomModel(id: $id, userId: $userId, userIds: $userIds, updateDate: $updateDate, timestamp: $timestamp, content: $content, statusSender: $statusSender, statusReceiver: $statusReceiver)';
+    return 'RoomModel(id: $id, userId: $userId, userIds: $userIds, updateDate: $updateDate, timestamp: $timestamp, content: $content, statusSender: $statusSender, statusReceiver: $statusReceiver, isGroup: $isGroup)';
   }
 }
 
@@ -257,7 +271,8 @@ abstract mixin class _$RoomModelCopyWith<$Res>
       DateTime? timestamp,
       String? content,
       String? statusSender,
-      String? statusReceiver});
+      String? statusReceiver,
+      bool? isGroup});
 }
 
 /// @nodoc
@@ -280,6 +295,7 @@ class __$RoomModelCopyWithImpl<$Res> implements _$RoomModelCopyWith<$Res> {
     Object? content = freezed,
     Object? statusSender = freezed,
     Object? statusReceiver = freezed,
+    Object? isGroup = freezed,
   }) {
     return _then(_RoomModel(
       id: freezed == id
@@ -314,6 +330,10 @@ class __$RoomModelCopyWithImpl<$Res> implements _$RoomModelCopyWith<$Res> {
           ? _self.statusReceiver
           : statusReceiver // ignore: cast_nullable_to_non_nullable
               as String?,
+      isGroup: freezed == isGroup
+          ? _self.isGroup
+          : isGroup // ignore: cast_nullable_to_non_nullable
+              as bool?,
     ));
   }
 }
