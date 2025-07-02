@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 
+import 'package:image/image.dart' as img;
 import 'package:image_picker/image_picker.dart';
 import 'package:stacked/stacked.dart';
 
@@ -56,22 +57,39 @@ class UploadMediaProvider extends ReactiveViewModel {
   Future<List<MediaStoryModel>> uploadMedias() async {
     List<MediaStoryModel> result = [];
     for (var media in medias) {
+      var mediaPath = media.file!.path;
+      var mediaType =
+          ((mediaPath.endsWith('png')) ||
+                  mediaPath.endsWith('jpg') ||
+                  mediaPath.endsWith('jpeg'))
+              ? 'image'
+              : 'video';
+
       if (media.isUploaded) continue;
       var url = await uploadMedia(media: media);
 
-      if (url != null) {
-        var type = media.file!.path;
+      if (mediaType == 'image') {
+        var bytes = await File(mediaPath).readAsBytes();
+        var decodedImage = img.decodeImage(bytes);
 
-        var model = MediaStoryModel(
-          link: url,
-          type:
-              ((type.endsWith('png')) ||
-                      type.endsWith('jpg') ||
-                      type.endsWith('jpeg'))
-                  ? 'image'
-                  : 'video',
-        );
-        result.add(model);
+        if (decodedImage != null) {
+          logger.d(decodedImage.width);
+          logger.d(decodedImage.height);
+          if (url != null) {
+            var model = MediaStoryModel(
+              link: url,
+              type: mediaType,
+              width: decodedImage.width.toDouble(),
+              height: decodedImage.height.toDouble(),
+            );
+            result.add(model);
+          }
+        }
+      } else {
+        if (url != null) {
+          var model = MediaStoryModel(link: url, type: mediaType);
+          result.add(model);
+        }
       }
     }
     return result;

@@ -75,12 +75,16 @@ _MediaStoryModel _$MediaStoryModelFromJson(Map<String, dynamic> json) =>
     _MediaStoryModel(
       link: json['link'] as String?,
       type: json['type'] as String?,
+      width: (json['width'] as num?)?.toDouble(),
+      height: (json['height'] as num?)?.toDouble(),
     );
 
 Map<String, dynamic> _$MediaStoryModelToJson(_MediaStoryModel instance) =>
     <String, dynamic>{
       'link': instance.link,
       'type': instance.type,
+      'width': instance.width,
+      'height': instance.height,
     };
 
 _StoryCommentModel _$StoryCommentModelFromJson(Map<String, dynamic> json) =>

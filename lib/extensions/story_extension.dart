@@ -89,7 +89,12 @@ extension StoryVoteModelExt on StoryVoteModel {
 
 extension MediaStoryModelExt on MediaStoryModel {
   Map<String, dynamic> toMap() {
-    Map<String, dynamic> result = {'link': link, 'type': type};
+    Map<String, dynamic> result = {
+      'link': link,
+      'type': type,
+      'width': width,
+      'height': height,
+    };
     result.removeWhere((k, v) => v == null);
     return result;
   }
