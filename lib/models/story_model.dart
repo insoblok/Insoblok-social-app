@@ -42,7 +42,12 @@ abstract class StoryVoteModel with _$StoryVoteModel {
 @freezed
 abstract class MediaStoryModel with _$MediaStoryModel {
   @JsonSerializable(fieldRename: FieldRename.snake)
-  factory MediaStoryModel({String? link, String? type}) = _MediaStoryModel;
+  factory MediaStoryModel({
+    String? link,
+    String? type,
+    double? width,
+    double? height,
+  }) = _MediaStoryModel;
 
   factory MediaStoryModel.fromJson(Map<String, dynamic> json) =>
       _$MediaStoryModelFromJson(json);

@@ -662,6 +662,8 @@ class __$StoryVoteModelCopyWithImpl<$Res>
 mixin _$MediaStoryModel {
   String? get link;
   String? get type;
+  double? get width;
+  double? get height;
 
   /// Create a copy of MediaStoryModel
   /// with the given fields replaced by the non-null parameter values.
@@ -680,16 +682,18 @@ mixin _$MediaStoryModel {
         (other.runtimeType == runtimeType &&
             other is MediaStoryModel &&
             (identical(other.link, link) || other.link == link) &&
-            (identical(other.type, type) || other.type == type));
+            (identical(other.type, type) || other.type == type) &&
+            (identical(other.width, width) || other.width == width) &&
+            (identical(other.height, height) || other.height == height));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, link, type);
+  int get hashCode => Object.hash(runtimeType, link, type, width, height);
 
   @override
   String toString() {
-    return 'MediaStoryModel(link: $link, type: $type)';
+    return 'MediaStoryModel(link: $link, type: $type, width: $width, height: $height)';
   }
 }
 
@@ -699,7 +703,7 @@ abstract mixin class $MediaStoryModelCopyWith<$Res> {
           MediaStoryModel value, $Res Function(MediaStoryModel) _then) =
       _$MediaStoryModelCopyWithImpl;
   @useResult
-  $Res call({String? link, String? type});
+  $Res call({String? link, String? type, double? width, double? height});
 }
 
 /// @nodoc
@@ -717,6 +721,8 @@ class _$MediaStoryModelCopyWithImpl<$Res>
   $Res call({
     Object? link = freezed,
     Object? type = freezed,
+    Object? width = freezed,
+    Object? height = freezed,
   }) {
     return _then(_self.copyWith(
       link: freezed == link
@@ -727,6 +733,14 @@ class _$MediaStoryModelCopyWithImpl<$Res>
           ? _self.type
           : type // ignore: cast_nullable_to_non_nullable
               as String?,
+      width: freezed == width
+          ? _self.width
+          : width // ignore: cast_nullable_to_non_nullable
+              as double?,
+      height: freezed == height
+          ? _self.height
+          : height // ignore: cast_nullable_to_non_nullable
+              as double?,
     ));
   }
 }
@@ -735,7 +749,7 @@ class _$MediaStoryModelCopyWithImpl<$Res>
 
 @JsonSerializable(fieldRename: FieldRename.snake)
 class _MediaStoryModel implements MediaStoryModel {
-  _MediaStoryModel({this.link, this.type});
+  _MediaStoryModel({this.link, this.type, this.width, this.height});
   factory _MediaStoryModel.fromJson(Map<String, dynamic> json) =>
       _$MediaStoryModelFromJson(json);
 
@@ -743,6 +757,10 @@ class _MediaStoryModel implements MediaStoryModel {
   final String? link;
   @override
   final String? type;
+  @override
+  final double? width;
+  @override
+  final double? height;
 
   /// Create a copy of MediaStoryModel
   /// with the given fields replaced by the non-null parameter values.
@@ -765,16 +783,18 @@ class _MediaStoryModel implements MediaStoryModel {
         (other.runtimeType == runtimeType &&
             other is _MediaStoryModel &&
             (identical(other.link, link) || other.link == link) &&
-            (identical(other.type, type) || other.type == type));
+            (identical(other.type, type) || other.type == type) &&
+            (identical(other.width, width) || other.width == width) &&
+            (identical(other.height, height) || other.height == height));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, link, type);
+  int get hashCode => Object.hash(runtimeType, link, type, width, height);
 
   @override
   String toString() {
-    return 'MediaStoryModel(link: $link, type: $type)';
+    return 'MediaStoryModel(link: $link, type: $type, width: $width, height: $height)';
   }
 }
 
@@ -786,7 +806,7 @@ abstract mixin class _$MediaStoryModelCopyWith<$Res>
       __$MediaStoryModelCopyWithImpl;
   @override
   @useResult
-  $Res call({String? link, String? type});
+  $Res call({String? link, String? type, double? width, double? height});
 }
 
 /// @nodoc
@@ -804,6 +824,8 @@ class __$MediaStoryModelCopyWithImpl<$Res>
   $Res call({
     Object? link = freezed,
     Object? type = freezed,
+    Object? width = freezed,
+    Object? height = freezed,
   }) {
     return _then(_MediaStoryModel(
       link: freezed == link
@@ -814,6 +836,14 @@ class __$MediaStoryModelCopyWithImpl<$Res>
           ? _self.type
           : type // ignore: cast_nullable_to_non_nullable
               as String?,
+      width: freezed == width
+          ? _self.width
+          : width // ignore: cast_nullable_to_non_nullable
+              as double?,
+      height: freezed == height
+          ? _self.height
+          : height // ignore: cast_nullable_to_non_nullable
+              as double?,
     ));
   }
 }

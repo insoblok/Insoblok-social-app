@@ -45,6 +45,7 @@ dependencies:
   get_ip_address: any
   image_picker: any
   file_picker: any
+  image: any
 
   fluro: any
   sqflite: any
