@@ -384,6 +384,7 @@ extension RoomModelExt on RoomModel {
       'content': content,
       'status_sender': statusSender,
       'status_receiver': statusReceiver,
+      'is_group': isGroup,
       'update_date': updateDate?.toUtc().toIso8601String(),
       'timestamp': timestamp?.toUtc().toIso8601String(),
     };
