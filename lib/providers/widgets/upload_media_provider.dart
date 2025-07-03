@@ -58,12 +58,7 @@ class UploadMediaProvider extends ReactiveViewModel {
     List<MediaStoryModel> result = [];
     for (var media in medias) {
       var mediaPath = media.file!.path;
-      var mediaType =
-          ((mediaPath.endsWith('png')) ||
-                  mediaPath.endsWith('jpg') ||
-                  mediaPath.endsWith('jpeg'))
-              ? 'image'
-              : 'video';
+      var mediaType = mediaPath.endsWith('mp4') ? 'video' : 'image';
 
       if (media.isUploaded) continue;
       var url = await uploadMedia(media: media);

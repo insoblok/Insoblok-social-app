@@ -17,7 +17,7 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addObserver(this);
 
-    var titles = ['Home', 'Vybe', 'Wallet', 'Messages', 'Profile'];
+    var titles = ['Home', 'Vybe', 'Wallet', 'Chat', 'Profile'];
     var pages = [
       DashboardView(),
       LookbookView(),

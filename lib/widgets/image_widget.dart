@@ -281,7 +281,7 @@ class _MediaCarouselCellState extends State<MediaCarouselCell> {
                 },
               )
               : AIImage(
-                AIImages.imgBackSplash,
+                AIImages.placehold,
                 width: double.infinity,
                 height: double.infinity,
                 fit: BoxFit.cover,

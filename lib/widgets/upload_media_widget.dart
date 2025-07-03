@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
+import 'package:insoblok/widgets/video_widget.dart';
 import 'package:stacked/stacked.dart';
 
 class UploadMediaWidget extends ViewModelWidget<AddStoryProvider> {
@@ -27,6 +28,8 @@ class UploadMediaWidget extends ViewModelWidget<AddStoryProvider> {
       ),
       itemBuilder: (context, index) {
         var media = medias[index];
+        var mediaPath = media.file!.path;
+        var mediaType = mediaPath.endsWith('mp4') ? 'video' : 'image';
         return Container(
           key: GlobalKey(debugLabel: 'media-$index'),
           decoration: kCardDecoration,
@@ -34,12 +37,19 @@ class UploadMediaWidget extends ViewModelWidget<AddStoryProvider> {
             borderRadius: BorderRadius.circular(16.0),
             child: Stack(
               children: [
-                AIImage(
-                  File(media.file!.path),
-                  width: double.infinity,
-                  height: double.infinity,
-                  fit: BoxFit.cover,
-                ),
+                mediaType == 'image'
+                    ? AIImage(
+                      File(media.file!.path),
+                      width: double.infinity,
+                      height: double.infinity,
+                      fit: BoxFit.cover,
+                    )
+                    : VideoView(
+                      videoUrl: mediaPath,
+                      width: double.infinity,
+                      height: double.infinity,
+                      loaderSize: 20.0,
+                    ),
                 Align(
                   alignment: Alignment.topRight,
                   child: InkWell(
