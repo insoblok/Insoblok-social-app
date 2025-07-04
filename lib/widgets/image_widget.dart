@@ -298,3 +298,37 @@ class _MediaCarouselCellState extends State<MediaCarouselCell> {
     super.dispose();
   }
 }
+
+class StoryMediaCellView extends StatelessWidget {
+  final List<MediaStoryModel> models;
+
+  const StoryMediaCellView({super.key, required this.models});
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: MediaQuery.of(context).size.height / 3.0,
+      child: SingleChildScrollView(
+        scrollDirection: Axis.horizontal,
+        child: Row(
+          spacing: 8.0,
+          children: [
+            for (var media in models) ...{
+              ClipRRect(
+                borderRadius: BorderRadiusGeometry.circular(12.0),
+                child: AspectRatio(
+                  aspectRatio: (media.width ?? 1) / (media.height ?? 1),
+                  child: MediaCarouselCell(
+                    media: media,
+                    boxFit: BoxFit.fitHeight,
+                    height: MediaQuery.of(context).size.height / 3.0,
+                  ),
+                ),
+              ),
+            },
+          ],
+        ),
+      ),
+    );
+  }
+}

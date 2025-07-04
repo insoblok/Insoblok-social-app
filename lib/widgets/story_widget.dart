@@ -24,15 +24,16 @@ class StoryListCell extends StatelessWidget {
       onViewModelReady: (viewModel) => viewModel.init(context, model: story),
       builder: (context, viewModel, _) {
         return GestureDetector(
-          onVerticalDragStart: (details) async {
-            viewModel.dragStart = details.localPosition;
-          },
-          onVerticalDragUpdate: (details) {
-            var dragPosition = details.localPosition;
-            if (dragPosition.dy + 50 < viewModel.dragStart.dy) {
-              viewModel.showDetailDialog();
-            }
-          },
+          // onVerticalDragStart: (details) async {
+          //   viewModel.dragStart = details.localPosition;
+          // },
+          // onVerticalDragUpdate: (details) {
+          //   var dragPosition = details.localPosition;
+          //   if (dragPosition.dy + 50 < viewModel.dragStart.dy) {
+          //     viewModel.showDetailDialog();
+          //   }
+          // },
+          onTap: viewModel.showDetailDialog,
           child: Container(
             padding: const EdgeInsets.symmetric(
               horizontal: 20.0,
@@ -121,18 +122,19 @@ class StoryListCell extends StatelessWidget {
                       ],
                     ),
                   const SizedBox(height: 12.0),
-                  Expanded(
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(12.0),
-                      child: StoryCarouselView(
-                        story: story,
-                        height: double.infinity,
-                        autoPlay: true,
-                        scrollPhysics: NeverScrollableScrollPhysics(),
-                        onChangePage: (index) => viewModel.pageIndex = index,
-                      ),
-                    ),
-                  ),
+                  // Expanded(
+                  //   child: ClipRRect(
+                  //     borderRadius: BorderRadius.circular(12.0),
+                  //     child: StoryCarouselView(
+                  //       story: story,
+                  //       height: double.infinity,
+                  //       autoPlay: true,
+                  //       scrollPhysics: NeverScrollableScrollPhysics(),
+                  //       onChangePage: (index) => viewModel.pageIndex = index,
+                  //     ),
+                  //   ),
+                  // ),
+                  StoryMediaCellView(models: story.medias ?? []),
                   const SizedBox(height: 16),
                   if (viewModel.story.category != null &&
                       viewModel.story.category == 'vote') ...{

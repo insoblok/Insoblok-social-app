@@ -41,6 +41,14 @@
         <uses-library
             android:name="org.apache.http.legacy"
             android:required="false" />
+
+        <uses-native-library
+            android:name="libOpenCL.so"
+            android:required="false" />
+
+        <uses-native-library
+            android:name="libOpenCL-pixel.so"
+            android:required="false" />
         
         <activity
             android:name=".MainActivity"
