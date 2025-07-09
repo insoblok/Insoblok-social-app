@@ -17,3 +17,5 @@ export 'user_service.dart';
 export 'tastescore_service.dart';
 export 'avatar_service.dart';
 export 'transfer_service.dart';
+export 'vimeo_service.dart';
+export 'method_channel_service.dart';

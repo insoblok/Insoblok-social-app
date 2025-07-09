@@ -58,10 +58,18 @@ class UploadMediaProvider extends ReactiveViewModel {
     List<MediaStoryModel> result = [];
     for (var media in medias) {
       var mediaPath = media.file!.path;
-      var mediaType = mediaPath.endsWith('mp4') ? 'video' : 'image';
+      var mediaType =
+          (mediaPath.endsWith('mp4') || mediaPath.endsWith('mov'))
+              ? 'video'
+              : 'image';
 
       if (media.isUploaded) continue;
-      var url = await uploadMedia(media: media);
+      var url =
+          mediaType == 'image'
+              ? (await uploadImage(media: media))
+              : (await uploadVideo(media: media));
+
+      logger.d(url);
 
       if (mediaType == 'image') {
         var bytes = await File(mediaPath).readAsBytes();
@@ -91,7 +99,7 @@ class UploadMediaProvider extends ReactiveViewModel {
   }
 
   // UPLOAD IMAGE
-  Future<String?> uploadMedia({required UploadMediaItem media}) async {
+  Future<String?> uploadImage({required UploadMediaItem media}) async {
     media.isUploading = true;
     notifyListeners();
     try {
@@ -103,6 +111,35 @@ class UploadMediaProvider extends ReactiveViewModel {
       notifyListeners();
 
       return mediaUrl;
+    } catch (e) {
+      logger.e(e);
+    } finally {
+      media.isUploading = false;
+      notifyListeners();
+    }
+    return null;
+  }
+
+  // UPLOAD VIDEO
+  Future<String?> uploadVideo({required UploadMediaItem media}) async {
+    media.isUploading = true;
+    notifyListeners();
+    try {
+      final videoFile = File(media.file!.path);
+      var vimeoService = VimeoService();
+      final videoId = await vimeoService.uploadVideoToVimeo(
+        videoFile,
+        title: 'InSoBlokAI Video',
+        description: 'Uploaded from InSoBlokAI',
+      );
+      media.isUploaded = true;
+      notifyListeners();
+
+      if (videoId != null) {
+        return 'https://player.vimeo.com/video/$videoId';
+      }
+
+      return null;
     } catch (e) {
       logger.e(e);
     } finally {

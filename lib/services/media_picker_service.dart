@@ -29,11 +29,17 @@ class MediaPickerService {
       if (isAllowed) {
         List<XFile> medias = [];
         if (mediaSource == ImageSource.camera) {
-          var media = await _picker.pickVideo(
-            source: mediaSource,
-            maxDuration: const Duration(seconds: 10),
-          );
-          if (media != null) {
+          // var media = await _picker.pickVideo(
+          //   source: mediaSource,
+          //   maxDuration: const Duration(seconds: 10),
+          // );
+          // if (media != null) {
+          //   medias.add(media);
+          // }
+          var mediaPath = await MethodChannelService.onPlatformCameraPicker();
+          if (mediaPath != null) {
+            logger.d(mediaPath);
+            var media = XFile(mediaPath);
             medias.add(media);
           }
         } else {

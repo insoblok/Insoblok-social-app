@@ -3,8 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
-
+    tools:context=".DeepAIActivity">
 
     <SurfaceView
         android:layout_width="match_parent"
@@ -26,9 +25,9 @@
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="40dp"
             android:background="@null"
+            android:contentDescription="@string/record_button"
             android:scaleType="centerInside"
             android:src="@drawable/record_selector" />
-
 
         <ImageButton
             android:id="@+id/switchCamera"
@@ -39,9 +38,9 @@
             android:layout_marginStart="15dp"
             android:layout_marginTop="15dp"
             android:background="@null"
+            android:contentDescription="@string/switch_camera"
             android:scaleType="centerInside"
             android:src="@drawable/camera_white" />
-
 
         <ImageButton
             android:id="@+id/openActivity"
@@ -53,8 +52,9 @@
             android:layout_marginTop="15dp"
             android:layout_marginEnd="5dp"
             android:background="@null"
+            android:contentDescription="@string/open_activity"
             android:scaleType="centerInside"
-            android:src="@drawable/open_new_activity" />
+            android:src="@android:drawable/ic_menu_close_clear_cancel" />
 
         <ImageButton
             android:id="@+id/previousMask"
@@ -65,9 +65,9 @@
             android:layout_marginStart="20dp"
             android:layout_marginBottom="20dp"
             android:background="@null"
+            android:contentDescription="@string/previous_mask"
             android:scaleType="centerInside"
             android:src="@drawable/arrow_left" />
-
 
         <ImageButton
             android:id="@+id/nextMask"
@@ -78,9 +78,9 @@
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="20dp"
             android:background="@null"
+            android:contentDescription="@string/next_mask"
             android:scaleType="centerInside"
             android:src="@drawable/arrow_right" />
-
 
         <TextView
             android:id="@+id/screenshotModeButton"
@@ -94,8 +94,8 @@
             android:elegantTextHeight="true"
             android:fadingEdgeLength="56dp"
             android:requiresFadingEdge="vertical"
-            android:text="  Screenshot  "
-            android:textAlignment="center" />
+            android:text="@string/screenshot"
+            android:gravity="center" />
 
         <TextView
             android:id="@+id/recordModeButton"
@@ -109,8 +109,8 @@
             android:elegantTextHeight="true"
             android:fadingEdgeLength="32dp"
             android:requiresFadingEdge="horizontal"
-            android:text="  Record  "
-            android:textAlignment="center" />
+            android:text="@string/record"
+            android:gravity="center" />
 
     </RelativeLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

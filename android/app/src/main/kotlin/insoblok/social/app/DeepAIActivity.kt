@@ -9,16 +9,17 @@ import ai.deepar.ar.DeepAR
 import ai.deepar.ar.DeepARImageFormat
 import android.Manifest
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.content.pm.ActivityInfo
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.media.Image
-import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.text.format.DateFormat
 import android.util.DisplayMetrics
+import android.util.Log
 import android.util.Size
 import android.view.MotionEvent
 import android.view.Surface
@@ -43,7 +44,7 @@ import java.nio.ByteOrder
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.concurrent.ExecutionException
-import com.google.common.util.concurrent.ListenableFuture;
+import com.google.common.util.concurrent.ListenableFuture
 
 
 @Suppress("DEPRECATION")
@@ -98,7 +99,7 @@ class DeepAIActivity : AppCompatActivity(), SurfaceHolder.Callback,
             return orientation
         }
 
-    var effects: ArrayList<String>? = null
+    private var effects: ArrayList<String>? = null
 
     private var recording = false
     private var currentSwitchRecording = false
@@ -106,7 +107,9 @@ class DeepAIActivity : AppCompatActivity(), SurfaceHolder.Callback,
     private var width = 0
     private var height = 0
 
-    private var videoFileName: File? = null
+    private var videoFile: File? = null
+
+    private val TAG = "DeepAIActivity"
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -114,21 +117,27 @@ class DeepAIActivity : AppCompatActivity(), SurfaceHolder.Callback,
     }
 
     override fun onStart() {
-        if (ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.CAMERA
-            ) != PackageManager.PERMISSION_GRANTED ||
-            ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.RECORD_AUDIO
-            ) != PackageManager.PERMISSION_GRANTED
+        val cameraPermission = ContextCompat.checkSelfPermission(
+            this,
+            Manifest.permission.CAMERA
+        )
+        Log.d(TAG, cameraPermission.toString())
+
+        val recordPermission = ContextCompat.checkSelfPermission(
+            this,
+            Manifest.permission.RECORD_AUDIO
+        )
+        Log.d(TAG, recordPermission.toString())
+
+        if (cameraPermission != PackageManager.PERMISSION_GRANTED ||
+            recordPermission != PackageManager.PERMISSION_GRANTED
         ) {
             ActivityCompat.requestPermissions(
                 this, arrayOf(Manifest.permission.CAMERA, Manifest.permission.RECORD_AUDIO),
                 1
             )
         } else {
-            // Permission has already been granted
+            Log.d(TAG, "Start initialize")
             initialize()
         }
         super.onStart()
@@ -157,6 +166,7 @@ class DeepAIActivity : AppCompatActivity(), SurfaceHolder.Callback,
     }
 
     private fun initializeFilters() {
+        Log.d(TAG, "Start initializeFilters")
         effects = ArrayList()
         effects!!.add("none")
         effects!!.add("viking_helmet.deepar")
@@ -177,14 +187,17 @@ class DeepAIActivity : AppCompatActivity(), SurfaceHolder.Callback,
         effects!!.add("Fire_Effect.deepar")
         effects!!.add("burning_effect.deepar")
         effects!!.add("Elephant_Trunk.deepar")
+        Log.d(TAG, "End initializeFilters")
     }
 
     @SuppressLint("ClickableViewAccessibility", "SimpleDateFormat")
     private fun initializeViews() {
-        val previousMask: ImageButton = findViewById<ImageButton>(R.id.previousMask)
-        val nextMask: ImageButton = findViewById<ImageButton>(R.id.nextMask)
+        Log.d(TAG, "Start initializeViews")
 
-        val arView: SurfaceView = findViewById<SurfaceView>(R.id.surface)
+        val previousMask: ImageButton = findViewById(R.id.previousMask)
+        val nextMask: ImageButton = findViewById(R.id.nextMask)
+
+        val arView: SurfaceView = findViewById(R.id.surface)
 
         arView.setOnTouchListener { _: View?, motionEvent: MotionEvent ->
             when (motionEvent.action) {
@@ -250,15 +263,11 @@ class DeepAIActivity : AppCompatActivity(), SurfaceHolder.Callback,
             setupCamera()
         }
 
-//        val openActivity: ImageButton = findViewById(R.id.openActivity)
-//        openActivity.setOnClickListener {
-//            val myIntent: Intent =
-//                Intent(
-//                    this@MainActivity,
-//                    BasicActivity::class.java
-//                )
-//            this@MainActivity.startActivity(myIntent)
-//        }
+        val openActivity: ImageButton = findViewById(R.id.openActivity)
+        openActivity.setOnClickListener {
+            setResult(Activity.RESULT_CANCELED)
+            finish()
+        }
 
 
         val screenShotModeButton: TextView = findViewById(R.id.screenshotModeButton)
@@ -295,24 +304,29 @@ class DeepAIActivity : AppCompatActivity(), SurfaceHolder.Callback,
                 screenshotBtn.setOnClickListener {
                     if (recording) {
                         deepAR?.stopVideoRecording()
-                        val mediaScanIntent =
-                            Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE)
-                        val contentUri = Uri.fromFile(videoFileName)
-                        mediaScanIntent.setData(contentUri)
-                        sendBroadcast(mediaScanIntent)
+                        // val mediaScanIntent =
+                        //     Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE)
+                        // val contentUri = Uri.fromFile(videoFileName)
+                        // mediaScanIntent.setData(contentUri)
+                        // sendBroadcast(mediaScanIntent)
                         Toast.makeText(
                             applicationContext,
-                            "Recording " + videoFileName!!.name + " saved.",
+                            "Recording " + videoFile!!.name + " saved.",
                             Toast.LENGTH_LONG
                         ).show()
+
+                        val resultIntent = Intent()
+                        resultIntent.putExtra("result", videoFile!!.path)
+                        setResult(Activity.RESULT_OK, resultIntent)
+                        finish()
                     } else {
-                        videoFileName = File(
+                        videoFile = File(
                             Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_MOVIES),
                             "video_" + SimpleDateFormat("yyyy_MM_dd_HH_mm_ss")
                                 .format(Date()) + ".mp4"
                         )
                         deepAR?.startVideoRecording(
-                            videoFileName.toString(),
+                            videoFile.toString(),
                             width / 2,
                             height / 2
                         )
@@ -332,18 +346,23 @@ class DeepAIActivity : AppCompatActivity(), SurfaceHolder.Callback,
         previousMask.setOnClickListener { gotoPrevious() }
 
         nextMask.setOnClickListener { gotoNext() }
+
+        Log.d(TAG, "End initializeViews")
     }
 
     private fun initializeDeepAR() {
+        Log.d(TAG, "Start initializeDeepAR")
         deepAR = DeepAR(this)
-        deepAR?.setLicenseKey("your_license_key_here")
+        deepAR?.setLicenseKey("3be3727479198503050f6abbeeb068065c3a196e3f3e8c5bc0233f37fb01efece1d07e97a14e4925")
         deepAR?.initialize(this, this)
         setupCamera()
+        Log.d(TAG, "End initializeDeepAR")
     }
 
     private fun setupCamera() {
+        Log.d(TAG, "Start Camera Setup")
         cameraProviderFuture = ProcessCameraProvider.getInstance(this)
-        cameraProviderFuture!!.addListener(Runnable {
+        cameraProviderFuture!!.addListener({
             try {
                 val cameraProvider: ProcessCameraProvider = cameraProviderFuture!!.get()
                 bindImageAnalysis(cameraProvider)
@@ -353,6 +372,7 @@ class DeepAIActivity : AppCompatActivity(), SurfaceHolder.Callback,
                 e.printStackTrace()
             }
         }, ContextCompat.getMainExecutor(this))
+        Log.d(TAG, "End Camera Setup")
     }
 
     private fun bindImageAnalysis(cameraProvider: ProcessCameraProvider) {
@@ -445,8 +465,8 @@ class DeepAIActivity : AppCompatActivity(), SurfaceHolder.Callback,
         currentSwitchRecording = false
         val cameraProvider: ProcessCameraProvider?
         try {
-            cameraProvider = cameraProviderFuture!!.get()
-            cameraProvider.unbindAll()
+            cameraProvider = cameraProviderFuture?.get()
+            cameraProvider?.unbindAll()
         } catch (e: ExecutionException) {
             e.printStackTrace()
         } catch (e: InterruptedException) {
@@ -500,15 +520,20 @@ class DeepAIActivity : AppCompatActivity(), SurfaceHolder.Callback,
             bitmap.compress(Bitmap.CompressFormat.JPEG, quality, outputStream)
             outputStream.flush()
             outputStream.close()
-            val mediaScanIntent = Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE)
-            val contentUri = Uri.fromFile(imageFile)
-            mediaScanIntent.setData(contentUri)
-            this.sendBroadcast(mediaScanIntent)
+            // val mediaScanIntent = Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE)
+            // val contentUri = Uri.fromFile(imageFile)
+            // mediaScanIntent.setData(contentUri)
+            // this.sendBroadcast(mediaScanIntent)
             Toast.makeText(
                 this,
                 "Screenshot " + imageFile.name + " saved.",
                 Toast.LENGTH_SHORT
             ).show()
+
+            val resultIntent = Intent()
+            resultIntent.putExtra("result", imageFile.path)
+            setResult(Activity.RESULT_OK, resultIntent)
+            finish()
         } catch (e: Throwable) {
             e.printStackTrace()
         }
