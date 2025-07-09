@@ -239,16 +239,20 @@ class _MediaCarouselCellState extends State<MediaCarouselCell> {
                       children: [
                         Align(
                           alignment: Alignment.center,
-                          child: AspectRatio(
-                            aspectRatio:
-                                _videoPlayerController.value.aspectRatio,
-                            child: FittedBox(
-                              fit: BoxFit.cover,
-                              child: SizedBox(
-                                width: _videoPlayerController.value.size.width,
-                                height:
-                                    _videoPlayerController.value.size.height,
-                                child: Chewie(controller: _chewieController),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(12.0),
+                            child: AspectRatio(
+                              aspectRatio:
+                                  _videoPlayerController.value.aspectRatio,
+                              child: FittedBox(
+                                fit: BoxFit.cover,
+                                child: SizedBox(
+                                  width:
+                                      _videoPlayerController.value.size.width,
+                                  height:
+                                      _videoPlayerController.value.size.height,
+                                  child: Chewie(controller: _chewieController),
+                                ),
                               ),
                             ),
                           ),
