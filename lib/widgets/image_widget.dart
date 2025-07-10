@@ -5,6 +5,9 @@ import 'package:flutter/material.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:chewie/chewie.dart';
 import 'package:video_player/video_player.dart';
+// import 'package:webview_flutter/webview_flutter.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:vimeo_video_player/vimeo_video_player.dart';
 
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
@@ -157,6 +160,8 @@ class MediaCarouselCell extends StatefulWidget {
 class _MediaCarouselCellState extends State<MediaCarouselCell> {
   late VideoPlayerController _videoPlayerController;
   late ChewieController _chewieController;
+  // late WebViewController _webViewController;
+  late InAppWebViewController? webViewController;
   bool isPlaying = false;
 
   @override
@@ -193,6 +198,27 @@ class _MediaCarouselCellState extends State<MediaCarouselCell> {
         );
         setState(() {});
       });
+      //   _webViewController =
+      //       WebViewController()
+      //         ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      //         ..setNavigationDelegate(
+      //           NavigationDelegate(
+      //             onProgress: (int progress) {
+      //               // Update loading bar.
+      //             },
+      //             onPageStarted: (String url) {},
+      //             onPageFinished: (String url) {},
+      //             onHttpError: (HttpResponseError error) {},
+      //             onWebResourceError: (WebResourceError error) {},
+      //             onNavigationRequest: (NavigationRequest request) {
+      //               // if (request.url.startsWith('https://www.youtube.com/')) {
+      //               //   return NavigationDecision.prevent;
+      //               // }
+      //               return NavigationDecision.navigate;
+      //             },
+      //           ),
+      //         )
+      //         ..loadRequest(Uri.parse(widget.media.link!));
     }
   }
 
@@ -229,6 +255,28 @@ class _MediaCarouselCellState extends State<MediaCarouselCell> {
                     ),
                   ),
                 ],
+              )
+              : widget.media.link!.contains('vimeo')
+              ? LayoutBuilder(
+                builder: (context, constraints) {
+                  return SizedBox(
+                    height: constraints.maxHeight,
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(12.0),
+                      child: VimeoVideoPlayer(
+                        videoId:
+                            AIHelpers.extractVimeoId(widget.media.link!) ?? '',
+                        isAutoPlay: true,
+                        onInAppWebViewCreated: (controller) {
+                          webViewController = controller;
+                        },
+                        onInAppWebViewLoadStart: (controller, url) {},
+                        onInAppWebViewLoadStop: (controller, url) {},
+                      ),
+                      // child: WebViewWidget(controller: _webViewController),
+                    ),
+                  );
+                },
               )
               : _videoPlayerController.value.isInitialized
               ? LayoutBuilder(
