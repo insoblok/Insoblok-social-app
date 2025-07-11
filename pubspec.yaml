@@ -33,6 +33,7 @@ dependencies:
   gif_view: any
   image_cropper: any
   flutter_expandable_fab: any
+  vimeo_video_player: any
 
   logger: any
   freezed_annotation: any

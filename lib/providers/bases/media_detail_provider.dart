@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 
+import 'package:image/image.dart' as img;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -231,12 +232,23 @@ class MediaDetailProvider extends InSoBlokViewModel {
           file: File(path),
           folderName: 'remix',
         );
+
+        var bytes = await File(path).readAsBytes();
+        var decodedImage = img.decodeImage(bytes);
+
         var story = StoryModel(
           title: 'REMIX',
           text: description ?? 'Creating Remix Yay/Nay Poll...',
           category: 'vote',
           status: 'public',
-          medias: [MediaStoryModel(link: imageUrl, type: 'image')],
+          medias: [
+            MediaStoryModel(
+              link: imageUrl,
+              type: 'image',
+              width: decodedImage?.width.toDouble(),
+              height: decodedImage?.height.toDouble(),
+            ),
+          ],
           updateDate: DateTime.now(),
           timestamp: DateTime.now(),
         );

@@ -35,6 +35,12 @@ abstract class InSoBlokViewModel extends ReactiveViewModel {
   final TransferService _transferService = TransferService();
   TransferService get transferService => _transferService;
 
+  final VimeoService _vimeoService = VimeoService();
+  VimeoService get vimeoService => _vimeoService;
+
+  final MethodChannelService _methodChannelService = MethodChannelService();
+  MethodChannelService get methodChannelService => _methodChannelService;
+
   @override
   List<ListenableServiceMixin> get listenableServices => [authService];
 }

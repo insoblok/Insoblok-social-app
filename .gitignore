@@ -61,3 +61,5 @@ lib/utils/const.dart
 firebase.json
 functions/.eslintrc.js
 functions/package-lock.json
+
+android/app/src/main/assets/

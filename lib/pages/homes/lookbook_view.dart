@@ -89,21 +89,13 @@ class LookbookView extends StatelessWidget {
                     SliverFillRemaining(
                       child: Column(
                         children: [
-                          // AITabBarView(onTap: (i) => logger.d(i)),
                           Expanded(
-                            child: PageView.builder(
-                              scrollDirection: Axis.horizontal,
-                              controller: viewModel.pageController,
-                              padEnds: false,
-                              itemCount: viewModel.filterStories.length,
-                              itemBuilder: (_, index) {
-                                var story = viewModel.filterStories[index];
+                            child: ListView.builder(
+                              padding: EdgeInsets.zero,
+                              itemCount: viewModel.stories.length,
+                              itemBuilder: (context, index) {
                                 return StoryListCell(
-                                  key: GlobalKey(
-                                    debugLabel:
-                                        '${story.id} - ${viewModel.tabIndex}',
-                                  ),
-                                  story: story,
+                                  story: viewModel.stories[index],
                                 );
                               },
                             ),

@@ -74,6 +74,19 @@ class AIHelpers {
     return false;
   }
 
+  static String? extractVimeoId(String url) {
+    final regExp = RegExp(
+      r'vimeo\.com/(?:channels/.+/|groups/.+/|album/.+/|video/)?(\d+)',
+      caseSensitive: false,
+    );
+
+    final match = regExp.firstMatch(url);
+    if (match != null && match.groupCount >= 1) {
+      return match.group(1); // The video ID
+    }
+    return null; // No match found
+  }
+
   static Future<void> shareStory(
     BuildContext context, {
     required StoryModel story,

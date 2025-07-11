@@ -98,6 +98,7 @@ class DashboardView extends StatelessWidget {
                             ),
                           ],
                         ),
+                        const SizedBox(height: 8.0),
                         Expanded(
                           child:
                               viewModel.isBusy
@@ -122,17 +123,27 @@ class DashboardView extends StatelessWidget {
                                       ],
                                     ),
                                   )
-                                  : PageView.builder(
-                                    scrollDirection: Axis.horizontal,
-                                    controller: viewModel.pageController,
-                                    padEnds: false,
+                                  : ListView.builder(
+                                    padding: EdgeInsets.zero,
                                     itemCount: viewModel.stories.length,
-                                    itemBuilder: (_, index) {
+                                    itemBuilder: (context, index) {
                                       return StoryListCell(
                                         story: viewModel.stories[index],
                                       );
                                     },
                                   ),
+
+                          // : PageView.builder(
+                          //   scrollDirection: Axis.horizontal,
+                          //   controller: viewModel.pageController,
+                          //   padEnds: false,
+                          //   itemCount: viewModel.stories.length,
+                          //   itemBuilder: (_, index) {
+                          //     return StoryListCell(
+                          //       story: viewModel.stories[index],
+                          //     );
+                          //   },
+                          // ),
                         ),
                       ],
                     ),
