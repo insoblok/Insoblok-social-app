@@ -44,6 +44,7 @@ abstract class MediaStoryModel with _$MediaStoryModel {
   @JsonSerializable(fieldRename: FieldRename.snake)
   factory MediaStoryModel({
     String? link,
+    String? thumb,
     String? type,
     double? width,
     double? height,

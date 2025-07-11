@@ -24,15 +24,6 @@ class StoryListCell extends StatelessWidget {
       onViewModelReady: (viewModel) => viewModel.init(context, model: story),
       builder: (context, viewModel, _) {
         return GestureDetector(
-          // onVerticalDragStart: (details) async {
-          //   viewModel.dragStart = details.localPosition;
-          // },
-          // onVerticalDragUpdate: (details) {
-          //   var dragPosition = details.localPosition;
-          //   if (dragPosition.dy + 50 < viewModel.dragStart.dy) {
-          //     viewModel.showDetailDialog();
-          //   }
-          // },
           onTap: viewModel.showDetailDialog,
           child: Container(
             padding: const EdgeInsets.symmetric(
@@ -49,7 +40,6 @@ class StoryListCell extends StatelessWidget {
                       InkWell(
                         onTap: viewModel.onTapUserAvatar,
                         child: AIAvatarImage(
-                          // key: GlobalKey(debugLabel: 'story-${story.id}'),
                           viewModel.owner?.avatar,
                           width: kStoryAvatarSize,
                           height: kStoryAvatarSize,
@@ -122,79 +112,11 @@ class StoryListCell extends StatelessWidget {
                       ],
                     ),
                   const SizedBox(height: 12.0),
-                  // Expanded(
-                  //   child: ClipRRect(
-                  //     borderRadius: BorderRadius.circular(12.0),
-                  //     child: StoryCarouselView(
-                  //       story: story,
-                  //       height: double.infinity,
-                  //       autoPlay: true,
-                  //       scrollPhysics: NeverScrollableScrollPhysics(),
-                  //       onChangePage: (index) => viewModel.pageIndex = index,
-                  //     ),
-                  //   ),
-                  // ),
                   StoryMediaCellView(models: story.medias ?? []),
                   const SizedBox(height: 16),
                   if (viewModel.story.category != null &&
                       viewModel.story.category == 'vote') ...{
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 40.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        spacing: 40.0,
-                        children: [
-                          Expanded(
-                            child: VoteFloatingButton(
-                              onTap: () {
-                                viewModel.updateVote(true);
-                              },
-                              text:
-                                  viewModel.story.cntYay == 0
-                                      ? 'Yay'
-                                      : 'Yay (${viewModel.story.cntYay})',
-                              textColor:
-                                  viewModel.story.isVote() == true
-                                      ? AIColors.white
-                                      : AIColors.green,
-                              src:
-                                  viewModel.story.isVote() == true
-                                      ? AIImages.icYayFill
-                                      : AIImages.icYayOutline,
-                              backgroundColor:
-                                  viewModel.story.isVote() == true
-                                      ? AIColors.green
-                                      : Colors.transparent,
-                              borderColor: AIColors.green,
-                            ),
-                          ),
-                          Expanded(
-                            child: VoteFloatingButton(
-                              onTap: () {
-                                viewModel.updateVote(false);
-                              },
-                              text:
-                                  viewModel.story.cntNay == 0
-                                      ? 'Nay'
-                                      : 'Nay (${viewModel.story.cntNay})',
-                              textColor:
-                                  viewModel.story.isVote() == false
-                                      ? AIColors.white
-                                      : AIColors.pink,
-                              src:
-                                  viewModel.story.isVote() == false
-                                      ? AIImages.icNayFill
-                                      : AIImages.icNayOutline,
-                              backgroundColor:
-                                  viewModel.story.isVote() == false
-                                      ? AIColors.pink
-                                      : AIColors.transparent,
-                              borderColor: AIColors.pink,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
+                    StoryYayNayWidget(),
                   },
                 ],
               ),
@@ -202,6 +124,257 @@ class StoryListCell extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+class StoryPageableCell extends StatelessWidget {
+  final StoryModel story;
+
+  const StoryPageableCell({super.key, required this.story});
+
+  @override
+  Widget build(BuildContext context) {
+    return ViewModelBuilder<StoryProvider>.reactive(
+      viewModelBuilder: () => StoryProvider(),
+      onViewModelReady: (viewModel) => viewModel.init(context, model: story),
+      builder: (context, viewModel, _) {
+        var media = (story.medias ?? [])[viewModel.pageIndex];
+        logger.d(media.toJson());
+        return Stack(
+          children: [
+            AIImage(
+              media.link,
+              width: double.infinity,
+              height: double.infinity,
+              // fit: BoxFit.contain,
+              fit: BoxFit.cover,
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 20.0,
+                vertical: 20.0,
+              ),
+              decoration: BoxDecoration(
+                gradient: LinearGradient(
+                  begin: Alignment.topCenter,
+                  end: Alignment.bottomCenter,
+                  colors: [
+                    Color(0x00ffffff),
+                    Color(0x00ffffff),
+                    Color(0xc0ffffff),
+                  ],
+                ),
+              ),
+              child: InkWell(
+                onTap: viewModel.showDetailDialog,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: 12.0,
+                  children: [
+                    const Spacer(),
+                    if (viewModel.story.category != null &&
+                        viewModel.story.category == 'vote') ...{
+                      StoryYayNayWidget(),
+                    },
+                    Row(
+                      spacing: 12.0,
+                      children: [
+                        Text(
+                          viewModel.owner?.fullName ?? '---',
+                          style: Theme.of(context).textTheme.headlineMedium,
+                        ),
+                        Text(
+                          '· ${viewModel.story.timestamp?.timeago}',
+                          style: Theme.of(context).textTheme.labelMedium,
+                        ),
+                      ],
+                    ),
+                    if (viewModel.story.category != null &&
+                        viewModel.story.category == 'vote') ...{
+                      Column(
+                        children: [
+                          const SizedBox(height: 8.0),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                'Vybe Virtual Try-On',
+                                style: TextStyle(
+                                  fontSize: 13.0,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 8.0,
+                                  vertical: 2.0,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.secondary.withAlpha(16),
+                                  borderRadius: BorderRadius.circular(16.0),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Icon(Icons.leaderboard_outlined, size: 18),
+                                    Text(
+                                      ' ${viewModel.story.votes?.length ?? 0} / 5 Looks Today',
+                                      style:
+                                          Theme.of(context).textTheme.bodySmall,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    },
+                  ],
+                ),
+              ),
+            ),
+            Align(
+              alignment: Alignment.centerRight,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                spacing: 20.0,
+                children: [
+                  InkWell(
+                    onTap: viewModel.onTapUserAvatar,
+                    child: AIAvatarImage(
+                      key: GlobalKey(debugLabel: 'story-${story.id}'),
+                      viewModel.owner?.avatar,
+                      width: kStoryAvatarSize,
+                      height: kStoryAvatarSize,
+                      fullname: viewModel.owner?.fullName ?? 'Test',
+                      textSize: 24,
+                      isBorder: true,
+                      borderWidth: 2,
+                      borderRadius: kStoryAvatarSize / 2,
+                    ),
+                  ),
+                  StoryActionButton(
+                    src:
+                        viewModel.story.isLike()
+                            ? AIImages.icFavoriteFill
+                            : AIImages.icFavorite,
+                    label: '${(viewModel.story.likes ?? []).length}',
+                    onTap: () {},
+                  ),
+                  StoryActionButton(
+                    src: AIImages.icCommit,
+                    label: '${(viewModel.story.comments ?? []).length}',
+                    onTap: () {},
+                  ),
+                ],
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+}
+
+class StoryYayNayWidget extends ViewModelWidget<StoryProvider> {
+  const StoryYayNayWidget({super.key});
+
+  @override
+  Widget build(BuildContext context, viewModel) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 40.0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        spacing: 40.0,
+        children: [
+          Expanded(
+            child: VoteFloatingButton(
+              onTap: () {
+                viewModel.updateVote(true);
+              },
+              text:
+                  viewModel.story.cntYay == 0
+                      ? 'Yay'
+                      : 'Yay (${viewModel.story.cntYay})',
+              textColor:
+                  viewModel.story.isVote() == true
+                      ? AIColors.white
+                      : AIColors.green,
+              src:
+                  viewModel.story.isVote() == true
+                      ? AIImages.icYayFill
+                      : AIImages.icYayOutline,
+              backgroundColor:
+                  viewModel.story.isVote() == true
+                      ? AIColors.green
+                      : Colors.transparent,
+              borderColor: AIColors.green,
+            ),
+          ),
+          Expanded(
+            child: VoteFloatingButton(
+              onTap: () {
+                viewModel.updateVote(false);
+              },
+              text:
+                  viewModel.story.cntNay == 0
+                      ? 'Nay'
+                      : 'Nay (${viewModel.story.cntNay})',
+              textColor:
+                  viewModel.story.isVote() == false
+                      ? AIColors.white
+                      : AIColors.pink,
+              src:
+                  viewModel.story.isVote() == false
+                      ? AIImages.icNayFill
+                      : AIImages.icNayOutline,
+              backgroundColor:
+                  viewModel.story.isVote() == false
+                      ? AIColors.pink
+                      : AIColors.transparent,
+              borderColor: AIColors.pink,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class StoryActionButton extends StatelessWidget {
+  final dynamic src;
+  final String label;
+  final void Function()? onTap;
+
+  const StoryActionButton({
+    super.key,
+    required this.src,
+    required this.label,
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      child: Column(
+        spacing: 2.0,
+        children: [
+          AIImage(
+            src,
+            width: kStoryAvatarSize * 0.6,
+            height: kStoryAvatarSize * 0.6,
+            color: Theme.of(context).colorScheme.onSecondary,
+          ),
+          Text(
+            label,
+            style: TextStyle(color: Theme.of(context).colorScheme.onSecondary),
+          ),
+        ],
+      ),
     );
   }
 }

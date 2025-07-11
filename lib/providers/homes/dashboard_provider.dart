@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:insoblok/models/models.dart';
+import 'package:insoblok/routers/router.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 
@@ -133,6 +134,11 @@ class DashboardProvider extends InSoBlokViewModel {
 
   void onClickFeedOptionButton(int index) {
     feedIndex = index;
+    fetchStoryData();
+  }
+
+  Future<void> goToAddPost() async {
+    await Routers.goToAddStoryPage(context);
     fetchStoryData();
   }
 }
