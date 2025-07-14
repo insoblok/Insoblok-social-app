@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 
 import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
@@ -6,6 +7,7 @@ import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
+import 'package:vsc_quill_delta_to_html/vsc_quill_delta_to_html.dart';
 
 class StoryProvider extends InSoBlokViewModel {
   late BuildContext _context;
@@ -22,11 +24,39 @@ class StoryProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  bool _isComment = false;
+  bool get isComment => _isComment;
+  set isComment(bool f) {
+    _isComment = f;
+    notifyListeners();
+  }
+
+  late QuillController quillController;
+  var quillScrollController = ScrollController();
+  var focusNode = FocusNode();
+
   void init(BuildContext context, {required StoryModel model}) async {
     this.context = context;
     story = model;
 
+    quillController = () {
+      return QuillController.basic(
+        config: QuillControllerConfig(
+          clipboardConfig: QuillClipboardConfig(enableExternalRichPaste: true),
+        ),
+      );
+    }();
+
     fetchUser();
+  }
+
+  @override
+  void dispose() {
+    quillController.dispose();
+    quillScrollController.dispose();
+    focusNode.dispose();
+
+    super.dispose();
   }
 
   Future<void> fetchStory() async {
@@ -177,6 +207,59 @@ class StoryProvider extends InSoBlokViewModel {
         AIHelpers.showToast(msg: 'Vote No. Feedback stays private');
       }
       notifyListeners();
+    }
+  }
+
+  Future<void> sendComment() async {
+    if (isBusy) return;
+    clearErrors();
+    await runBusyFuture(() async {
+      try {
+        var quillData = quillController.document.toDelta().toJson();
+        logger.d(quillController.document);
+        logger.d(quillData);
+        if (quillData.isNotEmpty) {
+          var converter = QuillDeltaToHtmlConverter(
+            quillData,
+            ConverterOptions.forEmail(),
+          );
+          var comment = StoryCommentModel(
+            userId: user?.id,
+            content: converter.convert(),
+            timestamp: DateTime.now(),
+          );
+          var comments = List<StoryCommentModel>.from(story.comments ?? []);
+
+          comments.add(comment);
+          story = story.copyWith(
+            comments: comments,
+            updateDate: DateTime.now(),
+          );
+          await storyService.addComment(story: story);
+          quillController.document = Document();
+        } else {
+          AIHelpers.showToast(msg: 'Your comment is empty!');
+        }
+      } catch (e, s) {
+        setError(e);
+        logger.e(e);
+        logger.e(s);
+      } finally {
+        notifyListeners();
+        // WidgetsBinding.instance.addPostFrameCallback((_) {
+        //   if (_scrollController.hasClients) {
+        //     _scrollController.animateTo(
+        //       _scrollController.position.maxScrollExtent,
+        //       duration: Duration(milliseconds: 300),
+        //       curve: Curves.easeOut,
+        //     );
+        //   }
+        // });
+      }
+    }());
+
+    if (hasError) {
+      AIHelpers.showToast(msg: modelError.toString());
     }
   }
 }

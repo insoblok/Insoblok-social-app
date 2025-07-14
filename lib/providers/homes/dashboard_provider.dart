@@ -143,7 +143,6 @@ class DashboardProvider extends InSoBlokViewModel {
   }
 
   Future<void> onClickMenuItem(int index) async {
-    Navigator.of(context).pop();
     logger.d(index);
     switch (index) {
       case 0:
