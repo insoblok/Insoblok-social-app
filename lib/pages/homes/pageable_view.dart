@@ -38,51 +38,55 @@ class PageableView extends StatelessWidget {
                       return StoryPageableCell(story: viewModel.stories[index]);
                     },
                   ),
-              Positioned(
-                top: MediaQuery.of(context).padding.top,
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                  child: Row(
-                    spacing: 12.0,
-                    children: [
-                      Expanded(
-                        child: SingleChildScrollView(
-                          child: Row(
-                            spacing: 12.0,
-                            children: [
-                              for (var title in menuTitles) ...{
-                                InkWell(
-                                  onTap: () {
-                                    var index = menuTitles.indexOf(title);
-                                    logger.d(index);
-                                    viewModel.onClickMenuItem(index);
-                                  },
-                                  child: Text(
-                                    title,
-                                    style: TextStyle(
-                                      color:
-                                          Theme.of(
-                                            context,
-                                          ).colorScheme.onSecondary,
-                                    ),
+              Padding(
+                padding: EdgeInsets.only(
+                  top: MediaQuery.of(context).padding.top,
+                  left: 12.0,
+                  right: 12.0,
+                ),
+                child: Row(
+                  spacing: 12.0,
+                  mainAxisSize: MainAxisSize.max,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Expanded(
+                      child: SingleChildScrollView(
+                        scrollDirection: Axis.horizontal,
+                        child: Row(
+                          spacing: 12.0,
+                          children: [
+                            for (var title in menuTitles) ...{
+                              InkWell(
+                                onTap: () {
+                                  var index = menuTitles.indexOf(title);
+                                  logger.d(index);
+                                  viewModel.onClickMenuItem(index);
+                                },
+                                child: Text(
+                                  title,
+                                  style: TextStyle(
+                                    color:
+                                        Theme.of(
+                                          context,
+                                        ).colorScheme.onSecondary,
                                   ),
                                 ),
-                              },
-                            ],
-                          ),
+                              ),
+                            },
+                          ],
                         ),
                       ),
-                      InkWell(
-                        onTap: viewModel.goToAddPost,
-                        child: AIImage(
-                          AIImages.icAddLogo,
-                          width: 28.0,
-                          height: 28.0,
-                          color: Theme.of(context).primaryColor,
-                        ),
+                    ),
+                    InkWell(
+                      onTap: viewModel.goToAddPost,
+                      child: AIImage(
+                        AIImages.icAddLogo,
+                        width: 28.0,
+                        height: 28.0,
+                        color: Theme.of(context).primaryColor,
                       ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             ],
