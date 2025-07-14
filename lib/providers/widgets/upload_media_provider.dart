@@ -1,10 +1,12 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image/image.dart' as img;
-import 'package:image_picker/image_picker.dart';
 import 'package:stacked/stacked.dart';
+import 'package:video_thumbnail/video_thumbnail.dart';
 
 import 'package:insoblok/locator.dart';
 import 'package:insoblok/models/models.dart';
@@ -64,42 +66,47 @@ class UploadMediaProvider extends ReactiveViewModel {
               : 'image';
 
       if (media.isUploaded) continue;
-      var url =
+      var model =
           mediaType == 'image'
               ? (await uploadImage(media: media))
               : (await uploadVideo(media: media));
 
-      logger.d(url);
-
-      if (mediaType == 'image') {
-        var bytes = await File(mediaPath).readAsBytes();
-        var decodedImage = img.decodeImage(bytes);
-
-        if (decodedImage != null) {
-          logger.d(decodedImage.width);
-          logger.d(decodedImage.height);
-          if (url != null) {
-            var model = MediaStoryModel(
-              link: url,
-              type: mediaType,
-              width: decodedImage.width.toDouble(),
-              height: decodedImage.height.toDouble(),
-            );
-            result.add(model);
-          }
-        }
-      } else {
-        if (url != null) {
-          var model = MediaStoryModel(link: url, type: mediaType);
-          result.add(model);
-        }
+      if (model != null) {
+        result.add(model);
       }
     }
     return result;
   }
 
+  Future<Uint8List?> getVideoThumbnail(String videoPath) async {
+    final thumbnail = await VideoThumbnail.thumbnailData(
+      video: videoPath,
+      imageFormat: ImageFormat.PNG,
+      quality: 80,
+      timeMs: 1000,
+    );
+    return thumbnail;
+  }
+
+  Future<Uint8List?> getImageThumbnail(String imagePath) async {
+    var file = File('${imagePath}_thumbnail.jpg');
+    if (!file.existsSync()) {
+      await file.create();
+    }
+
+    final result = await FlutterImageCompress.compressAndGetFile(
+      imagePath,
+      '${imagePath}_thumbnail.jpg',
+      quality: 60,
+      minWidth: 200,
+      minHeight: 200,
+    );
+    logger.d(result?.mimeType);
+    return result?.readAsBytes();
+  }
+
   // UPLOAD IMAGE
-  Future<String?> uploadImage({required UploadMediaItem media}) async {
+  Future<MediaStoryModel?> uploadImage({required UploadMediaItem media}) async {
     media.isUploading = true;
     notifyListeners();
     try {
@@ -107,10 +114,31 @@ class UploadMediaProvider extends ReactiveViewModel {
         file: File(media.file!.path),
         folderName: 'story',
       );
+
+      var bytes = await File(media.file!.path).readAsBytes();
+      var decodedImage = img.decodeImage(bytes);
+      logger.d(decodedImage?.width);
+      logger.d(decodedImage?.height);
+
+      String? thumbUrl;
+      var thumbnail = await getImageThumbnail(media.file!.path);
+      if (thumbnail != null) {
+        thumbUrl = await FirebaseHelper.uploadFileData(
+          fileData: thumbnail,
+          folderName: 'story',
+        );
+      }
+
       media.isUploaded = true;
       notifyListeners();
 
-      return mediaUrl;
+      return MediaStoryModel(
+        link: mediaUrl,
+        thumb: thumbUrl,
+        width: decodedImage?.width.toDouble(),
+        height: decodedImage?.height.toDouble(),
+        type: 'image',
+      );
     } catch (e) {
       logger.e(e);
     } finally {
@@ -121,7 +149,7 @@ class UploadMediaProvider extends ReactiveViewModel {
   }
 
   // UPLOAD VIDEO
-  Future<String?> uploadVideo({required UploadMediaItem media}) async {
+  Future<MediaStoryModel?> uploadVideo({required UploadMediaItem media}) async {
     media.isUploading = true;
     notifyListeners();
     try {
@@ -132,14 +160,29 @@ class UploadMediaProvider extends ReactiveViewModel {
         title: 'InSoBlokAI Video',
         description: 'Uploaded from InSoBlokAI',
       );
+
+      String? thumbUrl;
+      img.Image? decodedImage;
+
+      var thumbnail = await getVideoThumbnail(media.file!.path);
+      if (thumbnail != null) {
+        decodedImage = img.decodeImage(thumbnail);
+        thumbUrl = await FirebaseHelper.uploadFileData(
+          fileData: thumbnail,
+          folderName: 'story',
+        );
+      }
+
       media.isUploaded = true;
       notifyListeners();
 
-      if (videoId != null) {
-        return 'https://player.vimeo.com/video/$videoId';
-      }
-
-      return null;
+      return MediaStoryModel(
+        link: 'https://player.vimeo.com/video/$videoId',
+        thumb: thumbUrl,
+        width: decodedImage?.width.toDouble(),
+        height: decodedImage?.height.toDouble(),
+        type: 'video',
+      );
     } catch (e) {
       logger.e(e);
     } finally {

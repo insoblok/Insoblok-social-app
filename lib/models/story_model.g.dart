@@ -74,6 +74,7 @@ Map<String, dynamic> _$StoryVoteModelToJson(_StoryVoteModel instance) =>
 _MediaStoryModel _$MediaStoryModelFromJson(Map<String, dynamic> json) =>
     _MediaStoryModel(
       link: json['link'] as String?,
+      thumb: json['thumb'] as String?,
       type: json['type'] as String?,
       width: (json['width'] as num?)?.toDouble(),
       height: (json['height'] as num?)?.toDouble(),
@@ -82,6 +83,7 @@ _MediaStoryModel _$MediaStoryModelFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$MediaStoryModelToJson(_MediaStoryModel instance) =>
     <String, dynamic>{
       'link': instance.link,
+      'thumb': instance.thumb,
       'type': instance.type,
       'width': instance.width,
       'height': instance.height,

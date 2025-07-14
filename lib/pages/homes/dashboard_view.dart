@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 
 import 'package:insoblok/providers/providers.dart';
-import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
@@ -33,7 +32,7 @@ class DashboardView extends StatelessWidget {
                   actions: [
                     if (viewModel.tabIndex == 0) ...{
                       IconButton(
-                        onPressed: () => Routers.goToAddStoryPage(context),
+                        onPressed: viewModel.goToAddPost,
                         icon: AIImage(
                           AIImages.icAddLogo,
                           width: 28.0,

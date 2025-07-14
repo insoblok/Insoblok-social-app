@@ -4,7 +4,6 @@ export 'color.dart';
 export 'helper.dart';
 export 'const.dart';
 export 'date.dart';
-export 'ethereum_client.dart';
 export 'deeplink_handler.dart';
 export 'style.dart';
 export 'network.dart';

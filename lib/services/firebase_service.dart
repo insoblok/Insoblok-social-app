@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/services.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
@@ -190,6 +192,34 @@ class FirebaseService {
     }
   }
 
+  Future<String?> uploadFileData({
+    required Uint8List fileData,
+    String? id,
+    String? folderName,
+  }) async {
+    try {
+      final String fileName =
+          "${AuthHelper.user?.id}_${kFullFormatter.format(DateTime.now())}.jpg";
+      final String storagePath =
+          folderName != null
+              ? 'users/${id ?? AuthHelper.user?.id}/$folderName/$fileName'
+              : 'users/${id ?? AuthHelper.user?.id}/$fileName';
+
+      final Reference storageRef = _storage.ref().child(storagePath);
+
+      // Upload the file
+      final UploadTask uploadTask = storageRef.putData(fileData);
+      final TaskSnapshot snapshot = await uploadTask;
+
+      // Get download URL
+      final String downloadUrl = await snapshot.ref.getDownloadURL();
+      return downloadUrl;
+    } catch (e) {
+      logger.e('Error uploading image: $e');
+      return null;
+    }
+  }
+
   Future<void> deleteImage(String imageUrl) async {
     try {
       final Reference ref = _storage.refFromURL(imageUrl);
@@ -251,6 +281,16 @@ class FirebaseHelper {
     String? id,
     String? folderName,
   }) => service.uploadFile(file: file, id: id, folderName: folderName);
+
+  static Future<String?> uploadFileData({
+    required Uint8List fileData,
+    String? id,
+    String? folderName,
+  }) => service.uploadFileData(
+    fileData: fileData,
+    id: id,
+    folderName: folderName,
+  );
 
   static Future<void> deleteImage(String imageUrl) =>
       service.deleteImage(imageUrl);

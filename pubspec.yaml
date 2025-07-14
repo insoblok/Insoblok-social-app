@@ -61,6 +61,8 @@ dependencies:
   http: any
   share_plus: any
   app_links: any
+  video_thumbnail: any
+  flutter_image_compress: any
 
   firebase_analytics: any
   cloud_firestore: any
@@ -71,7 +73,7 @@ dependencies:
 
   dio: any
   path_provider: any
-  reown_appkit: ^1.4.3+1
+  reown_appkit: any
   google_sign_in: any
   smooth_page_indicator: any
   syncfusion_flutter_gauges: any

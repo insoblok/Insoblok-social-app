@@ -81,20 +81,5 @@ flutter pub cache clean
 flutter pub get
 flutter pub cache repair
 
-
-Request URL
-https://app.fashn.ai/edit
-Request Method
-POST
-Status Code
-200 OK
-Remote Address
-104.21.48.1:443
-Referrer Policy
-strict-origin-when-cross-origin
-
-Form-Data
-
-1_model_image : (binary)
-1_prompt : Change the garment color to blue
-0 : ["$K1"]
+message_provider.dart
+account_wallet_page.dart

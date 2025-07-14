@@ -661,6 +661,7 @@ class __$StoryVoteModelCopyWithImpl<$Res>
 /// @nodoc
 mixin _$MediaStoryModel {
   String? get link;
+  String? get thumb;
   String? get type;
   double? get width;
   double? get height;
@@ -682,6 +683,7 @@ mixin _$MediaStoryModel {
         (other.runtimeType == runtimeType &&
             other is MediaStoryModel &&
             (identical(other.link, link) || other.link == link) &&
+            (identical(other.thumb, thumb) || other.thumb == thumb) &&
             (identical(other.type, type) || other.type == type) &&
             (identical(other.width, width) || other.width == width) &&
             (identical(other.height, height) || other.height == height));
@@ -689,11 +691,12 @@ mixin _$MediaStoryModel {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, link, type, width, height);
+  int get hashCode =>
+      Object.hash(runtimeType, link, thumb, type, width, height);
 
   @override
   String toString() {
-    return 'MediaStoryModel(link: $link, type: $type, width: $width, height: $height)';
+    return 'MediaStoryModel(link: $link, thumb: $thumb, type: $type, width: $width, height: $height)';
   }
 }
 
@@ -703,7 +706,12 @@ abstract mixin class $MediaStoryModelCopyWith<$Res> {
           MediaStoryModel value, $Res Function(MediaStoryModel) _then) =
       _$MediaStoryModelCopyWithImpl;
   @useResult
-  $Res call({String? link, String? type, double? width, double? height});
+  $Res call(
+      {String? link,
+      String? thumb,
+      String? type,
+      double? width,
+      double? height});
 }
 
 /// @nodoc
@@ -720,6 +728,7 @@ class _$MediaStoryModelCopyWithImpl<$Res>
   @override
   $Res call({
     Object? link = freezed,
+    Object? thumb = freezed,
     Object? type = freezed,
     Object? width = freezed,
     Object? height = freezed,
@@ -728,6 +737,10 @@ class _$MediaStoryModelCopyWithImpl<$Res>
       link: freezed == link
           ? _self.link
           : link // ignore: cast_nullable_to_non_nullable
+              as String?,
+      thumb: freezed == thumb
+          ? _self.thumb
+          : thumb // ignore: cast_nullable_to_non_nullable
               as String?,
       type: freezed == type
           ? _self.type
@@ -749,12 +762,14 @@ class _$MediaStoryModelCopyWithImpl<$Res>
 
 @JsonSerializable(fieldRename: FieldRename.snake)
 class _MediaStoryModel implements MediaStoryModel {
-  _MediaStoryModel({this.link, this.type, this.width, this.height});
+  _MediaStoryModel({this.link, this.thumb, this.type, this.width, this.height});
   factory _MediaStoryModel.fromJson(Map<String, dynamic> json) =>
       _$MediaStoryModelFromJson(json);
 
   @override
   final String? link;
+  @override
+  final String? thumb;
   @override
   final String? type;
   @override
@@ -783,6 +798,7 @@ class _MediaStoryModel implements MediaStoryModel {
         (other.runtimeType == runtimeType &&
             other is _MediaStoryModel &&
             (identical(other.link, link) || other.link == link) &&
+            (identical(other.thumb, thumb) || other.thumb == thumb) &&
             (identical(other.type, type) || other.type == type) &&
             (identical(other.width, width) || other.width == width) &&
             (identical(other.height, height) || other.height == height));
@@ -790,11 +806,12 @@ class _MediaStoryModel implements MediaStoryModel {
 
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, link, type, width, height);
+  int get hashCode =>
+      Object.hash(runtimeType, link, thumb, type, width, height);
 
   @override
   String toString() {
-    return 'MediaStoryModel(link: $link, type: $type, width: $width, height: $height)';
+    return 'MediaStoryModel(link: $link, thumb: $thumb, type: $type, width: $width, height: $height)';
   }
 }
 
@@ -806,7 +823,12 @@ abstract mixin class _$MediaStoryModelCopyWith<$Res>
       __$MediaStoryModelCopyWithImpl;
   @override
   @useResult
-  $Res call({String? link, String? type, double? width, double? height});
+  $Res call(
+      {String? link,
+      String? thumb,
+      String? type,
+      double? width,
+      double? height});
 }
 
 /// @nodoc
@@ -823,6 +845,7 @@ class __$MediaStoryModelCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   $Res call({
     Object? link = freezed,
+    Object? thumb = freezed,
     Object? type = freezed,
     Object? width = freezed,
     Object? height = freezed,
@@ -831,6 +854,10 @@ class __$MediaStoryModelCopyWithImpl<$Res>
       link: freezed == link
           ? _self.link
           : link // ignore: cast_nullable_to_non_nullable
+              as String?,
+      thumb: freezed == thumb
+          ? _self.thumb
+          : thumb // ignore: cast_nullable_to_non_nullable
               as String?,
       type: freezed == type
           ? _self.type
