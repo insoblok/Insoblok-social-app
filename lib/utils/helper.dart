@@ -31,36 +31,38 @@ class AIHelpers {
     return deviceIdentifier;
   }
 
-  static Widget htmlRender(String? data, {FontSize? fontSize}) => Html(
-    data: data ?? '',
-    shrinkWrap: true,
-    style: {
-      'body': Style(margin: Margins.all(0), padding: HtmlPaddings.all(0)),
-      'p': Style(
-        margin: Margins.all(0),
-        fontSize: fontSize ?? FontSize(14.0),
-        fontWeight: FontWeight.w400,
-        letterSpacing: -0.3,
-      ),
-      'a': Style(
-        fontSize: fontSize ?? FontSize(14.0),
-        fontWeight: FontWeight.w400,
-        letterSpacing: -0.3,
-      ),
-    },
-    onLinkTap: (url, attributes, element) {
-      logger.d(url);
-      if (url != null) {
-        loadUrl(url);
-      }
-    },
-    onAnchorTap: (url, attributes, element) {
-      logger.d(url);
-      if (url != null) {
-        loadUrl(url);
-      }
-    },
-  );
+  static Widget htmlRender(String? data, {Key? key, FontSize? fontSize}) =>
+      Html(
+        key: key,
+        data: data ?? '',
+        shrinkWrap: true,
+        style: {
+          'body': Style(margin: Margins.all(0), padding: HtmlPaddings.all(0)),
+          'p': Style(
+            margin: Margins.all(0),
+            fontSize: fontSize ?? FontSize(14.0),
+            fontWeight: FontWeight.w400,
+            letterSpacing: -0.3,
+          ),
+          'a': Style(
+            fontSize: fontSize ?? FontSize(14.0),
+            fontWeight: FontWeight.w400,
+            letterSpacing: -0.3,
+          ),
+        },
+        onLinkTap: (url, attributes, element) {
+          logger.d(url);
+          if (url != null) {
+            loadUrl(url);
+          }
+        },
+        onAnchorTap: (url, attributes, element) {
+          logger.d(url);
+          if (url != null) {
+            loadUrl(url);
+          }
+        },
+      );
 
   static String removeFirstBr(String html) {
     final pattern = RegExp(r'<br\s*/?>', caseSensitive: false);

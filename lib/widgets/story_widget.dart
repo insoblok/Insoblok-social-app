@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:stacked/stacked.dart';
+import 'package:vimeo_video_player/vimeo_video_player.dart';
 
 import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
@@ -143,12 +145,14 @@ class StoryPageableCell extends StatelessWidget {
         logger.d(media.toJson());
         return Stack(
           children: [
-            AIImage(
-              media.link,
-              width: double.infinity,
-              height: double.infinity,
-              // fit: BoxFit.contain,
-              fit: BoxFit.cover,
+            PageView.builder(
+              itemCount: (viewModel.story.medias ?? []).length,
+              itemBuilder: (context, index) {
+                return StoryMediaView(media: media);
+              },
+              onPageChanged: (value) {
+                viewModel.pageIndex = value;
+              },
             ),
             Column(
               children: [
@@ -166,257 +170,270 @@ class StoryPageableCell extends StatelessWidget {
                         colors: [Color(0x00ffffff), Color(0xcfffffff)],
                       ),
                     ),
-                    child: InkWell(
-                      onTap: viewModel.showDetailDialog,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        spacing: 12.0,
-                        children: [
-                          const Spacer(),
-                          if (viewModel.isComment) ...{
-                            Container(
-                              padding: EdgeInsets.only(
-                                bottom: MediaQuery.of(context).padding.bottom,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      spacing: 12.0,
+                      children: [
+                        if (viewModel.isComment) ...{
+                          Expanded(
+                            child: SingleChildScrollView(
+                              reverse: true,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  for (StoryCommentModel comment
+                                      in story.comments ?? []) ...{
+                                    AIHelpers.htmlRender(
+                                      key: GlobalKey(
+                                        debugLabel:
+                                            'comment-${story.comments?.indexOf(comment)}',
+                                      ),
+                                      comment.content,
+                                    ),
+                                  },
+                                ],
                               ),
-                              decoration: BoxDecoration(
-                                // color: Theme.of(context).colorScheme.onSecondary,
-                                border: Border(
-                                  top: BorderSide(
-                                    color: AIColors.speraterColor,
-                                    width: 0.33,
-                                  ),
+                            ),
+                          ),
+                          Container(
+                            padding: EdgeInsets.only(
+                              bottom: MediaQuery.of(context).padding.bottom,
+                            ),
+                            decoration: BoxDecoration(
+                              border: Border(
+                                top: BorderSide(
+                                  color: AIColors.speraterColor,
+                                  width: 0.33,
                                 ),
                               ),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Row(
+                            ),
+                            child: Column(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Row(
+                                  children: [
+                                    IconButton(
+                                      onPressed: () {},
+                                      icon: AIImage(
+                                        AIImages.icImage,
+                                        color: AIColors.black,
+                                        width: 20,
+                                      ),
+                                    ),
+                                    IconButton(
+                                      onPressed: () {},
+                                      icon: AIImage(
+                                        AIImages.icCamera,
+                                        color: AIColors.black,
+                                        width: 20,
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: QuillSimpleToolbar(
+                                        controller: viewModel.quillController,
+                                        config: QuillSimpleToolbarConfig(
+                                          toolbarIconAlignment:
+                                              WrapAlignment.start,
+                                          showDividers: false,
+                                          showFontFamily: false,
+                                          showFontSize: false,
+                                          showColorButton: false,
+                                          showBackgroundColorButton: false,
+                                          showHeaderStyle: false,
+                                          showCodeBlock: false,
+                                          showInlineCode: false,
+                                          showIndent: false,
+                                          showSearchButton: false,
+                                          showUndo: false,
+                                          showRedo: false,
+                                          showQuote: false,
+                                          showSubscript: false,
+                                          showSuperscript: false,
+                                          showListCheck: false,
+                                          showClearFormat: false,
+                                          showAlignmentButtons: false,
+                                          showCenterAlignment: false,
+                                          showLeftAlignment: false,
+                                          showLink: false,
+                                          showJustifyAlignment: false,
+                                          showRightAlignment: false,
+                                          showListNumbers: false,
+                                          showListBullets: false,
+                                          showStrikeThrough: false,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                Container(
+                                  padding: const EdgeInsets.only(
+                                    left: 12.0,
+                                    right: 12.0,
+                                    // bottom: 8.0,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(24.0),
+                                    border: Border.all(color: AIColors.grey),
+                                  ),
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
-                                      IconButton(
-                                        onPressed: () {},
-                                        icon: AIImage(
-                                          AIImages.icImage,
-                                          color: AIColors.black,
-                                          width: 20,
-                                        ),
-                                      ),
-                                      IconButton(
-                                        onPressed: () {},
-                                        icon: AIImage(
-                                          AIImages.icCamera,
-                                          color: AIColors.black,
-                                          width: 20,
-                                        ),
-                                      ),
                                       Expanded(
-                                        child: QuillSimpleToolbar(
+                                        child: QuillEditor(
+                                          focusNode: viewModel.focusNode,
+                                          scrollController:
+                                              viewModel.quillScrollController,
                                           controller: viewModel.quillController,
-                                          config: QuillSimpleToolbarConfig(
-                                            toolbarIconAlignment:
-                                                WrapAlignment.start,
-                                            showDividers: false,
-                                            showFontFamily: false,
-                                            showFontSize: false,
-                                            showColorButton: false,
-                                            showBackgroundColorButton: false,
-                                            showHeaderStyle: false,
-                                            showCodeBlock: false,
-                                            showInlineCode: false,
-                                            showIndent: false,
-                                            showSearchButton: false,
-                                            showUndo: false,
-                                            showRedo: false,
-                                            showQuote: false,
-                                            showSubscript: false,
-                                            showSuperscript: false,
-                                            showListCheck: false,
-                                            showClearFormat: false,
-                                            showAlignmentButtons: false,
-                                            showCenterAlignment: false,
-                                            showLeftAlignment: false,
-                                            showLink: false,
-                                            showJustifyAlignment: false,
-                                            showRightAlignment: false,
-                                            showListNumbers: false,
-                                            showListBullets: false,
-                                            showStrikeThrough: false,
+
+                                          config: QuillEditorConfig(
+                                            autoFocus: false,
+                                            expands: false,
+                                            placeholder: 'Comments...',
+                                            padding: const EdgeInsets.all(12),
+                                            customStyles: DefaultStyles(
+                                              placeHolder:
+                                                  DefaultTextBlockStyle(
+                                                    TextStyle(
+                                                      fontSize: 16,
+                                                      color: AIColors.grey,
+                                                    ),
+                                                    HorizontalSpacing.zero,
+                                                    VerticalSpacing.zero,
+                                                    VerticalSpacing.zero,
+                                                    null,
+                                                  ),
+                                              paragraph: DefaultTextBlockStyle(
+                                                TextStyle(
+                                                  fontSize: 16,
+                                                  color:
+                                                      Theme.of(
+                                                        context,
+                                                      ).colorScheme.onPrimary,
+                                                ),
+                                                HorizontalSpacing.zero,
+                                                VerticalSpacing.zero,
+                                                VerticalSpacing.zero,
+                                                null,
+                                              ),
+                                            ),
+
+                                            // customize other styles if needed
+                                          ),
+                                        ),
+                                      ),
+                                      Padding(
+                                        padding: const EdgeInsets.only(
+                                          left: 8.0,
+                                          bottom: 8.0,
+                                        ),
+                                        child: Container(
+                                          width: 30.0,
+                                          height: 30.0,
+                                          alignment: Alignment.center,
+                                          decoration: BoxDecoration(
+                                            color: AIColors.pink,
+                                            borderRadius: BorderRadius.circular(
+                                              15.0,
+                                            ),
+                                          ),
+                                          child: IconButton(
+                                            onPressed: viewModel.sendComment,
+                                            icon: Icon(
+                                              Icons.arrow_upward_outlined,
+                                              color: AIColors.white,
+                                              size: 15.0,
+                                            ),
                                           ),
                                         ),
                                       ),
                                     ],
                                   ),
-                                  Container(
-                                    padding: const EdgeInsets.only(
-                                      left: 12.0,
-                                      right: 12.0,
-                                      // bottom: 8.0,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(24.0),
-                                      border: Border.all(color: AIColors.grey),
-                                    ),
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.end,
+                                ),
+                              ],
+                            ),
+                          ),
+                        } else ...{
+                          const Spacer(),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            spacing: 12.0,
+                            children: [
+                              if (viewModel.story.category != null &&
+                                  viewModel.story.category == 'vote') ...{
+                                StoryYayNayWidget(),
+                              },
+                              Row(
+                                spacing: 12.0,
+                                children: [
+                                  Text(
+                                    viewModel.owner?.fullName ?? '---',
+                                    style:
+                                        Theme.of(
+                                          context,
+                                        ).textTheme.headlineMedium,
+                                  ),
+                                  Text(
+                                    '· ${viewModel.story.timestamp?.timeago}',
+                                    style:
+                                        Theme.of(context).textTheme.labelMedium,
+                                  ),
+                                ],
+                              ),
+                              if (viewModel.story.category != null &&
+                                  viewModel.story.category == 'vote') ...{
+                                Column(
+                                  children: [
+                                    const SizedBox(height: 8.0),
+                                    Row(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
-                                        Expanded(
-                                          child: QuillEditor(
-                                            focusNode: viewModel.focusNode,
-                                            scrollController:
-                                                viewModel.quillScrollController,
-                                            controller:
-                                                viewModel.quillController,
-
-                                            config: QuillEditorConfig(
-                                              autoFocus: false,
-                                              expands: false,
-                                              placeholder: 'Comments...',
-                                              padding: const EdgeInsets.all(12),
-                                              customStyles: DefaultStyles(
-                                                placeHolder:
-                                                    DefaultTextBlockStyle(
-                                                      TextStyle(
-                                                        fontSize: 16,
-                                                        color: AIColors.grey,
-                                                      ),
-                                                      HorizontalSpacing.zero,
-                                                      VerticalSpacing.zero,
-                                                      VerticalSpacing.zero,
-                                                      null,
-                                                    ),
-                                                paragraph:
-                                                    DefaultTextBlockStyle(
-                                                      TextStyle(
-                                                        fontSize: 16,
-                                                        color:
-                                                            Theme.of(context)
-                                                                .colorScheme
-                                                                .onPrimary,
-                                                      ),
-                                                      HorizontalSpacing.zero,
-                                                      VerticalSpacing.zero,
-                                                      VerticalSpacing.zero,
-                                                      null,
-                                                    ),
-                                              ),
-
-                                              // customize other styles if needed
-                                            ),
+                                        Text(
+                                          'Vybe Virtual Try-On',
+                                          style: TextStyle(
+                                            fontSize: 13.0,
+                                            fontWeight: FontWeight.bold,
                                           ),
                                         ),
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                            left: 8.0,
-                                            bottom: 8.0,
+                                        Container(
+                                          padding: const EdgeInsets.symmetric(
+                                            horizontal: 8.0,
+                                            vertical: 2.0,
                                           ),
-                                          child: Container(
-                                            width: 30.0,
-                                            height: 30.0,
-                                            alignment: Alignment.center,
-                                            decoration: BoxDecoration(
-                                              color: AIColors.pink,
-                                              borderRadius:
-                                                  BorderRadius.circular(15.0),
+                                          decoration: BoxDecoration(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .secondary
+                                                .withAlpha(16),
+                                            borderRadius: BorderRadius.circular(
+                                              16.0,
                                             ),
-                                            child: IconButton(
-                                              onPressed: viewModel.sendComment,
-                                              icon: Icon(
-                                                Icons.arrow_upward_outlined,
-                                                color: AIColors.white,
-                                                size: 15.0,
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              Icon(
+                                                Icons.leaderboard_outlined,
+                                                size: 18,
                                               ),
-                                            ),
+                                              Text(
+                                                ' ${viewModel.story.votes?.length ?? 0} / 5 Looks Today',
+                                                style:
+                                                    Theme.of(
+                                                      context,
+                                                    ).textTheme.bodySmall,
+                                              ),
+                                            ],
                                           ),
                                         ),
                                       ],
                                     ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          } else ...{
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              spacing: 12.0,
-                              children: [
-                                if (viewModel.story.category != null &&
-                                    viewModel.story.category == 'vote') ...{
-                                  StoryYayNayWidget(),
-                                },
-                                Row(
-                                  spacing: 12.0,
-                                  children: [
-                                    Text(
-                                      viewModel.owner?.fullName ?? '---',
-                                      style:
-                                          Theme.of(
-                                            context,
-                                          ).textTheme.headlineMedium,
-                                    ),
-                                    Text(
-                                      '· ${viewModel.story.timestamp?.timeago}',
-                                      style:
-                                          Theme.of(
-                                            context,
-                                          ).textTheme.labelMedium,
-                                    ),
                                   ],
                                 ),
-                                if (viewModel.story.category != null &&
-                                    viewModel.story.category == 'vote') ...{
-                                  Column(
-                                    children: [
-                                      const SizedBox(height: 8.0),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            'Vybe Virtual Try-On',
-                                            style: TextStyle(
-                                              fontSize: 13.0,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          Container(
-                                            padding: const EdgeInsets.symmetric(
-                                              horizontal: 8.0,
-                                              vertical: 2.0,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .secondary
-                                                  .withAlpha(16),
-                                              borderRadius:
-                                                  BorderRadius.circular(16.0),
-                                            ),
-                                            child: Row(
-                                              children: [
-                                                Icon(
-                                                  Icons.leaderboard_outlined,
-                                                  size: 18,
-                                                ),
-                                                Text(
-                                                  ' ${viewModel.story.votes?.length ?? 0} / 5 Looks Today',
-                                                  style:
-                                                      Theme.of(
-                                                        context,
-                                                      ).textTheme.bodySmall,
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                },
-                              ],
-                            ),
-                          },
-                        ],
-                      ),
+                              },
+                            ],
+                          ),
+                        },
+                      ],
                     ),
                   ),
                 ),
@@ -455,12 +472,12 @@ class StoryPageableCell extends StatelessWidget {
                     StoryActionButton(
                       src: Icons.favorite,
                       label: '${(viewModel.story.likes ?? []).length}',
-                      onTap: () {},
+                      onTap: viewModel.updateLike,
                     ),
                     StoryActionButton(
-                      src: Icons.share,
+                      src: Icons.screen_share,
                       label: '${(viewModel.story.follows ?? []).length}',
-                      onTap: () {},
+                      onTap: viewModel.updateFollow,
                     ),
                     StoryActionButton(
                       src: Icons.comment,
@@ -469,14 +486,92 @@ class StoryPageableCell extends StatelessWidget {
                         viewModel.isComment = !viewModel.isComment;
                       },
                     ),
-                    StoryActionButton(src: Icons.post_add, onTap: () {}),
+                    StoryActionButton(
+                      src: Icons.share,
+                      onTap: () {
+                        AIHelpers.shareStory(context, story: story);
+                      },
+                    ),
+                    StoryActionButton(
+                      src: Icons.post_add,
+                      onTap: viewModel.repost,
+                    ),
                   ],
                 ),
               ),
             ),
+            if ((viewModel.story.medias ?? []).length > 1) ...{
+              Positioned(
+                left: 20.0,
+                top: MediaQuery.of(context).padding.top + 40.0,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12.0,
+                    vertical: 4.0,
+                  ),
+                  decoration: BoxDecoration(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSecondary.withAlpha(64),
+                    borderRadius: BorderRadius.circular(24.0),
+                  ),
+                  child: Text(
+                    '${viewModel.pageIndex + 1} / ${(viewModel.story.medias ?? []).length}',
+                    style: Theme.of(context).textTheme.titleSmall,
+                  ),
+                ),
+              ),
+            },
           ],
         );
       },
+    );
+  }
+}
+
+class StoryMediaView extends StatefulWidget {
+  final MediaStoryModel media;
+
+  const StoryMediaView({super.key, required this.media});
+
+  @override
+  State<StoryMediaView> createState() => _StoryMediaViewState();
+}
+
+class _StoryMediaViewState extends State<StoryMediaView> {
+  late InAppWebViewController? webViewController;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (widget.media.type == 'image') {
+      return AIImage(
+        widget.media.link,
+        width: double.infinity,
+        height: double.infinity,
+        fit:
+            ((widget.media.height ?? 1) / (widget.media.width ?? 1) > 1.2)
+                ? BoxFit.cover
+                : BoxFit.contain,
+      );
+    }
+    return VimeoVideoPlayer(
+      videoId: AIHelpers.extractVimeoId(widget.media.link!) ?? '',
+      isAutoPlay: true,
+      onInAppWebViewCreated: (controller) {
+        webViewController = controller;
+      },
+      onInAppWebViewLoadStart: (controller, url) {},
+      onInAppWebViewLoadStop: (controller, url) {},
     );
   }
 }
@@ -1128,14 +1223,6 @@ class StoryDialogMediaView extends ViewModelWidget<StoryContentProvider> {
                             media: viewModel.story.medias![i],
                           ),
                         ),
-                        // child: AspectRatio(
-                        //   aspectRatio: 3 / 2,
-                        //   child: AIImage(
-                        //     viewModel.story.medias![i].link,
-                        //     fit: BoxFit.cover,
-                        //     width: double.infinity,
-                        //   ),
-                        // ),
                       ),
                     ),
                   ),
