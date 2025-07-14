@@ -12,6 +12,14 @@ class PageableView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var menuTitles = [
+      'Profile',
+      'My Posts',
+      'Likes',
+      'Follows',
+      'Leaderboard',
+      'MarketPlace',
+    ];
     return ViewModelBuilder<DashboardProvider>.reactive(
       viewModelBuilder: () => DashboardProvider(),
       onViewModelReady: (viewModel) => viewModel.init(context),
@@ -31,20 +39,49 @@ class PageableView extends StatelessWidget {
                     },
                   ),
               Positioned(
-                left: 20.0,
                 top: MediaQuery.of(context).padding.top,
-                child: AppLeadingView(),
-              ),
-              Positioned(
-                top: MediaQuery.of(context).padding.top,
-                right: 20.0,
-                child: IconButton(
-                  onPressed: viewModel.goToAddPost,
-                  icon: AIImage(
-                    AIImages.icAddLogo,
-                    width: 28.0,
-                    height: 28.0,
-                    color: Theme.of(context).primaryColor,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12.0),
+                  child: Row(
+                    spacing: 12.0,
+                    children: [
+                      Expanded(
+                        child: SingleChildScrollView(
+                          child: Row(
+                            spacing: 12.0,
+                            children: [
+                              for (var title in menuTitles) ...{
+                                InkWell(
+                                  onTap: () {
+                                    var index = menuTitles.indexOf(title);
+                                    logger.d(index);
+                                    viewModel.onClickMenuItem(index);
+                                  },
+                                  child: Text(
+                                    title,
+                                    style: TextStyle(
+                                      color:
+                                          Theme.of(
+                                            context,
+                                          ).colorScheme.onSecondary,
+                                    ),
+                                  ),
+                                ),
+                              },
+                            ],
+                          ),
+                        ),
+                      ),
+                      InkWell(
+                        onTap: viewModel.goToAddPost,
+                        child: AIImage(
+                          AIImages.icAddLogo,
+                          width: 28.0,
+                          height: 28.0,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ),

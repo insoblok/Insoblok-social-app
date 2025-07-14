@@ -150,126 +150,152 @@ class StoryPageableCell extends StatelessWidget {
               // fit: BoxFit.contain,
               fit: BoxFit.cover,
             ),
-            Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 20.0,
-                vertical: 20.0,
-              ),
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                  colors: [
-                    Color(0x00ffffff),
-                    Color(0x00ffffff),
-                    Color(0xc0ffffff),
-                  ],
-                ),
-              ),
-              child: InkWell(
-                onTap: viewModel.showDetailDialog,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  spacing: 12.0,
-                  children: [
-                    const Spacer(),
-                    if (viewModel.story.category != null &&
-                        viewModel.story.category == 'vote') ...{
-                      StoryYayNayWidget(),
-                    },
-                    Row(
-                      spacing: 12.0,
-                      children: [
-                        Text(
-                          viewModel.owner?.fullName ?? '---',
-                          style: Theme.of(context).textTheme.headlineMedium,
-                        ),
-                        Text(
-                          '· ${viewModel.story.timestamp?.timeago}',
-                          style: Theme.of(context).textTheme.labelMedium,
-                        ),
-                      ],
+            Column(
+              children: [
+                const Spacer(flex: 2),
+                Expanded(
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 20.0,
+                      vertical: 20.0,
                     ),
-                    if (viewModel.story.category != null &&
-                        viewModel.story.category == 'vote') ...{
-                      Column(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                        colors: [Color(0x00ffffff), Color(0xcfffffff)],
+                      ),
+                    ),
+                    child: InkWell(
+                      onTap: viewModel.showDetailDialog,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        spacing: 12.0,
                         children: [
-                          const SizedBox(height: 8.0),
+                          const Spacer(),
+                          if (viewModel.story.category != null &&
+                              viewModel.story.category == 'vote') ...{
+                            StoryYayNayWidget(),
+                          },
                           Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            spacing: 12.0,
                             children: [
                               Text(
-                                'Vybe Virtual Try-On',
-                                style: TextStyle(
-                                  fontSize: 13.0,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                                viewModel.owner?.fullName ?? '---',
+                                style:
+                                    Theme.of(context).textTheme.headlineMedium,
                               ),
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 8.0,
-                                  vertical: 2.0,
-                                ),
-                                decoration: BoxDecoration(
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.secondary.withAlpha(16),
-                                  borderRadius: BorderRadius.circular(16.0),
-                                ),
-                                child: Row(
-                                  children: [
-                                    Icon(Icons.leaderboard_outlined, size: 18),
-                                    Text(
-                                      ' ${viewModel.story.votes?.length ?? 0} / 5 Looks Today',
-                                      style:
-                                          Theme.of(context).textTheme.bodySmall,
-                                    ),
-                                  ],
-                                ),
+                              Text(
+                                '· ${viewModel.story.timestamp?.timeago}',
+                                style: Theme.of(context).textTheme.labelMedium,
                               ),
                             ],
                           ),
+                          if (viewModel.story.category != null &&
+                              viewModel.story.category == 'vote') ...{
+                            Column(
+                              children: [
+                                const SizedBox(height: 8.0),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      'Vybe Virtual Try-On',
+                                      style: TextStyle(
+                                        fontSize: 13.0,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 8.0,
+                                        vertical: 2.0,
+                                      ),
+                                      decoration: BoxDecoration(
+                                        color: Theme.of(
+                                          context,
+                                        ).colorScheme.secondary.withAlpha(16),
+                                        borderRadius: BorderRadius.circular(
+                                          16.0,
+                                        ),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Icon(
+                                            Icons.leaderboard_outlined,
+                                            size: 18,
+                                          ),
+                                          Text(
+                                            ' ${viewModel.story.votes?.length ?? 0} / 5 Looks Today',
+                                            style:
+                                                Theme.of(
+                                                  context,
+                                                ).textTheme.bodySmall,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          },
                         ],
                       ),
-                    },
-                  ],
+                    ),
+                  ),
                 ),
-              ),
+              ],
             ),
             Align(
               alignment: Alignment.centerRight,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                spacing: 20.0,
-                children: [
-                  InkWell(
-                    onTap: viewModel.onTapUserAvatar,
-                    child: AIAvatarImage(
-                      key: GlobalKey(debugLabel: 'story-${story.id}'),
-                      viewModel.owner?.avatar,
-                      width: kStoryAvatarSize,
-                      height: kStoryAvatarSize,
-                      fullname: viewModel.owner?.fullName ?? 'Test',
-                      textSize: 24,
-                      isBorder: true,
-                      borderWidth: 2,
-                      borderRadius: kStoryAvatarSize / 2,
+              child: Container(
+                margin: const EdgeInsets.only(right: 8.0),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 4.0,
+                  vertical: 16.0,
+                ),
+                decoration: BoxDecoration(
+                  color: Theme.of(context).colorScheme.secondary.withAlpha(64),
+                  borderRadius: BorderRadius.circular(36.0),
+                ),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  spacing: 20.0,
+                  children: [
+                    InkWell(
+                      onTap: viewModel.onTapUserAvatar,
+                      child: AIAvatarImage(
+                        key: GlobalKey(debugLabel: 'story-${story.id}'),
+                        viewModel.owner?.avatar,
+                        width: kStoryAvatarSize * 0.8,
+                        height: kStoryAvatarSize * 0.8,
+                        fullname: viewModel.owner?.fullName ?? 'Test',
+                        textSize: 24,
+                        isBorder: true,
+                        borderWidth: 2,
+                        borderRadius: kStoryAvatarSize / 2,
+                      ),
                     ),
-                  ),
-                  StoryActionButton(
-                    src:
-                        viewModel.story.isLike()
-                            ? AIImages.icFavoriteFill
-                            : AIImages.icFavorite,
-                    label: '${(viewModel.story.likes ?? []).length}',
-                    onTap: () {},
-                  ),
-                  StoryActionButton(
-                    src: AIImages.icCommit,
-                    label: '${(viewModel.story.comments ?? []).length}',
-                    onTap: () {},
-                  ),
-                ],
+                    StoryActionButton(
+                      src: Icons.favorite,
+                      label: '${(viewModel.story.likes ?? []).length}',
+                      onTap: () {},
+                    ),
+                    StoryActionButton(
+                      src: Icons.share,
+                      label: '${(viewModel.story.follows ?? []).length}',
+                      onTap: () {},
+                    ),
+                    StoryActionButton(
+                      src: Icons.comment,
+                      label: '${(viewModel.story.comments ?? []).length}',
+                      onTap: () {},
+                    ),
+                    StoryActionButton(src: Icons.post_add, onTap: () {}),
+                  ],
+                ),
               ),
             ),
           ],
@@ -345,14 +371,14 @@ class StoryYayNayWidget extends ViewModelWidget<StoryProvider> {
 }
 
 class StoryActionButton extends StatelessWidget {
-  final dynamic src;
-  final String label;
+  final IconData src;
+  final String? label;
   final void Function()? onTap;
 
   const StoryActionButton({
     super.key,
     required this.src,
-    required this.label,
+    this.label,
     this.onTap,
   });
 
@@ -363,16 +389,19 @@ class StoryActionButton extends StatelessWidget {
       child: Column(
         spacing: 2.0,
         children: [
-          AIImage(
+          Icon(
             src,
-            width: kStoryAvatarSize * 0.6,
-            height: kStoryAvatarSize * 0.6,
+            size: kStoryAvatarSize * 0.6,
             color: Theme.of(context).colorScheme.onSecondary,
           ),
-          Text(
-            label,
-            style: TextStyle(color: Theme.of(context).colorScheme.onSecondary),
-          ),
+          if (label != null) ...{
+            Text(
+              label!,
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSecondary,
+              ),
+            ),
+          },
         ],
       ),
     );

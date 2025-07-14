@@ -141,4 +141,29 @@ class DashboardProvider extends InSoBlokViewModel {
     await Routers.goToAddStoryPage(context);
     fetchStoryData();
   }
+
+  Future<void> onClickMenuItem(int index) async {
+    Navigator.of(context).pop();
+    logger.d(index);
+    switch (index) {
+      case 0:
+        Routers.goToAccountPage(context);
+        break;
+      case 1:
+        Routers.goToAccountListPage(context);
+        break;
+      case 2:
+        Routers.goToAccountTopicPage(context);
+        break;
+      case 3:
+        Routers.goToAccountBookmarkPage(context);
+        break;
+      case 4:
+        Routers.goToLeaderboardPage(context);
+        break;
+      case 5:
+        Routers.goToMarketPlacePage(context);
+        break;
+    }
+  }
 }
