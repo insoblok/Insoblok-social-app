@@ -11,7 +11,7 @@ import 'package:insoblok/models/models.dart';
 import 'package:insoblok/utils/utils.dart';
 
 class AppSettingService with ListenableServiceMixin {
-  final RxValue<ThemeMode> _themeModeRx = RxValue<ThemeMode>(ThemeMode.light);
+  final RxValue<ThemeMode> _themeModeRx = RxValue<ThemeMode>(ThemeMode.dark);
   ThemeMode get themeMode => _themeModeRx.value;
 
   final RxValue<AppSettingModel?> _appSettingModelRx =
