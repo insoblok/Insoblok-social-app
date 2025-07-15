@@ -64,13 +64,13 @@ class UserService {
     return users.where((u) => u?.id != AuthHelper.user?.id).toList();
   }
 
-  Future<List<String>> getFollowingUserIds() async {
+  Future<List<String>> getFollowingUserIds({String? userid}) async {
     List<String> ids = [];
     var snapshot = await _userCollection.get();
     var allUsers = snapshot.docs.map((doc) => _getUserFromDoc(doc));
     for (var user in allUsers) {
       if (user?.follows != null &&
-          user!.follows!.contains(AuthHelper.user?.id)) {
+          user!.follows!.contains(userid ?? AuthHelper.user?.id)) {
         ids.add(user.id!);
       }
     }

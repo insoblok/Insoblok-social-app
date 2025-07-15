@@ -9,7 +9,7 @@ import 'package:insoblok/services/services.dart';
 import 'package:insoblok/widgets/widgets.dart';
 
 const kAccountAvatarSize = 92.0;
-const kAccountPageTitles = ['Posts', 'Like', 'Follow', 'Gallery'];
+const kAccountPageTitles = ['Posts', 'Like', 'Follow'];
 
 class AccountPage extends StatelessWidget {
   final UserModel? user;
@@ -47,17 +47,17 @@ class AccountPage extends StatelessWidget {
                         ),
                       ),
                       SliverToBoxAdapter(child: AccountFloatingView()),
-                      SliverAppBar(
-                        pinned: true,
-                        toolbarHeight: 48.0,
-                        // backgroundColor: AppSettingHelper.background,
-                        // surfaceTintColor: AppSettingHelper.background,
-                        elevation: 0,
-                        automaticallyImplyLeading: false,
-                        primary: false,
-                        flexibleSpace: AppBackgroundView(),
-                        title: AccountFloatingHeaderView(),
-                      ),
+                      // SliverAppBar(
+                      //   pinned: true,
+                      //   toolbarHeight: 48.0,
+                      //   // backgroundColor: AppSettingHelper.background,
+                      //   // surfaceTintColor: AppSettingHelper.background,
+                      //   elevation: 0,
+                      //   automaticallyImplyLeading: false,
+                      //   primary: false,
+                      //   flexibleSpace: AppBackgroundView(),
+                      //   title: AccountFloatingHeaderView(),
+                      // ),
                       SliverList(
                         delegate: SliverChildListDelegate([
                           if (viewModel.pageIndex == 0) ...{
@@ -75,27 +75,28 @@ class AccountPage extends StatelessWidget {
                                 children: [
                                   for (var story in viewModel.stories) ...{
                                     InkWell(
-                                      onTap: () {},
+                                      onTap: () {
+                                        viewModel.goToDetailPage(story);
+                                      },
                                       child: Stack(
                                         children: [
                                           AIImage(
+                                            width: double.infinity,
+                                            height: double.infinity,
                                             story.medias?.first.type == 'image'
                                                 ? story.medias?.first.link
                                                 : story.medias?.first.thumb,
                                             fit: BoxFit.cover,
                                           ),
-                                          Align(
-                                            alignment: Alignment.topRight,
-                                            child: Padding(
-                                              padding: const EdgeInsets.all(
-                                                4.0,
-                                              ),
+                                          if ((story.medias ?? []).length > 1)
+                                            Positioned(
+                                              top: 6.0,
+                                              right: 6.0,
                                               child: AIImage(
                                                 Icons.filter_none_outlined,
                                                 color: AIColors.white,
                                               ),
                                             ),
-                                          ),
                                         ],
                                       ),
                                     ),
@@ -165,18 +166,15 @@ class AccountPage extends StatelessWidget {
                                     children: [
                                       for (var gallery
                                           in viewModel.galleries) ...{
-                                        AspectRatio(
-                                          aspectRatio: 1,
-                                          child: InkWell(
-                                            onTap:
-                                                () => AIHelpers.goToDetailView(
-                                                  context,
-                                                  medias: viewModel.galleries,
-                                                  index: viewModel.galleries
-                                                      .indexOf(gallery),
-                                                ),
-                                            child: AIImage(gallery),
-                                          ),
+                                        InkWell(
+                                          onTap:
+                                              () => AIHelpers.goToDetailView(
+                                                context,
+                                                medias: viewModel.galleries,
+                                                index: viewModel.galleries
+                                                    .indexOf(gallery),
+                                              ),
+                                          child: AIImage(gallery),
                                         ),
                                       },
                                     ],
