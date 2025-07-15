@@ -63,3 +63,4 @@ functions/.eslintrc.js
 functions/package-lock.json
 
 android/app/src/main/assets/
+android/.kotlin/

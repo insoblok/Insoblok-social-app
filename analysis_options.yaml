@@ -1,5 +1,6 @@
 analyzer:
   errors:
+    constant_identifier_names: ignore
     depend_on_referenced_packages: ignore
     invalid_annotation_target: ignore
     non_constant_identifier_names: ignore
