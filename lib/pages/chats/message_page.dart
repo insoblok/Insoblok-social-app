@@ -140,7 +140,7 @@ class MessagePage extends StatelessWidget {
                           onPressed: viewModel.onPickerImage,
                           child: AIImage(
                             AIImages.icImage,
-                            color: Theme.of(context).colorScheme.onSecondary,
+                            color: Theme.of(context).colorScheme.secondary,
                             width: 20,
                             height: 20,
                           ),
@@ -155,7 +155,7 @@ class MessagePage extends StatelessWidget {
                           onPressed: viewModel.onPickerVideo,
                           child: AIImage(
                             AIImages.icCamera,
-                            color: Theme.of(context).colorScheme.onSecondary,
+                            color: Theme.of(context).colorScheme.secondary,
                             width: 20.0,
                             height: 20.0,
                           ),
@@ -170,7 +170,7 @@ class MessagePage extends StatelessWidget {
                           onPressed: viewModel.onPickGif,
                           child: AIImage(
                             AIImages.icGif,
-                            color: Theme.of(context).colorScheme.onSecondary,
+                            color: Theme.of(context).colorScheme.secondary,
                             width: 20.0,
                             height: 20.0,
                           ),
@@ -186,7 +186,7 @@ class MessagePage extends StatelessWidget {
                           child: Icon(
                             Icons.wallet,
                             size: 20.0,
-                            color: Theme.of(context).colorScheme.onSecondary,
+                            color: Theme.of(context).colorScheme.secondary,
                           ),
                         ),
                       ),
@@ -222,8 +222,7 @@ class MessagePage extends StatelessWidget {
                                 viewModel.isAddPop
                                     ? Icons.close
                                     : Icons.add_outlined,
-                                color:
-                                    Theme.of(context).colorScheme.onSecondary,
+                                color: Theme.of(context).colorScheme.secondary,
                               ),
                             ),
                           ),
@@ -238,6 +237,8 @@ class MessagePage extends StatelessWidget {
                                 focusNode: viewModel.focusNode,
                                 decoration: InputDecoration(
                                   hintText: 'Type something',
+                                  hintStyle:
+                                      Theme.of(context).textTheme.labelMedium,
                                   border: InputBorder.none,
                                 ),
                                 keyboardType: TextInputType.text,

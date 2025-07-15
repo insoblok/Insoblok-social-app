@@ -90,12 +90,12 @@ class StoryListCell extends StatelessWidget {
                             Container(
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 8.0,
-                                vertical: 2.0,
+                                vertical: 4.0,
                               ),
                               decoration: BoxDecoration(
                                 color: Theme.of(
                                   context,
-                                ).colorScheme.secondary.withAlpha(16),
+                                ).colorScheme.onSecondary.withAlpha(32),
                                 borderRadius: BorderRadius.circular(16.0),
                               ),
                               child: Row(
@@ -191,10 +191,6 @@ class StoryPageableCell extends StatelessWidget {
                                               'comment-${story.comments?.indexOf(comment)}',
                                         ),
                                         comment.content,
-                                        color:
-                                            Theme.of(
-                                              context,
-                                            ).colorScheme.onSecondary,
                                       ),
                                     },
                                   ],
@@ -222,14 +218,10 @@ class StoryPageableCell extends StatelessWidget {
                                   children: [
                                     Text(
                                       viewModel.owner?.fullName ?? '---',
-                                      style: Theme.of(
-                                        context,
-                                      ).textTheme.headlineMedium?.copyWith(
-                                        color:
-                                            Theme.of(
-                                              context,
-                                            ).colorScheme.onSecondary,
-                                      ),
+                                      style:
+                                          Theme.of(
+                                            context,
+                                          ).textTheme.headlineMedium,
                                     ),
                                     Text(
                                       '· ${viewModel.story.timestamp?.timeago}',
@@ -254,10 +246,6 @@ class StoryPageableCell extends StatelessWidget {
                                             style: TextStyle(
                                               fontSize: 13.0,
                                               fontWeight: FontWeight.bold,
-                                              color:
-                                                  Theme.of(
-                                                    context,
-                                                  ).colorScheme.onSecondary,
                                             ),
                                           ),
                                           Container(
@@ -278,22 +266,13 @@ class StoryPageableCell extends StatelessWidget {
                                                 Icon(
                                                   Icons.leaderboard_outlined,
                                                   size: 18,
-                                                  color:
-                                                      Theme.of(
-                                                        context,
-                                                      ).colorScheme.onSecondary,
                                                 ),
                                                 Text(
                                                   ' ${viewModel.story.votes?.length ?? 0} / 5 Looks Today',
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodySmall
-                                                      ?.copyWith(
-                                                        color:
-                                                            Theme.of(context)
-                                                                .colorScheme
-                                                                .onSecondary,
-                                                      ),
+                                                  style:
+                                                      Theme.of(
+                                                        context,
+                                                      ).textTheme.bodySmall,
                                                 ),
                                               ],
                                             ),
@@ -381,14 +360,12 @@ class StoryPageableCell extends StatelessWidget {
                     decoration: BoxDecoration(
                       color: Theme.of(
                         context,
-                      ).colorScheme.secondary.withAlpha(64),
+                      ).colorScheme.onSecondary.withAlpha(64),
                       borderRadius: BorderRadius.circular(24.0),
                     ),
                     child: Text(
                       '${viewModel.pageIndex + 1} / ${(viewModel.story.medias ?? []).length}',
-                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                        color: Theme.of(context).colorScheme.onSecondary,
-                      ),
+                      style: Theme.of(context).textTheme.titleSmall,
                     ),
                   ),
                 ),
@@ -433,7 +410,7 @@ class StorySendCommentWidget extends StatelessWidget {
                 onPressed: () {},
                 icon: AIImage(
                   AIImages.icImage,
-                  color: Theme.of(context).colorScheme.onSecondary,
+                  color: Theme.of(context).colorScheme.secondary,
                   width: 20,
                 ),
               ),
@@ -441,7 +418,7 @@ class StorySendCommentWidget extends StatelessWidget {
                 onPressed: () {},
                 icon: AIImage(
                   AIImages.icCamera,
-                  color: Theme.of(context).colorScheme.onSecondary,
+                  color: Theme.of(context).colorScheme.secondary,
                   width: 20,
                 ),
               ),
@@ -509,10 +486,7 @@ class StorySendCommentWidget extends StatelessWidget {
                           null,
                         ),
                         paragraph: DefaultTextBlockStyle(
-                          TextStyle(
-                            fontSize: 16,
-                            color: Theme.of(context).colorScheme.onSecondary,
-                          ),
+                          TextStyle(fontSize: 16),
                           HorizontalSpacing.zero,
                           VerticalSpacing.zero,
                           VerticalSpacing.zero,
@@ -536,11 +510,7 @@ class StorySendCommentWidget extends StatelessWidget {
                     ),
                     child: IconButton(
                       onPressed: onSend,
-                      icon: Icon(
-                        Icons.arrow_upward_outlined,
-                        color: Theme.of(context).colorScheme.onSecondary,
-                        size: 15.0,
-                      ),
+                      icon: Icon(Icons.arrow_upward_outlined, size: 15.0),
                     ),
                   ),
                 ),
@@ -684,19 +654,8 @@ class StoryActionButton extends StatelessWidget {
       child: Column(
         spacing: 2.0,
         children: [
-          Icon(
-            src,
-            size: kStoryAvatarSize * 0.6,
-            color: Theme.of(context).colorScheme.onSecondary,
-          ),
-          if (label != null) ...{
-            Text(
-              label!,
-              style: TextStyle(
-                color: Theme.of(context).colorScheme.onSecondary,
-              ),
-            ),
-          },
+          Icon(src, size: kStoryAvatarSize * 0.6),
+          if (label != null) ...{Text(label!)},
         ],
       ),
     );

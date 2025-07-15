@@ -45,13 +45,13 @@ class MediaDetailPage extends StatelessWidget {
                                       color:
                                           Theme.of(
                                             context,
-                                          ).colorScheme.onSecondary,
-                                      width: 2.0,
+                                          ).colorScheme.secondary,
+                                      width: 0.5,
                                     ),
                                     borderRadius: BorderRadius.circular(24.0),
                                   ),
                                   child: ClipRRect(
-                                    borderRadius: BorderRadius.circular(20.0),
+                                    borderRadius: BorderRadius.circular(24.0),
                                     child: AIImage(media, fit: BoxFit.contain),
                                   ),
                                 ),

@@ -214,10 +214,10 @@ class AppBackgroundView extends StatelessWidget {
         decoration: BoxDecoration(
           gradient: LinearGradient(
             colors: [
-              AIColors.lightPurple.withAlpha(128),
-              AIColors.lightBlue.withAlpha(128),
-              AIColors.lightPurple.withAlpha(128),
-              AIColors.lightTeal.withAlpha(128),
+              AIColors.lightPurple.withAlpha(32),
+              AIColors.lightBlue.withAlpha(32),
+              AIColors.lightPurple.withAlpha(32),
+              AIColors.lightTeal.withAlpha(32),
             ],
             stops: [0.0, 0.4, 0.7, 1.0],
             begin: Alignment.topLeft,
