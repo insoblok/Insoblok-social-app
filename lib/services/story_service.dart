@@ -24,7 +24,7 @@ class StoryService {
         var json = doc.data();
         json['id'] = doc.id;
         var story = StoryModel.fromJson(json);
-        if (story.userId != null && (story.medias ?? []).isNotEmpty) {
+        if (story.userId != null) {
           result.add(story);
         }
       } on FirebaseException catch (e) {
@@ -45,9 +45,7 @@ class StoryService {
         var json = doc.data();
         json['id'] = doc.id;
         var story = StoryModel.fromJson(json);
-        if (story.userId != null &&
-            userIds.contains(story.userId) &&
-            (story.medias ?? []).isNotEmpty) {
+        if (story.userId != null && userIds.contains(story.userId)) {
           result.add(story);
         }
       } on FirebaseException catch (e) {
@@ -69,8 +67,7 @@ class StoryService {
         var story = StoryModel.fromJson(json);
         if (story.userId != null &&
             AuthHelper.user!.userActions != null &&
-            AuthHelper.user!.userActions!.contains(story.id) &&
-            (story.medias ?? []).isNotEmpty) {
+            AuthHelper.user!.userActions!.contains(story.id)) {
           result.add(story);
         }
       } on FirebaseException catch (e) {
@@ -93,7 +90,7 @@ class StoryService {
         var json = doc.data();
         json['id'] = doc.id;
         var story = StoryModel.fromJson(json);
-        if (story.userId != null && (story.medias ?? []).isNotEmpty) {
+        if (story.userId != null) {
           result.add(story);
         }
       } on FirebaseException catch (e) {
@@ -117,7 +114,7 @@ class StoryService {
         var json = doc.data();
         json['id'] = doc.id;
         var story = StoryModel.fromJson(json);
-        if (story.userId != null && (story.medias ?? []).isNotEmpty) {
+        if (story.userId != null) {
           result.add(story);
         }
       } on FirebaseException catch (e) {
@@ -140,7 +137,7 @@ class StoryService {
         var json = doc.data();
         json['id'] = doc.id;
         var story = StoryModel.fromJson(json);
-        if (story.userId != null && (story.medias ?? []).isNotEmpty) {
+        if (story.userId != null) {
           result.add(story);
         }
       } on FirebaseException catch (e) {
