@@ -167,7 +167,7 @@ class StoryPageableCell extends StatelessWidget {
                       gradient: LinearGradient(
                         begin: Alignment.topCenter,
                         end: Alignment.bottomCenter,
-                        colors: [Color(0x00ffffff), Color(0xcfffffff)],
+                        colors: [Color(0x00000000), Color(0xcf000000)],
                       ),
                     ),
                     child: Column(
@@ -189,168 +189,21 @@ class StoryPageableCell extends StatelessWidget {
                                             'comment-${story.comments?.indexOf(comment)}',
                                       ),
                                       comment.content,
+                                      color:
+                                          Theme.of(
+                                            context,
+                                          ).colorScheme.onSecondary,
                                     ),
                                   },
                                 ],
                               ),
                             ),
                           ),
-                          Container(
-                            padding: EdgeInsets.only(
-                              bottom: MediaQuery.of(context).padding.bottom,
-                            ),
-                            decoration: BoxDecoration(
-                              border: Border(
-                                top: BorderSide(
-                                  color: AIColors.speraterColor,
-                                  width: 0.33,
-                                ),
-                              ),
-                            ),
-                            child: Column(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                Row(
-                                  children: [
-                                    IconButton(
-                                      onPressed: () {},
-                                      icon: AIImage(
-                                        AIImages.icImage,
-                                        color: AIColors.black,
-                                        width: 20,
-                                      ),
-                                    ),
-                                    IconButton(
-                                      onPressed: () {},
-                                      icon: AIImage(
-                                        AIImages.icCamera,
-                                        color: AIColors.black,
-                                        width: 20,
-                                      ),
-                                    ),
-                                    Expanded(
-                                      child: QuillSimpleToolbar(
-                                        controller: viewModel.quillController,
-                                        config: QuillSimpleToolbarConfig(
-                                          toolbarIconAlignment:
-                                              WrapAlignment.start,
-                                          showDividers: false,
-                                          showFontFamily: false,
-                                          showFontSize: false,
-                                          showColorButton: false,
-                                          showBackgroundColorButton: false,
-                                          showHeaderStyle: false,
-                                          showCodeBlock: false,
-                                          showInlineCode: false,
-                                          showIndent: false,
-                                          showSearchButton: false,
-                                          showUndo: false,
-                                          showRedo: false,
-                                          showQuote: false,
-                                          showSubscript: false,
-                                          showSuperscript: false,
-                                          showListCheck: false,
-                                          showClearFormat: false,
-                                          showAlignmentButtons: false,
-                                          showCenterAlignment: false,
-                                          showLeftAlignment: false,
-                                          showLink: false,
-                                          showJustifyAlignment: false,
-                                          showRightAlignment: false,
-                                          showListNumbers: false,
-                                          showListBullets: false,
-                                          showStrikeThrough: false,
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                Container(
-                                  padding: const EdgeInsets.only(
-                                    left: 12.0,
-                                    right: 12.0,
-                                    // bottom: 8.0,
-                                  ),
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(24.0),
-                                    border: Border.all(color: AIColors.grey),
-                                  ),
-                                  child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    children: [
-                                      Expanded(
-                                        child: QuillEditor(
-                                          focusNode: viewModel.focusNode,
-                                          scrollController:
-                                              viewModel.quillScrollController,
-                                          controller: viewModel.quillController,
-
-                                          config: QuillEditorConfig(
-                                            autoFocus: false,
-                                            expands: false,
-                                            placeholder: 'Comments...',
-                                            padding: const EdgeInsets.all(12),
-                                            customStyles: DefaultStyles(
-                                              placeHolder:
-                                                  DefaultTextBlockStyle(
-                                                    TextStyle(
-                                                      fontSize: 16,
-                                                      color: AIColors.grey,
-                                                    ),
-                                                    HorizontalSpacing.zero,
-                                                    VerticalSpacing.zero,
-                                                    VerticalSpacing.zero,
-                                                    null,
-                                                  ),
-                                              paragraph: DefaultTextBlockStyle(
-                                                TextStyle(
-                                                  fontSize: 16,
-                                                  color:
-                                                      Theme.of(
-                                                        context,
-                                                      ).colorScheme.onPrimary,
-                                                ),
-                                                HorizontalSpacing.zero,
-                                                VerticalSpacing.zero,
-                                                VerticalSpacing.zero,
-                                                null,
-                                              ),
-                                            ),
-
-                                            // customize other styles if needed
-                                          ),
-                                        ),
-                                      ),
-                                      Padding(
-                                        padding: const EdgeInsets.only(
-                                          left: 8.0,
-                                          bottom: 8.0,
-                                        ),
-                                        child: Container(
-                                          width: 30.0,
-                                          height: 30.0,
-                                          alignment: Alignment.center,
-                                          decoration: BoxDecoration(
-                                            color: AIColors.pink,
-                                            borderRadius: BorderRadius.circular(
-                                              15.0,
-                                            ),
-                                          ),
-                                          child: IconButton(
-                                            onPressed: viewModel.sendComment,
-                                            icon: Icon(
-                                              Icons.arrow_upward_outlined,
-                                              color: AIColors.white,
-                                              size: 15.0,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
+                          StorySendCommentWidget(
+                            controller: viewModel.quillController,
+                            focusNode: viewModel.focusNode,
+                            scrollController: viewModel.quillScrollController,
+                            onSend: viewModel.sendComment,
                           ),
                         } else ...{
                           const Spacer(),
@@ -367,10 +220,14 @@ class StoryPageableCell extends StatelessWidget {
                                 children: [
                                   Text(
                                     viewModel.owner?.fullName ?? '---',
-                                    style:
-                                        Theme.of(
-                                          context,
-                                        ).textTheme.headlineMedium,
+                                    style: Theme.of(
+                                      context,
+                                    ).textTheme.headlineMedium?.copyWith(
+                                      color:
+                                          Theme.of(
+                                            context,
+                                          ).colorScheme.onSecondary,
+                                    ),
                                   ),
                                   Text(
                                     '· ${viewModel.story.timestamp?.timeago}',
@@ -393,6 +250,10 @@ class StoryPageableCell extends StatelessWidget {
                                           style: TextStyle(
                                             fontSize: 13.0,
                                             fontWeight: FontWeight.bold,
+                                            color:
+                                                Theme.of(
+                                                  context,
+                                                ).colorScheme.onSecondary,
                                           ),
                                         ),
                                         Container(
@@ -414,13 +275,21 @@ class StoryPageableCell extends StatelessWidget {
                                               Icon(
                                                 Icons.leaderboard_outlined,
                                                 size: 18,
+                                                color:
+                                                    Theme.of(
+                                                      context,
+                                                    ).colorScheme.onSecondary,
                                               ),
                                               Text(
                                                 ' ${viewModel.story.votes?.length ?? 0} / 5 Looks Today',
-                                                style:
-                                                    Theme.of(
-                                                      context,
-                                                    ).textTheme.bodySmall,
+                                                style: Theme.of(
+                                                  context,
+                                                ).textTheme.bodySmall?.copyWith(
+                                                  color:
+                                                      Theme.of(
+                                                        context,
+                                                      ).colorScheme.onSecondary,
+                                                ),
                                               ),
                                             ],
                                           ),
@@ -447,10 +316,6 @@ class StoryPageableCell extends StatelessWidget {
                   horizontal: 4.0,
                   vertical: 16.0,
                 ),
-                // decoration: BoxDecoration(
-                //   color: Theme.of(context).colorScheme.secondary.withAlpha(64),
-                //   borderRadius: BorderRadius.circular(36.0),
-                // ),
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   spacing: 20.0,
@@ -512,12 +377,14 @@ class StoryPageableCell extends StatelessWidget {
                   decoration: BoxDecoration(
                     color: Theme.of(
                       context,
-                    ).colorScheme.onSecondary.withAlpha(64),
+                    ).colorScheme.secondary.withAlpha(64),
                     borderRadius: BorderRadius.circular(24.0),
                   ),
                   child: Text(
                     '${viewModel.pageIndex + 1} / ${(viewModel.story.medias ?? []).length}',
-                    style: Theme.of(context).textTheme.titleSmall,
+                    style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                      color: Theme.of(context).colorScheme.onSecondary,
+                    ),
                   ),
                 ),
               ),
@@ -525,6 +392,158 @@ class StoryPageableCell extends StatelessWidget {
           ],
         );
       },
+    );
+  }
+}
+
+class StorySendCommentWidget extends StatelessWidget {
+  final QuillController controller;
+  final FocusNode focusNode;
+  final ScrollController scrollController;
+  final void Function()? onSend;
+
+  const StorySendCommentWidget({
+    super.key,
+    required this.controller,
+    required this.focusNode,
+    required this.scrollController,
+    this.onSend,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
+      decoration: BoxDecoration(
+        border: Border(
+          top: BorderSide(color: AIColors.speraterColor, width: 0.33),
+        ),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            children: [
+              IconButton(
+                onPressed: () {},
+                icon: AIImage(
+                  AIImages.icImage,
+                  color: Theme.of(context).colorScheme.onSecondary,
+                  width: 20,
+                ),
+              ),
+              IconButton(
+                onPressed: () {},
+                icon: AIImage(
+                  AIImages.icCamera,
+                  color: Theme.of(context).colorScheme.onSecondary,
+                  width: 20,
+                ),
+              ),
+              Expanded(
+                child: QuillSimpleToolbar(
+                  controller: controller,
+                  config: QuillSimpleToolbarConfig(
+                    toolbarIconAlignment: WrapAlignment.start,
+                    showDividers: false,
+                    showFontFamily: false,
+                    showFontSize: false,
+                    showColorButton: false,
+                    showBackgroundColorButton: false,
+                    showHeaderStyle: false,
+                    showCodeBlock: false,
+                    showInlineCode: false,
+                    showIndent: false,
+                    showSearchButton: false,
+                    showUndo: false,
+                    showRedo: false,
+                    showQuote: false,
+                    showSubscript: false,
+                    showSuperscript: false,
+                    showListCheck: false,
+                    showClearFormat: false,
+                    showAlignmentButtons: false,
+                    showCenterAlignment: false,
+                    showLeftAlignment: false,
+                    showLink: false,
+                    showJustifyAlignment: false,
+                    showRightAlignment: false,
+                    showListNumbers: false,
+                    showListBullets: false,
+                    showStrikeThrough: false,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          Container(
+            padding: const EdgeInsets.only(left: 12.0, right: 12.0),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(24.0),
+              border: Border.all(color: AIColors.grey),
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Expanded(
+                  child: QuillEditor(
+                    focusNode: focusNode,
+                    scrollController: scrollController,
+                    controller: controller,
+                    config: QuillEditorConfig(
+                      autoFocus: false,
+                      expands: false,
+                      placeholder: 'Comments...',
+                      padding: const EdgeInsets.all(12),
+                      customStyles: DefaultStyles(
+                        placeHolder: DefaultTextBlockStyle(
+                          TextStyle(fontSize: 16, color: AIColors.grey),
+                          HorizontalSpacing.zero,
+                          VerticalSpacing.zero,
+                          VerticalSpacing.zero,
+                          null,
+                        ),
+                        paragraph: DefaultTextBlockStyle(
+                          TextStyle(
+                            fontSize: 16,
+                            color: Theme.of(context).colorScheme.onSecondary,
+                          ),
+                          HorizontalSpacing.zero,
+                          VerticalSpacing.zero,
+                          VerticalSpacing.zero,
+                          null,
+                        ),
+                      ),
+
+                      // customize other styles if needed
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0, bottom: 8.0),
+                  child: Container(
+                    width: 30.0,
+                    height: 30.0,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: AIColors.pink,
+                      borderRadius: BorderRadius.circular(15.0),
+                    ),
+                    child: IconButton(
+                      onPressed: onSend,
+                      icon: Icon(
+                        Icons.arrow_upward_outlined,
+                        color: Theme.of(context).colorScheme.onSecondary,
+                        size: 15.0,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -663,12 +682,14 @@ class StoryActionButton extends StatelessWidget {
           Icon(
             src,
             size: kStoryAvatarSize * 0.6,
-            color: Theme.of(context).colorScheme.onPrimary,
+            color: Theme.of(context).colorScheme.onSecondary,
           ),
           if (label != null) ...{
             Text(
               label!,
-              style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSecondary,
+              ),
             ),
           },
         ],
@@ -962,9 +983,6 @@ class StoryDetailDialog extends StatelessWidget {
                             StoryListEmptyView(
                               description: 'Nobody had commented yet!',
                             ),
-                            // SizedBox(
-                            //   height: MediaQuery.of(context).viewInsets.bottom,
-                            // ),
                           } else ...{
                             for (var comment
                                 in (viewModel.story.comments?.reversed
@@ -1009,162 +1027,11 @@ class StoryDetailDialog extends StatelessWidget {
                 bottom: MediaQuery.of(context).viewInsets.bottom,
                 left: 0,
                 right: 0,
-                child: Container(
-                  padding: EdgeInsets.only(
-                    left: 12.0,
-                    right: 12.0,
-                    bottom: MediaQuery.of(context).padding.bottom,
-                  ),
-                  decoration: BoxDecoration(
-                    // color: Theme.of(context).colorScheme.onSecondary,
-                    border: Border(
-                      top: BorderSide(
-                        color: AIColors.speraterColor,
-                        width: 0.33,
-                      ),
-                    ),
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Row(
-                        children: [
-                          IconButton(
-                            onPressed: () {},
-                            icon: AIImage(
-                              AIImages.icImage,
-                              color: AIColors.grey,
-                              width: 20,
-                            ),
-                          ),
-                          IconButton(
-                            onPressed: () {},
-                            icon: AIImage(
-                              AIImages.icCamera,
-                              color: AIColors.grey,
-                              width: 20,
-                            ),
-                          ),
-                          Expanded(
-                            child: QuillSimpleToolbar(
-                              controller: viewModel.quillController,
-                              config: QuillSimpleToolbarConfig(
-                                toolbarIconAlignment: WrapAlignment.start,
-                                showDividers: false,
-                                showFontFamily: false,
-                                showFontSize: false,
-                                showColorButton: false,
-                                showBackgroundColorButton: false,
-                                showHeaderStyle: false,
-                                showCodeBlock: false,
-                                showInlineCode: false,
-                                showIndent: false,
-                                showSearchButton: false,
-                                showUndo: false,
-                                showRedo: false,
-                                showQuote: false,
-                                showSubscript: false,
-                                showSuperscript: false,
-                                showListCheck: false,
-                                showClearFormat: false,
-                                showAlignmentButtons: false,
-                                showCenterAlignment: false,
-                                showLeftAlignment: false,
-                                showLink: false,
-                                showJustifyAlignment: false,
-                                showRightAlignment: false,
-                                showListNumbers: false,
-                                showListBullets: false,
-                                showStrikeThrough: false,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Container(
-                        padding: const EdgeInsets.only(
-                          left: 12.0,
-                          right: 12.0,
-                          // bottom: 8.0,
-                        ),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(24.0),
-                          border: Border.all(color: AIColors.speraterColor),
-                        ),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Expanded(
-                              child: QuillEditor(
-                                focusNode: viewModel.focusNode,
-                                scrollController:
-                                    viewModel.quillScrollController,
-                                controller: viewModel.quillController,
-
-                                config: QuillEditorConfig(
-                                  autoFocus: false,
-                                  expands: false,
-                                  placeholder: 'Comments...',
-
-                                  padding: const EdgeInsets.all(16),
-                                  customStyles: DefaultStyles(
-                                    placeHolder: DefaultTextBlockStyle(
-                                      TextStyle(
-                                        fontSize: 16,
-                                        color: AIColors.grey,
-                                      ),
-                                      HorizontalSpacing.zero,
-                                      VerticalSpacing.zero,
-                                      VerticalSpacing.zero,
-                                      null,
-                                    ),
-                                    paragraph: DefaultTextBlockStyle(
-                                      TextStyle(
-                                        fontSize: 16,
-                                        color:
-                                            Theme.of(
-                                              context,
-                                            ).colorScheme.onPrimary,
-                                      ),
-                                      HorizontalSpacing.zero,
-                                      VerticalSpacing.zero,
-                                      VerticalSpacing.zero,
-                                      null,
-                                    ),
-                                  ),
-
-                                  // customize other styles if needed
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                left: 8.0,
-                                bottom: 8.0,
-                              ),
-                              child: Container(
-                                width: 30.0,
-                                height: 30.0,
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                  color: AIColors.pink,
-                                  borderRadius: BorderRadius.circular(15.0),
-                                ),
-                                child: IconButton(
-                                  onPressed: viewModel.sendComment,
-                                  icon: Icon(
-                                    Icons.arrow_upward_outlined,
-                                    color: AIColors.white,
-                                    size: 15.0,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+                child: StorySendCommentWidget(
+                  controller: viewModel.quillController,
+                  focusNode: viewModel.focusNode,
+                  scrollController: viewModel.quillScrollController,
+                  onSend: viewModel.sendComment,
                 ),
               ),
             },

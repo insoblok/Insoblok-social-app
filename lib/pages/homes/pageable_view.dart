@@ -63,8 +63,15 @@ class PageableView extends StatelessWidget {
                                   viewModel.onClickMenuItem(index);
                                 },
                                 child: Text(
-                                  title.toUpperCase(),
-                                  style: Theme.of(context).textTheme.titleSmall,
+                                  title,
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.titleSmall?.copyWith(
+                                    color:
+                                        Theme.of(
+                                          context,
+                                        ).colorScheme.onSecondary,
+                                  ),
                                 ),
                               ),
                             },
