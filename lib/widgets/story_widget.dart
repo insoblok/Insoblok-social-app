@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:stacked/stacked.dart';
+import 'package:vimeo_video_player/vimeo_video_player.dart';
 
 import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
@@ -141,200 +143,72 @@ class StoryPageableCell extends StatelessWidget {
       builder: (context, viewModel, _) {
         var media = (story.medias ?? [])[viewModel.pageIndex];
         logger.d(media.toJson());
-        return Stack(
-          children: [
-            AIImage(
-              media.link,
-              width: double.infinity,
-              height: double.infinity,
-              // fit: BoxFit.contain,
-              fit: BoxFit.cover,
-            ),
-            Column(
-              children: [
-                const Spacer(flex: 2),
-                Expanded(
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 20.0,
-                      vertical: 20.0,
-                    ),
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [Color(0x00ffffff), Color(0xcfffffff)],
+        return InkWell(
+          onTap: viewModel.goToDetailPage,
+          child: Stack(
+            children: [
+              PageView.builder(
+                itemCount: (viewModel.story.medias ?? []).length,
+                itemBuilder: (context, index) {
+                  return StoryMediaView(media: media);
+                },
+                onPageChanged: (value) {
+                  viewModel.pageIndex = value;
+                },
+              ),
+              Column(
+                children: [
+                  const Spacer(flex: 2),
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 20.0,
+                        vertical: 20.0,
                       ),
-                    ),
-                    child: InkWell(
-                      onTap: viewModel.showDetailDialog,
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [Color(0x00000000), Color(0xcf000000)],
+                        ),
+                      ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         spacing: 12.0,
                         children: [
-                          const Spacer(),
                           if (viewModel.isComment) ...{
-                            Container(
-                              padding: EdgeInsets.only(
-                                bottom: MediaQuery.of(context).padding.bottom,
-                              ),
-                              decoration: BoxDecoration(
-                                // color: Theme.of(context).colorScheme.onSecondary,
-                                border: Border(
-                                  top: BorderSide(
-                                    color: AIColors.speraterColor,
-                                    width: 0.33,
-                                  ),
+                            Expanded(
+                              child: SingleChildScrollView(
+                                reverse: true,
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    for (StoryCommentModel comment
+                                        in story.comments ?? []) ...{
+                                      AIHelpers.htmlRender(
+                                        key: GlobalKey(
+                                          debugLabel:
+                                              'comment-${story.comments?.indexOf(comment)}',
+                                        ),
+                                        comment.content,
+                                        color:
+                                            Theme.of(
+                                              context,
+                                            ).colorScheme.onSecondary,
+                                      ),
+                                    },
+                                  ],
                                 ),
                               ),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Row(
-                                    children: [
-                                      IconButton(
-                                        onPressed: () {},
-                                        icon: AIImage(
-                                          AIImages.icImage,
-                                          color: AIColors.black,
-                                          width: 20,
-                                        ),
-                                      ),
-                                      IconButton(
-                                        onPressed: () {},
-                                        icon: AIImage(
-                                          AIImages.icCamera,
-                                          color: AIColors.black,
-                                          width: 20,
-                                        ),
-                                      ),
-                                      Expanded(
-                                        child: QuillSimpleToolbar(
-                                          controller: viewModel.quillController,
-                                          config: QuillSimpleToolbarConfig(
-                                            toolbarIconAlignment:
-                                                WrapAlignment.start,
-                                            showDividers: false,
-                                            showFontFamily: false,
-                                            showFontSize: false,
-                                            showColorButton: false,
-                                            showBackgroundColorButton: false,
-                                            showHeaderStyle: false,
-                                            showCodeBlock: false,
-                                            showInlineCode: false,
-                                            showIndent: false,
-                                            showSearchButton: false,
-                                            showUndo: false,
-                                            showRedo: false,
-                                            showQuote: false,
-                                            showSubscript: false,
-                                            showSuperscript: false,
-                                            showListCheck: false,
-                                            showClearFormat: false,
-                                            showAlignmentButtons: false,
-                                            showCenterAlignment: false,
-                                            showLeftAlignment: false,
-                                            showLink: false,
-                                            showJustifyAlignment: false,
-                                            showRightAlignment: false,
-                                            showListNumbers: false,
-                                            showListBullets: false,
-                                            showStrikeThrough: false,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Container(
-                                    padding: const EdgeInsets.only(
-                                      left: 12.0,
-                                      right: 12.0,
-                                      // bottom: 8.0,
-                                    ),
-                                    decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(24.0),
-                                      border: Border.all(color: AIColors.grey),
-                                    ),
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.end,
-                                      children: [
-                                        Expanded(
-                                          child: QuillEditor(
-                                            focusNode: viewModel.focusNode,
-                                            scrollController:
-                                                viewModel.quillScrollController,
-                                            controller:
-                                                viewModel.quillController,
-
-                                            config: QuillEditorConfig(
-                                              autoFocus: false,
-                                              expands: false,
-                                              placeholder: 'Comments...',
-                                              padding: const EdgeInsets.all(12),
-                                              customStyles: DefaultStyles(
-                                                placeHolder:
-                                                    DefaultTextBlockStyle(
-                                                      TextStyle(
-                                                        fontSize: 16,
-                                                        color: AIColors.grey,
-                                                      ),
-                                                      HorizontalSpacing.zero,
-                                                      VerticalSpacing.zero,
-                                                      VerticalSpacing.zero,
-                                                      null,
-                                                    ),
-                                                paragraph:
-                                                    DefaultTextBlockStyle(
-                                                      TextStyle(
-                                                        fontSize: 16,
-                                                        color:
-                                                            Theme.of(context)
-                                                                .colorScheme
-                                                                .onPrimary,
-                                                      ),
-                                                      HorizontalSpacing.zero,
-                                                      VerticalSpacing.zero,
-                                                      VerticalSpacing.zero,
-                                                      null,
-                                                    ),
-                                              ),
-
-                                              // customize other styles if needed
-                                            ),
-                                          ),
-                                        ),
-                                        Padding(
-                                          padding: const EdgeInsets.only(
-                                            left: 8.0,
-                                            bottom: 8.0,
-                                          ),
-                                          child: Container(
-                                            width: 30.0,
-                                            height: 30.0,
-                                            alignment: Alignment.center,
-                                            decoration: BoxDecoration(
-                                              color: AIColors.pink,
-                                              borderRadius:
-                                                  BorderRadius.circular(15.0),
-                                            ),
-                                            child: IconButton(
-                                              onPressed: viewModel.sendComment,
-                                              icon: Icon(
-                                                Icons.arrow_upward_outlined,
-                                                color: AIColors.white,
-                                                size: 15.0,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
+                            ),
+                            StorySendCommentWidget(
+                              controller: viewModel.quillController,
+                              focusNode: viewModel.focusNode,
+                              scrollController: viewModel.quillScrollController,
+                              onSend: viewModel.sendComment,
                             ),
                           } else ...{
+                            const Spacer(),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               spacing: 12.0,
@@ -348,10 +222,14 @@ class StoryPageableCell extends StatelessWidget {
                                   children: [
                                     Text(
                                       viewModel.owner?.fullName ?? '---',
-                                      style:
-                                          Theme.of(
-                                            context,
-                                          ).textTheme.headlineMedium,
+                                      style: Theme.of(
+                                        context,
+                                      ).textTheme.headlineMedium?.copyWith(
+                                        color:
+                                            Theme.of(
+                                              context,
+                                            ).colorScheme.onSecondary,
+                                      ),
                                     ),
                                     Text(
                                       '· ${viewModel.story.timestamp?.timeago}',
@@ -376,6 +254,10 @@ class StoryPageableCell extends StatelessWidget {
                                             style: TextStyle(
                                               fontSize: 13.0,
                                               fontWeight: FontWeight.bold,
+                                              color:
+                                                  Theme.of(
+                                                    context,
+                                                  ).colorScheme.onSecondary,
                                             ),
                                           ),
                                           Container(
@@ -396,13 +278,22 @@ class StoryPageableCell extends StatelessWidget {
                                                 Icon(
                                                   Icons.leaderboard_outlined,
                                                   size: 18,
+                                                  color:
+                                                      Theme.of(
+                                                        context,
+                                                      ).colorScheme.onSecondary,
                                                 ),
                                                 Text(
                                                   ' ${viewModel.story.votes?.length ?? 0} / 5 Looks Today',
-                                                  style:
-                                                      Theme.of(
-                                                        context,
-                                                      ).textTheme.bodySmall,
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodySmall
+                                                      ?.copyWith(
+                                                        color:
+                                                            Theme.of(context)
+                                                                .colorScheme
+                                                                .onSecondary,
+                                                      ),
                                                 ),
                                               ],
                                             ),
@@ -419,64 +310,292 @@ class StoryPageableCell extends StatelessWidget {
                       ),
                     ),
                   ),
+                ],
+              ),
+              Align(
+                alignment: Alignment.bottomRight,
+                child: Container(
+                  margin: const EdgeInsets.only(right: 8.0, bottom: 56),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 4.0,
+                    vertical: 16.0,
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    spacing: 20.0,
+                    children: [
+                      InkWell(
+                        onTap: viewModel.onTapUserAvatar,
+                        child: AIAvatarImage(
+                          key: GlobalKey(debugLabel: 'story-${story.id}'),
+                          viewModel.owner?.avatar,
+                          width: kStoryAvatarSize * 0.8,
+                          height: kStoryAvatarSize * 0.8,
+                          fullname: viewModel.owner?.fullName ?? 'Test',
+                          textSize: 24,
+                          isBorder: true,
+                          borderWidth: 2,
+                          borderRadius: kStoryAvatarSize / 2,
+                        ),
+                      ),
+                      StoryActionButton(
+                        src: Icons.favorite,
+                        label: '${(viewModel.story.likes ?? []).length}',
+                        onTap: viewModel.updateLike,
+                      ),
+                      StoryActionButton(
+                        src: Icons.screen_share,
+                        label: '${(viewModel.story.follows ?? []).length}',
+                        onTap: viewModel.updateFollow,
+                      ),
+                      StoryActionButton(
+                        src: Icons.comment,
+                        label: '${(viewModel.story.comments ?? []).length}',
+                        onTap: () {
+                          viewModel.isComment = !viewModel.isComment;
+                        },
+                      ),
+                      StoryActionButton(
+                        src: Icons.share,
+                        onTap: () {
+                          AIHelpers.shareStory(context, story: story);
+                        },
+                      ),
+                      StoryActionButton(
+                        src: Icons.post_add,
+                        onTap: viewModel.repost,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+              if ((viewModel.story.medias ?? []).length > 1) ...{
+                Positioned(
+                  left: 20.0,
+                  top: MediaQuery.of(context).padding.top + 40.0,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12.0,
+                      vertical: 4.0,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.secondary.withAlpha(64),
+                      borderRadius: BorderRadius.circular(24.0),
+                    ),
+                    child: Text(
+                      '${viewModel.pageIndex + 1} / ${(viewModel.story.medias ?? []).length}',
+                      style: Theme.of(context).textTheme.titleSmall?.copyWith(
+                        color: Theme.of(context).colorScheme.onSecondary,
+                      ),
+                    ),
+                  ),
+                ),
+              },
+            ],
+          ),
+        );
+      },
+    );
+  }
+}
+
+class StorySendCommentWidget extends StatelessWidget {
+  final QuillController controller;
+  final FocusNode focusNode;
+  final ScrollController scrollController;
+  final void Function()? onSend;
+
+  const StorySendCommentWidget({
+    super.key,
+    required this.controller,
+    required this.focusNode,
+    required this.scrollController,
+    this.onSend,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
+      decoration: BoxDecoration(
+        border: Border(
+          top: BorderSide(color: AIColors.speraterColor, width: 0.33),
+        ),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            children: [
+              IconButton(
+                onPressed: () {},
+                icon: AIImage(
+                  AIImages.icImage,
+                  color: Theme.of(context).colorScheme.onSecondary,
+                  width: 20,
+                ),
+              ),
+              IconButton(
+                onPressed: () {},
+                icon: AIImage(
+                  AIImages.icCamera,
+                  color: Theme.of(context).colorScheme.onSecondary,
+                  width: 20,
+                ),
+              ),
+              Expanded(
+                child: QuillSimpleToolbar(
+                  controller: controller,
+                  config: QuillSimpleToolbarConfig(
+                    toolbarIconAlignment: WrapAlignment.start,
+                    showDividers: false,
+                    showFontFamily: false,
+                    showFontSize: false,
+                    showColorButton: false,
+                    showBackgroundColorButton: false,
+                    showHeaderStyle: false,
+                    showCodeBlock: false,
+                    showInlineCode: false,
+                    showIndent: false,
+                    showSearchButton: false,
+                    showUndo: false,
+                    showRedo: false,
+                    showQuote: false,
+                    showSubscript: false,
+                    showSuperscript: false,
+                    showListCheck: false,
+                    showClearFormat: false,
+                    showAlignmentButtons: false,
+                    showCenterAlignment: false,
+                    showLeftAlignment: false,
+                    showLink: false,
+                    showJustifyAlignment: false,
+                    showRightAlignment: false,
+                    showListNumbers: false,
+                    showListBullets: false,
+                    showStrikeThrough: false,
+                  ),
+                ),
+              ),
+            ],
+          ),
+          Container(
+            padding: const EdgeInsets.only(left: 12.0, right: 12.0),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(24.0),
+              border: Border.all(color: AIColors.grey),
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Expanded(
+                  child: QuillEditor(
+                    focusNode: focusNode,
+                    scrollController: scrollController,
+                    controller: controller,
+                    config: QuillEditorConfig(
+                      autoFocus: false,
+                      expands: false,
+                      placeholder: 'Comments...',
+                      padding: const EdgeInsets.all(12),
+                      customStyles: DefaultStyles(
+                        placeHolder: DefaultTextBlockStyle(
+                          TextStyle(fontSize: 16, color: AIColors.grey),
+                          HorizontalSpacing.zero,
+                          VerticalSpacing.zero,
+                          VerticalSpacing.zero,
+                          null,
+                        ),
+                        paragraph: DefaultTextBlockStyle(
+                          TextStyle(
+                            fontSize: 16,
+                            color: Theme.of(context).colorScheme.onSecondary,
+                          ),
+                          HorizontalSpacing.zero,
+                          VerticalSpacing.zero,
+                          VerticalSpacing.zero,
+                          null,
+                        ),
+                      ),
+
+                      // customize other styles if needed
+                    ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 8.0, bottom: 8.0),
+                  child: Container(
+                    width: 30.0,
+                    height: 30.0,
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                      color: AIColors.pink,
+                      borderRadius: BorderRadius.circular(15.0),
+                    ),
+                    child: IconButton(
+                      onPressed: onSend,
+                      icon: Icon(
+                        Icons.arrow_upward_outlined,
+                        color: Theme.of(context).colorScheme.onSecondary,
+                        size: 15.0,
+                      ),
+                    ),
+                  ),
                 ),
               ],
             ),
-            Align(
-              alignment: Alignment.bottomRight,
-              child: Container(
-                margin: const EdgeInsets.only(right: 8.0, bottom: 56),
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 4.0,
-                  vertical: 16.0,
-                ),
-                // decoration: BoxDecoration(
-                //   color: Theme.of(context).colorScheme.secondary.withAlpha(64),
-                //   borderRadius: BorderRadius.circular(36.0),
-                // ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  spacing: 20.0,
-                  children: [
-                    InkWell(
-                      onTap: viewModel.onTapUserAvatar,
-                      child: AIAvatarImage(
-                        key: GlobalKey(debugLabel: 'story-${story.id}'),
-                        viewModel.owner?.avatar,
-                        width: kStoryAvatarSize * 0.8,
-                        height: kStoryAvatarSize * 0.8,
-                        fullname: viewModel.owner?.fullName ?? 'Test',
-                        textSize: 24,
-                        isBorder: true,
-                        borderWidth: 2,
-                        borderRadius: kStoryAvatarSize / 2,
-                      ),
-                    ),
-                    StoryActionButton(
-                      src: Icons.favorite,
-                      label: '${(viewModel.story.likes ?? []).length}',
-                      onTap: () {},
-                    ),
-                    StoryActionButton(
-                      src: Icons.share,
-                      label: '${(viewModel.story.follows ?? []).length}',
-                      onTap: () {},
-                    ),
-                    StoryActionButton(
-                      src: Icons.comment,
-                      label: '${(viewModel.story.comments ?? []).length}',
-                      onTap: () {
-                        viewModel.isComment = !viewModel.isComment;
-                      },
-                    ),
-                    StoryActionButton(src: Icons.post_add, onTap: () {}),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        );
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class StoryMediaView extends StatefulWidget {
+  final MediaStoryModel media;
+
+  const StoryMediaView({super.key, required this.media});
+
+  @override
+  State<StoryMediaView> createState() => _StoryMediaViewState();
+}
+
+class _StoryMediaViewState extends State<StoryMediaView> {
+  late InAppWebViewController? webViewController;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (widget.media.type == 'image') {
+      return AIImage(
+        widget.media.link,
+        width: double.infinity,
+        height: double.infinity,
+        fit:
+            ((widget.media.height ?? 1) / (widget.media.width ?? 1) > 1.2)
+                ? BoxFit.cover
+                : BoxFit.contain,
+      );
+    }
+    return VimeoVideoPlayer(
+      videoId: AIHelpers.extractVimeoId(widget.media.link!) ?? '',
+      isAutoPlay: true,
+      onInAppWebViewCreated: (controller) {
+        webViewController = controller;
       },
+      onInAppWebViewLoadStart: (controller, url) {},
+      onInAppWebViewLoadStop: (controller, url) {},
     );
   }
 }
@@ -568,12 +687,14 @@ class StoryActionButton extends StatelessWidget {
           Icon(
             src,
             size: kStoryAvatarSize * 0.6,
-            color: Theme.of(context).colorScheme.onPrimary,
+            color: Theme.of(context).colorScheme.onSecondary,
           ),
           if (label != null) ...{
             Text(
               label!,
-              style: TextStyle(color: Theme.of(context).colorScheme.onPrimary),
+              style: TextStyle(
+                color: Theme.of(context).colorScheme.onSecondary,
+              ),
             ),
           },
         ],
@@ -867,9 +988,6 @@ class StoryDetailDialog extends StatelessWidget {
                             StoryListEmptyView(
                               description: 'Nobody had commented yet!',
                             ),
-                            // SizedBox(
-                            //   height: MediaQuery.of(context).viewInsets.bottom,
-                            // ),
                           } else ...{
                             for (var comment
                                 in (viewModel.story.comments?.reversed
@@ -914,162 +1032,11 @@ class StoryDetailDialog extends StatelessWidget {
                 bottom: MediaQuery.of(context).viewInsets.bottom,
                 left: 0,
                 right: 0,
-                child: Container(
-                  padding: EdgeInsets.only(
-                    left: 12.0,
-                    right: 12.0,
-                    bottom: MediaQuery.of(context).padding.bottom,
-                  ),
-                  decoration: BoxDecoration(
-                    // color: Theme.of(context).colorScheme.onSecondary,
-                    border: Border(
-                      top: BorderSide(
-                        color: AIColors.speraterColor,
-                        width: 0.33,
-                      ),
-                    ),
-                  ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Row(
-                        children: [
-                          IconButton(
-                            onPressed: () {},
-                            icon: AIImage(
-                              AIImages.icImage,
-                              color: AIColors.grey,
-                              width: 20,
-                            ),
-                          ),
-                          IconButton(
-                            onPressed: () {},
-                            icon: AIImage(
-                              AIImages.icCamera,
-                              color: AIColors.grey,
-                              width: 20,
-                            ),
-                          ),
-                          Expanded(
-                            child: QuillSimpleToolbar(
-                              controller: viewModel.quillController,
-                              config: QuillSimpleToolbarConfig(
-                                toolbarIconAlignment: WrapAlignment.start,
-                                showDividers: false,
-                                showFontFamily: false,
-                                showFontSize: false,
-                                showColorButton: false,
-                                showBackgroundColorButton: false,
-                                showHeaderStyle: false,
-                                showCodeBlock: false,
-                                showInlineCode: false,
-                                showIndent: false,
-                                showSearchButton: false,
-                                showUndo: false,
-                                showRedo: false,
-                                showQuote: false,
-                                showSubscript: false,
-                                showSuperscript: false,
-                                showListCheck: false,
-                                showClearFormat: false,
-                                showAlignmentButtons: false,
-                                showCenterAlignment: false,
-                                showLeftAlignment: false,
-                                showLink: false,
-                                showJustifyAlignment: false,
-                                showRightAlignment: false,
-                                showListNumbers: false,
-                                showListBullets: false,
-                                showStrikeThrough: false,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Container(
-                        padding: const EdgeInsets.only(
-                          left: 12.0,
-                          right: 12.0,
-                          // bottom: 8.0,
-                        ),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(24.0),
-                          border: Border.all(color: AIColors.speraterColor),
-                        ),
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Expanded(
-                              child: QuillEditor(
-                                focusNode: viewModel.focusNode,
-                                scrollController:
-                                    viewModel.quillScrollController,
-                                controller: viewModel.quillController,
-
-                                config: QuillEditorConfig(
-                                  autoFocus: false,
-                                  expands: false,
-                                  placeholder: 'Comments...',
-
-                                  padding: const EdgeInsets.all(16),
-                                  customStyles: DefaultStyles(
-                                    placeHolder: DefaultTextBlockStyle(
-                                      TextStyle(
-                                        fontSize: 16,
-                                        color: AIColors.grey,
-                                      ),
-                                      HorizontalSpacing.zero,
-                                      VerticalSpacing.zero,
-                                      VerticalSpacing.zero,
-                                      null,
-                                    ),
-                                    paragraph: DefaultTextBlockStyle(
-                                      TextStyle(
-                                        fontSize: 16,
-                                        color:
-                                            Theme.of(
-                                              context,
-                                            ).colorScheme.onPrimary,
-                                      ),
-                                      HorizontalSpacing.zero,
-                                      VerticalSpacing.zero,
-                                      VerticalSpacing.zero,
-                                      null,
-                                    ),
-                                  ),
-
-                                  // customize other styles if needed
-                                ),
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(
-                                left: 8.0,
-                                bottom: 8.0,
-                              ),
-                              child: Container(
-                                width: 30.0,
-                                height: 30.0,
-                                alignment: Alignment.center,
-                                decoration: BoxDecoration(
-                                  color: AIColors.pink,
-                                  borderRadius: BorderRadius.circular(15.0),
-                                ),
-                                child: IconButton(
-                                  onPressed: viewModel.sendComment,
-                                  icon: Icon(
-                                    Icons.arrow_upward_outlined,
-                                    color: AIColors.white,
-                                    size: 15.0,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+                child: StorySendCommentWidget(
+                  controller: viewModel.quillController,
+                  focusNode: viewModel.focusNode,
+                  scrollController: viewModel.quillScrollController,
+                  onSend: viewModel.sendComment,
                 ),
               ),
             },
@@ -1128,14 +1095,6 @@ class StoryDialogMediaView extends ViewModelWidget<StoryContentProvider> {
                             media: viewModel.story.medias![i],
                           ),
                         ),
-                        // child: AspectRatio(
-                        //   aspectRatio: 3 / 2,
-                        //   child: AIImage(
-                        //     viewModel.story.medias![i].link,
-                        //     fit: BoxFit.cover,
-                        //     width: double.infinity,
-                        //   ),
-                        // ),
                       ),
                     ),
                   ),

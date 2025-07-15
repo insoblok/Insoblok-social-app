@@ -237,6 +237,8 @@ class StoryProvider extends InSoBlokViewModel {
           );
           await storyService.addComment(story: story);
           quillController.document = Document();
+
+          await fetchStory();
         } else {
           AIHelpers.showToast(msg: 'Your comment is empty!');
         }
@@ -246,15 +248,6 @@ class StoryProvider extends InSoBlokViewModel {
         logger.e(s);
       } finally {
         notifyListeners();
-        // WidgetsBinding.instance.addPostFrameCallback((_) {
-        //   if (_scrollController.hasClients) {
-        //     _scrollController.animateTo(
-        //       _scrollController.position.maxScrollExtent,
-        //       duration: Duration(milliseconds: 300),
-        //       curve: Curves.easeOut,
-        //     );
-        //   }
-        // });
       }
     }());
 
@@ -262,4 +255,239 @@ class StoryProvider extends InSoBlokViewModel {
       AIHelpers.showToast(msg: modelError.toString());
     }
   }
+
+  bool _isLiking = false;
+  bool get isLiking => _isLiking;
+  set isLiking(bool f) {
+    _isLiking = f;
+    notifyListeners();
+  }
+
+  Future<void> updateLike() async {
+    if (isBusy) return;
+    clearErrors();
+
+    if (story.userId == user?.id) {
+      AIHelpers.showToast(msg: 'You can\'t like to your feed!');
+      return;
+    }
+
+    isLiking = true;
+    var likes = List<String>.from(story.likes ?? []);
+    await runBusyFuture(() async {
+      try {
+        if (story.isLike()) {
+          likes.remove(user!.id);
+        } else {
+          likes.add(user!.id!);
+        }
+        await storyService.updateLikeStory(
+          story: story.copyWith(likes: likes, updateDate: DateTime.now()),
+          user: owner,
+        );
+      } catch (e) {
+        setError(e);
+        logger.e(e);
+      } finally {
+        isLiking = false;
+      }
+    }());
+
+    if (hasError) {
+      AIHelpers.showToast(msg: modelError.toString());
+    } else {
+      story = story.copyWith(likes: likes);
+      if (story.isLike()) {
+        AIHelpers.showToast(msg: 'You liked to a feed!');
+      } else {
+        AIHelpers.showToast(msg: 'You unliked to a feed!');
+      }
+      notifyListeners();
+    }
+  }
+
+  bool _isFollowing = false;
+  bool get isFollowing => _isFollowing;
+  set isFollowing(bool f) {
+    _isFollowing = f;
+    notifyListeners();
+  }
+
+  Future<void> updateFollow() async {
+    if (isBusy) return;
+    clearErrors();
+
+    if (story.userId == user?.id) {
+      AIHelpers.showToast(msg: 'You can\'t follow to your feed!');
+      return;
+    }
+
+    isFollowing = true;
+    var follows = List<String>.from(story.follows ?? []);
+    await runBusyFuture(() async {
+      try {
+        if (story.isFollow()) {
+          follows.remove(user!.id);
+        } else {
+          follows.add(user!.id!);
+        }
+        await storyService.updateFollowStory(
+          story: story.copyWith(follows: follows, updateDate: DateTime.now()),
+          user: owner,
+        );
+      } catch (e) {
+        setError(e);
+        logger.e(e);
+      } finally {
+        isFollowing = false;
+      }
+    }());
+
+    if (hasError) {
+      AIHelpers.showToast(msg: modelError.toString());
+    } else {
+      story = story.copyWith(follows: follows);
+      if (story.isFollow()) {
+        AIHelpers.showToast(msg: 'You followed to a feed!');
+      } else {
+        AIHelpers.showToast(msg: 'You unfollowed to a feed!');
+      }
+      notifyListeners();
+    }
+  }
+
+  Future<void> repost() async {
+    if (isBusy) return;
+    clearErrors();
+
+    await runBusyFuture(() async {
+      try {
+        var hasDescription = await _showDescriptionDialog();
+
+        String? description;
+        if (hasDescription == true) {
+          description = await AIHelpers.goToDescriptionView(context);
+          if (description == null) {
+            throw ('empty description!');
+          }
+        }
+        var newStory = StoryModel(
+          title: 'Repost',
+          text: description,
+          category: 'vote',
+          medias: story.medias,
+          updateDate: DateTime.now(),
+          timestamp: DateTime.now(),
+          connects: [
+            ...(story.connects ?? []),
+            if (!containedConnect())
+              ConnectedStoryModel(postId: story.id, userId: story.userId),
+          ],
+        );
+
+        await storyService.postStory(story: newStory);
+        await tastScoreService.repostScore(story);
+        AIHelpers.showToast(msg: 'Successfully reposted to LOOKBOOK!');
+
+        Navigator.of(context).pop(true);
+      } catch (e) {
+        setError(e);
+        logger.e(e);
+      } finally {
+        notifyListeners();
+      }
+    }());
+
+    if (hasError) {
+      AIHelpers.showToast(msg: modelError.toString());
+    }
+  }
+
+  bool containedConnect() {
+    var connects = story.connects ?? [];
+    for (var connect in connects) {
+      if (connect.postId == story.id && connect.userId == story.userId) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  Future<bool?> _showDescriptionDialog() => showDialog<bool>(
+    context: context,
+    builder: (context) {
+      return Center(
+        child: Container(
+          margin: const EdgeInsets.all(40.0),
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.onSecondary,
+            borderRadius: BorderRadius.circular(20.0),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Repost Story',
+                style: Theme.of(context).textTheme.titleSmall,
+              ),
+              const SizedBox(height: 16.0),
+              Text(
+                'Do you want to repost this story to your LOOKBOOK post?',
+                style: Theme.of(context).textTheme.labelLarge,
+              ),
+              const SizedBox(height: 24.0),
+              Row(
+                spacing: 24.0,
+                children: [
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () => Navigator.of(context).pop(true),
+                      child: Container(
+                        height: 44.0,
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).primaryColor,
+                          borderRadius: BorderRadius.circular(16.0),
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          'Add',
+                          style: Theme.of(
+                            context,
+                          ).textTheme.bodyMedium?.copyWith(
+                            color: Theme.of(context).colorScheme.onSecondary,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () => Navigator.of(context).pop(),
+                      child: Container(
+                        height: 44.0,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            width: 2.0,
+                            color: Theme.of(context).primaryColor,
+                          ),
+                          borderRadius: BorderRadius.circular(16.0),
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          'Skip',
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(color: Theme.of(context).primaryColor),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      );
+    },
+  );
 }

@@ -31,7 +31,13 @@ class AIHelpers {
     return deviceIdentifier;
   }
 
-  static Widget htmlRender(String? data, {FontSize? fontSize}) => Html(
+  static Widget htmlRender(
+    String? data, {
+    Key? key,
+    FontSize? fontSize,
+    Color? color,
+  }) => Html(
+    key: key,
     data: data ?? '',
     shrinkWrap: true,
     style: {
@@ -41,6 +47,7 @@ class AIHelpers {
         fontSize: fontSize ?? FontSize(14.0),
         fontWeight: FontWeight.w400,
         letterSpacing: -0.3,
+        color: color,
       ),
       'a': Style(
         fontSize: fontSize ?? FontSize(14.0),

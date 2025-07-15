@@ -53,7 +53,7 @@ class PageableView extends StatelessWidget {
                       child: SingleChildScrollView(
                         scrollDirection: Axis.horizontal,
                         child: Row(
-                          spacing: 12.0,
+                          spacing: 16.0,
                           children: [
                             for (var title in menuTitles) ...{
                               InkWell(
@@ -64,7 +64,9 @@ class PageableView extends StatelessWidget {
                                 },
                                 child: Text(
                                   title,
-                                  style: TextStyle(
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.titleSmall?.copyWith(
                                     color:
                                         Theme.of(
                                           context,
