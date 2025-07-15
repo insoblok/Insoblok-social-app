@@ -9,7 +9,7 @@ import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
 
-const kProfileDiscoverHeight = 126.0;
+const kProfileDiscoverHeight = 60.0;
 
 class AccountPresentHeaderView extends ViewModelWidget<AccountProvider> {
   const AccountPresentHeaderView({super.key});
@@ -31,30 +31,19 @@ class AccountPresentHeaderView extends ViewModelWidget<AccountProvider> {
           ),
           Align(
             alignment: Alignment.bottomCenter,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Container(
-                  margin: const EdgeInsets.only(left: 32.0),
-                  width: kAccountAvatarSize,
-                  height: kAccountAvatarSize,
-                  child: AIAvatarImage(
-                    viewModel.accountUser?.avatar,
-                    fullname: viewModel.accountUser?.fullName ?? 'Test',
-                    width: kAccountAvatarSize,
-                    height: kAccountAvatarSize,
-                    textSize: 28.0,
-                    borderWidth: 4,
-                    borderRadius: kAccountAvatarSize / 2,
-                    isBorder: true,
-                  ),
-                ),
-                SizedBox(width: 8),
-                // Text(
-                //   'Since: ${viewModel.accountUser?.timestamp?.myFormatter}',
-                //   style: Theme.of(context).textTheme.labelMedium,
-                // ),
-              ],
+            child: SizedBox(
+              width: kAccountAvatarSize,
+              height: kAccountAvatarSize,
+              child: AIAvatarImage(
+                viewModel.accountUser?.avatar,
+                fullname: viewModel.accountUser?.fullName ?? 'Test',
+                width: kAccountAvatarSize,
+                height: kAccountAvatarSize,
+                textSize: 28.0,
+                borderWidth: 4,
+                borderRadius: kAccountAvatarSize / 2,
+                isBorder: true,
+              ),
             ),
           ),
           CustomCircleBackButton(),
@@ -104,72 +93,114 @@ class AccountFloatingView extends ViewModelWidget<AccountProvider> {
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            spacing: 12.0,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            spacing: 4.0,
             children: [
               Text(
                 '${viewModel.accountUser?.fullName}',
                 style: Theme.of(context).textTheme.titleMedium,
               ),
+              Text(
+                '@${viewModel.accountUser?.nickId}',
+                style: Theme.of(context).textTheme.labelMedium,
+              ),
               viewModel.accountUser?.desc != null
                   ? AIHelpers.htmlRender(viewModel.accountUser?.desc)
-                  : Text(
-                    'User can input your profile description if you didn\'t set that yet!. That will be shown to other and will make more user experience of InSoBlokAI.',
-                    style: Theme.of(context).textTheme.labelMedium,
+                  : Container(),
+              // Wrap(
+              //   spacing: 12.0,
+              //   runSpacing: 8.0,
+              //   children:
+              //       (viewModel.accountUser?.linkInfo ?? []).map((info) {
+              //         return InkWell(
+              //           onTap: () {
+              //             if (info['type'] == 'wallet') {
+              //               viewModel.onClickInfo(0);
+              //             }
+              //           },
+              //           child: Row(
+              //             mainAxisSize: MainAxisSize.min,
+              //             children: [
+              //               AIImage(
+              //                 info['icon'],
+              //                 height: 18.0,
+              //                 color: AIColors.greyTextColor,
+              //               ),
+              //               const SizedBox(width: 4.0),
+              //               Text(
+              //                 info['title']!,
+              //                 style: Theme.of(context).textTheme.labelMedium,
+              //               ),
+              //             ],
+              //           ),
+              //         );
+              //       }).toList(),
+              // ),
+              // Text.rich(
+              //   TextSpan(
+              //     children: [
+              //       TextSpan(
+              //         text:
+              //             (viewModel.accountUser?.likes?.length ?? 0)
+              //                 .socialValue,
+              //         style: Theme.of(context).textTheme.labelLarge,
+              //       ),
+              //       TextSpan(
+              //         text: '  Likes  ',
+              //         style: Theme.of(context).textTheme.labelLarge,
+              //       ),
+              //       TextSpan(
+              //         text:
+              //             '  ${(viewModel.accountUser?.follows?.length ?? 0).socialValue}',
+              //         style: Theme.of(context).textTheme.labelLarge,
+              //       ),
+              //       TextSpan(
+              //         text: '  Followers',
+              //         style: Theme.of(context).textTheme.labelLarge,
+              //       ),
+              //     ],
+              //   ),
+              // ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Column(
+                    children: [
+                      Text(
+                        '${viewModel.accountUser?.follows?.length ?? 0}',
+                        style: Theme.of(context).textTheme.titleSmall,
+                      ),
+                      Text(
+                        'Following',
+                        style: Theme.of(context).textTheme.labelMedium,
+                      ),
+                    ],
                   ),
-              Wrap(
-                spacing: 12.0,
-                runSpacing: 8.0,
-                children:
-                    (viewModel.accountUser?.linkInfo ?? []).map((info) {
-                      return InkWell(
-                        onTap: () {
-                          if (info['type'] == 'wallet') {
-                            viewModel.onClickInfo(0);
-                          }
-                        },
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            AIImage(
-                              info['icon'],
-                              height: 18.0,
-                              color: AIColors.greyTextColor,
-                            ),
-                            const SizedBox(width: 4.0),
-                            Text(
-                              info['title']!,
-                              style: Theme.of(context).textTheme.labelMedium,
-                            ),
-                          ],
-                        ),
-                      );
-                    }).toList(),
-              ),
-              Text.rich(
-                TextSpan(
-                  children: [
-                    TextSpan(
-                      text:
-                          (viewModel.accountUser?.likes?.length ?? 0)
-                              .socialValue,
-                      style: Theme.of(context).textTheme.labelLarge,
-                    ),
-                    TextSpan(
-                      text: '  Likes  ',
-                      style: Theme.of(context).textTheme.labelLarge,
-                    ),
-                    TextSpan(
-                      text:
-                          '  ${(viewModel.accountUser?.follows?.length ?? 0).socialValue}',
-                      style: Theme.of(context).textTheme.labelLarge,
-                    ),
-                    TextSpan(
-                      text: '  Followers',
-                      style: Theme.of(context).textTheme.labelLarge,
-                    ),
-                  ],
-                ),
+                  Column(
+                    children: [
+                      Text(
+                        '${viewModel.accountUser?.follows?.length ?? 0}',
+                        style: Theme.of(context).textTheme.titleSmall,
+                      ),
+                      Text(
+                        'Follwers',
+                        style: Theme.of(context).textTheme.labelMedium,
+                      ),
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      Text(
+                        '${viewModel.accountUser?.likes?.length ?? 0}',
+                        style: Theme.of(context).textTheme.titleSmall,
+                      ),
+                      Text(
+                        'Likes',
+                        style: Theme.of(context).textTheme.labelMedium,
+                      ),
+                    ],
+                  ),
+                ],
               ),
             ],
           ),

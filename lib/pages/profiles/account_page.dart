@@ -8,7 +8,7 @@ import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/widgets/widgets.dart';
 
-const kAccountAvatarSize = 72.0;
+const kAccountAvatarSize = 92.0;
 const kAccountPageTitles = ['Posts', 'Like', 'Follow', 'Gallery'];
 
 class AccountPage extends StatelessWidget {
@@ -62,9 +62,49 @@ class AccountPage extends StatelessWidget {
                         delegate: SliverChildListDelegate([
                           if (viewModel.pageIndex == 0) ...{
                             if (viewModel.stories.isNotEmpty) ...{
-                              for (var story in viewModel.stories) ...{
-                                AccountStoryListCell(story: story),
-                              },
+                              GridView.count(
+                                shrinkWrap: true,
+                                controller: viewModel.controller,
+                                crossAxisCount: 3,
+                                mainAxisSpacing: 1.0,
+                                crossAxisSpacing: 1.0,
+                                childAspectRatio: 0.75,
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 4.0,
+                                ),
+                                children: [
+                                  for (var story in viewModel.stories) ...{
+                                    InkWell(
+                                      onTap: () {},
+                                      child: Stack(
+                                        children: [
+                                          AIImage(
+                                            story.medias?.first.type == 'image'
+                                                ? story.medias?.first.link
+                                                : story.medias?.first.thumb,
+                                            fit: BoxFit.cover,
+                                          ),
+                                          Align(
+                                            alignment: Alignment.topRight,
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(
+                                                4.0,
+                                              ),
+                                              child: AIImage(
+                                                Icons.filter_none_outlined,
+                                                color: AIColors.white,
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  },
+                                ],
+                              ),
+                              // for (var story in viewModel.stories) ...{
+                              //   AccountStoryListCell(story: story),
+                              // },
                             } else ...{
                               SafeArea(
                                 child: InSoBlokEmptyView(
@@ -116,10 +156,10 @@ class AccountPage extends StatelessWidget {
                                     shrinkWrap: true,
                                     controller: viewModel.controller,
                                     crossAxisCount: 3,
-                                    mainAxisSpacing: 4.0,
-                                    crossAxisSpacing: 4.0,
+                                    mainAxisSpacing: 1.0,
+                                    crossAxisSpacing: 1.0,
+                                    childAspectRatio: 0.75,
                                     padding: const EdgeInsets.symmetric(
-                                      horizontal: 20.0,
                                       vertical: 4.0,
                                     ),
                                     children: [
