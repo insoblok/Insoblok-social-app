@@ -52,6 +52,8 @@ class TextFillButton extends StatelessWidget {
   final double? width;
   final double? height;
   final String text;
+  final double? fontSize;
+  final FontWeight? fontWeight;
   final Color? color;
   final bool isBusy;
   final void Function()? onTap;
@@ -61,6 +63,8 @@ class TextFillButton extends StatelessWidget {
     required this.text,
     this.width,
     this.height,
+    this.fontSize,
+    this.fontWeight,
     this.color,
     this.isBusy = false,
     this.onTap,
@@ -84,8 +88,8 @@ class TextFillButton extends StatelessWidget {
                 : Text(
                   text,
                   style: TextStyle(
-                    fontSize: 16.0,
-                    fontWeight: FontWeight.bold,
+                    fontSize: fontSize ?? 16.0,
+                    fontWeight: fontWeight ?? FontWeight.bold,
                     color: Colors.white,
                   ),
                 ),

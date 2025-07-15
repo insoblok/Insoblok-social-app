@@ -1,10 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:insoblok/extensions/extensions.dart';
 
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/pages/pages.dart';
 import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
+import 'package:insoblok/widgets/widgets.dart';
 
 class AccountProvider extends InSoBlokViewModel {
   late BuildContext _context;
@@ -38,13 +40,24 @@ class AccountProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  List<String> _followingList = [];
+  List<String> get followingList => _followingList;
+  set followingList(List<String> i) {
+    _followingList = i;
+    notifyListeners();
+  }
+
+  bool get isFollowing =>
+      (accountUser?.follows ?? []).contains(AuthHelper.user?.id);
+
   void init(BuildContext context, {UserModel? model}) async {
     this.context = context;
     accountUser = model ?? AuthHelper.user;
 
     await fetchStories();
     await getUserScore();
-    await getGalleries();
+    await fetchFollowings();
+    // await getGalleries();
   }
 
   final List<StoryModel> stories = [];
@@ -73,6 +86,129 @@ class AccountProvider extends InSoBlokViewModel {
     if (hasError) {
       AIHelpers.showToast(msg: modelError.toString());
     }
+  }
+
+  Future<void> fetchFollowings() async {
+    try {
+      _followingList = await userService.getFollowingUserIds(
+        userid: accountUser!.id!,
+      );
+      logger.d(_followingList);
+    } catch (e) {
+      setError(e);
+      logger.e(e);
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<void> updateFollow() async {
+    var follows = List<String>.from(accountUser?.follows ?? []);
+    if (isFollowing) {
+      follows.remove(AuthHelper.user!.id!);
+    } else {
+      follows.add(AuthHelper.user!.id!);
+    }
+    accountUser = accountUser?.copyWith(follows: follows);
+    await userService.updateUser(accountUser!);
+    notifyListeners();
+  }
+
+  Future<void> gotoNewChat() async {
+    RoomModel? existedRoom;
+    try {
+      existedRoom = await roomService.getRoomByChatUesr(id: accountUser!.id!);
+      if (existedRoom == null) {
+        var dialog = await showDialog<bool>(
+          context: context,
+          builder: (context) {
+            return Scaffold(
+              backgroundColor: AIColors.transparent,
+              body: Center(
+                child: Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 32.0),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24.0,
+                    vertical: 24.0,
+                  ),
+                  decoration: BoxDecoration(
+                    color: AIColors.pink,
+                    borderRadius: BorderRadius.circular(16.0),
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        children: [
+                          Text(
+                            "Create Room",
+                            style: TextStyle(
+                              fontSize: 18.0,
+                              color: AIColors.white,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          const Spacer(),
+                          IconButton(
+                            onPressed: () => Navigator.of(context).pop(),
+                            icon: Icon(Icons.close, color: AIColors.white),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 24.0),
+                      Text(
+                        "Are you sure want to chat with the selected user?",
+                        style: TextStyle(fontSize: 16.0, color: AIColors.white),
+                      ),
+                      const SizedBox(height: 24.0),
+                      TextFillButton(
+                        onTap: () => Navigator.of(context).pop(true),
+                        text: 'Create',
+                        color: AIColors.pink,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            );
+          },
+        );
+
+        if (dialog != true) return;
+
+        var room = RoomModel(
+          userId: user?.id,
+          userIds: [user?.id, accountUser!.id!],
+          content: '${user?.fullName} have created a room',
+          updateDate: DateTime.now(),
+          timestamp: DateTime.now(),
+        );
+        await roomService.createRoom(room);
+        existedRoom = await roomService.getRoomByChatUesr(id: accountUser!.id!);
+        messageService.setInitialTypeStatus(existedRoom!.id!, accountUser!.id!);
+      }
+    } catch (e) {
+      logger.e(e);
+      setError(e);
+    } finally {
+      notifyListeners();
+    }
+
+    if (hasError) {
+      AIHelpers.showToast(msg: modelError.toString());
+    } else {
+      if (existedRoom != null) {
+        await Routers.goToMessagePage(
+          context,
+          MessagePageData(room: existedRoom, chatUser: accountUser!),
+        );
+      }
+    }
+  }
+
+  Future<void> goToDetailPage(StoryModel story) async {
+    Routers.goToStoryDetailPage(context, story);
   }
 
   final List<TastescoreModel> _scores = [];

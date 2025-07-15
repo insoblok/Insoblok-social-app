@@ -47,35 +47,26 @@ class AccountPresentHeaderView extends ViewModelWidget<AccountProvider> {
             ),
           ),
           CustomCircleBackButton(),
-          Align(
-            alignment: Alignment.topRight,
-            child: InkWell(
-              onTap: viewModel.onClickMoreButton,
-              child: Container(
-                width: 36.0,
-                height: 36.0,
-                margin: EdgeInsets.only(
-                  right: 20.0,
-                  top: MediaQuery.of(context).padding.top + 12.0,
+          if (viewModel.isMe)
+            Align(
+              alignment: Alignment.topRight,
+              child: InkWell(
+                onTap: viewModel.onClickMoreButton,
+                child: Container(
+                  width: 36.0,
+                  height: 36.0,
+                  margin: EdgeInsets.only(
+                    right: 20.0,
+                    top: MediaQuery.of(context).padding.top + 12.0,
+                  ),
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: AppSettingHelper.transparentBackground,
+                  ),
+                  child: Icon(Icons.edit, size: 18.0),
                 ),
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: AppSettingHelper.transparentBackground,
-                ),
-                child:
-                    viewModel.isMe
-                        ? Icon(Icons.edit, size: 18.0)
-                        : Center(
-                          child: AIImage(
-                            AIImages.icBottomMessage,
-                            width: 16.0,
-                            height: 16.0,
-                            color: Theme.of(context).colorScheme.onPrimary,
-                          ),
-                        ),
               ),
             ),
-          ),
         ],
       ),
     );
@@ -104,9 +95,7 @@ class AccountFloatingView extends ViewModelWidget<AccountProvider> {
                 '@${viewModel.accountUser?.nickId}',
                 style: Theme.of(context).textTheme.labelMedium,
               ),
-              viewModel.accountUser?.desc != null
-                  ? AIHelpers.htmlRender(viewModel.accountUser?.desc)
-                  : Container(),
+
               // Wrap(
               //   spacing: 12.0,
               //   runSpacing: 8.0,
@@ -164,44 +153,98 @@ class AccountFloatingView extends ViewModelWidget<AccountProvider> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  Column(
-                    children: [
-                      Text(
-                        '${viewModel.accountUser?.follows?.length ?? 0}',
-                        style: Theme.of(context).textTheme.titleSmall,
-                      ),
-                      Text(
-                        'Following',
-                        style: Theme.of(context).textTheme.labelMedium,
-                      ),
-                    ],
+                  SizedBox(
+                    width: 120.0,
+                    child: Column(
+                      children: [
+                        Text(
+                          '${viewModel.followingList.length}',
+                          style: Theme.of(context).textTheme.titleSmall,
+                        ),
+                        Text(
+                          'Following',
+                          style: Theme.of(context).textTheme.labelMedium,
+                        ),
+                      ],
+                    ),
                   ),
-                  Column(
-                    children: [
-                      Text(
-                        '${viewModel.accountUser?.follows?.length ?? 0}',
-                        style: Theme.of(context).textTheme.titleSmall,
-                      ),
-                      Text(
-                        'Follwers',
-                        style: Theme.of(context).textTheme.labelMedium,
-                      ),
-                    ],
+                  SizedBox(
+                    width: 120.0,
+                    child: Column(
+                      children: [
+                        Text(
+                          '${viewModel.accountUser?.follows?.length ?? 0}',
+                          style: Theme.of(context).textTheme.titleSmall,
+                        ),
+                        Text(
+                          'Follwers',
+                          style: Theme.of(context).textTheme.labelMedium,
+                        ),
+                      ],
+                    ),
                   ),
-                  Column(
-                    children: [
-                      Text(
-                        '${viewModel.accountUser?.likes?.length ?? 0}',
-                        style: Theme.of(context).textTheme.titleSmall,
-                      ),
-                      Text(
-                        'Likes',
-                        style: Theme.of(context).textTheme.labelMedium,
-                      ),
-                    ],
+                  SizedBox(
+                    width: 120.0,
+                    child: Column(
+                      children: [
+                        Text(
+                          '${viewModel.accountUser?.likes?.length ?? 0}',
+                          style: Theme.of(context).textTheme.titleSmall,
+                        ),
+                        Text(
+                          'Likes',
+                          style: Theme.of(context).textTheme.labelMedium,
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
+              if (!viewModel.isMe)
+                Column(
+                  children: [
+                    const SizedBox(height: 4),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        TextFillButton(
+                          onTap: () {
+                            viewModel.updateFollow();
+                          },
+                          height: 36,
+                          width: 124,
+                          isBusy: viewModel.isBusy,
+                          color:
+                              viewModel.isFollowing
+                                  ? Theme.of(context).primaryColor
+                                  : Theme.of(
+                                    context,
+                                  ).colorScheme.secondary.withAlpha(64),
+                          text:
+                              viewModel.isFollowing ? 'Follow back' : 'Follow',
+                          fontWeight: FontWeight.normal,
+                          fontSize: 14.0,
+                        ),
+                        TextFillButton(
+                          onTap: () {
+                            viewModel.gotoNewChat();
+                          },
+                          height: 36,
+                          width: 124,
+                          color: Theme.of(
+                            context,
+                          ).colorScheme.secondary.withAlpha(64),
+                          text: 'Message',
+                          fontWeight: FontWeight.normal,
+                          fontSize: 14.0,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              viewModel.accountUser?.desc != null
+                  ? AIHelpers.htmlRender(viewModel.accountUser?.desc)
+                  : Container(),
             ],
           ),
         ),
@@ -220,7 +263,7 @@ class AccountFloatingHeaderView extends ViewModelWidget<AccountProvider> {
     return Row(
       spacing: 12.0,
       children: [
-        for (var i = 0; i < 4; i++) ...{
+        for (var i = 0; i < kAccountPageTitles.length; i++) ...{
           Expanded(
             child: TabCoverView(
               kAccountPageTitles[i],
