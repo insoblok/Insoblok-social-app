@@ -36,6 +36,7 @@ class AIHelpers {
     Key? key,
     FontSize? fontSize,
     Color? color,
+    TextAlign? textAlign,
   }) => Html(
     key: key,
     data: data ?? '',
@@ -46,6 +47,7 @@ class AIHelpers {
         margin: Margins.all(0),
         fontSize: fontSize ?? FontSize(14.0),
         fontWeight: FontWeight.w400,
+        textAlign: textAlign ?? TextAlign.start,
         letterSpacing: -0.3,
         color: color,
       ),

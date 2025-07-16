@@ -37,15 +37,59 @@ class LoginPage extends StatelessWidget {
           body: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              SizedBox(
-                height: 512.0,
-                child: PageView(
-                  controller: viewModel.pageController,
+              Container(
+                width: double.infinity,
+                margin: EdgeInsets.only(
+                  top: MediaQuery.of(context).padding.top + 24.0,
+                  left: 32.0,
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: 8,
                   children: [
-                    for (var data in kLandingPageData) ...{
-                      LoginPageView(data: data),
-                    },
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'LivVybe',
+                          textAlign: TextAlign.start,
+                          style: TextStyle(
+                            fontSize: 28.0,
+                            fontWeight: FontWeight.bold,
+                            color: AIColors.pink,
+                          ),
+                        ),
+                        const SizedBox(width: 2),
+                        Text(
+                          'TM',
+                          textAlign: TextAlign.start,
+                          style: TextStyle(
+                            fontSize: 11.0,
+                            color: AIColors.pink,
+                          ),
+                        ),
+                      ],
+                    ),
+                    Text(
+                      'Swipe. React. Remix. Get Paid',
+                      textAlign: TextAlign.start,
+                      style: TextStyle(fontSize: 18.0, color: AIColors.white),
+                    ),
                   ],
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(top: 30.0, bottom: 16.0),
+                child: SizedBox(
+                  height: MediaQuery.of(context).size.width - 64,
+                  child: PageView(
+                    controller: viewModel.pageController,
+                    children: [
+                      for (var data in kLandingPageData) ...{
+                        LoginPageView(data: data),
+                      },
+                    ],
+                  ),
                 ),
               ),
               SmoothPageIndicator(
@@ -60,6 +104,48 @@ class LoginPage extends StatelessWidget {
                 ),
               ),
               Container(
+                width: double.infinity,
+                margin: EdgeInsets.only(top: 32.0, left: 32.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  spacing: 8,
+                  children: [
+                    Text(
+                      'Your Face is your ticket',
+                      textAlign: TextAlign.start,
+                      style: TextStyle(
+                        fontSize: 18.0,
+                        fontWeight: FontWeight.bold,
+                        color: AIColors.white,
+                      ),
+                    ),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          'Connect, Vybe and build your TasetScore',
+                          textAlign: TextAlign.start,
+                          style: TextStyle(
+                            fontSize: 12.0,
+                            color: AIColors.greyTextColor,
+                          ),
+                        ),
+                        const SizedBox(width: 2),
+                        Text(
+                          'TM',
+                          textAlign: TextAlign.start,
+                          style: TextStyle(
+                            fontSize: 8.0,
+                            color: AIColors.greyTextColor,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              Spacer(),
+              Container(
                 color: AIColors.darkScaffoldBackground.withAlpha(48),
                 margin: const EdgeInsets.symmetric(horizontal: 40.0),
                 child: OutlineButton(
@@ -69,10 +155,10 @@ class LoginPage extends StatelessWidget {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      AIImage(AIImages.imgMetamask, width: 28.0),
-                      const SizedBox(width: 24.0),
+                      // AIImage(AIImages.imgMetamask, width: 28.0),
+                      // const SizedBox(width: 24.0),
                       Text(
-                        'Start with MetaMask',
+                        'Sign in with Wallet',
                         style: TextStyle(
                           fontSize: 16.0,
                           fontWeight: FontWeight.bold,
@@ -83,52 +169,58 @@ class LoginPage extends StatelessWidget {
                   ),
                 ),
               ),
-              Column(
-                children: [
-                  Text(
-                    'By proceeding you accept InSoBlok',
-                    style: TextStyle(color: AIColors.white, fontSize: 14.0),
-                  ),
-                  const SizedBox(height: 8.0),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      InkWell(
-                        onTap: () {
-                          AIHelpers.loadUrl(kPrivacyUrl);
-                        },
-                        child: Text(
-                          'Terms of Use',
-                          style: TextStyle(
-                            fontSize: 14.0,
-                            color: AIColors.white,
-                            fontWeight: FontWeight.bold,
+              Padding(
+                padding: const EdgeInsets.only(bottom: 48.0, top: 36.0),
+                child: Column(
+                  children: [
+                    Text(
+                      'By proceeding you accept InSoBlok',
+                      style: TextStyle(color: AIColors.white, fontSize: 14.0),
+                    ),
+                    const SizedBox(height: 8.0),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        InkWell(
+                          onTap: () {
+                            AIHelpers.loadUrl(kPrivacyUrl);
+                          },
+                          child: Text(
+                            'Terms of Use',
+                            style: TextStyle(
+                              fontSize: 14.0,
+                              color: AIColors.white,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
-                      ),
-                      const SizedBox(width: 4),
-                      Text(
-                        'and',
-                        style: TextStyle(color: AIColors.white, fontSize: 14.0),
-                      ),
-                      const SizedBox(width: 4),
-                      InkWell(
-                        onTap: () {
-                          AIHelpers.loadUrl(kPrivacyUrl);
-                        },
-                        child: Text(
-                          'Privacy Policy',
+                        const SizedBox(width: 4),
+                        Text(
+                          'and',
                           style: TextStyle(
                             color: AIColors.white,
                             fontSize: 14.0,
-                            fontWeight: FontWeight.bold,
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                ],
+                        const SizedBox(width: 4),
+                        InkWell(
+                          onTap: () {
+                            AIHelpers.loadUrl(kPrivacyUrl);
+                          },
+                          child: Text(
+                            'Privacy Policy',
+                            style: TextStyle(
+                              color: AIColors.white,
+                              fontSize: 14.0,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
@@ -145,37 +237,34 @@ class LoginPageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 24.0, right: 24.0, top: 60.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        spacing: 12.0,
-        children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  data['title'],
-                  style: TextStyle(
-                    fontSize: 18.0,
-                    fontWeight: FontWeight.bold,
-                    color: AIColors.white,
-                  ),
-                ),
-                const SizedBox(height: 8.0),
-                Text(
-                  data['description'],
-                  style: TextStyle(fontSize: 14.0, color: AIColors.white),
-                ),
-              ],
-            ),
-          ),
-          AspectRatio(aspectRatio: 1, child: AIImage(data['image'])),
-        ],
-      ),
+    return Column(
+      // crossAxisAlignment: CrossAxisAlignment.start,
+      // mainAxisSize: MainAxisSize.min,
+      // spacing: 12.0,
+      children: [
+        // Padding(
+        //   padding: const EdgeInsets.symmetric(horizontal: 24.0),
+        //   child: Column(
+        //     crossAxisAlignment: CrossAxisAlignment.start,
+        //     children: [
+        //       Text(
+        //         data['title'],
+        //         style: TextStyle(
+        //           fontSize: 18.0,
+        //           fontWeight: FontWeight.bold,
+        //           color: AIColors.white,
+        //         ),
+        //       ),
+        //       const SizedBox(height: 8.0),
+        //       Text(
+        //         data['description'],
+        //         style: TextStyle(fontSize: 14.0, color: AIColors.white),
+        //       ),
+        //     ],
+        //   ),
+        // ),
+        AIImage(data['image'], height: MediaQuery.of(context).size.width - 64),
+      ],
     );
   }
 }

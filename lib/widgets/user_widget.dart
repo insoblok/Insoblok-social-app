@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:insoblok/widgets/widgets.dart';
 
 import 'package:stacked/stacked.dart';
 
@@ -198,38 +199,6 @@ class AppLeadingView extends StatelessWidget {
   }
 }
 
-class AppBackgroundView extends StatelessWidget {
-  final Widget? child;
-  final double? height;
-  const AppBackgroundView({super.key, this.child, this.height});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        FocusScope.of(context).unfocus();
-      },
-      child: Container(
-        height: height,
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              AIColors.lightPurple.withAlpha(32),
-              AIColors.lightBlue.withAlpha(32),
-              AIColors.lightPurple.withAlpha(32),
-              AIColors.lightTeal.withAlpha(32),
-            ],
-            stops: [0.0, 0.4, 0.7, 1.0],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-          ),
-        ),
-        child: child,
-      ),
-    );
-  }
-}
-
 class UserRelatedView extends StatelessWidget {
   final String id;
 
@@ -327,6 +296,135 @@ class UserRelatedView extends StatelessWidget {
                   ],
                 ),
               ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class FriendListCell extends StatelessWidget {
+  final String id;
+
+  const FriendListCell({super.key, required this.id});
+
+  @override
+  Widget build(BuildContext context) {
+    return ViewModelBuilder<UserProvider>.reactive(
+      viewModelBuilder: () => UserProvider(),
+      onViewModelReady: (viewModel) => viewModel.init(context, id: id),
+      builder: (context, viewModel, _) {
+        var userData = viewModel.owner;
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+          child: InkWell(
+            onTap: viewModel.goToTastescorePage,
+            child: Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16.0,
+                vertical: 12.0,
+              ),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.secondary.withAlpha(16),
+                borderRadius: BorderRadius.circular(12.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSecondary.withAlpha(16),
+                    spreadRadius: 3,
+                    blurRadius: 5,
+                    offset: Offset(0, 1), // changes position of shadow
+                  ),
+                ],
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  userData == null
+                      ? ShimmerContainer(
+                        child: Container(
+                          width: kUserAvatarSize,
+                          height: kUserAvatarSize,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                      )
+                      : Stack(
+                        children: [
+                          userData.avatarStatusView(
+                            width: kUserAvatarSize,
+                            height: kUserAvatarSize,
+                            borderWidth: 3.0,
+                            textSize: 18.0,
+                            showStatus: false,
+                          ),
+                        ],
+                      ),
+                  const SizedBox(width: 12.0),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      spacing: 4.0,
+                      children: [
+                        userData == null
+                            ? ShimmerContainer(
+                              child: Container(
+                                width: 150.0,
+                                height: 16,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                              ),
+                            )
+                            : Text(
+                              userData.fullName,
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                        userData == null
+                            ? ShimmerContainer(
+                              child: Container(
+                                width: 80.0,
+                                height: 16,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                              ),
+                            )
+                            : Text(
+                              '@${userData.nickId}',
+                              style: Theme.of(context).textTheme.labelSmall,
+                            ),
+                      ],
+                    ),
+                  ),
+                  userData == null
+                      ? ShimmerContainer(
+                        child: Container(
+                          width: 80.0,
+                          height: 32,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                        ),
+                      )
+                      : InkWell(
+                        onTap: () {
+                          viewModel.updateFollow();
+                        },
+                        child: TagView(
+                          tag: viewModel.isFollowing ? 'Following' : 'Follow',
+                          isSelected: viewModel.isFollowing,
+                        ),
+                      ),
+                ],
+              ),
             ),
           ),
         );

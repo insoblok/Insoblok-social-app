@@ -20,6 +20,7 @@ const kProductCategoryNames = [
   'Bracelet',
   'Earrings',
   'Sunglasses',
+  'Hat/Cap',
 ];
 
 final kProductCategories = [
@@ -32,6 +33,7 @@ final kProductCategories = [
   ProductCategory.JEWELRY,
   ProductCategory.JEWELRY,
   ProductCategory.JEWELRY,
+  ProductCategory.CLOTHING,
 ];
 
 const kProductTypeNames = [
@@ -44,6 +46,7 @@ const kProductTypeNames = [
   'bracelet',
   'earrings',
   'watch',
+  'tops',
 ];
 
 const kProductAvailable = [
@@ -53,6 +56,7 @@ const kProductAvailable = [
   false,
   false,
   false,
+  true,
   true,
   true,
   true,

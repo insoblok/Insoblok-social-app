@@ -180,7 +180,7 @@ class AvatarOriginView extends ViewModelWidget<AvatarProvider> {
                                   mainAxisSize: MainAxisSize.min,
                                   spacing: 20.0,
                                   children: [
-                                    AIImage(AIImages.icShare),
+                                    AIImage(AIImages.icUpload),
                                     Text('Click to upload image'),
                                   ],
                                 ),

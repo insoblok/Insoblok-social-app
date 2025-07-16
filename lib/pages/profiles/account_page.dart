@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:insoblok/utils/utils.dart';
 
 import 'package:stacked/stacked.dart';
@@ -76,29 +77,59 @@ class AccountPage extends StatelessWidget {
                                   for (var story in viewModel.stories) ...{
                                     InkWell(
                                       onTap: () {
-                                        viewModel.goToDetailPage(story);
+                                        viewModel.goToDetailPage(
+                                          viewModel.stories.indexOf(story),
+                                        );
                                       },
-                                      child: Stack(
-                                        children: [
-                                          AIImage(
-                                            width: double.infinity,
-                                            height: double.infinity,
-                                            story.medias?.first.type == 'image'
-                                                ? story.medias?.first.link
-                                                : story.medias?.first.thumb,
-                                            fit: BoxFit.cover,
-                                          ),
-                                          if ((story.medias ?? []).length > 1)
-                                            Positioned(
-                                              top: 6.0,
-                                              right: 6.0,
-                                              child: AIImage(
-                                                Icons.filter_none_outlined,
-                                                color: AIColors.white,
+                                      child:
+                                          (story.medias ?? []).isNotEmpty
+                                              ? Stack(
+                                                children: [
+                                                  AIImage(
+                                                    width: double.infinity,
+                                                    height: double.infinity,
+                                                    story.medias?.first.type ==
+                                                            'image'
+                                                        ? story
+                                                            .medias
+                                                            ?.first
+                                                            .link
+                                                        : story
+                                                            .medias
+                                                            ?.first
+                                                            .thumb,
+                                                    fit: BoxFit.cover,
+                                                  ),
+                                                  if ((story.medias ?? [])
+                                                          .length >
+                                                      1)
+                                                    Positioned(
+                                                      top: 6.0,
+                                                      right: 6.0,
+                                                      child: AIImage(
+                                                        Icons
+                                                            .filter_none_outlined,
+                                                        color: AIColors.white,
+                                                      ),
+                                                    ),
+                                                ],
+                                              )
+                                              : Container(
+                                                color: AIColors.grey,
+                                                child: Align(
+                                                  alignment: Alignment.center,
+                                                  child: Padding(
+                                                    padding:
+                                                        const EdgeInsets.all(8),
+                                                    child: AIHelpers.htmlRender(
+                                                      story.text,
+                                                      fontSize: FontSize(21.0),
+                                                      textAlign:
+                                                          TextAlign.center,
+                                                    ),
+                                                  ),
+                                                ),
                                               ),
-                                            ),
-                                        ],
-                                      ),
                                     ),
                                   },
                                 ],

@@ -43,6 +43,8 @@ class UserProvider extends InSoBlokViewModel {
     return userLevels.first;
   }
 
+  bool get isFollowing => (owner?.follows ?? []).contains(AuthHelper.user?.id);
+
   Future<void> fetchUser() async {
     try {
       owner = await userService.getUser(_id);
@@ -52,6 +54,18 @@ class UserProvider extends InSoBlokViewModel {
     } finally {
       notifyListeners();
     }
+  }
+
+  Future<void> updateFollow() async {
+    var follows = List<String>.from(owner?.follows ?? []);
+    if (isFollowing) {
+      follows.remove(AuthHelper.user!.id!);
+    } else {
+      follows.add(AuthHelper.user!.id!);
+    }
+    owner = owner?.copyWith(follows: follows);
+    await userService.updateUser(owner!);
+    notifyListeners();
   }
 
   Color getRankColor(int pos) {

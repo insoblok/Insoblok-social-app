@@ -30,3 +30,35 @@ class InSoBlokEmptyView extends StatelessWidget {
     );
   }
 }
+
+class AppBackgroundView extends StatelessWidget {
+  final Widget? child;
+  final double? height;
+  const AppBackgroundView({super.key, this.child, this.height});
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: () {
+        FocusScope.of(context).unfocus();
+      },
+      child: Container(
+        height: height,
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              AIColors.lightPurple.withAlpha(32),
+              AIColors.lightBlue.withAlpha(32),
+              AIColors.lightPurple.withAlpha(32),
+              AIColors.lightTeal.withAlpha(32),
+            ],
+            stops: [0.0, 0.4, 0.7, 1.0],
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+          ),
+        ),
+        child: child,
+      ),
+    );
+  }
+}

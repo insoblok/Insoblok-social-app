@@ -34,6 +34,13 @@ class DashboardProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  bool _showSearch = false;
+  bool get showSearch => _showSearch;
+  set showSearch(bool f) {
+    _showSearch = f;
+    notifyListeners();
+  }
+
   final PageController _pageController = PageController();
   PageController get pageController => _pageController;
   int _currentPage = 0;
@@ -146,21 +153,18 @@ class DashboardProvider extends InSoBlokViewModel {
     logger.d(index);
     switch (index) {
       case 0:
-        Routers.goToAccountPage(context);
+        Routers.goToLookbookPage(context);
         break;
       case 1:
-        Routers.goToAccountListPage(context);
+        Routers.goToFollowingPage(context);
         break;
       case 2:
-        Routers.goToAccountTopicPage(context);
+        Routers.goToFriendPage(context);
         break;
       case 3:
-        Routers.goToAccountBookmarkPage(context);
-        break;
-      case 4:
         Routers.goToLeaderboardPage(context);
         break;
-      case 5:
+      case 4:
         Routers.goToMarketPlacePage(context);
         break;
     }

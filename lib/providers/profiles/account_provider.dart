@@ -207,8 +207,11 @@ class AccountProvider extends InSoBlokViewModel {
     }
   }
 
-  Future<void> goToDetailPage(StoryModel story) async {
-    Routers.goToStoryDetailPage(context, story);
+  Future<void> goToDetailPage(int index) async {
+    Routers.goToPostDetailPage(context, {
+      'userid': accountUser?.id,
+      'index': index,
+    });
   }
 
   final List<TastescoreModel> _scores = [];

@@ -43,8 +43,7 @@ class AIImages {
   static String icFavorite = 'assets/icons/ic_favourite.svg';
   static String icCommit = 'assets/icons/ic_commit.svg';
   static String icRetwitter = 'assets/icons/ic_retweet.svg';
-  static String icFollow = 'assets/icons/ic_follow.svg';
-  static String icShare = 'assets/icons/ic_upload.svg';
+  static String icUpload = 'assets/icons/ic_upload.svg';
   static String icAddLogo = 'assets/icons/ic_add_logo.svg';
   static String icCircleMore = 'assets/icons/ic_more_circle.svg';
   static String icSetting = 'assets/icons/ic_setting.svg';
@@ -65,6 +64,13 @@ class AIImages {
   static String icLink = 'assets/icons/ic_link.svg';
   static String icCalendar = 'assets/icons/ic_calendar.svg';
   static String icLocation = 'assets/icons/ic_location.svg';
+
+  static String icComment = 'assets/icons/ic_comment.png';
+  static String icShare = 'assets/icons/ic_share.png';
+  static String icFollow = 'assets/icons/ic_follow.png';
+  static String icNot = 'assets/icons/ic_not.png';
+  static String icHot = 'assets/icons/ic_hot.png';
+  static String icRepost = 'assets/icons/ic_repost.png';
 
   static String imgLevel(int level) {
     return 'assets/images/img_level_0$level.png';

@@ -27,27 +27,29 @@ class TagView extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
-        height: height ?? 36,
-
-        decoration: BoxDecoration(
-          color: isSelected ? backGroundColor ?? AIColors.pink : AIColors.white,
-          borderRadius: BorderRadius.circular(12.0),
-          border: Border.all(
-            width: 1.0,
+      child: IntrinsicWidth(
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
+          height: height ?? 36,
+          decoration: BoxDecoration(
             color:
-                isSelected
-                    ? AIColors.transparent
-                    : borderColor ?? AIColors.pink,
+                isSelected ? backGroundColor ?? AIColors.pink : AIColors.white,
+            borderRadius: BorderRadius.circular(12.0),
+            border: Border.all(
+              width: 1.0,
+              color:
+                  isSelected
+                      ? AIColors.transparent
+                      : borderColor ?? AIColors.pink,
+            ),
           ),
-        ),
-        child: Center(
-          child: Text(
-            tag,
-            style: TextStyle(
-              color: isSelected ? AIColors.white : AIColors.pink,
-              fontSize: textSize ?? 12.0,
+          child: Center(
+            child: Text(
+              tag,
+              style: TextStyle(
+                color: isSelected ? AIColors.white : AIColors.pink,
+                fontSize: textSize ?? 12.0,
+              ),
             ),
           ),
         ),

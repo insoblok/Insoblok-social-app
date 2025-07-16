@@ -104,6 +104,18 @@ class Routers {
     return _pushToRoute(context, kRouterMessageSetting, null);
   }
 
+  static dynamic goToLookbookPage(BuildContext context) {
+    return _pushToRoute(context, kRouterLookbook, null);
+  }
+
+  static dynamic goToFollowingPage(BuildContext context) {
+    return _pushToRoute(context, kRouterFollowing, null);
+  }
+
+  static dynamic goToFriendPage(BuildContext context) {
+    return _pushToRoute(context, kRouterFriend, null);
+  }
+
   static dynamic goToAddStoryPage(BuildContext context) {
     return _pushToRoute(context, kRouterAddStory, null);
   }
@@ -131,8 +143,11 @@ class Routers {
     return _pushToRoute(context, kRouterNewsDetail, data);
   }
 
-  static dynamic goToPostDetailPage(BuildContext context) {
-    return _pushToRoute(context, kRouterPostDetail, null);
+  static dynamic goToPostDetailPage(
+    BuildContext context,
+    Map<String, dynamic> data,
+  ) {
+    return _pushToRoute(context, kRouterPostDetail, data);
   }
 
   static dynamic goToQuillDescriptionPage(

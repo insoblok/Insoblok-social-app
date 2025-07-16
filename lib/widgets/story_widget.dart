@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_quill/flutter_quill.dart';
@@ -114,7 +115,26 @@ class StoryListCell extends StatelessWidget {
                       ],
                     ),
                   const SizedBox(height: 12.0),
-                  StoryMediaCellView(models: story.medias ?? []),
+                  if ((story.medias ?? []).isNotEmpty) ...{
+                    StoryMediaCellView(models: story.medias ?? []),
+                  } else ...{
+                    Align(
+                      alignment: Alignment.center,
+                      child: Padding(
+                        padding: const EdgeInsets.only(
+                          left: 24.0,
+                          right: 24.0,
+                          top: 124.0,
+                          bottom: 124.0,
+                        ),
+                        child: AIHelpers.htmlRender(
+                          story.text,
+                          fontSize: FontSize(32.0),
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
+                    ),
+                  },
                   const SizedBox(height: 16),
                   if (viewModel.story.category != null &&
                       viewModel.story.category == 'vote') ...{
@@ -141,21 +161,40 @@ class StoryPageableCell extends StatelessWidget {
       viewModelBuilder: () => StoryProvider(),
       onViewModelReady: (viewModel) => viewModel.init(context, model: story),
       builder: (context, viewModel, _) {
-        var media = (story.medias ?? [])[viewModel.pageIndex];
-        logger.d(media.toJson());
         return InkWell(
           onTap: viewModel.goToDetailPage,
           child: Stack(
             children: [
-              PageView.builder(
-                itemCount: (viewModel.story.medias ?? []).length,
-                itemBuilder: (context, index) {
-                  return StoryMediaView(media: media);
-                },
-                onPageChanged: (value) {
-                  viewModel.pageIndex = value;
-                },
-              ),
+              if ((story.medias ?? []).isNotEmpty) ...{
+                PageView.builder(
+                  itemCount: (viewModel.story.medias ?? []).length,
+                  itemBuilder: (context, index) {
+                    return StoryMediaView(
+                      media: (story.medias ?? [])[viewModel.pageIndex],
+                    );
+                  },
+                  onPageChanged: (value) {
+                    viewModel.pageIndex = value;
+                  },
+                ),
+              } else ...{
+                Align(
+                  alignment: Alignment.center,
+                  child: Padding(
+                    padding: const EdgeInsets.only(
+                      left: 24.0,
+                      right: 24.0,
+                      top: 124.0,
+                      bottom: 124.0,
+                    ),
+                    child: AIHelpers.htmlRender(
+                      story.text,
+                      fontSize: FontSize(32.0),
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                ),
+              },
               Column(
                 children: [
                   const Spacer(flex: 2),
@@ -318,30 +357,46 @@ class StoryPageableCell extends StatelessWidget {
                         ),
                       ),
                       StoryActionButton(
-                        src: Icons.favorite,
+                        src: Icon(Icons.favorite, size: kStoryAvatarSize * 0.6),
                         label: '${(viewModel.story.likes ?? []).length}',
                         onTap: viewModel.updateLike,
                       ),
                       StoryActionButton(
-                        src: Icons.screen_share,
+                        src: AIImage(
+                          AIImages.icFollow,
+                          color: Theme.of(context).colorScheme.secondary,
+                          width: kStoryAvatarSize * 0.6,
+                        ),
                         label: '${(viewModel.story.follows ?? []).length}',
                         onTap: viewModel.updateFollow,
                       ),
                       StoryActionButton(
-                        src: Icons.comment,
+                        src: AIImage(
+                          AIImages.icComment,
+                          color: Theme.of(context).colorScheme.secondary,
+                          width: kStoryAvatarSize * 0.6,
+                        ),
                         label: '${(viewModel.story.comments ?? []).length}',
                         onTap: () {
                           viewModel.isComment = !viewModel.isComment;
                         },
                       ),
                       StoryActionButton(
-                        src: Icons.share,
+                        src: AIImage(
+                          AIImages.icShare,
+                          color: Theme.of(context).colorScheme.secondary,
+                          width: kStoryAvatarSize * 0.6,
+                        ),
                         onTap: () {
                           AIHelpers.shareStory(context, story: story);
                         },
                       ),
                       StoryActionButton(
-                        src: Icons.post_add,
+                        src: AIImage(
+                          AIImages.icRepost,
+                          color: Theme.of(context).colorScheme.secondary,
+                          width: kStoryAvatarSize * 0.6,
+                        ),
                         onTap: viewModel.repost,
                       ),
                     ],
@@ -636,7 +691,7 @@ class StoryYayNayWidget extends ViewModelWidget<StoryProvider> {
 }
 
 class StoryActionButton extends StatelessWidget {
-  final IconData src;
+  final Widget src;
   final String? label;
   final void Function()? onTap;
 
@@ -654,7 +709,7 @@ class StoryActionButton extends StatelessWidget {
       child: Column(
         spacing: 2.0,
         children: [
-          Icon(src, size: kStoryAvatarSize * 0.6),
+          src,
           if (label != null) ...{Text(label!)},
         ],
       ),
