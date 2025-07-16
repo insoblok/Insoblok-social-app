@@ -252,7 +252,7 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
                             AIImages.icBottomHome,
                             width: 18.0,
                             height: 18.0,
-                            color: AIColors.lightGrey,
+                            color: AIColors.white,
                           ),
                           activeIcon: AIImage(
                             AIImages.icBottomHomeFill,
@@ -268,7 +268,7 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
                             AIImages.icBottomWallet,
                             width: 18.0,
                             height: 18.0,
-                            color: AIColors.lightGrey,
+                            color: AIColors.white,
                           ),
                           activeIcon: AIImage(
                             AIImages.icBottomWalletFill,
@@ -288,7 +288,7 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
                             AIImages.icBottomMessage,
                             width: 18.0,
                             height: 18.0,
-                            color: AIColors.lightGrey,
+                            color: AIColors.white,
                           ),
                           activeIcon: AIImage(
                             AIImages.icBottomMessageFill,
@@ -304,7 +304,7 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
                             AIImages.icBottomUser,
                             width: 18.0,
                             height: 18.0,
-                            color: AIColors.lightGrey,
+                            color: AIColors.white,
                           ),
                           activeIcon: AIImage(
                             AIImages.icBottomUserFill,
