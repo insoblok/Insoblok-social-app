@@ -1,13 +1,13 @@
 flutter_native_splash:
   # General
   color: "#000000"
-  image: assets/images/img_splash.png
+  image: assets/images/img_vybe.png
 
   # Android specific
   android: true
   android_gravity: center
   android_12:
-    image: assets/images/img_splash.png
+    image: assets/images/img_vybe.png
     icon_background_color: "#000000"
 
   # iOS specific

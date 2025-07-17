@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image/image.dart' as img;
+import 'package:path_provider/path_provider.dart';
 import 'package:stacked/stacked.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
@@ -167,8 +168,13 @@ class UploadMediaProvider extends ReactiveViewModel {
       var thumbnail = await getVideoThumbnail(media.file!.path);
       if (thumbnail != null) {
         decodedImage = img.decodeImage(thumbnail);
-        thumbUrl = await FirebaseHelper.uploadFileData(
-          fileData: thumbnail,
+        var tempDir = await getTemporaryDirectory();
+        var file = File(
+          '${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}.png',
+        );
+        await file.writeAsBytes(thumbnail);
+        thumbUrl = await FirebaseHelper.uploadFile(
+          file: file,
           folderName: 'story',
         );
       }

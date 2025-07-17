@@ -37,7 +37,7 @@ class MarketPlacePage extends StatelessWidget {
                         onPressed: viewModel.onTapAddProduct,
                       ),
                   ],
-                  extendHeight: viewModel.isClickFilter ? 86 : 0,
+                  extendHeight: viewModel.isClickFilter ? 110 : 0,
                   extendWidget:
                       viewModel.isClickFilter
                           ? Wrap(

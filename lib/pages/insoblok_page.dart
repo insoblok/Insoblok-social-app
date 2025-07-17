@@ -17,28 +17,28 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     WidgetsBinding.instance.addObserver(this);
 
-    var titles = ['Home', 'Vybe', 'Wallet', 'Chat', 'Profile'];
+    // var titles = ['Home', 'Vybe', 'Wallet', 'Chat', 'Profile'];
     var pages = [
       PageableView(),
-      LookbookView(),
       AccountWalletPage(),
+      LookbookView(),
       ChatView(),
       ProfileView(),
     ];
-    var selectedIcon = [
-      AIImages.icBottomHomeFill,
-      AIImages.icBottomLookFill,
-      AIImages.icBottomWalletFill,
-      AIImages.icBottomMessageFill,
-      AIImages.icBottomUserFill,
-    ];
-    var unselectedIcon = [
-      AIImages.icBottomHome,
-      AIImages.icBottomLook,
-      AIImages.icBottomWallet,
-      AIImages.icBottomMessage,
-      AIImages.icBottomUser,
-    ];
+    // var selectedIcon = [
+    //   AIImages.icBottomHomeFill,
+    //   AIImages.icBottomLookFill,
+    //   AIImages.icBottomWalletFill,
+    //   AIImages.icBottomMessageFill,
+    //   AIImages.icBottomUserFill,
+    // ];
+    // var unselectedIcon = [
+    //   AIImages.icBottomHome,
+    //   AIImages.icBottomLook,
+    //   AIImages.icBottomWallet,
+    //   AIImages.icBottomMessage,
+    //   AIImages.icBottomUser,
+    // ];
 
     var menuTitles = [
       'Profile',
@@ -215,6 +215,15 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
               ),
             ),
             body: pages[viewModel.pageIndex],
+            floatingActionButton: FloatingActionButton(
+              onPressed: () {
+                viewModel.goToAddPost();
+              },
+              elevation: 2.0,
+              child: Icon(Icons.add, size: 32, color: AIColors.white),
+            ),
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.centerDocked,
             bottomNavigationBar: AppBackgroundView(
               child: ClipRRect(
                 borderRadius: BorderRadius.only(
@@ -224,15 +233,6 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
                 child: Stack(
                   children: [
                     AppBackgroundView(height: kBottomNavigationBarHeight),
-                    // Container(
-                    //   height: kBottomNavigationBarHeight,
-                    //   decoration: BoxDecoration(
-                    //     image: DecorationImage(
-                    //       image: AssetImage(AIImages.imgBackground),
-                    //       fit: BoxFit.cover,
-                    //     ),
-                    //   ),
-                    // ),
                     BottomNavigationBar(
                       backgroundColor: AIColors.transparent,
                       elevation: 0.0,
@@ -242,29 +242,97 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
                       onTap: (value) {
                         if (value == 4) {
                           Routers.goToAccountPage(context);
-                        } else {
+                        } else if (value != 2) {
                           viewModel.pageIndex = value;
                         }
                       },
                       items: [
-                        for (var i = 0; i < selectedIcon.length; i++) ...{
-                          BottomNavigationBarItem(
-                            icon: AIImage(
-                              unselectedIcon[i],
-                              width: 18.0,
-                              height: 18.0,
-                              color: AIColors.lightGrey,
-                            ),
-                            activeIcon: AIImage(
-                              selectedIcon[i],
-                              width: 18.0,
-                              height: 18.0,
-                              color: AIColors.pink,
-                            ),
-                            label: titles[i],
-                            backgroundColor: AIColors.pink,
+                        BottomNavigationBarItem(
+                          icon: AIImage(
+                            AIImages.icBottomHome,
+                            width: 18.0,
+                            height: 18.0,
+                            color: AIColors.white,
                           ),
-                        },
+                          activeIcon: AIImage(
+                            AIImages.icBottomHomeFill,
+                            width: 18.0,
+                            height: 18.0,
+                            color: AIColors.pink,
+                          ),
+                          label: 'Home',
+                          backgroundColor: AIColors.pink,
+                        ),
+                        BottomNavigationBarItem(
+                          icon: AIImage(
+                            AIImages.icBottomWallet,
+                            width: 18.0,
+                            height: 18.0,
+                            color: AIColors.white,
+                          ),
+                          activeIcon: AIImage(
+                            AIImages.icBottomWalletFill,
+                            width: 18.0,
+                            height: 18.0,
+                            color: AIColors.pink,
+                          ),
+                          label: 'Wallet',
+                          backgroundColor: AIColors.pink,
+                        ),
+                        BottomNavigationBarItem(
+                          icon: SizedBox.shrink(), // Empty item for the center
+                          label: '',
+                        ),
+                        BottomNavigationBarItem(
+                          icon: AIImage(
+                            AIImages.icBottomMessage,
+                            width: 18.0,
+                            height: 18.0,
+                            color: AIColors.white,
+                          ),
+                          activeIcon: AIImage(
+                            AIImages.icBottomMessageFill,
+                            width: 18.0,
+                            height: 18.0,
+                            color: AIColors.pink,
+                          ),
+                          label: 'Chat',
+                          backgroundColor: AIColors.pink,
+                        ),
+                        BottomNavigationBarItem(
+                          icon: AIImage(
+                            AIImages.icBottomUser,
+                            width: 18.0,
+                            height: 18.0,
+                            color: AIColors.white,
+                          ),
+                          activeIcon: AIImage(
+                            AIImages.icBottomUserFill,
+                            width: 18.0,
+                            height: 18.0,
+                            color: AIColors.pink,
+                          ),
+                          label: 'Profile',
+                          backgroundColor: AIColors.pink,
+                        ),
+                        // for (var i = 0; i < selectedIcon.length; i++) ...{
+                        //   BottomNavigationBarItem(
+                        //     icon: AIImage(
+                        //       unselectedIcon[i],
+                        //       width: 18.0,
+                        //       height: 18.0,
+                        //       color: AIColors.lightGrey,
+                        //     ),
+                        //     activeIcon: AIImage(
+                        //       selectedIcon[i],
+                        //       width: 18.0,
+                        //       height: 18.0,
+                        //       color: AIColors.pink,
+                        //     ),
+                        //     label: titles[i],
+                        //     backgroundColor: AIColors.pink,
+                        //   ),
+                        // },
                       ],
                     ),
                   ],

@@ -33,6 +33,10 @@ const kRouterCreateRoom = '/create-room';
 const kRouterMessage = '/message';
 const kRouterMessageSetting = '/message-setting';
 
+const kRouterLookbook = '/lookbook';
+const kRouterFollowing = '/following';
+const kRouterFriend = '/friend';
+
 const kRouterMarketVTOImage = '/vto-image';
 const kRouterMarketVTODetail = '/vto-detail';
 const kRouterVTOAddProduct = '/vto-add-product';
@@ -152,6 +156,15 @@ class Navigation {
     // * MessageSettingPage
     initRoute(kRouterMessageSetting, (props) => MessageSettingPage());
 
+    // * Lookbook
+    initRoute(kRouterLookbook, (props) => LookbookPage());
+
+    // * Following
+    initRoute(kRouterFollowing, (props) => FollowingPage());
+
+    // * Friend
+    initRoute(kRouterFriend, (props) => FriendPage());
+
     // * Marketlace VTO Clothing
     initRoute<ProductModel>(
       kRouterMarketVTOImage,
@@ -183,7 +196,10 @@ class Navigation {
     );
 
     // * PostDetailPage
-    initRoute(kRouterPostDetail, (props) => PostDetailPage());
+    initRoute<Map<String, dynamic>>(
+      kRouterPostDetail,
+      (props) => PostDetailPage(data: props!),
+    );
 
     // * QuillDescriptionPage
     initRoute<String>(

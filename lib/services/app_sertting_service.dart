@@ -203,7 +203,7 @@ class AppSettingService with ListenableServiceMixin {
     bottomNavigationBarTheme: BottomNavigationBarThemeData(
       backgroundColor: AIColors.black,
       selectedItemColor: AIColors.pink,
-      unselectedItemColor: AIColors.grey,
+      unselectedItemColor: AIColors.white,
       showSelectedLabels: false,
       showUnselectedLabels: false,
       elevation: 3.0,

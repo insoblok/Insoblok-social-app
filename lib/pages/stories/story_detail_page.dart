@@ -161,31 +161,33 @@ class StoryDetailPage extends StatelessWidget {
                         InkWell(
                           onTap: viewModel.addComment,
                           child: AIImage(
-                            AIImages.icCommit,
-                            width: 18.0,
-                            height: 18.0,
+                            AIImages.icComment,
+                            width: 20.0,
+                            height: 20.0,
+                            color: AIColors.white,
                           ),
                         ),
                         InkWell(
                           onTap: viewModel.updateFollow,
                           child: AIImage(
-                            AIImages.icRetwitter,
+                            AIImages.icFollow,
                             width: 18.0,
                             height: 18.0,
                             color:
                                 viewModel.story.isFollow()
                                     ? AIColors.green
-                                    : null,
+                                    : AIColors.white,
                           ),
                         ),
                         InkWell(
                           onTap: viewModel.updateLike,
-                          child: AIImage(
-                            viewModel.story.isLike()
-                                ? AIImages.icFavoriteFill
-                                : AIImages.icFavorite,
-                            width: 18.0,
-                            height: 18.0,
+                          child: Icon(
+                            Icons.favorite,
+                            color:
+                                viewModel.story.isLike()
+                                    ? AIColors.green
+                                    : AIColors.white,
+                            size: 20.0,
                           ),
                         ),
                         InkWell(
@@ -194,6 +196,7 @@ class StoryDetailPage extends StatelessWidget {
                             AIImages.icShare,
                             width: 18.0,
                             height: 18.0,
+                            color: AIColors.white,
                           ),
                         ),
                       ],

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:insoblok/utils/utils.dart';
-import 'package:insoblok/widgets/user_widget.dart';
+import 'package:insoblok/widgets/widgets.dart';
 
 const kCustomAppbarHeight = 45.0;
 const kExtendAppbarHeight = 45.0;
