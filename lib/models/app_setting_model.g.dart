@@ -8,18 +8,22 @@ part of 'app_setting_model.dart';
 
 _AppSettingModel _$AppSettingModelFromJson(Map<String, dynamic> json) =>
     _AppSettingModel(
-      abouts: (json['abouts'] as List<dynamic>?)
-          ?.map((e) => AboutAppModel.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      xpEarn: (json['xp_earn'] as List<dynamic>?)
-          ?.map((e) => XpEarnModel.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      xpInso: (json['xp_inso'] as List<dynamic>?)
-          ?.map((e) => XpInSoModel.fromJson(e as Map<String, dynamic>))
-          .toList(),
-      userLevel: (json['user_level'] as List<dynamic>?)
-          ?.map((e) => UserLevelModel.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      abouts:
+          (json['abouts'] as List<dynamic>?)
+              ?.map((e) => AboutAppModel.fromJson(e as Map<String, dynamic>))
+              .toList(),
+      xpEarn:
+          (json['xp_earn'] as List<dynamic>?)
+              ?.map((e) => XpEarnModel.fromJson(e as Map<String, dynamic>))
+              .toList(),
+      xpInso:
+          (json['xp_inso'] as List<dynamic>?)
+              ?.map((e) => XpInSoModel.fromJson(e as Map<String, dynamic>))
+              .toList(),
+      userLevel:
+          (json['user_level'] as List<dynamic>?)
+              ?.map((e) => UserLevelModel.fromJson(e as Map<String, dynamic>))
+              .toList(),
     );
 
 Map<String, dynamic> _$AppSettingModelToJson(_AppSettingModel instance) =>
@@ -43,12 +47,12 @@ Map<String, dynamic> _$AboutAppModelToJson(_AboutAppModel instance) =>
     };
 
 _XpEarnModel _$XpEarnModelFromJson(Map<String, dynamic> json) => _XpEarnModel(
-      key: json['key'] as String?,
-      name: json['name'] as String?,
-      bonusDecription: json['bonus_decription'] as String?,
-      reward: (json['reward'] as num?)?.toInt(),
-      bonus: (json['bonus'] as num?)?.toDouble(),
-    );
+  key: json['key'] as String?,
+  name: json['name'] as String?,
+  bonusDecription: json['bonus_decription'] as String?,
+  reward: (json['reward'] as num?)?.toInt(),
+  bonus: (json['bonus'] as num?)?.toDouble(),
+);
 
 Map<String, dynamic> _$XpEarnModelToJson(_XpEarnModel instance) =>
     <String, dynamic>{
@@ -60,10 +64,10 @@ Map<String, dynamic> _$XpEarnModelToJson(_XpEarnModel instance) =>
     };
 
 _XpInSoModel _$XpInSoModelFromJson(Map<String, dynamic> json) => _XpInSoModel(
-      min: (json['min'] as num?)?.toInt(),
-      max: (json['max'] as num?)?.toInt(),
-      rate: (json['rate'] as num?)?.toInt(),
-    );
+  min: (json['min'] as num?)?.toInt(),
+  max: (json['max'] as num?)?.toInt(),
+  rate: (json['rate'] as num?)?.toInt(),
+);
 
 Map<String, dynamic> _$XpInSoModelToJson(_XpInSoModel instance) =>
     <String, dynamic>{

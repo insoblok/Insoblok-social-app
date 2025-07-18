@@ -5,6 +5,13 @@ import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 
 class InSoBlokProvider extends InSoBlokViewModel {
+  late BuildContext _context;
+  BuildContext get context => _context;
+  set context(BuildContext context) {
+    _context = context;
+    notifyListeners();
+  }
+
   var _pageIndex = 0;
   int get pageIndex => _pageIndex;
   set pageIndex(int i) {
@@ -12,10 +19,10 @@ class InSoBlokProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  late BuildContext _context;
-  BuildContext get context => _context;
-  set context(BuildContext context) {
-    _context = context;
+  var _dotIndex = 0;
+  int get dotIndex => _dotIndex;
+  set dotIndex(int i) {
+    _dotIndex = i;
     notifyListeners();
   }
 

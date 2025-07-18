@@ -17,6 +17,7 @@ abstract class StoryModel with _$StoryModel {
     String? category,
     List<String>? likes,
     List<String>? follows,
+    List<String>? views,
     DateTime? updateDate,
     DateTime? timestamp,
     List<ConnectedStoryModel>? connects,

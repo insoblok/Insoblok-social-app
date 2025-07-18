@@ -16,45 +16,26 @@ class FollowingPage extends StatelessWidget {
       onViewModelReady: (viewModel) => viewModel.init(context),
       builder: (context, viewModel, _) {
         return Scaffold(
-          appBar: AppBar(
-            title: Text('Following'),
-            centerTitle: true,
-            flexibleSpace: AppBackgroundView(),
-          ),
           body: AppBackgroundView(
-            child: CustomScrollView(
-              physics: NeverScrollableScrollPhysics(),
-              slivers: [
-                if (viewModel.isBusy) ...{
-                  SliverFillRemaining(child: Center(child: Loader(size: 60))),
-                },
-                if (viewModel.stories.isEmpty && !viewModel.isBusy) ...{
-                  SliverFillRemaining(
-                    child: InSoBlokEmptyView(desc: 'Story is Empty!'),
-                  ),
-                } else ...{
-                  SliverFillRemaining(
-                    child: Column(
-                      children: [
-                        Expanded(
-                          child: ListView.builder(
-                            padding: EdgeInsets.zero,
-                            itemCount: viewModel.stories.length,
-                            itemBuilder: (context, index) {
-                              return StoryListCell(
-                                key: GlobalKey(
-                                  debugLabel:
-                                      'story-${viewModel.stories[index].id}',
-                                ),
-                                story: viewModel.stories[index],
-                              );
-                            },
+            child: Stack(
+              children: [
+                viewModel.isBusy
+                    ? Center(child: Loader(size: 60))
+                    : PageView.builder(
+                      scrollDirection: Axis.vertical,
+                      controller: viewModel.pageController,
+                      padEnds: false,
+                      itemCount: viewModel.stories.length,
+                      itemBuilder: (_, index) {
+                        return StoryPageableCell(
+                          key: GlobalKey(
+                            debugLabel: 'story-${viewModel.stories[index].id}',
                           ),
-                        ),
-                      ],
+                          story: viewModel.stories[index],
+                        );
+                      },
                     ),
-                  ),
-                },
+                CustomCircleBackButton(),
               ],
             ),
           ),

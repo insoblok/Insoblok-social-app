@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:insoblok/utils/utils.dart';
 
 class AccountWalletIconCover extends StatelessWidget {
   final Widget child;
@@ -31,15 +32,23 @@ class AccountWalletTokenCover extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: 160.0,
-      height: 80.0,
-      padding: const EdgeInsets.all(10.0),
-      decoration: BoxDecoration(
-        color: Theme.of(context).colorScheme.secondary.withAlpha(16),
-        borderRadius: BorderRadius.circular(8.0),
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.all(10.0),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.secondary.withAlpha(18),
+          borderRadius: BorderRadius.circular(8.0),
+          boxShadow: [
+            BoxShadow(
+              color: AIColors.black.withAlpha(50),
+              spreadRadius: 2,
+              blurRadius: 2,
+              // offset: Offset(0, 2),
+            ),
+          ],
+        ),
+        child: child,
       ),
-      child: child,
     );
   }
 }

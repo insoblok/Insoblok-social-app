@@ -84,75 +84,95 @@ class AccountWalletPage extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 40.0),
-                ValueListenableBuilder<String>(
-                  valueListenable:
-                      viewModel.reownService.appKitModel.balanceNotifier,
-                  builder: (_, balance, _) {
-                    return Text(
-                      balance,
-                      style: Theme.of(context).textTheme.titleLarge,
-                    );
-                  },
-                ),
-                const SizedBox(height: 40.0),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  physics: BouncingScrollPhysics(),
-                  child: Row(
-                    spacing: 12.0,
+                const SizedBox(height: 24.0),
+                Container(
+                  padding: const EdgeInsets.all(16.0),
+                  decoration: BoxDecoration(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.secondary.withAlpha(16),
+                    borderRadius: BorderRadius.circular(8.0),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AIColors.black.withAlpha(50),
+                        spreadRadius: 2,
+                        blurRadius: 2,
+                        // offset: Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Column(
                     children: [
-                      AccountWalletTokenCover(
-                        child: Column(
-                          children: [
-                            Text(
-                              'INSO',
-                              style: Theme.of(context).textTheme.titleMedium,
-                            ),
-                            Text(
-                              'INSO ${viewModel.balanceInso.toStringAsFixed(2)}',
-                            ),
-                          ],
+                      const SizedBox(height: 16.0),
+                      Text(
+                        '\$${viewModel.totalBalance}',
+                        style: TextStyle(
+                          fontSize: 36,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                      AccountWalletTokenCover(
-                        child: Column(
-                          children: [
-                            Text(
-                              'USDT',
-                              style: Theme.of(context).textTheme.titleMedium,
-                            ),
-                            Text(
-                              'USDT ${viewModel.balanceUsdt.toStringAsFixed(2)}',
-                            ),
-                          ],
-                        ),
+                      Text(
+                        'Total balance',
+                        style: Theme.of(context).textTheme.bodyLarge,
                       ),
-                      AccountWalletTokenCover(
-                        child: Column(
-                          children: [
-                            Text(
-                              'XRP',
-                              style: Theme.of(context).textTheme.titleMedium,
+                      // ValueListenableBuilder<String>(
+                      //   valueListenable:
+                      //       viewModel.reownService.appKitModel.balanceNotifier,
+                      //   builder: (_, balance, _) {
+                      //     return Text(
+                      //       balance,
+                      //       style: TextStyle(
+                      //         fontSize: 36,
+                      //         fontWeight: FontWeight.bold,
+                      //       ),
+                      //     );
+                      //   },
+                      // ),
+                      const SizedBox(height: 24.0),
+                      Row(
+                        spacing: 12.0,
+                        children: [
+                          AccountWalletTokenCover(
+                            child: Column(
+                              children: [
+                                Text(
+                                  'INSO',
+                                  style:
+                                      Theme.of(context).textTheme.titleMedium,
+                                ),
+                                Text(
+                                  'INSO ${viewModel.balanceInso.toStringAsFixed(2)}',
+                                ),
+                              ],
                             ),
-                            Text('XRP 0'),
-                          ],
-                        ),
-                      ),
-                      Container(
-                        width: 160.0,
-                        height: 80.0,
-                        padding: const EdgeInsets.all(10.0),
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            color: Theme.of(context).primaryColor,
                           ),
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        child: Icon(
-                          Icons.add,
-                          color: Theme.of(context).primaryColor,
-                        ),
+                          AccountWalletTokenCover(
+                            child: Column(
+                              children: [
+                                Text(
+                                  'USDT',
+                                  style:
+                                      Theme.of(context).textTheme.titleMedium,
+                                ),
+                                Text(
+                                  'USDT ${viewModel.balanceUsdt.toStringAsFixed(2)}',
+                                ),
+                              ],
+                            ),
+                          ),
+                          AccountWalletTokenCover(
+                            child: Column(
+                              children: [
+                                Text(
+                                  'XRP',
+                                  style:
+                                      Theme.of(context).textTheme.titleMedium,
+                                ),
+                                Text('XRP 0'),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -191,174 +211,225 @@ class AccountWalletPage extends StatelessWidget {
                     },
                   ],
                 ),
+                // const SizedBox(height: 24.0),
+                // Row(
+                //   spacing: 12.0,
+                //   children: [
+                //     Container(
+                //       padding: EdgeInsets.symmetric(
+                //         horizontal: 8.0,
+                //         vertical: 2.0,
+                //       ),
+                //       decoration: BoxDecoration(
+                //         color: AppSettingHelper.greyBackground,
+                //         borderRadius: BorderRadius.circular(4.0),
+                //       ),
+                //       child: Text(
+                //         'Assets',
+                //         style: Theme.of(context).textTheme.labelMedium,
+                //       ),
+                //     ),
+                //     Container(
+                //       padding: EdgeInsets.symmetric(
+                //         horizontal: 8.0,
+                //         vertical: 2.0,
+                //       ),
+                //       decoration: BoxDecoration(
+                //         border: Border.all(
+                //           color: AppSettingHelper.greyBackground,
+                //         ),
+                //         borderRadius: BorderRadius.circular(4.0),
+                //       ),
+                //       child: Text(
+                //         'Collectibles',
+                //         style: Theme.of(context).textTheme.labelMedium,
+                //       ),
+                //     ),
+                //   ],
+                // ),
+                // const SizedBox(height: 24.0),
+                // Row(
+                //   spacing: 12.0,
+                //   children: [
+                //     Expanded(
+                //       child: Container(
+                //         padding: const EdgeInsets.all(12.0),
+                //         decoration: BoxDecoration(
+                //           color: Theme.of(
+                //             context,
+                //           ).colorScheme.secondary.withAlpha(16),
+                //           borderRadius: BorderRadius.circular(12.0),
+                //         ),
+                //         alignment: Alignment.centerLeft,
+                //         child: Column(
+                //           mainAxisSize: MainAxisSize.min,
+                //           crossAxisAlignment: CrossAxisAlignment.start,
+                //           spacing: 4.0,
+                //           children: [
+                //             AIImage(
+                //               AIImages.icCoinInso,
+                //               width: 36.0,
+                //               height: 36.0,
+                //             ),
+                //             Text('Ways to buy'),
+                //             Text(
+                //               'Via card or bank',
+                //               style: Theme.of(context).textTheme.labelMedium,
+                //             ),
+                //           ],
+                //         ),
+                //       ),
+                //     ),
+                //     Expanded(
+                //       child: Container(
+                //         padding: const EdgeInsets.all(12.0),
+                //         decoration: BoxDecoration(
+                //           color: Theme.of(
+                //             context,
+                //           ).colorScheme.secondary.withAlpha(16),
+                //           borderRadius: BorderRadius.circular(12.0),
+                //         ),
+                //         alignment: Alignment.centerLeft,
+                //         child: Column(
+                //           mainAxisSize: MainAxisSize.min,
+                //           crossAxisAlignment: CrossAxisAlignment.start,
+                //           spacing: 4.0,
+                //           children: [
+                //             AIImage(
+                //               AIImages.icCoinInso,
+                //               width: 36.0,
+                //               height: 36.0,
+                //             ),
+                //             Text('Receive'),
+                //             Text(
+                //               'Deposit to your wallet',
+                //               style: Theme.of(context).textTheme.labelMedium,
+                //             ),
+                //           ],
+                //         ),
+                //       ),
+                //     ),
+                //   ],
+                // ),
                 const SizedBox(height: 24.0),
-                Row(
-                  spacing: 12.0,
-                  children: [
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 8.0,
-                        vertical: 2.0,
+                Container(
+                  padding: const EdgeInsets.all(10.0),
+                  decoration: BoxDecoration(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.secondary.withAlpha(18),
+                    borderRadius: BorderRadius.circular(8.0),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AIColors.black.withAlpha(50),
+                        spreadRadius: 2,
+                        blurRadius: 2,
+                        // offset: Offset(0, 2),
                       ),
-                      decoration: BoxDecoration(
-                        color: AppSettingHelper.greyBackground,
-                        borderRadius: BorderRadius.circular(4.0),
-                      ),
-                      child: Text(
-                        'Assets',
-                        style: Theme.of(context).textTheme.labelMedium,
-                      ),
-                    ),
-                    Container(
-                      padding: EdgeInsets.symmetric(
-                        horizontal: 8.0,
-                        vertical: 2.0,
-                      ),
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          color: AppSettingHelper.greyBackground,
-                        ),
-                        borderRadius: BorderRadius.circular(4.0),
-                      ),
-                      child: Text(
-                        'Collectibles',
-                        style: Theme.of(context).textTheme.labelMedium,
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 24.0),
-                Row(
-                  spacing: 12.0,
-                  children: [
-                    Expanded(
-                      child: Container(
-                        padding: const EdgeInsets.all(12.0),
-                        decoration: BoxDecoration(
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.secondary.withAlpha(16),
-                          borderRadius: BorderRadius.circular(12.0),
-                        ),
-                        alignment: Alignment.centerLeft,
+                    ],
+                  ),
+                  child: Row(
+                    spacing: 12.0,
+                    children: [
+                      AIImage(AIImages.icCoinInso, width: 36.0, height: 36.0),
+                      Expanded(
                         child: Column(
-                          mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          spacing: 4.0,
                           children: [
-                            AIImage(
-                              AIImages.icCoinInso,
-                              width: 36.0,
-                              height: 36.0,
-                            ),
-                            Text('Ways to buy'),
+                            Text('INSO'),
                             Text(
-                              'Via card or bank',
-                              style: Theme.of(context).textTheme.labelMedium,
+                              '${viewModel.balanceInso} INSO',
+                              style: Theme.of(context).textTheme.labelSmall,
                             ),
                           ],
                         ),
                       ),
-                    ),
-                    Expanded(
-                      child: Container(
-                        padding: const EdgeInsets.all(12.0),
-                        decoration: BoxDecoration(
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.secondary.withAlpha(16),
-                          borderRadius: BorderRadius.circular(12.0),
-                        ),
-                        alignment: Alignment.centerLeft,
+                      Text(
+                        '\$${viewModel.balanceInso / 100}',
+                        style: Theme.of(context).textTheme.headlineMedium,
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 8.0),
+                Container(
+                  padding: const EdgeInsets.all(10.0),
+                  decoration: BoxDecoration(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.secondary.withAlpha(18),
+                    borderRadius: BorderRadius.circular(8.0),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AIColors.black.withAlpha(50),
+                        spreadRadius: 2,
+                        blurRadius: 2,
+                        // offset: Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    spacing: 12.0,
+                    children: [
+                      AIImage(AIImages.icCoinUsdt, width: 36.0, height: 36.0),
+                      Expanded(
                         child: Column(
-                          mainAxisSize: MainAxisSize.min,
                           crossAxisAlignment: CrossAxisAlignment.start,
-                          spacing: 4.0,
                           children: [
-                            AIImage(
-                              AIImages.icCoinInso,
-                              width: 36.0,
-                              height: 36.0,
-                            ),
-                            Text('Receive'),
+                            Text('USDT'),
                             Text(
-                              'Deposit to your wallet',
-                              style: Theme.of(context).textTheme.labelMedium,
+                              '${viewModel.balanceUsdt.toStringAsFixed(2)} USDT',
+                              style: Theme.of(context).textTheme.labelSmall,
                             ),
                           ],
                         ),
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 24.0),
-                Row(
-                  spacing: 12.0,
-                  children: [
-                    AIImage(AIImages.icCoinInso, width: 36.0, height: 36.0),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('INSO'),
-                          Text(
-                            '${viewModel.balanceInso} INSO',
-                            style: Theme.of(context).textTheme.labelSmall,
-                          ),
-                        ],
+                      Text(
+                        '\$${viewModel.balanceUsdt.toStringAsFixed(2)}',
+                        style: Theme.of(context).textTheme.headlineMedium,
                       ),
-                    ),
-                    Text(
-                      '\$${viewModel.balanceInso / 100}',
-                      style: Theme.of(context).textTheme.headlineMedium,
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-                const SizedBox(height: 24.0),
-                Row(
-                  spacing: 12.0,
-                  children: [
-                    AIImage(AIImages.icCoinUsdt, width: 36.0, height: 36.0),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('USDT'),
-                          Text(
-                            '${viewModel.balanceUsdt.toStringAsFixed(2)} USDT',
-                            style: Theme.of(context).textTheme.labelSmall,
-                          ),
-                        ],
+                const SizedBox(height: 8.0),
+                Container(
+                  padding: const EdgeInsets.all(10.0),
+                  decoration: BoxDecoration(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.secondary.withAlpha(18),
+                    borderRadius: BorderRadius.circular(8.0),
+                    boxShadow: [
+                      BoxShadow(
+                        color: AIColors.black.withAlpha(50),
+                        spreadRadius: 2,
+                        blurRadius: 2,
+                        // offset: Offset(0, 2),
                       ),
-                    ),
-                    Text(
-                      '\$${viewModel.balanceUsdt.toStringAsFixed(2)}',
-                      style: Theme.of(context).textTheme.headlineMedium,
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 24.0),
-                Row(
-                  spacing: 12.0,
-                  children: [
-                    AIImage(AIImages.icCoinXrp, width: 36.0, height: 36.0),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('XRP'),
-                          Text(
-                            '0 XRP',
-                            style: Theme.of(context).textTheme.labelSmall,
-                          ),
-                        ],
+                    ],
+                  ),
+                  child: Row(
+                    spacing: 12.0,
+                    children: [
+                      AIImage(AIImages.icCoinXrp, width: 36.0, height: 36.0),
+                      Expanded(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('XRP'),
+                            Text(
+                              '0 XRP',
+                              style: Theme.of(context).textTheme.labelSmall,
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    Text(
-                      '\$0.00',
-                      style: Theme.of(context).textTheme.headlineMedium,
-                    ),
-                  ],
+                      Text(
+                        '\$0.00',
+                        style: Theme.of(context).textTheme.headlineMedium,
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),

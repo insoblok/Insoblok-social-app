@@ -36,6 +36,8 @@ class AccountWalletProvider extends InSoBlokViewModel {
       transferXpToInsoValues[1] - transferInsoToUsdtValues[0];
   double get balanceUsdt => transferInsoToUsdtValues[1];
 
+  double get totalBalance => balanceInso / 500 + balanceUsdt;
+
   bool _isInitLoading = false;
   bool get isInitLoading => _isInitLoading;
   set isInitLoading(bool f) {

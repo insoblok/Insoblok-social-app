@@ -7,22 +7,23 @@ part of 'room_model.dart';
 // **************************************************************************
 
 _RoomModel _$RoomModelFromJson(Map<String, dynamic> json) => _RoomModel(
-      id: json['id'] as String?,
-      userId: json['user_id'] as String?,
-      userIds: (json['user_ids'] as List<dynamic>?)
-          ?.map((e) => e as String?)
-          .toList(),
-      updateDate: json['update_date'] == null
+  id: json['id'] as String?,
+  userId: json['user_id'] as String?,
+  userIds:
+      (json['user_ids'] as List<dynamic>?)?.map((e) => e as String?).toList(),
+  updateDate:
+      json['update_date'] == null
           ? null
           : DateTime.parse(json['update_date'] as String),
-      timestamp: json['timestamp'] == null
+  timestamp:
+      json['timestamp'] == null
           ? null
           : DateTime.parse(json['timestamp'] as String),
-      content: json['content'] as String?,
-      statusSender: json['status_sender'] as String?,
-      statusReceiver: json['status_receiver'] as String?,
-      isGroup: json['is_group'] as bool?,
-    );
+  content: json['content'] as String?,
+  statusSender: json['status_sender'] as String?,
+  statusReceiver: json['status_receiver'] as String?,
+  isGroup: json['is_group'] as bool?,
+);
 
 Map<String, dynamic> _$RoomModelToJson(_RoomModel instance) =>
     <String, dynamic>{

@@ -15,12 +15,14 @@ _TastescoreModel _$TastescoreModelFromJson(Map<String, dynamic> json) =>
       type: json['type'] as String?,
       bonus: (json['bonus'] as num?)?.toInt(),
       desc: json['desc'] as String?,
-      updateDate: json['update_date'] == null
-          ? null
-          : DateTime.parse(json['update_date'] as String),
-      timestamp: json['timestamp'] == null
-          ? null
-          : DateTime.parse(json['timestamp'] as String),
+      updateDate:
+          json['update_date'] == null
+              ? null
+              : DateTime.parse(json['update_date'] as String),
+      timestamp:
+          json['timestamp'] == null
+              ? null
+              : DateTime.parse(json['timestamp'] as String),
     );
 
 Map<String, dynamic> _$TastescoreModelToJson(_TastescoreModel instance) =>

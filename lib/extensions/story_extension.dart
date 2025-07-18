@@ -42,6 +42,11 @@ extension StoryModelExt on StoryModel {
     return follow.contains(AuthHelper.user!.id);
   }
 
+  bool isView() {
+    var view = views ?? [];
+    return view.contains(AuthHelper.user!.id);
+  }
+
   String get shownDate {
     return kDateMDYFormatter.format(
       timestamp != null ? timestamp! : DateTime.now(),
@@ -63,6 +68,7 @@ extension StoryModelExt on StoryModel {
       'category': category,
       'likes': (likes),
       'follows': (follows),
+      'views': (views),
       'update_date': updateDate?.toUtc().toIso8601String(),
       'timestamp': timestamp?.toUtc().toIso8601String(),
       'connects': ((connects ?? []).map((e) => e.toMap()).toList()),

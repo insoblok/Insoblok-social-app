@@ -81,24 +81,20 @@ class LookbookPage extends StatelessWidget {
                   ),
                 } else ...{
                   SliverFillRemaining(
-                    child: Column(
-                      children: [
-                        Expanded(
-                          child: ListView.builder(
-                            padding: EdgeInsets.zero,
-                            itemCount: viewModel.filterStories.length,
-                            itemBuilder: (context, index) {
-                              return StoryListCell(
-                                key: GlobalKey(
-                                  debugLabel:
-                                      'story-${viewModel.filterStories[index].id}',
-                                ),
-                                story: viewModel.filterStories[index],
-                              );
-                            },
+                    child: PageView.builder(
+                      scrollDirection: Axis.vertical,
+                      controller: viewModel.pageController,
+                      padEnds: false,
+                      itemCount: viewModel.filterStories.length,
+                      itemBuilder: (_, index) {
+                        return StoryPageableCell(
+                          key: GlobalKey(
+                            debugLabel:
+                                'story-${viewModel.filterStories[index].id}',
                           ),
-                        ),
-                      ],
+                          story: viewModel.filterStories[index],
+                        );
+                      },
                     ),
                   ),
                 },

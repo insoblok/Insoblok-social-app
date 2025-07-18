@@ -152,8 +152,9 @@ class StoryListCell extends StatelessWidget {
 
 class StoryPageableCell extends StatelessWidget {
   final StoryModel story;
+  final double? marginBottom;
 
-  const StoryPageableCell({super.key, required this.story});
+  const StoryPageableCell({super.key, required this.story, this.marginBottom});
 
   @override
   Widget build(BuildContext context) {
@@ -204,6 +205,7 @@ class StoryPageableCell extends StatelessWidget {
                         horizontal: 20.0,
                         vertical: 20.0,
                       ),
+
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           begin: Alignment.topCenter,
@@ -240,88 +242,95 @@ class StoryPageableCell extends StatelessWidget {
                               controller: viewModel.quillController,
                               focusNode: viewModel.focusNode,
                               scrollController: viewModel.quillScrollController,
+                              marginBottom: marginBottom,
                               onSend: viewModel.sendComment,
                             ),
                           } else ...{
                             const Spacer(),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              spacing: 12.0,
-                              children: [
-                                if (viewModel.story.category != null &&
-                                    viewModel.story.category == 'vote') ...{
-                                  StoryYayNayWidget(),
-                                },
-                                Row(
-                                  spacing: 12.0,
-                                  children: [
-                                    Text(
-                                      viewModel.owner?.fullName ?? '---',
-                                      style:
-                                          Theme.of(
-                                            context,
-                                          ).textTheme.headlineMedium,
-                                    ),
-                                    Text(
-                                      '· ${viewModel.story.timestamp?.timeago}',
-                                      style:
-                                          Theme.of(
-                                            context,
-                                          ).textTheme.labelMedium,
-                                    ),
-                                  ],
-                                ),
-                                if (viewModel.story.category != null &&
-                                    viewModel.story.category == 'vote') ...{
-                                  Column(
+                            Container(
+                              margin: EdgeInsets.only(
+                                bottom: marginBottom ?? 0,
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                spacing: 12.0,
+                                children: [
+                                  if (viewModel.story.category != null &&
+                                      viewModel.story.category == 'vote') ...{
+                                    StoryYayNayWidget(),
+                                  },
+                                  Row(
+                                    spacing: 12.0,
                                     children: [
-                                      const SizedBox(height: 8.0),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Text(
-                                            'Vybe Virtual Try-On',
-                                            style: TextStyle(
-                                              fontSize: 13.0,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          Container(
-                                            padding: const EdgeInsets.symmetric(
-                                              horizontal: 8.0,
-                                              vertical: 2.0,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .secondary
-                                                  .withAlpha(16),
-                                              borderRadius:
-                                                  BorderRadius.circular(16.0),
-                                            ),
-                                            child: Row(
-                                              children: [
-                                                Icon(
-                                                  Icons.leaderboard_outlined,
-                                                  size: 18,
-                                                ),
-                                                Text(
-                                                  ' ${viewModel.story.votes?.length ?? 0} / 5 Looks Today',
-                                                  style:
-                                                      Theme.of(
-                                                        context,
-                                                      ).textTheme.bodySmall,
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ],
+                                      Text(
+                                        viewModel.owner?.fullName ?? '---',
+                                        style:
+                                            Theme.of(
+                                              context,
+                                            ).textTheme.headlineMedium,
+                                      ),
+                                      Text(
+                                        '· ${viewModel.story.timestamp?.timeago}',
+                                        style:
+                                            Theme.of(
+                                              context,
+                                            ).textTheme.labelMedium,
                                       ),
                                     ],
                                   ),
-                                },
-                              ],
+                                  if (viewModel.story.category != null &&
+                                      viewModel.story.category == 'vote') ...{
+                                    Column(
+                                      children: [
+                                        const SizedBox(height: 8.0),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              'Vybe Virtual Try-On',
+                                              style: TextStyle(
+                                                fontSize: 13.0,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 8.0,
+                                                    vertical: 2.0,
+                                                  ),
+                                              decoration: BoxDecoration(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .secondary
+                                                    .withAlpha(16),
+                                                borderRadius:
+                                                    BorderRadius.circular(16.0),
+                                              ),
+                                              child: Row(
+                                                children: [
+                                                  Icon(
+                                                    Icons.leaderboard_outlined,
+                                                    size: 18,
+                                                  ),
+                                                  Text(
+                                                    ' ${viewModel.story.votes?.length ?? 0} / 5 Looks Today',
+                                                    style:
+                                                        Theme.of(
+                                                          context,
+                                                        ).textTheme.bodySmall,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  },
+                                ],
+                              ),
                             ),
                           },
                         ],
@@ -333,7 +342,10 @@ class StoryPageableCell extends StatelessWidget {
               Align(
                 alignment: Alignment.bottomRight,
                 child: Container(
-                  margin: const EdgeInsets.only(right: 8.0, bottom: 56),
+                  margin: EdgeInsets.only(
+                    right: 8.0,
+                    bottom: marginBottom != null ? marginBottom! + 56 : 56,
+                  ),
                   padding: const EdgeInsets.symmetric(
                     horizontal: 4.0,
                     vertical: 16.0,
@@ -383,10 +395,19 @@ class StoryPageableCell extends StatelessWidget {
                       ),
                       StoryActionButton(
                         src: AIImage(
+                          AIImages.icView,
+                          color: Theme.of(context).colorScheme.secondary,
+                          width: kStoryAvatarSize * 0.6,
+                        ),
+                        label: '${(viewModel.story.views ?? []).length}',
+                      ),
+                      StoryActionButton(
+                        src: AIImage(
                           AIImages.icShare,
                           color: Theme.of(context).colorScheme.secondary,
                           width: kStoryAvatarSize * 0.6,
                         ),
+                        label: '',
                         onTap: () {
                           AIHelpers.shareStory(context, story: story);
                         },
@@ -437,6 +458,7 @@ class StorySendCommentWidget extends StatelessWidget {
   final QuillController controller;
   final FocusNode focusNode;
   final ScrollController scrollController;
+  final double? marginBottom;
   final void Function()? onSend;
 
   const StorySendCommentWidget({
@@ -445,12 +467,18 @@ class StorySendCommentWidget extends StatelessWidget {
     required this.focusNode,
     required this.scrollController,
     this.onSend,
+    this.marginBottom,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
+      padding: EdgeInsets.only(
+        bottom:
+            marginBottom != null
+                ? MediaQuery.of(context).padding.bottom + marginBottom!
+                : MediaQuery.of(context).padding.bottom,
+      ),
       decoration: BoxDecoration(
         border: Border(
           top: BorderSide(color: AIColors.speraterColor, width: 0.33),

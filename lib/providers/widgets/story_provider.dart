@@ -133,6 +133,7 @@ class StoryProvider extends InSoBlokViewModel {
   }
 
   Future<void> goToDetailPage() async {
+    await updateView();
     var data = await Routers.goToStoryDetailPage(context, story);
     if (data != null) {
       story = data;
@@ -303,6 +304,23 @@ class StoryProvider extends InSoBlokViewModel {
       } else {
         AIHelpers.showToast(msg: 'You unliked to a feed!');
       }
+      notifyListeners();
+    }
+  }
+
+  Future<void> updateView() async {
+    if (story.userId == user?.id || story.isView()) {
+      return;
+    }
+    var views = List<String>.from(story.views ?? []);
+    try {
+      views.add(user!.id!);
+      await storyService.updateStory(story: story.copyWith(views: views));
+    } catch (e) {
+      setError(e);
+      logger.e(e);
+    } finally {
+      story = story.copyWith(views: views);
       notifyListeners();
     }
   }

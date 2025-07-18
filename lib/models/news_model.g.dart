@@ -7,46 +7,44 @@ part of 'news_model.dart';
 // **************************************************************************
 
 _NewsModel _$NewsModelFromJson(Map<String, dynamic> json) => _NewsModel(
-      article_id: json['article_id'] as String?,
-      title: json['title'] as String?,
-      link: json['link'] as String?,
-      keywords: (json['keywords'] as List<dynamic>?)
-          ?.map((e) => e as String?)
-          .toList(),
-      creator: (json['creator'] as List<dynamic>?)
-          ?.map((e) => e as String?)
-          .toList(),
-      description: json['description'] as String?,
-      content: json['content'] as String?,
-      pubDate: json['pubDate'] as String?,
-      pubDateTz: json['pubDateTz'] as String?,
-      image_url: json['image_url'] as String?,
-      video_url: json['video_url'] as String?,
-      source_id: json['source_id'] as String?,
-      source_name: json['source_name'] as String?,
-      source_priority: (json['source_priority'] as num?)?.toInt(),
-      source_url: json['source_url'] as String?,
-      source_icon: json['source_icon'] as String?,
-      language: json['language'] as String?,
-      country: (json['country'] as List<dynamic>?)
-          ?.map((e) => e as String?)
-          .toList(),
-      category: (json['category'] as List<dynamic>?)
-          ?.map((e) => e as String?)
-          .toList(),
-      sentiment: json['sentiment'] as String?,
-      sentiment_stats: json['sentiment_stats'] as String?,
-      ai_tag: json['ai_tag'] as String?,
-      ai_region: json['ai_region'] as String?,
-      ai_org: json['ai_org'] as String?,
-      timestamp: json['timestamp'] == null
+  article_id: json['article_id'] as String?,
+  title: json['title'] as String?,
+  link: json['link'] as String?,
+  keywords:
+      (json['keywords'] as List<dynamic>?)?.map((e) => e as String?).toList(),
+  creator:
+      (json['creator'] as List<dynamic>?)?.map((e) => e as String?).toList(),
+  description: json['description'] as String?,
+  content: json['content'] as String?,
+  pubDate: json['pubDate'] as String?,
+  pubDateTz: json['pubDateTz'] as String?,
+  image_url: json['image_url'] as String?,
+  video_url: json['video_url'] as String?,
+  source_id: json['source_id'] as String?,
+  source_name: json['source_name'] as String?,
+  source_priority: (json['source_priority'] as num?)?.toInt(),
+  source_url: json['source_url'] as String?,
+  source_icon: json['source_icon'] as String?,
+  language: json['language'] as String?,
+  country:
+      (json['country'] as List<dynamic>?)?.map((e) => e as String?).toList(),
+  category:
+      (json['category'] as List<dynamic>?)?.map((e) => e as String?).toList(),
+  sentiment: json['sentiment'] as String?,
+  sentiment_stats: json['sentiment_stats'] as String?,
+  ai_tag: json['ai_tag'] as String?,
+  ai_region: json['ai_region'] as String?,
+  ai_org: json['ai_org'] as String?,
+  timestamp:
+      json['timestamp'] == null
           ? null
           : DateTime.parse(json['timestamp'] as String),
-      updateDate: json['updateDate'] == null
+  updateDate:
+      json['updateDate'] == null
           ? null
           : DateTime.parse(json['updateDate'] as String),
-      duplicate: json['duplicate'] as bool?,
-    );
+  duplicate: json['duplicate'] as bool?,
+);
 
 Map<String, dynamic> _$NewsModelToJson(_NewsModel instance) =>
     <String, dynamic>{

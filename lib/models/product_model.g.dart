@@ -24,19 +24,23 @@ _ProductModel _$ProductModelFromJson(Map<String, dynamic> json) =>
       userId: json['user_id'] as String?,
       likes:
           (json['likes'] as List<dynamic>?)?.map((e) => e as String).toList(),
-      rates: (json['rates'] as List<dynamic>?)
-          ?.map((e) => (e as num).toInt())
-          .toList(),
+      rates:
+          (json['rates'] as List<dynamic>?)
+              ?.map((e) => (e as num).toInt())
+              .toList(),
       selles: (json['selles'] as num?)?.toInt(),
-      updateDate: json['update_date'] == null
-          ? null
-          : DateTime.parse(json['update_date'] as String),
-      timestamp: json['timestamp'] == null
-          ? null
-          : DateTime.parse(json['timestamp'] as String),
-      medias: (json['medias'] as List<dynamic>?)
-          ?.map((e) => MediaStoryModel.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      updateDate:
+          json['update_date'] == null
+              ? null
+              : DateTime.parse(json['update_date'] as String),
+      timestamp:
+          json['timestamp'] == null
+              ? null
+              : DateTime.parse(json['timestamp'] as String),
+      medias:
+          (json['medias'] as List<dynamic>?)
+              ?.map((e) => MediaStoryModel.fromJson(e as Map<String, dynamic>))
+              .toList(),
     );
 
 Map<String, dynamic> _$ProductModelToJson(_ProductModel instance) =>
@@ -64,20 +68,18 @@ Map<String, dynamic> _$ProductModelToJson(_ProductModel instance) =>
     };
 
 _ProductTribeCategoryModel _$ProductTribeCategoryModelFromJson(
-        Map<String, dynamic> json) =>
-    _ProductTribeCategoryModel(
-      title: json['title'] as String?,
-      subtypes: (json['subtypes'] as List<dynamic>?)
+  Map<String, dynamic> json,
+) => _ProductTribeCategoryModel(
+  title: json['title'] as String?,
+  subtypes:
+      (json['subtypes'] as List<dynamic>?)
           ?.map((e) => ProductSubtypeModel.fromJson(e as Map<String, dynamic>))
           .toList(),
-    );
+);
 
 Map<String, dynamic> _$ProductTribeCategoryModelToJson(
-        _ProductTribeCategoryModel instance) =>
-    <String, dynamic>{
-      'title': instance.title,
-      'subtypes': instance.subtypes,
-    };
+  _ProductTribeCategoryModel instance,
+) => <String, dynamic>{'title': instance.title, 'subtypes': instance.subtypes};
 
 _ProductSubtypeModel _$ProductSubtypeModelFromJson(Map<String, dynamic> json) =>
     _ProductSubtypeModel(
@@ -86,8 +88,8 @@ _ProductSubtypeModel _$ProductSubtypeModelFromJson(Map<String, dynamic> json) =>
     );
 
 Map<String, dynamic> _$ProductSubtypeModelToJson(
-        _ProductSubtypeModel instance) =>
-    <String, dynamic>{
-      'title': instance.title,
-      'description': instance.description,
-    };
+  _ProductSubtypeModel instance,
+) => <String, dynamic>{
+  'title': instance.title,
+  'description': instance.description,
+};

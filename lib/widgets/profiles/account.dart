@@ -154,7 +154,22 @@ class AccountFloatingView extends ViewModelWidget<AccountProvider> {
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   SizedBox(
-                    width: 120.0,
+                    width: 80.0,
+                    child: Column(
+                      children: [
+                        Text(
+                          '${viewModel.userLevel.level}',
+                          style: Theme.of(context).textTheme.titleSmall,
+                        ),
+                        Text(
+                          'Rank',
+                          style: Theme.of(context).textTheme.labelMedium,
+                        ),
+                      ],
+                    ),
+                  ),
+                  SizedBox(
+                    width: 80.0,
                     child: Column(
                       children: [
                         Text(
@@ -169,7 +184,7 @@ class AccountFloatingView extends ViewModelWidget<AccountProvider> {
                     ),
                   ),
                   SizedBox(
-                    width: 120.0,
+                    width: 80.0,
                     child: Column(
                       children: [
                         Text(
@@ -184,15 +199,15 @@ class AccountFloatingView extends ViewModelWidget<AccountProvider> {
                     ),
                   ),
                   SizedBox(
-                    width: 120.0,
+                    width: 80.0,
                     child: Column(
                       children: [
                         Text(
-                          '${viewModel.accountUser?.likes?.length ?? 0}',
+                          '${viewModel.accountUser?.views?.length ?? 0}',
                           style: Theme.of(context).textTheme.titleSmall,
                         ),
                         Text(
-                          'Likes',
+                          'Views',
                           style: Theme.of(context).textTheme.labelMedium,
                         ),
                       ],

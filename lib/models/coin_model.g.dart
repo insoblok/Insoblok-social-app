@@ -7,11 +7,11 @@ part of 'coin_model.dart';
 // **************************************************************************
 
 _CoinModel _$CoinModelFromJson(Map<String, dynamic> json) => _CoinModel(
-      icon: json['icon'] as String?,
-      type: json['type'] as String?,
-      unit: json['unit'] as String?,
-      amount: json['amount'] as String?,
-    );
+  icon: json['icon'] as String?,
+  type: json['type'] as String?,
+  unit: json['unit'] as String?,
+  amount: json['amount'] as String?,
+);
 
 Map<String, dynamic> _$CoinModelToJson(_CoinModel instance) =>
     <String, dynamic>{
