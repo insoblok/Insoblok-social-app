@@ -13,6 +13,7 @@ class PageableView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var menuTitles = [
+      'News',
       'Lookbook',
       'Following',
       'Follow',
@@ -34,7 +35,10 @@ class PageableView extends StatelessWidget {
                     padEnds: false,
                     itemCount: viewModel.stories.length,
                     itemBuilder: (_, index) {
-                      return StoryPageableCell(story: viewModel.stories[index]);
+                      return StoryListCell(
+                        story: viewModel.stories[index],
+                        marginBottom: 76,
+                      );
                     },
                   ),
               Padding(

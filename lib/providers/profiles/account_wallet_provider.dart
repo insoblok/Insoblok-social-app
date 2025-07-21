@@ -36,6 +36,8 @@ class AccountWalletProvider extends InSoBlokViewModel {
       transferXpToInsoValues[1] - transferInsoToUsdtValues[0];
   double get balanceUsdt => transferInsoToUsdtValues[1];
 
+  double get totalBalance => balanceInso / 500 + balanceUsdt;
+
   bool _isInitLoading = false;
   bool get isInitLoading => _isInitLoading;
   set isInitLoading(bool f) {
@@ -59,10 +61,10 @@ class AccountWalletProvider extends InSoBlokViewModel {
 
   Future<void> onClickActions(int index) async {
     switch (index) {
-      case 1:
+      case 0:
         await onClickSend();
         break;
-      case 3:
+      case 2:
         await Routers.goToWalletSwapPage(context);
         getTransfers();
         break;

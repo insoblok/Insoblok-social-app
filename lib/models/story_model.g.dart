@@ -7,35 +7,41 @@ part of 'story_model.dart';
 // **************************************************************************
 
 _StoryModel _$StoryModelFromJson(Map<String, dynamic> json) => _StoryModel(
-      id: json['id'] as String?,
-      userId: json['user_id'] as String?,
-      title: json['title'] as String?,
-      text: json['text'] as String?,
-      status: json['status'] as String?,
-      category: json['category'] as String?,
-      likes:
-          (json['likes'] as List<dynamic>?)?.map((e) => e as String).toList(),
-      follows:
-          (json['follows'] as List<dynamic>?)?.map((e) => e as String).toList(),
-      updateDate: json['update_date'] == null
+  id: json['id'] as String?,
+  userId: json['user_id'] as String?,
+  title: json['title'] as String?,
+  text: json['text'] as String?,
+  status: json['status'] as String?,
+  category: json['category'] as String?,
+  likes: (json['likes'] as List<dynamic>?)?.map((e) => e as String).toList(),
+  follows:
+      (json['follows'] as List<dynamic>?)?.map((e) => e as String).toList(),
+  views: (json['views'] as List<dynamic>?)?.map((e) => e as String).toList(),
+  updateDate:
+      json['update_date'] == null
           ? null
           : DateTime.parse(json['update_date'] as String),
-      timestamp: json['timestamp'] == null
+  timestamp:
+      json['timestamp'] == null
           ? null
           : DateTime.parse(json['timestamp'] as String),
-      connects: (json['connects'] as List<dynamic>?)
+  connects:
+      (json['connects'] as List<dynamic>?)
           ?.map((e) => ConnectedStoryModel.fromJson(e as Map<String, dynamic>))
           .toList(),
-      comments: (json['comments'] as List<dynamic>?)
+  comments:
+      (json['comments'] as List<dynamic>?)
           ?.map((e) => StoryCommentModel.fromJson(e as Map<String, dynamic>))
           .toList(),
-      votes: (json['votes'] as List<dynamic>?)
+  votes:
+      (json['votes'] as List<dynamic>?)
           ?.map((e) => StoryVoteModel.fromJson(e as Map<String, dynamic>))
           .toList(),
-      medias: (json['medias'] as List<dynamic>?)
+  medias:
+      (json['medias'] as List<dynamic>?)
           ?.map((e) => MediaStoryModel.fromJson(e as Map<String, dynamic>))
           .toList(),
-    );
+);
 
 Map<String, dynamic> _$StoryModelToJson(_StoryModel instance) =>
     <String, dynamic>{
@@ -47,6 +53,7 @@ Map<String, dynamic> _$StoryModelToJson(_StoryModel instance) =>
       'category': instance.category,
       'likes': instance.likes,
       'follows': instance.follows,
+      'views': instance.views,
       'update_date': instance.updateDate?.toIso8601String(),
       'timestamp': instance.timestamp?.toIso8601String(),
       'connects': instance.connects,
@@ -59,9 +66,10 @@ _StoryVoteModel _$StoryVoteModelFromJson(Map<String, dynamic> json) =>
     _StoryVoteModel(
       userId: json['user_id'] as String?,
       vote: json['vote'] as bool?,
-      timestamp: json['timestamp'] == null
-          ? null
-          : DateTime.parse(json['timestamp'] as String),
+      timestamp:
+          json['timestamp'] == null
+              ? null
+              : DateTime.parse(json['timestamp'] as String),
     );
 
 Map<String, dynamic> _$StoryVoteModelToJson(_StoryVoteModel instance) =>
@@ -93,12 +101,14 @@ _StoryCommentModel _$StoryCommentModelFromJson(Map<String, dynamic> json) =>
     _StoryCommentModel(
       userId: json['user_id'] as String?,
       content: json['content'] as String?,
-      timestamp: json['timestamp'] == null
-          ? null
-          : DateTime.parse(json['timestamp'] as String),
-      medias: (json['medias'] as List<dynamic>?)
-          ?.map((e) => MediaStoryModel.fromJson(e as Map<String, dynamic>))
-          .toList(),
+      timestamp:
+          json['timestamp'] == null
+              ? null
+              : DateTime.parse(json['timestamp'] as String),
+      medias:
+          (json['medias'] as List<dynamic>?)
+              ?.map((e) => MediaStoryModel.fromJson(e as Map<String, dynamic>))
+              .toList(),
     );
 
 Map<String, dynamic> _$StoryCommentModelToJson(_StoryCommentModel instance) =>
@@ -111,15 +121,14 @@ Map<String, dynamic> _$StoryCommentModelToJson(_StoryCommentModel instance) =>
 
 _UpdatedStoryModel _$UpdatedStoryModelFromJson(Map<String, dynamic> json) =>
     _UpdatedStoryModel(
-      timestamp: json['timestamp'] == null
-          ? null
-          : DateTime.parse(json['timestamp'] as String),
+      timestamp:
+          json['timestamp'] == null
+              ? null
+              : DateTime.parse(json['timestamp'] as String),
     );
 
 Map<String, dynamic> _$UpdatedStoryModelToJson(_UpdatedStoryModel instance) =>
-    <String, dynamic>{
-      'timestamp': instance.timestamp?.toIso8601String(),
-    };
+    <String, dynamic>{'timestamp': instance.timestamp?.toIso8601String()};
 
 _ConnectedStoryModel _$ConnectedStoryModelFromJson(Map<String, dynamic> json) =>
     _ConnectedStoryModel(
@@ -128,8 +137,5 @@ _ConnectedStoryModel _$ConnectedStoryModelFromJson(Map<String, dynamic> json) =>
     );
 
 Map<String, dynamic> _$ConnectedStoryModelToJson(
-        _ConnectedStoryModel instance) =>
-    <String, dynamic>{
-      'post_id': instance.postId,
-      'user_id': instance.userId,
-    };
+  _ConnectedStoryModel instance,
+) => <String, dynamic>{'post_id': instance.postId, 'user_id': instance.userId};

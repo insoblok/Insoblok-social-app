@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:fluro/fluro.dart' as fluro;
 
 import 'package:insoblok/models/models.dart';
+import 'package:insoblok/pages/news/news_page.dart';
 import 'package:insoblok/pages/pages.dart';
 import 'package:insoblok/pages/profiles/tastescore_page.dart';
 import 'package:insoblok/pages/profiles/wallet_swap_page.dart';
@@ -33,6 +34,7 @@ const kRouterCreateRoom = '/create-room';
 const kRouterMessage = '/message';
 const kRouterMessageSetting = '/message-setting';
 
+const kRouterNews = '/news';
 const kRouterLookbook = '/lookbook';
 const kRouterFollowing = '/following';
 const kRouterFriend = '/friend';
@@ -155,6 +157,9 @@ class Navigation {
 
     // * MessageSettingPage
     initRoute(kRouterMessageSetting, (props) => MessageSettingPage());
+
+    // * News
+    initRoute(kRouterNews, (props) => NewsPage());
 
     // * Lookbook
     initRoute(kRouterLookbook, (props) => LookbookPage());

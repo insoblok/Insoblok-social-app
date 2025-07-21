@@ -87,7 +87,7 @@ class StoryProvider extends InSoBlokViewModel {
 
   bool openDialog = false;
 
-  Future<void> showDetailDialog() async {
+  Future<void> showCommentDialog() async {
     if (openDialog) return;
     openDialog = true;
 
@@ -97,17 +97,14 @@ class StoryProvider extends InSoBlokViewModel {
       barrierColor: Colors.transparent,
       isScrollControlled: true,
       constraints: BoxConstraints(
-        maxHeight:
-            MediaQuery.of(context).size.height -
-            kToolbarHeight -
-            MediaQuery.of(context).padding.top,
-        minHeight:
-            MediaQuery.of(context).size.height -
-            kToolbarHeight -
-            MediaQuery.of(context).padding.top,
+        maxHeight: MediaQuery.of(context).size.height * 0.7,
+        minHeight: MediaQuery.of(context).size.height * 0.2,
+        // MediaQuery.of(context).size.height -
+        // kToolbarHeight -
+        // MediaQuery.of(context).padding.top,
       ),
       builder: (ctx) {
-        return StoryDetailDialog(story: story);
+        return StoryCommentDialog(story: story);
       },
     );
     openDialog = false;
@@ -133,6 +130,7 @@ class StoryProvider extends InSoBlokViewModel {
   }
 
   Future<void> goToDetailPage() async {
+    await updateView();
     var data = await Routers.goToStoryDetailPage(context, story);
     if (data != null) {
       story = data;
@@ -303,6 +301,23 @@ class StoryProvider extends InSoBlokViewModel {
       } else {
         AIHelpers.showToast(msg: 'You unliked to a feed!');
       }
+      notifyListeners();
+    }
+  }
+
+  Future<void> updateView() async {
+    if (story.userId == user?.id || story.isView()) {
+      return;
+    }
+    var views = List<String>.from(story.views ?? []);
+    try {
+      views.add(user!.id!);
+      await storyService.updateStory(story: story.copyWith(views: views));
+    } catch (e) {
+      setError(e);
+      logger.e(e);
+    } finally {
+      story = story.copyWith(views: views);
       notifyListeners();
     }
   }

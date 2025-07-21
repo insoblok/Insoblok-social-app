@@ -7,15 +7,17 @@ part of 'post_model.dart';
 // **************************************************************************
 
 _PostModel _$PostModelFromJson(Map<String, dynamic> json) => _PostModel(
-      id: json['id'] as String?,
-      userId: json['user_id'] as String?,
-      media: json['media'] == null
+  id: json['id'] as String?,
+  userId: json['user_id'] as String?,
+  media:
+      json['media'] == null
           ? null
           : MediaStoryModel.fromJson(json['media'] as Map<String, dynamic>),
-      timestamp: json['timestamp'] == null
+  timestamp:
+      json['timestamp'] == null
           ? null
           : DateTime.parse(json['timestamp'] as String),
-    );
+);
 
 Map<String, dynamic> _$PostModelToJson(_PostModel instance) =>
     <String, dynamic>{

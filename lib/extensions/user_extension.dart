@@ -205,6 +205,7 @@ extension UserModelExt on UserModel {
       'is_premium': isPremium,
       'likes': (likes),
       'follows': (follows),
+      'views': (views),
       'user_actions': (userActions),
       'actions': ((actions ?? []).map((e) => e.toMap()).toList()),
       'update_date': updateDate?.toUtc().toIso8601String(),

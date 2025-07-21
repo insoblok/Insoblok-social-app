@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 import 'package:image_picker/image_picker.dart';
-
+import 'package:image/image.dart' as img;
 import 'package:insoblok/locator.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/providers/providers.dart';
@@ -222,12 +222,22 @@ class VTOImageProvider extends InSoBlokViewModel {
               product: product,
             );
 
+            var originImgbytes = await File(_selectedFile!.path).readAsBytes();
+            var originDecodedImage = img.decodeImage(originImgbytes);
+
+            var resultImgbytes = await File(_resultFile!.path).readAsBytes();
+            var resultDecodedImage = img.decodeImage(resultImgbytes);
+
             await Routers.goToVTODetailPage(
               context,
               VTODetailPageModel(
                 product: product,
                 originImage: originUrl!,
+                originImgWidth: originDecodedImage?.width.toDouble(),
+                originImgHeight: originDecodedImage?.height.toDouble(),
                 resultImage: serverUrl!,
+                resultImgWidth: resultDecodedImage?.width.toDouble(),
+                resultImgHeight: resultDecodedImage?.height.toDouble(),
               ),
             );
           }
@@ -258,16 +268,83 @@ class VTOImageProvider extends InSoBlokViewModel {
 
     await runBusyFuture(() async {
       try {
-        // isConverting = true;
-        // var result = await VTOService.convertVTOClothing(
-        //   path: selectedFile!.path,
-        //   clothingLink: product.modelImage,
-        //   clothingType: product.type ?? 'tops',
-        //   folderName: product.categoryName?.toLowerCase() ?? 'clothing',
-        // );
-        // if (result != null) {
-        //   resultModel = result;
-        // }
+        isConverting = true;
+        if (originUrl?.isEmpty ?? true) {
+          originUrl = await FirebaseHelper.uploadFile(
+            file: File(selectedFile!.path),
+            folderName: product.categoryName?.toLowerCase() ?? 'clothing',
+          );
+        }
+
+        logger.d(originUrl);
+        logger.d(product.modelImage);
+
+        if (originUrl?.isEmpty ?? true) {
+          throw ('Failed origin image uploaded!');
+        }
+
+        var resultUrl = await vtoService.convertVTOShoes(
+          model: originUrl!,
+          shoesModel: product.modelImage!,
+        );
+        if (resultUrl == null) {
+          throw ('Failed AI Convertor!');
+        }
+
+        _resultFile = await NetworkHelper.downloadFile(
+          resultUrl,
+          type: 'gallery',
+          ext: 'png',
+        );
+        if (_resultFile == null) {
+          throw ('Failed result file downloaded!');
+        }
+
+        var path = await FirebaseHelper.uploadFile(
+          file: _resultFile!,
+          folderName: 'gallery',
+        );
+
+        if (path != null) {
+          serverUrl = path;
+
+          List<MediaStoryModel> medias = [];
+          medias.addAll(product.medias ?? []);
+
+          if (!medias.map((m) => m.link).toList().contains(serverUrl)) {
+            medias.insert(0, MediaStoryModel(link: serverUrl, type: 'image'));
+            logger.d(medias.length);
+            product = product.copyWith(
+              medias: medias,
+              updateDate: DateTime.now(),
+            );
+            await productService.updateProduct(
+              id: product.id!,
+              product: product,
+            );
+
+            var originImgbytes = await File(_selectedFile!.path).readAsBytes();
+            var originDecodedImage = img.decodeImage(originImgbytes);
+
+            var resultImgbytes = await File(_resultFile!.path).readAsBytes();
+            var resultDecodedImage = img.decodeImage(resultImgbytes);
+
+            await Routers.goToVTODetailPage(
+              context,
+              VTODetailPageModel(
+                product: product,
+                originImage: originUrl!,
+                originImgWidth: originDecodedImage?.width.toDouble(),
+                originImgHeight: originDecodedImage?.height.toDouble(),
+                resultImage: serverUrl!,
+                resultImgWidth: resultDecodedImage?.width.toDouble(),
+                resultImgHeight: resultDecodedImage?.height.toDouble(),
+              ),
+            );
+          }
+        } else {
+          throw ('Failed server error!');
+        }
       } catch (e) {
         setError(e);
         logger.e(e);

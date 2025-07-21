@@ -50,6 +50,9 @@ class AccountProvider extends InSoBlokViewModel {
   bool get isFollowing =>
       (accountUser?.follows ?? []).contains(AuthHelper.user?.id);
 
+  bool get isViewing =>
+      (accountUser?.views ?? []).contains(AuthHelper.user?.id);
+
   void init(BuildContext context, {UserModel? model}) async {
     this.context = context;
     accountUser = model ?? AuthHelper.user;
@@ -57,7 +60,7 @@ class AccountProvider extends InSoBlokViewModel {
     await fetchStories();
     await getUserScore();
     await fetchFollowings();
-    // await getGalleries();
+    if (!isMe) await updateViews();
   }
 
   final List<StoryModel> stories = [];
@@ -112,6 +115,35 @@ class AccountProvider extends InSoBlokViewModel {
     accountUser = accountUser?.copyWith(follows: follows);
     await userService.updateUser(accountUser!);
     notifyListeners();
+  }
+
+  Future<void> updateViews() async {
+    var views = List<String>.from(accountUser?.views ?? []);
+    if (isViewing) {
+      return;
+    } else {
+      views.add(AuthHelper.user!.id!);
+    }
+    accountUser = accountUser?.copyWith(views: views);
+    await userService.updateUser(accountUser!);
+    notifyListeners();
+  }
+
+  Future<void> updateStoryView(StoryModel story) async {
+    if (story.userId == user?.id || story.isView()) {
+      return;
+    }
+    var views = List<String>.from(story.views ?? []);
+    try {
+      views.add(user!.id!);
+      await storyService.updateStory(story: story.copyWith(views: views));
+    } catch (e) {
+      setError(e);
+      logger.e(e);
+    } finally {
+      story = story.copyWith(views: views);
+      notifyListeners();
+    }
   }
 
   Future<void> gotoNewChat() async {
@@ -208,6 +240,7 @@ class AccountProvider extends InSoBlokViewModel {
   }
 
   Future<void> goToDetailPage(int index) async {
+    if (!isMe) updateStoryView(stories[index]);
     Routers.goToPostDetailPage(context, {
       'userid': accountUser?.id,
       'index': index,

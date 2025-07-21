@@ -112,11 +112,11 @@ class DashboardProvider extends InSoBlokViewModel {
     await runBusyFuture(() async {
       try {
         List<StoryModel> storydatas = [];
-        if (feedIndex == 0) {
-          storydatas = await storyService.getFollowingStories();
-        } else {
-          storydatas = await storyService.getStories();
-        }
+        // if (feedIndex == 0) {
+        //   storydatas = await storyService.getFollowingStories();
+        // } else {
+        storydatas = await storyService.getStories();
+        // }
         _stories.clear();
         logger.d(storydatas.length);
         _stories.addAll(storydatas);
@@ -153,18 +153,21 @@ class DashboardProvider extends InSoBlokViewModel {
     logger.d(index);
     switch (index) {
       case 0:
-        Routers.goToLookbookPage(context);
+        Routers.goToNewsPage(context);
         break;
       case 1:
-        Routers.goToFollowingPage(context);
+        Routers.goToLookbookPage(context);
         break;
       case 2:
-        Routers.goToFriendPage(context);
+        Routers.goToFollowingPage(context);
         break;
       case 3:
-        Routers.goToLeaderboardPage(context);
+        Routers.goToFriendPage(context);
         break;
       case 4:
+        Routers.goToLeaderboardPage(context);
+        break;
+      case 5:
         Routers.goToMarketPlacePage(context);
         break;
     }

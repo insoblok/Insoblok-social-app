@@ -297,7 +297,7 @@ class _VoteFloatingButton extends State<VoteFloatingButton>
         duration: Duration(milliseconds: 200),
         transform: Matrix4.identity()..scale(scale),
         child: Container(
-          height: 44.0,
+          padding: EdgeInsets.symmetric(horizontal: 24, vertical: 6),
           decoration: BoxDecoration(
             color: widget.backgroundColor ?? Theme.of(context).primaryColor,
             borderRadius: BorderRadius.circular(widget.borderRadius ?? 24.0),
@@ -315,7 +315,7 @@ class _VoteFloatingButton extends State<VoteFloatingButton>
                 widget.src,
                 width: widget.imgSize ?? 32,
                 height: widget.imgSize ?? 32,
-                color: widget.textColor ?? AIColors.white,
+                // color: widget.textColor ?? AIColors.white,
               ),
               const SizedBox(width: 16),
               Text(

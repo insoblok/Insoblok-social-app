@@ -62,3 +62,50 @@ class AppBackgroundView extends StatelessWidget {
     );
   }
 }
+
+class BottomBarBackgroundView extends StatelessWidget {
+  final Widget? child;
+  final double? height;
+  const BottomBarBackgroundView({super.key, this.child, this.height});
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(height: height, color: AIColors.grey, child: child);
+  }
+}
+
+class AIBottomBar extends StatelessWidget {
+  final String icon;
+  final Color? color;
+  final String? label;
+  final void Function()? onTap;
+  const AIBottomBar({
+    super.key,
+    required this.icon,
+    required this.label,
+    this.onTap,
+    this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      child: Column(
+        spacing: 4.0,
+        children: [
+          AIImage(
+            icon,
+            width: 18.0,
+            height: 18.0,
+            color: color ?? AIColors.white,
+          ),
+          Text(
+            label ?? '',
+            style: TextStyle(fontSize: 12, color: color ?? AIColors.white),
+          ),
+        ],
+      ),
+    );
+  }
+}

@@ -37,6 +37,7 @@ abstract class UserModel with _$UserModel {
     int? transferedInSo,
     List<String>? likes,
     List<String>? follows,
+    List<String>? views,
     List<String>? userActions,
     List<UserActionModel>? actions,
   }) = _UserModel;

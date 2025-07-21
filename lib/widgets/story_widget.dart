@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_html/flutter_html.dart';
 
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
@@ -17,143 +18,9 @@ const kStoryAvatarSize = 50.0;
 
 class StoryListCell extends StatelessWidget {
   final StoryModel story;
+  final double? marginBottom;
 
-  const StoryListCell({super.key, required this.story});
-
-  @override
-  Widget build(BuildContext context) {
-    return ViewModelBuilder<StoryProvider>.reactive(
-      viewModelBuilder: () => StoryProvider(),
-      onViewModelReady: (viewModel) => viewModel.init(context, model: story),
-      builder: (context, viewModel, _) {
-        return GestureDetector(
-          onTap: viewModel.showDetailDialog,
-          child: Container(
-            padding: const EdgeInsets.symmetric(
-              horizontal: 20.0,
-              vertical: 16.0,
-            ),
-            child: InkWell(
-              onTap: viewModel.goToDetailPage,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      InkWell(
-                        onTap: viewModel.onTapUserAvatar,
-                        child: AIAvatarImage(
-                          viewModel.owner?.avatar,
-                          width: kStoryAvatarSize,
-                          height: kStoryAvatarSize,
-                          fullname: viewModel.owner?.fullName ?? 'Test',
-                          textSize: 24,
-                          isBorder: true,
-                          borderWidth: 2,
-                          borderRadius: kStoryAvatarSize / 2,
-                        ),
-                      ),
-                      const SizedBox(width: 12.0),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              viewModel.owner?.fullName ?? '---',
-                              style: Theme.of(context).textTheme.headlineMedium,
-                            ),
-                            const SizedBox(height: 4),
-                            Text(
-                              '${viewModel.story.timestamp?.timeago}',
-                              style: Theme.of(context).textTheme.labelMedium,
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
-                  if (viewModel.story.category != null &&
-                      viewModel.story.category == 'vote')
-                    Column(
-                      children: [
-                        const SizedBox(height: 8.0),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Vybe Virtual Try-On',
-                              style: TextStyle(
-                                fontSize: 13.0,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                horizontal: 8.0,
-                                vertical: 4.0,
-                              ),
-                              decoration: BoxDecoration(
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.onSecondary.withAlpha(32),
-                                borderRadius: BorderRadius.circular(16.0),
-                              ),
-                              child: Row(
-                                children: [
-                                  Icon(Icons.leaderboard_outlined, size: 18),
-                                  Text(
-                                    ' ${viewModel.story.votes?.length ?? 0} / 5 Looks Today',
-                                    style:
-                                        Theme.of(context).textTheme.bodySmall,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  const SizedBox(height: 12.0),
-                  if ((story.medias ?? []).isNotEmpty) ...{
-                    StoryMediaCellView(models: story.medias ?? []),
-                  } else ...{
-                    Align(
-                      alignment: Alignment.center,
-                      child: Padding(
-                        padding: const EdgeInsets.only(
-                          left: 24.0,
-                          right: 24.0,
-                          top: 124.0,
-                          bottom: 124.0,
-                        ),
-                        child: AIHelpers.htmlRender(
-                          story.text,
-                          fontSize: FontSize(32.0),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                    ),
-                  },
-                  const SizedBox(height: 16),
-                  if (viewModel.story.category != null &&
-                      viewModel.story.category == 'vote') ...{
-                    StoryYayNayWidget(),
-                  },
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    );
-  }
-}
-
-class StoryPageableCell extends StatelessWidget {
-  final StoryModel story;
-
-  const StoryPageableCell({super.key, required this.story});
+  const StoryListCell({super.key, required this.story, this.marginBottom});
 
   @override
   Widget build(BuildContext context) {
@@ -204,6 +71,7 @@ class StoryPageableCell extends StatelessWidget {
                         horizontal: 20.0,
                         vertical: 20.0,
                       ),
+
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           begin: Alignment.topCenter,
@@ -213,38 +81,42 @@ class StoryPageableCell extends StatelessWidget {
                       ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisSize: MainAxisSize.min,
                         spacing: 12.0,
                         children: [
-                          if (viewModel.isComment) ...{
-                            Expanded(
-                              child: SingleChildScrollView(
-                                reverse: true,
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    for (StoryCommentModel comment
-                                        in story.comments ?? []) ...{
-                                      AIHelpers.htmlRender(
-                                        key: GlobalKey(
-                                          debugLabel:
-                                              'comment-${story.comments?.indexOf(comment)}',
-                                        ),
-                                        comment.content,
-                                      ),
-                                    },
-                                  ],
-                                ),
-                              ),
-                            ),
-                            StorySendCommentWidget(
-                              controller: viewModel.quillController,
-                              focusNode: viewModel.focusNode,
-                              scrollController: viewModel.quillScrollController,
-                              onSend: viewModel.sendComment,
-                            ),
-                          } else ...{
-                            const Spacer(),
-                            Column(
+                          // if (viewModel.isComment) ...{
+                          //   Expanded(
+                          //     child: SingleChildScrollView(
+                          //       reverse: true,
+                          //       child: Column(
+                          //         crossAxisAlignment: CrossAxisAlignment.start,
+                          //         children: [
+                          //           for (StoryCommentModel comment
+                          //               in story.comments ?? []) ...{
+                          //             AIHelpers.htmlRender(
+                          //               key: GlobalKey(
+                          //                 debugLabel:
+                          //                     'comment-${story.comments?.indexOf(comment)}',
+                          //               ),
+                          //               comment.content,
+                          //             ),
+                          //           },
+                          //         ],
+                          //       ),
+                          //     ),
+                          //   ),
+                          //   StorySendCommentWidget(
+                          //     controller: viewModel.quillController,
+                          //     focusNode: viewModel.focusNode,
+                          //     scrollController: viewModel.quillScrollController,
+                          //     marginBottom: marginBottom,
+                          //     onSend: viewModel.sendComment,
+                          //   ),
+                          // } else ...{
+                          const Spacer(),
+                          Container(
+                            margin: EdgeInsets.only(bottom: marginBottom ?? 0),
+                            child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               spacing: 12.0,
                               children: [
@@ -323,7 +195,8 @@ class StoryPageableCell extends StatelessWidget {
                                 },
                               ],
                             ),
-                          },
+                          ),
+                          // },
                         ],
                       ),
                     ),
@@ -333,60 +206,87 @@ class StoryPageableCell extends StatelessWidget {
               Align(
                 alignment: Alignment.bottomRight,
                 child: Container(
-                  margin: const EdgeInsets.only(right: 8.0, bottom: 56),
+                  margin: EdgeInsets.only(
+                    right: 8.0,
+                    bottom: marginBottom != null ? marginBottom! + 56 : 56,
+                  ),
                   padding: const EdgeInsets.symmetric(
                     horizontal: 4.0,
                     vertical: 16.0,
                   ),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
-                    spacing: 20.0,
+                    spacing: 12.0,
                     children: [
-                      InkWell(
-                        onTap: viewModel.onTapUserAvatar,
-                        child: AIAvatarImage(
-                          key: GlobalKey(debugLabel: 'story-${story.id}'),
-                          viewModel.owner?.avatar,
-                          width: kStoryAvatarSize * 0.8,
-                          height: kStoryAvatarSize * 0.8,
-                          fullname: viewModel.owner?.fullName ?? 'Test',
-                          textSize: 24,
-                          isBorder: true,
-                          borderWidth: 2,
-                          borderRadius: kStoryAvatarSize / 2,
+                      SizedBox(
+                        width: kStoryAvatarSize * 0.8,
+                        height: kStoryAvatarSize,
+                        child: Stack(
+                          children: [
+                            InkWell(
+                              onTap: viewModel.onTapUserAvatar,
+                              child: AIAvatarImage(
+                                key: GlobalKey(debugLabel: 'story-${story.id}'),
+                                viewModel.owner?.avatar,
+                                width: kStoryAvatarSize * 0.8,
+                                height: kStoryAvatarSize * 0.8,
+                                fullname: viewModel.owner?.fullName ?? 'Test',
+                                textSize: 24,
+                                isBorder: true,
+                                borderWidth: 2,
+                                borderRadius: kStoryAvatarSize / 2,
+                              ),
+                            ),
+                            Align(
+                              alignment: Alignment.bottomCenter,
+                              child: Container(
+                                width: 16,
+                                height: 16,
+                                decoration: BoxDecoration(
+                                  color: Theme.of(context).primaryColor,
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                                child: Icon(
+                                  Icons.add,
+                                  size: 12,
+                                  color: AIColors.white,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
                       StoryActionButton(
-                        src: Icon(Icons.favorite, size: kStoryAvatarSize * 0.6),
+                        src: Icon(Icons.favorite, size: kStoryAvatarSize * 0.5),
                         label: '${(viewModel.story.likes ?? []).length}',
                         onTap: viewModel.updateLike,
                       ),
                       StoryActionButton(
                         src: AIImage(
-                          AIImages.icFollow,
-                          color: Theme.of(context).colorScheme.secondary,
-                          width: kStoryAvatarSize * 0.6,
-                        ),
-                        label: '${(viewModel.story.follows ?? []).length}',
-                        onTap: viewModel.updateFollow,
-                      ),
-                      StoryActionButton(
-                        src: AIImage(
                           AIImages.icComment,
                           color: Theme.of(context).colorScheme.secondary,
-                          width: kStoryAvatarSize * 0.6,
+                          width: kStoryAvatarSize * 0.5,
                         ),
                         label: '${(viewModel.story.comments ?? []).length}',
                         onTap: () {
-                          viewModel.isComment = !viewModel.isComment;
+                          viewModel.showCommentDialog();
                         },
+                      ),
+                      StoryActionButton(
+                        src: AIImage(
+                          AIImages.icView,
+                          color: Theme.of(context).colorScheme.secondary,
+                          width: kStoryAvatarSize * 0.46,
+                        ),
+                        label: '${(viewModel.story.views ?? []).length}',
                       ),
                       StoryActionButton(
                         src: AIImage(
                           AIImages.icShare,
                           color: Theme.of(context).colorScheme.secondary,
-                          width: kStoryAvatarSize * 0.6,
+                          width: kStoryAvatarSize * 0.4,
                         ),
+                        label: '',
                         onTap: () {
                           AIHelpers.shareStory(context, story: story);
                         },
@@ -395,7 +295,7 @@ class StoryPageableCell extends StatelessWidget {
                         src: AIImage(
                           AIImages.icRepost,
                           color: Theme.of(context).colorScheme.secondary,
-                          width: kStoryAvatarSize * 0.6,
+                          width: kStoryAvatarSize * 0.46,
                         ),
                         onTap: viewModel.repost,
                       ),
@@ -437,6 +337,7 @@ class StorySendCommentWidget extends StatelessWidget {
   final QuillController controller;
   final FocusNode focusNode;
   final ScrollController scrollController;
+  final double? marginBottom;
   final void Function()? onSend;
 
   const StorySendCommentWidget({
@@ -445,12 +346,18 @@ class StorySendCommentWidget extends StatelessWidget {
     required this.focusNode,
     required this.scrollController,
     this.onSend,
+    this.marginBottom,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.only(bottom: MediaQuery.of(context).padding.bottom),
+      padding: EdgeInsets.only(
+        bottom:
+            marginBottom != null
+                ? MediaQuery.of(context).padding.bottom + marginBottom!
+                : MediaQuery.of(context).padding.bottom,
+      ),
       decoration: BoxDecoration(
         border: Border(
           top: BorderSide(color: AIColors.speraterColor, width: 0.33),
@@ -532,6 +439,13 @@ class StorySendCommentWidget extends StatelessWidget {
                       expands: false,
                       placeholder: 'Comments...',
                       padding: const EdgeInsets.all(12),
+                      textInputAction: TextInputAction.done,
+                      onKeyPressed: (event, node) {
+                        if (event.logicalKey == LogicalKeyboardKey.enter) {
+                          onSend;
+                        }
+                        return null;
+                      },
                       customStyles: DefaultStyles(
                         placeHolder: DefaultTextBlockStyle(
                           TextStyle(fontSize: 16, color: AIColors.grey),
@@ -548,7 +462,6 @@ class StorySendCommentWidget extends StatelessWidget {
                           null,
                         ),
                       ),
-
                       // customize other styles if needed
                     ),
                   ),
@@ -630,62 +543,49 @@ class StoryYayNayWidget extends ViewModelWidget<StoryProvider> {
 
   @override
   Widget build(BuildContext context, viewModel) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 40.0),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceAround,
-        spacing: 40.0,
-        children: [
-          Expanded(
-            child: VoteFloatingButton(
-              onTap: () {
-                viewModel.updateVote(true);
-              },
-              text:
-                  viewModel.story.cntYay == 0
-                      ? 'Yay'
-                      : 'Yay (${viewModel.story.cntYay})',
-              textColor:
-                  viewModel.story.isVote() == true
-                      ? AIColors.white
-                      : AIColors.green,
-              src:
-                  viewModel.story.isVote() == true
-                      ? AIImages.icYayFill
-                      : AIImages.icYayOutline,
-              backgroundColor:
-                  viewModel.story.isVote() == true
-                      ? AIColors.green
-                      : Colors.transparent,
-              borderColor: AIColors.green,
-            ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        IntrinsicWidth(
+          child: VoteFloatingButton(
+            onTap: () {
+              viewModel.updateVote(true);
+            },
+            text:
+                viewModel.story.cntYay == 0
+                    ? 'Yay'
+                    : 'Yay (${viewModel.story.cntYay})',
+            textColor: AIColors.green,
+            src: AIImages.icHot,
+            imgSize: 28,
+            backgroundColor:
+                viewModel.story.isVote() == true
+                    ? AIColors.green.withAlpha(64)
+                    : Colors.transparent,
+            borderColor: AIColors.green,
           ),
-          Expanded(
-            child: VoteFloatingButton(
-              onTap: () {
-                viewModel.updateVote(false);
-              },
-              text:
-                  viewModel.story.cntNay == 0
-                      ? 'Nay'
-                      : 'Nay (${viewModel.story.cntNay})',
-              textColor:
-                  viewModel.story.isVote() == false
-                      ? AIColors.white
-                      : AIColors.pink,
-              src:
-                  viewModel.story.isVote() == false
-                      ? AIImages.icNayFill
-                      : AIImages.icNayOutline,
-              backgroundColor:
-                  viewModel.story.isVote() == false
-                      ? AIColors.pink
-                      : AIColors.transparent,
-              borderColor: AIColors.pink,
-            ),
+        ),
+        const SizedBox(width: 30),
+        IntrinsicWidth(
+          child: VoteFloatingButton(
+            onTap: () {
+              viewModel.updateVote(false);
+            },
+            text:
+                viewModel.story.cntNay == 0
+                    ? 'Nay'
+                    : 'Nay (${viewModel.story.cntNay})',
+            textColor: AIColors.pink,
+            src: AIImages.icNot,
+            imgSize: 28,
+            backgroundColor:
+                viewModel.story.isVote() == false
+                    ? AIColors.pink.withAlpha(64)
+                    : AIColors.transparent,
+            borderColor: AIColors.pink,
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
@@ -707,20 +607,21 @@ class StoryActionButton extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Column(
-        spacing: 2.0,
         children: [
           src,
-          if (label != null) ...{Text(label!)},
+          if (label != null) ...{
+            Text(label!, style: Theme.of(context).textTheme.bodySmall),
+          },
         ],
       ),
     );
   }
 }
 
-class StoryDetailDialog extends StatelessWidget {
+class StoryCommentDialog extends StatelessWidget {
   final StoryModel story;
 
-  const StoryDetailDialog({super.key, required this.story});
+  const StoryCommentDialog({super.key, required this.story});
 
   @override
   Widget build(BuildContext context) {
@@ -742,319 +643,85 @@ class StoryDetailDialog extends StatelessWidget {
             });
           }
         });
-        return Stack(
-          children: [
-            NotificationListener<ScrollNotification>(
-              onNotification: (notification) {
-                if (notification is ScrollUpdateNotification) {
-                  if (viewModel.scrollController.offset < -50) {
-                    viewModel.popupDialog();
-                  }
-                  return false;
-                }
-                return true;
-              },
-              child: Scaffold(
-                resizeToAvoidBottomInset: true,
-                body: SingleChildScrollView(
-                  controller: viewModel.scrollController,
-                  physics: BouncingScrollPhysics(),
-                  child: AppBackgroundView(
+        return Container(
+          padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(12.0),
+              topRight: Radius.circular(12.0),
+            ),
+            gradient: LinearGradient(
+              colors: [
+                AIColors.lightPurple.withAlpha(32),
+                AIColors.lightBlue.withAlpha(32),
+                AIColors.lightPurple.withAlpha(32),
+                AIColors.lightTeal.withAlpha(32),
+              ],
+              stops: [0.0, 0.4, 0.7, 1.0],
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+            ),
+          ),
+          child: Scaffold(
+            resizeToAvoidBottomInset: true,
+            backgroundColor: AIColors.transparent,
+            body: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(),
+                    Text(
+                      ' ${viewModel.story.comments?.length ?? 0} comments',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    InkWell(
+                      onTap: viewModel.popupDialog,
+                      child: Icon(Icons.close, size: 26),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Expanded(
+                  child: SingleChildScrollView(
+                    controller: viewModel.scrollController,
+                    physics: BouncingScrollPhysics(),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 20.0,
-                            vertical: 8.0,
-                          ),
-                          decoration: BoxDecoration(
-                            border: Border(
-                              top: BorderSide(
-                                color: AIColors.speraterColor,
-                                width: 0.33,
+                        for (var comment
+                            in (viewModel.story.comments?.reversed.toList() ??
+                                [])) ...{
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 4.0,
+                              vertical: 4.0,
+                            ),
+                            child: StoryDetailCommentCell(
+                              key: GlobalKey(
+                                debugLabel:
+                                    '${comment.userId} - ${viewModel.story.comments?.reversed.toList().indexOf(comment)}',
                               ),
+                              comment: comment,
+                              isLast:
+                                  (viewModel.story.comments ?? []).length ==
+                                  comment,
                             ),
                           ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              if (viewModel.story.text != null &&
-                                  AIHelpers.removeFirstBr(
-                                        viewModel.story.text!,
-                                      ) !=
-                                      '<p></p>')
-                                AIHelpers.htmlRender(viewModel.story.text),
-                              if ((viewModel.story.medias ?? [])
-                                  .isNotEmpty) ...{
-                                const SizedBox(height: 8.0),
-                                StoryDialogMediaView(),
-                              },
-                              const SizedBox(height: 8.0),
-                              Text(
-                                viewModel.story.shownHMDate,
-                                style: Theme.of(context).textTheme.labelMedium,
-                              ),
-                              Divider(
-                                thickness: 0.2,
-                                height: 24.0,
-                                color: AIColors.speraterColor,
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  InkWell(
-                                    onTap: viewModel.updateLike,
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        AIImage(
-                                          viewModel.story.isLike()
-                                              ? AIImages.icFavoriteFill
-                                              : AIImages.icFavorite,
-                                          width: 16.0,
-                                          height: 16.0,
-                                        ),
-                                        const SizedBox(width: 8.0),
-                                        Text.rich(
-                                          TextSpan(
-                                            children: [
-                                              TextSpan(
-                                                text:
-                                                    '${(viewModel.story.likes ?? []).length}',
-                                                style:
-                                                    Theme.of(
-                                                      context,
-                                                    ).textTheme.bodyMedium,
-                                              ),
-                                              TextSpan(
-                                                text: '  Likes  ',
-                                                style:
-                                                    Theme.of(
-                                                      context,
-                                                    ).textTheme.labelMedium,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  InkWell(
-                                    onTap: viewModel.updateFollow,
-                                    child: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        AIImage(
-                                          AIImages.icFollow,
-                                          width: 20.0,
-                                          height: 20.0,
-                                          color:
-                                              viewModel.story.isFollow()
-                                                  ? AIColors.green
-                                                  : null,
-                                        ),
-                                        const SizedBox(width: 8.0),
-                                        Text.rich(
-                                          TextSpan(
-                                            children: [
-                                              TextSpan(
-                                                text:
-                                                    '${(viewModel.story.follows ?? []).length}',
-                                                style:
-                                                    Theme.of(
-                                                      context,
-                                                    ).textTheme.bodyMedium,
-                                              ),
-                                              TextSpan(
-                                                text: '  Followers',
-                                                style:
-                                                    Theme.of(
-                                                      context,
-                                                    ).textTheme.labelMedium,
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  if (viewModel.isMine) SizedBox(width: 12),
-                                  if (viewModel.isMine)
-                                    InkWell(
-                                      onTap: viewModel.onClickSaveToLookBook,
-                                      child: Container(
-                                        padding: EdgeInsets.symmetric(
-                                          horizontal: 12,
-                                          vertical: 4,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: AIColors.pink,
-                                          borderRadius: BorderRadius.circular(
-                                            12.0,
-                                          ),
-                                        ),
-                                        alignment: Alignment.center,
-                                        child: Text(
-                                          'Save to LOOKBOOK',
-                                          style: TextStyle(
-                                            fontSize: 12.0,
-                                            color: AIColors.white,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                ],
-                              ),
-                              Divider(
-                                thickness: 0.2,
-                                height: 24.0,
-                                color: AIColors.speraterColor,
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  if (viewModel.story.category != null &&
-                                      viewModel.story.category == 'vote') ...{
-                                    InkWell(
-                                      onTap: () {
-                                        viewModel.actionType('vote');
-                                      },
-                                      child: AIImage(
-                                        viewModel.isVote
-                                            ? AIImages.icYayFill
-                                            : AIImages.icYayOutline,
-                                        color:
-                                            viewModel.isVote
-                                                ? AIColors.pink
-                                                : AIColors.grey,
-                                        width: 20.0,
-                                        height: 20.0,
-                                      ),
-                                    ),
-                                  },
-                                  InkWell(
-                                    onTap: () {
-                                      viewModel.actionType('comment');
-                                      // viewModel.addComment();
-                                    },
-                                    child: AIImage(
-                                      AIImages.icCommit,
-                                      color:
-                                          viewModel.isComment
-                                              ? AIColors.pink
-                                              : AIColors.grey,
-                                      width: 20.0,
-                                      height: 20.0,
-                                    ),
-                                  ),
-                                  InkWell(
-                                    onTap: viewModel.onClickRepost,
-                                    child: AIImage(
-                                      AIImages.icRetwitter,
-                                      width: 20.0,
-                                      height: 20.0,
-                                    ),
-                                  ),
-                                  InkWell(
-                                    onTap: () {},
-                                    child: AIImage(
-                                      AIImages.icShare,
-                                      width: 20.0,
-                                      height: 20.0,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                              Divider(
-                                thickness: 0.2,
-                                height: 24.0,
-                                color: AIColors.speraterColor,
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        if (viewModel.isVote) ...{
-                          if ((viewModel.story.votes?.isEmpty ?? true)) ...{
-                            StoryListEmptyView(
-                              description:
-                                  'On click on that open tastescore tab!',
-                            ),
-                          } else ...{
-                            for (var vote
-                                in (viewModel.story.votes?.reversed.toList() ??
-                                    [])) ...{
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 16.0,
-                                  vertical: 4.0,
-                                ),
-                                child: VotedUserCell(voteModel: vote),
-                              ),
-                            },
-                          },
                         },
-                        if (viewModel.isComment) ...{
-                          if ((viewModel.story.comments?.isEmpty ?? true)) ...{
-                            StoryListEmptyView(
-                              description: 'Nobody had commented yet!',
-                            ),
-                          } else ...{
-                            for (var comment
-                                in (viewModel.story.comments?.reversed
-                                        .toList() ??
-                                    [])) ...{
-                              Padding(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 16.0,
-                                  vertical: 4.0,
-                                ),
-                                child: StoryDetailCommentCell(
-                                  key: GlobalKey(
-                                    debugLabel:
-                                        '${comment.userId} - ${viewModel.story.comments?.reversed.toList().indexOf(comment)}',
-                                  ),
-                                  comment: comment,
-                                  isLast:
-                                      (viewModel.story.comments ?? []).length ==
-                                      comment,
-                                ),
-                              ),
-                            },
-                          },
-                          const SizedBox(height: 20),
-                        },
-                        SizedBox(height: 198.0),
                       ],
                     ),
                   ),
                 ),
-              ),
-            ),
-
-            if (viewModel.isBusy) ...{
-              Align(
-                alignment: Alignment.center,
-                child: Center(child: Loader(size: 60)),
-              ),
-            },
-            if (viewModel.isComment) ...{
-              Positioned(
-                bottom: MediaQuery.of(context).viewInsets.bottom,
-                left: 0,
-                right: 0,
-                child: StorySendCommentWidget(
+                StorySendCommentWidget(
                   controller: viewModel.quillController,
                   focusNode: viewModel.focusNode,
                   scrollController: viewModel.quillScrollController,
                   onSend: viewModel.sendComment,
                 ),
-              ),
-            },
-          ],
+              ],
+            ),
+          ),
         );
       },
     );

@@ -53,7 +53,7 @@ const kProductAvailable = [
   true,
   true,
   true,
-  false,
+  true,
   false,
   false,
   true,
@@ -87,6 +87,26 @@ class VTOService {
         return (result['output'] as List).first;
       } else {
         logger.i('VTO Create ID Error!');
+      }
+    } catch (e) {
+      logger.e(e);
+    }
+    return null;
+  }
+
+  Future<String?> convertVTOShoes({
+    required String model,
+    required String shoesModel,
+  }) async {
+    try {
+      var result = await NetworkUtil.getVTOShoesImage(
+        model: model,
+        shoesModel: shoesModel,
+      );
+      if (result != null) {
+        return result;
+      } else {
+        logger.i('VTO Error!');
       }
     } catch (e) {
       logger.e(e);
