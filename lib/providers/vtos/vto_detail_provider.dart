@@ -9,12 +9,20 @@ import 'package:insoblok/utils/utils.dart';
 class VTODetailPageModel {
   final ProductModel product;
   final String originImage;
+  final double? originImgWidth;
+  final double? originImgHeight;
   final String resultImage;
+  final double? resultImgWidth;
+  final double? resultImgHeight;
 
   VTODetailPageModel({
     required this.product,
     required this.originImage,
+    this.originImgWidth,
+    this.originImgHeight,
     required this.resultImage,
+    this.resultImgWidth,
+    this.resultImgHeight,
   });
 }
 
@@ -114,8 +122,18 @@ class VTODetailProvider extends InSoBlokViewModel {
             category: 'vote',
             status: 'public',
             medias: [
-              MediaStoryModel(link: model.originImage, type: 'image'),
-              MediaStoryModel(link: model.resultImage, type: 'image'),
+              MediaStoryModel(
+                link: model.originImage,
+                width: model.originImgWidth,
+                height: model.originImgHeight,
+                type: 'image',
+              ),
+              MediaStoryModel(
+                link: model.resultImage,
+                width: model.resultImgWidth,
+                height: model.resultImgHeight,
+                type: 'image',
+              ),
             ],
             updateDate: DateTime.now(),
             timestamp: DateTime.now(),
@@ -163,8 +181,18 @@ class VTODetailProvider extends InSoBlokViewModel {
             category: 'vote',
             status: 'public',
             medias: [
-              MediaStoryModel(link: model.originImage, type: 'image'),
-              MediaStoryModel(link: model.resultImage, type: 'image'),
+              MediaStoryModel(
+                link: model.originImage,
+                width: model.originImgWidth,
+                height: model.originImgHeight,
+                type: 'image',
+              ),
+              MediaStoryModel(
+                link: model.resultImage,
+                width: model.resultImgWidth,
+                height: model.resultImgHeight,
+                type: 'image',
+              ),
             ],
             updateDate: DateTime.now(),
             timestamp: DateTime.now(),

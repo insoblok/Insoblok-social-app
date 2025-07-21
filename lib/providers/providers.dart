@@ -9,3 +9,4 @@ export 'bases/bases.dart';
 export 'profiles/profiles.dart';
 export 'app_provider.dart';
 export 'vtos/vtos.dart';
+export 'news/news.dart';

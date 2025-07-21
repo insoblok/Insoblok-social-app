@@ -87,7 +87,7 @@ class StoryProvider extends InSoBlokViewModel {
 
   bool openDialog = false;
 
-  Future<void> showDetailDialog() async {
+  Future<void> showCommentDialog() async {
     if (openDialog) return;
     openDialog = true;
 
@@ -97,17 +97,14 @@ class StoryProvider extends InSoBlokViewModel {
       barrierColor: Colors.transparent,
       isScrollControlled: true,
       constraints: BoxConstraints(
-        maxHeight:
-            MediaQuery.of(context).size.height -
-            kToolbarHeight -
-            MediaQuery.of(context).padding.top,
-        minHeight:
-            MediaQuery.of(context).size.height -
-            kToolbarHeight -
-            MediaQuery.of(context).padding.top,
+        maxHeight: MediaQuery.of(context).size.height * 0.7,
+        minHeight: MediaQuery.of(context).size.height * 0.2,
+        // MediaQuery.of(context).size.height -
+        // kToolbarHeight -
+        // MediaQuery.of(context).padding.top,
       ),
       builder: (ctx) {
-        return StoryDetailDialog(story: story);
+        return StoryCommentDialog(story: story);
       },
     );
     openDialog = false;

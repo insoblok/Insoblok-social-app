@@ -92,7 +92,7 @@ class AIBottomBar extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Column(
-        spacing: 2.0,
+        spacing: 4.0,
         children: [
           AIImage(
             icon,

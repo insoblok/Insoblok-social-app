@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_html/flutter_html.dart';
 
 import 'package:stacked/stacked.dart';
 
@@ -47,7 +48,7 @@ class StoryDetailCommentCell extends StatelessWidget {
                       Expanded(
                         child: Text(
                           user?.fullName ?? '---',
-                          style: Theme.of(context).textTheme.headlineSmall,
+                          style: Theme.of(context).textTheme.bodySmall,
                         ),
                       ),
                       Text(
@@ -57,7 +58,10 @@ class StoryDetailCommentCell extends StatelessWidget {
                     ],
                   ),
                   if (comment.content != null)
-                    AIHelpers.htmlRender(comment.content),
+                    AIHelpers.htmlRender(
+                      comment.content,
+                      fontSize: FontSize(12.0),
+                    ),
                   const SizedBox(height: 8.0),
                 ],
               ),

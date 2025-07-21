@@ -27,7 +27,7 @@ class FollowingPage extends StatelessWidget {
                       padEnds: false,
                       itemCount: viewModel.stories.length,
                       itemBuilder: (_, index) {
-                        return StoryPageableCell(
+                        return StoryListCell(
                           key: GlobalKey(
                             debugLabel: 'story-${viewModel.stories[index].id}',
                           ),

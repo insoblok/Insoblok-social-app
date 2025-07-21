@@ -452,6 +452,7 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
         return PopScope(
           canPop: false,
           child: Scaffold(
+            resizeToAvoidBottomInset: false,
             drawer: Drawer(
               width: MediaQuery.of(context).size.width / 2,
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
@@ -608,10 +609,10 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: Padding(
-                    padding: const EdgeInsets.only(
+                    padding: EdgeInsets.only(
                       left: 4.0,
                       right: 4.0,
-                      bottom: 20.0,
+                      bottom: MediaQuery.of(context).padding.bottom,
                     ),
                     child: Stack(
                       children: [
@@ -723,34 +724,35 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
                     ),
                   ),
                 ),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: InkWell(
+                    onTap: () {
+                      viewModel.goToAddPost();
+                    },
+                    child: Container(
+                      width: 64,
+                      height: 64,
+                      margin: EdgeInsets.only(bottom: 28),
+                      decoration: BoxDecoration(
+                        color: AIColors.grey,
+                        borderRadius: BorderRadius.circular(30.0),
+                      ),
+                      alignment: Alignment.center,
+                      child: Container(
+                        width: 52,
+                        height: 52,
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).primaryColor,
+                          borderRadius: BorderRadius.circular(26.0),
+                        ),
+                        child: Icon(Icons.add, size: 36, color: AIColors.white),
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
-            floatingActionButton: InkWell(
-              onTap: () {
-                viewModel.goToAddPost();
-              },
-              child: Container(
-                width: 60,
-                height: 60,
-                // margin: EdgeInsets.only(top: 24),
-                decoration: BoxDecoration(
-                  color: AIColors.grey,
-                  borderRadius: BorderRadius.circular(30.0),
-                ),
-                alignment: Alignment.center,
-                child: Container(
-                  width: 48,
-                  height: 48,
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor,
-                    borderRadius: BorderRadius.circular(24.0),
-                  ),
-                  child: Icon(Icons.add, size: 36, color: AIColors.white),
-                ),
-              ),
-            ),
-            floatingActionButtonLocation:
-                FloatingActionButtonLocation.centerDocked,
           ),
         );
       },

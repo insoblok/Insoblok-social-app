@@ -14,11 +14,11 @@ final kWalletTokenList = [
 ];
 
 const kWalletActionList = [
-  {'name': 'Buy', 'icon': Icons.add},
+  // {'name': 'Buy', 'icon': Icons.add},
   {'name': 'Send', 'icon': Icons.arrow_upward},
   {'name': 'Receive', 'icon': Icons.arrow_downward},
   {'name': 'Swap', 'icon': Icons.swap_calls},
-  {'name': 'Bridge', 'icon': Icons.link},
+  // {'name': 'Bridge', 'icon': Icons.link},
 ];
 
 class AccountWalletPage extends StatelessWidget {
@@ -84,7 +84,7 @@ class AccountWalletPage extends StatelessWidget {
                     ),
                   ],
                 ),
-                const SizedBox(height: 24.0),
+                const SizedBox(height: 20.0),
                 Container(
                   padding: const EdgeInsets.all(16.0),
                   decoration: BoxDecoration(
@@ -103,11 +103,10 @@ class AccountWalletPage extends StatelessWidget {
                   ),
                   child: Column(
                     children: [
-                      const SizedBox(height: 16.0),
                       Text(
                         '\$${viewModel.totalBalance}',
                         style: TextStyle(
-                          fontSize: 36,
+                          fontSize: 32,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -128,7 +127,7 @@ class AccountWalletPage extends StatelessWidget {
                       //     );
                       //   },
                       // ),
-                      const SizedBox(height: 24.0),
+                      const SizedBox(height: 16.0),
                       Row(
                         spacing: 12.0,
                         children: [
@@ -137,12 +136,9 @@ class AccountWalletPage extends StatelessWidget {
                               children: [
                                 Text(
                                   'INSO',
-                                  style:
-                                      Theme.of(context).textTheme.titleMedium,
+                                  style: Theme.of(context).textTheme.titleSmall,
                                 ),
-                                Text(
-                                  'INSO ${viewModel.balanceInso.toStringAsFixed(2)}',
-                                ),
+                                Text(viewModel.balanceInso.toStringAsFixed(2)),
                               ],
                             ),
                           ),
@@ -151,12 +147,9 @@ class AccountWalletPage extends StatelessWidget {
                               children: [
                                 Text(
                                   'USDT',
-                                  style:
-                                      Theme.of(context).textTheme.titleMedium,
+                                  style: Theme.of(context).textTheme.titleSmall,
                                 ),
-                                Text(
-                                  'USDT ${viewModel.balanceUsdt.toStringAsFixed(2)}',
-                                ),
+                                Text(viewModel.balanceUsdt.toStringAsFixed(2)),
                               ],
                             ),
                           ),
@@ -165,10 +158,9 @@ class AccountWalletPage extends StatelessWidget {
                               children: [
                                 Text(
                                   'XRP',
-                                  style:
-                                      Theme.of(context).textTheme.titleMedium,
+                                  style: Theme.of(context).textTheme.titleSmall,
                                 ),
-                                Text('XRP 0'),
+                                Text('0'),
                               ],
                             ),
                           ),
@@ -190,8 +182,8 @@ class AccountWalletPage extends StatelessWidget {
                         child: Column(
                           children: [
                             Container(
-                              width: 40.0,
-                              height: 40.0,
+                              width: 60.0,
+                              height: 60.0,
                               decoration: BoxDecoration(
                                 color: Theme.of(
                                   context,
@@ -201,7 +193,11 @@ class AccountWalletPage extends StatelessWidget {
                                 // ),
                                 borderRadius: BorderRadius.circular(8.0),
                               ),
-                              child: AIImage(item['icon']),
+                              child: AIImage(
+                                item['icon'],
+                                width: 28,
+                                height: 28,
+                              ),
                             ),
                             const SizedBox(height: 8.0),
                             Text(item['name'] as String),
@@ -319,14 +315,6 @@ class AccountWalletPage extends StatelessWidget {
                       context,
                     ).colorScheme.secondary.withAlpha(18),
                     borderRadius: BorderRadius.circular(8.0),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AIColors.black.withAlpha(50),
-                        spreadRadius: 2,
-                        blurRadius: 2,
-                        // offset: Offset(0, 2),
-                      ),
-                    ],
                   ),
                   child: Row(
                     spacing: 12.0,
@@ -359,14 +347,6 @@ class AccountWalletPage extends StatelessWidget {
                       context,
                     ).colorScheme.secondary.withAlpha(18),
                     borderRadius: BorderRadius.circular(8.0),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AIColors.black.withAlpha(50),
-                        spreadRadius: 2,
-                        blurRadius: 2,
-                        // offset: Offset(0, 2),
-                      ),
-                    ],
                   ),
                   child: Row(
                     spacing: 12.0,
@@ -399,14 +379,6 @@ class AccountWalletPage extends StatelessWidget {
                       context,
                     ).colorScheme.secondary.withAlpha(18),
                     borderRadius: BorderRadius.circular(8.0),
-                    boxShadow: [
-                      BoxShadow(
-                        color: AIColors.black.withAlpha(50),
-                        spreadRadius: 2,
-                        blurRadius: 2,
-                        // offset: Offset(0, 2),
-                      ),
-                    ],
                   ),
                   child: Row(
                     spacing: 12.0,

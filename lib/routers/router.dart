@@ -108,6 +108,10 @@ class Routers {
     return _pushToRoute(context, kRouterLookbook, null);
   }
 
+  static dynamic goToNewsPage(BuildContext context) {
+    return _pushToRoute(context, kRouterNews, null);
+  }
+
   static dynamic goToFollowingPage(BuildContext context) {
     return _pushToRoute(context, kRouterFollowing, null);
   }

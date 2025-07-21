@@ -61,10 +61,10 @@ class AccountWalletProvider extends InSoBlokViewModel {
 
   Future<void> onClickActions(int index) async {
     switch (index) {
-      case 1:
+      case 0:
         await onClickSend();
         break;
-      case 3:
+      case 2:
         await Routers.goToWalletSwapPage(context);
         getTransfers();
         break;

@@ -35,6 +35,29 @@ class StoryContentProvider extends InSoBlokViewModel {
 
   final _userService = UserService();
 
+  UserModel? _owner;
+  UserModel? get owner => _owner;
+  set owner(UserModel? model) {
+    _owner = model;
+    notifyListeners();
+  }
+
+  bool get isMine => owner?.id == AuthHelper.user?.id;
+
+  bool _isLiking = false;
+  bool get isLiking => _isLiking;
+  set isLiking(bool f) {
+    _isLiking = f;
+    notifyListeners();
+  }
+
+  int _pageIndex = 0;
+  int get pageIndex => _pageIndex;
+  set pageIndex(int i) {
+    _pageIndex = i;
+    notifyListeners();
+  }
+
   void init(BuildContext context, {required StoryModel model}) async {
     this.context = context;
     story = model;
@@ -77,29 +100,6 @@ class StoryContentProvider extends InSoBlokViewModel {
     focusNode.dispose();
 
     super.dispose();
-  }
-
-  UserModel? _owner;
-  UserModel? get owner => _owner;
-  set owner(UserModel? model) {
-    _owner = model;
-    notifyListeners();
-  }
-
-  bool get isMine => owner?.id == AuthHelper.user?.id;
-
-  bool _isLiking = false;
-  bool get isLiking => _isLiking;
-  set isLiking(bool f) {
-    _isLiking = f;
-    notifyListeners();
-  }
-
-  int _pageIndex = 0;
-  int get pageIndex => _pageIndex;
-  set pageIndex(int i) {
-    _pageIndex = i;
-    notifyListeners();
   }
 
   Future<void> goToDetailPage() async {
@@ -332,53 +332,45 @@ class StoryContentProvider extends InSoBlokViewModel {
   }
 
   Future<void> sendComment() async {
-    if (isBusy) return;
-    clearErrors();
-    await runBusyFuture(() async {
-      try {
-        var quillData = quillController.document.toDelta().toJson();
-        logger.d(quillController.document);
-        logger.d(quillData);
-        if (quillData.isNotEmpty) {
-          var converter = QuillDeltaToHtmlConverter(
-            quillData,
-            ConverterOptions.forEmail(),
-          );
-          var comment = StoryCommentModel(
-            userId: user?.id,
-            content: converter.convert(),
-            timestamp: DateTime.now(),
-          );
-          var comments = List<StoryCommentModel>.from(story.comments ?? []);
+    try {
+      var quillData = quillController.document.toDelta().toJson();
+      logger.d(quillController.document);
+      logger.d(quillData);
+      if (quillData.isNotEmpty) {
+        var converter = QuillDeltaToHtmlConverter(
+          quillData,
+          ConverterOptions.forEmail(),
+        );
+        var comment = StoryCommentModel(
+          userId: user?.id,
+          content: converter.convert(),
+          timestamp: DateTime.now(),
+        );
+        var comments = List<StoryCommentModel>.from(story.comments ?? []);
 
-          comments.add(comment);
-          story = story.copyWith(
-            comments: comments,
-            updateDate: DateTime.now(),
-          );
-          await storyService.addComment(story: story);
-          quillController.document = Document();
-        } else {
-          AIHelpers.showToast(msg: 'Your comment is empty!');
-        }
-      } catch (e, s) {
-        setError(e);
-        logger.e(e);
-        logger.e(s);
-      } finally {
-        notifyListeners();
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (_scrollController.hasClients) {
-            _scrollController.animateTo(
-              _scrollController.position.maxScrollExtent,
-              duration: Duration(milliseconds: 300),
-              curve: Curves.easeOut,
-            );
-          }
-        });
+        comments.add(comment);
+        story = story.copyWith(comments: comments, updateDate: DateTime.now());
+        await storyService.addComment(story: story);
+        quillController.document = Document();
+      } else {
+        AIHelpers.showToast(msg: 'Your comment is empty!');
       }
-    }());
-
+    } catch (e, s) {
+      setError(e);
+      logger.e(e);
+      logger.e(s);
+    } finally {
+      notifyListeners();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (_scrollController.hasClients) {
+          _scrollController.animateTo(
+            _scrollController.position.maxScrollExtent,
+            duration: Duration(milliseconds: 300),
+            curve: Curves.easeOut,
+          );
+        }
+      });
+    }
     if (hasError) {
       AIHelpers.showToast(msg: modelError.toString());
     }

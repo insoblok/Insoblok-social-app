@@ -33,6 +33,26 @@ class NetworkUtil {
     return null;
   }
 
+  static Future<String?> getVTOShoesImage({
+    required String model,
+    required String shoesModel,
+  }) async {
+    try {
+      var response = await NetworkHelper.theneApiRequest(
+        'vto-shoes',
+        method: APIMETHOD.post,
+        postParams: {'model_photo': model, 'shoes_photo': shoesModel},
+      );
+      logger.d(response.data);
+      return response.data;
+    } on DioException catch (e) {
+      logger.e(e.message);
+    } catch (e) {
+      logger.e(e.toString());
+    }
+    return null;
+  }
+
   static Future<String> getVTOJewelryModelImage({
     required String modelUrl, // Model image URL
     required String type,
