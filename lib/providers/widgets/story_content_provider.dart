@@ -75,14 +75,6 @@ class StoryContentProvider extends InSoBlokViewModel {
         ),
       );
     }();
-    quillController.document.changes.listen((event) {
-      logger.d(event.change.last.value);
-      if (event.change.last.value == '\n') {
-        sendComment();
-      } else {
-        logger.d('failed');
-      }
-    });
     // focusNode.addListener(() {
     //   if (focusNode.hasFocus) {
     //     Future.delayed(Duration(milliseconds: 300), () {
@@ -95,7 +87,7 @@ class StoryContentProvider extends InSoBlokViewModel {
     //   }
     // });
     owner = await _userService.getUser(story.userId!);
-
+    initQuill();
     notifyListeners();
   }
 
@@ -107,6 +99,18 @@ class StoryContentProvider extends InSoBlokViewModel {
     focusNode.dispose();
 
     super.dispose();
+  }
+
+  void initQuill() {
+    quillController.document = Document();
+    quillController.document.changes.listen((event) {
+      logger.d(event.change.last.value);
+      if (event.change.last.value == '\n') {
+        sendComment();
+      } else {
+        logger.d('failed');
+      }
+    });
   }
 
   Future<void> goToDetailPage() async {
@@ -341,17 +345,17 @@ class StoryContentProvider extends InSoBlokViewModel {
   Future<void> sendComment() async {
     try {
       var quillData = quillController.document.toDelta().toJson();
-      quillController.document = Document();
-      logger.d(quillController.document);
-      logger.d(quillData);
+      initQuill();
       if (quillData.isNotEmpty) {
         var converter = QuillDeltaToHtmlConverter(
           quillData,
           ConverterOptions.forEmail(),
         );
+        logger.d(converter.convert());
+        logger.d(AIHelpers.removeLastBr(converter.convert()));
         var comment = StoryCommentModel(
           userId: user?.id,
-          content: converter.convert(),
+          content: AIHelpers.removeLastBr(converter.convert()),
           timestamp: DateTime.now(),
         );
         var comments = List<StoryCommentModel>.from(story.comments ?? []);
@@ -368,15 +372,15 @@ class StoryContentProvider extends InSoBlokViewModel {
       logger.e(s);
     } finally {
       notifyListeners();
-      // WidgetsBinding.instance.addPostFrameCallback((_) {
-      //   if (_scrollController.hasClients) {
-      //     _scrollController.animateTo(
-      //       _scrollController.position.minScrollExtent,
-      //       duration: Duration(milliseconds: 300),
-      //       curve: Curves.easeOut,
-      //     );
-      //   }
-      // });
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (_scrollController.hasClients) {
+          _scrollController.animateTo(
+            _scrollController.position.minScrollExtent,
+            duration: Duration(milliseconds: 300),
+            curve: Curves.easeOut,
+          );
+        }
+      });
     }
     if (hasError) {
       AIHelpers.showToast(msg: modelError.toString());
