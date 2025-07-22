@@ -75,20 +75,19 @@ class StoryContentProvider extends InSoBlokViewModel {
         ),
       );
     }();
-
-    focusNode.addListener(() {
-      if (focusNode.hasFocus) {
-        Future.delayed(Duration(milliseconds: 300), () {
-          _scrollController.animateTo(
-            0.0,
-            duration: Duration(milliseconds: 300),
-            curve: Curves.easeInOut,
-          );
-        });
-      }
-    });
+    // focusNode.addListener(() {
+    //   if (focusNode.hasFocus) {
+    //     Future.delayed(Duration(milliseconds: 300), () {
+    //       _scrollController.animateTo(
+    //         0.0,
+    //         duration: Duration(milliseconds: 300),
+    //         curve: Curves.easeInOut,
+    //       );
+    //     });
+    //   }
+    // });
     owner = await _userService.getUser(story.userId!);
-
+    initQuill(false);
     notifyListeners();
   }
 
@@ -100,6 +99,20 @@ class StoryContentProvider extends InSoBlokViewModel {
     focusNode.dispose();
 
     super.dispose();
+  }
+
+  void initQuill(bool isInited) {
+    if (isInited) {
+      quillController.document = Document();
+    }
+    quillController.document.changes.listen((event) {
+      logger.d(event.change.last.value);
+      if (event.change.last.value == '\n') {
+        sendComment();
+      } else {
+        logger.d('failed');
+      }
+    });
   }
 
   Future<void> goToDetailPage() async {
@@ -334,24 +347,29 @@ class StoryContentProvider extends InSoBlokViewModel {
   Future<void> sendComment() async {
     try {
       var quillData = quillController.document.toDelta().toJson();
-      logger.d(quillController.document);
-      logger.d(quillData);
+      initQuill(true);
       if (quillData.isNotEmpty) {
         var converter = QuillDeltaToHtmlConverter(
           quillData,
           ConverterOptions.forEmail(),
         );
-        var comment = StoryCommentModel(
-          userId: user?.id,
-          content: converter.convert(),
-          timestamp: DateTime.now(),
-        );
-        var comments = List<StoryCommentModel>.from(story.comments ?? []);
+        if (AIHelpers.removeLastBr(converter.convert()) != '<p></p>') {
+          var comment = StoryCommentModel(
+            userId: user?.id,
+            content: AIHelpers.removeLastBr(converter.convert()),
+            timestamp: DateTime.now(),
+          );
+          var comments = List<StoryCommentModel>.from(story.comments ?? []);
 
-        comments.add(comment);
-        story = story.copyWith(comments: comments, updateDate: DateTime.now());
-        await storyService.addComment(story: story);
-        quillController.document = Document();
+          comments.add(comment);
+          story = story.copyWith(
+            comments: comments,
+            updateDate: DateTime.now(),
+          );
+          await storyService.addComment(story: story);
+        } else {
+          AIHelpers.showToast(msg: 'Your comment is empty!');
+        }
       } else {
         AIHelpers.showToast(msg: 'Your comment is empty!');
       }
@@ -364,7 +382,7 @@ class StoryContentProvider extends InSoBlokViewModel {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (_scrollController.hasClients) {
           _scrollController.animateTo(
-            _scrollController.position.maxScrollExtent,
+            _scrollController.position.minScrollExtent,
             duration: Duration(milliseconds: 300),
             curve: Curves.easeOut,
           );

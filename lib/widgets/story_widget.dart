@@ -439,7 +439,7 @@ class StorySendCommentWidget extends StatelessWidget {
                       expands: false,
                       placeholder: 'Comments...',
                       padding: const EdgeInsets.all(12),
-                      textInputAction: TextInputAction.done,
+                      // textInputAction: TextInputAction.send,
                       onKeyPressed: (event, node) {
                         if (event.logicalKey == LogicalKeyboardKey.enter) {
                           onSend;
@@ -629,20 +629,6 @@ class StoryCommentDialog extends StatelessWidget {
       viewModelBuilder: () => StoryContentProvider(),
       onViewModelReady: (viewModel) => viewModel.init(context, model: story),
       builder: (context, viewModel, _) {
-        var bottomInset = MediaQuery.of(context).viewInsets.bottom;
-        WidgetsBinding.instance.addPostFrameCallback((_) {
-          if (bottomInset > 0) {
-            Future.delayed(Duration(milliseconds: 100), () {
-              if (viewModel.scrollController.hasClients) {
-                viewModel.scrollController.animateTo(
-                  viewModel.scrollController.position.maxScrollExtent,
-                  duration: Duration(milliseconds: 300),
-                  curve: Curves.easeOut,
-                );
-              }
-            });
-          }
-        });
         return Container(
           padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
           decoration: BoxDecoration(

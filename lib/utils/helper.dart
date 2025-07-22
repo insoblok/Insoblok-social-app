@@ -76,6 +76,17 @@ class AIHelpers {
     return html.replaceFirst(pattern, '');
   }
 
+  static String removeLastBr(String htmlString) {
+    final regex = RegExp(r'<br\s*/?>', caseSensitive: false);
+    final matches = regex.allMatches(htmlString).toList();
+
+    if (matches.isNotEmpty) {
+      final lastMatch = matches.last;
+      return htmlString.replaceRange(lastMatch.start, lastMatch.end, '');
+    }
+    return htmlString;
+  }
+
   static Future<bool> loadUrl(String url) async {
     if (await canLaunchUrl(Uri.parse(url))) {
       return await launchUrl(Uri.parse(url));
