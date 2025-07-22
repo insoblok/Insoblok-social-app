@@ -75,18 +75,25 @@ class StoryContentProvider extends InSoBlokViewModel {
         ),
       );
     }();
-
-    focusNode.addListener(() {
-      if (focusNode.hasFocus) {
-        Future.delayed(Duration(milliseconds: 300), () {
-          _scrollController.animateTo(
-            0.0,
-            duration: Duration(milliseconds: 300),
-            curve: Curves.easeInOut,
-          );
-        });
+    quillController.document.changes.listen((event) {
+      logger.d(event.change.last.value);
+      if (event.change.last.value == '\n') {
+        sendComment();
+      } else {
+        logger.d('failed');
       }
     });
+    // focusNode.addListener(() {
+    //   if (focusNode.hasFocus) {
+    //     Future.delayed(Duration(milliseconds: 300), () {
+    //       _scrollController.animateTo(
+    //         0.0,
+    //         duration: Duration(milliseconds: 300),
+    //         curve: Curves.easeInOut,
+    //       );
+    //     });
+    //   }
+    // });
     owner = await _userService.getUser(story.userId!);
 
     notifyListeners();
@@ -334,6 +341,7 @@ class StoryContentProvider extends InSoBlokViewModel {
   Future<void> sendComment() async {
     try {
       var quillData = quillController.document.toDelta().toJson();
+      quillController.document = Document();
       logger.d(quillController.document);
       logger.d(quillData);
       if (quillData.isNotEmpty) {
@@ -351,7 +359,6 @@ class StoryContentProvider extends InSoBlokViewModel {
         comments.add(comment);
         story = story.copyWith(comments: comments, updateDate: DateTime.now());
         await storyService.addComment(story: story);
-        quillController.document = Document();
       } else {
         AIHelpers.showToast(msg: 'Your comment is empty!');
       }
@@ -361,15 +368,15 @@ class StoryContentProvider extends InSoBlokViewModel {
       logger.e(s);
     } finally {
       notifyListeners();
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (_scrollController.hasClients) {
-          _scrollController.animateTo(
-            _scrollController.position.maxScrollExtent,
-            duration: Duration(milliseconds: 300),
-            curve: Curves.easeOut,
-          );
-        }
-      });
+      // WidgetsBinding.instance.addPostFrameCallback((_) {
+      //   if (_scrollController.hasClients) {
+      //     _scrollController.animateTo(
+      //       _scrollController.position.minScrollExtent,
+      //       duration: Duration(milliseconds: 300),
+      //       curve: Curves.easeOut,
+      //     );
+      //   }
+      // });
     }
     if (hasError) {
       AIHelpers.showToast(msg: modelError.toString());
