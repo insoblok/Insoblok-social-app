@@ -87,7 +87,7 @@ class StoryContentProvider extends InSoBlokViewModel {
     //   }
     // });
     owner = await _userService.getUser(story.userId!);
-    initQuill();
+    initQuill(false);
     notifyListeners();
   }
 
@@ -101,8 +101,10 @@ class StoryContentProvider extends InSoBlokViewModel {
     super.dispose();
   }
 
-  void initQuill() {
-    quillController.document = Document();
+  void initQuill(bool isInited) {
+    if (isInited) {
+      quillController.document = Document();
+    }
     quillController.document.changes.listen((event) {
       logger.d(event.change.last.value);
       if (event.change.last.value == '\n') {
@@ -345,24 +347,29 @@ class StoryContentProvider extends InSoBlokViewModel {
   Future<void> sendComment() async {
     try {
       var quillData = quillController.document.toDelta().toJson();
-      initQuill();
+      initQuill(true);
       if (quillData.isNotEmpty) {
         var converter = QuillDeltaToHtmlConverter(
           quillData,
           ConverterOptions.forEmail(),
         );
-        logger.d(converter.convert());
-        logger.d(AIHelpers.removeLastBr(converter.convert()));
-        var comment = StoryCommentModel(
-          userId: user?.id,
-          content: AIHelpers.removeLastBr(converter.convert()),
-          timestamp: DateTime.now(),
-        );
-        var comments = List<StoryCommentModel>.from(story.comments ?? []);
+        if (AIHelpers.removeLastBr(converter.convert()) != '<p></p>') {
+          var comment = StoryCommentModel(
+            userId: user?.id,
+            content: AIHelpers.removeLastBr(converter.convert()),
+            timestamp: DateTime.now(),
+          );
+          var comments = List<StoryCommentModel>.from(story.comments ?? []);
 
-        comments.add(comment);
-        story = story.copyWith(comments: comments, updateDate: DateTime.now());
-        await storyService.addComment(story: story);
+          comments.add(comment);
+          story = story.copyWith(
+            comments: comments,
+            updateDate: DateTime.now(),
+          );
+          await storyService.addComment(story: story);
+        } else {
+          AIHelpers.showToast(msg: 'Your comment is empty!');
+        }
       } else {
         AIHelpers.showToast(msg: 'Your comment is empty!');
       }

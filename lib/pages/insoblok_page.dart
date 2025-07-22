@@ -733,7 +733,9 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
                     child: Container(
                       width: 64,
                       height: 64,
-                      margin: EdgeInsets.only(bottom: 28),
+                      margin: EdgeInsets.only(
+                        bottom: MediaQuery.of(context).padding.bottom + 6,
+                      ),
                       decoration: BoxDecoration(
                         color: AIColors.grey,
                         borderRadius: BorderRadius.circular(30.0),
