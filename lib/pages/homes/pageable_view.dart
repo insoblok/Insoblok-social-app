@@ -37,7 +37,8 @@ class PageableView extends StatelessWidget {
                     itemBuilder: (_, index) {
                       return StoryListCell(
                         story: viewModel.stories[index],
-                        marginBottom: 76,
+                        marginBottom:
+                            56 + MediaQuery.of(context).padding.bottom,
                       );
                     },
                   ),

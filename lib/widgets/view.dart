@@ -70,7 +70,11 @@ class BottomBarBackgroundView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(height: height, color: AIColors.grey, child: child);
+    return Container(
+      height: height,
+      color: Theme.of(context).scaffoldBackgroundColor,
+      child: child,
+    );
   }
 }
 

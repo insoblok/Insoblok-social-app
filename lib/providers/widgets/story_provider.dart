@@ -15,6 +15,14 @@ import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
 import 'package:image/image.dart' as img;
 
+final kFaceEmojiContents = [
+  {'key': 'shock', 'name': 'Shock Face', 'icon': AIImages.icFaceShock},
+  {'key': 'smirk', 'name': 'Smirk Face', 'icon': AIImages.icFaceSmirk},
+  {'key': 'laugh', 'name': 'Laugh Burst Face', 'icon': AIImages.icFaceLaugh},
+  {'key': 'rage', 'name': 'Rage Tap Face', 'icon': AIImages.icFaceRage},
+  {'key': 'cool', 'name': 'Cool Mode Face', 'icon': AIImages.icFaceCool},
+];
+
 class StoryProvider extends InSoBlokViewModel {
   late BuildContext _context;
   BuildContext get context => _context;
@@ -117,11 +125,12 @@ class StoryProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  bool openDialog = false;
+  bool openCommentDialog = false;
 
   Future<void> showCommentDialog() async {
-    if (openDialog) return;
-    openDialog = true;
+    if (openCommentDialog) return;
+    openCommentDialog = true;
+    showFaceDialog = false;
 
     await showModalBottomSheet(
       context: context,
@@ -131,15 +140,12 @@ class StoryProvider extends InSoBlokViewModel {
       constraints: BoxConstraints(
         maxHeight: MediaQuery.of(context).size.height * 0.7,
         minHeight: MediaQuery.of(context).size.height * 0.2,
-        // MediaQuery.of(context).size.height -
-        // kToolbarHeight -
-        // MediaQuery.of(context).padding.top,
       ),
       builder: (ctx) {
         return StoryCommentDialog(story: story);
       },
     );
-    openDialog = false;
+    openCommentDialog = false;
     fetchStory();
   }
 
@@ -423,7 +429,17 @@ class StoryProvider extends InSoBlokViewModel {
           title: 'Repost',
           text: description,
           category: 'vote',
-          medias: story.medias,
+          medias:
+              ((resultFaceUrl?.isNotEmpty ?? false) && showFaceDialog)
+                  ? [
+                    MediaStoryModel(
+                      link: resultFaceUrl,
+                      type: 'image',
+                      width: (story.medias ?? [])[pageIndex].width,
+                      height: (story.medias ?? [])[pageIndex].height,
+                    ),
+                  ]
+                  : story.medias,
           updateDate: DateTime.now(),
           timestamp: DateTime.now(),
           connects: [
@@ -449,6 +465,60 @@ class StoryProvider extends InSoBlokViewModel {
     if (hasError) {
       AIHelpers.showToast(msg: modelError.toString());
     }
+  }
+
+  bool _showFaceDialog = false;
+  bool get showFaceDialog => _showFaceDialog;
+  set showFaceDialog(bool f) {
+    _showFaceDialog = f;
+    notifyListeners();
+  }
+
+  String? _faceStatus;
+  String? get faceStatus => _faceStatus;
+  set faceStatus(String? s) {
+    _faceStatus = s;
+    notifyListeners();
+  }
+
+  String? _resultFaceUrl;
+  String? get resultFaceUrl => _resultFaceUrl;
+  set resultFaceUrl(String? s) {
+    _resultFaceUrl = s;
+    notifyListeners();
+  }
+
+  Future<void> onProcessFace(Map<String, String> content) async {
+    if (isBusy) return;
+    clearErrors();
+
+    logger.d(content);
+
+    faceStatus = 'Generating...';
+
+    await runBusyFuture(() async {
+      try {
+        var media = (story.medias ?? [])[pageIndex];
+
+        var resultUrl = await NetworkUtil.getVTOEditImage(
+          model: media.link!,
+          prompt: content['name']!,
+        );
+
+        if (resultUrl == null) throw ('AI service error!');
+
+        // pageStatus = 'Almost done!';
+        resultFaceUrl = await storyService.uploadResult(
+          resultUrl,
+          folderName: 'face',
+        );
+      } catch (e) {
+        setError(e);
+        logger.e(e);
+      } finally {
+        notifyListeners();
+      }
+    }());
   }
 
   bool containedConnect() {

@@ -37,7 +37,20 @@ class StoryListCell extends StatelessWidget {
                   itemCount: (viewModel.story.medias ?? []).length,
                   itemBuilder: (context, index) {
                     return StoryMediaView(
-                      media: (story.medias ?? [])[viewModel.pageIndex],
+                      media:
+                          ((viewModel.resultFaceUrl?.isNotEmpty ?? false) &&
+                                  viewModel.showFaceDialog)
+                              ? MediaStoryModel(
+                                link: viewModel.resultFaceUrl,
+                                type: 'image',
+                                width:
+                                    (story.medias ?? [])[viewModel.pageIndex]
+                                        .width,
+                                height:
+                                    (story.medias ?? [])[viewModel.pageIndex]
+                                        .height,
+                              )
+                              : (story.medias ?? [])[viewModel.pageIndex],
                     );
                   },
                   onPageChanged: (value) {
@@ -71,7 +84,6 @@ class StoryListCell extends StatelessWidget {
                         horizontal: 20.0,
                         vertical: 20.0,
                       ),
-
                       decoration: BoxDecoration(
                         gradient: LinearGradient(
                           begin: Alignment.topCenter,
@@ -84,119 +96,139 @@ class StoryListCell extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         spacing: 12.0,
                         children: [
-                          // if (viewModel.isComment) ...{
-                          //   Expanded(
-                          //     child: SingleChildScrollView(
-                          //       reverse: true,
-                          //       child: Column(
-                          //         crossAxisAlignment: CrossAxisAlignment.start,
-                          //         children: [
-                          //           for (StoryCommentModel comment
-                          //               in story.comments ?? []) ...{
-                          //             AIHelpers.htmlRender(
-                          //               key: GlobalKey(
-                          //                 debugLabel:
-                          //                     'comment-${story.comments?.indexOf(comment)}',
-                          //               ),
-                          //               comment.content,
-                          //             ),
-                          //           },
-                          //         ],
-                          //       ),
-                          //     ),
-                          //   ),
-                          //   StorySendCommentWidget(
-                          //     controller: viewModel.quillController,
-                          //     focusNode: viewModel.focusNode,
-                          //     scrollController: viewModel.quillScrollController,
-                          //     marginBottom: marginBottom,
-                          //     onSend: viewModel.sendComment,
-                          //   ),
-                          // } else ...{
                           const Spacer(),
-                          Container(
-                            margin: EdgeInsets.only(bottom: marginBottom ?? 0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              spacing: 12.0,
-                              children: [
-                                if (viewModel.story.category != null &&
-                                    viewModel.story.category == 'vote') ...{
-                                  StoryYayNayWidget(),
-                                },
-                                Row(
-                                  spacing: 12.0,
-                                  children: [
-                                    Text(
-                                      viewModel.owner?.fullName ?? '---',
-                                      style:
-                                          Theme.of(
-                                            context,
-                                          ).textTheme.headlineMedium,
-                                    ),
-                                    Text(
-                                      '· ${viewModel.story.timestamp?.timeago}',
-                                      style:
-                                          Theme.of(
-                                            context,
-                                          ).textTheme.labelMedium,
-                                    ),
-                                  ],
-                                ),
-                                if (viewModel.story.category != null &&
-                                    viewModel.story.category == 'vote') ...{
-                                  Column(
-                                    children: [
-                                      const SizedBox(height: 8.0),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
+                          if (viewModel.showFaceDialog) ...{
+                            Container(
+                              margin: EdgeInsets.only(
+                                bottom: marginBottom ?? 0,
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                vertical: 8.0,
+                              ),
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                color:
+                                    Theme.of(context).scaffoldBackgroundColor,
+                                borderRadius: BorderRadius.circular(16.0),
+                              ),
+                              child: Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
+                                children: [
+                                  for (var content in kFaceEmojiContents) ...{
+                                    InkWell(
+                                      onTap: () {
+                                        viewModel.onProcessFace(content);
+                                      },
+                                      child: Column(
+                                        spacing: 4.0,
                                         children: [
-                                          Text(
-                                            'Vybe Virtual Try-On',
-                                            style: TextStyle(
-                                              fontSize: 13.0,
-                                              fontWeight: FontWeight.bold,
-                                            ),
+                                          AIImage(
+                                            content['icon'],
+                                            width: 32.0,
+                                            height: 32.0,
                                           ),
-                                          Container(
-                                            padding: const EdgeInsets.symmetric(
-                                              horizontal: 8.0,
-                                              vertical: 2.0,
-                                            ),
-                                            decoration: BoxDecoration(
-                                              color: Theme.of(context)
-                                                  .colorScheme
-                                                  .secondary
-                                                  .withAlpha(16),
-                                              borderRadius:
-                                                  BorderRadius.circular(16.0),
-                                            ),
-                                            child: Row(
-                                              children: [
-                                                Icon(
-                                                  Icons.leaderboard_outlined,
-                                                  size: 18,
-                                                ),
-                                                Text(
-                                                  ' ${viewModel.story.votes?.length ?? 0} / 5 Looks Today',
-                                                  style:
-                                                      Theme.of(
-                                                        context,
-                                                      ).textTheme.bodySmall,
-                                                ),
-                                              ],
-                                            ),
+                                          Text(
+                                            content['key']!.toUpperCase(),
+                                            style:
+                                                Theme.of(
+                                                  context,
+                                                ).textTheme.bodySmall,
                                           ),
                                         ],
                                       ),
+                                    ),
+                                  },
+                                ],
+                              ),
+                            ),
+                          } else ...{
+                            Container(
+                              margin: EdgeInsets.only(
+                                bottom: marginBottom ?? 0,
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                spacing: 12.0,
+                                children: [
+                                  if (viewModel.story.category != null &&
+                                      viewModel.story.category == 'vote') ...{
+                                    StoryYayNayWidget(),
+                                  },
+                                  Row(
+                                    spacing: 12.0,
+                                    children: [
+                                      Text(
+                                        viewModel.owner?.fullName ?? '---',
+                                        style:
+                                            Theme.of(
+                                              context,
+                                            ).textTheme.headlineMedium,
+                                      ),
+                                      Text(
+                                        '· ${viewModel.story.timestamp?.timeago}',
+                                        style:
+                                            Theme.of(
+                                              context,
+                                            ).textTheme.labelMedium,
+                                      ),
                                     ],
                                   ),
-                                },
-                              ],
+                                  if (viewModel.story.category != null &&
+                                      viewModel.story.category == 'vote') ...{
+                                    Column(
+                                      children: [
+                                        const SizedBox(height: 8.0),
+                                        Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Text(
+                                              'Vybe Virtual Try-On',
+                                              style: TextStyle(
+                                                fontSize: 13.0,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                    horizontal: 8.0,
+                                                    vertical: 2.0,
+                                                  ),
+                                              decoration: BoxDecoration(
+                                                color: Theme.of(context)
+                                                    .colorScheme
+                                                    .secondary
+                                                    .withAlpha(16),
+                                                borderRadius:
+                                                    BorderRadius.circular(16.0),
+                                              ),
+                                              child: Row(
+                                                children: [
+                                                  Icon(
+                                                    Icons.leaderboard_outlined,
+                                                    size: 18,
+                                                  ),
+                                                  Text(
+                                                    ' ${viewModel.story.votes?.length ?? 0} / 5 Looks Today',
+                                                    style:
+                                                        Theme.of(
+                                                          context,
+                                                        ).textTheme.bodySmall,
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ],
+                                    ),
+                                  },
+                                ],
+                              ),
                             ),
-                          ),
-                          // },
+                          },
                         ],
                       ),
                     ),
@@ -299,6 +331,16 @@ class StoryListCell extends StatelessWidget {
                         ),
                         onTap: viewModel.repost,
                       ),
+                      if (viewModel.isFace) ...{
+                        const SizedBox(height: 0.0),
+                        StoryActionButton(
+                          src: Icon(Icons.face, size: kStoryAvatarSize * 0.5),
+                          onTap: () {
+                            viewModel.showFaceDialog =
+                                !viewModel.showFaceDialog;
+                          },
+                        ),
+                      },
                     ],
                   ),
                 ),
@@ -325,6 +367,7 @@ class StoryListCell extends StatelessWidget {
                   ),
                 ),
               },
+              if (viewModel.isBusy) Center(child: Loader(size: 60.0)),
             ],
           ),
         );
