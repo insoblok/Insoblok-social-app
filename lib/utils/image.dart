@@ -84,4 +84,10 @@ class AIImages {
   static String imgEmptyList = 'assets/images/gif_empty_list.gif';
 
   static String icColorSet = 'assets/icons/ic_color_set.svg';
+
+  static String icFaceShock = 'assets/icons/ic_emoji_astonished.png';
+  static String icFaceSmirk = 'assets/icons/ic_emoji_confused.png';
+  static String icFaceLaugh = 'assets/icons/ic_emoji_beaming_smiling_eyes.png';
+  static String icFaceRage = 'assets/icons/ic_emoji_grinning_squinting.png';
+  static String icFaceCool = 'assets/icons/ic_emoji_smiling_sunglasses.png';
 }

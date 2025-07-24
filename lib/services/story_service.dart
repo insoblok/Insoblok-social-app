@@ -308,4 +308,11 @@ class StoryService {
     owner = owner!.copyWith(userActions: userActions);
     await AuthHelper.updateUser(owner);
   }
+
+  Future<String?> uploadResult(String url, {String? folderName}) async {
+    return FirebaseHelper.uploadImageFromUrl(
+      imageUrl: url,
+      folderName: folderName,
+    );
+  }
 }
