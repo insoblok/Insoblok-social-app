@@ -169,6 +169,21 @@ class LoginPage extends StatelessWidget {
                   ),
                 ),
               ),
+              Container(
+                margin: const EdgeInsets.symmetric(
+                  horizontal: 32.0,
+                  vertical: 8,
+                ),
+                child: Row(
+                  children: [
+                    Checkbox(value: true, onChanged: (value) {}),
+                    Text(
+                      'Vybe scan enable',
+                      style: TextStyle(color: AIColors.white, fontSize: 14.0),
+                    ),
+                  ],
+                ),
+              ),
               Padding(
                 padding: const EdgeInsets.only(bottom: 48.0, top: 36.0),
                 child: Column(

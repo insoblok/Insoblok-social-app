@@ -75,6 +75,8 @@ dependencies:
   path_provider: any
   reown_appkit: any
   google_sign_in: any
+  googleapis: any
+  googleapis_auth: any
   smooth_page_indicator: any
   syncfusion_flutter_gauges: any
 
