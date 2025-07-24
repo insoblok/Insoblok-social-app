@@ -18,10 +18,13 @@ class AuthService with ListenableServiceMixin {
   final RxValue<UserCredential?> _credentialRx = RxValue<UserCredential?>(null);
   UserCredential? get credential => _credentialRx.value;
 
+  final RxValue<bool?> _isVybeScan = RxValue<bool?>(null);
+  bool? get isVybeScan => _isVybeScan.value;
+
   bool get isLoggedIn => user?.walletAddress != null;
 
   AuthService() {
-    listenToReactiveValues([_userRx, _credentialRx]);
+    listenToReactiveValues([_userRx, _credentialRx, _isVybeScan]);
   }
 
   Future<void> updateUser(UserModel model) async {
@@ -42,7 +45,7 @@ class AuthService with ListenableServiceMixin {
     await userService.updateUser(user!.copyWith(status: status));
   }
 
-  Future<UserModel?> signIn(String walletAddress) async {
+  Future<UserModel?> signIn(String walletAddress, bool isVybeScan) async {
     await FirebaseHelper.signInFirebase();
     var credential = FirebaseHelper.userCredential;
     logger.d(credential);
@@ -62,6 +65,7 @@ class AuthService with ListenableServiceMixin {
       );
       await userService.updateUser(newUser);
       _userRx.value = newUser;
+      _isVybeScan.value = isVybeScan;
       return newUser;
     }
 
@@ -150,8 +154,8 @@ class AuthHelper {
   static UserModel? get user => service.user;
   static bool get isLoggedIn => service.isLoggedIn;
 
-  static Future<UserModel?> signIn(String walletAddress) =>
-      service.signIn(walletAddress);
+  static Future<UserModel?> signIn(String walletAddress, bool isVybeScan) =>
+      service.signIn(walletAddress, isVybeScan);
   static Future<UserModel?> signUp(UserModel user) => service.signUp(user);
   static Future<void> signInWithGoogle({String? walletAddress}) =>
       service.signInWithGoogle(walletAddress: walletAddress);

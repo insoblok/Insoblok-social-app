@@ -23,16 +23,22 @@ class LoginProvider extends InSoBlokViewModel {
   PageController get pageController => _pageController;
   int _currentPage = 0;
 
-  @override
-  void dispose() {
-    _pageController.dispose();
-    _timer.cancel();
-
-    super.dispose();
-  }
-
   late ReownService _reownService;
   ReownService get reownService => _reownService;
+
+  bool _isClickWallet = false;
+  bool get isClickWallet => _isClickWallet;
+  set isClickWallet(bool f) {
+    _isClickWallet = f;
+    notifyListeners();
+  }
+
+  bool _isCheckScan = true;
+  bool get isCheckScan => _isCheckScan;
+  set isCheckScan(bool f) {
+    _isCheckScan = f;
+    notifyListeners();
+  }
 
   Future<void> init(BuildContext context) async {
     this.context = context;
@@ -59,11 +65,12 @@ class LoginProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  bool _isClickWallet = false;
-  bool get isClickWallet => _isClickWallet;
-  set isClickWallet(bool f) {
-    _isClickWallet = f;
-    notifyListeners();
+  @override
+  void dispose() {
+    _pageController.dispose();
+    _timer.cancel();
+
+    super.dispose();
   }
 
   Future<void> login() async {
@@ -76,7 +83,10 @@ class LoginProvider extends InSoBlokViewModel {
       if (reownService.isConnected) {
         logger.d(reownService.walletAddress);
 
-        var authUser = await AuthHelper.signIn(reownService.walletAddress!);
+        var authUser = await AuthHelper.signIn(
+          reownService.walletAddress!,
+          isCheckScan,
+        );
 
         if (authUser?.walletAddress?.isEmpty ?? true) {
           Routers.goToRegisterFirstPage(
