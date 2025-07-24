@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:flutter_quill/flutter_quill.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:vsc_quill_delta_to_html/vsc_quill_delta_to_html.dart';
 
 import 'package:insoblok/extensions/extensions.dart';
@@ -9,6 +13,7 @@ import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
+import 'package:image/image.dart' as img;
 
 final kFaceEmojiContents = [
   {'key': 'shock', 'name': 'Shock Face', 'icon': AIImages.icFaceShock},
@@ -65,12 +70,25 @@ class StoryProvider extends InSoBlokViewModel {
     fetchUser();
   }
 
-  bool isFace = false;
+  File? _face;
+  File? get face => _face;
+  set face(File? f) {
+    _face = f;
+    notifyListeners();
+  }
 
   Future<void> detectFace(String link) async {
-    isFace = await GoogleVisionHelper.analyzeImage(link: link);
-    logger.d(isFace);
-    notifyListeners();
+    var faces = await GoogleVisionHelper.getFacesFromImage(link: link);
+    if (faces.isNotEmpty) {
+      final directory = await getApplicationDocumentsDirectory();
+      final filePath = '${directory.path}/face.png';
+      final file = File(filePath);
+      if (!file.existsSync()) {
+        await file.create();
+      }
+      _face = await file.writeAsBytes(img.encodePng(faces[0]));
+      notifyListeners();
+    }
   }
 
   @override

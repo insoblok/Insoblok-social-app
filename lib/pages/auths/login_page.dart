@@ -176,7 +176,12 @@ class LoginPage extends StatelessWidget {
                 ),
                 child: Row(
                   children: [
-                    Checkbox(value: true, onChanged: (value) {}),
+                    Checkbox(
+                      value: viewModel.isCheckScan,
+                      onChanged: (value) {
+                        viewModel.isCheckScan = !viewModel.isCheckScan;
+                      },
+                    ),
                     Text(
                       'Vybe scan enable',
                       style: TextStyle(color: AIColors.white, fontSize: 14.0),

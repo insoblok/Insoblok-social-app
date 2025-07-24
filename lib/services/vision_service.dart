@@ -1,9 +1,11 @@
 import 'dart:convert';
 import 'package:flutter/services.dart';
+import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
 import 'package:googleapis/vision/v1.dart';
 import 'package:googleapis_auth/auth_io.dart';
 import 'package:http/http.dart' as http;
 import 'package:insoblok/locator.dart';
+import 'package:image/image.dart' as img;
 
 import 'services.dart';
 
@@ -66,6 +68,63 @@ class GoogleVisionService {
     }
     return false;
   }
+
+  Future<List<img.Image>> getFacesFromImage(String imagePath) async {
+    // 1. Load the original image
+    var image = await NetworkHelper.downloadFile(
+      imagePath,
+      type: 'gallery',
+      ext: 'png',
+    );
+
+    if (image == null) return [];
+    final originalImageBytes = await image.readAsBytes();
+    final originalImage = img.decodeImage(originalImageBytes)!;
+
+    // 2. Initialize face detector
+    final faceDetector = FaceDetector(
+      options: FaceDetectorOptions(
+        enableLandmarks: true,
+        enableContours: true,
+        enableClassification: true,
+      ),
+    );
+
+    // 3. Create input image for detection
+    final inputImage = InputImage.fromFile(image);
+
+    // 4. Detect faces
+    final faces = await faceDetector.processImage(inputImage);
+
+    // 5. Extract each face as separate image
+    final List<img.Image> faceImages = [];
+
+    for (final face in faces) {
+      final rect = face.boundingBox;
+
+      // Ensure the rectangle is within image bounds
+      final x = rect.left.clamp(0, originalImage.width - 1).toInt();
+      final y = rect.top.clamp(0, originalImage.height - 1).toInt();
+      final width = rect.width.clamp(1, originalImage.width - x).toInt();
+      final height = rect.height.clamp(1, originalImage.height - y).toInt();
+
+      // Crop the face from original image
+      final faceImage = img.copyCrop(
+        originalImage,
+        x: x,
+        y: y,
+        width: width,
+        height: height,
+      );
+
+      faceImages.add(faceImage);
+    }
+
+    // 6. Close detector
+    await faceDetector.close();
+
+    return faceImages;
+  }
 }
 
 class GoogleVisionHelper {
@@ -73,4 +132,7 @@ class GoogleVisionHelper {
 
   static Future<bool> analyzeImage({required String link}) =>
       service.analyzeImage(link);
+
+  static Future<List<img.Image>> getFacesFromImage({required String link}) =>
+      service.getFacesFromImage(link);
 }
