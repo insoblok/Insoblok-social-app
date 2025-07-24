@@ -40,6 +40,12 @@ class StoryProvider extends InSoBlokViewModel {
     this.context = context;
     story = model;
 
+    if ((story.medias ?? []).isNotEmpty) {
+      if (story.medias![0].type == 'image') {
+        detectFace(story.medias![0].link!);
+      }
+    }
+
     quillController = () {
       return QuillController.basic(
         config: QuillControllerConfig(
@@ -49,6 +55,11 @@ class StoryProvider extends InSoBlokViewModel {
     }();
 
     fetchUser();
+  }
+
+  Future<void> detectFace(String link) async {
+    var isFace = await GoogleVisionHelper.analyzeImage(link: link);
+    logger.d(isFace);
   }
 
   @override

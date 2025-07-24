@@ -56,6 +56,7 @@ pubspec.lock
 README.md
 
 lib/utils/const.dart
+assets/data/insoblokai-news-17063d3f1669.json
 
 .firebaserc
 firebase.json
