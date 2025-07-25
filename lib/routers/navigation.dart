@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:fluro/fluro.dart' as fluro;
 
 import 'package:insoblok/models/models.dart';
-import 'package:insoblok/pages/news/news_page.dart';
 import 'package:insoblok/pages/pages.dart';
 import 'package:insoblok/pages/profiles/tastescore_page.dart';
 import 'package:insoblok/pages/profiles/wallet_swap_page.dart';

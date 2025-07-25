@@ -331,7 +331,7 @@ class StoryListCell extends StatelessWidget {
                         ),
                         onTap: viewModel.repost,
                       ),
-                      if (viewModel.isFace) ...{
+                      if (viewModel.face != null) ...{
                         const SizedBox(height: 0.0),
                         StoryActionButton(
                           src: Icon(Icons.face, size: kStoryAvatarSize * 0.5),
