@@ -191,4 +191,8 @@ class Routers {
   static dynamic goToMarketPlacePage(BuildContext context) {
     return _pushToRoute(context, kRouterMarketPlace, null);
   }
+
+  static dynamic goToFaceDetailPage(BuildContext context, String url) {
+    return _pushToRoute(context, kRouterFaceDetail, url);
+  }
 }

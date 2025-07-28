@@ -14,14 +14,6 @@ import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
 
-final kFaceEmojiContents = [
-  {'key': 'shock', 'name': 'Shock Face', 'icon': AIImages.icFaceShock},
-  {'key': 'smirk', 'name': 'Smirk Face', 'icon': AIImages.icFaceSmirk},
-  {'key': 'laugh', 'name': 'Laugh Burst Face', 'icon': AIImages.icFaceLaugh},
-  {'key': 'rage', 'name': 'Rage Tap Face', 'icon': AIImages.icFaceRage},
-  {'key': 'cool', 'name': 'Cool Mode Face', 'icon': AIImages.icFaceCool},
-];
-
 class StoryProvider extends InSoBlokViewModel {
   late BuildContext _context;
   BuildContext get context => _context;
@@ -76,8 +68,12 @@ class StoryProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  List<AIFaceAnnotation> annotations = [];
+
   Future<void> detectFace(String link) async {
     var faces = await GoogleVisionHelper.getFacesFromImage(link: link);
+    annotations.clear();
+    annotations.addAll(await GoogleVisionHelper.analyzeImage(link: link));
     if (faces.isNotEmpty) {
       final directory = await getApplicationDocumentsDirectory();
       final filePath = '${directory.path}/face.png';

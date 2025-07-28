@@ -56,6 +56,7 @@ const kRouterSetting = '/setting';
 const kRouterLeaderboard = '/leaderboard';
 const kRouterTastescore = '/tastescore';
 const kRouterMarketPlace = '/market-place';
+const kRouterFaceDetail = '/face-detail';
 
 class Navigation {
   final router = fluro.FluroRouter();
@@ -237,5 +238,11 @@ class Navigation {
 
     // * MarketPlacePage
     initRoute(kRouterMarketPlace, (props) => MarketPlacePage());
+
+    // * FaceDetailPage
+    initRoute<String>(
+      kRouterFaceDetail,
+      (props) => FaceDetailPage(url: props!),
+    );
   }
 }

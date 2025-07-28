@@ -4,6 +4,7 @@ import 'package:flutter_html/flutter_html.dart';
 
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_quill/flutter_quill.dart';
+import 'package:insoblok/routers/routers.dart';
 import 'package:stacked/stacked.dart';
 import 'package:vimeo_video_player/vimeo_video_player.dart';
 
@@ -98,50 +99,7 @@ class StoryListCell extends StatelessWidget {
                         children: [
                           const Spacer(),
                           if (viewModel.showFaceDialog) ...{
-                            Container(
-                              margin: EdgeInsets.only(
-                                bottom: marginBottom ?? 0,
-                              ),
-                              padding: const EdgeInsets.symmetric(
-                                vertical: 8.0,
-                              ),
-                              width: double.infinity,
-                              decoration: BoxDecoration(
-                                color:
-                                    Theme.of(context).scaffoldBackgroundColor,
-                                borderRadius: BorderRadius.circular(16.0),
-                              ),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
-                                children: [
-                                  for (var content in kFaceEmojiContents) ...{
-                                    InkWell(
-                                      onTap: () {
-                                        viewModel.onProcessFace(content);
-                                      },
-                                      child: Column(
-                                        spacing: 4.0,
-                                        children: [
-                                          AIImage(
-                                            content['icon'],
-                                            width: 32.0,
-                                            height: 32.0,
-                                          ),
-                                          Text(
-                                            content['key']!.toUpperCase(),
-                                            style:
-                                                Theme.of(
-                                                  context,
-                                                ).textTheme.bodySmall,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  },
-                                ],
-                              ),
-                            ),
+                            StoryFaceModalView(marginBottom: marginBottom),
                           } else ...{
                             Container(
                               margin: EdgeInsets.only(
@@ -372,6 +330,58 @@ class StoryListCell extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+class StoryFaceModalView extends ViewModelWidget<StoryProvider> {
+  final double? marginBottom;
+  const StoryFaceModalView({super.key, this.marginBottom});
+
+  @override
+  Widget build(BuildContext context, viewModel) {
+    return InkWell(
+      onTap:
+          () => Routers.goToFaceDetailPage(
+            context,
+            (viewModel.story.medias ?? [])[viewModel.pageIndex].link!,
+          ),
+      child: Container(
+        margin: EdgeInsets.only(bottom: marginBottom ?? 0),
+        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          borderRadius: BorderRadius.circular(64.0),
+        ),
+        child: Row(
+          children: [
+            ClipOval(
+              child: AIImage(
+                viewModel.face,
+                width: 64.0,
+                height: 64.0,
+                fit: BoxFit.cover,
+              ),
+            ),
+            for (var content in viewModel.annotations) ...{
+              Expanded(
+                child: Column(
+                  spacing: 4.0,
+                  children: [
+                    AIImage(content.icon, width: 32.0, height: 32.0),
+                    Text(
+                      '${content.title}\n${content.desc}',
+                      textAlign: TextAlign.center,
+                      style: Theme.of(context).textTheme.bodySmall,
+                    ),
+                  ],
+                ),
+              ),
+            },
+          ],
+        ),
+      ),
     );
   }
 }

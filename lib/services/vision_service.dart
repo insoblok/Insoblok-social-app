@@ -9,8 +9,30 @@ import 'package:http/http.dart' as http;
 import 'package:image/image.dart' as img;
 
 import 'package:insoblok/locator.dart';
+import 'package:insoblok/utils/utils.dart';
 
 import 'services.dart';
+
+class AIFaceAnnotation {
+  final String title;
+  final String icon;
+  final String value;
+
+  AIFaceAnnotation({
+    required this.title,
+    required this.icon,
+    required this.value,
+  });
+
+  String get desc {
+    if (value == 'VERY_UNLIKELY') return '20%';
+    if (value == 'UNLIKELY') return '40%';
+    if (value == 'POSSIBLE') return '60%';
+    if (value == 'LIKELY') return '80%';
+    if (value == 'VERY_LIKELY') return '100%';
+    return '---';
+  }
+}
 
 class GoogleVisionService {
   AutoRefreshingAuthClient? _authClient;
@@ -33,14 +55,15 @@ class GoogleVisionService {
     return ServiceAccountCredentials.fromJson(json);
   }
 
-  Future<bool> analyzeImage(String link) async {
+  Future<List<AIFaceAnnotation>> analyzeImage(String link) async {
+    List<AIFaceAnnotation> result = [];
     var image = await NetworkHelper.downloadFile(
       link,
       type: 'gallery',
       ext: 'png',
     );
 
-    if (image == null) return false;
+    if (image == null) return [];
 
     final visionApi = await getVisionApi();
 
@@ -62,14 +85,43 @@ class GoogleVisionService {
     final response = await visionApi.images.annotate(request);
 
     // Process results
-    for (var result in response.responses ?? []) {
+    for (AnnotateImageResponse result in response.responses ?? []) {
       logger.d(result.faceAnnotations);
       if (result.faceAnnotations != null) {
-        logger.d('Faces detected: ${result.faceAnnotations.length}');
-        return true;
+        logger.d('Faces detected: ${result.faceAnnotations?.length}');
+        if ((result.faceAnnotations ?? []).isNotEmpty) {
+          var annotation = result.faceAnnotations!.first;
+
+          return [
+            if (annotation.angerLikelihood != null)
+              AIFaceAnnotation(
+                title: 'Angry',
+                icon: AIImages.icFaceAngry,
+                value: annotation.angerLikelihood!,
+              ),
+            if (annotation.joyLikelihood != null)
+              AIFaceAnnotation(
+                title: 'Joy',
+                icon: AIImages.icFaceLaugh,
+                value: annotation.joyLikelihood!,
+              ),
+            if (annotation.sorrowLikelihood != null)
+              AIFaceAnnotation(
+                title: 'Sad',
+                icon: AIImages.icFaceSad,
+                value: annotation.sorrowLikelihood!,
+              ),
+            if (annotation.surpriseLikelihood != null)
+              AIFaceAnnotation(
+                title: 'Shock',
+                icon: AIImages.icFaceShock,
+                value: annotation.surpriseLikelihood!,
+              ),
+          ];
+        }
       }
     }
-    return false;
+    return result;
   }
 
   Future<List<img.Image>> getFacesFromImage(String imagePath) async {
@@ -104,6 +156,7 @@ class GoogleVisionService {
 
     for (final face in faces) {
       final rect = face.boundingBox;
+      logger.d(face.smilingProbability);
 
       // Ensure the rectangle is within image bounds
       final x = rect.left.clamp(0, originalImage.width - 1).toInt();
@@ -133,7 +186,7 @@ class GoogleVisionService {
 class GoogleVisionHelper {
   static GoogleVisionService get service => locator<GoogleVisionService>();
 
-  static Future<bool> analyzeImage({required String link}) =>
+  static Future<List<AIFaceAnnotation>> analyzeImage({required String link}) =>
       service.analyzeImage(link);
 
   static Future<List<img.Image>> getFacesFromImage({required String link}) =>

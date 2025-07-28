@@ -85,6 +85,8 @@ class AIImages {
 
   static String icColorSet = 'assets/icons/ic_color_set.svg';
 
+  static String icFaceAngry = 'assets/icons/ic_emoji_angry.png';
+  static String icFaceSad = 'assets/icons/ic_emoji_frowning.png';
   static String icFaceShock = 'assets/icons/ic_emoji_astonished.png';
   static String icFaceSmirk = 'assets/icons/ic_emoji_confused.png';
   static String icFaceLaugh = 'assets/icons/ic_emoji_beaming_smiling_eyes.png';
