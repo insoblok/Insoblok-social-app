@@ -38,7 +38,6 @@ dependencies:
   logger: any
   freezed_annotation: any
   json_annotation: any
-  flutter_native_splash: any
   flutter_launcher_icons: any
 
   permission_handler: any

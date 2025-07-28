@@ -3,9 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 
 import 'package:app_links/app_links.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:provider/provider.dart';
 import 'package:stacked/stacked.dart';
@@ -25,23 +23,14 @@ class MyHttpOverrides extends HttpOverrides {
   }
 }
 
-void main() async {
-  var widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
+void main() {
+  WidgetsFlutterBinding.ensureInitialized();
   HttpOverrides.global = MyHttpOverrides();
   FlutterError.onError = (FlutterErrorDetails details) {
     logger.e('Error: $details');
   };
 
-  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
-
   setupLocator();
-
-  await FirebaseHelper.init();
-  AuthHelper.service.init();
-  await NetworkHelper.service.init();
-  FirebaseFirestore.instance.settings = const Settings(
-    persistenceEnabled: true,
-  );
 
   AppLinks().uriLinkStream.listen((uri) {
     logger.d('onAppLink: $uri');
@@ -74,7 +63,7 @@ class InSoBlokApp extends StatelessWidget {
             initialRoute: kRouterBase,
             onGenerateRoute: _navigation.router.generator,
             scaffoldMessengerKey: scaffoldKey,
-            home: LoginPage(),
+            home: SplashPage(),
             localizationsDelegates: const [
               GlobalMaterialLocalizations.delegate,
               GlobalWidgetsLocalizations.delegate,

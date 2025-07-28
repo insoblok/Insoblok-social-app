@@ -2,8 +2,6 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import 'package:flutter_native_splash/flutter_native_splash.dart';
-
 import 'package:insoblok/locator.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/routers/routers.dart';
@@ -45,8 +43,6 @@ class LoginProvider extends InSoBlokViewModel {
 
     _reownService = locator<ReownService>();
     await _reownService.init(context);
-
-    FlutterNativeSplash.remove();
 
     _timer = Timer.periodic(Duration(seconds: 3), (Timer timer) {
       if (_currentPage < 1) {

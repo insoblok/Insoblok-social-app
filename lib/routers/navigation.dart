@@ -83,6 +83,9 @@ class Navigation {
       );
     }
 
+    // * SplashPage
+    initRoute(kRouterBase, (props) => SplashPage());
+
     // * LoginPage
     initRoute(kRouterLogin, (props) => LoginPage());
 

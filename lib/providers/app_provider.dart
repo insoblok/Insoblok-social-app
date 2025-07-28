@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 
-import 'package:insoblok/locator.dart';
-import 'package:insoblok/providers/providers.dart';
-import 'package:insoblok/services/services.dart';
-import 'package:insoblok/utils/utils.dart';
+import 'package:stacked/stacked.dart';
 
-class AppProvider extends InSoBlokViewModel {
+import 'package:insoblok/services/services.dart';
+
+class AppProvider extends ReactiveViewModel {
   late BuildContext _context;
   BuildContext get context => _context;
   set context(BuildContext context) {
@@ -15,9 +14,6 @@ class AppProvider extends InSoBlokViewModel {
 
   Future<void> init(BuildContext context) async {
     this.context = context;
-
-    var uploadProvider = locator<UploadMediaProvider>();
-    uploadProvider.init(context);
   }
 
   void updateTheme() {
