@@ -20,3 +20,4 @@ export 'transfer_service.dart';
 export 'vimeo_service.dart';
 export 'method_channel_service.dart';
 export 'vision_service.dart';
+export 'comment_service.dart';

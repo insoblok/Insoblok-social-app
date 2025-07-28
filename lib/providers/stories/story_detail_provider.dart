@@ -28,6 +28,9 @@ class StoryDetailProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  final List<StoryCommentModel> _comments = [];
+  List<StoryCommentModel> get comments => _comments;
+
   void init(BuildContext context, {required StoryModel model}) async {
     this.context = context;
     story = model;
@@ -45,6 +48,25 @@ class StoryDetailProvider extends InSoBlokViewModel {
   Future<void> fetchUser() async {
     try {
       owner = await userService.getUser(story.userId!);
+    } catch (e) {
+      setError(e);
+      logger.e(e);
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  Future<void> getComments() async {
+    try {
+      List<StoryCommentModel> commentdatas = [];
+      // if (feedIndex == 0) {
+      //   storydatas = await storyService.getFollowingStories();
+      // } else {
+      commentdatas = await commentService.getComments(story.id ?? '');
+      // }
+      _comments.clear();
+      logger.d(commentdatas.length);
+      _comments.addAll(commentdatas);
     } catch (e) {
       setError(e);
       logger.e(e);
@@ -162,31 +184,31 @@ class StoryDetailProvider extends InSoBlokViewModel {
     clearErrors();
 
     await runBusyFuture(() async {
-      try {
-        var desc = await AIHelpers.goToDescriptionView(context);
-        if (desc != null) {
-          var comment = StoryCommentModel(
-            userId: user?.id,
-            content: desc,
-            timestamp: DateTime.now(),
-          );
+      // try {
+      //   var desc = await AIHelpers.goToDescriptionView(context);
+      //   if (desc != null) {
+      //     var comment = StoryCommentModel(
+      //       userId: user?.id,
+      //       content: desc,
+      //       timestamp: DateTime.now(),
+      //     );
 
-          var comments = List<StoryCommentModel>.from(story.comments ?? []);
-          comments.add(comment);
-          _story = story.copyWith(
-            comments: comments,
-            updateDate: DateTime.now(),
-          );
-          await storyService.addComment(story: _story);
+      //     var comments = List<StoryCommentModel>.from(story.comments ?? []);
+      //     comments.add(comment);
+      //     _story = story.copyWith(
+      //       comments: comments,
+      //       updateDate: DateTime.now(),
+      //     );
+      //     await storyService.addComment(story: _story);
 
-          AIHelpers.showToast(msg: 'Successfully add your comment!');
-        }
-      } catch (e) {
-        setError(e);
-        logger.e(e);
-      } finally {
-        notifyListeners();
-      }
+      //     AIHelpers.showToast(msg: 'Successfully add your comment!');
+      //   }
+      // } catch (e) {
+      //   setError(e);
+      //   logger.e(e);
+      // } finally {
+      //   notifyListeners();
+      // }
     }());
 
     if (hasError) {

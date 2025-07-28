@@ -24,6 +24,9 @@ class StoryContentProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  final List<StoryCommentModel> _comments = [];
+  List<StoryCommentModel> get comments => _comments;
+
   var textController = TextEditingController();
 
   late QuillController quillController;
@@ -58,6 +61,13 @@ class StoryContentProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  String? _replyCommentId;
+  String? get replyCommentId => _replyCommentId;
+  set replyCommentId(String? i) {
+    _replyCommentId = i;
+    notifyListeners();
+  }
+
   void init(BuildContext context, {required StoryModel model}) async {
     this.context = context;
     story = model;
@@ -88,6 +98,7 @@ class StoryContentProvider extends InSoBlokViewModel {
     // });
     owner = await _userService.getUser(story.userId!);
     initQuill(false);
+    getComments();
     notifyListeners();
   }
 
@@ -108,11 +119,33 @@ class StoryContentProvider extends InSoBlokViewModel {
     quillController.document.changes.listen((event) {
       logger.d(event.change.last.value);
       if (event.change.last.value == '\n') {
-        sendComment();
+        sendComment(story.id ?? '');
       } else {
         logger.d('failed');
       }
     });
+  }
+
+  Future<void> getComments() async {
+    try {
+      List<StoryCommentModel> commentdatas = [];
+      // if (feedIndex == 0) {
+      //   storydatas = await storyService.getFollowingStories();
+      // } else {
+      commentdatas = await commentService.getComments(story.id ?? '');
+      // }
+      _comments.clear();
+      for (var comment in commentdatas) {
+        if (comment.commentId == null) {
+          _comments.add(comment);
+        }
+      }
+    } catch (e) {
+      setError(e);
+      logger.e(e);
+    } finally {
+      notifyListeners();
+    }
   }
 
   Future<void> goToDetailPage() async {
@@ -297,45 +330,45 @@ class StoryContentProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  Future<void> addComment() async {
-    if (isBusy) return;
-    clearErrors();
+  // Future<void> addComment() async {
+  //   if (isBusy) return;
+  //   clearErrors();
 
-    await runBusyFuture(() async {
-      try {
-        var desc = await AIHelpers.goToDescriptionView(context);
-        logger.d(desc);
-        if (desc != null) {
-          var comment = StoryCommentModel(
-            userId: user?.id,
-            content: desc,
-            timestamp: DateTime.now(),
-          );
-          final comments = List<StoryCommentModel>.from(story.comments ?? []);
-          comments.add(comment);
+  //   await runBusyFuture(() async {
+  //     try {
+  //       var desc = await AIHelpers.goToDescriptionView(context);
+  //       logger.d(desc);
+  //       if (desc != null) {
+  //         var comment = StoryCommentModel(
+  //           userId: user?.id,
+  //           content: desc,
+  //           timestamp: DateTime.now(),
+  //         );
+  //         final comments = List<StoryCommentModel>.from(story.comments ?? []);
+  //         comments.add(comment);
 
-          story = story.copyWith(
-            comments: comments,
-            updateDate: DateTime.now(),
-          );
-          await storyService.addComment(story: story);
+  //         story = story.copyWith(
+  //           comments: comments,
+  //           updateDate: DateTime.now(),
+  //         );
+  //         await storyService.addComment(story: story);
 
-          AIHelpers.showToast(msg: 'Successfully add your comment!');
-        } else {
-          setError('Your comment is empty!');
-        }
-      } catch (e) {
-        setError(e);
-        logger.e(e);
-      } finally {
-        notifyListeners();
-      }
-    }());
+  //         AIHelpers.showToast(msg: 'Successfully add your comment!');
+  //       } else {
+  //         setError('Your comment is empty!');
+  //       }
+  //     } catch (e) {
+  //       setError(e);
+  //       logger.e(e);
+  //     } finally {
+  //       notifyListeners();
+  //     }
+  //   }());
 
-    if (hasError) {
-      AIHelpers.showToast(msg: modelError.toString());
-    }
-  }
+  //   if (hasError) {
+  //     AIHelpers.showToast(msg: modelError.toString());
+  //   }
+  // }
 
   String? _commentContent;
   String? get commentContent => _commentContent;
@@ -344,7 +377,10 @@ class StoryContentProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  Future<void> sendComment() async {
+  Future<void> sendComment(String storyId, {String? commentId}) async {
+    if (storyId == '') return;
+    logger.d(storyId);
+    logger.d(user?.id);
     try {
       var quillData = quillController.document.toDelta().toJson();
       initQuill(true);
@@ -356,17 +392,24 @@ class StoryContentProvider extends InSoBlokViewModel {
         if (AIHelpers.removeLastBr(converter.convert()) != '<p></p>') {
           var comment = StoryCommentModel(
             userId: user?.id,
+            storyId: storyId,
+            commentId: commentId,
             content: AIHelpers.removeLastBr(converter.convert()),
             timestamp: DateTime.now(),
           );
-          var comments = List<StoryCommentModel>.from(story.comments ?? []);
+          var commentid = await commentService.postComment(comment: comment);
 
-          comments.add(comment);
-          story = story.copyWith(
-            comments: comments,
-            updateDate: DateTime.now(),
-          );
-          await storyService.addComment(story: story);
+          if (commentId == null) {
+            var comments = List<String>.from(story.comments ?? []);
+
+            comments.add(commentid);
+            story = story.copyWith(
+              comments: comments,
+              updateDate: DateTime.now(),
+            );
+            await storyService.addComment(story: story);
+            _comments.insert(0, comment.copyWith(id: commentid));
+          }
         } else {
           AIHelpers.showToast(msg: 'Your comment is empty!');
         }

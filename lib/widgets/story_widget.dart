@@ -728,9 +728,7 @@ class StoryCommentDialog extends StatelessWidget {
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
                       children: [
-                        for (var comment
-                            in (viewModel.story.comments?.reversed.toList() ??
-                                [])) ...{
+                        for (var comment in viewModel.comments) ...{
                           Padding(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 4.0,
@@ -739,12 +737,17 @@ class StoryCommentDialog extends StatelessWidget {
                             child: StoryDetailCommentCell(
                               key: GlobalKey(
                                 debugLabel:
-                                    '${comment.userId} - ${viewModel.story.comments?.reversed.toList().indexOf(comment)}',
+                                    '${comment.id} - ${comment.storyId}',
                               ),
                               comment: comment,
-                              isLast:
-                                  (viewModel.story.comments ?? []).length ==
-                                  comment,
+                              selected: viewModel.replyCommentId == comment.id,
+                              onTap: () {
+                                if (viewModel.replyCommentId == comment.id) {
+                                  viewModel.replyCommentId = null;
+                                } else {
+                                  viewModel.replyCommentId = comment.id;
+                                }
+                              },
                             ),
                           ),
                         },
@@ -756,7 +759,12 @@ class StoryCommentDialog extends StatelessWidget {
                   controller: viewModel.quillController,
                   focusNode: viewModel.focusNode,
                   scrollController: viewModel.quillScrollController,
-                  onSend: viewModel.sendComment,
+                  onSend: () {
+                    viewModel.sendComment(
+                      story.id ?? '',
+                      commentId: viewModel.replyCommentId,
+                    );
+                  },
                 ),
               ],
             ),

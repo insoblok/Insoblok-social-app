@@ -20,6 +20,9 @@ abstract class InSoBlokViewModel extends ReactiveViewModel {
   final _tastScoreService = TastescoreService();
   TastescoreService get tastScoreService => _tastScoreService;
 
+  final _commentService = CommentService();
+  CommentService get commentService => _commentService;
+
   final _vtoService = VTOService();
   VTOService get vtoService => _vtoService;
 

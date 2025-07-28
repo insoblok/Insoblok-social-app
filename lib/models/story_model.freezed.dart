@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$StoryModel {
 
- String? get id; String? get userId; String? get title; String? get text; String? get status; String? get category; List<String>? get likes; List<String>? get follows; List<String>? get views; DateTime? get updateDate; DateTime? get timestamp; List<ConnectedStoryModel>? get connects; List<StoryCommentModel>? get comments; List<StoryVoteModel>? get votes; List<MediaStoryModel>? get medias;
+ String? get id; String? get userId; String? get title; String? get text; String? get status; String? get category; List<String>? get likes; List<String>? get follows; List<String>? get views; DateTime? get updateDate; DateTime? get timestamp; List<ConnectedStoryModel>? get connects; List<String>? get comments; List<StoryVoteModel>? get votes; List<MediaStoryModel>? get medias;
 /// Create a copy of StoryModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $StoryModelCopyWith<$Res>  {
   factory $StoryModelCopyWith(StoryModel value, $Res Function(StoryModel) _then) = _$StoryModelCopyWithImpl;
 @useResult
 $Res call({
- String? id, String? userId, String? title, String? text, String? status, String? category, List<String>? likes, List<String>? follows, List<String>? views, DateTime? updateDate, DateTime? timestamp, List<ConnectedStoryModel>? connects, List<StoryCommentModel>? comments, List<StoryVoteModel>? votes, List<MediaStoryModel>? medias
+ String? id, String? userId, String? title, String? text, String? status, String? category, List<String>? likes, List<String>? follows, List<String>? views, DateTime? updateDate, DateTime? timestamp, List<ConnectedStoryModel>? connects, List<String>? comments, List<StoryVoteModel>? votes, List<MediaStoryModel>? medias
 });
 
 
@@ -80,7 +80,7 @@ as List<String>?,updateDate: freezed == updateDate ? _self.updateDate : updateDa
 as DateTime?,timestamp: freezed == timestamp ? _self.timestamp : timestamp // ignore: cast_nullable_to_non_nullable
 as DateTime?,connects: freezed == connects ? _self.connects : connects // ignore: cast_nullable_to_non_nullable
 as List<ConnectedStoryModel>?,comments: freezed == comments ? _self.comments : comments // ignore: cast_nullable_to_non_nullable
-as List<StoryCommentModel>?,votes: freezed == votes ? _self.votes : votes // ignore: cast_nullable_to_non_nullable
+as List<String>?,votes: freezed == votes ? _self.votes : votes // ignore: cast_nullable_to_non_nullable
 as List<StoryVoteModel>?,medias: freezed == medias ? _self.medias : medias // ignore: cast_nullable_to_non_nullable
 as List<MediaStoryModel>?,
   ));
@@ -167,7 +167,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? id,  String? userId,  String? title,  String? text,  String? status,  String? category,  List<String>? likes,  List<String>? follows,  List<String>? views,  DateTime? updateDate,  DateTime? timestamp,  List<ConnectedStoryModel>? connects,  List<StoryCommentModel>? comments,  List<StoryVoteModel>? votes,  List<MediaStoryModel>? medias)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? id,  String? userId,  String? title,  String? text,  String? status,  String? category,  List<String>? likes,  List<String>? follows,  List<String>? views,  DateTime? updateDate,  DateTime? timestamp,  List<ConnectedStoryModel>? connects,  List<String>? comments,  List<StoryVoteModel>? votes,  List<MediaStoryModel>? medias)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _StoryModel() when $default != null:
 return $default(_that.id,_that.userId,_that.title,_that.text,_that.status,_that.category,_that.likes,_that.follows,_that.views,_that.updateDate,_that.timestamp,_that.connects,_that.comments,_that.votes,_that.medias);case _:
@@ -188,7 +188,7 @@ return $default(_that.id,_that.userId,_that.title,_that.text,_that.status,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? id,  String? userId,  String? title,  String? text,  String? status,  String? category,  List<String>? likes,  List<String>? follows,  List<String>? views,  DateTime? updateDate,  DateTime? timestamp,  List<ConnectedStoryModel>? connects,  List<StoryCommentModel>? comments,  List<StoryVoteModel>? votes,  List<MediaStoryModel>? medias)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? id,  String? userId,  String? title,  String? text,  String? status,  String? category,  List<String>? likes,  List<String>? follows,  List<String>? views,  DateTime? updateDate,  DateTime? timestamp,  List<ConnectedStoryModel>? connects,  List<String>? comments,  List<StoryVoteModel>? votes,  List<MediaStoryModel>? medias)  $default,) {final _that = this;
 switch (_that) {
 case _StoryModel():
 return $default(_that.id,_that.userId,_that.title,_that.text,_that.status,_that.category,_that.likes,_that.follows,_that.views,_that.updateDate,_that.timestamp,_that.connects,_that.comments,_that.votes,_that.medias);case _:
@@ -208,7 +208,7 @@ return $default(_that.id,_that.userId,_that.title,_that.text,_that.status,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? id,  String? userId,  String? title,  String? text,  String? status,  String? category,  List<String>? likes,  List<String>? follows,  List<String>? views,  DateTime? updateDate,  DateTime? timestamp,  List<ConnectedStoryModel>? connects,  List<StoryCommentModel>? comments,  List<StoryVoteModel>? votes,  List<MediaStoryModel>? medias)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? id,  String? userId,  String? title,  String? text,  String? status,  String? category,  List<String>? likes,  List<String>? follows,  List<String>? views,  DateTime? updateDate,  DateTime? timestamp,  List<ConnectedStoryModel>? connects,  List<String>? comments,  List<StoryVoteModel>? votes,  List<MediaStoryModel>? medias)?  $default,) {final _that = this;
 switch (_that) {
 case _StoryModel() when $default != null:
 return $default(_that.id,_that.userId,_that.title,_that.text,_that.status,_that.category,_that.likes,_that.follows,_that.views,_that.updateDate,_that.timestamp,_that.connects,_that.comments,_that.votes,_that.medias);case _:
@@ -223,7 +223,7 @@ return $default(_that.id,_that.userId,_that.title,_that.text,_that.status,_that.
 
 @JsonSerializable(fieldRename: FieldRename.snake)
 class _StoryModel implements StoryModel {
-   _StoryModel({this.id, this.userId, this.title, this.text, this.status, this.category, final  List<String>? likes, final  List<String>? follows, final  List<String>? views, this.updateDate, this.timestamp, final  List<ConnectedStoryModel>? connects, final  List<StoryCommentModel>? comments, final  List<StoryVoteModel>? votes, final  List<MediaStoryModel>? medias}): _likes = likes,_follows = follows,_views = views,_connects = connects,_comments = comments,_votes = votes,_medias = medias;
+   _StoryModel({this.id, this.userId, this.title, this.text, this.status, this.category, final  List<String>? likes, final  List<String>? follows, final  List<String>? views, this.updateDate, this.timestamp, final  List<ConnectedStoryModel>? connects, final  List<String>? comments, final  List<StoryVoteModel>? votes, final  List<MediaStoryModel>? medias}): _likes = likes,_follows = follows,_views = views,_connects = connects,_comments = comments,_votes = votes,_medias = medias;
   factory _StoryModel.fromJson(Map<String, dynamic> json) => _$StoryModelFromJson(json);
 
 @override final  String? id;
@@ -270,8 +270,8 @@ class _StoryModel implements StoryModel {
   return EqualUnmodifiableListView(value);
 }
 
- final  List<StoryCommentModel>? _comments;
-@override List<StoryCommentModel>? get comments {
+ final  List<String>? _comments;
+@override List<String>? get comments {
   final value = _comments;
   if (value == null) return null;
   if (_comments is EqualUnmodifiableListView) return _comments;
@@ -331,7 +331,7 @@ abstract mixin class _$StoryModelCopyWith<$Res> implements $StoryModelCopyWith<$
   factory _$StoryModelCopyWith(_StoryModel value, $Res Function(_StoryModel) _then) = __$StoryModelCopyWithImpl;
 @override @useResult
 $Res call({
- String? id, String? userId, String? title, String? text, String? status, String? category, List<String>? likes, List<String>? follows, List<String>? views, DateTime? updateDate, DateTime? timestamp, List<ConnectedStoryModel>? connects, List<StoryCommentModel>? comments, List<StoryVoteModel>? votes, List<MediaStoryModel>? medias
+ String? id, String? userId, String? title, String? text, String? status, String? category, List<String>? likes, List<String>? follows, List<String>? views, DateTime? updateDate, DateTime? timestamp, List<ConnectedStoryModel>? connects, List<String>? comments, List<StoryVoteModel>? votes, List<MediaStoryModel>? medias
 });
 
 
@@ -363,7 +363,7 @@ as List<String>?,updateDate: freezed == updateDate ? _self.updateDate : updateDa
 as DateTime?,timestamp: freezed == timestamp ? _self.timestamp : timestamp // ignore: cast_nullable_to_non_nullable
 as DateTime?,connects: freezed == connects ? _self._connects : connects // ignore: cast_nullable_to_non_nullable
 as List<ConnectedStoryModel>?,comments: freezed == comments ? _self._comments : comments // ignore: cast_nullable_to_non_nullable
-as List<StoryCommentModel>?,votes: freezed == votes ? _self._votes : votes // ignore: cast_nullable_to_non_nullable
+as List<String>?,votes: freezed == votes ? _self._votes : votes // ignore: cast_nullable_to_non_nullable
 as List<StoryVoteModel>?,medias: freezed == medias ? _self._medias : medias // ignore: cast_nullable_to_non_nullable
 as List<MediaStoryModel>?,
   ));
@@ -920,7 +920,7 @@ as double?,
 /// @nodoc
 mixin _$StoryCommentModel {
 
- String? get userId; String? get content; DateTime? get timestamp; List<MediaStoryModel>? get medias;
+ String? get id; String? get userId; String? get storyId; String? get commentId; String? get content; List<String>? get likes; DateTime? get timestamp; List<MediaStoryModel>? get medias;
 /// Create a copy of StoryCommentModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -933,16 +933,16 @@ $StoryCommentModelCopyWith<StoryCommentModel> get copyWith => _$StoryCommentMode
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is StoryCommentModel&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.content, content) || other.content == content)&&(identical(other.timestamp, timestamp) || other.timestamp == timestamp)&&const DeepCollectionEquality().equals(other.medias, medias));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is StoryCommentModel&&(identical(other.id, id) || other.id == id)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.storyId, storyId) || other.storyId == storyId)&&(identical(other.commentId, commentId) || other.commentId == commentId)&&(identical(other.content, content) || other.content == content)&&const DeepCollectionEquality().equals(other.likes, likes)&&(identical(other.timestamp, timestamp) || other.timestamp == timestamp)&&const DeepCollectionEquality().equals(other.medias, medias));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,userId,content,timestamp,const DeepCollectionEquality().hash(medias));
+int get hashCode => Object.hash(runtimeType,id,userId,storyId,commentId,content,const DeepCollectionEquality().hash(likes),timestamp,const DeepCollectionEquality().hash(medias));
 
 @override
 String toString() {
-  return 'StoryCommentModel(userId: $userId, content: $content, timestamp: $timestamp, medias: $medias)';
+  return 'StoryCommentModel(id: $id, userId: $userId, storyId: $storyId, commentId: $commentId, content: $content, likes: $likes, timestamp: $timestamp, medias: $medias)';
 }
 
 
@@ -953,7 +953,7 @@ abstract mixin class $StoryCommentModelCopyWith<$Res>  {
   factory $StoryCommentModelCopyWith(StoryCommentModel value, $Res Function(StoryCommentModel) _then) = _$StoryCommentModelCopyWithImpl;
 @useResult
 $Res call({
- String? userId, String? content, DateTime? timestamp, List<MediaStoryModel>? medias
+ String? id, String? userId, String? storyId, String? commentId, String? content, List<String>? likes, DateTime? timestamp, List<MediaStoryModel>? medias
 });
 
 
@@ -970,11 +970,15 @@ class _$StoryCommentModelCopyWithImpl<$Res>
 
 /// Create a copy of StoryCommentModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? userId = freezed,Object? content = freezed,Object? timestamp = freezed,Object? medias = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? userId = freezed,Object? storyId = freezed,Object? commentId = freezed,Object? content = freezed,Object? likes = freezed,Object? timestamp = freezed,Object? medias = freezed,}) {
   return _then(_self.copyWith(
-userId: freezed == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
+id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String?,userId: freezed == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
+as String?,storyId: freezed == storyId ? _self.storyId : storyId // ignore: cast_nullable_to_non_nullable
+as String?,commentId: freezed == commentId ? _self.commentId : commentId // ignore: cast_nullable_to_non_nullable
 as String?,content: freezed == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
-as String?,timestamp: freezed == timestamp ? _self.timestamp : timestamp // ignore: cast_nullable_to_non_nullable
+as String?,likes: freezed == likes ? _self.likes : likes // ignore: cast_nullable_to_non_nullable
+as List<String>?,timestamp: freezed == timestamp ? _self.timestamp : timestamp // ignore: cast_nullable_to_non_nullable
 as DateTime?,medias: freezed == medias ? _self.medias : medias // ignore: cast_nullable_to_non_nullable
 as List<MediaStoryModel>?,
   ));
@@ -1061,10 +1065,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? userId,  String? content,  DateTime? timestamp,  List<MediaStoryModel>? medias)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? id,  String? userId,  String? storyId,  String? commentId,  String? content,  List<String>? likes,  DateTime? timestamp,  List<MediaStoryModel>? medias)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _StoryCommentModel() when $default != null:
-return $default(_that.userId,_that.content,_that.timestamp,_that.medias);case _:
+return $default(_that.id,_that.userId,_that.storyId,_that.commentId,_that.content,_that.likes,_that.timestamp,_that.medias);case _:
   return orElse();
 
 }
@@ -1082,10 +1086,10 @@ return $default(_that.userId,_that.content,_that.timestamp,_that.medias);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? userId,  String? content,  DateTime? timestamp,  List<MediaStoryModel>? medias)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? id,  String? userId,  String? storyId,  String? commentId,  String? content,  List<String>? likes,  DateTime? timestamp,  List<MediaStoryModel>? medias)  $default,) {final _that = this;
 switch (_that) {
 case _StoryCommentModel():
-return $default(_that.userId,_that.content,_that.timestamp,_that.medias);case _:
+return $default(_that.id,_that.userId,_that.storyId,_that.commentId,_that.content,_that.likes,_that.timestamp,_that.medias);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -1102,10 +1106,10 @@ return $default(_that.userId,_that.content,_that.timestamp,_that.medias);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? userId,  String? content,  DateTime? timestamp,  List<MediaStoryModel>? medias)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? id,  String? userId,  String? storyId,  String? commentId,  String? content,  List<String>? likes,  DateTime? timestamp,  List<MediaStoryModel>? medias)?  $default,) {final _that = this;
 switch (_that) {
 case _StoryCommentModel() when $default != null:
-return $default(_that.userId,_that.content,_that.timestamp,_that.medias);case _:
+return $default(_that.id,_that.userId,_that.storyId,_that.commentId,_that.content,_that.likes,_that.timestamp,_that.medias);case _:
   return null;
 
 }
@@ -1117,11 +1121,23 @@ return $default(_that.userId,_that.content,_that.timestamp,_that.medias);case _:
 
 @JsonSerializable(fieldRename: FieldRename.snake)
 class _StoryCommentModel implements StoryCommentModel {
-   _StoryCommentModel({this.userId, this.content, this.timestamp, final  List<MediaStoryModel>? medias}): _medias = medias;
+   _StoryCommentModel({this.id, this.userId, this.storyId, this.commentId, this.content, final  List<String>? likes, this.timestamp, final  List<MediaStoryModel>? medias}): _likes = likes,_medias = medias;
   factory _StoryCommentModel.fromJson(Map<String, dynamic> json) => _$StoryCommentModelFromJson(json);
 
+@override final  String? id;
 @override final  String? userId;
+@override final  String? storyId;
+@override final  String? commentId;
 @override final  String? content;
+ final  List<String>? _likes;
+@override List<String>? get likes {
+  final value = _likes;
+  if (value == null) return null;
+  if (_likes is EqualUnmodifiableListView) return _likes;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(value);
+}
+
 @override final  DateTime? timestamp;
  final  List<MediaStoryModel>? _medias;
 @override List<MediaStoryModel>? get medias {
@@ -1146,16 +1162,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _StoryCommentModel&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.content, content) || other.content == content)&&(identical(other.timestamp, timestamp) || other.timestamp == timestamp)&&const DeepCollectionEquality().equals(other._medias, _medias));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _StoryCommentModel&&(identical(other.id, id) || other.id == id)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.storyId, storyId) || other.storyId == storyId)&&(identical(other.commentId, commentId) || other.commentId == commentId)&&(identical(other.content, content) || other.content == content)&&const DeepCollectionEquality().equals(other._likes, _likes)&&(identical(other.timestamp, timestamp) || other.timestamp == timestamp)&&const DeepCollectionEquality().equals(other._medias, _medias));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,userId,content,timestamp,const DeepCollectionEquality().hash(_medias));
+int get hashCode => Object.hash(runtimeType,id,userId,storyId,commentId,content,const DeepCollectionEquality().hash(_likes),timestamp,const DeepCollectionEquality().hash(_medias));
 
 @override
 String toString() {
-  return 'StoryCommentModel(userId: $userId, content: $content, timestamp: $timestamp, medias: $medias)';
+  return 'StoryCommentModel(id: $id, userId: $userId, storyId: $storyId, commentId: $commentId, content: $content, likes: $likes, timestamp: $timestamp, medias: $medias)';
 }
 
 
@@ -1166,7 +1182,7 @@ abstract mixin class _$StoryCommentModelCopyWith<$Res> implements $StoryCommentM
   factory _$StoryCommentModelCopyWith(_StoryCommentModel value, $Res Function(_StoryCommentModel) _then) = __$StoryCommentModelCopyWithImpl;
 @override @useResult
 $Res call({
- String? userId, String? content, DateTime? timestamp, List<MediaStoryModel>? medias
+ String? id, String? userId, String? storyId, String? commentId, String? content, List<String>? likes, DateTime? timestamp, List<MediaStoryModel>? medias
 });
 
 
@@ -1183,11 +1199,15 @@ class __$StoryCommentModelCopyWithImpl<$Res>
 
 /// Create a copy of StoryCommentModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? userId = freezed,Object? content = freezed,Object? timestamp = freezed,Object? medias = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? userId = freezed,Object? storyId = freezed,Object? commentId = freezed,Object? content = freezed,Object? likes = freezed,Object? timestamp = freezed,Object? medias = freezed,}) {
   return _then(_StoryCommentModel(
-userId: freezed == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
+id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String?,userId: freezed == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
+as String?,storyId: freezed == storyId ? _self.storyId : storyId // ignore: cast_nullable_to_non_nullable
+as String?,commentId: freezed == commentId ? _self.commentId : commentId // ignore: cast_nullable_to_non_nullable
 as String?,content: freezed == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
-as String?,timestamp: freezed == timestamp ? _self.timestamp : timestamp // ignore: cast_nullable_to_non_nullable
+as String?,likes: freezed == likes ? _self._likes : likes // ignore: cast_nullable_to_non_nullable
+as List<String>?,timestamp: freezed == timestamp ? _self.timestamp : timestamp // ignore: cast_nullable_to_non_nullable
 as DateTime?,medias: freezed == medias ? _self._medias : medias // ignore: cast_nullable_to_non_nullable
 as List<MediaStoryModel>?,
   ));
