@@ -62,6 +62,5 @@ class CommentService {
       userActions[actionIndex] = storyId;
     }
     owner = owner!.copyWith(userActions: userActions);
-    await AuthHelper.updateUser(owner);
   }
 }

@@ -33,9 +33,6 @@ class StoryContentProvider extends InSoBlokViewModel {
   var quillScrollController = ScrollController();
   var focusNode = FocusNode();
 
-  final _scrollController = ScrollController();
-  ScrollController get scrollController => _scrollController;
-
   final _userService = UserService();
 
   UserModel? _owner;
@@ -85,17 +82,7 @@ class StoryContentProvider extends InSoBlokViewModel {
         ),
       );
     }();
-    // focusNode.addListener(() {
-    //   if (focusNode.hasFocus) {
-    //     Future.delayed(Duration(milliseconds: 300), () {
-    //       _scrollController.animateTo(
-    //         0.0,
-    //         duration: Duration(milliseconds: 300),
-    //         curve: Curves.easeInOut,
-    //       );
-    //     });
-    //   }
-    // });
+
     owner = await _userService.getUser(story.userId!);
     initQuill(false);
     getComments();
@@ -105,7 +92,6 @@ class StoryContentProvider extends InSoBlokViewModel {
   @override
   void dispose() {
     quillController.dispose();
-    scrollController.dispose();
     quillScrollController.dispose();
     focusNode.dispose();
 
@@ -330,46 +316,6 @@ class StoryContentProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  // Future<void> addComment() async {
-  //   if (isBusy) return;
-  //   clearErrors();
-
-  //   await runBusyFuture(() async {
-  //     try {
-  //       var desc = await AIHelpers.goToDescriptionView(context);
-  //       logger.d(desc);
-  //       if (desc != null) {
-  //         var comment = StoryCommentModel(
-  //           userId: user?.id,
-  //           content: desc,
-  //           timestamp: DateTime.now(),
-  //         );
-  //         final comments = List<StoryCommentModel>.from(story.comments ?? []);
-  //         comments.add(comment);
-
-  //         story = story.copyWith(
-  //           comments: comments,
-  //           updateDate: DateTime.now(),
-  //         );
-  //         await storyService.addComment(story: story);
-
-  //         AIHelpers.showToast(msg: 'Successfully add your comment!');
-  //       } else {
-  //         setError('Your comment is empty!');
-  //       }
-  //     } catch (e) {
-  //       setError(e);
-  //       logger.e(e);
-  //     } finally {
-  //       notifyListeners();
-  //     }
-  //   }());
-
-  //   if (hasError) {
-  //     AIHelpers.showToast(msg: modelError.toString());
-  //   }
-  // }
-
   String? _commentContent;
   String? get commentContent => _commentContent;
   set commentContent(String? s) {
@@ -422,15 +368,6 @@ class StoryContentProvider extends InSoBlokViewModel {
       logger.e(s);
     } finally {
       notifyListeners();
-      WidgetsBinding.instance.addPostFrameCallback((_) {
-        if (_scrollController.hasClients) {
-          _scrollController.animateTo(
-            _scrollController.position.minScrollExtent,
-            duration: Duration(milliseconds: 300),
-            curve: Curves.easeOut,
-          );
-        }
-      });
     }
     if (hasError) {
       AIHelpers.showToast(msg: modelError.toString());

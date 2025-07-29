@@ -132,45 +132,38 @@ class _StoryDetailCommentCellState extends State<StoryDetailCommentCell> {
                           color: AIColors.speraterColor,
                         ),
                         const SizedBox(width: 4),
-                        Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            InkWell(
-                              onTap: () {
-                                viewModel.isShowReplies =
-                                    !viewModel.isShowReplies;
-                              },
-                              child: Text(
-                                'View ${viewModel.commentReplies.length} Replies',
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Theme.of(
-                                    context,
-                                  ).colorScheme.onPrimary.withAlpha(128),
-                                ),
-                              ),
+                        InkWell(
+                          onTap: () {
+                            viewModel.isShowReplies = !viewModel.isShowReplies;
+                          },
+                          child: Text(
+                            'View ${viewModel.commentReplies.length} Replies',
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.onPrimary.withAlpha(128),
                             ),
-                            if (viewModel.isShowReplies) ...{
-                              for (var comment in viewModel.commentReplies) ...{
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 4.0,
-                                    vertical: 4.0,
-                                  ),
-                                  constraints: BoxConstraints(maxHeight: 200.0),
-                                  child: StoryCommentReplyCell(
-                                    key: GlobalKey(
-                                      debugLabel:
-                                          '${comment.id} - ${comment.commentId}',
-                                    ),
-                                  ),
-                                ),
-                              },
-                            },
-                          ],
+                          ),
                         ),
                       ],
                     ),
+                  },
+                  if (viewModel.isShowReplies) ...{
+                    for (var comment in viewModel.commentReplies) ...{
+                      Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 4.0,
+                          vertical: 4.0,
+                        ),
+                        constraints: BoxConstraints(maxHeight: 200.0),
+                        child: StoryCommentReplyCell(
+                          key: GlobalKey(
+                            debugLabel: '${comment.id} - ${comment.commentId}',
+                          ),
+                        ),
+                      ),
+                    },
                   },
                   const SizedBox(height: 8.0),
                 ],

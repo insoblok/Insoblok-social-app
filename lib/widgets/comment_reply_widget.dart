@@ -14,26 +14,14 @@ class StoryCommentReplyCell extends ViewModelWidget<CommentProvider> {
 
   @override
   Widget build(BuildContext context, viewModel) {
-    return Row(
+    return Stack(
       children: [
-        InkWell(
-          onTap: viewModel.onTapUserAvatar,
-          child: ClipOval(
-            child: AIAvatarImage(
-              viewModel.user?.avatar,
-              textSize: 22,
-              width: kStoryDetailAvatarSize,
-              height: kStoryDetailAvatarSize,
-              fullname: viewModel.user?.nickId ?? 'Test',
-            ),
-          ),
-        ),
         Container(
           margin: const EdgeInsets.only(left: kStoryDetailAvatarSize / 2.0),
           padding: const EdgeInsets.only(
             left: kStoryDetailAvatarSize / 2.0 + 8.0,
           ),
-          // width: double.infinity,
+          width: double.infinity,
           decoration: BoxDecoration(
             border: Border(
               left: BorderSide(width: 0.5, color: AIColors.speraterColor),
@@ -44,7 +32,7 @@ class StoryCommentReplyCell extends ViewModelWidget<CommentProvider> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Text(
-                viewModel.user?.fullName ?? '',
+                viewModel.owner?.fullName ?? '',
                 style: Theme.of(context).textTheme.bodySmall,
               ),
               if (viewModel.comment.content != null)
@@ -54,6 +42,18 @@ class StoryCommentReplyCell extends ViewModelWidget<CommentProvider> {
                 ),
               const SizedBox(height: 8.0),
             ],
+          ),
+        ),
+        InkWell(
+          onTap: viewModel.onTapUserAvatar,
+          child: ClipOval(
+            child: AIAvatarImage(
+              viewModel.owner?.avatar,
+              textSize: 22,
+              width: kStoryDetailAvatarSize * 0.66,
+              height: kStoryDetailAvatarSize * 0.66,
+              fullname: viewModel.owner?.nickId ?? 'Test',
+            ),
           ),
         ),
       ],

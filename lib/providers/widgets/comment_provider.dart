@@ -95,6 +95,7 @@ class CommentProvider extends InSoBlokViewModel {
         await commentService.updateLikeComment(
           comment: comment.copyWith(likes: likes, timestamp: DateTime.now()),
         );
+        comment = comment.copyWith(likes: likes);
       } catch (e) {
         setError(e);
         logger.e(e);
@@ -103,9 +104,6 @@ class CommentProvider extends InSoBlokViewModel {
 
     if (hasError) {
       AIHelpers.showToast(msg: modelError.toString());
-    } else {
-      comment = comment.copyWith(likes: likes);
-      notifyListeners();
     }
   }
 

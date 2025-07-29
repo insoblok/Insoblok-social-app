@@ -671,16 +671,22 @@ class StoryActionButton extends StatelessWidget {
   }
 }
 
-class StoryCommentDialog extends StatelessWidget {
+class StoryCommentDialog extends StatefulWidget {
   final StoryModel story;
 
   const StoryCommentDialog({super.key, required this.story});
 
   @override
+  State<StoryCommentDialog> createState() => _StoryCommentDialogState();
+}
+
+class _StoryCommentDialogState extends State<StoryCommentDialog> {
+  @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<StoryContentProvider>.reactive(
       viewModelBuilder: () => StoryContentProvider(),
-      onViewModelReady: (viewModel) => viewModel.init(context, model: story),
+      onViewModelReady:
+          (viewModel) => viewModel.init(context, model: widget.story),
       builder: (context, viewModel, _) {
         return Container(
           padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
@@ -701,73 +707,59 @@ class StoryCommentDialog extends StatelessWidget {
               end: Alignment.bottomRight,
             ),
           ),
-          child: Scaffold(
-            resizeToAvoidBottomInset: true,
-            backgroundColor: AIColors.transparent,
-            body: Column(
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(),
-                    Text(
-                      ' ${viewModel.story.comments?.length ?? 0} comments',
-                      style: Theme.of(context).textTheme.bodyMedium,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Container(),
+                  Text(
+                    ' ${viewModel.story.comments?.length ?? 0} comments',
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                  InkWell(
+                    onTap: viewModel.popupDialog,
+                    child: Icon(Icons.close, size: 26),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 16),
+              for (var comment in viewModel.comments) ...{
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 4.0,
+                    vertical: 4.0,
+                  ),
+                  child: StoryDetailCommentCell(
+                    key: GlobalKey(
+                      debugLabel: '${comment.id} - ${comment.storyId}',
                     ),
-                    InkWell(
-                      onTap: viewModel.popupDialog,
-                      child: Icon(Icons.close, size: 26),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                Expanded(
-                  child: SingleChildScrollView(
-                    controller: viewModel.scrollController,
-                    physics: BouncingScrollPhysics(),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        for (var comment in viewModel.comments) ...{
-                          Padding(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 4.0,
-                              vertical: 4.0,
-                            ),
-                            child: StoryDetailCommentCell(
-                              key: GlobalKey(
-                                debugLabel:
-                                    '${comment.id} - ${comment.storyId}',
-                              ),
-                              comment: comment,
-                              selected: viewModel.replyCommentId == comment.id,
-                              onTap: () {
-                                if (viewModel.replyCommentId == comment.id) {
-                                  viewModel.replyCommentId = null;
-                                } else {
-                                  viewModel.replyCommentId = comment.id;
-                                }
-                              },
-                            ),
-                          ),
-                        },
-                      ],
-                    ),
+                    comment: comment,
+                    selected: viewModel.replyCommentId == comment.id,
+                    onTap: () {
+                      if (viewModel.replyCommentId == comment.id) {
+                        viewModel.replyCommentId = null;
+                      } else {
+                        viewModel.replyCommentId = comment.id;
+                      }
+                    },
                   ),
                 ),
-                StorySendCommentWidget(
-                  controller: viewModel.quillController,
-                  focusNode: viewModel.focusNode,
-                  scrollController: viewModel.quillScrollController,
-                  onSend: () {
-                    viewModel.sendComment(
-                      story.id ?? '',
-                      commentId: viewModel.replyCommentId,
-                    );
-                  },
-                ),
-              ],
-            ),
+              },
+              StorySendCommentWidget(
+                controller: viewModel.quillController,
+                focusNode: viewModel.focusNode,
+                scrollController: viewModel.quillScrollController,
+                onSend: () {
+                  viewModel.sendComment(
+                    viewModel.story.id ?? '',
+                    commentId: viewModel.replyCommentId,
+                  );
+                },
+              ),
+              SizedBox(height: MediaQuery.of(context).viewInsets.bottom),
+            ],
           ),
         );
       },
