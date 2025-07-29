@@ -125,7 +125,6 @@ class StoryProvider extends InSoBlokViewModel {
     if (openCommentDialog) return;
     openCommentDialog = true;
     showFaceDialog = false;
-
     await showModalBottomSheet(
       context: context,
       backgroundColor: AppSettingHelper.background,
@@ -135,9 +134,14 @@ class StoryProvider extends InSoBlokViewModel {
         maxHeight: MediaQuery.of(context).size.height * 0.7,
         minHeight: MediaQuery.of(context).size.height * 0.2,
       ),
-      builder: (ctx) {
-        return StoryCommentDialog(story: story);
-      },
+      builder:
+          (context) => StatefulBuilder(
+            builder: (context, setState) => StoryCommentDialog(story: story),
+          ),
+      // builder: (ctx) {
+      //   logger.d('kkkkkkkkkkk');
+      //   return StoryCommentDialog(story: story);
+      // },
     );
 
     logger.d('Dismissed dialog');

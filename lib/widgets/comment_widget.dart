@@ -161,6 +161,7 @@ class _StoryDetailCommentCellState extends State<StoryDetailCommentCell> {
                           key: GlobalKey(
                             debugLabel: '${comment.id} - ${comment.commentId}',
                           ),
+                          comment: comment,
                         ),
                       ),
                     },

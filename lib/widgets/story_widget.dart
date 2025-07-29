@@ -680,9 +680,14 @@ class StoryCommentDialog extends StatefulWidget {
   State<StoryCommentDialog> createState() => _StoryCommentDialogState();
 }
 
-class _StoryCommentDialogState extends State<StoryCommentDialog> {
+class _StoryCommentDialogState extends State<StoryCommentDialog>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
   @override
   Widget build(BuildContext context) {
+    super.build(context);
     return ViewModelBuilder<StoryContentProvider>.reactive(
       viewModelBuilder: () => StoryContentProvider(),
       onViewModelReady:
@@ -707,59 +712,72 @@ class _StoryCommentDialogState extends State<StoryCommentDialog> {
               end: Alignment.bottomRight,
             ),
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(),
-                  Text(
-                    ' ${viewModel.story.comments?.length ?? 0} comments',
-                    style: Theme.of(context).textTheme.bodyMedium,
-                  ),
-                  InkWell(
-                    onTap: viewModel.popupDialog,
-                    child: Icon(Icons.close, size: 26),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-              for (var comment in viewModel.comments) ...{
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 4.0,
-                    vertical: 4.0,
-                  ),
-                  child: StoryDetailCommentCell(
-                    key: GlobalKey(
-                      debugLabel: '${comment.id} - ${comment.storyId}',
+          child: Scaffold(
+            resizeToAvoidBottomInset: true,
+            backgroundColor: AIColors.transparent,
+            body: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(),
+                    Text(
+                      ' ${viewModel.story.comments?.length ?? 0} comments',
+                      style: Theme.of(context).textTheme.bodyMedium,
                     ),
-                    comment: comment,
-                    selected: viewModel.replyCommentId == comment.id,
-                    onTap: () {
-                      if (viewModel.replyCommentId == comment.id) {
-                        viewModel.replyCommentId = null;
-                      } else {
-                        viewModel.replyCommentId = comment.id;
-                      }
-                    },
+                    InkWell(
+                      onTap: viewModel.popupDialog,
+                      child: Icon(Icons.close, size: 26),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+                Expanded(
+                  child: SingleChildScrollView(
+                    physics: BouncingScrollPhysics(),
+                    child: Column(
+                      children: [
+                        for (var comment in viewModel.comments) ...{
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 4.0,
+                              vertical: 4.0,
+                            ),
+                            child: StoryDetailCommentCell(
+                              key: GlobalKey(
+                                debugLabel:
+                                    '${comment.id} - ${comment.storyId}',
+                              ),
+                              comment: comment,
+                              selected: viewModel.replyCommentId == comment.id,
+                              onTap: () {
+                                if (viewModel.replyCommentId == comment.id) {
+                                  viewModel.replyCommentId = null;
+                                } else {
+                                  viewModel.replyCommentId = comment.id;
+                                }
+                              },
+                            ),
+                          ),
+                        },
+                      ],
+                    ),
                   ),
                 ),
-              },
-              StorySendCommentWidget(
-                controller: viewModel.quillController,
-                focusNode: viewModel.focusNode,
-                scrollController: viewModel.quillScrollController,
-                onSend: () {
-                  viewModel.sendComment(
-                    viewModel.story.id ?? '',
-                    commentId: viewModel.replyCommentId,
-                  );
-                },
-              ),
-              SizedBox(height: MediaQuery.of(context).viewInsets.bottom),
-            ],
+                StorySendCommentWidget(
+                  controller: viewModel.quillController,
+                  focusNode: viewModel.focusNode,
+                  scrollController: viewModel.quillScrollController,
+                  onSend: () {
+                    viewModel.sendComment(
+                      viewModel.story.id ?? '',
+                      commentId: viewModel.replyCommentId,
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
         );
       },
