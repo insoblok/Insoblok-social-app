@@ -108,12 +108,12 @@ class LookbookProvider extends InSoBlokViewModel {
             filterStories.add(story);
           }
         } else if (index == 2) {
-          if ((story.comments ?? [])
-              .map((comment) => comment.userId)
-              .toList()
-              .contains(AuthHelper.user?.id)) {
-            filterStories.add(story);
-          }
+          // if ((story.comments ?? [])
+          //     .map((comment) => comment.userId)
+          //     .toList()
+          //     .contains(AuthHelper.user?.id)) {
+          //   filterStories.add(story);
+          // }
         } else if (index == 3) {
           if (story.likes != null &&
               story.likes!.contains(AuthHelper.user?.id)) {

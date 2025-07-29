@@ -9,6 +9,7 @@ export 'upload_media_widget.dart';
 export 'image_widget.dart';
 export 'appbar.dart';
 export 'comment_widget.dart';
+export 'comment_reply_widget.dart';
 export 'profiles/profiles.dart';
 export 'news_widget.dart';
 export 'product_widget.dart';

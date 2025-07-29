@@ -21,7 +21,7 @@ abstract class StoryModel with _$StoryModel {
     DateTime? updateDate,
     DateTime? timestamp,
     List<ConnectedStoryModel>? connects,
-    List<StoryCommentModel>? comments,
+    List<String>? comments,
     List<StoryVoteModel>? votes,
     List<MediaStoryModel>? medias,
   }) = _StoryModel;
@@ -59,8 +59,12 @@ abstract class MediaStoryModel with _$MediaStoryModel {
 abstract class StoryCommentModel with _$StoryCommentModel {
   @JsonSerializable(fieldRename: FieldRename.snake)
   factory StoryCommentModel({
+    String? id,
     String? userId,
+    String? storyId,
+    String? commentId,
     String? content,
+    List<String>? likes,
     DateTime? timestamp,
     List<MediaStoryModel>? medias,
   }) = _StoryCommentModel;

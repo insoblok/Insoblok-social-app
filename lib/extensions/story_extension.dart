@@ -72,7 +72,7 @@ extension StoryModelExt on StoryModel {
       'update_date': updateDate?.toUtc().toIso8601String(),
       'timestamp': timestamp?.toUtc().toIso8601String(),
       'connects': ((connects ?? []).map((e) => e.toMap()).toList()),
-      'comments': ((comments ?? []).map((e) => e.toMap()).toList()),
+      'comments': (comments),
       'votes': ((votes ?? []).map((e) => e.toMap()).toList()),
       'medias': ((medias ?? []).map((e) => e.toMap()).toList()),
     };
@@ -107,10 +107,18 @@ extension MediaStoryModelExt on MediaStoryModel {
 }
 
 extension StoryCommentModelExt on StoryCommentModel {
+  bool isLike() {
+    var like = likes ?? [];
+    return like.contains(AuthHelper.user!.id);
+  }
+
   Map<String, dynamic> toMap() {
     Map<String, dynamic> result = {
       'user_id': userId,
+      'story_id': storyId,
+      'comment_id': commentId,
       'content': content,
+      'likes': (likes),
       'medias': ((medias ?? []).map((e) => e.toMap()).toList()),
       'timestamp': timestamp?.toUtc().toIso8601String(),
     };

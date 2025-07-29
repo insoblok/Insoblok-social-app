@@ -671,16 +671,27 @@ class StoryActionButton extends StatelessWidget {
   }
 }
 
-class StoryCommentDialog extends StatelessWidget {
+class StoryCommentDialog extends StatefulWidget {
   final StoryModel story;
 
   const StoryCommentDialog({super.key, required this.story});
 
   @override
+  State<StoryCommentDialog> createState() => _StoryCommentDialogState();
+}
+
+class _StoryCommentDialogState extends State<StoryCommentDialog>
+    with AutomaticKeepAliveClientMixin {
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
   Widget build(BuildContext context) {
+    super.build(context);
     return ViewModelBuilder<StoryContentProvider>.reactive(
       viewModelBuilder: () => StoryContentProvider(),
-      onViewModelReady: (viewModel) => viewModel.init(context, model: story),
+      onViewModelReady:
+          (viewModel) => viewModel.init(context, model: widget.story),
       builder: (context, viewModel, _) {
         return Container(
           padding: EdgeInsets.symmetric(horizontal: 12, vertical: 12),
@@ -705,6 +716,7 @@ class StoryCommentDialog extends StatelessWidget {
             resizeToAvoidBottomInset: true,
             backgroundColor: AIColors.transparent,
             body: Column(
+              mainAxisSize: MainAxisSize.min,
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -723,14 +735,10 @@ class StoryCommentDialog extends StatelessWidget {
                 const SizedBox(height: 16),
                 Expanded(
                   child: SingleChildScrollView(
-                    controller: viewModel.scrollController,
                     physics: BouncingScrollPhysics(),
                     child: Column(
-                      mainAxisSize: MainAxisSize.min,
                       children: [
-                        for (var comment
-                            in (viewModel.story.comments?.reversed.toList() ??
-                                [])) ...{
+                        for (var comment in viewModel.comments) ...{
                           Padding(
                             padding: const EdgeInsets.symmetric(
                               horizontal: 4.0,
@@ -739,12 +747,17 @@ class StoryCommentDialog extends StatelessWidget {
                             child: StoryDetailCommentCell(
                               key: GlobalKey(
                                 debugLabel:
-                                    '${comment.userId} - ${viewModel.story.comments?.reversed.toList().indexOf(comment)}',
+                                    '${comment.id} - ${comment.storyId}',
                               ),
                               comment: comment,
-                              isLast:
-                                  (viewModel.story.comments ?? []).length ==
-                                  comment,
+                              selected: viewModel.replyCommentId == comment.id,
+                              onTap: () {
+                                if (viewModel.replyCommentId == comment.id) {
+                                  viewModel.replyCommentId = null;
+                                } else {
+                                  viewModel.replyCommentId = comment.id;
+                                }
+                              },
                             ),
                           ),
                         },
@@ -756,7 +769,12 @@ class StoryCommentDialog extends StatelessWidget {
                   controller: viewModel.quillController,
                   focusNode: viewModel.focusNode,
                   scrollController: viewModel.quillScrollController,
-                  onSend: viewModel.sendComment,
+                  onSend: () {
+                    viewModel.sendComment(
+                      viewModel.story.id ?? '',
+                      commentId: viewModel.replyCommentId,
+                    );
+                  },
                 ),
               ],
             ),

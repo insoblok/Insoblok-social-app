@@ -210,16 +210,17 @@ class StoryDetailPage extends StatelessWidget {
                 ),
               ),
 
-              for (var comment
-                  in (viewModel.story.comments?.reversed.toList() ?? [])) ...{
+              for (var comment in viewModel.comments) ...{
                 Padding(
                   padding: const EdgeInsets.symmetric(
                     horizontal: 16.0,
                     vertical: 4.0,
                   ),
                   child: StoryDetailCommentCell(
+                    key: GlobalKey(
+                      debugLabel: '${comment.id} - ${comment.storyId}',
+                    ),
                     comment: comment,
-                    isLast: (viewModel.story.comments ?? []).length == comment,
                   ),
                 ),
               },

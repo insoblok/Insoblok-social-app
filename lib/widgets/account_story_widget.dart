@@ -88,7 +88,9 @@ class AccountStoryListCell extends StatelessWidget {
                             children: [
                               Expanded(
                                 child: InkWell(
-                                  onTap: viewModel.addComment,
+                                  onTap: () {
+                                    viewModel.sendComment(story.id ?? '');
+                                  },
                                   child: Row(
                                     children: [
                                       AIImage(AIImages.icCommit, height: 14.0),

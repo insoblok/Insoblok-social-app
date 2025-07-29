@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:image/image.dart' as img;
 import 'package:path_provider/path_provider.dart';
-import 'package:vsc_quill_delta_to_html/vsc_quill_delta_to_html.dart';
 
 import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
@@ -126,7 +125,6 @@ class StoryProvider extends InSoBlokViewModel {
     if (openCommentDialog) return;
     openCommentDialog = true;
     showFaceDialog = false;
-
     await showModalBottomSheet(
       context: context,
       backgroundColor: AppSettingHelper.background,
@@ -136,10 +134,18 @@ class StoryProvider extends InSoBlokViewModel {
         maxHeight: MediaQuery.of(context).size.height * 0.7,
         minHeight: MediaQuery.of(context).size.height * 0.2,
       ),
-      builder: (ctx) {
-        return StoryCommentDialog(story: story);
-      },
+      builder:
+          (context) => StatefulBuilder(
+            builder: (context, setState) => StoryCommentDialog(story: story),
+          ),
+      // builder: (ctx) {
+      //   logger.d('kkkkkkkkkkk');
+      //   return StoryCommentDialog(story: story);
+      // },
     );
+
+    logger.d('Dismissed dialog');
+
     openCommentDialog = false;
     fetchStory();
   }
@@ -242,51 +248,51 @@ class StoryProvider extends InSoBlokViewModel {
     }
   }
 
-  Future<void> sendComment() async {
-    if (isBusy) return;
-    clearErrors();
-    await runBusyFuture(() async {
-      try {
-        var quillData = quillController.document.toDelta().toJson();
-        logger.d(quillController.document);
-        logger.d(quillData);
-        if (quillData.isNotEmpty) {
-          var converter = QuillDeltaToHtmlConverter(
-            quillData,
-            ConverterOptions.forEmail(),
-          );
-          var comment = StoryCommentModel(
-            userId: user?.id,
-            content: converter.convert(),
-            timestamp: DateTime.now(),
-          );
-          var comments = List<StoryCommentModel>.from(story.comments ?? []);
+  // Future<void> sendComment() async {
+  //   if (isBusy) return;
+  //   clearErrors();
+  //   await runBusyFuture(() async {
+  //     try {
+  //       var quillData = quillController.document.toDelta().toJson();
+  //       logger.d(quillController.document);
+  //       logger.d(quillData);
+  //       if (quillData.isNotEmpty) {
+  //         var converter = QuillDeltaToHtmlConverter(
+  //           quillData,
+  //           ConverterOptions.forEmail(),
+  //         );
+  //         var comment = StoryCommentModel(
+  //           userId: user?.id,
+  //           content: converter.convert(),
+  //           timestamp: DateTime.now(),
+  //         );
+  //         var comments = List<StoryCommentModel>.from(story.comments ?? []);
 
-          comments.add(comment);
-          story = story.copyWith(
-            comments: comments,
-            updateDate: DateTime.now(),
-          );
-          await storyService.addComment(story: story);
-          quillController.document = Document();
+  //         comments.add(comment);
+  //         story = story.copyWith(
+  //           comments: comments,
+  //           updateDate: DateTime.now(),
+  //         );
+  //         await storyService.addComment(story: story);
+  //         quillController.document = Document();
 
-          await fetchStory();
-        } else {
-          AIHelpers.showToast(msg: 'Your comment is empty!');
-        }
-      } catch (e, s) {
-        setError(e);
-        logger.e(e);
-        logger.e(s);
-      } finally {
-        notifyListeners();
-      }
-    }());
+  //         await fetchStory();
+  //       } else {
+  //         AIHelpers.showToast(msg: 'Your comment is empty!');
+  //       }
+  //     } catch (e, s) {
+  //       setError(e);
+  //       logger.e(e);
+  //       logger.e(s);
+  //     } finally {
+  //       notifyListeners();
+  //     }
+  //   }());
 
-    if (hasError) {
-      AIHelpers.showToast(msg: modelError.toString());
-    }
-  }
+  //   if (hasError) {
+  //     AIHelpers.showToast(msg: modelError.toString());
+  //   }
+  // }
 
   bool _isLiking = false;
   bool get isLiking => _isLiking;
