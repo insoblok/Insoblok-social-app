@@ -124,29 +124,22 @@ class _StoryDetailCommentCellState extends State<StoryDetailCommentCell> {
                   ),
                   if (viewModel.commentReplies.isNotEmpty) ...{
                     const SizedBox(height: 8),
-                    Row(
-                      children: [
-                        Container(
-                          width: 24,
-                          height: 0.5,
-                          color: AIColors.speraterColor,
-                        ),
-                        const SizedBox(width: 4),
-                        InkWell(
-                          onTap: () {
-                            viewModel.isShowReplies = !viewModel.isShowReplies;
-                          },
-                          child: Text(
-                            'View ${viewModel.commentReplies.length} Replies',
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Theme.of(
-                                context,
-                              ).colorScheme.onPrimary.withAlpha(128),
-                            ),
+                    Padding(
+                      padding: EdgeInsets.only(left: 16),
+                      child: InkWell(
+                        onTap: () {
+                          viewModel.isShowReplies = !viewModel.isShowReplies;
+                        },
+                        child: Text(
+                          'View ${viewModel.commentReplies.length} Replies',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onPrimary.withAlpha(128),
                           ),
                         ),
-                      ],
+                      ),
                     ),
                   },
                   if (viewModel.isShowReplies) ...{
@@ -178,7 +171,8 @@ class _StoryDetailCommentCellState extends State<StoryDetailCommentCell> {
                   textSize: 22,
                   width: kStoryDetailAvatarSize,
                   height: kStoryDetailAvatarSize,
-                  fullname: user?.nickId ?? 'Test',
+                  borderRadius: kStoryDetailAvatarSize / 2,
+                  fullname: user?.fullName ?? 'Test',
                 ),
               ),
             ),
