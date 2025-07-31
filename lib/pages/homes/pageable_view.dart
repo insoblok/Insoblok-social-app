@@ -101,15 +101,29 @@ class PageableView extends StatelessWidget {
                                             var index = menuTitles.indexOf(
                                               title,
                                             );
-                                            logger.d(index);
+                                            viewModel.tabIndex = index;
                                             viewModel.onClickMenuItem(index);
                                           },
-                                          child: Text(
-                                            title,
-                                            style:
-                                                Theme.of(
-                                                  context,
-                                                ).textTheme.headlineMedium,
+                                          child: Column(
+                                            children: [
+                                              Text(
+                                                title,
+                                                style:
+                                                    Theme.of(
+                                                      context,
+                                                    ).textTheme.headlineMedium,
+                                              ),
+                                              if (viewModel.tabIndex ==
+                                                  menuTitles.indexOf(title))
+                                                Container(
+                                                  width: 30,
+                                                  height: 2,
+                                                  margin: EdgeInsets.only(
+                                                    top: 8,
+                                                  ),
+                                                  color: AIColors.white,
+                                                ),
+                                            ],
                                           ),
                                         ),
                                       },

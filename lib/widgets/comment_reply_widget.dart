@@ -23,9 +23,11 @@ class StoryCommentReplyCell extends StatelessWidget {
         return Stack(
           children: [
             Container(
-              margin: const EdgeInsets.only(left: kStoryDetailAvatarSize / 2.0),
+              margin: const EdgeInsets.only(
+                left: kStoryDetailAvatarSize * 0.33,
+              ),
               padding: const EdgeInsets.only(
-                left: kStoryDetailAvatarSize / 2.0 + 8.0,
+                left: kStoryDetailAvatarSize * 0.33 + 8.0,
               ),
               width: double.infinity,
               decoration: BoxDecoration(
@@ -69,10 +71,11 @@ class StoryCommentReplyCell extends StatelessWidget {
               child: ClipOval(
                 child: AIAvatarImage(
                   viewModel.owner?.avatar,
-                  textSize: 22,
+                  textSize: 16,
                   width: kStoryDetailAvatarSize * 0.66,
                   height: kStoryDetailAvatarSize * 0.66,
-                  fullname: viewModel.owner?.nickId ?? 'Test',
+                  borderRadius: kStoryDetailAvatarSize * 0.33,
+                  fullname: viewModel.owner?.fullName ?? 'Test',
                 ),
               ),
             ),
