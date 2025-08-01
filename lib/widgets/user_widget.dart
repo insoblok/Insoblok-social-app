@@ -432,3 +432,110 @@ class FriendListCell extends StatelessWidget {
     );
   }
 }
+
+class UserListCell extends StatefulWidget {
+  final String id;
+  final bool selected;
+  final void Function()? onTap;
+
+  const UserListCell({
+    super.key,
+    required this.id,
+    this.selected = false,
+    this.onTap,
+  });
+
+  @override
+  State<UserListCell> createState() => _UserListCellState();
+}
+
+class _UserListCellState extends State<UserListCell> {
+  @override
+  Widget build(BuildContext context) {
+    return ViewModelBuilder<UserProvider>.reactive(
+      viewModelBuilder: () => UserProvider(),
+      onViewModelReady: (viewModel) => viewModel.init(context, id: widget.id),
+      builder: (context, viewModel, _) {
+        var userData = viewModel.owner;
+        return Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
+          child: InkWell(
+            onTap: widget.onTap,
+            child: Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: 16.0,
+                vertical: 8.0,
+              ),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.secondary.withAlpha(16),
+                borderRadius: BorderRadius.circular(12.0),
+                boxShadow: [
+                  BoxShadow(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.onSecondary.withAlpha(16),
+                    spreadRadius: 3,
+                    blurRadius: 5,
+                    offset: Offset(0, 1), // changes position of shadow
+                  ),
+                ],
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  userData == null
+                      ? ShimmerContainer(
+                        child: Container(
+                          width: 28,
+                          height: 28,
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                      )
+                      : Stack(
+                        children: [
+                          userData.avatarStatusView(
+                            width: 28,
+                            height: 28,
+                            borderWidth: 2.0,
+                            textSize: 14.0,
+                            showStatus: false,
+                          ),
+                        ],
+                      ),
+                  const SizedBox(width: 12.0),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      spacing: 4.0,
+                      children: [
+                        userData == null
+                            ? ShimmerContainer(
+                              child: Container(
+                                width: 80.0,
+                                height: 16,
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                              ),
+                            )
+                            : Text(
+                              userData.fullName,
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
+                      ],
+                    ),
+                  ),
+                  if (widget.selected) Icon(Icons.check, color: AIColors.white),
+                ],
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+}

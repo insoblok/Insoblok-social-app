@@ -24,8 +24,17 @@ class StoryService {
         var json = doc.data();
         json['id'] = doc.id;
         var story = StoryModel.fromJson(json);
-        if (story.userId != null) {
-          result.add(story);
+
+        if (story.status == null || story.status == 'public') {
+          if (story.userId != null) {
+            result.add(story);
+          }
+        } else {
+          if ((story.allowUsers ?? []).contains(AuthHelper.user!.id!)) {
+            if (story.userId != null) {
+              result.add(story);
+            }
+          }
         }
       } on FirebaseException catch (e) {
         logger.e(e.message);

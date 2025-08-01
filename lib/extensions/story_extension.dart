@@ -73,6 +73,7 @@ extension StoryModelExt on StoryModel {
       'timestamp': timestamp?.toUtc().toIso8601String(),
       'connects': ((connects ?? []).map((e) => e.toMap()).toList()),
       'comments': (comments),
+      'allow_users': (allowUsers),
       'votes': ((votes ?? []).map((e) => e.toMap()).toList()),
       'medias': ((medias ?? []).map((e) => e.toMap()).toList()),
     };

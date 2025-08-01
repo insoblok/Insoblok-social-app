@@ -18,10 +18,6 @@ class AddStoryProvider extends InSoBlokViewModel {
   final _mediaProvider = locator<UploadMediaProvider>();
   UploadMediaProvider get mediaProvider => _mediaProvider;
 
-  Future<void> init(BuildContext context) async {
-    this.context = context;
-  }
-
   String _title = '';
   String get title => _title;
   set title(String s) {
@@ -33,6 +29,13 @@ class AddStoryProvider extends InSoBlokViewModel {
   bool get isVoteImage => _isVoteImage;
   set isVoteImage(bool s) {
     _isVoteImage = s;
+    notifyListeners();
+  }
+
+  bool _isPrivate = false;
+  bool get isPrivate => _isPrivate;
+  set isPrivate(bool s) {
+    _isPrivate = s;
     notifyListeners();
   }
 
@@ -50,6 +53,20 @@ class AddStoryProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  final List<UserModel?> userList = [];
+
+  List<UserModel?> _selectedUserList = [];
+  List<UserModel?> get selectedUserList => _selectedUserList;
+  set selectedUserList(List<UserModel?> data) {
+    _selectedUserList = data;
+    notifyListeners();
+  }
+
+  Future<void> init(BuildContext context) async {
+    this.context = context;
+    fetchUserData();
+  }
+
   Future<void> updateDescription() async {
     var desc = await AIHelpers.goToDescriptionView(
       context,
@@ -61,8 +78,37 @@ class AddStoryProvider extends InSoBlokViewModel {
     }
   }
 
+  Future<void> fetchUserData() async {
+    try {
+      var value = await userService.getAllUsers();
+      if (value.isNotEmpty) {
+        userList.clear();
+        userList.addAll(value);
+      }
+    } catch (e) {
+      setError(e);
+      logger.e(e);
+    } finally {
+      notifyListeners();
+    }
+  }
+
+  void selectUser(UserModel? user) {
+    if (_selectedUserList.contains(user)) {
+      _selectedUserList.remove(user);
+    } else {
+      _selectedUserList.add(user);
+    }
+    notifyListeners();
+  }
+
   void setPostType(bool isVote) {
     _isVoteImage = isVote;
+    notifyListeners();
+  }
+
+  void setPostAction(bool isVote) {
+    _isPrivate = isVote;
     notifyListeners();
   }
 
@@ -101,7 +147,14 @@ class AddStoryProvider extends InSoBlokViewModel {
   Future<void> onClickUploadButton() async {
     if (isBusy) return;
     clearErrors();
-
+    List<String> allowUsers = [];
+    for (var user in selectedUserList) {
+      allowUsers.add(user!.id!);
+    }
+    if (isPrivate && allowUsers.isEmpty) {
+      AIHelpers.showToast(msg: 'You need to select one user at least');
+      return;
+    }
     await runBusyFuture(() async {
       try {
         txtUploadButton = 'Uploading Media(s)...';
@@ -110,12 +163,15 @@ class AddStoryProvider extends InSoBlokViewModel {
           throw ('Invalid story type');
         }
         txtUploadButton = 'Adding to Server...';
+
         var story = StoryModel(
           title: title,
           text: quillDescription,
           category: isVoteImage ? 'vote' : 'regular',
           updateDate: DateTime.now(),
           timestamp: DateTime.now(),
+          status: isPrivate ? 'private' : 'public',
+          allowUsers: allowUsers,
         ).copyWith(medias: medias);
         await storyService.postStory(story: story);
       } catch (e, s) {

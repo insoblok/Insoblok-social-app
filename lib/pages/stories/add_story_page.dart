@@ -88,26 +88,79 @@ class AddStoryPage extends StatelessWidget {
                       ),
                       UploadMediaWidget(),
                       const SizedBox(height: 40.0),
-                      Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Checkbox(
-                            value: viewModel.isVoteImage,
-                            onChanged: (bool? newValue) {
-                              viewModel.setPostType(newValue ?? true);
-                            },
-                          ),
-                          Text(
-                            'Post as a Vote Story',
-                            style: Theme.of(context).textTheme.labelMedium,
-                          ),
-                        ],
-                      ),
                       TextFillButton(
                         text: viewModel.txtUploadButton,
                         color: viewModel.isBusy ? AIColors.grey : AIColors.pink,
                         onTap: viewModel.onClickUploadButton,
                       ),
+                      const SizedBox(height: 16.0),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        spacing: 8,
+                        children: [
+                          SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: Checkbox(
+                              value: viewModel.isVoteImage,
+                              onChanged: (bool? newValue) {
+                                viewModel.setPostType(newValue ?? true);
+                              },
+                            ),
+                          ),
+                          Text(
+                            'Post as a Vote Story',
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        spacing: 8,
+                        children: [
+                          SizedBox(
+                            width: 24,
+                            height: 24,
+                            child: Checkbox(
+                              value: viewModel.isPrivate,
+                              onChanged: (bool? newValue) {
+                                viewModel.setPostAction(newValue ?? true);
+                              },
+                            ),
+                          ),
+                          Text(
+                            'Make it private',
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 8),
+                      if (viewModel.isPrivate) ...{
+                        SizedBox(
+                          width: double.infinity,
+                          height: 400,
+                          child: ListView.builder(
+                            padding: EdgeInsets.zero,
+                            itemCount: viewModel.userList.length,
+                            itemBuilder: (context, index) {
+                              var user = viewModel.userList[index];
+                              return UserListCell(
+                                key: GlobalKey(
+                                  debugLabel: 'friend-${user?.id}',
+                                ),
+                                id: user!.id!,
+                                selected: viewModel.selectedUserList.contains(
+                                  user,
+                                ),
+                                onTap: () {
+                                  viewModel.selectUser(user);
+                                },
+                              );
+                            },
+                          ),
+                        ),
+                      },
                     ]),
                   ),
                 ),

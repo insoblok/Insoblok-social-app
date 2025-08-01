@@ -31,6 +31,8 @@ _StoryModel _$StoryModelFromJson(Map<String, dynamic> json) => _StoryModel(
           .toList(),
   comments:
       (json['comments'] as List<dynamic>?)?.map((e) => e as String).toList(),
+  allowUsers:
+      (json['allow_users'] as List<dynamic>?)?.map((e) => e as String).toList(),
   votes:
       (json['votes'] as List<dynamic>?)
           ?.map((e) => StoryVoteModel.fromJson(e as Map<String, dynamic>))
@@ -56,6 +58,7 @@ Map<String, dynamic> _$StoryModelToJson(_StoryModel instance) =>
       'timestamp': instance.timestamp?.toIso8601String(),
       'connects': instance.connects,
       'comments': instance.comments,
+      'allow_users': instance.allowUsers,
       'votes': instance.votes,
       'medias': instance.medias,
     };
