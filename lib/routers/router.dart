@@ -195,4 +195,11 @@ class Routers {
   static dynamic goToFaceDetailPage(BuildContext context, String url) {
     return _pushToRoute(context, kRouterFaceDetail, url);
   }
+
+  static dynamic goToUserListPage(
+    BuildContext context, {
+    List<UserModel>? users,
+  }) {
+    return _pushToRoute(context, kRouterUserList, users);
+  }
 }

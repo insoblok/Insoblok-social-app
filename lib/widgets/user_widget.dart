@@ -433,7 +433,7 @@ class FriendListCell extends StatelessWidget {
   }
 }
 
-class UserListCell extends StatefulWidget {
+class UserListCell extends StatelessWidget {
   final String id;
   final bool selected;
   final void Function()? onTap;
@@ -446,21 +446,16 @@ class UserListCell extends StatefulWidget {
   });
 
   @override
-  State<UserListCell> createState() => _UserListCellState();
-}
-
-class _UserListCellState extends State<UserListCell> {
-  @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<UserProvider>.reactive(
       viewModelBuilder: () => UserProvider(),
-      onViewModelReady: (viewModel) => viewModel.init(context, id: widget.id),
+      onViewModelReady: (viewModel) => viewModel.init(context, id: id),
       builder: (context, viewModel, _) {
         var userData = viewModel.owner;
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
           child: InkWell(
-            onTap: widget.onTap,
+            onTap: onTap,
             child: Container(
               padding: const EdgeInsets.symmetric(
                 horizontal: 16.0,
@@ -529,7 +524,7 @@ class _UserListCellState extends State<UserListCell> {
                       ],
                     ),
                   ),
-                  if (widget.selected) Icon(Icons.check, color: AIColors.white),
+                  if (selected) Icon(Icons.check, color: AIColors.white),
                 ],
               ),
             ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import 'package:stacked/stacked.dart';
 
+import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
@@ -137,28 +138,49 @@ class AddStoryPage extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       if (viewModel.isPrivate) ...{
-                        SizedBox(
-                          width: double.infinity,
-                          height: 400,
-                          child: ListView.builder(
-                            padding: EdgeInsets.zero,
-                            itemCount: viewModel.userList.length,
-                            itemBuilder: (context, index) {
-                              var user = viewModel.userList[index];
-                              return UserListCell(
-                                key: GlobalKey(
-                                  debugLabel: 'friend-${user?.id}',
+                        Row(
+                          children: [
+                            Spacer(),
+                            InkWell(
+                              onTap: viewModel.onClickAddUser,
+                              child: Text('+ Add User'),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 16.0),
+                        Wrap(
+                          spacing: 4.0,
+                          runSpacing: 4.0,
+                          children: [
+                            for (var user in viewModel.selectedUserList) ...{
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 6.0,
+                                  vertical: 2.0,
                                 ),
-                                id: user!.id!,
-                                selected: viewModel.selectedUserList.contains(
-                                  user,
+                                decoration: BoxDecoration(
+                                  color: Theme.of(
+                                    context,
+                                  ).colorScheme.secondary.withAlpha(32),
+                                  borderRadius: BorderRadius.circular(12.0),
                                 ),
-                                onTap: () {
-                                  viewModel.selectUser(user);
-                                },
-                              );
+                                child: Row(
+                                  spacing: 4.0,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Text(user.fullName),
+                                    InkWell(
+                                      onTap: () {
+                                        viewModel.selectedUserList.remove(user);
+                                        viewModel.notifyListeners();
+                                      },
+                                      child: Icon(Icons.close, size: 14.0),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             },
-                          ),
+                          ],
                         ),
                       },
                     ]),

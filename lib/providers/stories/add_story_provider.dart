@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:insoblok/locator.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/providers/providers.dart';
+import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 
@@ -53,18 +54,11 @@ class AddStoryProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  final List<UserModel?> userList = [];
-
-  List<UserModel?> _selectedUserList = [];
-  List<UserModel?> get selectedUserList => _selectedUserList;
-  set selectedUserList(List<UserModel?> data) {
-    _selectedUserList = data;
-    notifyListeners();
-  }
+  List<UserModel> _selectedUserList = [];
+  List<UserModel> get selectedUserList => _selectedUserList;
 
   Future<void> init(BuildContext context) async {
     this.context = context;
-    fetchUserData();
   }
 
   Future<void> updateDescription() async {
@@ -76,30 +70,6 @@ class AddStoryProvider extends InSoBlokViewModel {
       quillDescription = desc;
       notifyListeners();
     }
-  }
-
-  Future<void> fetchUserData() async {
-    try {
-      var value = await userService.getAllUsers();
-      if (value.isNotEmpty) {
-        userList.clear();
-        userList.addAll(value);
-      }
-    } catch (e) {
-      setError(e);
-      logger.e(e);
-    } finally {
-      notifyListeners();
-    }
-  }
-
-  void selectUser(UserModel? user) {
-    if (_selectedUserList.contains(user)) {
-      _selectedUserList.remove(user);
-    } else {
-      _selectedUserList.add(user);
-    }
-    notifyListeners();
   }
 
   void setPostType(bool isVote) {
@@ -149,7 +119,7 @@ class AddStoryProvider extends InSoBlokViewModel {
     clearErrors();
     List<String> allowUsers = [];
     for (var user in selectedUserList) {
-      allowUsers.add(user!.id!);
+      allowUsers.add(user.id!);
     }
     if (isPrivate && allowUsers.isEmpty) {
       AIHelpers.showToast(msg: 'You need to select one user at least');
@@ -191,6 +161,10 @@ class AddStoryProvider extends InSoBlokViewModel {
       mediaProvider.reset();
       Navigator.of(context).pop(true);
     }
+  }
+
+  Future<void> onClickAddUser() async {
+    Routers.goToUserListPage(context, users: selectedUserList);
   }
 
   @override
