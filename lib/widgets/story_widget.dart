@@ -888,10 +888,11 @@ class CommentFaceModalView extends ViewModelWidget<StoryProvider> {
               children: [
                 ClipOval(
                   child: AIImage(
-                    viewModel.face,
+                    viewModel.face!,
                     width: 64.0,
                     height: 64.0,
                     fit: BoxFit.cover,
+                    key: ValueKey(viewModel.face!.path + DateTime.now().millisecondsSinceEpoch.toString()),
                   ),
                 ),
                 for (var content in viewModel.annotations) ...{

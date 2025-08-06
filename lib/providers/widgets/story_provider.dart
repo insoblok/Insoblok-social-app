@@ -83,31 +83,44 @@ class StoryProvider extends InSoBlokViewModel {
 
   Future<void> detectFace(String link) async {
     var faces = await GoogleVisionHelper.getFacesFromImage(link: link);
-    
-    logger.d('link: ${link}');
+    logger.d('link: $link');
+
     var _annotations = await GoogleVisionHelper.analyzeLocalImage(link: link);
 
-    logger.d('_annotations: ${_annotations}');
+    logger.d('_annotations: ${_annotations[0]}');
+    logger.d('_faces: $faces');
 
     if (faces.isNotEmpty) {
-      // print('The number of detected faces: ${faces.length}');
       final directory = await getApplicationDocumentsDirectory();
       final filePath = '${directory.path}/face.png';
       final file = File(filePath);
-      if (!file.existsSync()) {
-        await file.create();
+
+      try {
+        // Delete the file if it exists
+        if (await file.exists()) {
+          await file.delete();
+        }
+
+        // Write new image bytes directly (no need to call create() before writing)
+        final encoded = img.encodePng(faces[0]);
+        _face = await file.writeAsBytes(encoded, flush: true);
+        await FileImage(_face!).evict(); // 👈 force clear from memory
+
+        // Clear and add annotations
+        annotations.clear();
+        annotations.addAll(_annotations);
+
+        logger.d('✅ face.png replaced at $filePath');
+      } catch (e) {
+        logger.e('❌ Failed to write new face.png: $e');
       }
-      // print("The number of annotations: ${annotations.length}");
-      _face = await file.writeAsBytes(img.encodePng(faces[0]));
-      annotations.clear();
-      annotations.addAll(_annotations);
+
       notifyListeners();
-    }
-    else{
-      // print("No face detected!");
+    } else {
       logger.e("No face detected!");
     }
   }
+
 
   @override
   void dispose() {
@@ -184,6 +197,7 @@ class StoryProvider extends InSoBlokViewModel {
   }
 
   Future<void> onPostDeclinePressed() async{
+    logger.d(face);
     showFaceDialog = false;
   }
 
