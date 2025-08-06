@@ -98,8 +98,8 @@ class StoryListCell extends StatelessWidget {
                         spacing: 12.0,
                         children: [
                           const Spacer(),
-                          if (viewModel.showFaceDialog) ...{
-                            StoryFaceModalView(marginBottom: marginBottom),
+                          if (viewModel.face != null && viewModel.showFaceDialog) ...{
+                            CommentFaceModalView(marginBottom: marginBottom),
                           } else ...{
                             Container(
                               margin: EdgeInsets.only(
@@ -289,16 +289,15 @@ class StoryListCell extends StatelessWidget {
                         ),
                         onTap: viewModel.repost,
                       ),
-                      if (viewModel.face != null) ...{
-                        const SizedBox(height: 0.0),
-                        StoryActionButton(
-                          src: Icon(Icons.face, size: kStoryAvatarSize * 0.5),
-                          onTap: () {
-                            viewModel.showFaceDialog =
-                                !viewModel.showFaceDialog;
-                          },
-                        ),
-                      },
+                      // if (viewModel.face != null) ...{
+                      //   const SizedBox(height: 0.0),
+                      //   StoryActionButton(
+                      //     src: Icon(Icons.face, size: kStoryAvatarSize * 0.5),
+                      //     onTap: () {
+                      //       viewModel.showFaceDialog = !viewModel.showFaceDialog;
+                      //     },
+                      //   ),
+                      // },
                     ],
                   ),
                 ),
@@ -858,6 +857,121 @@ class StoryListEmptyView extends StatelessWidget {
       height: 200.0,
       alignment: Alignment.center,
       child: Text(description),
+    );
+  }
+}
+
+class CommentFaceModalView extends ViewModelWidget<StoryProvider> {
+  final double? marginBottom;
+  const CommentFaceModalView({super.key, this.marginBottom});
+
+  @override
+  Widget build(BuildContext context, viewModel) {
+    return InkWell(
+      onTap: () => Routers.goToFaceDetailPage(
+        context,
+        (viewModel.story.medias ?? [])[viewModel.pageIndex].link!,
+      ),
+      child: Container(
+        margin: EdgeInsets.only(bottom: marginBottom ?? 0),
+        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          borderRadius: BorderRadius.circular(30.0),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Original content row
+            Row(
+              children: [
+                ClipOval(
+                  child: AIImage(
+                    viewModel.face,
+                    width: 64.0,
+                    height: 64.0,
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                for (var content in viewModel.annotations) ...{
+                  Expanded(
+                    child: Column(
+                      spacing: 4.0,
+                      children: [
+                        AIImage(content.icon, width: 32.0, height: 32.0),
+                        Text(
+                          '${content.title}\n${content.desc}',
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context).textTheme.bodySmall,
+                        ),
+                      ],
+                    ),
+                  ),
+                },
+              ],
+            ),
+            
+            // Spacing between content and buttons
+            const SizedBox(height: 5.0),
+            
+            // Button row
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                ElevatedButton(
+                  onPressed: () => viewModel.onFaceEditPressed(),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.pink,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                    minimumSize: const Size(60, 30),
+                  ),
+                  child: const Text(
+                    'Edit',
+                    style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w600),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () => viewModel.onCommentPostPressed(),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                    minimumSize: const Size(60, 30),
+                  ),
+                  child: const Text(
+                    'Post',
+                    style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w600),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () => viewModel.onPostDeclinePressed(),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                    minimumSize: const Size(60, 30),
+                  ),
+                  child: const Text(
+                    'Decline',
+                    style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w600),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

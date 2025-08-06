@@ -1,5 +1,5 @@
 import 'dart:convert';
-
+import 'dart:io';
 import 'package:flutter/services.dart';
 
 import 'package:google_mlkit_face_detection/google_mlkit_face_detection.dart';
@@ -55,8 +55,8 @@ class GoogleVisionService {
     return ServiceAccountCredentials.fromJson(json);
   }
 
-  Future<List<AIFaceAnnotation>> analyzeImage(String link) async {
-    List<AIFaceAnnotation> result = [];
+  Future<List<AIFaceAnnotation>> analyzeImageUrl(String link) async {
+
     var image = await NetworkHelper.downloadFile(
       link,
       type: 'gallery',
@@ -65,6 +65,27 @@ class GoogleVisionService {
 
     if (image == null) return [];
 
+    return await analyzeImageCore(image);
+  }
+
+  Future<List<AIFaceAnnotation>> analyzeImageFile(String link) async {
+
+    var image = File(link);
+
+     logger.d('Faces image link in analyzeImageFile: ${image}');
+
+    // if (!image.existsSync()){
+      return await analyzeImageCore(image);
+    // }
+    // return [];
+  }
+
+  Future<List<AIFaceAnnotation>> analyzeImageCore(File? image) async {
+
+    logger.d('Face image in analyzeImageCore function: ${image}');
+
+    if (image == null) return [];
+    List<AIFaceAnnotation> result = [];
     final visionApi = await getVisionApi();
 
     // Convert image to base64
@@ -91,7 +112,8 @@ class GoogleVisionService {
         logger.d('Faces detected: ${result.faceAnnotations?.length}');
         if ((result.faceAnnotations ?? []).isNotEmpty) {
           var annotation = result.faceAnnotations!.first;
-
+          logger.d('underExposedLikelihood: ${annotation.underExposedLikelihood}');
+          logger.d('headwearLikelihood: ${annotation.headwearLikelihood}');
           return [
             if (annotation.angerLikelihood != null)
               AIFaceAnnotation(
@@ -124,7 +146,7 @@ class GoogleVisionService {
     return result;
   }
 
-  Future<List<img.Image>> getFacesFromImage(String imagePath) async {
+  Future<List<img.Image>> getFacesFromImageUrl(String imagePath) async {
     // 1. Load the original image
     var image = await NetworkHelper.downloadFile(
       imagePath,
@@ -132,6 +154,19 @@ class GoogleVisionService {
       ext: 'png',
     );
 
+    if (image == null) return [];
+    return await getFacesFromImageCore(image);
+  }
+
+  Future<List<img.Image>> getFacesFromLocalImage(String imagePath) async {
+    // 1. Load the original image
+    var image = File(imagePath);
+    if (!image.existsSync()) return [];
+    return await getFacesFromImageCore(image);
+  }
+
+  Future<List<img.Image>> getFacesFromImageCore(File? image) async {
+    // 1. Load the original image
     if (image == null) return [];
     final originalImageBytes = await image.readAsBytes();
     final originalImage = img.decodeImage(originalImageBytes)!;
@@ -153,7 +188,7 @@ class GoogleVisionService {
 
     // 5. Extract each face as separate image
     final List<img.Image> faceImages = [];
-
+    print('The number of faces detected::${faces.length}');
     for (final face in faces) {
       final rect = face.boundingBox;
       logger.d(face.smilingProbability);
@@ -187,8 +222,11 @@ class GoogleVisionHelper {
   static GoogleVisionService get service => locator<GoogleVisionService>();
 
   static Future<List<AIFaceAnnotation>> analyzeImage({required String link}) =>
-      service.analyzeImage(link);
+      service.analyzeImageUrl(link);
+
+  static Future<List<AIFaceAnnotation>> analyzeLocalImage({required String link}) =>
+      service.analyzeImageFile(link);
 
   static Future<List<img.Image>> getFacesFromImage({required String link}) =>
-      service.getFacesFromImage(link);
+      service.getFacesFromLocalImage(link);
 }

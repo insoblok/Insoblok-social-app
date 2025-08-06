@@ -16,6 +16,7 @@ dependencies:
 
   intl: any
 
+  camera: any
   cupertino_icons: any
   cached_network_image: any
   flutter_svg: any
@@ -79,6 +80,7 @@ dependencies:
   google_mlkit_face_detection: any
   smooth_page_indicator: any
   syncfusion_flutter_gauges: any
+
 
 dev_dependencies:
   flutter_test:

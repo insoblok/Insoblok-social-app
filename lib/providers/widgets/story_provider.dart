@@ -1,11 +1,11 @@
 import 'dart:io';
-
+import 'dart:async';
 import 'package:flutter/material.dart';
 
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:image/image.dart' as img;
+import 'package:insoblok/utils/background_camera_capture.dart';
 import 'package:path_provider/path_provider.dart';
-
 import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/routers/routers.dart';
@@ -38,16 +38,27 @@ class StoryProvider extends InSoBlokViewModel {
   late QuillController quillController;
   var quillScrollController = ScrollController();
   var focusNode = FocusNode();
+  final camera = BackgroundCameraCapture();
+  Timer? capture_timer;
 
   void init(BuildContext context, {required StoryModel model}) async {
     this.context = context;
     story = model;
 
-    if ((story.medias ?? []).isNotEmpty) {
-      if (story.medias![0].type == 'image') {
-        detectFace(story.medias![0].link!);
+    
+    camera.onFrame = (String? path){
+      print("Trying to detect user expressions");
+      if(path!=null){
+        detectFace(path);
       }
-    }
+    };
+
+    await camera.initialize(); // Initialize camera.
+    //if ((story.medias ?? []).isNotEmpty) {
+    //  if (story.medias![0].type == 'image') {
+    //    detectFace(story.medias![0].link!);
+    //  }
+    //}
 
     quillController = () {
       return QuillController.basic(
@@ -60,6 +71,7 @@ class StoryProvider extends InSoBlokViewModel {
     fetchUser();
   }
 
+
   File? _face;
   File? get face => _face;
   set face(File? f) {
@@ -71,17 +83,29 @@ class StoryProvider extends InSoBlokViewModel {
 
   Future<void> detectFace(String link) async {
     var faces = await GoogleVisionHelper.getFacesFromImage(link: link);
-    annotations.clear();
-    annotations.addAll(await GoogleVisionHelper.analyzeImage(link: link));
+    
+    logger.d('link: ${link}');
+    var _annotations = await GoogleVisionHelper.analyzeLocalImage(link: link);
+
+    logger.d('_annotations: ${_annotations}');
+
     if (faces.isNotEmpty) {
+      // print('The number of detected faces: ${faces.length}');
       final directory = await getApplicationDocumentsDirectory();
       final filePath = '${directory.path}/face.png';
       final file = File(filePath);
       if (!file.existsSync()) {
         await file.create();
       }
+      // print("The number of annotations: ${annotations.length}");
       _face = await file.writeAsBytes(img.encodePng(faces[0]));
+      annotations.clear();
+      annotations.addAll(_annotations);
       notifyListeners();
+    }
+    else{
+      // print("No face detected!");
+      logger.e("No face detected!");
     }
   }
 
@@ -90,7 +114,8 @@ class StoryProvider extends InSoBlokViewModel {
     quillController.dispose();
     quillScrollController.dispose();
     focusNode.dispose();
-
+    camera.dispose();
+    //capture_timer?.cancel();
     super.dispose();
   }
 
@@ -148,6 +173,18 @@ class StoryProvider extends InSoBlokViewModel {
 
     openCommentDialog = false;
     fetchStory();
+  }
+
+  Future<void> onFaceEditPressed() async{
+
+  }
+
+  Future<void> onCommentPostPressed() async{
+
+  }
+
+  Future<void> onPostDeclinePressed() async{
+    showFaceDialog = false;
   }
 
   Future<void> fetchUser() async {
@@ -468,7 +505,7 @@ class StoryProvider extends InSoBlokViewModel {
     }
   }
 
-  bool _showFaceDialog = false;
+  bool _showFaceDialog = true;
   bool get showFaceDialog => _showFaceDialog;
   set showFaceDialog(bool f) {
     _showFaceDialog = f;
