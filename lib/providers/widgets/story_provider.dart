@@ -188,12 +188,9 @@ class StoryProvider extends InSoBlokViewModel {
     fetchStory();
   }
 
-  Future<void> onFaceEditPressed() async{
-
-  }
-
-  Future<void> onCommentPostPressed() async{
-
+  Future<void> onReactionPostPressed() async{
+    Routers.goToFaceDetailPage(context, (story.medias ?? [])[pageIndex].link!,
+        face!);
   }
 
   Future<void> onPostDeclinePressed() async{
@@ -469,17 +466,20 @@ class StoryProvider extends InSoBlokViewModel {
     await runBusyFuture(() async {
       try {
         var hasDescription = await _showDescriptionDialog();
+        logger.d("hasDescription: $hasDescription");
 
         String? description;
         if (hasDescription == true) {
           description = await AIHelpers.goToDescriptionView(context);
           if (description == null) {
+            description = "";
             throw ('empty description!');
           }
-        }
-        var newStory = StoryModel(
+
+          var newStory = StoryModel(
           title: 'Repost',
           text: description,
+          status: 'private',
           category: 'vote',
           medias:
               ((resultFaceUrl?.isNotEmpty ?? false) && showFaceDialog)
@@ -492,20 +492,21 @@ class StoryProvider extends InSoBlokViewModel {
                     ),
                   ]
                   : story.medias,
-          updateDate: DateTime.now(),
-          timestamp: DateTime.now(),
-          connects: [
-            ...(story.connects ?? []),
-            if (!containedConnect())
-              ConnectedStoryModel(postId: story.id, userId: story.userId),
-          ],
-        );
+            updateDate: DateTime.now(),
+            timestamp: DateTime.now(),
+            connects: [
+              ...(story.connects ?? []),
+              if (!containedConnect())
+                ConnectedStoryModel(postId: story.id, userId: story.userId),
+            ],
+          );
 
-        await storyService.postStory(story: newStory);
-        await tastScoreService.repostScore(story);
-        AIHelpers.showToast(msg: 'Successfully reposted to LOOKBOOK!');
+          await storyService.postStory(story: newStory);
+          await tastScoreService.repostScore(story);
 
-        Navigator.of(context).pop(true);
+          AIHelpers.showToast(msg: 'Successfully reposted to LOOKBOOK!');
+        }
+        // Navigator.of(context).pop(true);
       } catch (e) {
         setError(e);
         logger.e(e);
@@ -633,7 +634,7 @@ class StoryProvider extends InSoBlokViewModel {
                   ),
                   Expanded(
                     child: GestureDetector(
-                      onTap: () => Navigator.of(context).pop(),
+                      onTap: () => Navigator.of(context).pop(false),
                       child: Container(
                         height: 44.0,
                         decoration: BoxDecoration(

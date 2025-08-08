@@ -37,6 +37,8 @@ class AIImages {
   static String icBottomWallet = 'assets/icons/ic_wallet.svg';
   static String icUsdt = 'assets/icons/ic_usdt.png';
   static String icXrp = 'assets/icons/ic_xrp.svg';
+  static String icPostLookbook = 'assets/icons/ic_post_lookbook.png';
+  static String icPostReaction = 'assets/icons/ic_post_reaction.png';
 
   static String icTopEffect = 'assets/icons/ic_effect_2.svg';
   static String icFavoriteFill = 'assets/icons/ic_favourite_fill.svg';
@@ -72,6 +74,7 @@ class AIImages {
   static String icHot = 'assets/icons/ic_hot.png';
   static String icRepost = 'assets/icons/ic_repost.png';
   static String icView = 'assets/icons/ic_view.png';
+  static String icGallery = 'assets/icons/ic_photo-gallery.svg';
 
   static String imgLevel(int level) {
     return 'assets/images/img_level_0$level.png';

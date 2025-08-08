@@ -112,42 +112,107 @@ class FirebaseService {
     }
   }
 
+  // Future<String?> uploadImageFromUrl({
+  //   required String imageUrl,
+  //   String? id,
+  //   String? folderName,
+  // }) async {
+  //   try {
+  //     var tempDir = await getTemporaryDirectory();
+  //     String fullPath = "${tempDir.path}/${AuthHelper.user?.id}.jpg";
+  //     logger.d('full path $fullPath');
+
+  //     final folderPath = 'users/${id ?? AuthHelper.user?.id}';
+  //     await createFolderInFirebaseStorage(folderPath);
+
+  //     var dio = Dio();
+  //     var response = await dio.get(
+  //       imageUrl,
+  //       onReceiveProgress: (p, v) {
+  //         logger.d('${(p / v * 100).toStringAsFixed(2)}%');
+  //       },
+  //       options: Options(
+  //         responseType: ResponseType.bytes,
+  //         followRedirects: false,
+  //         validateStatus: (status) {
+  //           return (status ?? 600) < 500;
+  //         },
+  //       ),
+  //     );
+      
+  //     File file = File(fullPath);
+  //     var raf = file.openSync(mode: FileMode.write);
+  //     raf.writeFromSync(response.data);
+  //     await raf.close();
+
+  //     final String fileName =
+  //         "${AuthHelper.user?.id}_${kFullFormatter.format(DateTime.now())}.jpg";
+
+  //     logger.d("fileName : $fileName");
+
+  //     final String storagePath =
+  //         folderName != null
+  //             ? 'users/${id ?? AuthHelper.user?.id}/$folderName/$fileName'
+  //             : 'users/${id ?? AuthHelper.user?.id}/$fileName';
+
+  //     final Reference storageRef = _storage.ref().child(storagePath);
+  //     logger.d("file : $file");
+  //     // Upload the file
+  //     final UploadTask uploadTask = storageRef.putFile(file);
+  //     final TaskSnapshot snapshot = await uploadTask;
+
+  //     // Get download URL
+  //     final String downloadUrl = await snapshot.ref.getDownloadURL();
+
+  //     logger.d("downloadUrl : $downloadUrl");
+  //     return downloadUrl;
+  //   } catch (e) {
+  //     logger.e('Error uploading image: $e');
+  //     return null;
+  //   }
+  // }
+
   Future<String?> uploadImageFromUrl({
     required String imageUrl,
     String? id,
     String? folderName,
   }) async {
     try {
-      var tempDir = await getTemporaryDirectory();
-      String fullPath = "${tempDir.path}/${AuthHelper.user?.id}.jpg";
-      logger.d('full path $fullPath');
+      File file;
 
-      var dio = Dio();
-      var response = await dio.get(
-        imageUrl,
-        onReceiveProgress: (p, v) {
-          logger.d('${(p / v * 100).toStringAsFixed(2)}%');
-        },
-        options: Options(
-          responseType: ResponseType.bytes,
-          followRedirects: false,
-          validateStatus: (status) {
-            return (status ?? 600) < 500;
+      if (imageUrl.startsWith('http')) {
+        // It's a remote image, download it first
+        var tempDir = await getTemporaryDirectory();
+        String fullPath = "${tempDir.path}/${AuthHelper.user?.id}.jpg";
+        logger.d('full path $fullPath');
+
+        var dio = Dio();
+        var response = await dio.get(
+          imageUrl,
+          onReceiveProgress: (p, v) {
+            logger.d('${(p / v * 100).toStringAsFixed(2)}%');
           },
-        ),
-      );
-      logger.d(response.headers);
-      File file = File(fullPath);
-      var raf = file.openSync(mode: FileMode.write);
-      raf.writeFromSync(response.data);
-      await raf.close();
+          options: Options(
+            responseType: ResponseType.bytes,
+            followRedirects: false,
+            validateStatus: (status) => (status ?? 600) < 500,
+          ),
+        );
+
+        file = File(fullPath);
+        var raf = file.openSync(mode: FileMode.write);
+        raf.writeFromSync(response.data);
+        await raf.close();
+      } else {
+        // It's a local file path
+        file = File(imageUrl);
+      }
 
       final String fileName =
           "${AuthHelper.user?.id}_${kFullFormatter.format(DateTime.now())}.jpg";
-      final String storagePath =
-          folderName != null
-              ? 'users/${id ?? AuthHelper.user?.id}/$folderName/$fileName'
-              : 'users/${id ?? AuthHelper.user?.id}/$fileName';
+      final String storagePath = folderName != null
+          ? 'users/${id ?? AuthHelper.user?.id}/$folderName/$fileName'
+          : 'users/${id ?? AuthHelper.user?.id}/$fileName';
 
       final Reference storageRef = _storage.ref().child(storagePath);
 
@@ -157,12 +222,26 @@ class FirebaseService {
 
       // Get download URL
       final String downloadUrl = await snapshot.ref.getDownloadURL();
+      logger.d("downloadUrl : $downloadUrl");
       return downloadUrl;
     } catch (e) {
       logger.e('Error uploading image: $e');
       return null;
     }
   }
+
+
+  Future<void> createFolderInFirebaseStorage(String folderPath) async {
+    try {
+      final ref = FirebaseStorage.instance.ref('$folderPath/.keep');
+
+      // Upload a small dummy string
+      await ref.putString('placeholder');
+      print('Folder "$folderPath" created (by uploading .keep file)');
+    } catch (e) {
+      print('Error creating folder: $e');
+    }
+}
 
   Future<String?> uploadFile({
     required File file,

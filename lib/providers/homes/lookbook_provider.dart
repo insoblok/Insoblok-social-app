@@ -65,8 +65,11 @@ class LookbookProvider extends InSoBlokViewModel {
     await runBusyFuture(() async {
       try {
         var ss = await storyService.getLookBookStories();
-        logger.d(ss.length);
         _stories.addAll(ss);
+
+        var ids = ss.map((item) => item.id).toList();
+        logger.d("reaction ids: $ids");
+        
         filterList(0);
       } catch (e) {
         setError(e);

@@ -244,9 +244,12 @@ class Navigation {
     initRoute(kRouterMarketPlace, (props) => MarketPlacePage());
 
     // * FaceDetailPage
-    initRoute<String>(
+    initRoute<Map<String, dynamic>>(
       kRouterFaceDetail,
-      (props) => FaceDetailPage(url: props!),
+      (props) => FaceDetailPage(
+        url: props!['url'],
+        face: props['face'],
+      ),
     );
 
     // * UserListPage

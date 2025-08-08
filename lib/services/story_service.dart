@@ -69,14 +69,17 @@ class StoryService {
     List<StoryModel> result = [];
     var storiesSnapshot =
         await storyCollection.orderBy('timestamp', descending: true).get();
+
     for (var doc in storiesSnapshot.docs) {
       try {
         var json = doc.data();
         json['id'] = doc.id;
         var story = StoryModel.fromJson(json);
+
         if (story.userId != null &&
             AuthHelper.user!.userActions != null &&
             AuthHelper.user!.userActions!.contains(story.id)) {
+
           result.add(story);
         }
       } on FirebaseException catch (e) {
@@ -184,12 +187,17 @@ class StoryService {
       await tastescoreService.winCreatorScore();
       await AuthHelper.updateUser(AuthHelper.user!.copyWith(hasVotePost: true));
     }
+    
+    var staus = story.status;
+
+    logger.d("staus after post: $staus");
     if (story.status != null && story.status == 'private') {
       addUserAction(ref.id);
     }
     return ref.id;
   }
 
+  
   // Update a story
   Future<void> updateStory({required StoryModel story}) async {
     await storyCollection.doc(story.id).update(story.toMap());
@@ -321,6 +329,7 @@ class StoryService {
   Future<String?> uploadResult(String url, {String? folderName}) async {
     return FirebaseHelper.uploadImageFromUrl(
       imageUrl: url,
+      id: AuthHelper.user!.id!,
       folderName: folderName,
     );
   }

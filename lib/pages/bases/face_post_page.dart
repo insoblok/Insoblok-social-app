@@ -9,11 +9,11 @@ import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/widgets/widgets.dart';
 
-class FaceDetailPage extends StatelessWidget {
+class FacePostPage extends StatelessWidget {
   final String url;
   final File face;
 
-  const FaceDetailPage({super.key, required this.url, required this.face});
+  const FacePostPage({super.key, required this.url, required this.face});
 
   @override
   Widget build(BuildContext context) {
@@ -103,16 +103,16 @@ class FaceDetailPage extends StatelessWidget {
                                 ),
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
-                                  spacing: 20.0,
+                                  spacing: 40.0,
                                   children: [
-                                    for (var data in kReactionPostIconData) ...{
+                                    for (var data in kMediaDetailIconData) ...{
                                       InkWell(
-                                        onTap:
-                                            () => viewModel.onClickActionButton(
-                                              kReactionPostIconData.indexOf(
-                                                data,
-                                              ),
-                                            ),
+                                        // onTap:
+                                        //     () => viewModel.onClickActionButton(
+                                        //       kMediaDetailIconData.indexOf(
+                                        //         data,
+                                        //       ),
+                                        //     ),
                                         child: Column(
                                           mainAxisSize: MainAxisSize.min,
                                           children: [

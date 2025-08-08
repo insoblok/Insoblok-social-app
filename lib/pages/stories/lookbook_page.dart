@@ -72,7 +72,7 @@ class LookbookPage extends StatelessWidget {
                 if (viewModel.isBusy) ...{
                   SliverFillRemaining(child: Center(child: Loader(size: 60))),
                 },
-                if (viewModel.filterStories.isEmpty && !viewModel.isBusy) ...{
+                if (viewModel.stories.isEmpty && !viewModel.isBusy) ...{
                   SliverFillRemaining(
                     child: InSoBlokEmptyView(
                       desc:
@@ -85,14 +85,14 @@ class LookbookPage extends StatelessWidget {
                       scrollDirection: Axis.vertical,
                       controller: viewModel.pageController,
                       padEnds: false,
-                      itemCount: viewModel.filterStories.length,
+                      itemCount: viewModel.stories.length,
                       itemBuilder: (_, index) {
                         return StoryListCell(
                           key: GlobalKey(
                             debugLabel:
-                                'story-${viewModel.filterStories[index].id}',
+                                'story-${viewModel.stories[index].id}',
                           ),
-                          story: viewModel.filterStories[index],
+                          story: viewModel.stories[index],
                         );
                       },
                     ),

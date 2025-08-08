@@ -344,7 +344,9 @@ class StoryFaceModalView extends ViewModelWidget<StoryProvider> {
           () => Routers.goToFaceDetailPage(
             context,
             (viewModel.story.medias ?? [])[viewModel.pageIndex].link!,
+            viewModel.face!,
           ),
+          
       child: Container(
         margin: EdgeInsets.only(bottom: marginBottom ?? 0),
         padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
@@ -871,6 +873,7 @@ class CommentFaceModalView extends ViewModelWidget<StoryProvider> {
       onTap: () => Routers.goToFaceDetailPage(
         context,
         (viewModel.story.medias ?? [])[viewModel.pageIndex].link!,
+        viewModel.face!,
       ),
       child: Container(
         margin: EdgeInsets.only(bottom: marginBottom ?? 0),
@@ -921,23 +924,7 @@ class CommentFaceModalView extends ViewModelWidget<StoryProvider> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ElevatedButton(
-                  onPressed: () => viewModel.onFaceEditPressed(),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.pink,
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20.0),
-                    ),
-                    minimumSize: const Size(60, 30),
-                  ),
-                  child: const Text(
-                    'Edit',
-                    style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w600),
-                  ),
-                ),
-                ElevatedButton(
-                  onPressed: () => viewModel.onCommentPostPressed(),
+                  onPressed: () => viewModel.onReactionPostPressed(),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green,
                     foregroundColor: Colors.white,

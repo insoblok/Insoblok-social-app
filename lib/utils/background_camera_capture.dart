@@ -55,7 +55,7 @@ class BackgroundCameraCapture {
 
     // Skip if not enough time has passed
     final now = DateTime.now();
-    if (now.difference(_lastCaptureTime).inMilliseconds < 2000) return;
+    if (now.difference(_lastCaptureTime).inMilliseconds < 20000) return;
     _lastCaptureTime = now;
 
     // Ensure camera is ready

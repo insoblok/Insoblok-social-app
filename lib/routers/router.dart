@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 
 import 'package:insoblok/models/models.dart';
@@ -192,8 +193,11 @@ class Routers {
     return _pushToRoute(context, kRouterMarketPlace, null);
   }
 
-  static dynamic goToFaceDetailPage(BuildContext context, String url) {
-    return _pushToRoute(context, kRouterFaceDetail, url);
+  static dynamic goToFaceDetailPage(BuildContext context, String url, File face) {
+    return _pushToRoute(context, kRouterFaceDetail, {
+      'url': url,
+      'face': face,
+    });
   }
 
   static dynamic goToUserListPage(
