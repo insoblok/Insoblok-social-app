@@ -188,8 +188,10 @@ class StoryProvider extends InSoBlokViewModel {
     fetchStory();
   }
 
-  Future<void> onReactionPostPressed() async{
-    Routers.goToFaceDetailPage(context, (story.medias ?? [])[pageIndex].link!,
+  Future<void> onPostReactionPressed() async{
+
+    logger.d("story : $story");
+    Routers.goToFaceDetailPage(context, story.id!, (story.medias ?? [])[pageIndex].link!,
         face!);
   }
 
@@ -457,6 +459,10 @@ class StoryProvider extends InSoBlokViewModel {
       }
       notifyListeners();
     }
+  }
+
+  Future<void> showReactions() async{
+    Routers.goToReactionPage(context, story);
   }
 
   Future<void> repost() async {

@@ -10,16 +10,17 @@ import 'package:insoblok/services/services.dart';
 import 'package:insoblok/widgets/widgets.dart';
 
 class FaceDetailPage extends StatelessWidget {
+  final String storyID;
   final String url;
   final File face;
 
-  const FaceDetailPage({super.key, required this.url, required this.face});
+  const FaceDetailPage({super.key, required this.storyID, required this.url, required this.face});
 
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<FaceDetailProvider>.reactive(
       viewModelBuilder: () => FaceDetailProvider(),
-      onViewModelReady: (viewModel) => viewModel.init(context, url: url, face: face),
+      onViewModelReady: (viewModel) => viewModel.init(context, storyID:storyID, url: url, face: face),
       builder: (context, viewModel, _) {
         return Scaffold(
           body: Stack(

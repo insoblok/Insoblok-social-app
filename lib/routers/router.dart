@@ -45,6 +45,14 @@ class Routers {
     return _pushToRoute(context, kRouterAccount, user);
   }
 
+  static dynamic goToReactionPage(BuildContext context, StoryModel data) {
+    return _pushToRoute(context, kRouterReaction, data);
+  }
+
+  static dynamic goToStoryDetailPage(BuildContext context, StoryModel data) {
+    return _pushToRoute(context, kRouterStoryDetail, data);
+  }
+  
   static dynamic goToAccountUpdatePage(BuildContext context) {
     return _pushToRoute(context, kRouterAccountUpdate, null);
   }
@@ -140,9 +148,7 @@ class Routers {
     return _pushToRoute(context, kRouterVTOAddProduct, null);
   }
 
-  static dynamic goToStoryDetailPage(BuildContext context, StoryModel data) {
-    return _pushToRoute(context, kRouterStoryDetail, data);
-  }
+  
 
   static dynamic goToNewsDetailPage(BuildContext context, NewsModel data) {
     return _pushToRoute(context, kRouterNewsDetail, data);
@@ -193,8 +199,9 @@ class Routers {
     return _pushToRoute(context, kRouterMarketPlace, null);
   }
 
-  static dynamic goToFaceDetailPage(BuildContext context, String url, File face) {
+  static dynamic goToFaceDetailPage(BuildContext context, String storyID, String url, File face) {
     return _pushToRoute(context, kRouterFaceDetail, {
+      'storyID': storyID,
       'url': url,
       'face': face,
     });

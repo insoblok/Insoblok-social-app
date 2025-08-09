@@ -239,7 +239,7 @@ return $default(_that.id,_that.uid,_that.walletAddress,_that.avatar,_that.firstN
 
 @JsonSerializable(fieldRename: FieldRename.snake)
 class _UserModel implements UserModel {
-   _UserModel({this.id, this.uid, this.walletAddress, this.avatar, this.firstName, this.lastName, this.email, this.password, this.city, this.country, this.website, this.desc, this.discovery, this.nickId, this.lat, this.lon, this.ipAddress, this.updateDate, this.timestamp, this.status, this.hasVotePost, this.freeStyle, this.isPremium, this.rewardDate, this.transferedXP, this.transferedInSo, final  List<String>? likes, final  List<String>? follows, final  List<String>? views, final  List<String>? userActions, final  List<UserActionModel>? actions}): _likes = likes,_follows = follows,_views = views,_userActions = userActions,_actions = actions;
+   _UserModel({this.id, this.uid, this.walletAddress, this.avatar, this.firstName, this.lastName, this.email, this.password, this.city, this.country, this.website, this.desc, this.discovery, this.nickId, this.lat, this.lon, this.ipAddress, this.updateDate, this.timestamp, this.status, this.hasVotePost, this.freeStyle, this.isPremium, this.rewardDate, this.transferedXP, this.transferedInSo, final  List<String>? likes, final  List<String>? follows, final  List<String>? views, final  List<String>? userActions, final  List<String>? galleries, final  List<UserActionModel>? actions}): _likes = likes,_follows = follows,_views = views,_userActions = userActions,_actions = actions;
   factory _UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);
 
 @override final  String? id;

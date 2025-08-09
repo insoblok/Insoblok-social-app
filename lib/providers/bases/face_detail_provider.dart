@@ -30,6 +30,13 @@ class FaceDetailProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  String? _storyID;
+  String? get storyID => _storyID;
+  set storyID(String? model) {
+    _storyID = model;
+    notifyListeners();
+  }
+
   StoryModel? _story;
   StoryModel? get story => _story;
   set story(StoryModel? model) {
@@ -60,13 +67,15 @@ class FaceDetailProvider extends InSoBlokViewModel {
 
   List<AIFaceAnnotation> annotations = [];
 
-  Future<void> init(BuildContext context, {required String url, required File face}) async {
+  Future<void> init(BuildContext context, {required String storyID, required String url, required File face}) async {
     this.context = context;
     this.url = url;
+    this.storyID = storyID;
 
-    final directory = await getApplicationDocumentsDirectory();
-    final filePath = '${directory.path}/face_mickle.png';
-    this.face = File(filePath);
+    // final directory = await getApplicationDocumentsDirectory();
+    // final filePath = '${directory.path}/face_mickle.png';
+    // this.face = File(filePath);
+    this.face = face;
   }
 
   Future<void> detectFace(String link) async {
@@ -108,160 +117,218 @@ class FaceDetailProvider extends InSoBlokViewModel {
         await repost();
         break;
       case 1:
+        logger.d("storyID : $storyID");
+        await postAsReaction();
         break;
       case 2:
+        await saveToGallery();
         break;
     }
   }
 
-  Future<void> repost() async {
-  if (isBusy) return;
-  clearErrors();
+  Future<void> saveToGallery() async {
+    if (isBusy) return;
+    clearErrors();
 
-  await runBusyFuture(() async {
+    setBusy(true);
+    notifyListeners();
+
     try {
-      var hasDescription = await _showDescriptionDialog();
-      if (hasDescription != true) return;
-
-      final description = await AIHelpers.goToDescriptionView(context);
-      if (description == null || description.isEmpty) {
-        throw ('empty description!');
-      }
-
-      resultFaceUrl = await storyService.uploadResult(
+      var galleryFaceUrl = await storyService.uploadResult(
         face!.path,
         folderName: 'face',
+        postCategory: 'gallery',
+        storyID: storyID,
       );
 
-      logger.d("resultFaceUrl: $resultFaceUrl");
+      logger.d("galleryFaceUrl: $galleryFaceUrl");
 
-      MediaStoryModel? media;
-      if (resultFaceUrl != null){
-
-        var bytes = await File(face!.path).readAsBytes();
-        var decodedImage = img.decodeImage(bytes);
-
-        media = MediaStoryModel(
-          link: resultFaceUrl,
-          type: 'image',
-          width: decodedImage?.width.toDouble(),
-          height: decodedImage?.height.toDouble(),
-        );
-      }
-
-      var newStory = StoryModel(
-        title: 'Repost',
-        text: description,
-        status: 'private',
-        category: 'vote',
-        medias: media != null ? [media] : [],
-        updateDate: DateTime.now(),
-        timestamp: DateTime.now(),
-      );
-
-      await storyService.postStory(story: newStory);
-
-      if (story != null) {
-        await tastScoreService.repostScore(story!);
-      }
-
-      logger.d("newStory: $newStory");
-      AIHelpers.showToast(msg: 'Successfully reposted to LOOKBOOK!');
+      AIHelpers.showToast(msg: 'Successfully saved to Gallery!');
     } catch (e) {
       setError(e);
       logger.e(e);
     } finally {
+      setBusy(false);
       notifyListeners();
     }
-  }());
-
-  if (hasError) {
-    AIHelpers.showToast(msg: modelError.toString());
   }
-}
+
+  Future<void> postAsReaction() async {
+    if (isBusy) return;
+    clearErrors();
+
+    setBusy(true);
+    notifyListeners();
+
+    try {
+      var reactionFaceUrl = await storyService.uploadResult(
+        face!.path,
+        folderName: 'face',
+        postCategory: 'reaction',
+        storyID: storyID,
+      );
+
+      logger.d("reactionFaceUrl: $reactionFaceUrl");
+
+      AIHelpers.showToast(msg: 'Successfully posted as Reaction!');
+
+    } catch (e) {
+      setError(e);
+      logger.e(e);
+    } finally {
+      setBusy(false);
+      notifyListeners();
+    }
+  }
+
+  Future<void> repost() async {
+    if (isBusy) return;
+    clearErrors();
+
+    await runBusyFuture(() async {
+      try {
+        var hasDescription = await _showDescriptionDialog();
+        if (hasDescription != true) return;
+
+        final description = await AIHelpers.goToDescriptionView(context);
+        if (description == null || description.isEmpty) {
+          throw ('empty description!');
+        }
+
+        resultFaceUrl = await storyService.uploadResult(
+          face!.path,
+          folderName: 'face',
+          postCategory: 'lookbook',
+          storyID: storyID,
+        );
+
+        logger.d("resultFaceUrl: $resultFaceUrl");
+
+        MediaStoryModel? media;
+        if (resultFaceUrl != null) {
+          var bytes = await File(face!.path).readAsBytes();
+          var decodedImage = img.decodeImage(bytes);
+
+          media = MediaStoryModel(
+            link: resultFaceUrl,
+            type: 'image',
+            width: decodedImage?.width.toDouble(),
+            height: decodedImage?.height.toDouble(),
+          );
+        }
+
+        var newStory = StoryModel(
+          title: 'Repost',
+          text: description,
+          status: 'private',
+          category: 'vote',
+          medias: media != null ? [media] : [],
+          updateDate: DateTime.now(),
+          timestamp: DateTime.now(),
+        );
+
+        await storyService.postStory(story: newStory);
+
+        if (story != null) {
+          await tastScoreService.repostScore(story!);
+        }
+
+        logger.d("newStory: $newStory");
+        AIHelpers.showToast(msg: 'Successfully reposted to LOOKBOOK!');
+      } catch (e) {
+        setError(e);
+        logger.e(e);
+      } finally {
+        notifyListeners();
+      }
+    }());
+
+    if (hasError) {
+      AIHelpers.showToast(msg: modelError.toString());
+    }
+  }
 
   Future<bool?> _showDescriptionDialog() => showDialog<bool>(
-    context: context,
-    builder: (context) {
-      return Center(
-        child: Container(
-          margin: const EdgeInsets.all(40.0),
-          padding:
-              const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
-          decoration: BoxDecoration(
-            color: Theme.of(context).colorScheme.onSecondary,
-            borderRadius: BorderRadius.circular(20.0),
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'Repost Story',
-                style: Theme.of(context).textTheme.titleSmall,
+        context: context,
+        builder: (context) {
+          return Center(
+            child: Container(
+              margin: const EdgeInsets.all(40.0),
+              padding:
+                  const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+              decoration: BoxDecoration(
+                color: Theme.of(context).colorScheme.onSecondary,
+                borderRadius: BorderRadius.circular(20.0),
               ),
-              const SizedBox(height: 16.0),
-              Text(
-                'Do you want to post this reaction to your LOOKBOOK?',
-                style: Theme.of(context).textTheme.labelLarge,
-              ),
-              const SizedBox(height: 24.0),
-              Row(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () => Navigator.of(context).pop(true),
-                      child: Container(
-                        height: 44.0,
-                        decoration: BoxDecoration(
-                          color: Theme.of(context).primaryColor,
-                          borderRadius: BorderRadius.circular(16.0),
-                        ),
-                        alignment: Alignment.center,
-                        child: Text(
-                          'Add',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium
-                              ?.copyWith(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .onSecondary,
-                              ),
-                        ),
-                      ),
-                    ),
+                  Text(
+                    'Repost Story',
+                    style: Theme.of(context).textTheme.titleSmall,
                   ),
-                  const SizedBox(width: 16.0),
-                  Expanded(
-                    child: GestureDetector(
-                      onTap: () => Navigator.of(context).pop(false),
-                      child: Container(
-                        height: 44.0,
-                        decoration: BoxDecoration(
-                          border: Border.all(
-                            width: 2.0,
-                            color: Theme.of(context).primaryColor,
+                  const SizedBox(height: 16.0),
+                  Text(
+                    'Do you want to post this reaction to your LOOKBOOK?',
+                    style: Theme.of(context).textTheme.labelLarge,
+                  ),
+                  const SizedBox(height: 24.0),
+                  Row(
+                    children: [
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () => Navigator.of(context).pop(true),
+                          child: Container(
+                            height: 44.0,
+                            decoration: BoxDecoration(
+                              color: Theme.of(context).primaryColor,
+                              borderRadius: BorderRadius.circular(16.0),
+                            ),
+                            alignment: Alignment.center,
+                            child: Text(
+                              'Add',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(
+                                    color: Theme.of(context).colorScheme.onSecondary,
+                                  ),
+                            ),
                           ),
-                          borderRadius: BorderRadius.circular(16.0),
-                        ),
-                        alignment: Alignment.center,
-                        child: Text(
-                          'Skip',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium
-                              ?.copyWith(
-                                  color: Theme.of(context).primaryColor),
                         ),
                       ),
-                    ),
+                      const SizedBox(width: 16.0),
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: () => Navigator.of(context).pop(false),
+                          child: Container(
+                            height: 44.0,
+                            decoration: BoxDecoration(
+                              border: Border.all(
+                                width: 2.0,
+                                color: Theme.of(context).primaryColor,
+                              ),
+                              borderRadius: BorderRadius.circular(16.0),
+                            ),
+                            alignment: Alignment.center,
+                            child: Text(
+                              'Skip',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodyMedium
+                                  ?.copyWith(
+                                    color: Theme.of(context).primaryColor,
+                                  ),
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       );
-    },
-  );
 }

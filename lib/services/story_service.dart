@@ -326,11 +326,13 @@ class StoryService {
     await AuthHelper.updateUser(owner);
   }
 
-  Future<String?> uploadResult(String url, {String? folderName}) async {
+  Future<String?> uploadResult(String url, {String? folderName, String? postCategory, String? storyID}) async {
     return FirebaseHelper.uploadImageFromUrl(
       imageUrl: url,
       id: AuthHelper.user!.id!,
       folderName: folderName,
+      postCategory: postCategory,
+      storyID: storyID,
     );
   }
 }

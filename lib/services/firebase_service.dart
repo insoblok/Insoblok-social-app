@@ -112,70 +112,12 @@ class FirebaseService {
     }
   }
 
-  // Future<String?> uploadImageFromUrl({
-  //   required String imageUrl,
-  //   String? id,
-  //   String? folderName,
-  // }) async {
-  //   try {
-  //     var tempDir = await getTemporaryDirectory();
-  //     String fullPath = "${tempDir.path}/${AuthHelper.user?.id}.jpg";
-  //     logger.d('full path $fullPath');
-
-  //     final folderPath = 'users/${id ?? AuthHelper.user?.id}';
-  //     await createFolderInFirebaseStorage(folderPath);
-
-  //     var dio = Dio();
-  //     var response = await dio.get(
-  //       imageUrl,
-  //       onReceiveProgress: (p, v) {
-  //         logger.d('${(p / v * 100).toStringAsFixed(2)}%');
-  //       },
-  //       options: Options(
-  //         responseType: ResponseType.bytes,
-  //         followRedirects: false,
-  //         validateStatus: (status) {
-  //           return (status ?? 600) < 500;
-  //         },
-  //       ),
-  //     );
-      
-  //     File file = File(fullPath);
-  //     var raf = file.openSync(mode: FileMode.write);
-  //     raf.writeFromSync(response.data);
-  //     await raf.close();
-
-  //     final String fileName =
-  //         "${AuthHelper.user?.id}_${kFullFormatter.format(DateTime.now())}.jpg";
-
-  //     logger.d("fileName : $fileName");
-
-  //     final String storagePath =
-  //         folderName != null
-  //             ? 'users/${id ?? AuthHelper.user?.id}/$folderName/$fileName'
-  //             : 'users/${id ?? AuthHelper.user?.id}/$fileName';
-
-  //     final Reference storageRef = _storage.ref().child(storagePath);
-  //     logger.d("file : $file");
-  //     // Upload the file
-  //     final UploadTask uploadTask = storageRef.putFile(file);
-  //     final TaskSnapshot snapshot = await uploadTask;
-
-  //     // Get download URL
-  //     final String downloadUrl = await snapshot.ref.getDownloadURL();
-
-  //     logger.d("downloadUrl : $downloadUrl");
-  //     return downloadUrl;
-  //   } catch (e) {
-  //     logger.e('Error uploading image: $e');
-  //     return null;
-  //   }
-  // }
-
   Future<String?> uploadImageFromUrl({
     required String imageUrl,
     String? id,
     String? folderName,
+    String? postCategory,
+    String? storyID
   }) async {
     try {
       File file;
@@ -209,7 +151,8 @@ class FirebaseService {
       }
 
       final String fileName =
-          "${AuthHelper.user?.id}_${kFullFormatter.format(DateTime.now())}.jpg";
+          "${AuthHelper.user?.id}_${kFullFormatter.format(DateTime.now())}.jpg";;
+
       final String storagePath = folderName != null
           ? 'users/${id ?? AuthHelper.user?.id}/$folderName/$fileName'
           : 'users/${id ?? AuthHelper.user?.id}/$fileName';
@@ -222,7 +165,26 @@ class FirebaseService {
 
       // Get download URL
       final String downloadUrl = await snapshot.ref.getDownloadURL();
-      logger.d("downloadUrl : $downloadUrl");
+      
+      if (postCategory == "reaction" && storyID != null) {
+          final storiesRef = FirebaseFirestore.instance.collection("story");
+          await storiesRef.doc(storyID).update({
+            "reactions": FieldValue.arrayUnion([downloadUrl]),
+          });
+
+          logger.d("post category reaction");
+      }
+
+      if (postCategory == "gallery") {
+        // Add image URL to user galleries
+        final usersRef = FirebaseFirestore.instance.collection("user");
+        await usersRef.doc(id ?? AuthHelper.user?.id).update({
+          "galleries": FieldValue.arrayUnion([downloadUrl]),
+        });
+
+        logger.d("post category gallery");
+      }
+      
       return downloadUrl;
     } catch (e) {
       logger.e('Error uploading image: $e');
@@ -309,22 +271,65 @@ class FirebaseService {
   }
 
   Future<List<String>> fetchGalleries(String id) async {
-    List<String> result = [];
-    final ref = _storage.ref('users/$id');
+    
+    // AuthHelper.user?.id
+    final currentUserId = FirebaseAuth.instance.currentUser?.uid;
+    logger.d("currentUserId : $currentUserId");
+    // If the passed id matches the current logged-in user's ID,
+    // we still use it (but this is where you can add custom logic)
+    final targetId = (id == currentUserId) ? currentUserId : id;
 
-    var folders = await ref.listAll();
-    for (var folder in folders.prefixes) {
-      var items = await folder.listAll();
-      for (var item in items.items) {
-        var value = await item.getDownloadURL();
-        result.add(value);
-      }
+    if (targetId == null) {
+      throw Exception('No user ID available.');
     }
-    logger.d(result.length);
 
-    return result;
+    try {
+      final docSnapshot = await FirebaseFirestore.instance
+          .collection("user")
+          .doc(id)
+          .get();
+
+      if (docSnapshot.exists) {
+        final data = docSnapshot.data();
+        if (data != null && data['galleries'] != null) {
+          // Ensure it's a List<String>
+          return List<String>.from(data['galleries']);
+        }
+      }
+
+      return []; // If no galleries or doc doesn't exist
+    } catch (e) {
+      logger.e("Error fetching galleries: $e");
+      return [];
+    }
   }
+
+  Future<List<String>> fetchReactions(String id) async {
+    try {
+      final docSnapshot = await FirebaseFirestore.instance
+          .collection("story")
+          .doc(id)
+          .get();
+
+      if (docSnapshot.exists) {
+        final data = docSnapshot.data();
+        if (data != null && data['reactions'] != null) {
+          // Ensure it's a List<String>
+          return List<String>.from(data['reactions']);
+        }
+      }
+
+      return []; // If no reactions or doc doesn't exist
+    } catch (e) {
+      logger.e("Error fetching reactions: $e");
+      return [];
+    }
+  }
+
 }
+
+
+
 
 class FirebaseHelper {
   static FirebaseService get service => locator<FirebaseService>();
@@ -349,10 +354,14 @@ class FirebaseHelper {
     required String imageUrl,
     String? id,
     String? folderName,
+    String? postCategory,
+    String? storyID,
   }) => service.uploadImageFromUrl(
     imageUrl: imageUrl,
     id: id,
     folderName: folderName,
+    postCategory: postCategory,
+    storyID: storyID,
   );
 
   static Future<String?> uploadFile({

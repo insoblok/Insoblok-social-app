@@ -46,6 +46,7 @@ const kRouterAddStory = '/add-story';
 const kRouterStoryDetail = '/story-detail';
 const kRouterNewsDetail = '/news-detail';
 const kRouterPostDetail = '/post-detail';
+const kRouterReaction = '/reaction';
 
 const kRouterQuillDescription = '/quill-description';
 const kRouterPrivacy = '/privacy-police';
@@ -198,6 +199,11 @@ class Navigation {
       (props) => StoryDetailPage(story: props!),
     );
 
+    initRoute<StoryModel>(
+      kRouterReaction,
+      (props) => ReactionsPage(story: props!),
+    );
+
     // * NewsDetailPage
     initRoute<NewsModel>(
       kRouterNewsDetail,
@@ -244,12 +250,30 @@ class Navigation {
     initRoute(kRouterMarketPlace, (props) => MarketPlacePage());
 
     // * FaceDetailPage
+    // initRoute<Map<String, dynamic>>(
+    //   kRouterFaceDetail,
+    //   (props) => FaceDetailPage(
+    //     storyID: props!['storyID'],
+    //     url: props['url'],
+    //     face: props['face'],
+    //   ),
+    // );
+
     initRoute<Map<String, dynamic>>(
       kRouterFaceDetail,
-      (props) => FaceDetailPage(
-        url: props!['url'],
-        face: props['face'],
-      ),
+      (props) {
+        if (props == null) {
+          throw ArgumentError('Route parameters are null');
+        }
+        if (!props.containsKey('storyID') || !props.containsKey('url') || !props.containsKey('face')) {
+          throw ArgumentError('Missing required route parameters');
+        }
+        return FaceDetailPage(
+          storyID: props['storyID'],
+          url: props['url'],
+          face: props['face'],
+        );
+      },
     );
 
     // * UserListPage

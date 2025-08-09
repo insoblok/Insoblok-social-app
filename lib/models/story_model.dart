@@ -23,6 +23,7 @@ abstract class StoryModel with _$StoryModel {
     List<ConnectedStoryModel>? connects,
     List<String>? comments,
     List<String>? allowUsers,
+    List<String>? reactions,
     List<StoryVoteModel>? votes,
     List<MediaStoryModel>? medias,
   }) = _StoryModel;

@@ -4,3 +4,4 @@ export 'post_detail_page.dart';
 export 'lookbook_page.dart';
 export 'following_page.dart';
 export 'friend_page.dart';
+export 'reactions_page.dart';

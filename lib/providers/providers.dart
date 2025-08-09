@@ -10,3 +10,5 @@ export 'profiles/profiles.dart';
 export 'app_provider.dart';
 export 'vtos/vtos.dart';
 export 'news/news.dart';
+export 'profiles/reactions_provider.dart';
+

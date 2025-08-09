@@ -27,46 +27,6 @@ class LookbookPage extends StatelessWidget {
                     centerTitle: true,
                     flexibleSpace: AppBackgroundView(),
                     pinned: true,
-                    // bottom: PreferredSize(
-                    //   preferredSize: Size.fromHeight(30.0),
-                    //   child: TabBar(
-                    //     indicatorSize: TabBarIndicatorSize.tab,
-                    //     onTap: (index) {
-                    //       viewModel.tabIndex = index;
-                    //       viewModel.filterList(index);
-                    //     },
-                    //     tabs: [
-                    //       Tab(
-                    //         height: 30.0,
-                    //         child: Text(
-                    //           'Stories',
-                    //           style: Theme.of(context).textTheme.headlineSmall,
-                    //         ),
-                    //       ),
-                    //       Tab(
-                    //         height: 30.0,
-                    //         child: Text(
-                    //           'Posts',
-                    //           style: Theme.of(context).textTheme.headlineSmall,
-                    //         ),
-                    //       ),
-                    //       Tab(
-                    //         height: 30.0,
-                    //         child: Text(
-                    //           'Comments',
-                    //           style: Theme.of(context).textTheme.headlineSmall,
-                    //         ),
-                    //       ),
-                    //       Tab(
-                    //         height: 30.0,
-                    //         child: Text(
-                    //           'Likes',
-                    //           style: Theme.of(context).textTheme.headlineSmall,
-                    //         ),
-                    //       ),
-                    //     ],
-                    //   ),
-                    // ),
                   ),
                 ),
                 if (viewModel.isBusy) ...{

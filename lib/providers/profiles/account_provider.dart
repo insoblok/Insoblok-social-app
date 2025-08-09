@@ -33,7 +33,7 @@ class AccountProvider extends InSoBlokViewModel {
 
   bool get isMe => accountUser?.id == AuthHelper.user?.id;
 
-  int _pageIndex = 0;
+  int _pageIndex = 3;
   int get pageIndex => _pageIndex;
   set pageIndex(int i) {
     _pageIndex = i;
@@ -60,10 +60,16 @@ class AccountProvider extends InSoBlokViewModel {
     await fetchStories();
     await getUserScore();
     await fetchFollowings();
+    await getGalleries();
     if (!isMe) await updateViews();
   }
 
   final List<StoryModel> stories = [];
+
+  void setPageIndex(int index) {
+    pageIndex = index;
+    notifyListeners();
+  }
 
   Future<void> fetchStories() async {
     if (isBusy) return;
@@ -325,7 +331,7 @@ class AccountProvider extends InSoBlokViewModel {
       isFetchingGallery = false;
     }
   }
-
+  
   bool _isCreatingRoom = false;
   bool get isCreatingRoom => _isCreatingRoom;
   set isCreatingRoom(bool flag) {

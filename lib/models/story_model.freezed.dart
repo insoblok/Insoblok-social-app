@@ -224,7 +224,7 @@ return $default(_that.id,_that.userId,_that.title,_that.text,_that.status,_that.
 
 @JsonSerializable(fieldRename: FieldRename.snake)
 class _StoryModel implements StoryModel {
-   _StoryModel({this.id, this.userId, this.title, this.text, this.status, this.category, final  List<String>? likes, final  List<String>? follows, final  List<String>? views, this.updateDate, this.timestamp, final  List<ConnectedStoryModel>? connects, final  List<String>? comments, final  List<String>? allowUsers, final  List<StoryVoteModel>? votes, final  List<MediaStoryModel>? medias}): _likes = likes,_follows = follows,_views = views,_connects = connects,_comments = comments,_allowUsers = allowUsers,_votes = votes,_medias = medias;
+   _StoryModel({this.id, this.userId, this.title, this.text, this.status, this.category, final  List<String>? likes, final  List<String>? follows, final  List<String>? views, this.updateDate, this.timestamp, final  List<ConnectedStoryModel>? connects, final  List<String>? comments, final  List<String>? allowUsers, final  List<String>? reactions, final  List<StoryVoteModel>? votes, final  List<MediaStoryModel>? medias}): _likes = likes,_follows = follows,_views = views,_connects = connects,_comments = comments,_allowUsers = allowUsers,_votes = votes,_medias = medias;
   factory _StoryModel.fromJson(Map<String, dynamic> json) => _$StoryModelFromJson(json);
 
 @override final  String? id;

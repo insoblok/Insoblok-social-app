@@ -74,7 +74,7 @@ class AIImages {
   static String icHot = 'assets/icons/ic_hot.png';
   static String icRepost = 'assets/icons/ic_repost.png';
   static String icView = 'assets/icons/ic_view.png';
-  static String icGallery = 'assets/icons/ic_photo-gallery.svg';
+  static String icGallery = 'assets/icons/ic_photo_gallery.png';
 
   static String imgLevel(int level) {
     return 'assets/images/img_level_0$level.png';

@@ -262,6 +262,7 @@ class StoryListCell extends StatelessWidget {
                           viewModel.showCommentDialog();
                         },
                       ),
+                      
                       StoryActionButton(
                         src: AIImage(
                           AIImages.icView,
@@ -269,6 +270,16 @@ class StoryListCell extends StatelessWidget {
                           width: kStoryAvatarSize * 0.46,
                         ),
                         label: '${(viewModel.story.views ?? []).length}',
+                      ),
+                      StoryActionButton(
+                        src: AIImage(
+                          AIImages.icGallery,
+                          color: Theme.of(context).colorScheme.secondary,
+                          width: kStoryAvatarSize * 0.5,
+                        ),
+                        onTap: () {
+                            viewModel.showReactions();
+                        }
                       ),
                       StoryActionButton(
                         src: AIImage(
@@ -343,6 +354,7 @@ class StoryFaceModalView extends ViewModelWidget<StoryProvider> {
       onTap:
           () => Routers.goToFaceDetailPage(
             context,
+            viewModel.story.id!,
             (viewModel.story.medias ?? [])[viewModel.pageIndex].link!,
             viewModel.face!,
           ),
@@ -872,6 +884,7 @@ class CommentFaceModalView extends ViewModelWidget<StoryProvider> {
     return InkWell(
       onTap: () => Routers.goToFaceDetailPage(
         context,
+        viewModel.story.id!,
         (viewModel.story.medias ?? [])[viewModel.pageIndex].link!,
         viewModel.face!,
       ),
@@ -924,7 +937,7 @@ class CommentFaceModalView extends ViewModelWidget<StoryProvider> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 ElevatedButton(
-                  onPressed: () => viewModel.onReactionPostPressed(),
+                  onPressed: () => viewModel.onPostReactionPressed(),
                   style: ElevatedButton.styleFrom(
                     backgroundColor: Colors.green,
                     foregroundColor: Colors.white,
