@@ -152,11 +152,14 @@ class DashboardProvider extends InSoBlokViewModel {
   Future<void> onClickMenuItem(int index) async {
     logger.d(index);
     switch (index) {
+      // case 0:
+      //   Routers.goToNewsPage(context);
+      //   break;
       case 0:
-        Routers.goToNewsPage(context);
+        Routers.goToLookbookPage(context);
         break;
       case 1:
-        Routers.goToLookbookPage(context);
+        Routers.goToLeaderboardPage(context); 
         break;
       case 2:
         Routers.goToFollowingPage(context);
@@ -165,9 +168,6 @@ class DashboardProvider extends InSoBlokViewModel {
         Routers.goToFriendPage(context);
         break;
       case 4:
-        Routers.goToLeaderboardPage(context);
-        break;
-      case 5:
         Routers.goToMarketPlacePage(context);
         break;
     }

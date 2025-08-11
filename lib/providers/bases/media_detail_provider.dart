@@ -13,9 +13,9 @@ import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 
 final kReactionPostIconData = [
-  {'title': 'Post to Lookbook', 'icon': AIImages.icPostLookbook},
-  {'title': 'Post as Reaction', 'icon': AIImages.icPostReaction},
-  {'title': 'Save to Gallery', 'icon': AIImages.icGallery},
+  {'title': 'Post to\nLookbook', 'icon': AIImages.icPostLookbook},
+  {'title': 'Post to\nReaction', 'icon': AIImages.icPostReaction},
+  {'title': 'Post to\nGallery', 'icon': AIImages.icGallery},
 ];
 
 final kMediaDetailIconData = [

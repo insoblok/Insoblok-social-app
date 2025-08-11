@@ -32,6 +32,7 @@ class StoryService {
         } else {
           if ((story.allowUsers ?? []).contains(AuthHelper.user!.id!)) {
             if (story.userId != null) {
+              logger.d("story.allowUsers ref.id : $story");
               result.add(story);
             }
           }
@@ -172,6 +173,7 @@ class StoryService {
 
   // Post a story
   Future<String> postStory({required StoryModel story}) async {
+
     var ref = await storyCollection.add({
       ...story.toMap(),
       'user_id': AuthHelper.user?.id,
@@ -191,10 +193,16 @@ class StoryService {
     var staus = story.status;
 
     logger.d("staus after post: $staus");
-    if (story.status != null && story.status == 'private') {
+    
+    logger.d("postStory: status ref.id: ${ref.id}");
+    // ignore: unnecessary_null_comparison
+    if (staus != null && staus == 'private' && ref.id != null) {
       addUserAction(ref.id);
+      return ref.id;
+    }else{
+      return ref.id;
     }
-    return ref.id;
+    
   }
 
   

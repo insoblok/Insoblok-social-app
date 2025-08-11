@@ -82,6 +82,10 @@ class AddStoryProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  Future<void> goToMainPage() async {
+    await Routers.goToMainPage(context);
+  }
+
   Future<void> onAddMedia() async {
     if (isBusy) return;
     clearErrors();
@@ -118,6 +122,9 @@ class AddStoryProvider extends InSoBlokViewModel {
     if (isBusy) return;
     clearErrors();
     List<String> allowUsers = [];
+
+    logger.d("selectedUserList : $selectedUserList");
+
     for (var user in selectedUserList) {
       allowUsers.add(user.id!);
     }
@@ -125,10 +132,18 @@ class AddStoryProvider extends InSoBlokViewModel {
       AIHelpers.showToast(msg: 'You need to select one user at least');
       return;
     }
+    if(isPrivate){
+      var id = AuthHelper.user?.id;
+      allowUsers.add(id!);
+    }
+    
     await runBusyFuture(() async {
       try {
         txtUploadButton = 'Uploading Media(s)...';
         var medias = await mediaProvider.uploadMedias();
+
+        logger.d("medias : $medias");
+
         if (quillDescription == '' && medias.isEmpty) {
           throw ('Invalid story type');
         }
@@ -143,7 +158,9 @@ class AddStoryProvider extends InSoBlokViewModel {
           status: isPrivate ? 'private' : 'public',
           allowUsers: allowUsers,
         ).copyWith(medias: medias);
-        await storyService.postStory(story: story);
+        logger.d("new story : $story");
+        var result = await storyService.postStory(story: story);
+        logger.d("result : $result");
       } catch (e, s) {
         setError(e);
         logger.e(e, stackTrace: s);
@@ -159,7 +176,8 @@ class AddStoryProvider extends InSoBlokViewModel {
         msg: 'Successfully your post! Your feed is in list now!',
       );
       mediaProvider.reset();
-      Navigator.of(context).pop(true);
+      // Navigator.of(context).pop(true);
+      goToMainPage();
     }
   }
 

@@ -27,8 +27,9 @@ class AddStoryPage extends StatelessWidget {
                   flexibleSpace: AppBackgroundView(),
                   leading: IconButton(
                     onPressed: () {
+                      viewModel.goToMainPage();
                       viewModel.mediaProvider.reset();
-                      Navigator.of(context).pop();
+                      // Navigator.of(context).pop(true);
                     },
                     icon: Icon(Icons.arrow_back),
                   ),

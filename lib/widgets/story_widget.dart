@@ -128,7 +128,7 @@ class StoryListCell extends StatelessWidget {
                                         style:
                                             Theme.of(
                                               context,
-                                            ).textTheme.labelMedium,
+                                            ).textTheme.headlineMedium,
                                       ),
                                     ],
                                   ),
@@ -619,8 +619,8 @@ class StoryYayNayWidget extends ViewModelWidget<StoryProvider> {
             },
             text:
                 viewModel.story.cntYay == 0
-                    ? 'Yay'
-                    : 'Yay (${viewModel.story.cntYay})',
+                    ? 'Hot'
+                    : 'Hot (${viewModel.story.cntYay})',
             textColor: AIColors.green,
             src: AIImages.icHot,
             imgSize: 28,
@@ -639,8 +639,8 @@ class StoryYayNayWidget extends ViewModelWidget<StoryProvider> {
             },
             text:
                 viewModel.story.cntNay == 0
-                    ? 'Nay'
-                    : 'Nay (${viewModel.story.cntNay})',
+                    ? 'Not'
+                    : 'Not (${viewModel.story.cntNay})',
             textColor: AIColors.pink,
             src: AIImages.icNot,
             imgSize: 28,

@@ -28,6 +28,8 @@ class SplashProvider extends ReactiveViewModel {
     var reownService = locator<ReownService>();
     await reownService.init(context);
 
+    AuthHelper.updateStatus('Online');
     Routers.goToLoginPage(context);
+    // Routers.goToMainPage(context);
   }
 }

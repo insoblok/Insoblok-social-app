@@ -104,7 +104,7 @@ class FaceDetailPage extends StatelessWidget {
                                 ),
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
-                                  spacing: 20.0,
+                                  spacing: 40.0,
                                   children: [
                                     for (var data in kReactionPostIconData) ...{
                                       InkWell(
@@ -127,6 +127,7 @@ class FaceDetailPage extends StatelessWidget {
                                             ),
                                             Text(
                                               data['title'] as String,
+                                              textAlign: TextAlign.center, // important for two-line centering
                                               style:
                                                   Theme.of(
                                                     context,

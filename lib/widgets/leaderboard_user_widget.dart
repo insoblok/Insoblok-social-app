@@ -76,7 +76,8 @@ class LeaderboardUserView extends StatelessWidget {
                             textSize: 18.0,
                             showStatus: false,
                           ),
-                          Positioned(
+                          if (cellIndex == 0)
+                            Positioned(
                             bottom: 0.0,
                             right: 0.0,
                             child: Container(
@@ -92,9 +93,7 @@ class LeaderboardUserView extends StatelessWidget {
                                 shape: BoxShape.circle,
                               ),
                               child: AIImage(
-                                AIImages.imgLevel(
-                                  viewModel.userLevel.level ?? 1,
-                                ),
+                                AIImages.imgLevel(5),
                               ),
                             ),
                           ),
