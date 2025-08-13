@@ -14,10 +14,9 @@ class PageableView extends StatelessWidget {
   Widget build(BuildContext context) {
     var menuTitles = [
       // 'News',
-      'Lookbook',
       'Leaderboard',
-      'Follow',
-      'Following',
+      'Follow/Following',
+      'Lookbook',
       'MarketPlace',
     ];
     return ViewModelBuilder<DashboardProvider>.reactive(

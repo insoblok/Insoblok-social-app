@@ -1,9 +1,9 @@
 import 'dart:ui';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
-
 import 'package:stacked/stacked.dart';
-
+import 'package:video_player/video_player.dart';
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
@@ -52,7 +52,7 @@ class MediaDetailPage extends StatelessWidget {
                                   ),
                                   child: ClipRRect(
                                     borderRadius: BorderRadius.circular(24.0),
-                                    child: AIImage(media, fit: BoxFit.contain),
+                                    child: _buildMediaWidget(media),
                                   ),
                                 ),
                               ),
@@ -116,4 +116,78 @@ class MediaDetailPage extends StatelessWidget {
       },
     );
   }
+
+    Widget _buildMediaWidget(String mediaUrl) {
+    final lowerUrl = mediaUrl.toLowerCase();
+    if (lowerUrl.contains('.mp4') || lowerUrl.contains('.mov')) {
+      // Video file: show video player
+      return _CircularVideoPlayer(videoPath: mediaUrl);
+    } else {
+      // Image file: show AIImage as before
+      return AIImage(mediaUrl, fit: BoxFit.contain);
+    }
+  }
+}
+
+class _CircularVideoPlayer extends StatefulWidget {
+  final String videoPath;
+  
+  const _CircularVideoPlayer({required this.videoPath});
+
+  @override
+  State<_CircularVideoPlayer> createState() => _CircularVideoPlayerState();
+}
+
+class _CircularVideoPlayerState extends State<_CircularVideoPlayer> {
+  late VideoPlayerController _controller;
+  bool _initialized = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.videoPath.startsWith('http') || widget.videoPath.startsWith('https')) {
+      _controller = VideoPlayerController.network(widget.videoPath);
+    } else {
+      _controller = VideoPlayerController.file(File(widget.videoPath));
+    }
+
+    _controller.initialize().then((_) {
+      setState(() {
+        _initialized = true;
+        _controller.setLooping(true);
+        _controller.play();
+      });
+    }).catchError((error) {
+      // Handle errors if needed, e.g. show error UI
+      print("Video initialization error: $error");
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final double size = MediaQuery.of(context).size.width * 0.7;
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(24.0),
+      child: Container(
+        width: size,
+        height: size,
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: Theme.of(context).colorScheme.secondary,
+            width: 2,
+          ),
+        ),
+        child: _initialized
+            ? VideoPlayer(_controller)
+            : const Center(child: CircularProgressIndicator(strokeWidth: 2)),
+      ),
+    );
+  }
+
 }

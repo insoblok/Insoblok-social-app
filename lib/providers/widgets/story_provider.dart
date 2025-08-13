@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:image/image.dart' as img;
 import 'package:insoblok/utils/background_camera_capture.dart';
+import 'package:insoblok/utils/background_camera_video_capture.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
@@ -35,31 +36,51 @@ class StoryProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  late QuillController quillController;
+  String? _videoPath;
+  String? get videoPath => _videoPath;
+  set videoPath(String? f) {
+    _videoPath= f;
+    notifyListeners();
+  }
+  
+  String? _videoStoryPath;
+  String? get videoStoryPath => _videoStoryPath;
+  set videoStoryPath(String? f) {
+    _videoStoryPath = f;
+    notifyListeners();
+  }
+
+  File? _face;
+  File? get face => _face;
+  set face(File? f) {
+    _face = f;
+    notifyListeners();
+  }
+
+  late QuillController? quillController;
   var quillScrollController = ScrollController();
   var focusNode = FocusNode();
+
   final camera = BackgroundCameraCapture();
+  final videoCapture = BackgroundCameraVideoCapture();
+  var refreshCount = 0;
+
   Timer? capture_timer;
 
   void init(BuildContext context, {required StoryModel model}) async {
     this.context = context;
     story = model;
 
+    final mediaPath = story.medias?[0].link;
+    if(mediaPath!.contains('.mov') || mediaPath.contains('.mp4')){
+      _videoStoryPath = story.medias?[0].link;
+    }else{
+      _videoStoryPath = null;
+    }
+
+    // captureReactionImage();
+    captureReactionVideo();
     
-    camera.onFrame = (String? path){
-      print("Trying to detect user expressions");
-      if(path!=null){
-        detectFace(path);
-      }
-    };
-
-    await camera.initialize(); // Initialize camera.
-    //if ((story.medias ?? []).isNotEmpty) {
-    //  if (story.medias![0].type == 'image') {
-    //    detectFace(story.medias![0].link!);
-    //  }
-    //}
-
     quillController = () {
       return QuillController.basic(
         config: QuillControllerConfig(
@@ -71,24 +92,40 @@ class StoryProvider extends InSoBlokViewModel {
     fetchUser();
   }
 
-
-  File? _face;
-  File? get face => _face;
-  set face(File? f) {
-    _face = f;
-    notifyListeners();
+  Future<void> captureReactionImage() async {
+    camera.onFrame = (String? path){
+      print("Trying to detect user expressions");
+      if(path!=null){
+        detectFace(path);
+      }
+    };
+    await camera.initialize();
   }
 
+  Future<void> captureReactionVideo() async {
+
+    if(refreshCount > 2) return;
+
+    videoCapture.onVideoRecorded = (String path) {
+
+      logger.d('✅ path replaced at $path');
+      _videoPath = path;
+      refreshCount++;
+      // _videoPath = "/data/user/0/insoblok.social.app/cache/SnapVideo.mov";
+      // You can now send this file to your server or process it
+    };
+
+    await videoCapture.initialize();
+    await videoCapture.recordShortVideo(seconds: 2.0);
+    
+  }
+  
   List<AIFaceAnnotation> annotations = [];
 
   Future<void> detectFace(String link) async {
     var faces = await GoogleVisionHelper.getFacesFromImage(link: link);
-    logger.d('link: $link');
 
     var _annotations = await GoogleVisionHelper.analyzeLocalImage(link: link);
-
-    logger.d('_annotations: ${_annotations[0]}');
-    logger.d('_faces: $faces');
 
     if (faces.isNotEmpty) {
       final directory = await getApplicationDocumentsDirectory();
@@ -124,9 +161,9 @@ class StoryProvider extends InSoBlokViewModel {
 
   @override
   void dispose() {
-    quillController.dispose();
-    quillScrollController.dispose();
-    focusNode.dispose();
+    quillController?.dispose();
+    quillScrollController?.dispose();
+    focusNode?.dispose();
     camera.dispose();
     //capture_timer?.cancel();
     super.dispose();
@@ -193,6 +230,13 @@ class StoryProvider extends InSoBlokViewModel {
     logger.d("story : $story");
     Routers.goToFaceDetailPage(context, story.id!, (story.medias ?? [])[pageIndex].link!,
         face!);
+  }
+
+  Future<void> onPostReactionVideoPressed() async{
+
+    logger.d("story : $story");
+    Routers.goToReactionVideoDetailPage(context, story.id!, (story.medias ?? [])[pageIndex].link!,
+        videoPath!);
   }
 
   Future<void> onPostDeclinePressed() async{

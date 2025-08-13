@@ -3,5 +3,6 @@ export 'setting_page.dart';
 export 'help_page.dart';
 export 'media_detail_page.dart';
 export 'face_detail_page.dart';
+export 'reaction_video_detail_page.dart';
 export 'splash_page.dart';
 export 'user_list_page.dart';

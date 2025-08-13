@@ -89,6 +89,7 @@ class LookbookProvider extends InSoBlokViewModel {
     try {
       var ss = await storyService.getStoriesById(AuthHelper.user!.id!);
       _myStories.addAll(ss);
+
     } catch (e) {
       setError(e);
       logger.e(e);

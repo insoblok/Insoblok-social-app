@@ -207,6 +207,14 @@ class Routers {
     });
   }
 
+  static dynamic goToReactionVideoDetailPage(BuildContext context, String storyID, String url, String videoPath) {
+    return _pushToRoute(context, kRouterReactionVideoDetail, {
+      'storyID': storyID,
+      'url': url,
+      'videoPath': videoPath,
+    });
+  }
+
   static dynamic goToUserListPage(
     BuildContext context, {
     List<UserModel>? users,

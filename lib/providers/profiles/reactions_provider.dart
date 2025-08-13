@@ -55,8 +55,11 @@ class ReactionsProvider extends InSoBlokViewModel {
   Future<void> fetchReactions(String storyId) async {
     try {
       setBusy(true);
+
+      logger.d("reactions : $storyId");
       _reactions = await FirebaseHelper.service.fetchReactions(storyId);
-      logger.d("Fetched ${_reactions.length} reaction image paths");
+      logger.d("reactions : $_reactions");
+
     } catch (e) {
       logger.e("Error fetching reactions: $e");
       _reactions = [];
@@ -68,6 +71,12 @@ class ReactionsProvider extends InSoBlokViewModel {
 
   /// Toggle image selection
   void toggleSelection(String imageUrl) {
+
+    final lowerUrl = imageUrl.toLowerCase();
+    if (lowerUrl.contains('.mp4') || lowerUrl.contains('.mov')) {
+      return;
+    }
+
     if (_selectedImages.contains(imageUrl)) {
       _selectedImages.remove(imageUrl);
     } else {

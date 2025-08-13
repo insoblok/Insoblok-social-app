@@ -19,8 +19,8 @@ class AIImages {
 
   static String icEthereumGold = 'assets/images/ic_ethereum_gold.png';
 
-  static String icBottomHomeFill = 'assets/icons/ic_home_fill.svg';
-  static String icBottomHome = 'assets/icons/ic_home.svg';
+  static String icBottomHomeFill = 'assets/icons/ic_home_fill.png';
+  static String icBottomHome = 'assets/icons/ic_home.png';
   static String icBottomLookFill = 'assets/icons/ic_effect_2_fill.svg';
   static String icBottomLook = 'assets/icons/ic_effect_2.svg';
   static String icBottomSearchFill = 'assets/icons/ic_search_fill.svg';
@@ -29,8 +29,8 @@ class AIImages {
   static String icBottomMarket = 'assets/icons/ic_chart_hoz.svg';
   static String icBottomNotiFill = 'assets/icons/ic_notifications_fill.svg';
   static String icBottomNoti = 'assets/icons/ic_notifications.svg';
-  static String icBottomMessageFill = 'assets/icons/ic_message_fill.svg';
-  static String icBottomMessage = 'assets/icons/ic_message.svg';
+  static String icBottomMessageFill = 'assets/icons/ic_comment_fill.png';
+  static String icBottomMessage = 'assets/icons/ic_comment.png';
   static String icBottomUserFill = 'assets/icons/ic_user_fill.svg';
   static String icBottomUser = 'assets/icons/ic_user.svg';
   static String icBottomWalletFill = 'assets/icons/ic_wallet_fill.svg';

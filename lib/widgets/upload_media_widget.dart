@@ -29,7 +29,7 @@ class UploadMediaWidget extends ViewModelWidget<AddStoryProvider> {
       itemBuilder: (context, index) {
         var media = medias[index];
         var mediaPath = media.file!.path;
-        var mediaType = mediaPath.endsWith('mp4') ? 'video' : 'image';
+        var mediaType = mediaPath.contains('mp4') ? 'video' : 'image';
         return Container(
           key: GlobalKey(debugLabel: 'media-$index'),
           decoration: kCardDecoration,

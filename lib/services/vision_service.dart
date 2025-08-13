@@ -189,17 +189,26 @@ class GoogleVisionService {
     // 5. Extract each face as separate image
     final List<img.Image> faceImages = [];
     print('The number of faces detected::${faces.length}');
-    for (final face in faces) {
+
+    const paddingFactor = 1.5;
+
+    for (final face in faces) 
+    {
       final rect = face.boundingBox;
-      logger.d(face.smilingProbability);
 
-      // Ensure the rectangle is within image bounds
-      final x = rect.left.clamp(0, originalImage.width - 1).toInt();
-      final y = rect.top.clamp(0, originalImage.height - 1).toInt();
-      final width = rect.width.clamp(1, originalImage.width - x).toInt();
-      final height = rect.height.clamp(1, originalImage.height - y).toInt();
+      // Expand the bounding box
+      double newLeft = rect.left - rect.width * paddingFactor / 2;
+      double newTop = rect.top - rect.height * paddingFactor / 2;
+      double newRight = rect.right + rect.width * paddingFactor / 2;
+      double newBottom = rect.bottom + rect.height * paddingFactor / 2;
 
-      // Crop the face from original image
+      // Clamp the values so they stay within image bounds
+      int x = newLeft.clamp(0, originalImage.width - 1).toInt();
+      int y = newTop.clamp(0, originalImage.height - 1).toInt();
+      int width = (newRight - newLeft).clamp(1, originalImage.width - x).toInt();
+      int height = (newBottom - newTop).clamp(1, originalImage.height - y).toInt();
+
+      // Crop the expanded rectangle
       final faceImage = img.copyCrop(
         originalImage,
         x: x,

@@ -84,6 +84,8 @@ class LoginProvider extends InSoBlokViewModel {
           isCheckScan,
         );
 
+        logger.d("authUser : $authUser");
+        
         if (authUser?.walletAddress?.isEmpty ?? true) {
           Routers.goToRegisterFirstPage(
             context,

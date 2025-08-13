@@ -34,6 +34,7 @@ class BackgroundCameraCapture {
       frontCam,
       ResolutionPreset.medium,
       enableAudio: false,
+      imageFormatGroup: ImageFormatGroup.jpeg,
     );
 
     _controller.addListener(() {

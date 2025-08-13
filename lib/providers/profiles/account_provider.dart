@@ -322,6 +322,10 @@ class AccountProvider extends InSoBlokViewModel {
     try {
       _galleries.clear();
       var gs = await FirebaseHelper.service.fetchGalleries(accountUser!.id!);
+      
+      logger.d("fetchGalleries");
+      logger.d(gs);
+
       _galleries.addAll(gs);
       notifyListeners();
     } catch (e) {
@@ -391,4 +395,5 @@ class AccountProvider extends InSoBlokViewModel {
   Future<void> onClickInfo(int index) async {
     Routers.goToAccountWalletPage(context);
   }
+
 }

@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -6,6 +8,7 @@ import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:insoblok/routers/routers.dart';
 import 'package:stacked/stacked.dart';
+import 'package:video_player/video_player.dart';
 import 'package:vimeo_video_player/vimeo_video_player.dart';
 
 import 'package:insoblok/extensions/extensions.dart';
@@ -37,22 +40,26 @@ class StoryListCell extends StatelessWidget {
                 PageView.builder(
                   itemCount: (viewModel.story.medias ?? []).length,
                   itemBuilder: (context, index) {
-                    return StoryMediaView(
-                      media:
-                          ((viewModel.resultFaceUrl?.isNotEmpty ?? false) &&
-                                  viewModel.showFaceDialog)
-                              ? MediaStoryModel(
-                                link: viewModel.resultFaceUrl,
-                                type: 'image',
-                                width:
-                                    (story.medias ?? [])[viewModel.pageIndex]
-                                        .width,
-                                height:
-                                    (story.medias ?? [])[viewModel.pageIndex]
-                                        .height,
-                              )
-                              : (story.medias ?? [])[viewModel.pageIndex],
-                    );
+                    if(viewModel.videoStoryPath == null){
+                      return StoryMediaView(
+                        media:
+                            ((viewModel.resultFaceUrl?.isNotEmpty ?? false) &&
+                                    viewModel.showFaceDialog)
+                                ? MediaStoryModel(
+                                  link: viewModel.resultFaceUrl,
+                                  type: 'image',
+                                  width:
+                                      (story.medias ?? [])[viewModel.pageIndex]
+                                          .width,
+                                  height:
+                                      (story.medias ?? [])[viewModel.pageIndex]
+                                          .height,
+                                )
+                                : (story.medias ?? [])[viewModel.pageIndex],
+                      );
+                    }else{
+                      return _CircularVideoPlayer(videoPath: viewModel.videoStoryPath!);
+                    }
                   },
                   onPageChanged: (value) {
                     viewModel.pageIndex = value;
@@ -98,8 +105,9 @@ class StoryListCell extends StatelessWidget {
                         spacing: 12.0,
                         children: [
                           const Spacer(),
-                          if (viewModel.face != null && viewModel.showFaceDialog) ...{
-                            CommentFaceModalView(marginBottom: marginBottom),
+                          if (viewModel.videoPath != null && viewModel.showFaceDialog) ...{
+                            // CommentFaceModalView(marginBottom: marginBottom),
+                            CommentFaceVideoModalView(marginBottom: marginBottom),
                           } else ...{
                             Container(
                               margin: EdgeInsets.only(
@@ -975,4 +983,224 @@ class CommentFaceModalView extends ViewModelWidget<StoryProvider> {
       ),
     );
   }
+}
+
+class CommentFaceVideoModalView extends ViewModelWidget<StoryProvider> {
+  final double? marginBottom;
+  const CommentFaceVideoModalView({super.key, this.marginBottom});
+
+  @override
+  Widget build(BuildContext context, viewModel) {
+    return InkWell(
+      onTap: () => (),
+      child: Container(
+        margin: EdgeInsets.only(bottom: marginBottom ?? 0),
+        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 1.0),
+        width: double.infinity,
+        decoration: BoxDecoration(
+          color: Theme.of(context).scaffoldBackgroundColor,
+          borderRadius: BorderRadius.circular(30.0),
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const SizedBox(height: 5.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+
+                if (viewModel.videoPath != null)
+                _VideoPreviewWidget(videoPath: viewModel.videoPath!, onRecapture: viewModel.captureReactionVideo, refreshCount: viewModel.refreshCount),
+
+                ElevatedButton(
+                  onPressed: () => viewModel.onPostReactionVideoPressed(),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.green,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                    minimumSize: const Size(60, 30),
+                  ),
+                  child: const Text(
+                    'Post',
+                    style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w600),
+                  ),
+                ),
+                ElevatedButton(
+                  onPressed: () => viewModel.onPostDeclinePressed(),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    foregroundColor: Colors.white,
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20.0),
+                    ),
+                    minimumSize: const Size(60, 30),
+                  ),
+                  child: const Text(
+                    'Decline',
+                    style: TextStyle(fontSize: 12.0, fontWeight: FontWeight.w600),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _VideoPreviewWidget extends StatefulWidget {
+  final String videoPath;
+  final VoidCallback onRecapture; // Callback to trigger re-capture
+  final int refreshCount;
+
+  const _VideoPreviewWidget({
+    required this.videoPath,
+    required this.onRecapture,
+    required this.refreshCount,
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  State<_VideoPreviewWidget> createState() => _VideoPreviewWidgetState();
+}
+
+class _VideoPreviewWidgetState extends State<_VideoPreviewWidget> {
+  late VideoPlayerController _controller;
+  bool _initialized = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeVideo(widget.videoPath);
+  }
+
+  void _initializeVideo(String path) {
+    _controller = VideoPlayerController.file(File(path))
+      ..initialize().then((_) {
+        setState(() {
+          _initialized = true;
+          _controller.setLooping(true);
+          _controller.play();
+        });
+      });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  void _handleRecapture() {
+    widget.onRecapture(); // Calls parent method to recapture
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 64.0,
+      height: 64.0,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          ClipOval(
+            child: _initialized
+                ? VideoPlayer(_controller)
+                : const Center(
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  ),
+          ),
+          ...[if(widget.refreshCount < 3)
+                Positioned(
+                  top: -6,
+                  right: -6,
+                  child: InkWell(
+                    onTap: _handleRecapture,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.black.withOpacity(0.6),
+                        shape: BoxShape.circle,
+                      ),
+                      padding: const EdgeInsets.all(4),
+                      child: const Icon(
+                        Icons.refresh,
+                        size: 16,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+          ]
+        ],
+      ),
+    );
+  }
+}
+
+class _CircularVideoPlayer extends StatefulWidget {
+  final String videoPath;
+  
+  const _CircularVideoPlayer({required this.videoPath});
+
+  @override
+  State<_CircularVideoPlayer> createState() => _CircularVideoPlayerState();
+}
+
+class _CircularVideoPlayerState extends State<_CircularVideoPlayer> {
+  late VideoPlayerController _controller;
+  bool _initialized = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.videoPath.startsWith('http') || widget.videoPath.startsWith('https')) {
+      _controller = VideoPlayerController.network(widget.videoPath);
+    } else {
+      _controller = VideoPlayerController.file(File(widget.videoPath));
+    }
+
+    _controller.initialize().then((_) {
+      setState(() {
+        _initialized = true;
+        _controller.setLooping(true);
+        _controller.play();
+      });
+    }).catchError((error) {
+      // Handle errors if needed, e.g. show error UI
+      print("Video initialization error: $error");
+    });
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final double size = MediaQuery.of(context).size.width * 0.7;
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(24.0),
+      child: Container(
+        width: size,
+        height: size,
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: Theme.of(context).colorScheme.secondary,
+            width: 2,
+          ),
+        ),
+        child: _initialized
+            ? VideoPlayer(_controller)
+            : const Center(child: CircularProgressIndicator(strokeWidth: 2)),
+      ),
+    );
+  }
+
 }

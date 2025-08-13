@@ -343,4 +343,16 @@ class StoryService {
       storyID: storyID,
     );
   }
+
+  Future<String?> uploadVideoFile(String url, {String? folderName, String? postCategory, String? storyID}) async {
+    return FirebaseHelper.uploadVideoFile(
+      videoUrl: url,
+      id: AuthHelper.user!.id!,
+      folderName: folderName,
+      postCategory: postCategory,
+      storyID: storyID,
+    );
+  }
+
+  
 }

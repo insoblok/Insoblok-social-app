@@ -15,6 +15,7 @@ import 'package:insoblok/locator.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 
+import 'package:path/path.dart' as p;
 class FirebaseService {
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyAN4xG1SxbgazfmqjxG84yX4Il1DV01Jxc',
@@ -151,7 +152,7 @@ class FirebaseService {
       }
 
       final String fileName =
-          "${AuthHelper.user?.id}_${kFullFormatter.format(DateTime.now())}.jpg";;
+          "${AuthHelper.user?.id}_${kFullFormatter.format(DateTime.now())}.jpg";
 
       final String storagePath = folderName != null
           ? 'users/${id ?? AuthHelper.user?.id}/$folderName/$fileName'
@@ -188,6 +189,101 @@ class FirebaseService {
       return downloadUrl;
     } catch (e) {
       logger.e('Error uploading image: $e');
+      return null;
+    }
+  }
+
+
+  Future<String?> uploadVideoFile({
+    required String videoUrl, // <-- renamed for clarity
+    String? id,
+    String? folderName,
+    String? postCategory,
+    String? storyID,
+  }) async {
+    try {
+      File file;
+
+      if (videoUrl.startsWith('http')) {
+        // It's a remote video, download it first
+        var tempDir = await getTemporaryDirectory();
+        String fileExtension = p.extension(videoUrl); // get extension (.mp4, .mov, etc.)
+        if (fileExtension.isEmpty) {
+          fileExtension = ".mp4"; // default
+        }
+
+        String fullPath = "${tempDir.path}/${AuthHelper.user?.id}$fileExtension";
+        logger.d('full path $fullPath');
+
+        var dio = Dio();
+        var response = await dio.get(
+          videoUrl,
+          onReceiveProgress: (p, v) {
+            logger.d('${(p / v * 100).toStringAsFixed(2)}%');
+          },
+          options: Options(
+            responseType: ResponseType.bytes,
+            followRedirects: false,
+            validateStatus: (status) => (status ?? 600) < 500,
+          ),
+        );
+
+        file = File(fullPath);
+        var raf = file.openSync(mode: FileMode.write);
+        raf.writeFromSync(response.data);
+        await raf.close();
+      } else {
+        // It's a local file path
+        file = File(videoUrl);
+      }
+
+      // Get file extension from original file path
+      String ext = p.extension(file.path);
+      if (ext.isEmpty) {
+        ext = ".mp4"; // default extension
+      }
+
+      final String fileName =
+          "${AuthHelper.user?.id}_${kFullFormatter.format(DateTime.now())}$ext";
+
+      final String storagePath = folderName != null
+          ? 'users/${id ?? AuthHelper.user?.id}/$folderName/$fileName'
+          : 'users/${id ?? AuthHelper.user?.id}/$fileName';
+
+      final Reference storageRef = _storage.ref().child(storagePath);
+
+      // Upload the video file
+      final UploadTask uploadTask = storageRef.putFile(
+        file,
+        SettableMetadata(contentType: "video/mp4"), // <-- ensures correct MIME type
+      );
+      final TaskSnapshot snapshot = await uploadTask;
+
+      // Get download URL
+      final String downloadUrl = await snapshot.ref.getDownloadURL();
+
+      if (postCategory == "reaction" && storyID != null) {
+        final storiesRef = FirebaseFirestore.instance.collection("story");
+        await storiesRef.doc(storyID).update({
+          "reactions": FieldValue.arrayUnion([downloadUrl]),
+        });
+
+        logger.d("post category reaction");
+      }
+
+      if (postCategory == "gallery") {
+        // Add video URL to user galleries
+        final usersRef = FirebaseFirestore.instance.collection("user");
+        await usersRef.doc(id ?? AuthHelper.user?.id).update({
+          "galleries": FieldValue.arrayUnion([downloadUrl]),
+        });
+
+        logger.d("post category gallery");
+      }
+
+      return downloadUrl;
+    } catch (e) {
+      logger.e('Error uploading video: $e');
       return null;
     }
   }
@@ -328,9 +424,6 @@ class FirebaseService {
 
 }
 
-
-
-
 class FirebaseHelper {
   static FirebaseService get service => locator<FirebaseService>();
 
@@ -358,6 +451,20 @@ class FirebaseHelper {
     String? storyID,
   }) => service.uploadImageFromUrl(
     imageUrl: imageUrl,
+    id: id,
+    folderName: folderName,
+    postCategory: postCategory,
+    storyID: storyID,
+  );
+
+  static Future<String?> uploadVideoFile({
+    required String videoUrl,
+    String? id,
+    String? folderName,
+    String? postCategory,
+    String? storyID,
+  }) => service.uploadVideoFile(
+    videoUrl: videoUrl,
     id: id,
     folderName: folderName,
     postCategory: postCategory,

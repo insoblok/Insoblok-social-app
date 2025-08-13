@@ -150,25 +150,25 @@ class DashboardProvider extends InSoBlokViewModel {
   }
 
   Future<void> onClickMenuItem(int index) async {
-    logger.d(index);
+    
     switch (index) {
-      // case 0:
-      //   Routers.goToNewsPage(context);
-      //   break;
       case 0:
-        Routers.goToLookbookPage(context);
-        break;
-      case 1:
         Routers.goToLeaderboardPage(context); 
         break;
-      case 2:
+      case 1:
         Routers.goToFollowingPage(context);
         break;
+      case 2:
+        Routers.goToLookbookPage(context);
+        break;
       case 3:
-        Routers.goToFriendPage(context);
+        Routers.goToMarketPlacePage(context);
         break;
       case 4:
-        Routers.goToMarketPlacePage(context);
+        Routers.goToFriendPage(context);
+        break;
+      case 5:
+        Routers.goToNewsPage(context);
         break;
     }
   }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:fluro/fluro.dart' as fluro;
 
 import 'package:insoblok/models/models.dart';
+import 'package:insoblok/pages/bases/reaction_video_detail_page.dart';
 import 'package:insoblok/pages/pages.dart';
 import 'package:insoblok/pages/profiles/tastescore_page.dart';
 import 'package:insoblok/pages/profiles/wallet_swap_page.dart';
@@ -58,6 +59,7 @@ const kRouterLeaderboard = '/leaderboard';
 const kRouterTastescore = '/tastescore';
 const kRouterMarketPlace = '/market-place';
 const kRouterFaceDetail = '/face-detail';
+const kRouterReactionVideoDetail = '/reaction-video-detail';
 const kRouterUserList = '/user-list';
 
 class Navigation {
@@ -272,6 +274,23 @@ class Navigation {
           storyID: props['storyID'],
           url: props['url'],
           face: props['face'],
+        );
+      },
+    );
+
+    initRoute<Map<String, dynamic>>(
+      kRouterReactionVideoDetail,
+      (props) {
+        if (props == null) {
+          throw ArgumentError('Route parameters are null');
+        }
+        if (!props.containsKey('storyID') || !props.containsKey('url') || !props.containsKey('videoPath')) {
+          throw ArgumentError('Missing required route parameters');
+        }
+        return ReactionVideoDetailPage(
+          storyID: props['storyID'],
+          url: props['url'],
+          videoPath: props['videoPath'],
         );
       },
     );

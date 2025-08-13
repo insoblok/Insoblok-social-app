@@ -8,7 +8,7 @@ import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 
-class FaceDetailProvider extends InSoBlokViewModel {
+class ReactionVideoDetailProvider extends InSoBlokViewModel {
   late BuildContext _context;
   BuildContext get context => _context;
   set context(BuildContext context) {
@@ -20,6 +20,13 @@ class FaceDetailProvider extends InSoBlokViewModel {
   String get url => _url;
   set url(String f) {
     _url = f;
+    notifyListeners();
+  }
+
+  late String _videoPath;
+  String get videoPath => _videoPath;
+  set videoPath(String f) {
+    _videoPath = f;
     notifyListeners();
   }
 
@@ -67,15 +74,11 @@ class FaceDetailProvider extends InSoBlokViewModel {
 
   List<AIFaceAnnotation> annotations = [];
 
-  Future<void> init(BuildContext context, {required String storyID, required String url, required File face}) async {
+  Future<void> init(BuildContext context, {required String storyID, required String url, required String videoPath}) async {
     this.context = context;
     this.url = url;
     this.storyID = storyID;
-
-    final directory = await getApplicationDocumentsDirectory();
-    final filePath = '${directory.path}/face_mickle.png';
-    this.face = File(filePath);
-    // this.face = face;
+    this.videoPath = videoPath;
   }
 
   Future<void> detectFace(String link) async {
@@ -117,7 +120,6 @@ class FaceDetailProvider extends InSoBlokViewModel {
         await repost();
         break;
       case 1:
-        logger.d("storyID : $storyID");
         await postAsReaction();
         break;
       case 2:
@@ -134,8 +136,8 @@ class FaceDetailProvider extends InSoBlokViewModel {
     notifyListeners();
 
     try {
-      var galleryFaceUrl = await storyService.uploadResult(
-        face!.path,
+      var galleryFaceUrl = await storyService.uploadVideoFile(
+        videoPath,
         folderName: 'face',
         postCategory: 'gallery',
         storyID: storyID,
@@ -161,8 +163,8 @@ class FaceDetailProvider extends InSoBlokViewModel {
     notifyListeners();
 
     try {
-      var reactionFaceUrl = await storyService.uploadResult(
-        face!.path,
+      var reactionFaceUrl = await storyService.uploadVideoFile(
+        videoPath,
         folderName: 'face',
         postCategory: 'reaction',
         storyID: storyID,
@@ -195,8 +197,8 @@ class FaceDetailProvider extends InSoBlokViewModel {
           throw ('empty description!');
         }
 
-        resultFaceUrl = await storyService.uploadResult(
-          face!.path,
+        resultFaceUrl = await storyService.uploadVideoFile(
+          videoPath,
           folderName: 'face',
           postCategory: 'lookbook',
           storyID: storyID,
@@ -206,14 +208,12 @@ class FaceDetailProvider extends InSoBlokViewModel {
 
         MediaStoryModel? media;
         if (resultFaceUrl != null) {
-          var bytes = await File(face!.path).readAsBytes();
-          var decodedImage = img.decodeImage(bytes);
 
           media = MediaStoryModel(
             link: resultFaceUrl,
-            type: 'image',
-            width: decodedImage?.width.toDouble(),
-            height: decodedImage?.height.toDouble(),
+            type: 'video',
+            width: 64,
+            height: 64,
           );
         }
 

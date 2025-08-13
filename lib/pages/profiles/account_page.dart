@@ -1,3 +1,4 @@
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:insoblok/services/image_service.dart';
@@ -7,6 +8,7 @@ import 'package:stacked/stacked.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/widgets/widgets.dart';
+import 'package:video_thumbnail/video_thumbnail.dart';
 
 const kAccountAvatarSize = 92.0;
 const kAccountPageTitles = ['Posts', 'Like', 'Follow'];
@@ -187,7 +189,7 @@ class AccountPage extends StatelessWidget {
                                               index: viewModel.galleries
                                                   .indexOf(gallery),
                                             ),
-                                            child: AIImage(gallery),
+                                            child: _buildMediaThumbnail(gallery),
                                           ),
                                         },
                                       ],
@@ -220,7 +222,63 @@ class AccountPage extends StatelessWidget {
     );
   }
 
-  /// 🔹 Tab Button Builder
+  Future<Uint8List?> _getVideoThumbnail(String videoUrl) async {
+    try {
+      return await VideoThumbnail.thumbnailData(
+        video: videoUrl,
+        imageFormat: ImageFormat.JPEG,
+        maxWidth: 200,
+        quality: 75,
+      );
+    } catch (e) {
+      debugPrint("Error generating thumbnail: $e");
+      return null;
+    }
+  }
+  
+  Widget _buildMediaThumbnail(String url) {
+    final lowerUrl = url.toLowerCase();
+
+    if (lowerUrl.contains('.mp4') || lowerUrl.contains('.mov')) {
+      return FutureBuilder<Uint8List?>(
+        future: _getVideoThumbnail(url),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState ==
+              ConnectionState.waiting) {
+            return const Center(
+                child: CircularProgressIndicator());
+          }
+          if (snapshot.hasData) {
+            return Stack(
+              children: [
+                Image.memory(
+                  snapshot.data!,
+                  fit: BoxFit.cover,
+                  width: double.infinity,
+                  height: double.infinity,
+                ),
+                const Center(
+                  child: Icon(
+                    Icons.play_circle_fill,
+                    size: 40,
+                    color: Colors.white70,
+                  ),
+                ),
+              ],
+            );
+          }
+          return const Icon(
+            Icons.broken_image,
+            color: Colors.grey,
+          );
+        },
+      );
+    } else {
+      // Show image as before
+      return AIImage(url);
+    }
+  }
+
   Widget _buildTabButton(BuildContext context,
       {required String label,
       required bool isSelected,
@@ -246,3 +304,4 @@ class AccountPage extends StatelessWidget {
     );
   }
 }
+

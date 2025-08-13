@@ -1,13 +1,35 @@
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/widgets/widgets.dart';
+import 'package:video_thumbnail/video_thumbnail.dart';
 
 class ReactionsPage extends StatelessWidget {
   final StoryModel story;
 
   const ReactionsPage({super.key, required this.story});
+
+  bool _isVideo(String url) {
+    final lower = url.toLowerCase();
+    return lower.contains('.mp4') ||
+        lower.contains('.mov');
+  }
+
+  Future<Uint8List?> _getVideoThumbnail(String videoUrl) async {
+    try {
+      return await VideoThumbnail.thumbnailData(
+        video: videoUrl,
+        imageFormat: ImageFormat.JPEG,
+        maxWidth: 200,
+        quality: 75,
+      );
+    } catch (e) {
+      debugPrint("Error generating thumbnail: $e");
+      return null;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,35 +76,70 @@ class ReactionsPage extends StatelessWidget {
                               ),
                               delegate: SliverChildBuilderDelegate(
                                 (context, index) {
-                                  final imageUrl = viewModel.reactions[index];
+                                  final mediaUrl = viewModel.reactions[index];
+                                  final isVideo = _isVideo(mediaUrl);
                                   final isSelected =
-                                      viewModel.isSelected(imageUrl);
+                                      viewModel.isSelected(mediaUrl);
 
                                   return GestureDetector(
                                     onTap: () =>
-                                        viewModel.toggleSelection(imageUrl),
+                                        viewModel.toggleSelection(mediaUrl),
                                     child: Stack(
                                       children: [
                                         ClipRRect(
                                           borderRadius:
                                               BorderRadius.circular(8),
-                                          child: Image.network(
-                                            imageUrl,
-                                            fit: BoxFit.cover,
-                                            width: double.infinity,
-                                            height: double.infinity,
-                                            errorBuilder: (context, error,
-                                                    stackTrace) =>
-                                                const Icon(Icons.broken_image,
-                                                    color: Colors.grey),
-                                          ),
+                                          child: isVideo
+                                              ? FutureBuilder<Uint8List?>(
+                                                  future: _getVideoThumbnail(mediaUrl),
+                                                  builder: (context, snapshot) {
+                                                    if (snapshot.connectionState ==
+                                                        ConnectionState.waiting) {
+                                                      return const Center(
+                                                          child: CircularProgressIndicator());
+                                                    }
+                                                    if (snapshot.hasData) {
+                                                      return Stack(
+                                                        children: [
+                                                          Image.memory(
+                                                            snapshot.data!,
+                                                            fit: BoxFit.cover,
+                                                            width: double.infinity,
+                                                            height: double.infinity,
+                                                          ),
+                                                          const Center(
+                                                            child: Icon(
+                                                              Icons.play_circle_fill,
+                                                              size: 40,
+                                                              color: Colors.white70,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      );
+                                                    }
+                                                    return const Icon(
+                                                      Icons.broken_image,
+                                                      color: Colors.grey,
+                                                    );
+                                                  },
+                                                )
+                                              : Image.network(
+                                                  mediaUrl,
+                                                  fit: BoxFit.cover,
+                                                  width: double.infinity,
+                                                  height: double.infinity,
+                                                  errorBuilder: (context, error,
+                                                          stackTrace) =>
+                                                      const Icon(Icons.broken_image,
+                                                          color: Colors.grey),
+                                                ),
                                         ),
                                         if (isSelected)
                                           Positioned(
                                             bottom: 4,
                                             right: 4,
                                             child: Container(
-                                              decoration: BoxDecoration(
+                                              decoration: const BoxDecoration(
                                                 color: Colors.pink,
                                                 shape: BoxShape.circle,
                                               ),
@@ -130,14 +187,16 @@ class ReactionsPage extends StatelessWidget {
                         borderRadius: BorderRadius.circular(8),
                       ),
                     ),
-                    onPressed: viewModel.isBusyPosting ? null : () => viewModel.postToLookBook(),
+                    onPressed: viewModel.isBusyPosting
+                        ? null
+                        : () => viewModel.postToLookBook(),
                     child: const Text(
                       "Post to LookBook",
                       style: TextStyle(fontSize: 16, color: Colors.white),
                     ),
                   ),
                 ),
-                if (viewModel.isBusyPosting)
+              if (viewModel.isBusyPosting)
                 Container(
                   color: Colors.black54,
                   child: const Center(
