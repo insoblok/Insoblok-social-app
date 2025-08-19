@@ -116,6 +116,11 @@ class DashboardProvider extends InSoBlokViewModel {
         //   storydatas = await storyService.getFollowingStories();
         // } else {
         storydatas = await storyService.getStories();
+
+        for (final s in storydatas) {
+          logger.d('---id=${s.id}');
+        }
+
         // }
         _stories.clear();
         logger.d(storydatas.length);

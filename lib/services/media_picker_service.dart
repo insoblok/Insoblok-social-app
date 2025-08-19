@@ -1,10 +1,13 @@
+// media_picker_service.dart
 import 'package:flutter/material.dart';
-
 import 'package:file_picker/file_picker.dart';
 import 'package:image_picker/image_picker.dart';
 
+import 'package:insoblok/pages/vtos/deep_ar_plus_page.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
+
+enum PickerAction { gallery, camera, deepAr }
 
 class MediaPickerService {
   late BuildContext _context;
@@ -16,133 +19,163 @@ class MediaPickerService {
   }
 
   Future<List<XFile>> onPickerStoryMedia({int? limit}) async {
-    var mediaSource = await _showMediaSource();
-    logger.d(mediaSource);
+    final action = await _showMediaSource(); // ← now returns PickerAction?
+    logger.d(action);
 
-    if (mediaSource != null) {
-      var isAllowed = false;
-      isAllowed =
-          mediaSource == ImageSource.gallery
-              ? ((await PermissionService.requestGalleryPermission()) ?? false)
-              : ((await PermissionService.requestCameraPermission()) ?? false);
+    if (action == null) return [];
 
-      if (isAllowed) {
-        List<XFile> medias = [];
-        if (mediaSource == ImageSource.camera) {
-          // var media = await _picker.pickVideo(
-          //   source: mediaSource,
-          //   maxDuration: const Duration(seconds: 10),
-          // );
-          // if (media != null) {
-          //   medias.add(media);
-          // }
-          var mediaPath = await MethodChannelService.onPlatformCameraPicker();
-          if (mediaPath != null) {
-            logger.d(mediaPath);
-            var media = XFile(mediaPath);
-            medias.add(media);
-          }
-        } else {
-          var selects = await onMultiMediaPicker(limit: limit);
-          medias.addAll(selects);
+    // Handle DeepAR right here and return the captured file(s)
+    if (action == PickerAction.deepAr) {
+      final result = await Navigator.of(_context).push<Map<String, String?>>(
+        MaterialPageRoute(builder: (_) => const DeepARPlusPage()),
+      );
+
+      final medias = <XFile>[];
+      if (result != null) {
+        final photoPath = result['photo'];
+        final videoPath = result['video'];
+        if (photoPath != null && photoPath.isNotEmpty) {
+          medias.add(XFile(photoPath));
         }
-
-        if (medias.isEmpty) {
-          AIHelpers.showToast(msg: 'No selected medias!');
+        if (videoPath != null && videoPath.isNotEmpty) {
+          medias.add(XFile(videoPath));
         }
-        return medias;
-      } else {
-        AIHelpers.showToast(msg: 'Permission Denided!');
       }
+
+      if (medias.isEmpty) {
+        AIHelpers.showToast(msg: 'No media captured!');
+      }
+
+      logger.d("medias--- : $medias");
+
+      return medias;
     }
-    return [];
+
+    // Original flow for gallery/camera
+    final isAllowed = action == PickerAction.gallery
+        ? ((await PermissionService.requestGalleryPermission()) ?? false)
+        : ((await PermissionService.requestCameraPermission()) ?? false);
+
+    if (!isAllowed) {
+      AIHelpers.showToast(msg: 'Permission Denied!');
+      return [];
+    }
+
+    final medias = <XFile>[];
+    if (action == PickerAction.camera) {
+      // If you still want your platform camera picker:
+      final mediaPath = await MethodChannelService.onPlatformCameraPicker();
+      if (mediaPath != null) {
+        logger.d(mediaPath);
+        medias.add(XFile(mediaPath));
+      }
+    } else {
+      final selects = await onMultiMediaPicker(limit: limit);
+      medias.addAll(selects);
+    }
+
+    if (medias.isEmpty) {
+      AIHelpers.showToast(msg: 'No selected medias!');
+    }
+    return medias;
   }
 
   Future<XFile?> onPickerSingleMedia({
     required bool isImage,
     Duration? maxDuration,
   }) async {
-    var mediaSource = await _showMediaSource();
-    if (mediaSource != null) {
-      var isAllowed = false;
-      isAllowed =
-          mediaSource == ImageSource.gallery
-              ? ((await PermissionService.requestGalleryPermission()) ?? false)
-              : ((await PermissionService.requestCameraPermission()) ?? false);
+    final action = await _showMediaSource();
+    logger.d("mediaSource = $action");
+    if (action == null) return null;
 
-      if (isAllowed) {
-        XFile? media;
-        if (isImage) {
-          media = await _picker.pickImage(source: mediaSource);
-        } else {
-          media = await _picker.pickVideo(
-            source: mediaSource,
-            maxDuration: maxDuration,
-          );
-        }
-
-        if (media != null) {
-          return media;
-        } else {
-          AIHelpers.showToast(
-            msg: 'No selected ${isImage ? 'image' : 'video'}!',
-          );
-        }
-      } else {
-        AIHelpers.showToast(msg: 'Permission Denided!');
+    if (action == PickerAction.deepAr) {
+      final result = await Navigator.of(_context).push<Map<String, String?>>(
+        MaterialPageRoute(builder: (_) => const DeepARPlusPage()),
+      );
+      if (result != null) {
+        final p = isImage ? result['photo'] : result['video'];
+        if (p != null && p.isNotEmpty) return XFile(p);
       }
+      AIHelpers.showToast(msg: 'No ${isImage ? 'image' : 'video'} captured!');
+      return null;
     }
-    return null;
+
+    final isAllowed = action == PickerAction.gallery
+        ? ((await PermissionService.requestGalleryPermission()) ?? false)
+        : ((await PermissionService.requestCameraPermission()) ?? false);
+
+    if (!isAllowed) {
+      AIHelpers.showToast(msg: 'Permission Denied!');
+      return null;
+    }
+
+    XFile? media;
+    if (isImage) {
+      media = action == PickerAction.gallery
+          ? await _picker.pickImage(source: ImageSource.gallery)
+          : await _picker.pickImage(source: ImageSource.camera);
+    } else {
+      media = await _picker.pickVideo(
+        source: action == PickerAction.gallery ? ImageSource.gallery : ImageSource.camera,
+        maxDuration: maxDuration,
+      );
+    }
+
+    if (media == null) {
+      AIHelpers.showToast(msg: 'No selected ${isImage ? 'image' : 'video'}!');
+    }
+    return media;
   }
 
-  Future<ImageSource?> _showMediaSource() {
-    return showModalBottomSheet<ImageSource>(
+  Future<PickerAction?> _showMediaSource() {
+    return showModalBottomSheet<PickerAction>(
       context: _context,
       builder: (context) {
         return SafeArea(
           child: Container(
             width: double.infinity,
             color: AIColors.darkScaffoldBackground,
-            padding: const EdgeInsets.symmetric(
-              horizontal: 18.0,
-              vertical: 24.0,
-            ),
+            padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 24.0),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
                 InkWell(
-                  onTap: () => Navigator.of(context).pop(ImageSource.gallery),
+                  onTap: () => Navigator.of(context).pop(PickerAction.gallery),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       AIImage(Icons.air, color: AIColors.pink),
                       const SizedBox(width: 12.0),
-                      Text(
-                        'From Gallery',
-                        style: TextStyle(
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.bold,
-                          color: AIColors.pink,
-                        ),
+                      Text('From Gallery',
+                        style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: AIColors.pink),
                       ),
                     ],
                   ),
                 ),
                 const SizedBox(height: 24.0),
                 InkWell(
-                  onTap: () => Navigator.of(context).pop(ImageSource.camera),
+                  onTap: () => Navigator.of(context).pop(PickerAction.camera),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       AIImage(Icons.camera, color: AIColors.pink),
                       const SizedBox(width: 12.0),
-                      Text(
-                        'From Camera',
-                        style: TextStyle(
-                          fontSize: 16.0,
-                          fontWeight: FontWeight.bold,
-                          color: AIColors.pink,
-                        ),
+                      Text('From Camera',
+                        style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: AIColors.pink),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 24.0),
+                InkWell(
+                  onTap: () => Navigator.of(context).pop(PickerAction.deepAr),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      AIImage(Icons.camera_enhance, color: AIColors.pink),
+                      const SizedBox(width: 12.0),
+                      Text('From Camera (AR)',
+                        style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: AIColors.pink),
                       ),
                     ],
                   ),

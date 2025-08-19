@@ -47,8 +47,8 @@ class SplashProvider extends ReactiveViewModel {
     _reownService = locator<ReownService>(); // ✅ assign to class field
     await _reownService.init(context);
 
-    login();
-    // Routers.goToLoginPage(context);
+    // login();
+    Routers.goToLoginPage(context);
     // Routers.goToMainPage(context);
   }
 

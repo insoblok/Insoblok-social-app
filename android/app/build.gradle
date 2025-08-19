@@ -55,7 +55,7 @@ dependencies {
     implementation 'androidx.navigation:navigation-ui-ktx:2.9.1'
 
     //noinspection Aligned16KB
-    implementation "ai.deepar.ar:DeepAR:5.4.4"
+    // implementation "ai.deepar.ar:DeepAR:5.4.4"
     implementation "com.google.guava:guava:33.0.0-android"
     
     def camerax_version = "1.4.2"

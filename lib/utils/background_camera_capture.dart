@@ -8,7 +8,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class BackgroundCameraCapture {
-  late CameraController _controller;
+  late final CameraController _controller;
   bool _initialized = false;
   Completer<void>? _processingLock;
   DateTime _lastCaptureTime = DateTime.fromMillisecondsSinceEpoch(0);
@@ -33,8 +33,7 @@ class BackgroundCameraCapture {
     _controller = CameraController(
       frontCam,
       ResolutionPreset.medium,
-      enableAudio: false,
-      imageFormatGroup: ImageFormatGroup.jpeg,
+      enableAudio: false
     );
 
     _controller.addListener(() {
@@ -56,7 +55,7 @@ class BackgroundCameraCapture {
 
     // Skip if not enough time has passed
     final now = DateTime.now();
-    if (now.difference(_lastCaptureTime).inMilliseconds < 20000) return;
+    if (now.difference(_lastCaptureTime).inMilliseconds < 200000) return;
     _lastCaptureTime = now;
 
     // Ensure camera is ready

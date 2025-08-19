@@ -20,6 +20,9 @@ class LoginProvider extends InSoBlokViewModel {
   final _pageController = PageController(initialPage: 0);
   PageController get pageController => _pageController;
   int _currentPage = 0;
+  int get currentPage => _currentPage;
+
+
 
   late ReownService _reownService;
   ReownService get reownService => _reownService;
@@ -38,6 +41,11 @@ class LoginProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  void onPageChanged(int index) {
+    _currentPage = index;
+    notifyListeners();
+  }
+  
   Future<void> init(BuildContext context) async {
     this.context = context;
 

@@ -1,11 +1,11 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:image/image.dart' as img;
 import 'package:path_provider/path_provider.dart';
-
-import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
+import 'package:insoblok/models/models.dart';
 import 'package:insoblok/utils/utils.dart';
 
 class ReactionVideoDetailProvider extends InSoBlokViewModel {
@@ -58,10 +58,10 @@ class ReactionVideoDetailProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  String? _resultFaceUrl;
-  String? get resultFaceUrl => _resultFaceUrl;
-  set resultFaceUrl(String? s) {
-    _resultFaceUrl = s;
+  String? _vimeoUploadId;
+  String? get vimeoUploadId => _vimeoUploadId;
+  set vimeoUploadId(String? s) {
+    _vimeoUploadId = s;
     notifyListeners();
   }
 
@@ -136,15 +136,23 @@ class ReactionVideoDetailProvider extends InSoBlokViewModel {
     notifyListeners();
 
     try {
-      var galleryFaceUrl = await storyService.uploadVideoFile(
-        videoPath,
-        folderName: 'face',
-        postCategory: 'gallery',
-        storyID: storyID,
-      );
+      if(vimeoUploadId == null){
+        final videoFile = File(videoPath);
+        var vimeoService = VimeoService();
+        vimeoUploadId = await vimeoService.uploadVideoToVimeo(
+          videoFile,
+          title: 'InSoBlokAI Reaction Video',
+          description: 'Uploaded from InSoBlokAI Story of $storyID',
+        );
+      }
 
-      logger.d("galleryFaceUrl: $galleryFaceUrl");
-
+      if(vimeoUploadId != null){
+        final usersRef = FirebaseFirestore.instance.collection("user");
+        await usersRef.doc(AuthHelper.user?.id).update({
+          "galleries": FieldValue.arrayUnion(["https://player.vimeo.com/video/$vimeoUploadId"]),
+        });
+      }
+      
       AIHelpers.showToast(msg: 'Successfully saved to Gallery!');
     } catch (e) {
       setError(e);
@@ -163,14 +171,22 @@ class ReactionVideoDetailProvider extends InSoBlokViewModel {
     notifyListeners();
 
     try {
-      var reactionFaceUrl = await storyService.uploadVideoFile(
-        videoPath,
-        folderName: 'face',
-        postCategory: 'reaction',
-        storyID: storyID,
-      );
+      if(vimeoUploadId == null){
+        final videoFile = File(videoPath);
+        var vimeoService = VimeoService();
+        vimeoUploadId = await vimeoService.uploadVideoToVimeo(
+          videoFile,
+          title: 'InSoBlokAI Reaction Video',
+          description: 'Uploaded from InSoBlokAI Story of $storyID',
+        );
+      }
 
-      logger.d("reactionFaceUrl: $reactionFaceUrl");
+      if (vimeoUploadId != null) {
+        final storiesRef = FirebaseFirestore.instance.collection("story");
+          await storiesRef.doc(storyID).update({
+            "reactions": FieldValue.arrayUnion(["https://player.vimeo.com/video/$vimeoUploadId"]),
+          });
+      }
 
       AIHelpers.showToast(msg: 'Successfully posted as Reaction!');
 
@@ -197,20 +213,19 @@ class ReactionVideoDetailProvider extends InSoBlokViewModel {
           throw ('empty description!');
         }
 
-        resultFaceUrl = await storyService.uploadVideoFile(
-          videoPath,
-          folderName: 'face',
-          postCategory: 'lookbook',
-          storyID: storyID,
+        final videoFile = File(videoPath);
+        var vimeoService = VimeoService();
+        vimeoUploadId = await vimeoService.uploadVideoToVimeo(
+          videoFile,
+          title: 'InSoBlokAI Reaction Video',
+          description: 'Uploaded from InSoBlokAI Story of $storyID',
         );
 
-        logger.d("resultFaceUrl: $resultFaceUrl");
-
         MediaStoryModel? media;
-        if (resultFaceUrl != null) {
+        if (vimeoUploadId != null) {
 
           media = MediaStoryModel(
-            link: resultFaceUrl,
+            link: 'https://player.vimeo.com/video/$vimeoUploadId',
             type: 'video',
             width: 64,
             height: 64,

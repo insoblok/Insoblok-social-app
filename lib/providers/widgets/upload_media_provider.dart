@@ -46,6 +46,7 @@ class UploadMediaProvider extends ReactiveViewModel {
         files.map((asset) => UploadMediaItem(file: asset)).toList(),
       );
     }
+    logger.d("uploaded medias-----------");
     logger.d(medias.length);
     notifyListeners();
   }

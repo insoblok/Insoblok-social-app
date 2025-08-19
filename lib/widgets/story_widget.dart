@@ -1062,8 +1062,7 @@ class _VideoPreviewWidget extends StatefulWidget {
     required this.videoPath,
     required this.onRecapture,
     required this.refreshCount,
-    Key? key,
-  }) : super(key: key);
+  });
 
   @override
   State<_VideoPreviewWidget> createState() => _VideoPreviewWidgetState();
@@ -1076,6 +1075,7 @@ class _VideoPreviewWidgetState extends State<_VideoPreviewWidget> {
   @override
   void initState() {
     super.initState();
+    logger.d("path replaced at widget.videoPath : ${widget.videoPath}");
     _initializeVideo(widget.videoPath);
   }
 

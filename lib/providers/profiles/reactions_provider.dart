@@ -96,16 +96,10 @@ class ReactionsProvider extends InSoBlokViewModel {
     try{
       isBusyPosting = true;
       notifyListeners();
-
       isCombineImages = true;
-
-      logger.d("Posting ${_selectedImages.length} images to LookBook: $_selectedImages");
-      
       final bgUrl = (story.medias != null && story.medias!.isNotEmpty)
             ? (story.medias?[0].link)
             : '';
-
-        logger.d("Posting function bgUrl : $bgUrl");
         if (bgUrl == null) {
           logger.e('No background image in story');
           return;

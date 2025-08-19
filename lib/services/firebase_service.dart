@@ -1,10 +1,9 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:flutter/services.dart';
-
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/services.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -126,7 +125,7 @@ class FirebaseService {
       if (imageUrl.startsWith('http')) {
         // It's a remote image, download it first
         var tempDir = await getTemporaryDirectory();
-        String fullPath = "${tempDir.path}/${AuthHelper.user?.id}.jpg";
+        String fullPath = "${tempDir.path}/${AuthHelper.user?.id}.AVIF";
         logger.d('full path $fullPath');
 
         var dio = Dio();
@@ -152,7 +151,7 @@ class FirebaseService {
       }
 
       final String fileName =
-          "${AuthHelper.user?.id}_${kFullFormatter.format(DateTime.now())}.jpg";
+          "${AuthHelper.user?.id}_${kFullFormatter.format(DateTime.now())}.AVIF";
 
       final String storagePath = folderName != null
           ? 'users/${id ?? AuthHelper.user?.id}/$folderName/$fileName'
@@ -308,7 +307,7 @@ class FirebaseService {
   }) async {
     try {
       final String fileName =
-          "${AuthHelper.user?.id}_${kFullFormatter.format(DateTime.now())}.jpg";
+          "${AuthHelper.user?.id}_${kFullFormatter.format(DateTime.now())}.AVIF";
       final String storagePath =
           folderName != null
               ? 'users/${id ?? AuthHelper.user?.id}/$folderName/$fileName'
@@ -336,7 +335,7 @@ class FirebaseService {
   }) async {
     try {
       final String fileName =
-          "${AuthHelper.user?.id}_${kFullFormatter.format(DateTime.now())}.jpg";
+          "${AuthHelper.user?.id}_${kFullFormatter.format(DateTime.now())}.AVIF";
       final String storagePath =
           folderName != null
               ? 'users/${id ?? AuthHelper.user?.id}/$folderName/$fileName'

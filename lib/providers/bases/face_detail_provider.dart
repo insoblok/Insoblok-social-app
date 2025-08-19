@@ -117,7 +117,6 @@ class FaceDetailProvider extends InSoBlokViewModel {
         await repost();
         break;
       case 1:
-        logger.d("storyID : $storyID");
         await postAsReaction();
         break;
       case 2:

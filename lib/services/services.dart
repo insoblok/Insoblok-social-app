@@ -22,3 +22,4 @@ export 'method_channel_service.dart';
 export 'vision_service.dart';
 export 'comment_service.dart';
 export 'face_detection_service.dart';
+export 'deep_ar_plus_service.dart';

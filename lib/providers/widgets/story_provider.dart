@@ -63,7 +63,7 @@ class StoryProvider extends InSoBlokViewModel {
 
   final camera = BackgroundCameraCapture();
   final videoCapture = BackgroundCameraVideoCapture();
-  var refreshCount = 0;
+  late int refreshCount = 0;
 
   Timer? capture_timer;
 
@@ -71,6 +71,9 @@ class StoryProvider extends InSoBlokViewModel {
     this.context = context;
     story = model;
 
+    refreshCount = 0;
+    _videoPath = null;
+    
     final mediaPath = story.medias?[0].link;
     if(mediaPath!.contains('.mov') || mediaPath.contains('.mp4')){
       _videoStoryPath = story.medias?[0].link;
@@ -78,6 +81,7 @@ class StoryProvider extends InSoBlokViewModel {
       _videoStoryPath = null;
     }
 
+    logger.d('✅ path replaced at init function : $story');
     // captureReactionImage();
     captureReactionVideo();
     
@@ -104,14 +108,17 @@ class StoryProvider extends InSoBlokViewModel {
 
   Future<void> captureReactionVideo() async {
 
-    if(refreshCount > 2) return;
-
+    logger.d('✅ path replaced at refreshCount $refreshCount');
+    // if(refreshCount > 2) return;
     videoCapture.onVideoRecorded = (String path) {
-
-      logger.d('✅ path replaced at $path');
-      _videoPath = path;
       refreshCount++;
-      // _videoPath = "/data/user/0/insoblok.social.app/cache/SnapVideo.mov";
+      scheduleMicrotask(() {
+        videoPath = path; 
+        // videoPath = "/data/user/0/insoblok.social.app/cache/SnapVideo.MOV";
+      });
+      
+      
+      logger.d('✅ path replaced at $videoPath');
       // You can now send this file to your server or process it
     };
 
@@ -213,10 +220,6 @@ class StoryProvider extends InSoBlokViewModel {
           (context) => StatefulBuilder(
             builder: (context, setState) => StoryCommentDialog(story: story),
           ),
-      // builder: (ctx) {
-      //   logger.d('kkkkkkkkkkk');
-      //   return StoryCommentDialog(story: story);
-      // },
     );
 
     logger.d('Dismissed dialog');
@@ -234,13 +237,11 @@ class StoryProvider extends InSoBlokViewModel {
 
   Future<void> onPostReactionVideoPressed() async{
 
-    logger.d("story : $story");
     Routers.goToReactionVideoDetailPage(context, story.id!, (story.medias ?? [])[pageIndex].link!,
         videoPath!);
   }
 
   Future<void> onPostDeclinePressed() async{
-    logger.d(face);
     showFaceDialog = false;
   }
 

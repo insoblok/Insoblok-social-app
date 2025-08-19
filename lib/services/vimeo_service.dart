@@ -5,13 +5,32 @@ import 'package:http/http.dart' as http;
 
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
+import 'package:video_compress/video_compress.dart';
+
 
 class VimeoService {
+
+  Future<File?> compressForUpload(String path) async {
+    await VideoCompress.setLogLevel(0);
+    final info = await VideoCompress.compressVideo(
+      path,
+      quality: VideoQuality.MediumQuality, // try LowQuality for even smaller
+      includeAudio: true,
+      deleteOrigin: false,
+    );
+    return info?.file;
+  }
+
   Future<String?> uploadVideoToVimeo(
     File videoFile, {
     String? title,
     String? description,
   }) async {
+
+    logger.d("video file size: ${videoFile.lengthSync().toString()}");
+
+    // File? compressedVideofile = compressForUpload(videoFile.path) as File;
+
     String apiUrl = 'https://api.vimeo.com';
     try {
       final createResponse = await http.post(
