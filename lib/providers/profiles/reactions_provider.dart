@@ -3,7 +3,7 @@ import 'dart:io';
 import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'package:http/http.dart' as http;
-import 'package:image/image.dart' as img;
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 
 import 'package:flutter/material.dart';
 import 'package:insoblok/models/models.dart';
@@ -115,11 +115,8 @@ class ReactionsProvider extends InSoBlokViewModel {
         '${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}.png',
       );
       await file.writeAsBytes(pngBytes!);
-      final thumbUrl = await FirebaseHelper.uploadFile(
-        file: file,
-        folderName: 'lookbook',
-      );
-      
+      MediaStoryModel model = await CloudinaryCDNService.uploadImageToCDN(XFile(file.path));
+      String thumbUrl = model.link!;
       if(thumbUrl != null){
         isCombineImages = false;
       }

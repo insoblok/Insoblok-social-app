@@ -3,11 +3,6 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 import 'package:carousel_slider/carousel_slider.dart';
-// import 'package:chewie/chewie.dart';
-// import 'package:video_player/video_player.dart';
-// import 'package:webview_flutter/webview_flutter.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:vimeo_video_player/vimeo_video_player.dart';
 import 'package:video_player/video_player.dart'; 
 import 'package:chewie/chewie.dart';
 
@@ -160,68 +155,11 @@ class MediaCarouselCell extends StatefulWidget {
 }
 
 class _MediaCarouselCellState extends State<MediaCarouselCell> {
-  // late VideoPlayerController _videoPlayerController;
-  // late ChewieController _chewieController;
-  // late WebViewController _webViewController;
-  late InAppWebViewController? webViewController;
   bool isPlaying = false;
 
   @override
   void initState() {
     super.initState();
-
-    // if (widget.media.type == 'video') {
-    //   _videoPlayerController = VideoPlayerController.networkUrl(
-    //     Uri.parse(widget.media.link!),
-    //   );
-
-    //   _videoPlayerController.addListener(() {
-    //     if (_videoPlayerController.value.isCompleted) {
-    //       setState(() {
-    //         isPlaying = false;
-    //         _videoPlayerController.seekTo(Duration(milliseconds: 0));
-    //       });
-    //     }
-    //   });
-
-    // _videoPlayerController.initialize().then((value) {
-    //   _chewieController = ChewieController(
-    //     videoPlayerController: _videoPlayerController,
-    //     autoPlay: true,
-    //     looping: false,
-    //     aspectRatio: _videoPlayerController.value.aspectRatio,
-    //     showControls: false,
-    //     materialProgressColors: ChewieProgressColors(
-    //       playedColor: Colors.red,
-    //       handleColor: Colors.red,
-    //       backgroundColor: Colors.grey,
-    //       bufferedColor: Colors.lightGreen,
-    //     ),
-    //   );
-    //   setState(() {});
-    // });
-    //   _webViewController =
-    //       WebViewController()
-    //         ..setJavaScriptMode(JavaScriptMode.unrestricted)
-    //         ..setNavigationDelegate(
-    //           NavigationDelegate(
-    //             onProgress: (int progress) {
-    //               // Update loading bar.
-    //             },
-    //             onPageStarted: (String url) {},
-    //             onPageFinished: (String url) {},
-    //             onHttpError: (HttpResponseError error) {},
-    //             onWebResourceError: (WebResourceError error) {},
-    //             onNavigationRequest: (NavigationRequest request) {
-    //               // if (request.url.startsWith('https://www.youtube.com/')) {
-    //               //   return NavigationDecision.prevent;
-    //               // }
-    //               return NavigationDecision.navigate;
-    //             },
-    //           ),
-    //         )
-    //         ..loadRequest(Uri.parse(widget.media.link!));
-    // }
   }
 
   @override
@@ -266,92 +204,16 @@ class _MediaCarouselCellState extends State<MediaCarouselCell> {
                     height: constraints.maxHeight,
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(12.0),
-                      // child: VimeoVideoPlayer(
-                      //   videoId:
-                      //       AIHelpers.extractVimeoId(widget.media.link!) ?? '',
-                      //   isAutoPlay: true,
-                      //   onInAppWebViewCreated: (controller) {
-                      //     webViewController = controller;
-                      //   },
-                      //   onInAppWebViewLoadStart: (controller, url) {},
-                      //   onInAppWebViewLoadStop: (controller, url) {},
-                      // ),
-                        child: CloudinaryVideoPlayerWidget(videoUrl: "https://res.cloudinary.com/drlpximxi/video/upload/v1755696760/Butterfly-209_iumvk5.mp4")
-                      // child: WebViewWidget(controller: _webViewController),
+                      child: CloudinaryVideoPlayerWidget(videoUrl: widget.media.link!)
                     ),
                   );
                 },
               ),
-      // : _videoPlayerController.value.isInitialized
-      // ? LayoutBuilder(
-      //   builder: (context, constraints) {
-      //     return SizedBox(
-      //       height: constraints.maxHeight,
-      //       child: Stack(
-      //         children: [
-      //           Align(
-      //             alignment: Alignment.center,
-      //             child: ClipRRect(
-      //               borderRadius: BorderRadius.circular(12.0),
-      //               child: AspectRatio(
-      //                 aspectRatio:
-      //                     _videoPlayerController.value.aspectRatio,
-      //                 child: FittedBox(
-      //                   fit: BoxFit.cover,
-      //                   child: SizedBox(
-      //                     width:
-      //                         _videoPlayerController.value.size.width,
-      //                     height:
-      //                         _videoPlayerController.value.size.height,
-      //                     child: Chewie(controller: _chewieController),
-      //                   ),
-      //                 ),
-      //               ),
-      //             ),
-      //           ),
-      //           Align(
-      //             alignment: Alignment.center,
-      //             child: IconButton(
-      //               onPressed: () {
-      //                 if (isPlaying) {
-      //                   _videoPlayerController.pause();
-      //                 } else {
-      //                   _videoPlayerController.play();
-      //                 }
-      //                 setState(() {
-      //                   isPlaying = !isPlaying;
-      //                 });
-      //               },
-      //               icon: Icon(
-      //                 isPlaying
-      //                     ? Icons.pause_circle
-      //                     : Icons.play_circle,
-      //                 color: Colors.white,
-      //                 size: 32.0,
-      //               ),
-      //             ),
-      //           ),
-      //         ],
-      //       ),
-      //     );
-      //   },
-      // )
-      // : AIImage(
-      //   AIImages.placehold,
-      //   width: double.infinity,
-      //   height: double.infinity,
-      //   fit: BoxFit.cover,
-      // ),
     );
   }
 
   @override
   void dispose() {
-    if (widget.media.type == 'video') {
-      webViewController?.dispose();
-      // _videoPlayerController.dispose();
-      // _chewieController.dispose();
-    }
     super.dispose();
   }
 }
@@ -426,35 +288,11 @@ class _CloudinaryVideoPlayerWidgetState extends State<CloudinaryVideoPlayerWidge
 
   Future<void> _initializePlayer() async {
     try {
-      // Initialize the core video controller
       debugPrint('Loading original video from:');
       await _videoPlayerController.initialize();
-      
-      // Create the Chewie controller which provides the UI
-      // _chewieController = ChewieController(
-      //   videoPlayerController: _videoPlayerController,
-      //   autoPlay: true, // Set to true if you want it to play immediately
-      //   looping: false,
-      //   aspectRatio: _videoPlayerController.value.aspectRatio,
-      //   // Additional customization options:
-      //   showControls: true,
-      //   materialProgressColors: ChewieProgressColors(
-      //     playedColor: Colors.red,
-      //     handleColor: Colors.blue,
-      //     backgroundColor: Colors.grey,
-      //     bufferedColor: Colors.grey.shade300,
-      //   ),
-      //   placeholder: Container( // Shows before video loads
-      //     color: Colors.grey.shade900,
-      //   ),
-      //   autoInitialize: true,
-      // );
     } catch (error) {
-      // Handle any errors (e.g., invalid URL, network issue)
       print("Error initializing video player: $error");
-      // You could show an error message to the user here
     } finally {
-      // Set loading to false whether it succeeded or failed
       if (mounted) {
         setState(() {
           _isLoading = false;
@@ -464,7 +302,6 @@ class _CloudinaryVideoPlayerWidgetState extends State<CloudinaryVideoPlayerWidge
   }
   @override
   void dispose() {
-    // Ensure disposing of the VideoPlayerController to free up resources.
     _videoPlayerController.dispose();
     super.dispose();
   }
@@ -489,17 +326,15 @@ class _CloudinaryVideoPlayerWidgetState extends State<CloudinaryVideoPlayerWidge
       width: 200,
       decoration: BoxDecoration(
         border: Border.all(
-          color: Colors.transparent, // Border color
-          width: 2.0,        // Border width
+          color: Colors.transparent,
+          width: 2.0,
         ),
-        borderRadius: BorderRadius.circular(12.0), // Rounded corners
+        borderRadius: BorderRadius.circular(12.0),
       ),
       child: FractionallySizedBox(
-        // aspectRatio: aspectRatio,
         widthFactor: 1,
         child: Column(
           children: [
-            // Video player - Expanded to fill available space
             Expanded(
               child: AspectRatio(
                 aspectRatio: _videoPlayerController.value.aspectRatio,

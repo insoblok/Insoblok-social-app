@@ -106,10 +106,8 @@ class AccountPublicProvider extends InSoBlokViewModel {
     await runBusyFuture(() async {
       try {
         if (selectedFile != null) {
-          var discoverImg = await FirebaseHelper.uploadFile(
-            file: File(selectedFile!.path),
-          );
-          account = account.copyWith(discovery: discoverImg);
+          MediaStoryModel model = await CloudinaryCDNService.uploadImageToCDN(XFile(selectedFile!.path));
+          account = account.copyWith(discovery: model.link);
         }
         await AuthHelper.updateUser(account);
         AIHelpers.showToast(msg: 'Successfully updated user profile!');

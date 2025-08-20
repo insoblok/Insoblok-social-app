@@ -2,7 +2,9 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image/image.dart' as img;
+import 'package:insoblok/services/cloudinary_cdn_service.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/models/models.dart';
@@ -58,10 +60,10 @@ class ReactionVideoDetailProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  String? _vimeoUploadId;
-  String? get vimeoUploadId => _vimeoUploadId;
-  set vimeoUploadId(String? s) {
-    _vimeoUploadId = s;
+  String? _cdnUploadId;
+  String? get cdnUploadId => _cdnUploadId;
+  set cdnUploadId(String? s) {
+    _cdnUploadId = s;
     notifyListeners();
   }
 
@@ -134,22 +136,18 @@ class ReactionVideoDetailProvider extends InSoBlokViewModel {
 
     setBusy(true);
     notifyListeners();
-
+    String link = "";
     try {
-      if(vimeoUploadId == null){
-        final videoFile = File(videoPath);
-        var vimeoService = VimeoService();
-        vimeoUploadId = await vimeoService.uploadVideoToVimeo(
-          videoFile,
-          title: 'InSoBlokAI Reaction Video',
-          description: 'Uploaded from InSoBlokAI Story of $storyID',
-        );
+      if(cdnUploadId == null){
+        MediaStoryModel model = await CloudinaryCDNService.uploadVideoToCDN(XFile(videoPath));
+        cdnUploadId = model.publicId;
+        link = model.link!;
       }
 
-      if(vimeoUploadId != null){
+      if(cdnUploadId != null){
         final usersRef = FirebaseFirestore.instance.collection("user");
         await usersRef.doc(AuthHelper.user?.id).update({
-          "galleries": FieldValue.arrayUnion(["https://player.vimeo.com/video/$vimeoUploadId"]),
+          "galleries": FieldValue.arrayUnion([link]),
         });
       }
       
@@ -169,22 +167,18 @@ class ReactionVideoDetailProvider extends InSoBlokViewModel {
 
     setBusy(true);
     notifyListeners();
-
+    String url = "";
     try {
-      if(vimeoUploadId == null){
-        final videoFile = File(videoPath);
-        var vimeoService = VimeoService();
-        vimeoUploadId = await vimeoService.uploadVideoToVimeo(
-          videoFile,
-          title: 'InSoBlokAI Reaction Video',
-          description: 'Uploaded from InSoBlokAI Story of $storyID',
-        );
+      if(cdnUploadId == null) {
+        MediaStoryModel model = await CloudinaryCDNService.uploadVideoToCDN(XFile(videoPath));
+        cdnUploadId = model.publicId;
+        url = model.link!;
       }
 
-      if (vimeoUploadId != null) {
+      if (cdnUploadId != null) {
         final storiesRef = FirebaseFirestore.instance.collection("story");
           await storiesRef.doc(storyID).update({
-            "reactions": FieldValue.arrayUnion(["https://player.vimeo.com/video/$vimeoUploadId"]),
+            "reactions": FieldValue.arrayUnion([url]),
           });
       }
 
@@ -213,19 +207,21 @@ class ReactionVideoDetailProvider extends InSoBlokViewModel {
           throw ('empty description!');
         }
 
-        final videoFile = File(videoPath);
-        var vimeoService = VimeoService();
-        vimeoUploadId = await vimeoService.uploadVideoToVimeo(
-          videoFile,
-          title: 'InSoBlokAI Reaction Video',
-          description: 'Uploaded from InSoBlokAI Story of $storyID',
-        );
+        // final videoFile = File(videoPath);
+        // var vimeoService = VimeoService();
+        // cdnUploadId = await vimeoService.uploadVideoToVimeo(
+        //   videoFile,
+        //   title: 'InSoBlokAI Reaction Video',
+        //   description: 'Uploaded from InSoBlokAI Story of $storyID',
+        // );
+        MediaStoryModel model = await CloudinaryCDNService.uploadVideoToCDN(XFile(videoPath));
+        cdnUploadId = model.publicId;
 
         MediaStoryModel? media;
-        if (vimeoUploadId != null) {
+        if (cdnUploadId != null) {
 
           media = MediaStoryModel(
-            link: 'https://player.vimeo.com/video/$vimeoUploadId',
+            link: model.link,
             type: 'video',
             width: 64,
             height: 64,

@@ -203,16 +203,14 @@ class MessageProvider extends InSoBlokViewModel {
     var image = await _mediaPickerService.onPickerSingleMedia(isImage: true);
     if (image != null) {
       selectedFile = image;
+      
       var isSend = await _showPreview(isImage: true);
       if (isSend) {
-        var imageUrl = await FirebaseHelper.uploadFile(
-          file: File(image.path),
-          folderName: 'message',
-        );
-        if (imageUrl != null) {
+        final MediaStoryModel model = await CloudinaryCDNService.uploadImageToCDN(XFile(image.path));
+        if (model.link != null) {
           await messageService.sendImageMessage(
             chatRoomId: room.id!,
-            imageUrl: imageUrl,
+            imageUrl: model.link!,
           );
           scrollController.jumpTo(scrollController.position.maxScrollExtent);
         }
@@ -231,14 +229,11 @@ class MessageProvider extends InSoBlokViewModel {
       selectedFile = video;
       var isSend = await _showPreview(isImage: false);
       if (isSend) {
-        var videoUrl = await FirebaseHelper.uploadFile(
-          file: File(video.path),
-          folderName: 'message',
-        );
-        if (videoUrl != null) {
+        final MediaStoryModel model = await CloudinaryCDNService.uploadImageToCDN(XFile(video.path));
+        if (model.link != null) {
           await messageService.sendVideoMessage(
             chatRoomId: room.id!,
-            videoUrl: videoUrl,
+            videoUrl: model.link!,
           );
           scrollController.jumpTo(scrollController.position.maxScrollExtent);
         }
@@ -252,15 +247,11 @@ class MessageProvider extends InSoBlokViewModel {
 
     var gif = await _mediaPickerService.onGifPicker();
     if (gif.isNotEmpty) {
-      var gifUrl = await FirebaseHelper.uploadFile(
-        file: File(gif.first),
-        folderName: 'message',
-      );
-      if (gifUrl != null) {
-        logger.d(gifUrl);
+      final MediaStoryModel model = await CloudinaryCDNService.uploadImageToCDN(XFile(gif.first));
+      if (model.link != null) {
         await messageService.sendGifMessage(
           chatRoomId: room.id!,
-          gifUrl: gifUrl,
+          gifUrl: model.link!,
         );
         scrollController.jumpTo(scrollController.position.maxScrollExtent);
       }

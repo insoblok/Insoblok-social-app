@@ -7,6 +7,7 @@ import 'package:flutter/rendering.dart';
 import 'package:image/image.dart' as img;
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
@@ -234,10 +235,7 @@ class MediaDetailProvider extends InSoBlokViewModel {
 
         if (path == null) throw ('Something went wrong!');
 
-        var imageUrl = await FirebaseHelper.uploadFile(
-          file: File(path),
-          folderName: 'remix',
-        );
+        final MediaStoryModel model = await CloudinaryCDNService.uploadImageToCDN(XFile(path));
 
         var bytes = await File(path).readAsBytes();
         var decodedImage = img.decodeImage(bytes);
@@ -249,7 +247,7 @@ class MediaDetailProvider extends InSoBlokViewModel {
           status: 'public',
           medias: [
             MediaStoryModel(
-              link: imageUrl,
+              link: model.link,
               type: 'image',
               width: decodedImage?.width.toDouble(),
               height: decodedImage?.height.toDouble(),

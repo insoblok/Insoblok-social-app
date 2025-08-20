@@ -4,12 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_html/flutter_html.dart';
 
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:insoblok/routers/routers.dart';
 import 'package:stacked/stacked.dart';
 import 'package:video_player/video_player.dart';
-import 'package:vimeo_video_player/vimeo_video_player.dart';
 
 import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
@@ -575,7 +573,6 @@ class StoryMediaView extends StatefulWidget {
 }
 
 class _StoryMediaViewState extends State<StoryMediaView> {
-  late InAppWebViewController? webViewController;
 
   @override
   void initState() {
@@ -600,15 +597,8 @@ class _StoryMediaViewState extends State<StoryMediaView> {
                 : BoxFit.contain,
       );
     }
-    return VimeoVideoPlayer(
-      videoId: AIHelpers.extractVimeoId(widget.media.link!) ?? '',
-      isAutoPlay: true,
-      onInAppWebViewCreated: (controller) {
-        webViewController = controller;
-      },
-      onInAppWebViewLoadStart: (controller, url) {},
-      onInAppWebViewLoadStop: (controller, url) {},
-    );
+    debugPrint("THis is media link ${widget.media.link}");
+    return CloudinaryVideoPlayerWidget(videoUrl: widget.media.link!);
   }
 }
 
