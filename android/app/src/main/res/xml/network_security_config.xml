@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system" />
+            <certificates src="user" />
+        </trust-anchors>
+    </base-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">127.0.0.1</domain>
+        <domain includeSubdomains="true">www.genimg.ai</domain>
+        <domain includeSubdomains="true">cdn.janusproai.org</domain>
+        <domain includeSubdomains="true">bridge.walletconnect.org</domain>
+        <domain includeSubdomains="true">www.insoblokai.io</domain>
+        <domain includeSubdomains="true">www.cryptologos.cc</domain>
+        <domain includeSubdomains="true">www.newsdata.io</domain>
+        <domain includeSubdomains="true">www.thenewblack.ai</domain>
+        <domain includeSubdomains="true">kieai.erweima.ai</domain>
+        <domain includeSubdomains="true">api.fashn.ai</domain>
+    </domain-config>
+</network-security-config>
+
+<!-- <network-security-config>
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system" />
+            <certificates src="user" />
+        </trust-anchors>
+    </base-config>
+    <domain-config cleartextTrafficPermitted="true">
+        <domain includeSubdomains="true">*</domain>
+        <trust-anchors>
+            <certificates src="system" />
+            <certificates src="user" />
+        </trust-anchors>
+    </domain-config>
+</network-security-config> -->

@@ -1,0 +1,11 @@
+{
+  "version": "1.0",
+  "apis": [
+    {
+      "identifier": "perigon",
+      "source": "@perigon/v1.1#4c0jfm9t27na6",
+      "integrity": "sha512-DJp5ZLhAVsIO8iAnzg6bIPR8KeGB7O8CrreXovIVOFgKUGEpYe3XRVPAPX25VPjnllbPZug70kmY2NUbYkzlFw==",
+      "installerVersion": "6.1.3"
+    }
+  ]
+}

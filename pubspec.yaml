@@ -1,0 +1,133 @@
+name: insoblok
+description: "A new Flutter project."
+publish_to: "none"
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.7.2
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  flutter_localizations:
+    sdk: flutter
+
+  intl: any
+  camera: any
+  cupertino_icons: any
+  cached_network_image: any
+  flutter_svg: any
+  shimmer: any
+  animated_text_kit: any
+  video_player: any
+  chewie: any
+  carousel_slider: any
+  flutter_quill: any
+  vsc_quill_delta_to_html: any
+  flutter_html: any
+  gradient_borders: any
+  loading_indicator: any
+  flutter_staggered_grid_view: any
+  gif_view: any
+  image_cropper: any
+  flutter_expandable_fab: any
+  vimeo_video_player: any
+  logger: any
+  freezed_annotation: any
+  json_annotation: any
+  flutter_launcher_icons: any
+
+  permission_handler: ^12.0.1
+  fluttertoast: any
+  get_ip_address: any
+  image_picker: any
+  file_picker: any
+  image: any
+
+  fluro: any
+  sqflite: any
+  device_info_plus: any
+
+  provider: any
+  observable_ish: any
+  get_it: any
+  stacked: any
+
+  url_launcher: any
+  http: any
+  share_plus: any
+  app_links: any
+  video_thumbnail: any
+  flutter_image_compress: any
+
+  firebase_analytics: any
+  cloud_firestore: any
+  firebase_storage: any
+  firebase_auth: any
+  firebase_app_check: any
+  collection: any
+
+  dio: any
+  path_provider: any
+  reown_appkit: any
+  google_sign_in: any
+  googleapis: any
+  googleapis_auth: any
+  google_mlkit_face_detection: any
+  smooth_page_indicator: any
+  syncfusion_flutter_gauges: any
+  deepar_flutter_plus: ^0.2.0
+  video_compress: ^3.1.0
+  cloudinary: any
+  cloudinary_flutter: any
+  cloudinary_api: ^1.1.1
+  cloudinary_url_gen: ^1.8.0
+
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+
+  flutter_lints: ^6.0.0
+  json_serializable: any
+  freezed: any
+  build_runner: any
+
+dependency_overrides:
+  freezed: ^3.1.0
+  freezed_annotation: ^3.1.0
+  permission_handler: ^12.0.1
+  
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/images/
+    - assets/icons/
+    - assets/fonts/
+    - assets/data/
+
+
+  fonts:
+    - family: Geist
+      fonts:
+        - asset: assets/fonts/Geist-Thin.ttf
+          weight: 100
+        - asset: assets/fonts/Geist-ExtraLight.ttf
+          weight: 200
+        - asset: assets/fonts/Geist-Light.ttf
+          weight: 300
+        - asset: assets/fonts/Geist-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/Geist-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/Geist-SemiBold.ttf
+          weight: 600
+        - asset: assets/fonts/Geist-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/Geist-ExtraBold.ttf
+          weight: 800
+        - asset: assets/fonts/Geist-Black.ttf
+          weight: 900
