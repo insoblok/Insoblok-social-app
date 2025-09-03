@@ -128,21 +128,11 @@ class DashboardView extends StatelessWidget {
                                     itemBuilder: (context, index) {
                                       return StoryListCell(
                                         story: viewModel.stories[index],
+                                        enableDetail: true,
+                                        enableReaction: true,
                                       );
                                     },
                                   ),
-
-                          // : PageView.builder(
-                          //   scrollDirection: Axis.horizontal,
-                          //   controller: viewModel.pageController,
-                          //   padEnds: false,
-                          //   itemCount: viewModel.stories.length,
-                          //   itemBuilder: (_, index) {
-                          //     return StoryListCell(
-                          //       story: viewModel.stories[index],
-                          //     );
-                          //   },
-                          // ),
                         ),
                       ],
                     ),

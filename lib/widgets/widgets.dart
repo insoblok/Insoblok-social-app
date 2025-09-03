@@ -25,3 +25,4 @@ export 'media_detail_widget.dart';
 export 'reward_widget.dart';
 export 'linear_progress_widget.dart';
 export 'tastescore_widget.dart';
+export 'verticalreactiontoggle.dart';

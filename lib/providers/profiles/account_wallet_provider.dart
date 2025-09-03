@@ -16,15 +16,11 @@ class AccountWalletProvider extends InSoBlokViewModel {
 
   late ReownService reownService;
 
-  Future<void> init(BuildContext context) async {
-    this.context = context;
-
-    reownService = locator<ReownService>();
-
-    getTransfers();
-  }
-
   final List<TransferModel> _transfers = [];
+
+  final List<TastescoreModel> _scores = [];
+  List<TastescoreModel> get scores =>
+      _scores..sort((b, a) => a.timestamp!.difference(b.timestamp!).inSeconds);
 
   List<double> get transferXpToInsoValues =>
       transferService.getXpToInsoBalance(_transfers);
@@ -36,7 +32,29 @@ class AccountWalletProvider extends InSoBlokViewModel {
       transferXpToInsoValues[1] - transferInsoToUsdtValues[0];
   double get balanceUsdt => transferInsoToUsdtValues[1];
 
+
   double get totalBalance => balanceInso / 500 + balanceUsdt;
+
+  int get totalScore {
+      var result = 0;
+
+      for (var score in scores) {
+        result += (score.bonus ?? 0);
+      }
+      return result;
+    }
+    
+  int get availableXP {
+    return totalScore - transferXpToInsoValues[0].toInt();
+    // return 5000;
+  }
+
+  bool _isLoadingScore = false;
+  bool get isLoadingScore => _isLoadingScore;
+  set isLoadingScore(bool f) {
+    _isLoadingScore = f;
+    notifyListeners();
+  }
 
   bool _isInitLoading = false;
   bool get isInitLoading => _isInitLoading;
@@ -45,12 +63,22 @@ class AccountWalletProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  Future<void> init(BuildContext context) async {
+    this.context = context;
+
+    reownService = locator<ReownService>();
+
+    getTransfers();
+    getUserScore();
+  }
+
   Future<void> getTransfers() async {
     isInitLoading = true;
     try {
       _transfers.clear();
       var t = await transferService.getTransfers(user!.id!);
       _transfers.addAll(t);
+
     } catch (e) {
       setError(e);
       logger.e(e);
@@ -82,5 +110,19 @@ class AccountWalletProvider extends InSoBlokViewModel {
         notifyListeners();
       }
     }());
+  }
+
+  Future<void> getUserScore() async {
+    _isLoadingScore = true;
+    try {
+      _scores.clear();
+      var s = await tastScoreService.getScoresByUser(AuthHelper.user!.id!);
+      _scores.addAll(s);
+    } catch (e) {
+      setError(e);
+      logger.e(e);
+    } finally {
+      isLoadingScore = false;
+    }
   }
 }

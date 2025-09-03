@@ -84,28 +84,28 @@ class MediaDetailPage extends StatelessWidget {
                 ),
               ),
               CustomCircleBackButton(),
-              Align(
-                alignment: Alignment.topRight,
-                child: Padding(
-                  padding: EdgeInsets.only(
-                    right: 20.0,
-                    top: MediaQuery.of(context).padding.top + 12.0,
-                  ),
-                  child: CircleImageButton(
-                    src: Icons.share,
-                    size: 36.0,
-                    onTap:
-                        () => AIHelpers.shareFileToSocial(
-                          viewModel.medias[viewModel.index],
-                        ),
-                  ),
-                ),
-              ),
+              // Align(
+              //   alignment: Alignment.topRight,
+              //   child: Padding(
+              //     padding: EdgeInsets.only(
+              //       right: 20.0,
+              //       top: MediaQuery.of(context).padding.top + 12.0,
+              //     ),
+              //     child: CircleImageButton(
+              //       src: Icons.share,
+              //       size: 36.0,
+              //       onTap:
+              //           () => AIHelpers.shareFileToSocial(
+              //             viewModel.medias[viewModel.index],
+              //           ),
+              //     ),
+              //   ),
+              // ),
               Align(
                 alignment: Alignment.bottomCenter,
                 child: RemixActionView(),
               ),
-              if (viewModel.isRemixing)
+              if (viewModel.isRemixing || viewModel.isPostingLookbook || viewModel.isFeedDeleting)
                 Align(
                   alignment: Alignment.center,
                   child: Center(child: Loader(size: 40.0)),

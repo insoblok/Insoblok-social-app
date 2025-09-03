@@ -1,8 +1,11 @@
 import 'dart:io';
 
 import 'package:image_cropper/image_cropper.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 
 import 'package:insoblok/locator.dart';
+import 'package:insoblok/models/story_model.dart';
+import 'package:insoblok/services/cloudinary_cdn_service.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 
@@ -73,7 +76,9 @@ class AvatarService {
   }
 
   Future<String?> uploadOriginAvatar(File file) async {
-    return FirebaseHelper.uploadFile(file: file);
+    // return FirebaseHelper.uploadFile(file: file);
+    MediaStoryModel model = await CloudinaryCDNService.uploadImageToCDN(XFile(file.path));
+    return model.link;
   }
 
   Future<String?> createTask({
@@ -125,6 +130,7 @@ class AvatarService {
   }
 
   Future<String?> uploadResultAvatar(String url) async {
-    return FirebaseHelper.uploadImageFromUrl(imageUrl: url);
+    MediaStoryModel model = await CloudinaryCDNService.uploadImageFromUrl(url);
+    return model.link;
   }
 }

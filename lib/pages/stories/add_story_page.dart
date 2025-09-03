@@ -90,11 +90,22 @@ class AddStoryPage extends StatelessWidget {
                       ),
                       UploadMediaWidget(),
                       const SizedBox(height: 40.0),
-                      TextFillButton(
-                        text: viewModel.txtUploadButton,
-                        color: viewModel.isBusy ? AIColors.grey : AIColors.pink,
-                        onTap: viewModel.onClickUploadButton,
-                      ),
+
+                      Container(
+                          decoration: const BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.centerLeft,
+                              end: Alignment.centerRight,
+                              colors: [Color(0xFFF30C6C), Color(0xFFC739EB)],
+                            ),
+                            borderRadius: BorderRadius.all(Radius.circular(12)),
+                          ),
+                          child: TextFillButton(
+                            text: viewModel.txtUploadButton,
+                            color: viewModel.isBusy ? AIColors.grey : Colors.transparent,
+                            onTap: viewModel.onClickUploadButton,
+                          ),
+                        ),
                       const SizedBox(height: 16.0),
                       Row(
                         mainAxisSize: MainAxisSize.min,

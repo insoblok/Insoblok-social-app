@@ -11,6 +11,7 @@ import 'package:insoblok/utils/utils.dart';
 class LoginProvider extends InSoBlokViewModel {
   late BuildContext _context;
   BuildContext get context => _context;
+  
   set context(BuildContext context) {
     _context = context;
     notifyListeners();
@@ -21,8 +22,6 @@ class LoginProvider extends InSoBlokViewModel {
   PageController get pageController => _pageController;
   int _currentPage = 0;
   int get currentPage => _currentPage;
-
-
 
   late ReownService _reownService;
   ReownService get reownService => _reownService;
@@ -46,8 +45,14 @@ class LoginProvider extends InSoBlokViewModel {
     notifyListeners();
   }
   
+  final globals = GlobalStore();
+  bool get enabled => globals.isVybeCamEnabled;
+
   Future<void> init(BuildContext context) async {
     this.context = context;
+
+
+    logger.d("vybeCamEnabled in login: $enabled");
 
     _reownService = locator<ReownService>();
     await _reownService.init(context);
@@ -87,6 +92,7 @@ class LoginProvider extends InSoBlokViewModel {
       if (reownService.isConnected) {
         logger.d(reownService.walletAddress);
 
+      
         var authUser = await AuthHelper.signIn(
           reownService.walletAddress!,
           isCheckScan,
@@ -100,6 +106,10 @@ class LoginProvider extends InSoBlokViewModel {
             user: UserModel(walletAddress: reownService.walletAddress!),
           );
         } else {
+
+          globals.isVybeCamEnabled = isCheckScan;
+          await globals.save();
+
           AuthHelper.updateStatus('Online');
           Routers.goToMainPage(context);
         }

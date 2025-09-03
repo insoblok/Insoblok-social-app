@@ -80,7 +80,14 @@ dependencies:
   syncfusion_flutter_gauges: any
   deepar_flutter_plus: ^0.2.0
   video_compress: ^3.1.0
-  
+  cloudinary: any
+  cloudinary_flutter: any
+  cloudinary_api: ^1.1.1
+  cloudinary_url_gen: ^1.8.0
+  pro_image_editor: ^11.3.0
+  mocktail: ^1.0.4
+
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -89,6 +96,7 @@ dev_dependencies:
   json_serializable: any
   freezed: any
   build_runner: any
+  test: ^1.26.2
 
 dependency_overrides:
   freezed: ^3.1.0

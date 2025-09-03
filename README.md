@@ -83,3 +83,5 @@ flutter pub cache repair
 
 message_provider.dart
 account_wallet_page.dart
+
+VS Code: "Developer: Restart Dart Analysis Server"

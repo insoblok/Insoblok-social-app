@@ -11,13 +11,22 @@ class MediaRemixWidget extends ViewModelWidget<MediaDetailProvider> {
 
   @override
   Widget build(BuildContext context, viewModel) {
+
+    const gradient = LinearGradient(
+      begin: Alignment.centerLeft,
+      end: Alignment.centerRight,
+      colors: [
+        Color(0xFFF30C6C), // pink
+        Color(0xFFC739EB), // purple
+      ],
+    );
     return Center(
       child: RepaintBoundary(
         key: viewModel.globalkey,
         child: Container(
           margin: EdgeInsets.symmetric(horizontal: 40.0),
           decoration: BoxDecoration(
-            color: Theme.of(context).primaryColor,
+            gradient: gradient,
             borderRadius: BorderRadius.circular(16.0),
           ),
           child: ClipRRect(
@@ -32,7 +41,7 @@ class MediaRemixWidget extends ViewModelWidget<MediaDetailProvider> {
                     style: TextStyle(
                       fontSize: 28.0,
                       fontWeight: FontWeight.w800,
-                      color: Theme.of(context).colorScheme.onSecondary,
+                      color: AIColors.white,
                     ),
                   ),
                 ),
@@ -65,7 +74,7 @@ class MediaRemixWidget extends ViewModelWidget<MediaDetailProvider> {
                       ),
                     ),
                     Positioned.fill(
-                      bottom: 16.0,
+                      bottom: 10.0,
                       child: Column(
                         children: [
                           const Spacer(),
@@ -75,20 +84,20 @@ class MediaRemixWidget extends ViewModelWidget<MediaDetailProvider> {
                               Text(
                                 'Before'.toUpperCase(),
                                 style: TextStyle(
-                                  fontSize: 22.0,
+                                  fontSize: 15.0,
                                   fontWeight: FontWeight.w800,
                                   color:
-                                      Theme.of(context).colorScheme.onSecondary,
+                                      AIColors.white,
                                 ),
                               ),
                               Spacer(flex: 2),
                               Text(
                                 'After'.toUpperCase(),
                                 style: TextStyle(
-                                  fontSize: 22.0,
+                                  fontSize: 15.0,
                                   fontWeight: FontWeight.w800,
                                   color:
-                                      Theme.of(context).colorScheme.onSecondary,
+                                      AIColors.white,
                                 ),
                               ),
                               Spacer(),
@@ -113,6 +122,9 @@ class RemixActionView extends ViewModelWidget<MediaDetailProvider> {
 
   @override
   Widget build(BuildContext context, viewModel) {
+
+    final bool isOwner = (AuthHelper.user?.id == viewModel.storyUser && viewModel.storyUser != '');
+
     return Column(
       spacing: 12.0,
       mainAxisSize: MainAxisSize.min,
@@ -126,29 +138,30 @@ class RemixActionView extends ViewModelWidget<MediaDetailProvider> {
           ),
           child: Row(
             mainAxisSize: MainAxisSize.min,
-            spacing: 40.0,
+            spacing: 15.0,
             children: [
               for (var data in kMediaDetailIconData) ...{
-                InkWell(
-                  onTap:
-                      () => viewModel.onClickActionButton(
-                        kMediaDetailIconData.indexOf(data),
-                      ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      AIImage(
-                        data['icon'],
-                        height: 24.0,
-                        color: Theme.of(context).primaryColor,
-                      ),
-                      Text(
-                        data['title'] as String,
-                        style: Theme.of(context).textTheme.headlineSmall,
-                      ),
-                    ],
+                if (isOwner || data['title'] != 'Remove')
+                  InkWell(
+                    onTap:
+                        () => viewModel.onClickActionButton(
+                          kMediaDetailIconData.indexOf(data),
+                        ),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        AIImage(
+                          data['icon'],
+                          height: 24.0,
+                          color: Theme.of(context).primaryColor,
+                        ),
+                        Text(
+                          data['title'] as String,
+                          style: Theme.of(context).textTheme.headlineSmall,
+                        ),
+                      ],
+                    ),
                   ),
-                ),
               },
             ],
           ),
@@ -245,13 +258,17 @@ class RemixActionView extends ViewModelWidget<MediaDetailProvider> {
                         width: 64.0,
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
-                          color: Theme.of(context).primaryColor,
-                          borderRadius: BorderRadius.circular(8.0),
+                          gradient: LinearGradient(
+                          begin: Alignment.centerLeft,
+                          end: Alignment.centerRight,
+                          colors: [Color(0xFFF30C6C), Color(0xFFC739EB)],
+                        ),
+                        borderRadius: BorderRadius.all(Radius.circular(12)),
                         ),
                         child: Text(
                           'Set'.toUpperCase(),
                           style: TextStyle(
-                            color: Theme.of(context).colorScheme.onSecondary,
+                            color: AIColors.white,
                             fontWeight: FontWeight.w800,
                           ),
                         ),

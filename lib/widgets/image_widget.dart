@@ -3,9 +3,9 @@ import 'dart:ui';
 import 'package:flutter/material.dart';
 
 import 'package:carousel_slider/carousel_slider.dart';
-// import 'package:chewie/chewie.dart';
-// import 'package:video_player/video_player.dart';
-// import 'package:webview_flutter/webview_flutter.dart';
+import 'package:chewie/chewie.dart';
+import 'package:video_player/video_player.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:vimeo_video_player/vimeo_video_player.dart';
 
@@ -66,6 +66,8 @@ class _StoryCarouselViewState extends State<StoryCarouselView> {
               context,
               medias: medias.map((media) => media.link!).toList(),
               index: 0,
+              storyID:'',
+              storyUser:''
             ),
         child: SizedBox(
           width: double.infinity,
@@ -113,6 +115,8 @@ class _StoryCarouselViewState extends State<StoryCarouselView> {
                           context,
                           medias: medias.map((media) => media.link!).toList(),
                           index: index,
+                          storyID:'',
+                          storyUser:''
                         ),
                     child: SizedBox(
                       width: double.infinity,
@@ -264,17 +268,7 @@ class _MediaCarouselCellState extends State<MediaCarouselCell> {
                     height: constraints.maxHeight,
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(12.0),
-                      child: VimeoVideoPlayer(
-                        videoId:
-                            AIHelpers.extractVimeoId(widget.media.link!) ?? '',
-                        isAutoPlay: true,
-                        onInAppWebViewCreated: (controller) {
-                          webViewController = controller;
-                        },
-                        onInAppWebViewLoadStart: (controller, url) {},
-                        onInAppWebViewLoadStop: (controller, url) {},
-                      ),
-                      // child: WebViewWidget(controller: _webViewController),
+                      child: CloudinaryVideoPlayerWidget(videoUrl: widget.media.link!)
                     ),
                   );
                 },
@@ -384,5 +378,134 @@ class StoryMediaCellView extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class CloudinaryVideoPlayerWidget extends StatefulWidget {
+  final String videoUrl;
+
+  const CloudinaryVideoPlayerWidget({Key? key, required this.videoUrl}) : super(key: key);
+
+  @override
+  _CloudinaryVideoPlayerWidgetState createState() => _CloudinaryVideoPlayerWidgetState();
+}
+
+class _CloudinaryVideoPlayerWidgetState extends State<CloudinaryVideoPlayerWidget> {
+  late VideoPlayerController _videoPlayerController;
+  late Future<void> _initializeVideoPlayerFuture;
+  ChewieController? _chewieController;
+  bool _isLoading = true;
+  double? _aspectRatio;
+
+  @override
+  void initState() {
+    super.initState();
+    // Create and store the VideoPlayerController.
+    final url = Uri.parse(widget.videoUrl);
+    _videoPlayerController = VideoPlayerController.networkUrl(url);
+    _initializeVideoPlayerFuture = _videoPlayerController.initialize().then((_) {
+      // Ensure the first frame is shown and the player is initialized.
+      if (mounted) {
+        setState(() {
+          _aspectRatio = _videoPlayerController.value.aspectRatio;
+          debugPrint('Original video aspect ratio: $_aspectRatio');
+        });
+      }
+    });
+    _initializePlayer();
+  }
+
+  Future<void> _initializePlayer() async {
+    try {
+      debugPrint('Loading original video from:');
+      await _videoPlayerController.initialize();
+    } catch (error) {
+      print("Error initializing video player: $error");
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
+  @override
+  void dispose() {
+    _videoPlayerController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (_isLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (!_videoPlayerController.value.isInitialized) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    // Use the actual aspect ratio from the controller
+    final aspectRatio = _videoPlayerController.value.aspectRatio;
+    var screenWidth = MediaQuery.of(context).size.width;
+    debugPrint('Building with aspect ratio: $aspectRatio, $screenWidth');
+
+    return Container(
+      height: MediaQuery.of(context).size.width / aspectRatio,
+      width: 200,
+      decoration: BoxDecoration(
+        border: Border.all(
+          color: Colors.transparent,
+          width: 2.0,
+        ),
+        borderRadius: BorderRadius.circular(12.0),
+      ),
+      child: FractionallySizedBox(
+        widthFactor: 1,
+        child: Column(
+          children: [
+            Expanded(
+              child: AspectRatio(
+                aspectRatio: _videoPlayerController.value.aspectRatio,
+                child: VideoPlayer(_videoPlayerController),
+              ),
+            ),
+            // Controls
+            VideoProgressIndicator(_videoPlayerController, allowScrubbing: true),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                IconButton(
+                  icon: Icon(_videoPlayerController.value.isPlaying 
+                      ? Icons.pause : Icons.play_arrow),
+                  onPressed: _togglePlayPause,
+                ),
+                IconButton(
+                  icon: const Icon(Icons.stop),
+                  onPressed: _stopVideo,
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+  
+  void _togglePlayPause() {
+    setState(() {
+      if (_videoPlayerController.value.isPlaying) {
+        _videoPlayerController.pause();
+      } else {
+        _videoPlayerController.play();
+      }
+    });
+  }
+
+  void _stopVideo() {
+    setState(() {
+      _videoPlayerController.pause();
+      _videoPlayerController.seekTo(Duration.zero);
+    });
   }
 }

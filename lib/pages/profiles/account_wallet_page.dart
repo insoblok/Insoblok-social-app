@@ -6,6 +6,7 @@ import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
+import 'package:insoblok/models/models.dart';
 
 final kWalletTokenList = [
   {'name': 'INSO', 'short_name': 'INSO', 'icon': AIImages.icCoinInso},
@@ -308,6 +309,31 @@ class AccountWalletPage extends StatelessWidget {
                 //   ],
                 // ),
                 const SizedBox(height: 24.0),
+                GestureDetector(
+                  onTap: () {
+                    _showXpConvertSheet(context, viewModel);
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.all(10),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.secondary.withAlpha(18),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Row(
+                      spacing: 12,
+                      children: [
+                        AIImage(AIImages.icUserXP, width: 36, height: 36),
+                        const Expanded(child: Text('XP')),
+                        Text(
+                          '${viewModel.availableXP} XP',
+                          style: Theme.of(context).textTheme.headlineMedium,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+
+                const SizedBox(height: 24.0),
                 Container(
                   padding: const EdgeInsets.all(10.0),
                   decoration: BoxDecoration(
@@ -411,3 +437,177 @@ class AccountWalletPage extends StatelessWidget {
     );
   }
 }
+
+// void _showXpConvertSheet(BuildContext context, AccountWalletProvider vm) {
+//   showModalBottomSheet(
+//     context: context,
+//     useSafeArea: true,
+//     isScrollControlled: false,
+//     backgroundColor: Colors.transparent,
+//     builder: (_) => RewardTransferView(),
+//   );
+// }
+
+void _showXpConvertSheet(BuildContext context, AccountWalletProvider parentVm) {
+  showModalBottomSheet(
+    context: context,
+    useSafeArea: true,
+    isScrollControlled: false,
+    backgroundColor: Colors.transparent,
+    builder: (_) {
+      return ViewModelBuilder<AccountRewardProvider>.reactive(
+        viewModelBuilder: () => AccountRewardProvider(),
+        onViewModelReady: (vm) async {
+          // If you have a real XP value on parentVm, pass that instead.
+          vm.init(
+            context,
+            null
+          );
+        },
+        builder: (context, vm, __) {
+          return RewardTransferView(viewModel: vm);
+        },
+      );
+    },
+  );
+}
+
+class RewardTransferView extends StatelessWidget {
+  const RewardTransferView({super.key, required this.viewModel});
+  final AccountRewardProvider viewModel;
+
+  @override
+   Widget build(BuildContext context) {
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+      decoration: BoxDecoration(
+        // color: Theme.of(context).colorScheme.secondary.withAlpha(1),
+        color: Theme.of(context).scaffoldBackgroundColor,
+        borderRadius: BorderRadius.circular(8.0),
+      ),
+      child: Column(
+        children: [
+          Text(
+            'Available : ${viewModel.availableXP} XP',
+            style: Theme.of(context).textTheme.bodyLarge,
+          ),
+          const SizedBox(height: 8),
+          Wrap(
+            spacing: 4,
+            runSpacing: 4.0,
+            alignment: WrapAlignment.center,
+            runAlignment: WrapAlignment.center,
+            children: [
+              for (XpInSoModel inSoModel
+                  in (AppSettingHelper.appSettingModel?.xpInso ?? [])) ...{
+                InkWell(
+                  onTap: () {
+                    viewModel.selectInSo(inSoModel);
+                  },
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 16.0,
+                      vertical: 4.0,
+                    ),
+                    decoration: BoxDecoration(
+                      color:
+                          viewModel.selectXpInSo == inSoModel
+                              ? AIColors.pink
+                              : Theme.of(
+                                context,
+                              ).colorScheme.secondary.withAlpha(16),
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    child: Text.rich(
+                      TextSpan(children: [
+                        TextSpan(text: '${inSoModel.max}\n'),
+                        TextSpan(
+                          text: '${inSoModel.inso}\n',
+                          style: const TextStyle(fontSize: 12), // smaller second line
+                        ),
+                      ]),
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        color: viewModel.selectXpInSo == inSoModel
+                            ? AIColors.white
+                            : Theme.of(context).colorScheme.onPrimary,
+                      ),
+                    ),
+
+                  ),
+                ),
+              },
+            ],
+          ),
+          Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Row(
+                    children: [
+                      SizedBox(
+                        width: 80,
+                        child: TextFormField(
+                          decoration: InputDecoration(
+                            hintText: '0',
+                            hintTextDirection: TextDirection.rtl,
+                            hintStyle: TextStyle(
+                              color: Theme.of(context).colorScheme.onPrimary,
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            border: InputBorder.none,
+                          ),
+                          keyboardType: TextInputType.number,
+                          style: TextStyle(
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          maxLines: 1,
+                          textDirection: TextDirection.rtl,
+                          controller: viewModel.textController,
+                          onChanged: (value) {
+                            viewModel.setXpValue(value);
+                          },
+                        ),
+                      ),
+                      Text('  XP', style: TextStyle(fontSize: 16)),
+                    ],
+                  ),
+                  Text('to', style: TextStyle(fontSize: 16)),
+                  Row(
+                    children: [
+                      Text(
+                        '${viewModel.convertedInSo()}',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text('  INSO', style: TextStyle(fontSize: 16)),
+                    ],
+                  ),
+                ],
+              ),
+              TextFillButton(
+                onTap: () {
+                  viewModel.convertXPtoINSO();
+                },
+                height: 36,
+                isBusy: viewModel.isBusy,
+                color:
+                    viewModel.isPossibleConvert
+                        ? Theme.of(context).primaryColor
+                        : Theme.of(context).colorScheme.secondary.withAlpha(64),
+                text: 'Convert XP to INSO',
+              ),
+            ],
+          ),
+        ],
+      ),
+    );
+  }
+}
+

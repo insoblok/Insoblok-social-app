@@ -33,6 +33,7 @@ migrate_working_dir/
 .pub/
 /build/
 
+
 # Symbolication related
 app.*.symbols
 
@@ -57,6 +58,7 @@ README.md
 
 lib/utils/const.dart
 assets/data/insoblokai-news-17063d3f1669.json
+assets/effects/
 
 .firebaserc
 firebase.json

@@ -12,40 +12,15 @@ class TastescoreService {
 
   Future<int> loginScore(UserModel user) async {
     try {
-      var reward = user.rewardDate ?? 0;
-      var loginedDate = user.updateDate ?? DateTime.now();
-      logger.d(kDateYMDFormatter.format(user.updateDate!));
+      
+      var reward = UserXPValue.loginXP;
 
-      var logined = DateTime(
-        loginedDate.year,
-        loginedDate.month,
-        loginedDate.day,
+      var tastescore = TastescoreModelExt.creatXpModel(
+        reward,
+        user.id!,
+        type: TastescoreType.LOGIN,
       );
-      var current = DateTime(
-        DateTime.now().year,
-        DateTime.now().month,
-        DateTime.now().day,
-      );
-
-      var rewardValue = 0;
-
-      logger.d(current.difference(logined).inSeconds);
-
-      if (current.difference(logined) == Duration(days: 1)) {
-        reward = reward + 1;
-        var bonus = reward ~/ 3;
-        rewardValue =
-            AppSettingHelper.appSettingModel!.xpEarn![5].reward! + 5 * bonus;
-      } else if (current.difference(logined) > Duration(days: 1)) {
-        reward = 0;
-
-        rewardValue = AppSettingHelper.appSettingModel!.xpEarn![5].reward!;
-      }
-
-      if (rewardValue > 0) {
-        var tastescore = TastescoreModelExt.creatXpModel(rewardValue, user.id!);
-        await tastescoreCollection.add(tastescore.toMap());
-      }
+      await tastescoreCollection.add(tastescore.toMap());
 
       return reward;
     } catch (e) {
@@ -55,10 +30,149 @@ class TastescoreService {
   }
 
   Future<void> registerScore(int score) async {
+
+    var reward = UserXPValue.reactionXP;
+
     var tastescore = TastescoreModelExt.creatXpModel(
-      score,
+      reward,
       AuthHelper.user!.id!,
       type: TastescoreType.REGISTER,
+    );
+    await tastescoreCollection.add(tastescore.toMap());
+  }
+
+  Future<void> voteScore(StoryModel story) async {
+
+    var reward = UserXPValue.voteXP;
+
+    var tastescore = TastescoreModelExt.creatXpModel(
+      reward,
+      AuthHelper.user!.id!,
+      type: TastescoreType.VOTE,
+    );
+    await tastescoreCollection.add(tastescore.toMap());
+
+    if(AuthHelper.user!.id! != story.userId!){
+      var tastescoretoonwer = TastescoreModelExt.creatXpModel(
+        reward,
+        story.userId!,
+        type: TastescoreType.VOTE,
+      );
+      await tastescoreCollection.add(tastescoretoonwer.toMap());
+    }
+    
+  }
+
+  Future<void> postScore() async {
+
+    var reward = UserXPValue.postXP;
+
+    var tastescore = TastescoreModelExt.creatXpModel(
+      reward,
+      AuthHelper.user!.id!,
+      type: TastescoreType.POST,
+    );
+    await tastescoreCollection.add(tastescore.toMap());
+  }
+
+  Future<void> repostScore(StoryModel story) async {
+    var reward = UserXPValue.postXP;
+
+    var tastescore = TastescoreModelExt.creatXpModel(
+      reward,
+      AuthHelper.user!.id!,
+      type: TastescoreType.REPOST,
+    );
+    await tastescoreCollection.add(tastescore.toMap());
+
+    // var tastescorereposted = TastescoreModelExt.creatXpModel(
+    //   reward,
+    //   story.userId!,
+    //   type: TastescoreType.REPOSTED,
+    // );
+    // await tastescoreCollection.add(tastescorereposted.toMap());
+  }
+
+  Future<void> remixScore() async {
+
+    var reward = UserXPValue.remixXP;
+
+    var tastescore = TastescoreModelExt.creatXpModel(
+      reward,
+      AuthHelper.user!.id!,
+      type: TastescoreType.REMIX,
+    );
+    await tastescoreCollection.add(tastescore.toMap());
+  }
+
+  Future<void> commentScore() async {
+
+    var reward = UserXPValue.commentXP;
+
+    var tastescore = TastescoreModelExt.creatXpModel(
+      reward,
+      AuthHelper.user!.id!,
+      type: TastescoreType.COMMENT,
+    );
+    await tastescoreCollection.add(tastescore.toMap());
+  }
+
+  Future<void> replyScore() async {
+
+    var reward = UserXPValue.replyXP;
+
+    var tastescore = TastescoreModelExt.creatXpModel(
+      reward,
+      AuthHelper.user!.id!,
+      type: TastescoreType.REPLY,
+    );
+    await tastescoreCollection.add(tastescore.toMap());
+  }
+
+  Future<void> followScore() async {
+
+    var reward = UserXPValue.followXP;
+
+    var tastescore = TastescoreModelExt.creatXpModel(
+      reward,
+      AuthHelper.user!.id!,
+      type: TastescoreType.FOLLOW_UNFOLLOW,
+    );
+    await tastescoreCollection.add(tastescore.toMap());
+  }
+
+  Future<void> taggingScore() async {
+
+    var reward = UserXPValue.taggingXP;
+
+    var tastescore = TastescoreModelExt.creatXpModel(
+      reward,
+      AuthHelper.user!.id!,
+      type: TastescoreType.TAGGING,
+    );
+    await tastescoreCollection.add(tastescore.toMap());
+  }
+
+  Future<void> mentionScore() async {
+
+    var reward = UserXPValue.mentionXP;
+
+    var tastescore = TastescoreModelExt.creatXpModel(
+      reward,
+      AuthHelper.user!.id!,
+      type: TastescoreType.MENTIONS,
+    );
+    await tastescoreCollection.add(tastescore.toMap());
+  }
+
+  Future<void> shareOutsideScore() async {
+
+    var reward = UserXPValue.shareOutsideXP;
+
+    var tastescore = TastescoreModelExt.creatXpModel(
+      reward,
+      AuthHelper.user!.id!,
+      type: TastescoreType.SHARE_OUTSIDE,
     );
     await tastescoreCollection.add(tastescore.toMap());
   }
@@ -70,93 +184,6 @@ class TastescoreService {
       type: TastescoreType.WINCREATOR,
     );
     await tastescoreCollection.add(tastescore.toMap());
-  }
-
-  Future<void> voteScore(StoryModel story) async {
-    var scores = await getScoresByUser(story.userId!);
-    var contained = false;
-    for (var score in scores) {
-      if (score.postId == story.id &&
-          score.userId == AuthHelper.user?.id &&
-          score.type != TastescoreType.VOTE) {
-        contained = true;
-        break;
-      }
-    }
-    if (!contained) {
-      var userService = UserService();
-      var owner = await userService.getUser(story.id!);
-      var rewardVote =
-          (AppSettingHelper.appSettingModel?.xpEarn?[0].reward ?? 0);
-      if (owner?.freeStyle == true) {
-        rewardVote =
-            (rewardVote *
-                    (AppSettingHelper.appSettingModel?.xpEarn?[3].bonus ?? 0.0))
-                .toInt();
-      }
-      var scoreVote = TastescoreModelExt.creatXpModel(
-        rewardVote,
-        story.userId!,
-        postUserId: AuthHelper.user?.id,
-        postId: story.id,
-        type:
-            (owner?.freeStyle == true)
-                ? '${TastescoreType.FREESTYLE}-${TastescoreType.BONUS}'
-                : TastescoreType.VOTE,
-      );
-      await tastescoreCollection.add(scoreVote.toMap());
-
-      if (scores.length == 99) {
-        await userService.updateUser(owner!.copyWith(freeStyle: true));
-        var rewardFreeStyle =
-            (AppSettingHelper.appSettingModel?.xpEarn?[3].reward ?? 0);
-        var scoreFreeStyle = TastescoreModelExt.creatXpModel(
-          rewardFreeStyle,
-          story.userId!,
-          type: TastescoreType.FREESTYLE,
-        );
-        await tastescoreCollection.add(scoreFreeStyle.toMap());
-      }
-
-      for (ConnectedStoryModel connect in (story.connects ?? [])) {
-        var rewardRepost =
-            ((AppSettingHelper.appSettingModel?.xpEarn?[0].reward ?? 0) *
-                    (AppSettingHelper.appSettingModel?.xpEarn?[1].bonus ?? 0.0))
-                .toInt();
-        var scoreRepost = TastescoreModelExt.creatXpModel(
-          rewardRepost,
-          connect.userId!,
-          postUserId: AuthHelper.user?.id,
-          postId: connect.postId,
-          type: '${TastescoreType.REPOST}-${TastescoreType.BONUS}',
-        );
-        await tastescoreCollection.add(scoreRepost.toMap());
-      }
-    }
-  }
-
-  Future<void> repostScore(StoryModel story) async {
-    var rewardRepost =
-        (AppSettingHelper.appSettingModel?.xpEarn?[1].reward ?? 0);
-    var scoreRepost = TastescoreModelExt.creatXpModel(
-      rewardRepost,
-      story.userId!,
-      postUserId: AuthHelper.user?.id,
-      postId: story.id,
-      type: TastescoreType.REPOST,
-    );
-    await tastescoreCollection.add(scoreRepost.toMap());
-
-    for (ConnectedStoryModel connect in (story.connects ?? [])) {
-      var scoreConnect = TastescoreModelExt.creatXpModel(
-        rewardRepost,
-        connect.userId!,
-        postUserId: AuthHelper.user?.id,
-        postId: connect.postId,
-        type: TastescoreType.REPOST,
-      );
-      await tastescoreCollection.add(scoreConnect.toMap());
-    }
   }
 
   Future<List<TastescoreModel>> getScoreList() async {

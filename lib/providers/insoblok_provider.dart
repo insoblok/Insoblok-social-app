@@ -27,7 +27,7 @@ class InSoBlokProvider extends InSoBlokViewModel {
   }
 
   // late AppProvider _appProvider;
-
+  
   Future<void> init(BuildContext context) async {
     this.context = context;
     // _appProvider = context.read<AppProvider>();

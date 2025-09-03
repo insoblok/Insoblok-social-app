@@ -51,6 +51,7 @@ abstract class MediaStoryModel with _$MediaStoryModel {
     String? type,
     double? width,
     double? height,
+    String? publicId,
   }) = _MediaStoryModel;
 
   factory MediaStoryModel.fromJson(Map<String, dynamic> json) =>

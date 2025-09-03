@@ -191,7 +191,9 @@ class StoryDetailPage extends StatelessWidget {
                           ),
                         ),
                         InkWell(
-                          onTap: viewModel.shareFeed,
+                          onTap: () {
+                            AIHelpers.shareStory(context, story: story);
+                          },
                           child: AIImage(
                             AIImages.icShare,
                             width: 18.0,

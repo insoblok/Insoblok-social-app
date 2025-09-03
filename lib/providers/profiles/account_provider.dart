@@ -120,6 +120,8 @@ class AccountProvider extends InSoBlokViewModel {
     }
     accountUser = accountUser?.copyWith(follows: follows);
     await userService.updateUser(accountUser!);
+    await tastScoreService.followScore();
+
     notifyListeners();
   }
 
@@ -152,7 +154,19 @@ class AccountProvider extends InSoBlokViewModel {
     }
   }
 
+
+  
   Future<void> gotoNewChat() async {
+
+    const gradient = LinearGradient(
+      begin: Alignment.centerLeft,
+      end: Alignment.centerRight,
+      colors: [
+        Color(0xFFF30C6C), // pink
+        Color(0xFFC739EB), // purple
+      ],
+    );
+    
     RoomModel? existedRoom;
     try {
       existedRoom = await roomService.getRoomByChatUesr(id: accountUser!.id!);
@@ -170,7 +184,7 @@ class AccountProvider extends InSoBlokViewModel {
                     vertical: 24.0,
                   ),
                   decoration: BoxDecoration(
-                    color: AIColors.pink,
+                    gradient: gradient,
                     borderRadius: BorderRadius.circular(16.0),
                   ),
                   child: Column(
@@ -325,6 +339,8 @@ class AccountProvider extends InSoBlokViewModel {
       
       logger.d("fetchGalleries");
       logger.d(gs);
+
+      logger.d(accountUser!.id!);
 
       _galleries.addAll(gs);
       notifyListeners();

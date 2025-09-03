@@ -29,7 +29,10 @@ class PostDetailPage extends StatelessWidget {
                       padEnds: false,
                       itemCount: viewModel.stories.length,
                       itemBuilder: (_, index) {
-                        return StoryListCell(story: viewModel.stories[index]);
+                        return StoryListCell(
+                          story: viewModel.stories[index], 
+                          enableDetail: true,
+                          enableReaction: false,);
                       },
                     ),
                 CustomCircleBackButton(),

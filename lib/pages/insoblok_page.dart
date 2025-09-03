@@ -408,7 +408,8 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
     // var titles = ['Home', 'Vybe', 'Wallet', 'Chat', 'Profile'];
     var pages = [
       PageableView(),
-      AccountWalletPage(),
+      // AccountWalletPage(),
+      LeaderboardPage(),
       LookbookView(),
       ChatView(),
       ProfileView(),
@@ -651,9 +652,9 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
                                       },
                                       icon:
                                           viewModel.pageIndex == 1
-                                              ? AIImages.icBottomWalletFill
-                                              : AIImages.icBottomWallet,
-                                      label: 'Wallet',
+                                              ? AIImages.icBottomLeaderboardFill
+                                              : AIImages.icBottomLeaderboard,
+                                      label: 'Leaderboard',
                                       color:
                                           viewModel.pageIndex == 1
                                               ? AIColors.pink

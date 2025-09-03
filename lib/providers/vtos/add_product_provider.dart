@@ -158,12 +158,9 @@ class AddProductProvider extends InSoBlokViewModel {
     await runBusyFuture(() async {
       try {
         if (avatarImage != null) {
-          var avatarLink = await FirebaseHelper.uploadFile(
-            file: File(avatarImage!.path),
-            folderName: 'product',
-          );
-          if (avatarLink != null) {
-            _product = product.copyWith(avatarImage: avatarLink);
+          final MediaStoryModel model = await CloudinaryCDNService.uploadImageToCDN(XFile(avatarImage!.path));
+          if (model.link != null) {
+            _product = product.copyWith(avatarImage: model.link);
           }
         }
         if (selectedTags.isNotEmpty) {
@@ -171,14 +168,11 @@ class AddProductProvider extends InSoBlokViewModel {
             tags: selectedTags.map((tag) => tag.title ?? '').toList(),
           );
         }
-        var modelLink = await FirebaseHelper.uploadFile(
-          file: File(modelImage!.path),
-          folderName: 'product',
-        );
+        final MediaStoryModel msm = await CloudinaryCDNService.uploadImageToCDN(XFile(modelImage!.path));
 
-        if (modelLink != null) {
+        if (msm.link != null) {
           _product = product.copyWith(
-            modelImage: modelLink,
+            modelImage: msm.link,
             timestamp: DateTime.now(),
             updateDate: DateTime.now(),
           );

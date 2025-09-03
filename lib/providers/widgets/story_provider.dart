@@ -1,18 +1,19 @@
 import 'dart:io';
 import 'dart:async';
 import 'package:flutter/material.dart';
-
 import 'package:flutter_quill/flutter_quill.dart';
-import 'package:image/image.dart' as img;
+
 import 'package:insoblok/utils/background_camera_capture.dart';
 import 'package:insoblok/utils/background_camera_video_capture.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
+
+import 'package:path_provider/path_provider.dart';
+import 'package:image/image.dart' as img;
 
 class StoryProvider extends InSoBlokViewModel {
   late BuildContext _context;
@@ -36,13 +37,20 @@ class StoryProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  bool _isVideoReaction = false;
+  bool get isVideoReaction => _isVideoReaction;
+  set isVideoReaction(bool f) {
+    _isVideoReaction = f;
+    notifyListeners();
+  }
+
   String? _videoPath;
   String? get videoPath => _videoPath;
   set videoPath(String? f) {
-    _videoPath= f;
+    _videoPath = f;
     notifyListeners();
   }
-  
+
   String? _videoStoryPath;
   String? get videoStoryPath => _videoStoryPath;
   set videoStoryPath(String? f) {
@@ -57,122 +65,194 @@ class StoryProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  bool _showFaceDialog = true;
+  bool get showFaceDialog => _showFaceDialog;
+  set showFaceDialog(bool f) {
+    _showFaceDialog = f;
+    notifyListeners();
+  }
+
+  String? _faceStatus;
+  String? get faceStatus => _faceStatus;
+  set faceStatus(String? s) {
+    _faceStatus = s;
+    notifyListeners();
+  }
+
+  String? _resultFaceUrl;
+  String? get resultFaceUrl => _resultFaceUrl;
+  set resultFaceUrl(String? s) {
+    _resultFaceUrl = s;
+    notifyListeners();
+  }
+
   late QuillController? quillController;
   var quillScrollController = ScrollController();
   var focusNode = FocusNode();
 
-  final camera = BackgroundCameraCapture();
+  final camera = BackgroundCameraCapture(
+    maxCaptures: 3,              // exactly 3 captures
+    stopStreamOnMax: true, 
+  );
   final videoCapture = BackgroundCameraVideoCapture();
   late int refreshCount = 0;
 
   Timer? capture_timer;
 
+  final globals = GlobalStore();
+  bool get vybeCamEnabled => globals.isVybeCamEnabled;
+
   void init(BuildContext context, {required StoryModel model}) async {
     this.context = context;
     story = model;
 
+    logger.d("id of story: $story");
+
     refreshCount = 0;
     _videoPath = null;
-    
+
     final mediaPath = story.medias?[0].link;
-    if(mediaPath!.contains('.mov') || mediaPath.contains('.mp4')){
+    if (mediaPath!.contains('.mov') || mediaPath.contains('.mp4')) {
       _videoStoryPath = story.medias?[0].link;
-    }else{
+    } else {
       _videoStoryPath = null;
     }
 
-    logger.d('✅ path replaced at init function : $story');
-    // captureReactionImage();
-    captureReactionVideo();
-    
-    quillController = () {
-      return QuillController.basic(
-        config: QuillControllerConfig(
-          clipboardConfig: QuillClipboardConfig(enableExternalRichPaste: true),
-        ),
-      );
-    }();
+    final auth = AuthHelper.user?.id;
 
+    if((auth == story.userId)){
+
+      logger.d("resumeCapturing");
+      camera.resumeCapturing();
+    }
+
+    if(vybeCamEnabled && (auth != story.userId)){
+      showFaceDialog = true;
+
+      camera.onFrame = (String? path) {
+        logger.d("Trying to detect user expressions");
+        if (path != null) {
+          detectFace(path);
+        }
+      };
+
+      await camera.initialize();
+    }
+
+    quillController = () {
+        return QuillController.basic(
+          config: QuillControllerConfig(
+            clipboardConfig: QuillClipboardConfig(enableExternalRichPaste: true),
+          ),
+        );
+      }();
     fetchUser();
   }
 
   Future<void> captureReactionImage() async {
-    camera.onFrame = (String? path){
-      print("Trying to detect user expressions");
-      if(path!=null){
-        detectFace(path);
-      }
-    };
-    await camera.initialize();
+    _isVideoReaction = false;
+    showFaceDialog = true;
+
+    final hadVideoPreview = _videoPath != null;
+    if (hadVideoPreview) {
+      _videoPath = null;
+      refreshCount++; 
+      notifyListeners();
+
+      // Allow a frame to pass so Flutter disposes the video widget & decoder
+      try {
+        await WidgetsBinding.instance.endOfFrame;
+      } catch (_) {}
+      await Future.delayed(const Duration(milliseconds: 120));
+    }
+
+    // 1) Ensure the video recorder controller is released
+    await videoCapture.stopAndDispose();
+
+    // 2) Re-grab camera for image stream
+    if (!camera.isInitialized) {
+      await camera.initialize();
+    } else if (!camera.isStreaming) {
+      await camera.restartStream();
+    }
+
+    // 3) Resume throttled frame processing
+    camera.resumeCapturing();
   }
 
+  /// Switch to VIDEO capture mode
   Future<void> captureReactionVideo() async {
+    _isVideoReaction = true;
+    showFaceDialog = true;
 
-    logger.d('✅ path replaced at refreshCount $refreshCount');
-    // if(refreshCount > 2) return;
+    // 1) Release the image stream completely to avoid buffer/ownership conflicts
+    await camera.stopAndDispose();
+
+    // 2) Record short clip
     videoCapture.onVideoRecorded = (String path) {
       refreshCount++;
       scheduleMicrotask(() {
-        videoPath = path; 
-        // videoPath = "/data/user/0/insoblok.social.app/cache/SnapVideo.MOV";
+        videoPath = path;
       });
-      
-      
-      logger.d('✅ path replaced at $videoPath');
-      // You can now send this file to your server or process it
     };
 
     await videoCapture.initialize();
     await videoCapture.recordShortVideo(seconds: 2.0);
-    
+
+    // 3) Optionally release video controller now; we keep preview in UI via file.
+    await videoCapture.stopAndDispose();
   }
-  
+
   List<AIFaceAnnotation> annotations = [];
 
   Future<void> detectFace(String link) async {
-    var faces = await GoogleVisionHelper.getFacesFromImage(link: link);
 
+    link = '/data/data/insoblok.social.app/cache/SnapImage.jpg';
+
+    var faces = await GoogleVisionHelper.getFacesFromImage(link: link);
     var _annotations = await GoogleVisionHelper.analyzeLocalImage(link: link);
 
     if (faces.isNotEmpty) {
       final directory = await getApplicationDocumentsDirectory();
       final filePath = '${directory.path}/face.png';
+
       final file = File(filePath);
 
       try {
-        // Delete the file if it exists
         if (await file.exists()) {
           await file.delete();
         }
 
-        // Write new image bytes directly (no need to call create() before writing)
         final encoded = img.encodePng(faces[0]);
         _face = await file.writeAsBytes(encoded, flush: true);
-        await FileImage(_face!).evict(); // 👈 force clear from memory
+        await FileImage(_face!).evict();
 
-        // Clear and add annotations
         annotations.clear();
         annotations.addAll(_annotations);
 
         logger.d('✅ face.png replaced at $filePath');
       } catch (e) {
         logger.e('❌ Failed to write new face.png: $e');
+        AIHelpers.showToast(msg: 'Failed to write new reaction image');
       }
 
       notifyListeners();
     } else {
       logger.e("No face detected!");
+      AIHelpers.showToast(msg: 'No face detected!');
     }
   }
-
 
   @override
   void dispose() {
     quillController?.dispose();
-    quillScrollController?.dispose();
-    focusNode?.dispose();
+    quillScrollController.dispose();
+    focusNode.dispose();
+
+    // Fire-and-forget disposals
     camera.dispose();
-    //capture_timer?.cancel();
+    videoCapture.dispose();
+
     super.dispose();
   }
 
@@ -194,7 +274,7 @@ class StoryProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  Offset _dragStart = Offset(0, 0);
+  Offset _dragStart = const Offset(0, 0);
   Offset get dragStart => _dragStart;
   set dragStart(Offset o) {
     _dragStart = o;
@@ -203,8 +283,17 @@ class StoryProvider extends InSoBlokViewModel {
 
   bool openCommentDialog = false;
 
+  Future<void> setVideoReaction() async {
+    await captureReactionVideo();
+  }
+
+  Future<void> setImageReaction() async {
+    await captureReactionImage();
+  }
+
   Future<void> showCommentDialog() async {
     if (openCommentDialog) return;
+
     openCommentDialog = true;
     showFaceDialog = false;
     await showModalBottomSheet(
@@ -216,32 +305,44 @@ class StoryProvider extends InSoBlokViewModel {
         maxHeight: MediaQuery.of(context).size.height * 0.7,
         minHeight: MediaQuery.of(context).size.height * 0.2,
       ),
-      builder:
-          (context) => StatefulBuilder(
-            builder: (context, setState) => StoryCommentDialog(story: story),
-          ),
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) => StoryCommentDialog(story: story),
+      ),
     );
-
-    logger.d('Dismissed dialog');
 
     openCommentDialog = false;
     fetchStory();
   }
 
-  Future<void> onPostReactionPressed() async{
-
-    logger.d("story : $story");
-    Routers.goToFaceDetailPage(context, story.id!, (story.medias ?? [])[pageIndex].link!,
-        face!);
+  Future<void> onPostReactionPressed() async {
+    Routers.goToFaceDetailPage(
+        context,
+        story.id!,
+        (story.medias ?? [])[pageIndex].link!,
+        face!,
+        annotations,
+        false);
   }
 
-  Future<void> onPostReactionVideoPressed() async{
-
-    Routers.goToReactionVideoDetailPage(context, story.id!, (story.medias ?? [])[pageIndex].link!,
-        videoPath!);
+  Future<void> onPostReactionVideoPressed() async {
+    Routers.goToReactionVideoDetailPage(
+        context,
+        story.id!,
+        (story.medias ?? [])[pageIndex].link!,
+        videoPath!,
+        false);
   }
 
-  Future<void> onPostDeclinePressed() async{
+  Future<void> onEditReactionVideoPressed() async {
+    Routers.goToReactionVideoDetailPage(
+        context,
+        story.id!,
+        (story.medias ?? [])[pageIndex].link!,
+        videoPath!,
+        false);
+  }
+
+  Future<void> onPostDeclinePressed() async {
     showFaceDialog = false;
   }
 
@@ -266,6 +367,16 @@ class StoryProvider extends InSoBlokViewModel {
   Future<void> goToDetailPage() async {
     await updateView();
     var data = await Routers.goToStoryDetailPage(context, story);
+    if (data != null) {
+      story = data;
+      notifyListeners();
+    }
+  }
+
+  Future<void> goToLookbookDetailPage() async {
+    await updateView();
+
+    var data = await Routers.goToLookbookDetailPage(context, story);
     if (data != null) {
       story = data;
       notifyListeners();
@@ -342,52 +453,6 @@ class StoryProvider extends InSoBlokViewModel {
       notifyListeners();
     }
   }
-
-  // Future<void> sendComment() async {
-  //   if (isBusy) return;
-  //   clearErrors();
-  //   await runBusyFuture(() async {
-  //     try {
-  //       var quillData = quillController.document.toDelta().toJson();
-  //       logger.d(quillController.document);
-  //       logger.d(quillData);
-  //       if (quillData.isNotEmpty) {
-  //         var converter = QuillDeltaToHtmlConverter(
-  //           quillData,
-  //           ConverterOptions.forEmail(),
-  //         );
-  //         var comment = StoryCommentModel(
-  //           userId: user?.id,
-  //           content: converter.convert(),
-  //           timestamp: DateTime.now(),
-  //         );
-  //         var comments = List<StoryCommentModel>.from(story.comments ?? []);
-
-  //         comments.add(comment);
-  //         story = story.copyWith(
-  //           comments: comments,
-  //           updateDate: DateTime.now(),
-  //         );
-  //         await storyService.addComment(story: story);
-  //         quillController.document = Document();
-
-  //         await fetchStory();
-  //       } else {
-  //         AIHelpers.showToast(msg: 'Your comment is empty!');
-  //       }
-  //     } catch (e, s) {
-  //       setError(e);
-  //       logger.e(e);
-  //       logger.e(s);
-  //     } finally {
-  //       notifyListeners();
-  //     }
-  //   }());
-
-  //   if (hasError) {
-  //     AIHelpers.showToast(msg: modelError.toString());
-  //   }
-  // }
 
   bool _isLiking = false;
   bool get isLiking => _isLiking;
@@ -506,7 +571,7 @@ class StoryProvider extends InSoBlokViewModel {
     }
   }
 
-  Future<void> showReactions() async{
+  Future<void> showReactions() async {
     Routers.goToReactionPage(context, story);
   }
 
@@ -528,13 +593,12 @@ class StoryProvider extends InSoBlokViewModel {
           }
 
           var newStory = StoryModel(
-          title: 'Repost',
-          text: description,
-          status: 'private',
-          category: 'vote',
-          medias:
-              ((resultFaceUrl?.isNotEmpty ?? false) && showFaceDialog)
-                  ? [
+            title: 'Repost',
+            text: description,
+            status: 'private',
+            category: 'vote',
+            medias: ((resultFaceUrl?.isNotEmpty ?? false) && showFaceDialog)
+                ? [
                     MediaStoryModel(
                       link: resultFaceUrl,
                       type: 'image',
@@ -542,7 +606,7 @@ class StoryProvider extends InSoBlokViewModel {
                       height: (story.medias ?? [])[pageIndex].height,
                     ),
                   ]
-                  : story.medias,
+                : story.medias,
             updateDate: DateTime.now(),
             timestamp: DateTime.now(),
             connects: [
@@ -557,7 +621,6 @@ class StoryProvider extends InSoBlokViewModel {
 
           AIHelpers.showToast(msg: 'Successfully reposted to LOOKBOOK!');
         }
-        // Navigator.of(context).pop(true);
       } catch (e) {
         setError(e);
         logger.e(e);
@@ -569,27 +632,6 @@ class StoryProvider extends InSoBlokViewModel {
     if (hasError) {
       AIHelpers.showToast(msg: modelError.toString());
     }
-  }
-
-  bool _showFaceDialog = true;
-  bool get showFaceDialog => _showFaceDialog;
-  set showFaceDialog(bool f) {
-    _showFaceDialog = f;
-    notifyListeners();
-  }
-
-  String? _faceStatus;
-  String? get faceStatus => _faceStatus;
-  set faceStatus(String? s) {
-    _faceStatus = s;
-    notifyListeners();
-  }
-
-  String? _resultFaceUrl;
-  String? get resultFaceUrl => _resultFaceUrl;
-  set resultFaceUrl(String? s) {
-    _resultFaceUrl = s;
-    notifyListeners();
   }
 
   Future<void> onProcessFace(Map<String, String> content) async {
@@ -611,7 +653,6 @@ class StoryProvider extends InSoBlokViewModel {
 
         if (resultUrl == null) throw ('AI service error!');
 
-        // pageStatus = 'Almost done!';
         resultFaceUrl = await storyService.uploadResult(
           resultUrl,
           folderName: 'face',
@@ -641,7 +682,8 @@ class StoryProvider extends InSoBlokViewModel {
       return Center(
         child: Container(
           margin: const EdgeInsets.all(40.0),
-          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+          padding:
+              const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.onSecondary,
             borderRadius: BorderRadius.circular(20.0),
@@ -674,11 +716,14 @@ class StoryProvider extends InSoBlokViewModel {
                         alignment: Alignment.center,
                         child: Text(
                           'Add',
-                          style: Theme.of(
-                            context,
-                          ).textTheme.bodyMedium?.copyWith(
-                            color: Theme.of(context).colorScheme.onSecondary,
-                          ),
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onSecondary,
+                              ),
                         ),
                       ),
                     ),
@@ -698,8 +743,11 @@ class StoryProvider extends InSoBlokViewModel {
                         alignment: Alignment.center,
                         child: Text(
                           'Skip',
-                          style: Theme.of(context).textTheme.bodyMedium
-                              ?.copyWith(color: Theme.of(context).primaryColor),
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(
+                                  color: Theme.of(context).primaryColor),
                         ),
                       ),
                     ),

@@ -7,6 +7,7 @@ import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image/image.dart' as img;
 import 'package:path_provider/path_provider.dart';
 import 'package:stacked/stacked.dart';
+import 'package:insoblok/services/cloudinary_cdn_service.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
 import 'package:insoblok/locator.dart';
@@ -56,6 +57,10 @@ class UploadMediaProvider extends ReactiveViewModel {
       medias.remove(media);
       notifyListeners();
     }
+  }
+
+  void removeMediaByIndex(int index) {
+    if(index < medias.length) medias.removeAt(index);
   }
 
   Future<List<MediaStoryModel>> uploadMedias() async {
@@ -112,33 +117,35 @@ class UploadMediaProvider extends ReactiveViewModel {
     media.isUploading = true;
     notifyListeners();
     try {
-      var mediaUrl = await FirebaseHelper.uploadFile(
-        file: File(media.file!.path),
-        folderName: 'story',
-      );
 
-      var bytes = await File(media.file!.path).readAsBytes();
-      var decodedImage = img.decodeImage(bytes);
-      logger.d(decodedImage?.width);
-      logger.d(decodedImage?.height);
+      // var mediaUrl = await FirebaseHelper.uploadFile(
+      //   file: File(media.file!.path),
+      //   folderName: 'story',
+      // );
+      MediaStoryModel model = await CloudinaryCDNService.uploadImageToCDN(media.file!);
 
-      String? thumbUrl;
-      var thumbnail = await getImageThumbnail(media.file!.path);
-      if (thumbnail != null) {
-        thumbUrl = await FirebaseHelper.uploadFileData(
-          fileData: thumbnail,
-          folderName: 'story',
-        );
-      }
+      // var bytes = await File(media.file!.path).readAsBytes();
+      // var decodedImage = img.decodeImage(bytes);
+      // logger.d(decodedImage?.width);
+      // logger.d(decodedImage?.height);
+
+      // String? thumbUrl;
+      // var thumbnail = await getImageThumbnail(media.file!.path);
+      // if (thumbnail != null) {
+      //   thumbUrl = await FirebaseHelper.uploadFileData(
+      //     fileData: thumbnail,
+      //     folderName: 'story',
+      //   );
+      // }
 
       media.isUploaded = true;
       notifyListeners();
 
       return MediaStoryModel(
-        link: mediaUrl,
-        thumb: thumbUrl,
-        width: decodedImage?.width.toDouble(),
-        height: decodedImage?.height.toDouble(),
+        link: model.link,
+        thumb: "",
+        width: model.width,
+        height: model.height,
         type: 'image',
       );
     } catch (e) {
@@ -147,7 +154,13 @@ class UploadMediaProvider extends ReactiveViewModel {
       media.isUploading = false;
       notifyListeners();
     }
-    return null;
+    return MediaStoryModel(
+        link: "",
+        thumb: "",
+        width: 0,
+        height: 0,
+        type: 'image',
+      );
   }
 
   // UPLOAD VIDEO
@@ -155,41 +168,17 @@ class UploadMediaProvider extends ReactiveViewModel {
     media.isUploading = true;
     notifyListeners();
     try {
-      final videoFile = File(media.file!.path);
-      var vimeoService = VimeoService();
-      final videoId = await vimeoService.uploadVideoToVimeo(
-        videoFile,
-        title: 'InSoBlokAI Video',
-        description: 'Uploaded from InSoBlokAI',
-      );
-
-      String? thumbUrl;
-      img.Image? decodedImage;
-
-      var thumbnail = await getVideoThumbnail(media.file!.path);
-      if (thumbnail != null) {
-        decodedImage = img.decodeImage(thumbnail);
-        var tempDir = await getTemporaryDirectory();
-        var file = File(
-          '${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}.png',
-        );
-        await file.writeAsBytes(thumbnail);
-        thumbUrl = await FirebaseHelper.uploadFile(
-          file: file,
-          folderName: 'story',
-        );
-      }
-
+      // final videoFile = File(media.file!.path);
+      // final videoId = await vimeoService.uploadVideoToVimeo(
+      //   videoFile,
+      //   title: 'InSoBlokAI Video',
+      //   description: 'Uploaded from InSoBlokAI',
+      // );
+      MediaStoryModel model = await CloudinaryCDNService.uploadVideoToCDN(media.file!);
       media.isUploaded = true;
       notifyListeners();
 
-      return MediaStoryModel(
-        link: 'https://player.vimeo.com/video/$videoId',
-        thumb: thumbUrl,
-        width: decodedImage?.width.toDouble(),
-        height: decodedImage?.height.toDouble(),
-        type: 'video',
-      );
+      return model;
     } catch (e) {
       logger.e(e);
     } finally {

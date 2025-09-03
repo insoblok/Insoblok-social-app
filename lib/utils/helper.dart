@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import 'package:device_info_plus/device_info_plus.dart';
@@ -9,14 +10,19 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:insoblok/providers/providers.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
-
+import 'package:insoblok/services/services.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:vsc_quill_delta_to_html/vsc_quill_delta_to_html.dart';
 
+
+final _tastScoreService = TastescoreService();
+TastescoreService get tastScoreService => _tastScoreService;
+
 class AIHelpers {
+
   static Future<String> getDeviceIdentifier() async {
     String deviceIdentifier = "unknown";
     DeviceInfoPlugin deviceInfo = DeviceInfoPlugin();
@@ -111,6 +117,12 @@ class AIHelpers {
     BuildContext context, {
     required StoryModel story,
   }) async {
+
+    if (story.userId != AuthHelper.user?.id) {
+      AIHelpers.showToast(msg: 'You can\'t share this feed.');
+      return;
+    }
+
     var result = await showModalBottomSheet<int>(
       context: context,
       builder: (context) {
@@ -161,13 +173,23 @@ class AIHelpers {
       ShareParams(text: story.text, title: story.title),
     );
     logger.d(result);
+
+    await tastScoreService.shareOutsideScore();
+    
     return result;
   }
 
   static Future<void> shareStoryToInSoBlok({required StoryModel story}) async {
+
+    final usersRef = FirebaseFirestore.instance.collection("user");
+      await usersRef.doc(AuthHelper.user?.id).update({
+        "status": "public",
+      });
+    
     AIHelpers.showToast(
-      msg: 'This feature was not added yet! Will be came soon. ',
+      msg: 'This story is shown to everyone of InsoBlok.',
     );
+    await tastScoreService.shareOutsideScore();
   }
 
   static Future<void> shareComment({required StoryCommentModel comment}) async {
@@ -207,10 +229,12 @@ class AIHelpers {
     BuildContext context, {
     required List<String> medias,
     int index = 0,
+    String storyID = '',
+    String storyUser = '',
   }) async {
     Routers.goToMediaDetailPage(
       context,
-      model: MediaDetailModel(medias: medias, index: index),
+      model: MediaDetailModel(medias: medias, index: index, storyID: storyID, storyUser: storyUser),
     );
   }
 

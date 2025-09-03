@@ -204,11 +204,22 @@ class AddProductPage extends StatelessWidget {
                 },
 
                 const SizedBox(height: 40.0),
-                TextFillButton(
-                  text: viewModel.isBusy ? 'Uploading...' : 'Add Product',
-                  color: viewModel.isBusy ? AIColors.grey : AIColors.pink,
-                  onTap: viewModel.onClickAddProduct,
-                ),
+                Container(
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.centerLeft,
+                        end: Alignment.centerRight,
+                        colors: [Color(0xFFF30C6C), Color(0xFFC739EB)],
+                      ),
+                      borderRadius: BorderRadius.all(Radius.circular(12)),
+                    ),
+                    child: TextFillButton(
+                      text: viewModel.isBusy ? 'Uploading...' : 'Add Product',
+                      color: viewModel.isBusy ? AIColors.grey : Colors.transparent,
+                      onTap: viewModel.onClickAddProduct,
+                    ),
+                  ),
+
                 const SizedBox(height: 40.0),
               ],
             ),

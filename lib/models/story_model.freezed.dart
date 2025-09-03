@@ -656,7 +656,7 @@ as DateTime?,
 /// @nodoc
 mixin _$MediaStoryModel {
 
- String? get link; String? get thumb; String? get type; double? get width; double? get height;
+ String? get link; String? get thumb; String? get type; double? get width; double? get height; String? get publicId;
 /// Create a copy of MediaStoryModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -854,7 +854,7 @@ return $default(_that.link,_that.thumb,_that.type,_that.width,_that.height);case
 
 @JsonSerializable(fieldRename: FieldRename.snake)
 class _MediaStoryModel implements MediaStoryModel {
-   _MediaStoryModel({this.link, this.thumb, this.type, this.width, this.height});
+   _MediaStoryModel({this.link, this.thumb, this.type, this.width, this.height, this.publicId});
   factory _MediaStoryModel.fromJson(Map<String, dynamic> json) => _$MediaStoryModelFromJson(json);
 
 @override final  String? link;
@@ -862,6 +862,7 @@ class _MediaStoryModel implements MediaStoryModel {
 @override final  String? type;
 @override final  double? width;
 @override final  double? height;
+@override final  String? publicId;
 
 /// Create a copy of MediaStoryModel
 /// with the given fields replaced by the non-null parameter values.

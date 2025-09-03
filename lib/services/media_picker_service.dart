@@ -19,12 +19,12 @@ class MediaPickerService {
   }
 
   Future<List<XFile>> onPickerStoryMedia({int? limit}) async {
-    final action = await _showMediaSource(); // ← now returns PickerAction?
+    final action = await _showMediaSource();
     logger.d(action);
 
     if (action == null) return [];
 
-    // Handle DeepAR right here and return the captured file(s)
+    // Handle DeepAR
     if (action == PickerAction.deepAr) {
       final result = await Navigator.of(_context).push<Map<String, String?>>(
         MaterialPageRoute(builder: (_) => const DeepARPlusPage()),
@@ -47,11 +47,10 @@ class MediaPickerService {
       }
 
       logger.d("medias--- : $medias");
-
       return medias;
     }
 
-    // Original flow for gallery/camera
+    // Gallery/Camera
     final isAllowed = action == PickerAction.gallery
         ? ((await PermissionService.requestGalleryPermission()) ?? false)
         : ((await PermissionService.requestCameraPermission()) ?? false);
@@ -62,8 +61,9 @@ class MediaPickerService {
     }
 
     final medias = <XFile>[];
+
     if (action == PickerAction.camera) {
-      // If you still want your platform camera picker:
+      // Your platform camera picker may return a content:// URI on Android.
       final mediaPath = await MethodChannelService.onPlatformCameraPicker();
       if (mediaPath != null) {
         logger.d(mediaPath);
@@ -146,26 +146,26 @@ class MediaPickerService {
                     children: [
                       AIImage(Icons.air, color: AIColors.pink),
                       const SizedBox(width: 12.0),
-                      Text('From Gallery',
+                      Text('From Photos',
                         style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: AIColors.pink),
                       ),
                     ],
                   ),
                 ),
-                const SizedBox(height: 24.0),
-                InkWell(
-                  onTap: () => Navigator.of(context).pop(PickerAction.camera),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      AIImage(Icons.camera, color: AIColors.pink),
-                      const SizedBox(width: 12.0),
-                      Text('From Camera',
-                        style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: AIColors.pink),
-                      ),
-                    ],
-                  ),
-                ),
+                // const SizedBox(height: 24.0),
+                // InkWell(
+                //   onTap: () => Navigator.of(context).pop(PickerAction.camera),
+                //   child: Row(
+                //     mainAxisSize: MainAxisSize.min,
+                //     children: [
+                //       AIImage(Icons.camera, color: AIColors.pink),
+                //       const SizedBox(width: 12.0),
+                //       Text('From Camera',
+                //         style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: AIColors.pink),
+                //       ),
+                //     ],
+                //   ),
+                // ),
                 const SizedBox(height: 24.0),
                 InkWell(
                   onTap: () => Navigator.of(context).pop(PickerAction.deepAr),
@@ -174,7 +174,7 @@ class MediaPickerService {
                     children: [
                       AIImage(Icons.camera_enhance, color: AIColors.pink),
                       const SizedBox(width: 12.0),
-                      Text('From Camera (AR)',
+                      Text('From Camera',
                         style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: AIColors.pink),
                       ),
                     ],
@@ -233,4 +233,5 @@ class MediaPickerService {
     }
     return result;
   }
+
 }

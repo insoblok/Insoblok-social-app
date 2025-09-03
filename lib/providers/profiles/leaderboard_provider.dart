@@ -72,7 +72,7 @@ class LeaderboardProvider extends InSoBlokViewModel {
 
   List<UserScoreModel> get dailyLeaderboard =>
       _leaderboard.sorted((b, a) => a.xpDay - b.xpDay).toList();
-
+  
   List<UserScoreModel> get weeklyLeaderboard =>
       _leaderboard.sorted((b, a) => a.xpWeek - b.xpWeek).toList();
 

@@ -2,7 +2,9 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image/image.dart' as img;
+import 'package:insoblok/services/cloudinary_cdn_service.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/models/models.dart';
@@ -58,6 +60,13 @@ class ReactionVideoDetailProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  bool _enableEdit = false;
+  bool get enableEdit => _enableEdit;
+  set enableEdit(bool f) {
+    _enableEdit = f;
+    notifyListeners();
+  }
+
   String? _vimeoUploadId;
   String? get vimeoUploadId => _vimeoUploadId;
   set vimeoUploadId(String? s) {
@@ -65,6 +74,13 @@ class ReactionVideoDetailProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  String? _cdnUploadId;
+  String? get cdnUploadId => _cdnUploadId;
+  set cdnUploadId(String? s) {
+    _cdnUploadId = s;
+    notifyListeners();
+  }
+  
   int _pageIndex = 0;
   int get pageIndex => _pageIndex;
   set pageIndex(int i) {
@@ -74,11 +90,13 @@ class ReactionVideoDetailProvider extends InSoBlokViewModel {
 
   List<AIFaceAnnotation> annotations = [];
 
-  Future<void> init(BuildContext context, {required String storyID, required String url, required String videoPath}) async {
+
+  Future<void> init(BuildContext context, {required String storyID, required String url, required String videoPath, required bool editable}) async {
     this.context = context;
     this.url = url;
     this.storyID = storyID;
     this.videoPath = videoPath;
+    enableEdit = editable;
   }
 
   Future<void> detectFace(String link) async {
@@ -113,8 +131,6 @@ class ReactionVideoDetailProvider extends InSoBlokViewModel {
   Future<void> onClickActionButton(int index) async {
     if (isBusy) return;
 
-    logger.d('button index: $index');
-
     switch (index) {
       case 0:
         await repost();
@@ -134,24 +150,18 @@ class ReactionVideoDetailProvider extends InSoBlokViewModel {
 
     setBusy(true);
     notifyListeners();
-
+    String link = "";
     try {
-      if(vimeoUploadId == null){
-        final videoFile = File(videoPath);
-        var vimeoService = VimeoService();
-        vimeoUploadId = await vimeoService.uploadVideoToVimeo(
-          videoFile,
-          title: 'InSoBlokAI Reaction Video',
-          description: 'Uploaded from InSoBlokAI Story of $storyID',
-        );
+      if(cdnUploadId == null){
+        MediaStoryModel model = await CloudinaryCDNService.uploadVideoToCDN(XFile(videoPath));
+        cdnUploadId = model.publicId;
+        link = model.link!;
       }
 
-      if(vimeoUploadId != null){
-        final usersRef = FirebaseFirestore.instance.collection("user");
-        await usersRef.doc(AuthHelper.user?.id).update({
-          "galleries": FieldValue.arrayUnion(["https://player.vimeo.com/video/$vimeoUploadId"]),
-        });
-      }
+      final usersRef = FirebaseFirestore.instance.collection("user");
+      await usersRef.doc(AuthHelper.user?.id).update({
+        "galleries": FieldValue.arrayUnion([link]),
+      });
       
       AIHelpers.showToast(msg: 'Successfully saved to Gallery!');
     } catch (e) {
@@ -169,24 +179,18 @@ class ReactionVideoDetailProvider extends InSoBlokViewModel {
 
     setBusy(true);
     notifyListeners();
-
+    String url = "";
     try {
-      if(vimeoUploadId == null){
-        final videoFile = File(videoPath);
-        var vimeoService = VimeoService();
-        vimeoUploadId = await vimeoService.uploadVideoToVimeo(
-          videoFile,
-          title: 'InSoBlokAI Reaction Video',
-          description: 'Uploaded from InSoBlokAI Story of $storyID',
-        );
+      if(cdnUploadId == null) {
+        MediaStoryModel model = await CloudinaryCDNService.uploadVideoToCDN(XFile(videoPath));
+        cdnUploadId = model.publicId;
+        url = model.link!;
       }
 
-      if (vimeoUploadId != null) {
-        final storiesRef = FirebaseFirestore.instance.collection("story");
-          await storiesRef.doc(storyID).update({
-            "reactions": FieldValue.arrayUnion(["https://player.vimeo.com/video/$vimeoUploadId"]),
-          });
-      }
+      final storiesRef = FirebaseFirestore.instance.collection("story");
+      await storiesRef.doc(storyID).update({
+        "reactions": FieldValue.arrayUnion([url]),
+      });
 
       AIHelpers.showToast(msg: 'Successfully posted as Reaction!');
 
@@ -203,6 +207,7 @@ class ReactionVideoDetailProvider extends InSoBlokViewModel {
     if (isBusy) return;
     clearErrors();
 
+    String url = "";
     await runBusyFuture(() async {
       try {
         var hasDescription = await _showDescriptionDialog();
@@ -213,24 +218,27 @@ class ReactionVideoDetailProvider extends InSoBlokViewModel {
           throw ('empty description!');
         }
 
-        final videoFile = File(videoPath);
-        var vimeoService = VimeoService();
-        vimeoUploadId = await vimeoService.uploadVideoToVimeo(
-          videoFile,
-          title: 'InSoBlokAI Reaction Video',
-          description: 'Uploaded from InSoBlokAI Story of $storyID',
-        );
+        // final videoFile = File(videoPath);
+        // var vimeoService = VimeoService();
+        // cdnUploadId = await vimeoService.uploadVideoToVimeo(
+        //   videoFile,
+        //   title: 'InSoBlokAI Reaction Video',
+        //   description: 'Uploaded from InSoBlokAI Story of $storyID',
+        // );
 
-        MediaStoryModel? media;
-        if (vimeoUploadId != null) {
-
-          media = MediaStoryModel(
-            link: 'https://player.vimeo.com/video/$vimeoUploadId',
-            type: 'video',
-            width: 64,
-            height: 64,
-          );
+        if(cdnUploadId == null) {
+          MediaStoryModel model = await CloudinaryCDNService.uploadVideoToCDN(XFile(videoPath));
+          cdnUploadId = model.publicId;
+          url = model.link!;
         }
+        
+        MediaStoryModel? media;
+        media = MediaStoryModel(
+          link: url,
+          type: 'video',
+          width: 64,
+          height: 64,
+        );
 
         var newStory = StoryModel(
           title: 'Repost',

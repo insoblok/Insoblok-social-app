@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:deepar_flutter_plus/deepar_flutter_plus.dart';
 
 class DeepArPlusService with ChangeNotifier {
-  DeepArControllerPlus? _controller;      // ← make it nullable (no single final instance)
+  DeepArControllerPlus? _controller;      
   bool _engineReady = false;
   bool _viewReady = false;
   bool _recording = false;
@@ -15,7 +15,6 @@ class DeepArPlusService with ChangeNotifier {
   double get aspectRatio => _controller?.aspectRatio ?? 1.0;
   DeepArControllerPlus get controller => _controller!;
 
-  /// Initialize once. If already ready (or initializing), this is a no-op.
   Future<void> initialize({
     required String androidKey,
     required String iosKey,
@@ -23,10 +22,10 @@ class DeepArPlusService with ChangeNotifier {
     String? initialEffect,
     Duration iosViewTimeout = const Duration(seconds: 10),
   }) async {
-    if (_engineReady || _initInProgress) return;   // ← guard against repeats
+    if (_engineReady || _initInProgress) return;   
     _initInProgress = true;
 
-    _controller ??= DeepArControllerPlus();        // ← create a NEW instance when needed
+    _controller ??= DeepArControllerPlus();       
     try {
       final res = await _controller!.initialize(
         androidLicenseKey: androidKey,
@@ -88,12 +87,11 @@ class DeepArPlusService with ChangeNotifier {
     return null;
   }
 
-  /// Clean teardown. Crucially: drop the controller so a fresh one is created next time.
   void disposeEngine() {
     try {
       _controller?.destroy();
     } finally {
-      _controller = null;                 // ← KEY: allow a fresh instance on next initialize()
+      _controller = null;                
       _engineReady = false;
       _viewReady = false;
       _recording = false;
@@ -102,7 +100,6 @@ class DeepArPlusService with ChangeNotifier {
     }
   }
 
-  /// If you intentionally need to re-init (e.g., change resolution), use this.
   Future<void> reinitialize({
     required String androidKey,
     required String iosKey,

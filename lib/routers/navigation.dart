@@ -45,6 +45,7 @@ const kRouterVTOAddProduct = '/vto-add-product';
 
 const kRouterAddStory = '/add-story';
 const kRouterStoryDetail = '/story-detail';
+const kRouterLookbookDetail = '/lookbook-detail';
 const kRouterNewsDetail = '/news-detail';
 const kRouterPostDetail = '/post-detail';
 const kRouterReaction = '/reaction';
@@ -202,6 +203,11 @@ class Navigation {
     );
 
     initRoute<StoryModel>(
+      kRouterLookbookDetail,
+      (props) => LookbookDetailPage(story: props!),
+    );
+
+    initRoute<StoryModel>(
       kRouterReaction,
       (props) => ReactionsPage(story: props!),
     );
@@ -267,13 +273,15 @@ class Navigation {
         if (props == null) {
           throw ArgumentError('Route parameters are null');
         }
-        if (!props.containsKey('storyID') || !props.containsKey('url') || !props.containsKey('face')) {
+        if (!props.containsKey('storyID') || !props.containsKey('url') || !props.containsKey('face') || !props.containsKey('annotations') || !props.containsKey('editable')) {
           throw ArgumentError('Missing required route parameters');
         }
         return FaceDetailPage(
           storyID: props['storyID'],
           url: props['url'],
           face: props['face'],
+          annotations: props['annotations'],
+          editable: props['editable'],
         );
       },
     );
@@ -291,6 +299,7 @@ class Navigation {
           storyID: props['storyID'],
           url: props['url'],
           videoPath: props['videoPath'],
+          editable: props['editable'],
         );
       },
     );

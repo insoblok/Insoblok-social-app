@@ -10,6 +10,7 @@ import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:share_plus/share_plus.dart';
 
 class ReactionsProvider extends InSoBlokViewModel {
   late BuildContext _context;
@@ -115,11 +116,8 @@ class ReactionsProvider extends InSoBlokViewModel {
         '${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}.png',
       );
       await file.writeAsBytes(pngBytes!);
-      final thumbUrl = await FirebaseHelper.uploadFile(
-        file: file,
-        folderName: 'lookbook',
-      );
-      
+      MediaStoryModel model = await CloudinaryCDNService.uploadImageToCDN(XFile(file.path));
+      String thumbUrl = model.link!;
       if(thumbUrl != null){
         isCombineImages = false;
       }

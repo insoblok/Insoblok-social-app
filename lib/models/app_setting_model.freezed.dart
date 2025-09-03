@@ -860,7 +860,7 @@ as double?,
 /// @nodoc
 mixin _$XpInSoModel {
 
- int? get min; int? get max; int? get rate;
+ int? get min; int? get max; int? get inso; int? get rate;
 /// Create a copy of XpInSoModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -873,12 +873,12 @@ $XpInSoModelCopyWith<XpInSoModel> get copyWith => _$XpInSoModelCopyWithImpl<XpIn
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is XpInSoModel&&(identical(other.min, min) || other.min == min)&&(identical(other.max, max) || other.max == max)&&(identical(other.rate, rate) || other.rate == rate));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is XpInSoModel&&(identical(other.min, min) || other.min == min)&&(identical(other.max, max) || other.max == max)&&(identical(other.inso, inso) || other.inso == inso)&&(identical(other.rate, rate) || other.rate == rate));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,min,max,rate);
+int get hashCode => Object.hash(runtimeType,min,max,inso,rate);
 
 @override
 String toString() {
@@ -1056,11 +1056,12 @@ return $default(_that.min,_that.max,_that.rate);case _:
 
 @JsonSerializable(fieldRename: FieldRename.snake)
 class _XpInSoModel implements XpInSoModel {
-   _XpInSoModel({this.min, this.max, this.rate});
+   _XpInSoModel({this.min, this.max, this.inso, this.rate});
   factory _XpInSoModel.fromJson(Map<String, dynamic> json) => _$XpInSoModelFromJson(json);
 
 @override final  int? min;
 @override final  int? max;
+@override final  int? inso;
 @override final  int? rate;
 
 /// Create a copy of XpInSoModel
@@ -1081,11 +1082,11 @@ bool operator ==(Object other) {
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,min,max,rate);
+int get hashCode => Object.hash(runtimeType,min,max,inso,rate);
 
 @override
 String toString() {
-  return 'XpInSoModel(min: $min, max: $max, rate: $rate)';
+  return 'XpInSoModel(min: $min, max: $max, inso: $inso, rate: $rate)';
 }
 
 

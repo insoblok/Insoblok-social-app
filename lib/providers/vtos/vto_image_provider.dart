@@ -171,10 +171,8 @@ class VTOImageProvider extends InSoBlokViewModel {
       try {
         isConverting = true;
         if (originUrl?.isEmpty ?? true) {
-          originUrl = await FirebaseHelper.uploadFile(
-            file: File(selectedFile!.path),
-            folderName: product.categoryName?.toLowerCase() ?? 'clothing',
-          );
+          MediaStoryModel model = await CloudinaryCDNService.uploadImageToCDN(XFile(selectedFile!.path));
+          originUrl = model.link;
         }
 
         if (originUrl?.isEmpty ?? true) {
@@ -199,13 +197,10 @@ class VTOImageProvider extends InSoBlokViewModel {
           throw ('Failed result file downloaded!');
         }
 
-        var path = await FirebaseHelper.uploadFile(
-          file: _resultFile!,
-          folderName: 'gallery',
-        );
+        final MediaStoryModel resultModel = await CloudinaryCDNService.uploadImageToCDN(XFile(_resultFile!.path));
 
-        if (path != null) {
-          serverUrl = path;
+        if (resultModel.link != null) {
+          serverUrl = resultModel.link;
 
           List<MediaStoryModel> medias = [];
           medias.addAll(product.medias ?? []);
@@ -270,10 +265,8 @@ class VTOImageProvider extends InSoBlokViewModel {
       try {
         isConverting = true;
         if (originUrl?.isEmpty ?? true) {
-          originUrl = await FirebaseHelper.uploadFile(
-            file: File(selectedFile!.path),
-            folderName: product.categoryName?.toLowerCase() ?? 'clothing',
-          );
+          final MediaStoryModel selectedModel = await CloudinaryCDNService.uploadImageToCDN(XFile(selectedFile!.path));
+          originUrl = selectedModel.link;
         }
 
         logger.d(originUrl);
@@ -300,13 +293,10 @@ class VTOImageProvider extends InSoBlokViewModel {
           throw ('Failed result file downloaded!');
         }
 
-        var path = await FirebaseHelper.uploadFile(
-          file: _resultFile!,
-          folderName: 'gallery',
-        );
+        final MediaStoryModel model = await CloudinaryCDNService.uploadImageToCDN(XFile(_resultFile!.path));
 
-        if (path != null) {
-          serverUrl = path;
+        if (model.link != null) {
+          serverUrl = model.link;
 
           List<MediaStoryModel> medias = [];
           medias.addAll(product.medias ?? []);
@@ -385,13 +375,10 @@ class VTOImageProvider extends InSoBlokViewModel {
           throw ('Failed result file downloaded!');
         }
 
-        var path = await FirebaseHelper.uploadFile(
-          file: _resultFile!,
-          folderName: 'gallery',
-        );
+        final MediaStoryModel model = await CloudinaryCDNService.uploadImageToCDN(XFile(_resultFile!.path));
 
-        if (path != null) {
-          serverUrl = path;
+        if (model.link != null) {
+          serverUrl = model.link;
 
           List<MediaStoryModel> medias = [];
           medias.addAll(product.medias ?? []);

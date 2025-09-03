@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
+import 'package:insoblok/services/cloudinary_cdn_service.dart';
 import 'package:insoblok/services/services.dart';
 
 class StoryService {
@@ -335,13 +336,8 @@ class StoryService {
   }
 
   Future<String?> uploadResult(String url, {String? folderName, String? postCategory, String? storyID}) async {
-    return FirebaseHelper.uploadImageFromUrl(
-      imageUrl: url,
-      id: AuthHelper.user!.id!,
-      folderName: folderName,
-      postCategory: postCategory,
-      storyID: storyID,
-    );
+    MediaStoryModel model = await CloudinaryCDNService.uploadImageFromUrl(url);
+    return model.link;
   }
 
   Future<String?> uploadVideoFile(String url, {String? folderName, String? postCategory, String? storyID}) async {
