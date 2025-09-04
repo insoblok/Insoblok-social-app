@@ -101,8 +101,8 @@ class WalletSwapProvider extends InSoBlokViewModel {
         break;
     }
     getRate(
-      kWalletTokenList[index]['name'],
-      kWalletTokenList[selectedToToken]['name'],
+      kWalletTokenList[index]['name'].toString(),
+      kWalletTokenList[selectedToToken]['name'].toString(),
     );
     if ((double.tryParse(fromTokenTextController.text) ?? 0) > availableValue ||
         (double.tryParse(fromTokenTextController.text) ?? 0) == 0) {
@@ -119,8 +119,8 @@ class WalletSwapProvider extends InSoBlokViewModel {
   void selectToToken(int index) {
     selectedToToken = index;
     getRate(
-      kWalletTokenList[selectedFromToken]['name'],
-      kWalletTokenList[index]['name'],
+      kWalletTokenList[selectedFromToken]['name'].toString(),
+      kWalletTokenList[index]['name'].toString(),
     );
     logger.d(double.tryParse(fromTokenTextController.text));
     logger.d(availableValue);
@@ -198,8 +198,8 @@ class WalletSwapProvider extends InSoBlokViewModel {
         var fromToken = kWalletTokenList[selectedFromToken]['name'] ?? 'INSO';
         var toToken = kWalletTokenList[selectedToToken]['name'] ?? 'INSO';
         var model = transferService.getTransferModel(
-          fromToken: fromToken,
-          toToken: toToken,
+          fromToken: fromToken.toString(),
+          toToken: toToken.toString(),
           from: (double.tryParse(fromTokenTextController.text) ?? 0),
           to: (double.tryParse(toTokenTextController.text) ?? 0),
         );

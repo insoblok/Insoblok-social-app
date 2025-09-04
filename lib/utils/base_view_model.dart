@@ -11,6 +11,11 @@ abstract class InSoBlokViewModel extends ReactiveViewModel {
   final UserService _userService = UserService();
   UserService get userService => _userService;
 
+  final Web3Service _web3service = Web3Service();
+  Web3Service get web3Service => _web3service;
+
+  final CryptoService cryptoService = CryptoHelper.service;
+  
   final _newsService = NewsService();
   NewsService get newsService => _newsService;
 
@@ -43,6 +48,8 @@ abstract class InSoBlokViewModel extends ReactiveViewModel {
 
   final MethodChannelService _methodChannelService = MethodChannelService();
   MethodChannelService get methodChannelService => _methodChannelService;
+
+  
 
   @override
   List<ListenableServiceMixin> get listenableServices => [authService];

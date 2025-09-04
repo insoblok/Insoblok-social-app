@@ -4,10 +4,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_html/flutter_html.dart';
 
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:insoblok/routers/routers.dart';
 import 'package:stacked/stacked.dart';
 import 'package:video_player/video_player.dart';
+import 'package:vimeo_video_player/vimeo_video_player.dart';
 
 import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
@@ -20,9 +22,11 @@ const kStoryAvatarSize = 50.0;
 
 class StoryListCell extends StatelessWidget {
   final StoryModel story;
+  final bool? enableDetail;
+  final bool? enableReaction;
   final double? marginBottom;
 
-  const StoryListCell({super.key, required this.story, this.marginBottom});
+  const StoryListCell({super.key, required this.story, this.enableDetail, this.enableReaction, this.marginBottom});
 
   @override
   Widget build(BuildContext context) {
@@ -30,8 +34,14 @@ class StoryListCell extends StatelessWidget {
       viewModelBuilder: () => StoryProvider(),
       onViewModelReady: (viewModel) => viewModel.init(context, model: story),
       builder: (context, viewModel, _) {
+
+         final canOpen = enableDetail ?? false;
+         final canReaction = enableReaction ?? false;
+
         return InkWell(
-          onTap: viewModel.goToDetailPage,
+          onTap: canOpen
+              ? () => viewModel.goToLookbookDetailPage() // or story.id
+              : null,
           child: Stack(
             children: [
               if ((story.medias ?? []).isNotEmpty) ...{
@@ -103,96 +113,187 @@ class StoryListCell extends StatelessWidget {
                         spacing: 12.0,
                         children: [
                           const Spacer(),
-                          if (viewModel.videoPath != null && viewModel.showFaceDialog) ...{
-                            // CommentFaceModalView(marginBottom: marginBottom),
-                            CommentFaceVideoModalView(marginBottom: marginBottom),
-                          } else ...{
-                            Container(
-                              margin: EdgeInsets.only(
-                                bottom: marginBottom ?? 0,
-                              ),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                spacing: 12.0,
-                                children: [
-                                  if (viewModel.story.category != null &&
-                                      viewModel.story.category == 'vote') ...{
-                                    StoryYayNayWidget(),
-                                  },
-                                  Row(
-                                    spacing: 12.0,
-                                    children: [
-                                      Text(
-                                        viewModel.owner?.fullName ?? '---',
-                                        style:
-                                            Theme.of(
-                                              context,
-                                            ).textTheme.headlineMedium,
-                                      ),
-                                      Text(
-                                        '· ${viewModel.story.timestamp?.timeago}',
-                                        style:
-                                            Theme.of(
-                                              context,
-                                            ).textTheme.headlineMedium,
-                                      ),
-                                    ],
-                                  ),
-                                  if (viewModel.story.category != null &&
-                                      viewModel.story.category == 'vote') ...{
-                                    Column(
+                          if(viewModel.isVideoReaction)...{
+                            if (viewModel.videoPath != null && viewModel.showFaceDialog && canReaction) ...{
+                              CommentFaceVideoModalView(marginBottom: marginBottom)
+                            } else ...{
+                              Container(
+                                margin: EdgeInsets.only(
+                                  bottom: marginBottom ?? 0,
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  spacing: 12.0,
+                                  children: [
+                                    if (viewModel.story.category != null &&
+                                        viewModel.story.category == 'vote') ...{
+                                      StoryYayNayWidget(),
+                                    },
+                                    Row(
+                                      spacing: 12.0,
                                       children: [
-                                        const SizedBox(height: 8.0),
-                                        Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Text(
-                                              'Vybe Virtual Try-On',
-                                              style: TextStyle(
-                                                fontSize: 13.0,
-                                                fontWeight: FontWeight.bold,
-                                              ),
-                                            ),
-                                            Container(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                    horizontal: 8.0,
-                                                    vertical: 2.0,
-                                                  ),
-                                              decoration: BoxDecoration(
-                                                color: Theme.of(context)
-                                                    .colorScheme
-                                                    .secondary
-                                                    .withAlpha(16),
-                                                borderRadius:
-                                                    BorderRadius.circular(16.0),
-                                              ),
-                                              child: Row(
-                                                children: [
-                                                  Icon(
-                                                    Icons.leaderboard_outlined,
-                                                    size: 18,
-                                                  ),
-                                                  Text(
-                                                    ' ${viewModel.story.votes?.length ?? 0} / 5 Looks Today',
-                                                    style:
-                                                        Theme.of(
-                                                          context,
-                                                        ).textTheme.bodySmall,
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ],
+                                        Text(
+                                          viewModel.owner?.fullName ?? '---',
+                                          style:
+                                              Theme.of(
+                                                context,
+                                              ).textTheme.headlineMedium,
+                                        ),
+                                        Text(
+                                          '· ${viewModel.story.timestamp?.timeago}',
+                                          style:
+                                              Theme.of(
+                                                context,
+                                              ).textTheme.headlineMedium,
                                         ),
                                       ],
                                     ),
-                                  },
-                                ],
+                                    if (viewModel.story.category != null &&
+                                        viewModel.story.category == 'vote') ...{
+                                      Column(
+                                        children: [
+                                          const SizedBox(height: 8.0),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                'Vybe Virtual Try-On',
+                                                style: TextStyle(
+                                                  fontSize: 13.0,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              Container(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                      horizontal: 8.0,
+                                                      vertical: 2.0,
+                                                    ),
+                                                decoration: BoxDecoration(
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .secondary
+                                                      .withAlpha(16),
+                                                  borderRadius:
+                                                      BorderRadius.circular(16.0),
+                                                ),
+                                                child: Row(
+                                                  children: [
+                                                    Icon(
+                                                      Icons.leaderboard_outlined,
+                                                      size: 18,
+                                                    ),
+                                                    Text(
+                                                      ' ${viewModel.story.votes?.length ?? 0} / 5 Looks Today',
+                                                      style:
+                                                          Theme.of(
+                                                            context,
+                                                          ).textTheme.bodySmall,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    },
+                                  ],
+                                ),
                               ),
-                            ),
-                          },
+                            }
+                          } else ...{
+                            if (viewModel.face != null && viewModel.showFaceDialog && canReaction) ...{
+                            CommentFaceModalView(marginBottom: marginBottom),
+                            } else ...{
+                              Container(
+                                margin: EdgeInsets.only(
+                                  bottom: marginBottom ?? 0,
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  spacing: 12.0,
+                                  children: [
+                                    if (viewModel.story.category != null &&
+                                        viewModel.story.category == 'vote') ...{
+                                      StoryYayNayWidget(),
+                                    },
+                                    Row(
+                                      spacing: 12.0,
+                                      children: [
+                                        Text(
+                                          viewModel.owner?.fullName ?? '---',
+                                          style:
+                                              Theme.of(
+                                                context,
+                                              ).textTheme.headlineMedium,
+                                        ),
+                                        Text(
+                                          '· ${viewModel.story.timestamp?.timeago}',
+                                          style:
+                                              Theme.of(
+                                                context,
+                                              ).textTheme.headlineMedium,
+                                        ),
+                                      ],
+                                    ),
+                                    if (viewModel.story.category != null &&
+                                        viewModel.story.category == 'vote') ...{
+                                      Column(
+                                        children: [
+                                          const SizedBox(height: 8.0),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(
+                                                'Vybe Virtual Try-On',
+                                                style: TextStyle(
+                                                  fontSize: 13.0,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              ),
+                                              Container(
+                                                padding:
+                                                    const EdgeInsets.symmetric(
+                                                      horizontal: 8.0,
+                                                      vertical: 2.0,
+                                                    ),
+                                                decoration: BoxDecoration(
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .secondary
+                                                      .withAlpha(16),
+                                                  borderRadius:
+                                                      BorderRadius.circular(16.0),
+                                                ),
+                                                child: Row(
+                                                  children: [
+                                                    Icon(
+                                                      Icons.leaderboard_outlined,
+                                                      size: 18,
+                                                    ),
+                                                    Text(
+                                                      ' ${viewModel.story.votes?.length ?? 0} / 5 Looks Today',
+                                                      style:
+                                                          Theme.of(
+                                                            context,
+                                                          ).textTheme.bodySmall,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    },
+                                  ],
+                                ),
+                              ),
+                            },
+                          }
                         ],
                       ),
                     ),
@@ -319,6 +420,49 @@ class StoryListCell extends StatelessWidget {
                   ),
                 ),
               ),
+              Align(
+                alignment: Alignment.bottomLeft,
+                child: Container(
+                  margin: EdgeInsets.only(
+                    left: 8.0,
+                    bottom: marginBottom != null ? marginBottom! + 156 : 156,
+                  ),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 4.0,
+                    vertical: 16.0,
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    spacing: 12.0,
+                    children: [
+                      if(canReaction) ...{
+                          StoryActionButton(
+                          src: AIImage(
+                            AIImages.icReactionVideo,
+                            color: (viewModel.isVideoReaction && viewModel.showFaceDialog) ? AIColors.pink : AIColors.white,
+                            width: kStoryAvatarSize * 0.5,
+                          ),
+                          label: 'V-React',
+                          onTap: () {
+                            viewModel.setVideoReaction();
+                          },
+                        ),
+                        StoryActionButton(
+                          src: AIImage(
+                            AIImages.icReactionImage,
+                            color: (viewModel.isVideoReaction && viewModel.showFaceDialog)  ? AIColors.white : AIColors.pink,
+                            width: kStoryAvatarSize * 0.5,
+                          ),
+                          label: 'I-Recat',
+                          onTap: () {
+                            viewModel.setImageReaction();
+                          },
+                        ),
+                      },
+                    ],
+                  ),
+                ),
+              ),
               if ((viewModel.story.medias ?? []).length > 1) ...{
                 Positioned(
                   left: 20.0,
@@ -363,6 +507,8 @@ class StoryFaceModalView extends ViewModelWidget<StoryProvider> {
             viewModel.story.id!,
             (viewModel.story.medias ?? [])[viewModel.pageIndex].link!,
             viewModel.face!,
+            viewModel.annotations,
+            false
           ),
           
       child: Container(
@@ -876,15 +1022,19 @@ class StoryListEmptyView extends StatelessWidget {
 class CommentFaceModalView extends ViewModelWidget<StoryProvider> {
   final double? marginBottom;
   const CommentFaceModalView({super.key, this.marginBottom});
-
+  
   @override
   Widget build(BuildContext context, viewModel) {
+    logger.d("CommentFaceModalView");
     return InkWell(
+      
       onTap: () => Routers.goToFaceDetailPage(
         context,
         viewModel.story.id!,
         (viewModel.story.medias ?? [])[viewModel.pageIndex].link!,
         viewModel.face!,
+        viewModel.annotations,
+        true
       ),
       child: Container(
         margin: EdgeInsets.only(bottom: marginBottom ?? 0),
@@ -1000,7 +1150,7 @@ class CommentFaceVideoModalView extends ViewModelWidget<StoryProvider> {
               children: [
 
                 if (viewModel.videoPath != null)
-                _VideoPreviewWidget(videoPath: viewModel.videoPath!, onRecapture: viewModel.captureReactionVideo, refreshCount: viewModel.refreshCount),
+                _VideoPreviewWidget(videoPath: viewModel.videoPath!, onRecapture: viewModel.captureReactionVideo, onEditVideo: viewModel.onEditReactionVideoPressed, refreshCount: viewModel.refreshCount),
 
                 ElevatedButton(
                   onPressed: () => viewModel.onPostReactionVideoPressed(),
@@ -1046,11 +1196,13 @@ class CommentFaceVideoModalView extends ViewModelWidget<StoryProvider> {
 class _VideoPreviewWidget extends StatefulWidget {
   final String videoPath;
   final VoidCallback onRecapture; // Callback to trigger re-capture
+  final VoidCallback onEditVideo;
   final int refreshCount;
 
   const _VideoPreviewWidget({
     required this.videoPath,
     required this.onRecapture,
+    required this.onEditVideo,
     required this.refreshCount,
   });
 
@@ -1095,37 +1247,48 @@ class _VideoPreviewWidgetState extends State<_VideoPreviewWidget> {
     return SizedBox(
       width: 64.0,
       height: 64.0,
+      
       child: Stack(
         clipBehavior: Clip.none,
         children: [
+          
           ClipOval(
-            child: _initialized
-                ? VideoPlayer(_controller)
-                : const Center(
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  ),
-          ),
-          ...[if(widget.refreshCount < 3)
-                Positioned(
-                  top: -6,
-                  right: -6,
-                  child: InkWell(
-                    onTap: _handleRecapture,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.black.withOpacity(0.6),
-                        shape: BoxShape.circle,
-                      ),
-                      padding: const EdgeInsets.all(4),
-                      child: const Icon(
-                        Icons.refresh,
-                        size: 16,
-                        color: Colors.white,
-                      ),
-                    ),
-                  ),
+            child: Material(
+              color: Colors.transparent,                     // needed for ripple
+              child: InkWell(
+                customBorder: const CircleBorder(),          // ripple clipped to circle
+                onTap: widget.onEditVideo,
+                child: SizedBox.expand(                      // fill 64x64
+                  child: _initialized
+                      ? VideoPlayer(_controller)
+                      : const Center(
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        ),
                 ),
-          ]
+              ),
+            ),
+          ),
+          // ...[if(widget.refreshCount < 3)
+          //       Positioned(
+          //         top: -6,
+          //         right: -6,
+          //         child: InkWell(
+          //           onTap: _handleRecapture,
+          //           child: Container(
+          //             decoration: BoxDecoration(
+          //               color: Colors.black.withOpacity(0.6),
+          //               shape: BoxShape.circle,
+          //             ),
+          //             padding: const EdgeInsets.all(4),
+          //             child: const Icon(
+          //               Icons.refresh,
+          //               size: 16,
+          //               color: Colors.white,
+          //             ),
+          //           ),
+          //         ),
+          //       ),
+          // ]
         ],
       ),
     );

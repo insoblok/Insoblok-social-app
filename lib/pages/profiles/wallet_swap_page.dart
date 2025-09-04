@@ -109,7 +109,7 @@ class WalletSwapPage extends StatelessWidget {
                     children: [
                       for (var i = 0; i < kWalletTokenList.length; i++) ...{
                         TagView(
-                          tag: kWalletTokenList[i]['name'] ?? 'tag',
+                          tag: kWalletTokenList[i]['name'].toString() ?? 'tag',
                           height: 34,
                           isSelected:
                               viewModel.selectedFromToken == i ? true : false,
@@ -160,7 +160,7 @@ class WalletSwapPage extends StatelessWidget {
                     children: [
                       for (var i = 0; i < kWalletTokenList.length; i++) ...{
                         TagView(
-                          tag: kWalletTokenList[i]['name'] ?? 'tag',
+                          tag: kWalletTokenList[i]['name'].toString() ?? 'tag',
                           height: 34,
                           isSelected:
                               viewModel.selectedToToken == i ? true : false,

@@ -8,8 +8,6 @@ import 'package:flutter_quill/flutter_quill.dart';
 import 'package:provider/provider.dart';
 import 'package:stacked/stacked.dart';
 
-
-
 import 'package:insoblok/locator.dart';
 import 'package:insoblok/pages/pages.dart';
 import 'package:insoblok/providers/providers.dart';
@@ -24,7 +22,6 @@ class MyHttpOverrides extends HttpOverrides {
           (X509Certificate cert, String host, int port) => true;
   }
 }
-
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();

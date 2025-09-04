@@ -7,3 +7,4 @@ export 'stories/stories.dart';
 export 'bases/bases.dart';
 export 'news/news.dart';
 export 'vtos/vtos.dart';
+export 'stories/lookbook_detail_page.dart';

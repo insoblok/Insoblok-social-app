@@ -16,6 +16,10 @@ class UploadMediaWidget extends ViewModelWidget<AddStoryProvider> {
     var medias = viewModel.mediaProvider.medias;
 
     if (medias.isEmpty) return Container();
+
+    logger.d("uploaded medias");
+    logger.d(medias[0].file!.path);
+
     return GridView.builder(
       shrinkWrap: true,
       controller: viewModel.scrollController,

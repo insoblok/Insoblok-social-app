@@ -494,12 +494,12 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
                                   style:
                                       Theme.of(context).textTheme.displayLarge,
                                 ),
-                                Text(
-                                  viewModel.user!.nickId!.isEmpty
-                                      ? '@${viewModel.user?.fullName}'
-                                      : '@${viewModel.user?.nickId}',
-                                  style: Theme.of(context).textTheme.labelLarge,
-                                ),
+                                // Text(
+                                //   (viewModel.user?.nickId?.isEmpty ?? true)
+                                //       ? '@${viewModel.user?.fullName ?? 'unknown'}'
+                                //       : '@${viewModel.user?.nickId}',
+                                //   style: Theme.of(context).textTheme.labelLarge,
+                                // ),
                               ],
                             ),
                             InkWell(

@@ -1,8 +1,10 @@
 // deep_ar_plus_page.dart
+import 'dart:async';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:deepar_flutter_plus/deepar_flutter_plus.dart';
-
+import 'package:insoblok/services/image_service.dart';
+import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/services/deep_ar_plus_service.dart';
 import 'deep_ar_plus_surface.dart';
 
@@ -37,13 +39,30 @@ class _DeepARPlusPageState extends State<DeepARPlusPage> {
   File? lastPhoto;
   File? lastVideo;
 
+  // ===== Timer bits =====
+  final int _maxSeconds = 10;   // <- set 0 for “no auto-stop”
+  int _remaining = 0;
+  bool _isFiltering = false;
+  bool _isVideoLoading = false;
+
+  Timer? _ticker;
+  bool get _isRecording => deepAr.isRecording;
+
+  // ===== Zoom bits =====
+  static const double _minZoom = 1.0;
+  static const double _maxZoom = 4.0;
+  double _zoom = 1.0;                    // current zoom factor
+  double _zoomStart = 1.0;               // base for pinch gesture
+  bool _showZoomBadge = false;           // fades out after interaction
+  Timer? _zoomBadgeTimer;
+
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await deepAr.initialize(
-        androidKey: 'e332c29bc405ace300d31b356060ee1b3604fe96e7ef3cb47d3f16d7fedd9e626f00f88acb70aedd',
-        iosKey: '5dd0e1f500e57133ea528acbc4fba42d38c80229590d1fdab9dfcb07145c0f9ccb9bb2bcc5bc5262',
+        androidKey: DEEPAR_ANDROID_KEY,
+        iosKey: DEEPAR_IOS_KEY,
         resolution: Resolution.medium,
         initialEffect: 'assets/effects/filters/fire_effect/Fire_Effect.deepar',
       );
@@ -53,6 +72,8 @@ class _DeepARPlusPageState extends State<DeepARPlusPage> {
 
   @override
   void dispose() {
+    _ticker?.cancel();
+    _zoomBadgeTimer?.cancel();
     deepAr.disposeEngine();
     super.dispose();
   }
@@ -64,11 +85,243 @@ class _DeepARPlusPageState extends State<DeepARPlusPage> {
     });
   }
 
+  // ===== Hardware zoom if available on controller =====
+  Future<void> _applyHardwareZoom(double z) async {
+    try {
+      // If your plugin exposes setZoom(double) or setZoomFactor(double), call it here.
+      await (deepAr.controller as dynamic).setZoom(z);
+    } catch (_) {
+      // No hardware zoom available; preview zoom still works
+    }
+  }
+
+  void _setZoom(double next) {
+    final clamped = next.clamp(_minZoom, _maxZoom);
+    if (clamped == _zoom) return;
+    setState(() {
+      _zoom = clamped;
+      _showZoomBadge = true;
+    });
+    _applyHardwareZoom(_zoom);
+
+    _zoomBadgeTimer?.cancel();
+    _zoomBadgeTimer = Timer(const Duration(milliseconds: 800), () {
+      if (!mounted) return;
+      setState(() => _showZoomBadge = false);
+    });
+  }
+
+  // ===== Start/Stop with timer =====
+  Future<void> _startRecordingWithTimer() async {
+    if (!deepAr.isReady || _isRecording) return;
+
+    await deepAr.startRecording();
+    if (!mounted) return;
+
+    if (_maxSeconds <= 0) {
+      // No auto-stop; show REC
+      setState(() {
+        _isFiltering = true;
+        _remaining = 0;
+      });
+      return;
+    }
+
+    setState(() {
+      _isFiltering = true;
+      _remaining = _maxSeconds;
+    });
+
+    _ticker?.cancel();
+    _ticker = Timer.periodic(const Duration(seconds: 1), (t) async {
+      if (!mounted) {
+        t.cancel();
+        return;
+      }
+      if (_remaining <= 1) {
+        setState(() => _isFiltering = false);
+        await _stopRecordingAndClearTimer(autoReturn: true);
+      } else {
+        setState(() => _remaining -= 1);
+      }
+    });
+  }
+
+  Future<void> _stopRecordingAndClearTimer({bool autoReturn = false}) async {
+    _ticker?.cancel();
+    _ticker = null;
+
+    setState(() {
+      _isVideoLoading = true;  // show loader overlay
+      _isFiltering = false;    // hide timer
+    });
+
+    File? result;
+    try {
+      result = await deepAr.stopRecording();
+    } finally {
+      if (!mounted) return;
+      setState(() {
+        _remaining = 0;
+        _isVideoLoading = false;
+      });
+    }
+
+    if (!mounted) return;
+
+    if (result != null) {
+      setState(() => lastVideo = result);
+      if (autoReturn) {
+        Navigator.pop(context, {'video': result.path});
+      }
+    }
+  }
+
+  // ===== Timer overlay =====
+  Widget _recordTimerOverlay() {
+    if (!_isFiltering) return const SizedBox.shrink();
+
+    final progress = _maxSeconds == 0
+        ? null
+        : (1 - (_remaining / _maxSeconds).clamp(0.0, 1.0));
+
+    return SafeArea(
+      child: Align(
+        alignment: Alignment.topCenter,
+        child: Padding(
+          padding: const EdgeInsets.only(top: 12),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                decoration: BoxDecoration(
+                  color: Colors.black.withOpacity(0.65),
+                  borderRadius: BorderRadius.circular(24),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Icon(Icons.fiber_manual_record, size: 16, color: Colors.redAccent),
+                    const SizedBox(width: 8),
+                    Text(
+                      _maxSeconds == 0 ? 'REC' : '$_remaining s',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 16,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 6),
+              if (progress != null)
+                SizedBox(
+                  width: 160,
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(2),
+                    child: LinearProgressIndicator(
+                      value: progress,
+                      minHeight: 4,
+                      backgroundColor: Colors.white.withOpacity(0.25),
+                    ),
+                  ),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ===== Loader overlay =====
+  Widget _loadingOverlay() {
+    if (!_isVideoLoading) return const SizedBox.shrink();
+    return Positioned.fill(
+      child: IgnorePointer(
+        ignoring: false,
+        child: Container(
+          color: Colors.black.withOpacity(0.45),
+          child: const Center(
+            child: SizedBox(
+              width: 56,
+              height: 56,
+              child: CircularProgressIndicator(strokeWidth: 4),
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ===== Zoom overlay (vertical slider + badge) =====
+  Widget _zoomOverlay() {
+    if (_isVideoLoading) return const SizedBox.shrink();
+
+    return SafeArea(
+      child: Align(
+        alignment: Alignment.centerRight,
+        child: Padding(
+          padding: const EdgeInsets.only(right: 8, top: 60, bottom: 60),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              AnimatedOpacity(
+                opacity: _showZoomBadge ? 1 : 0,
+                duration: const Duration(milliseconds: 150),
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  margin: const EdgeInsets.only(bottom: 8),
+                  decoration: BoxDecoration(
+                    color: Colors.black54,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    '${_zoom.toStringAsFixed(1)}x',
+                    style: const TextStyle(color: Colors.white, fontSize: 12),
+                  ),
+                ),
+              ),
+              RotatedBox(
+                quarterTurns: 3,
+                child: Slider(
+                  value: _zoom,
+                  min: _minZoom,
+                  max: _maxZoom,
+                  label: '${_zoom.toStringAsFixed(1)}x',
+                  onChanged: (v) => _setZoom(v),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // ===== Pinch-to-zoom wrapper =====
+  Widget _pinchZoomWrapper({required Widget child}) {
+    return GestureDetector(
+      onScaleStart: (d) {
+        _zoomStart = _zoom;
+      },
+      onScaleUpdate: (d) {
+        if (d.scale != 1.0) {
+          _setZoom(_zoomStart * d.scale);
+        }
+      },
+      child: child,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    final canCapture = deepAr.isReady;
+
     return Scaffold(
       appBar: AppBar(
-        title: const Text('DeepAR Camera'),
+        title: const Text('DeepAR Filter'),
         actions: [
           TextButton(
             onPressed: _finishAndReturn,
@@ -78,85 +331,120 @@ class _DeepARPlusPageState extends State<DeepARPlusPage> {
       ),
       body: Stack(
         children: [
-          // 1) AR preview
+          // 1) AR preview with pinch-to-zoom
           Positioned.fill(
-            child: DeepArPlusSurface(
-              service: deepAr,
-              scale: deepAr.aspectRatio * 1.3,
+            child: _pinchZoomWrapper(
+              child: DeepArPlusSurface(
+                service: deepAr,
+                // Keep your base scale (1.3) and multiply by _zoom for preview zoom
+                scale: deepAr.aspectRatio * 1.3 * _zoom,
+              ),
             ),
           ),
 
-          // 2) Effects list
-          ListView.builder(
-            padding: const EdgeInsets.only(top: 30, left: 4, right: 4, bottom: 4),
-            itemCount: kDeeparEffectData.length,
-            itemBuilder: (context, i) {
-              final item = kDeeparEffectData[i];
-              final title = (item['title'] ?? '').toString();
-              final path  = (item['assets'] ?? '').toString();
-
-              return Padding(
-                padding: const EdgeInsets.only(bottom: 4),
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: FilledButton(
-                    onPressed: (!deepAr.isReady || path.isEmpty)
-                        ? null
-                        : () async => await deepAr.switchEffect(path),
-                    child: Text(title.isEmpty ? 'Effect ${i + 1}' : title),
-                  ),
+          // 2) Effects list (vertical list on the right)
+          // Put this inside your Stack (replacing the vertical ListView you had)
+          Positioned(
+            top: 8,
+            left: 0,
+            right: 0,
+            child: SafeArea(
+              child: Container(
+                margin: const EdgeInsets.symmetric(horizontal: 8),
+                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.6),
+                  borderRadius: BorderRadius.circular(12),
                 ),
-              );
-            },
+                height: 48, // bar height
+                child: ListView.separated(
+                  scrollDirection: Axis.horizontal,
+                  physics: const BouncingScrollPhysics(),
+                  padding: const EdgeInsets.symmetric(horizontal: 6),
+                  itemCount: kDeeparEffectData.length,
+                  separatorBuilder: (_, __) => const SizedBox(width: 8),
+                  itemBuilder: (context, i) {
+                    final item  = kDeeparEffectData[i];
+                    final title = (item['title'] ?? '').toString();
+                    final path  = (item['assets'] ?? '').toString();
+
+                    return FilledButton(
+                      style: FilledButton.styleFrom(
+                        backgroundColor: Colors.pink,   // item color (button background)
+                        foregroundColor: Colors.white, 
+                        minimumSize: const Size(90, 36), // button size in the bar
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                      ),
+                      onPressed: (!canCapture || path.isEmpty)
+                          ? null
+                          : () async => await deepAr.switchEffect(path),
+                      child: Text(title.isEmpty ? 'Effect ${i + 1}' : title),
+                    );
+                  },
+                ),
+              ),
+            ),
           ),
 
-          // 3) Capture controls
+
+          // 3) Timer overlay (top)
+          _recordTimerOverlay(),
+
+          // 4) Zoom overlay (right)
+          _zoomOverlay(),
+
+          // 5) Capture controls
           SafeArea(
             child: Align(
               alignment: Alignment.bottomCenter,
               child: Padding(
                 padding: const EdgeInsets.all(16),
                 child: Wrap(
-                  spacing: 12, runSpacing: 12, alignment: WrapAlignment.center,
+                  spacing: 12,
+                  runSpacing: 12,
+                  alignment: WrapAlignment.center,
                   children: [
                     FilledButton(
                       style: FilledButton.styleFrom(
                         backgroundColor: Colors.green,
                         foregroundColor: Colors.white,
                       ),
-                      onPressed: () async {
-                        final f = await deepAr.takePhoto();
-                        if (f == null) return;
-                        setState(() => lastPhoto = f);
-
-                        // If you prefer to return immediately after snapping:
-                        Navigator.pop(context, {'photo': f.path});
-                      },
+                      onPressed: !canCapture || _isVideoLoading
+                          ? null
+                          : () async {
+                              final f = await deepAr.takePhoto();
+                              if (f == null) return;
+                              setState(() => lastPhoto = f);
+                              Navigator.pop(context, {'photo': f.path});
+                            },
                       child: const Text('Snap Photo'),
                     ),
                     FilledButton.tonal(
                       style: FilledButton.styleFrom(
-                        backgroundColor: deepAr.isRecording ? Colors.red : Colors.green,
+                        backgroundColor: _isRecording ? Colors.red : Colors.green,
                         foregroundColor: Colors.white,
                       ),
-                      onPressed: () async {
-                        final result = await deepAr.toggleRecording();
-                        if (!mounted) return;
-                        setState(() {}); // refresh label/color
-                        if (result != null) {
-                          setState(() => lastVideo = result);
-
-                          // If you prefer to return immediately after stopping:
-                          Navigator.pop(context, {'video': result.path});
-                        }
-                      },
-                      child: Text(deepAr.isRecording ? 'Stop Rec' : 'Start Rec'),
+                      onPressed: !canCapture || _isVideoLoading
+                          ? null
+                          : () async {
+                              if (_isRecording) {
+                                await _stopRecordingAndClearTimer(autoReturn: true);
+                              } else {
+                                await _startRecordingWithTimer();
+                              }
+                              if (!mounted) return;
+                              setState(() {}); // refresh label/color
+                            },
+                      child: Text(_isRecording ? 'Stop Rec' : 'Start Rec'),
                     ),
                   ],
                 ),
               ),
             ),
           ),
+
+          // 6) Loader overlay
+          _loadingOverlay(),
         ],
       ),
 
@@ -169,9 +457,21 @@ class _DeepARPlusPageState extends State<DeepARPlusPage> {
               child: Row(
                 children: [
                   if (lastPhoto != null)
-                    Expanded(child: Text('Photo: ${lastPhoto!.path}', maxLines: 1, overflow: TextOverflow.ellipsis)),
+                    Expanded(
+                      child: Text(
+                        'Photo: ${lastPhoto!.path}',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
                   if (lastVideo != null)
-                    Expanded(child: Text('Video: ${lastVideo!.path}', maxLines: 1, overflow: TextOverflow.ellipsis)),
+                    Expanded(
+                      child: Text(
+                        'Video: ${lastVideo!.path}',
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
                 ],
               ),
             ),

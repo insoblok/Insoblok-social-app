@@ -326,6 +326,8 @@ class AccountProvider extends InSoBlokViewModel {
       logger.d("fetchGalleries");
       logger.d(gs);
 
+      logger.d(accountUser!.id!);
+
       _galleries.addAll(gs);
       notifyListeners();
     } catch (e) {

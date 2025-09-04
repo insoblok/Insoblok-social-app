@@ -33,6 +33,7 @@ dependencies:
   gif_view: any
   image_cropper: any
   flutter_expandable_fab: any
+  vimeo_video_player: any
   logger: any
   freezed_annotation: any
   json_annotation: any
@@ -83,7 +84,15 @@ dependencies:
   cloudinary_flutter: any
   cloudinary_api: ^1.1.1
   cloudinary_url_gen: ^1.8.0
-  
+  pro_image_editor: ^11.3.0
+  flutter_secure_storage: ^9.2.2
+  cryptography: ^2.7.0
+  bip39: ^1.0.6
+  bip32: ^2.0.0
+  hex: ^0.2.0
+  web3dart: ^2.7.2
+  solana: ^0.31.2+1
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -106,7 +115,23 @@ flutter:
     - assets/icons/
     - assets/fonts/
     - assets/data/
+    # - assets/effects/filters/fire_effect/Fire_Effect.deepar
+    # - assets/effects/filters/vendetta_mask/Vendetta_Mask.deepar
+    # - assets/effects/filters/flower_face/flower_face.deepar
 
+    # - assets/effects/filters/devil_neon_horns/Neon_Devil_Horns.deepar
+    # - assets/effects/filters/elephant_trunk/Elephant_Trunk.deepar
+    # - assets/effects/filters/emotion_meter/Emotion_Meter.deepar
+    # - assets/effects/filters/emotions_exaggerator/Emotions_Exaggerator.deepar
+    # - assets/effects/filters/heart/8bitHearts.deepar
+    # - assets/effects/filters/hope/Hope.deepar
+    # - assets/effects/filters/humanoid/Humanoid.deepar
+    # - assets/effects/filters/ping_pong/Ping_Pong.deepar
+    # - assets/effects/filters/simple/MakeupLook.deepar
+    # - assets/effects/filters/slipt/Split_View_Look.deepar
+    # - assets/effects/filters/snail/Snail.deepar
+    # - assets/effects/filters/stallone/Stallone.deepar
+    # - assets/effects/filters/viking_helmet/viking_helmet.deepar
 
   fonts:
     - family: Geist

@@ -7,6 +7,7 @@ import 'package:insoblok/pages/bases/reaction_video_detail_page.dart';
 import 'package:insoblok/pages/pages.dart';
 import 'package:insoblok/pages/profiles/tastescore_page.dart';
 import 'package:insoblok/pages/profiles/wallet_swap_page.dart';
+import 'package:insoblok/pages/profiles/wallet_send_page.dart';
 import 'package:insoblok/providers/providers.dart';
 
 const kRouterBase = '/';
@@ -29,6 +30,7 @@ const kRouterAccountWallet = '/account-Wallet';
 const kRouterAccountReward = '/account-reward';
 const kRouterRewardDetail = '/reward-detail';
 const kRouterWalletSwap = '/wallet-swap';
+const kRouterWalletSend = '/wallet-send';
 
 const kRouterCreateRoom = '/create-room';
 const kRouterMessage = '/message';
@@ -45,6 +47,7 @@ const kRouterVTOAddProduct = '/vto-add-product';
 
 const kRouterAddStory = '/add-story';
 const kRouterStoryDetail = '/story-detail';
+const kRouterLookbookDetail = '/lookbook-detail';
 const kRouterNewsDetail = '/news-detail';
 const kRouterPostDetail = '/post-detail';
 const kRouterReaction = '/reaction';
@@ -153,6 +156,9 @@ class Navigation {
     // * WalletSwapPage
     initRoute(kRouterWalletSwap, (props) => WalletSwapPage());
 
+    // * WalletSendPage
+    initRoute(kRouterWalletSend, (props) => WalletSendPage());
+    
     // * CreateRoomPage
     initRoute(kRouterCreateRoom, (props) => CreateRoomPage());
 
@@ -199,6 +205,11 @@ class Navigation {
     initRoute<StoryModel>(
       kRouterStoryDetail,
       (props) => StoryDetailPage(story: props!),
+    );
+
+    initRoute<StoryModel>(
+      kRouterLookbookDetail,
+      (props) => LookbookDetailPage(story: props!),
     );
 
     initRoute<StoryModel>(
@@ -267,13 +278,15 @@ class Navigation {
         if (props == null) {
           throw ArgumentError('Route parameters are null');
         }
-        if (!props.containsKey('storyID') || !props.containsKey('url') || !props.containsKey('face')) {
+        if (!props.containsKey('storyID') || !props.containsKey('url') || !props.containsKey('face') || !props.containsKey('annotations') || !props.containsKey('editable')) {
           throw ArgumentError('Missing required route parameters');
         }
         return FaceDetailPage(
           storyID: props['storyID'],
           url: props['url'],
           face: props['face'],
+          annotations: props['annotations'],
+          editable: props['editable'],
         );
       },
     );
@@ -291,6 +304,7 @@ class Navigation {
           storyID: props['storyID'],
           url: props['url'],
           videoPath: props['videoPath'],
+          editable: props['editable'],
         );
       },
     );

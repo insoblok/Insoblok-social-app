@@ -105,7 +105,7 @@ class MediaDetailPage extends StatelessWidget {
                 alignment: Alignment.bottomCenter,
                 child: RemixActionView(),
               ),
-              if (viewModel.isRemixing)
+              if (viewModel.isRemixing || viewModel.isPostingLookbook)
                 Align(
                   alignment: Alignment.center,
                   child: Center(child: Loader(size: 40.0)),

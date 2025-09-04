@@ -119,4 +119,6 @@ class DeepArPlusService with ChangeNotifier {
       iosViewTimeout: iosViewTimeout,
     );
   }
+
+  
 }

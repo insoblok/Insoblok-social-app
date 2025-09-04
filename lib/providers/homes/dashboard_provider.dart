@@ -117,6 +117,9 @@ class DashboardProvider extends InSoBlokViewModel {
         // } else {
         storydatas = await storyService.getStories();
 
+        final auth = AuthHelper.user?.id;
+        logger.d("auth : $auth");
+
         for (final s in storydatas) {
           logger.d('---id=${s.id}');
         }

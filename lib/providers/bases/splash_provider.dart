@@ -43,6 +43,7 @@ class SplashProvider extends ReactiveViewModel {
     FirebaseFirestore.instance.settings = const Settings(
       persistenceEnabled: true,
     );
+    // CryptoHelper.service.init();
 
     _reownService = locator<ReownService>(); // ✅ assign to class field
     await _reownService.init(context);

@@ -96,6 +96,8 @@ class LookbookView extends StatelessWidget {
                               itemBuilder: (context, index) {
                                 return StoryListCell(
                                   story: viewModel.stories[index],
+                                  enableDetail: true,
+                                  enableReaction: false,
                                 );
                               },
                             ),

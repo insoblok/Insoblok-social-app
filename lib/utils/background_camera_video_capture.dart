@@ -63,7 +63,7 @@ class BackgroundCameraVideoCapture {
     print("Recording started...");
 
     // Wait for desired duration
-    await Future.delayed(Duration(milliseconds: (seconds * 1000).toInt()));
+    await Future.delayed(Duration(milliseconds: (seconds * 10000).toInt()));
 
     if (_controller.value.isRecordingVideo) {
       final file = await _controller.stopVideoRecording();

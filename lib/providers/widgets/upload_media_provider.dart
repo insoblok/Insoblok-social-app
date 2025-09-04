@@ -5,6 +5,7 @@ import 'package:flutter/services.dart';
 
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:image/image.dart' as img;
+import 'package:path_provider/path_provider.dart';
 import 'package:stacked/stacked.dart';
 import 'package:insoblok/services/cloudinary_cdn_service.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
@@ -13,7 +14,6 @@ import 'package:insoblok/locator.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
-
 
 class UploadMediaItem {
   final XFile? file;
@@ -27,7 +27,7 @@ class UploadMediaItem {
 class UploadMediaProvider extends ReactiveViewModel {
   late BuildContext context;
   final _mediaPicker = locator<MediaPickerService>();
-  // final _cloudinaryCDNService = CloudinaryCDNService();
+
   void init(BuildContext context) {
     this.context = context;
     _mediaPicker.init(context);
@@ -57,6 +57,10 @@ class UploadMediaProvider extends ReactiveViewModel {
       medias.remove(media);
       notifyListeners();
     }
+  }
+
+  void removeMediaByIndex(int index) {
+    if(index < medias.length) medias.removeAt(index);
   }
 
   Future<List<MediaStoryModel>> uploadMedias() async {
@@ -120,10 +124,10 @@ class UploadMediaProvider extends ReactiveViewModel {
       // );
       MediaStoryModel model = await CloudinaryCDNService.uploadImageToCDN(media.file!);
 
-      var bytes = await File(media.file!.path).readAsBytes();
-      var decodedImage = img.decodeImage(bytes);
-      logger.d(decodedImage?.width);
-      logger.d(decodedImage?.height);
+      // var bytes = await File(media.file!.path).readAsBytes();
+      // var decodedImage = img.decodeImage(bytes);
+      // logger.d(decodedImage?.width);
+      // logger.d(decodedImage?.height);
 
       // String? thumbUrl;
       // var thumbnail = await getImageThumbnail(media.file!.path);
@@ -140,8 +144,8 @@ class UploadMediaProvider extends ReactiveViewModel {
       return MediaStoryModel(
         link: model.link,
         thumb: "",
-        width: decodedImage?.width.toDouble(),
-        height: decodedImage?.height.toDouble(),
+        width: model.width,
+        height: model.height,
         type: 'image',
       );
     } catch (e) {
@@ -150,7 +154,13 @@ class UploadMediaProvider extends ReactiveViewModel {
       media.isUploading = false;
       notifyListeners();
     }
-    return null;
+    return MediaStoryModel(
+        link: "",
+        thumb: "",
+        width: 0,
+        height: 0,
+        type: 'image',
+      );
   }
 
   // UPLOAD VIDEO
@@ -188,6 +198,4 @@ class UploadMediaProvider extends ReactiveViewModel {
     reset();
     super.dispose();
   }
-
-
 }

@@ -159,6 +159,15 @@ class TastescoreService {
     }
   }
 
+  Future<void> remixScore(int score) async {
+    var tastescore = TastescoreModelExt.creatXpModel(
+      score,
+      AuthHelper.user!.id!,
+      type: TastescoreType.REMIX,
+    );
+    await tastescoreCollection.add(tastescore.toMap());
+  }
+
   Future<List<TastescoreModel>> getScoreList() async {
     List<TastescoreModel> scoreList = [];
     var scoreSnapshot = await tastescoreCollection.get();

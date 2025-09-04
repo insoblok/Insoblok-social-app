@@ -154,7 +154,10 @@ class MediaPickerService {
                 ),
                 const SizedBox(height: 24.0),
                 InkWell(
-                  onTap: () => Navigator.of(context).pop(PickerAction.camera),
+                  onTap: () => {
+                    Navigator.of(context).pop(PickerAction.camera),
+                      // await _countdownAndRecord(context);
+                  },
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -233,4 +236,47 @@ class MediaPickerService {
     }
     return result;
   }
+
+  // Somewhere in your UI before launching the camera
+  // Future<void> _countdownAndRecord(BuildContext context) async {
+  //   const maxSeconds = 10;
+
+  //   // simple 3..2..1 pre-capture dialog
+  //   int seconds = 3;
+  //   final controller = Stream<int>.periodic(
+  //     const Duration(seconds: 1),
+  //     (tick) => 3 - tick,
+  //   ).take(3);
+
+  //   await showDialog(
+  //     context: context,
+  //     barrierDismissible: false,
+  //     builder: (_) => StreamBuilder<int>(
+  //       stream: controller,
+  //       initialData: seconds,
+  //       builder: (ctx, snap) {
+  //         final n = snap.data ?? seconds;
+  //         return AlertDialog(
+  //           backgroundColor: Colors.black87,
+  //           content: Text(
+  //             n > 0 ? '$n' : 'Go!',
+  //             textAlign: TextAlign.center,
+  //             style: const TextStyle(fontSize: 48, color: Colors.white),
+  //           ),
+  //         );
+  //       },
+  //     ),
+  //   );
+
+  //   // now launch the native camera with a capture limit
+  //   final path = await MethodChannelService.onPlatformCameraPicker(
+  //     maxSeconds: maxSeconds,
+  //   );
+
+  //   // handle the returned file path
+  //   if (path != null) {
+  //     // do something with the recorded file...
+  //   }
+  // }
+
 }

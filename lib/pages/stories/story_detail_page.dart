@@ -136,7 +136,7 @@ class StoryDetailPage extends StatelessWidget {
                             style: Theme.of(context).textTheme.bodyMedium,
                           ),
                           TextSpan(
-                            text: ' Likes ',
+                            text: ' Likes  ',
                             style: Theme.of(context).textTheme.labelMedium,
                           ),
                           TextSpan(
@@ -144,7 +144,7 @@ class StoryDetailPage extends StatelessWidget {
                             style: Theme.of(context).textTheme.bodyMedium,
                           ),
                           TextSpan(
-                            text: ' Followers ',
+                            text: ' Followers',
                             style: Theme.of(context).textTheme.labelMedium,
                           ),
                         ],
@@ -191,7 +191,9 @@ class StoryDetailPage extends StatelessWidget {
                           ),
                         ),
                         InkWell(
-                          onTap: viewModel.shareFeed,
+                          onTap: () {
+                            AIHelpers.shareStory(context, story: story);
+                          },
                           child: AIImage(
                             AIImages.icShare,
                             width: 18.0,

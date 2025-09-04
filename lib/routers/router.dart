@@ -5,6 +5,7 @@ import 'package:insoblok/models/models.dart';
 import 'package:insoblok/pages/pages.dart';
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/routers/routers.dart';
+import 'package:insoblok/services/vision_service.dart';
 
 class Routers {
   static dynamic _pushToRoute(BuildContext context, String route, props) {
@@ -51,6 +52,10 @@ class Routers {
 
   static dynamic goToStoryDetailPage(BuildContext context, StoryModel data) {
     return _pushToRoute(context, kRouterStoryDetail, data);
+  }
+
+  static dynamic goToLookbookDetailPage(BuildContext context, StoryModel data) {
+    return _pushToRoute(context, kRouterLookbookDetail, data);
   }
   
   static dynamic goToAccountUpdatePage(BuildContext context) {
@@ -99,6 +104,10 @@ class Routers {
 
   static dynamic goToWalletSwapPage(BuildContext context) {
     return _pushToRoute(context, kRouterWalletSwap, null);
+  }
+
+  static dynamic goToWalletSendPage(BuildContext context) {
+    return _pushToRoute(context, kRouterWalletSend, null);
   }
 
   static dynamic goToCreateRoomPage(BuildContext context) {
@@ -199,19 +208,23 @@ class Routers {
     return _pushToRoute(context, kRouterMarketPlace, null);
   }
 
-  static dynamic goToFaceDetailPage(BuildContext context, String storyID, String url, File face) {
+  static dynamic goToFaceDetailPage(BuildContext context, String storyID, String url, File face, List<AIFaceAnnotation> annotations, bool editable) {
+
     return _pushToRoute(context, kRouterFaceDetail, {
       'storyID': storyID,
       'url': url,
       'face': face,
+      'annotations' : annotations,
+      'editable' : editable
     });
   }
 
-  static dynamic goToReactionVideoDetailPage(BuildContext context, String storyID, String url, String videoPath) {
+  static dynamic goToReactionVideoDetailPage(BuildContext context, String storyID, String url, String videoPath, bool editable) {
     return _pushToRoute(context, kRouterReactionVideoDetail, {
       'storyID': storyID,
       'url': url,
       'videoPath': videoPath,
+      'editable' : editable,
     });
   }
 

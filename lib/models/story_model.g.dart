@@ -33,6 +33,8 @@ _StoryModel _$StoryModelFromJson(Map<String, dynamic> json) => _StoryModel(
       (json['comments'] as List<dynamic>?)?.map((e) => e as String).toList(),
   allowUsers:
       (json['allow_users'] as List<dynamic>?)?.map((e) => e as String).toList(),
+  reactions:
+      (json['reactions'] as List<dynamic>?)?.map((e) => e as String).toList(),
   votes:
       (json['votes'] as List<dynamic>?)
           ?.map((e) => StoryVoteModel.fromJson(e as Map<String, dynamic>))
@@ -59,6 +61,7 @@ Map<String, dynamic> _$StoryModelToJson(_StoryModel instance) =>
       'connects': instance.connects,
       'comments': instance.comments,
       'allow_users': instance.allowUsers,
+      'reactions': instance.reactions,
       'votes': instance.votes,
       'medias': instance.medias,
     };
@@ -87,6 +90,7 @@ _MediaStoryModel _$MediaStoryModelFromJson(Map<String, dynamic> json) =>
       type: json['type'] as String?,
       width: (json['width'] as num?)?.toDouble(),
       height: (json['height'] as num?)?.toDouble(),
+      publicId: json['public_id'] as String?,
     );
 
 Map<String, dynamic> _$MediaStoryModelToJson(_MediaStoryModel instance) =>
@@ -96,6 +100,7 @@ Map<String, dynamic> _$MediaStoryModelToJson(_MediaStoryModel instance) =>
       'type': instance.type,
       'width': instance.width,
       'height': instance.height,
+      'public_id': instance.publicId,
     };
 
 _StoryCommentModel _$StoryCommentModelFromJson(Map<String, dynamic> json) =>

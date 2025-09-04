@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 import 'package:device_info_plus/device_info_plus.dart';
@@ -111,6 +112,12 @@ class AIHelpers {
     BuildContext context, {
     required StoryModel story,
   }) async {
+
+    if (story.userId != AuthHelper.user?.id) {
+      AIHelpers.showToast(msg: 'You can\'t share this feed.');
+      return;
+    }
+
     var result = await showModalBottomSheet<int>(
       context: context,
       builder: (context) {
@@ -165,8 +172,14 @@ class AIHelpers {
   }
 
   static Future<void> shareStoryToInSoBlok({required StoryModel story}) async {
+
+    final usersRef = FirebaseFirestore.instance.collection("user");
+      await usersRef.doc(AuthHelper.user?.id).update({
+        "status": "public",
+      });
+      
     AIHelpers.showToast(
-      msg: 'This feature was not added yet! Will be came soon. ',
+      msg: 'This story is shown to everyone of InsoBlok.',
     );
   }
 
@@ -313,4 +326,6 @@ class AIHelpers {
       );
     },
   );
+
+  
 }

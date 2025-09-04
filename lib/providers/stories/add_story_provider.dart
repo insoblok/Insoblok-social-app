@@ -26,6 +26,13 @@ class AddStoryProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  bool _isPostingStory = false;
+  bool get isPostingStory => _isPostingStory;
+  set isPostingStory(bool s) {
+    _isPostingStory = s;
+    notifyListeners();
+  }
+
   bool _isVoteImage = true;
   bool get isVoteImage => _isVoteImage;
   set isVoteImage(bool s) {
@@ -119,7 +126,10 @@ class AddStoryProvider extends InSoBlokViewModel {
   }
 
   Future<void> onClickUploadButton() async {
-    if (isBusy) return;
+    if (isBusy || isPostingStory) return;
+
+    _isPostingStory = true;
+
     clearErrors();
     List<String> allowUsers = [];
 
@@ -141,9 +151,26 @@ class AddStoryProvider extends InSoBlokViewModel {
       try {
         txtUploadButton = 'Uploading Media(s)...';
         var medias = await mediaProvider.uploadMedias();
+        var validMedias = medias.asMap().entries
+          .where((entry) {
+            final index = entry.key;
+            final media= entry.value;
+            bool result = media.link != "" || media.width! > 0 || media.height! > 0; 
+            if(!result) mediaProvider.removeMediaByIndex(index);
+            return result; 
+          })
+          .map((entry) => entry.value)
+          .toList();
 
         logger.d("medias : $medias");
+        if(validMedias.isEmpty) {
+          setError("Failed to upload medias.");
+          return;
+        }
+        else if(validMedias.length < medias.length) {
+          setError("Failed to upload some medias.");
 
+        }
         if (quillDescription == '' && medias.isEmpty) {
           throw ('Invalid story type');
         }
@@ -157,7 +184,7 @@ class AddStoryProvider extends InSoBlokViewModel {
           timestamp: DateTime.now(),
           status: isPrivate ? 'private' : 'public',
           allowUsers: allowUsers,
-        ).copyWith(medias: medias);
+        ).copyWith(medias: validMedias);
         logger.d("new story : $story");
         var result = await storyService.postStory(story: story);
         logger.d("result : $result");
@@ -165,12 +192,14 @@ class AddStoryProvider extends InSoBlokViewModel {
         setError(e);
         logger.e(e, stackTrace: s);
       } finally {
+        isPostingStory = false;
         notifyListeners();
       }
     }());
 
     if (hasError) {
       AIHelpers.showToast(msg: modelError.toString());
+      txtUploadButton = "Post Story";
     } else {
       AIHelpers.showToast(
         msg: 'Successfully your post! Your feed is in list now!',

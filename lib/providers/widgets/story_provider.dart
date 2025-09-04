@@ -36,6 +36,13 @@ class StoryProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  bool _isVideoReaction = false;
+  bool get isVideoReaction => _isVideoReaction;
+  set isVideoReaction(bool f) {
+    _isVideoReaction = f;
+    notifyListeners();
+  }
+
   String? _videoPath;
   String? get videoPath => _videoPath;
   set videoPath(String? f) {
@@ -71,6 +78,8 @@ class StoryProvider extends InSoBlokViewModel {
     this.context = context;
     story = model;
 
+    logger.d("current story id : ${story.id}");
+
     refreshCount = 0;
     _videoPath = null;
     
@@ -80,11 +89,9 @@ class StoryProvider extends InSoBlokViewModel {
     }else{
       _videoStoryPath = null;
     }
-
-    logger.d('✅ path replaced at init function : $story');
-    // captureReactionImage();
-    captureReactionVideo();
     
+    captureReactionImage();
+
     quillController = () {
       return QuillController.basic(
         config: QuillControllerConfig(
@@ -95,8 +102,11 @@ class StoryProvider extends InSoBlokViewModel {
 
     fetchUser();
   }
-
+  
   Future<void> captureReactionImage() async {
+    
+    if(isVideoReaction) return;
+    showFaceDialog = true;
     camera.onFrame = (String? path){
       print("Trying to detect user expressions");
       if(path!=null){
@@ -104,32 +114,48 @@ class StoryProvider extends InSoBlokViewModel {
       }
     };
     await camera.initialize();
+
+    quillController = () {
+      return QuillController.basic(
+        config: QuillControllerConfig(
+          clipboardConfig: QuillClipboardConfig(enableExternalRichPaste: true),
+        ),
+      );
+    }();
   }
 
   Future<void> captureReactionVideo() async {
 
-    logger.d('✅ path replaced at refreshCount $refreshCount');
-    // if(refreshCount > 2) return;
+    if(refreshCount > 2) return;
+    if(!isVideoReaction) return;
+
+    showFaceDialog = true;
     videoCapture.onVideoRecorded = (String path) {
       refreshCount++;
       scheduleMicrotask(() {
-        videoPath = path; 
+        videoPath = path;
         // videoPath = "/data/user/0/insoblok.social.app/cache/SnapVideo.MOV";
       });
-      
-      
-      logger.d('✅ path replaced at $videoPath');
-      // You can now send this file to your server or process it
     };
 
     await videoCapture.initialize();
     await videoCapture.recordShortVideo(seconds: 2.0);
     
+    quillController = () {
+      return QuillController.basic(
+        config: QuillControllerConfig(
+          clipboardConfig: QuillClipboardConfig(enableExternalRichPaste: true),
+        ),
+      );
+    }();
   }
   
   List<AIFaceAnnotation> annotations = [];
 
   Future<void> detectFace(String link) async {
+    
+    link = '/data/user/0/insoblok.social.app/cache/SnapImage.jpg';
+
     var faces = await GoogleVisionHelper.getFacesFromImage(link: link);
 
     var _annotations = await GoogleVisionHelper.analyzeLocalImage(link: link);
@@ -137,6 +163,7 @@ class StoryProvider extends InSoBlokViewModel {
     if (faces.isNotEmpty) {
       final directory = await getApplicationDocumentsDirectory();
       final filePath = '${directory.path}/face.png';
+      
       final file = File(filePath);
 
       try {
@@ -145,10 +172,9 @@ class StoryProvider extends InSoBlokViewModel {
           await file.delete();
         }
 
-        // Write new image bytes directly (no need to call create() before writing)
         final encoded = img.encodePng(faces[0]);
         _face = await file.writeAsBytes(encoded, flush: true);
-        await FileImage(_face!).evict(); // 👈 force clear from memory
+        await FileImage(_face!).evict(); 
 
         // Clear and add annotations
         annotations.clear();
@@ -157,11 +183,13 @@ class StoryProvider extends InSoBlokViewModel {
         logger.d('✅ face.png replaced at $filePath');
       } catch (e) {
         logger.e('❌ Failed to write new face.png: $e');
+        AIHelpers.showToast(msg: 'Failed to write new reaction image');
       }
 
       notifyListeners();
     } else {
       logger.e("No face detected!");
+      AIHelpers.showToast(msg: 'No face detected!');
     }
   }
 
@@ -179,6 +207,7 @@ class StoryProvider extends InSoBlokViewModel {
   Future<void> fetchStory() async {
     try {
       story = await storyService.getStory(story.id!);
+
     } catch (e, s) {
       logger.e(e);
       logger.e(s);
@@ -203,8 +232,20 @@ class StoryProvider extends InSoBlokViewModel {
 
   bool openCommentDialog = false;
 
+  Future<void> setVideoReaction() async {
+    _isVideoReaction = true;
+    captureReactionVideo();
+  }
+
+  Future<void> setImageReaction() async {
+    _isVideoReaction = false;
+    captureReactionImage();
+  }
+
   Future<void> showCommentDialog() async {
     if (openCommentDialog) return;
+
+    
     openCommentDialog = true;
     showFaceDialog = false;
     await showModalBottomSheet(
@@ -230,15 +271,19 @@ class StoryProvider extends InSoBlokViewModel {
 
   Future<void> onPostReactionPressed() async{
 
-    logger.d("story : $story");
-    Routers.goToFaceDetailPage(context, story.id!, (story.medias ?? [])[pageIndex].link!,
-        face!);
+    Routers.goToFaceDetailPage(context, story.id!, (story.medias ?? [])[pageIndex].link!, face!, annotations, false);
   }
 
   Future<void> onPostReactionVideoPressed() async{
 
     Routers.goToReactionVideoDetailPage(context, story.id!, (story.medias ?? [])[pageIndex].link!,
-        videoPath!);
+        videoPath!, false);
+  }
+
+  Future<void> onEditReactionVideoPressed() async{
+
+    Routers.goToReactionVideoDetailPage(context, story.id!, (story.medias ?? [])[pageIndex].link!,
+        videoPath!, false);
   }
 
   Future<void> onPostDeclinePressed() async{
@@ -267,6 +312,21 @@ class StoryProvider extends InSoBlokViewModel {
     await updateView();
     var data = await Routers.goToStoryDetailPage(context, story);
     if (data != null) {
+      story = data;
+      notifyListeners();
+    }
+  }
+
+  Future<void> goToLookbookDetailPage() async {
+    await updateView();
+
+    var data = await Routers.goToLookbookDetailPage(context, story);
+
+    logger.d("data!!!");
+    logger.d(data);
+
+    if (data != null) {
+      
       story = data;
       notifyListeners();
     }

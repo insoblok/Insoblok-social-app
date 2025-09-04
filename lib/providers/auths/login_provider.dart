@@ -7,7 +7,8 @@ import 'package:insoblok/models/models.dart';
 import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
-
+import 'package:insoblok/widgets/widgets.dart';
+import 'package:insoblok/pages/auths/import_wallet_dialog.dart';
 class LoginProvider extends InSoBlokViewModel {
   late BuildContext _context;
   BuildContext get context => _context;
@@ -16,21 +17,35 @@ class LoginProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  bool _walletExists = false;
+  bool get walletExists => _walletExists;
+
+  String? _storedAddress;
+  String? get storedAddress => _storedAddress;
+
   late Timer _timer;
   final _pageController = PageController(initialPage: 0);
   PageController get pageController => _pageController;
   int _currentPage = 0;
   int get currentPage => _currentPage;
 
-
+  final _existingPasswordController = TextEditingController();
+  TextEditingController get existingPasswordController => _existingPasswordController;
 
   late ReownService _reownService;
   ReownService get reownService => _reownService;
 
-  bool _isClickWallet = false;
-  bool get isClickWallet => _isClickWallet;
-  set isClickWallet(bool f) {
-    _isClickWallet = f;
+  bool _isClickCreateNewWallet = false;
+  bool get isClickCreateNewWallet => _isClickCreateNewWallet;
+  set isClickCreateNewWallet(bool f) {
+    _isClickCreateNewWallet = f;
+    notifyListeners();
+  }
+
+  bool _isClickImportWallet = false;
+  bool get isClickImportWallet => _isClickImportWallet;
+  set isClickImportWallet(bool f) {
+    _isClickImportWallet = f;
     notifyListeners();
   }
 
@@ -64,8 +79,9 @@ class LoginProvider extends InSoBlokViewModel {
         duration: Duration(milliseconds: 300),
         curve: Curves.easeIn,
       );
-    });
+    }); 
 
+    checkWalletStatus();
     notifyListeners();
   }
 
@@ -77,11 +93,125 @@ class LoginProvider extends InSoBlokViewModel {
     super.dispose();
   }
 
+  Future<void> handleClickCreateNewWallet(BuildContext buildContext) async {
+    if(isClickCreateNewWallet) return;
+    isClickCreateNewWallet = true;
+    final scaffoldContext = buildContext;
+    showDialog<String>(
+      context: buildContext,
+      builder: (bContext) {
+        final TextEditingController _passwordController = TextEditingController();
+        final TextEditingController _confirmController = TextEditingController();
+        bool _obscurePassword = true;
+        bool _obscureConfirm = true;
+
+    // Handler function
+        void _handleOkClick(BuildContext ctx, BuildContext buttonContext) async {
+          final password = _passwordController.text.trim();
+          final confirm = _confirmController.text.trim();
+
+          if (password.isEmpty || confirm.isEmpty) {
+            AIHelpers.showToast(msg: "Please enter both fields.");
+            return;
+          }
+          if (password != confirm) {
+            AIHelpers.showToast(msg: "Passwords don't match.");
+            return;
+          }
+
+          // ✅ Both match → call your wallet creation function
+          // createNewWallet(password);
+          
+          try {
+            final newWalletResult = await cryptoService.createAndStoreWallet(password);
+            var authUser = await AuthHelper.signIn(
+              newWalletResult.address,
+              isCheckScan,
+            );
+
+            logger.d("authUser : $authUser");
+            Navigator.pop(buttonContext, null);
+            
+            if (authUser?.walletAddress?.isEmpty ?? true) {
+              Routers.goToRegisterFirstPage(
+                context,
+                user: UserModel(walletAddress: newWalletResult.address),
+              );
+            } else {
+              AuthHelper.updateStatus('Online');
+              Routers.goToMainPage(context);
+            }
+            } catch (e) {
+              logger.e(e);
+            }
+          
+        }
+
+        void _handleClickCancel(BuildContext ctx) {
+          isClickCreateNewWallet = false;
+          Navigator.pop(ctx, null);
+        }
+
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return AlertDialog(
+              backgroundColor: AIColors.modalBackground,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(16),
+              ),
+              title: const Text(
+                "Set Password",
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              content: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  AIPasswordField(
+                    controller: _passwordController
+                  ),
+                  const SizedBox(height: 12),
+                  AIPasswordField(
+                    controller: _confirmController
+                  )
+                  ],
+              ),
+              actions: [
+                TextButton(
+                  onPressed: () => _handleClickCancel(context),
+                  child: const Text(
+                    "Cancel",
+                    style: TextStyle(color: Colors.grey),
+                  ),
+                ),
+                ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.pink[400],
+                    foregroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                  onPressed: () => _handleOkClick(scaffoldContext, context),
+                  child: const Text("OK"),
+                ),
+              ],
+            );
+          },
+        );
+      },
+    );
+
+
+  }
+
   Future<void> login() async {
-    if (isClickWallet) return;
+    if (isClickCreateNewWallet) return;
     clearErrors();
 
-    isClickWallet = true;
+    isClickCreateNewWallet = true;
     try {
       await reownService.connect();
       if (reownService.isConnected) {
@@ -110,7 +240,7 @@ class LoginProvider extends InSoBlokViewModel {
       setError(e);
       logger.e(e);
     } finally {
-      isClickWallet = false;
+      isClickCreateNewWallet = false;
     }
 
     if (hasError) {
@@ -139,6 +269,61 @@ class LoginProvider extends InSoBlokViewModel {
     } else {
       AuthHelper.updateStatus('Online');
       Routers.goToMainPage(context);
+    }
+  }
+
+  void showImportDialog(BuildContext ctx) {
+    
+    showDialog(
+      context: ctx,
+      builder: (context) => ImportWalletDialog(cryptoService: cryptoService),
+    ).then((result) {
+      if (result != null) {
+        // Import was successful!
+        AIHelpers.showToast(msg: 'Wallet imported successfully! Address: ${result.address}');
+        // Navigate to main app screen
+        Routers.goToRegisterFirstPage(
+          context,
+          user: UserModel(walletAddress: result.address),
+        );
+      }
+    });
+  }
+
+  Future<void> checkWalletStatus() async {
+    _walletExists = await cryptoService.doesWalletExist();
+    notifyListeners();
+  } 
+
+  Future<void> handleClickSignIn(BuildContext ctx) async {
+    try {
+      final password = existingPasswordController.text.trim();
+      UnlockedWallet unlockedWallet = await cryptoService.unlockFromStorage(password);
+      if (unlockedWallet.address == "") { 
+        AIHelpers.showToast(msg: "Incorrect Password.");
+        return;
+      }
+      debugPrint("This is unlocked address ${unlockedWallet.address}");
+      var authUser = await AuthHelper.signIn(
+        unlockedWallet.address,
+        isCheckScan,
+      );
+
+      logger.d("authUser : $authUser");
+      if (authUser?.walletAddress?.isEmpty ?? true) {
+        Routers.goToRegisterFirstPage(
+          context,
+          user: UserModel(walletAddress: unlockedWallet.address),
+        );
+      } else {
+        AuthHelper.updateStatus('Online');
+        Routers.goToMainPage(context);
+      }
+    } catch (e) {
+      logger.d(e);
+      AIHelpers.showToast(msg: "Failed to SignIn $e");
+    } finally {
+      isClickCreateNewWallet = false;
     }
   }
 }

@@ -55,4 +55,6 @@ class AIColors {
   static Color gold = Color(0xFFFFD700);
   static Color silver = Color(0xFFC0C0C0);
   static Color bronze = Color(0xFFCD7F32);
+
+  static Color modalBackground = Color(0xFF130037);
 }

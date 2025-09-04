@@ -13,61 +13,31 @@ class FaceDetailPage extends StatelessWidget {
   final String storyID;
   final String url;
   final File face;
+  final List<AIFaceAnnotation> annotations;
+  final bool editable;
 
-  const FaceDetailPage({super.key, required this.storyID, required this.url, required this.face});
+  const FaceDetailPage({super.key, required this.storyID, required this.url, required this.face, required this.annotations, required this.editable});
 
   @override
   Widget build(BuildContext context) {
+
     return ViewModelBuilder<FaceDetailProvider>.reactive(
       viewModelBuilder: () => FaceDetailProvider(),
-      onViewModelReady: (viewModel) => viewModel.init(context, storyID:storyID, url: url, face: face),
+      onViewModelReady: (viewModel) => viewModel.init(context, storyID:storyID, url: url, face: face, annotations:annotations, editable:editable),
       builder: (context, viewModel, _) {
         return Scaffold(
           body: Stack(
             children: [
-              AIImage(url, width: double.infinity, height: double.infinity),
+              AIImage(viewModel.url, width: double.infinity, height: double.infinity),
               BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 20.0, sigmaY: 20.0),
                 child:
-                    viewModel.face != null
+                    viewModel.hypeFace != null
                         ? Center(
                           child: Column(
                             mainAxisSize: MainAxisSize.min,
                             spacing: 24.0,
                             children: [
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 8.0,
-                                  horizontal: 8.0,
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
-                                  spacing: 24.0,
-                                  children: [
-                                    for (var content
-                                        in viewModel.annotations) ...{
-                                      Column(
-                                        spacing: 4.0,
-                                        children: [
-                                          AIImage(
-                                            content.icon,
-                                            width: 60.0,
-                                            height: 60.0,
-                                          ),
-                                          Text(
-                                            '${content.title}\n${content.desc}',
-                                            textAlign: TextAlign.center,
-                                            style:
-                                                Theme.of(
-                                                  context,
-                                                ).textTheme.bodyMedium,
-                                          ),
-                                        ],
-                                      ),
-                                    },
-                                  ],
-                                ),
-                              ),
                               Container(
                                 decoration: BoxDecoration(
                                   border: Border.all(
@@ -80,7 +50,7 @@ class FaceDetailPage extends StatelessWidget {
                                 child: ClipRRect(
                                   borderRadius: BorderRadius.circular(24.0),
                                   child: AIImage(
-                                    viewModel.face,
+                                    viewModel.hypeFace,
                                     fit: BoxFit.contain,
                                     width:
                                         MediaQuery.of(context).size.width * 0.7,
@@ -143,7 +113,10 @@ class FaceDetailPage extends StatelessWidget {
                             ],
                           ),
                         )
-                        : Container(),
+                        : Container(
+                            color: Colors.black26,
+                            child: const Center(child: Loader(size: 60)),
+                          ),
               ),
               CustomCircleBackButton(),
               if (viewModel.isBusy)

@@ -192,7 +192,6 @@ class FirebaseService {
     }
   }
 
-
   Future<String?> uploadVideoFile({
     required String videoUrl, // <-- renamed for clarity
     String? id,
@@ -286,7 +285,6 @@ class FirebaseService {
       return null;
     }
   }
-
 
   Future<void> createFolderInFirebaseStorage(String folderPath) async {
     try {

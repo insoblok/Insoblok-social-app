@@ -6,6 +6,7 @@ import 'package:chewie/chewie.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:video_player/video_player.dart';
+import 'package:web3dart/web3dart.dart';
 
 import 'package:insoblok/locator.dart';
 import 'package:insoblok/models/models.dart';
@@ -203,7 +204,6 @@ class MessageProvider extends InSoBlokViewModel {
     var image = await _mediaPickerService.onPickerSingleMedia(isImage: true);
     if (image != null) {
       selectedFile = image;
-      
       var isSend = await _showPreview(isImage: true);
       if (isSend) {
         final MediaStoryModel model = await CloudinaryCDNService.uploadImageToCDN(XFile(image.path));
@@ -258,20 +258,53 @@ class MessageProvider extends InSoBlokViewModel {
     }
   }
 
-  Future<void> onPaidEth() async {
-    if (isBusy) return;
+  Future<void> handleClickSend(Map<String, dynamic> map) async {
+    if(isBusy) {
+      return;
+    }
+    if(map["chain"] == null || map["amount"] == null) {
+      AIHelpers.showToast(msg: "Need to both enter token type and amount.");
+      return;
+    }
     clearErrors();
+    setBusy(true);
 
+    await runBusyFuture(() async {
+      try {
+        final network = kWalletTokenList.firstWhere((tk) => tk["chain"] == map["chain"]);
+        final newTransaction = await web3Service.sendEvmToken(chatUser.walletAddress!, map["amount"].toDouble(), network, cryptoService.privateKey!);
+        if (newTransaction.isEmpty) {
+          setError("Failed to send token due to server error.");
+        }
+      } catch (e) {
+        setError(e);
+      } finally {
+        setBusy(false);
+      }
+    }());
+
+    if (hasError) {
+      AIHelpers.showToast(msg: modelError.toString());
+    }
+    else {
+      AIHelpers.showToast(msg: "Sent token successfully.");
+    }
+
+  }
+
+  Future<void> onPaidEth() async {
     isAddPop = false;
-
     final reownService = locator<ReownService>();
-
-    var req = await reownService.onShowTransferModal(
+    web3Service.getBalances(cryptoService.privateKey!.address.hex);
+    await reownService.onShowTransferModal(
       context,
-      address: chatUser.walletAddress,
+      chatUser.walletAddress,
+      handleClickSend
     );
+    /*
     if (req != null) {
       try {
+        logger.d("This is payment req $req");
         await reownService.connect();
         if (reownService.isConnected) {
           if (chatUser.walletAddress == null) {
@@ -286,6 +319,8 @@ class MessageProvider extends InSoBlokViewModel {
         } else {
           throw ('Failed wallet connected!');
         }
+        final network = kWalletTokenList.firstWhere((tk) => tk["chain"] == req["chain"]);
+        web3Service.sendEvmToken(chatUser.walletAddress!, req["amount"], network, cryptoService.privateKey);
       } catch (e) {
         logger.e(e);
         setError(e);
@@ -301,13 +336,14 @@ class MessageProvider extends InSoBlokViewModel {
           coin: CoinModel(
             icon: AIImages.icEthereumGold,
             type: 'ETH',
-            amount: '${req.amount}',
-            unit: '${req.unit}',
+            amount: '${req["amount"]}',
+            unit: '${EtherUnit.ether}',
           ),
         );
         scrollController.jumpTo(scrollController.position.maxScrollExtent);
       }
     }
+    */
   }
 
   Future<bool> _showPreview({bool isImage = true}) async {

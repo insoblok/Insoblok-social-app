@@ -39,7 +39,8 @@ class AIImages {
   static String icXrp = 'assets/icons/ic_xrp.svg';
   static String icPostLookbook = 'assets/icons/ic_post_lookbook.png';
   static String icPostReaction = 'assets/icons/ic_post_reaction.png';
-
+  static String icLookBook = 'assets/icons/ic_lookbook.png';
+  
   static String icTopEffect = 'assets/icons/ic_effect_2.svg';
   static String icFavoriteFill = 'assets/icons/ic_favourite_fill.svg';
   static String icFavorite = 'assets/icons/ic_favourite.svg';
@@ -53,7 +54,7 @@ class AIImages {
   static String icGif = 'assets/icons/ic_gif.svg';
   static String icCamera = 'assets/icons/ic_camera.svg';
   static String icFire = 'assets/icons/ic_fire.png';
-
+  
   static String icMenuProfile = 'assets/icons/ic_user.svg';
   static String icMenuLists = 'assets/icons/ic_list.svg';
   static String icMenuTopics = 'assets/icons/ic_retweet.svg';
@@ -75,6 +76,8 @@ class AIImages {
   static String icRepost = 'assets/icons/ic_repost.png';
   static String icView = 'assets/icons/ic_view.png';
   static String icGallery = 'assets/icons/ic_photo_gallery.png';
+  static String icReactionVideo = 'assets/icons/ic_reaction_video.png';
+  static String icReactionImage = 'assets/icons/ic_reaction_image.png';
 
   static String imgLevel(int level) {
     return 'assets/images/img_level_0$level.png';
@@ -83,6 +86,8 @@ class AIImages {
   static String icCoinUsdt = 'assets/icons/ic_usdt.png';
   static String icCoinXrp = 'assets/icons/ic_xrp.png';
   static String icCoinInso = 'assets/icons/ic_inso.png';
+  static String icCoinEther = 'assets/icons/ic_eth.svg';
+  static String icUserXP = 'assets/icons/ic_xrp.svg';
 
   static String imgEmptyList = 'assets/images/gif_empty_list.gif';
 

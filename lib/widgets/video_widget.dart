@@ -88,9 +88,17 @@ class _VideoViewState extends State<VideoView> {
             _videoPlayerController.value.isInitialized
                 ? Chewie(controller: _chewieController)
                 : Center(
-                  child: Loader(
-                    size: widget.loaderSize ?? 60,
-                    color: Colors.white,
+                  // child: Loader(
+                  //   size: widget.loaderSize ?? 60,
+                  //   color: Colors.white,
+                  // ),
+                  child: Text(
+                    'Attached',
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodyMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.onSecondary,
+                    ),
                   ),
                 ),
             if (_videoPlayerController.value.isInitialized) ...{

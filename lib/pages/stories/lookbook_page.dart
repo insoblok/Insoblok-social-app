@@ -53,6 +53,8 @@ class LookbookPage extends StatelessWidget {
                                 'story-${viewModel.stories[index].id}',
                           ),
                           story: viewModel.stories[index],
+                          enableDetail: true,
+                          enableReaction: false,
                         );
                       },
                     ),
