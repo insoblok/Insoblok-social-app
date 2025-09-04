@@ -75,6 +75,8 @@ class MessageProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  final ValueNotifier<bool> isSendingNotifier = ValueNotifier<bool>(false);
+
   var textController = TextEditingController();
   var scrollController = ScrollController();
   late FocusNode focusNode;
@@ -259,32 +261,30 @@ class MessageProvider extends InSoBlokViewModel {
   }
 
   Future<void> handleClickSend(Map<String, dynamic> map) async {
-    if(isBusy) {
+    if(isSendingNotifier.value) {
       return;
     }
+
     if(map["chain"] == null || map["amount"] == null) {
       AIHelpers.showToast(msg: "Need to both enter token type and amount.");
       return;
     }
-    clearErrors();
-    setBusy(true);
-
-    await runBusyFuture(() async {
+    isSendingNotifier.value = true;
+    String error = "";
       try {
         final network = kWalletTokenList.firstWhere((tk) => tk["chain"] == map["chain"]);
         final newTransaction = await web3Service.sendEvmToken(chatUser.walletAddress!, map["amount"].toDouble(), network, cryptoService.privateKey!);
         if (newTransaction.isEmpty) {
-          setError("Failed to send token due to server error.");
+          error = "Failed to send token due to server error.";
         }
       } catch (e) {
-        setError(e);
+        error = e.toString();
       } finally {
-        setBusy(false);
+        isSendingNotifier.value = false;
       }
-    }());
 
-    if (hasError) {
-      AIHelpers.showToast(msg: modelError.toString());
+    if (error.isNotEmpty) {
+      AIHelpers.showToast(msg: error);
     }
     else {
       AIHelpers.showToast(msg: "Sent token successfully.");
@@ -299,7 +299,8 @@ class MessageProvider extends InSoBlokViewModel {
     await reownService.onShowTransferModal(
       context,
       chatUser.walletAddress,
-      handleClickSend
+      handleClickSend,
+      isSendingNotifier
     );
     /*
     if (req != null) {
