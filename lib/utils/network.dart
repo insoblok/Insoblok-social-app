@@ -23,6 +23,7 @@ class NetworkUtil {
           'category': clothingType,
         },
       );
+      logger.d("response.data");
       logger.d(response.data);
       return response.data['id'];
     } on DioException catch (e) {

@@ -83,6 +83,15 @@ class _DeepARPlusPageState extends State<DeepARPlusPage> {
     });
   }
 
+  void _onSwitchCameraPressed() async {
+    try {
+      await deepAr.switchCamera();
+    } catch (e) {
+      debugPrint('Switch camera failed: $e');
+    }
+  }
+
+
   Future<void> _applyHardwareZoom(double z) async {
     try {
       await (deepAr.controller as dynamic).setZoom(z);
@@ -312,12 +321,19 @@ class _DeepARPlusPageState extends State<DeepARPlusPage> {
       appBar: AppBar(
         title: const Text('DeepAR Filter'),
         actions: [
+          // Icon will appear beside "Done" (to its left in LTR locales).
+          IconButton(
+            tooltip: 'Switch camera',
+            onPressed: _onSwitchCameraPressed,
+            icon: const Icon(Icons.cameraswitch_outlined),
+          ),
           TextButton(
             onPressed: _finishAndReturn,
             child: const Text('Done'),
           ),
         ],
       ),
+
       body: Stack(
         children: [
           Positioned.fill(

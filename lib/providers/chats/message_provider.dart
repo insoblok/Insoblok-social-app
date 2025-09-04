@@ -200,7 +200,7 @@ class MessageProvider extends InSoBlokViewModel {
 
     isAddPop = false;
 
-    var image = await _mediaPickerService.onPickerSingleMedia(isImage: true);
+    var image = await _mediaPickerService.onPickerSingleMedia(context, isImage: true);
     if (image != null) {
       selectedFile = image;
       var isSend = await _showPreview(isImage: true);
@@ -223,7 +223,7 @@ class MessageProvider extends InSoBlokViewModel {
 
     isAddPop = false;
 
-    var video = await _mediaPickerService.onPickerSingleMedia(isImage: false);
+    var video = await _mediaPickerService.onPickerSingleMedia(context, isImage: false);
     if (video != null) {
       selectedFile = video;
       var isSend = await _showPreview(isImage: false);

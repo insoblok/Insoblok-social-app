@@ -99,7 +99,7 @@ class AddStoryProvider extends InSoBlokViewModel {
 
     await runBusyFuture(() async {
       try {
-        await mediaProvider.addMedias();
+        await mediaProvider.addMedias(context);
       } catch (e) {
         setError(e);
         logger.e(e);

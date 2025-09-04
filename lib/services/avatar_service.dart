@@ -1,9 +1,9 @@
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 
-import 'package:insoblok/locator.dart';
 import 'package:insoblok/models/story_model.dart';
 import 'package:insoblok/services/cloudinary_cdn_service.dart';
 import 'package:insoblok/services/services.dart';
@@ -12,7 +12,7 @@ import 'package:insoblok/utils/utils.dart';
 final kAvatarAspectRatio = [
   {
     'title': '1 : 1',
-    'ratio': 1,
+    'ratio': 1.0,
     'data': CropAspectRatioPreset.square,
     'size': '1:1',
   },
@@ -39,18 +39,27 @@ class CropAspectRatioPresetRatio23 implements CropAspectRatioPresetData {
 }
 
 class AvatarService {
-  Future<String?> pickCropImage(int index) async {
+  /// NOTE: now requires `BuildContext` so we can open the source sheet safely.
+  Future<String?> pickCropImage(BuildContext context, int index) async {
     try {
-      var mediaService = locator<MediaPickerService>();
-      var xFile = await mediaService.onPickerSingleMedia(isImage: true);
-      if (xFile == null) throw ('No selected image');
-      var cropResult = await ImageCropper().cropImage(
+      final mediaService = MediaPickerService();
+
+      // ⬇️ PASS CONTEXT HERE
+      final xFile = await mediaService.onPickerSingleMedia(
+        context,
+        isImage: true,
+      );
+      if (xFile == null) {
+        AIHelpers.showToast(msg: 'No selected image');
+        return null;
+      }
+
+      final cropResult = await ImageCropper().cropImage(
         sourcePath: xFile.path,
         uiSettings: [
           AndroidUiSettings(
             toolbarTitle: 'Cropper',
-            initAspectRatio:
-                kAvatarAspectRatio[index]['data'] as CropAspectRatioPresetData,
+            initAspectRatio: kAvatarAspectRatio[index]['data'] as CropAspectRatioPresetData,
             hideBottomControls: true,
             aspectRatioPresets: [
               CropAspectRatioPreset.square,
@@ -68,16 +77,16 @@ class AvatarService {
           ),
         ],
       );
+
       return cropResult?.path;
-    } catch (e) {
-      logger.e(e);
+    } catch (e, st) {
+      logger.e('pickCropImage error', error: e, stackTrace: st);
+      return null;
     }
-    return null;
   }
 
   Future<String?> uploadOriginAvatar(File file) async {
-    // return FirebaseHelper.uploadFile(file: file);
-    MediaStoryModel model = await CloudinaryCDNService.uploadImageToCDN(XFile(file.path));
+    final model = await CloudinaryCDNService.uploadImageToCDN(XFile(file.path));
     return model.link;
   }
 
@@ -86,20 +95,12 @@ class AvatarService {
     String? prompt,
     required String size,
   }) async {
-    var result = await NetworkUtil.createKieAvatar(
+    final result = await NetworkUtil.createKieAvatar(
       NetworkUtil.kieGenerateMap(fileUrl: fileUrl, prompt: prompt, size: size),
     );
-
     logger.d(result);
-
     return result?['data']['taskId'];
   }
-
-  // Status Descriptions
-  // GENERATING: Generating in progress
-  // SUCCESS: Generation successful
-  // CREATE_TASK_FAILED: Failed to create task
-  // GENERATE_FAILED: Generation failed
 
   Future<Map<String, dynamic>> setOnProgressListener(
     String taskId, {
@@ -107,14 +108,11 @@ class AvatarService {
   }) async {
     Map<String, dynamic> result = {};
     while (true) {
-      var response = await NetworkUtil.getKieProgress(taskId);
+      final response = await NetworkUtil.getKieProgress(taskId);
       if (response == null) break;
       result = response['data'];
       if (result['status'] != 'GENERATING') break;
-      if (onProgressListener != null) {
-        onProgressListener(result['progress']);
-      }
-
+      onProgressListener?.call(result['progress']);
       await Future.delayed(const Duration(seconds: 1));
     }
     logger.d(result);
@@ -122,15 +120,12 @@ class AvatarService {
   }
 
   Future<String?> downloadAvatar(String taskId, {required String url}) async {
-    var response = await NetworkUtil.downloadKieAvatar(
-      taskId: taskId,
-      url: url,
-    );
+    final response = await NetworkUtil.downloadKieAvatar(taskId: taskId, url: url);
     return response?['data'];
   }
 
   Future<String?> uploadResultAvatar(String url) async {
-    MediaStoryModel model = await CloudinaryCDNService.uploadImageFromUrl(url);
+    final model = await CloudinaryCDNService.uploadImageFromUrl(url);
     return model.link;
   }
 }

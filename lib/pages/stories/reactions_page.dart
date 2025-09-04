@@ -157,7 +157,7 @@ class ReactionsPage extends StatelessWidget {
                         ),
                       ),
               ),
-              if (hasReactions)
+              if (hasReactions && viewModel.isStoryOwner)
                 Positioned(
                   bottom: 16,
                   left: 16,

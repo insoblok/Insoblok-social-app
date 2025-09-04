@@ -26,20 +26,23 @@ class UploadMediaItem {
 
 class UploadMediaProvider extends ReactiveViewModel {
   late BuildContext context;
-  final _mediaPicker = locator<MediaPickerService>();
+  final _mediaPicker = MediaPickerService();
 
   void init(BuildContext context) {
     this.context = context;
-    _mediaPicker.init(context);
   }
 
   List<UploadMediaItem> medias = [];
 
   // * PICK IMAGES FROM GALLERY
-  Future<void> addMedias({String? title, int? maxImages}) async {
+  Future<void> addMedias(BuildContext context, {String? title, int? maxImages}) async {
+
+    
     var files = await _mediaPicker.onPickerStoryMedia(
+      context,
       limit: (maxImages ?? 9 - medias.length),
     );
+    
     if (files.isEmpty) {
       AIHelpers.showToast(msg: 'No selected media!');
     } else {

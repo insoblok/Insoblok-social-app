@@ -1,41 +1,45 @@
 // reaction_video_detail_page.dart
+import 'dart:async';
 import 'dart:io';
-import 'dart:math' as logger;
 import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:insoblok/services/image_service.dart';
+import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:stacked/stacked.dart';
 import 'package:video_player/video_player.dart';
 
 import 'package:deepar_flutter_plus/deepar_flutter_plus.dart';
+import 'package:media_kit/media_kit.dart';
+import 'package:pro_video_editor/pro_video_editor.dart';
+
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/services/deep_ar_plus_service.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
-import 'package:path/path.dart' as p;
 
 final kDeeparEffectData = [
-  {'title': 'Fire',               'assets': 'assets/effects/filters/fire_effect/Fire_Effect.deepar'},
-  {'title': 'Vendetta',           'assets': 'assets/effects/filters/vendetta_mask/Vendetta_Mask.deepar'},
-  {'title': 'Flower',             'assets': 'assets/effects/filters/flower_face/flower_face.deepar'},
-  {'title': 'Devil Neon Horns',   'assets': 'assets/effects/filters/devil_neon_horns/Neon_Devil_Horns.deepar'},
-  {'title': 'Elephant Trunk',     'assets': 'assets/effects/filters/elephant_trunk/Elephant_Trunk.deepar'},
-  {'title': 'Emotion Meter',      'assets': 'assets/effects/filters/emotion_meter/Emotion_Meter.deepar'},
-  {'title': 'Emotions Exaggerator','assets':'assets/effects/filters/emotions_exaggerator/Emotions_Exaggerator.deepar'},
-  {'title': 'Heart',              'assets': 'assets/effects/filters/heart/8bitHearts.deepar'},
-  {'title': 'Hope',               'assets': 'assets/effects/filters/hope/Hope.deepar'},
-  {'title': 'Humanoid',           'assets': 'assets/effects/filters/humanoid/Humanoid.deepar'},
-  {'title': 'Ping Pong',          'assets': 'assets/effects/filters/ping_pong/Ping_Pong.deepar'},
-  {'title': 'Simple',             'assets': 'assets/effects/filters/simple/MakeupLook.deepar'},
-  {'title': 'Slipt',              'assets': 'assets/effects/filters/slipt/Split_View_Look.deepar'},
-  {'title': 'Snail',              'assets': 'assets/effects/filters/snail/Snail.deepar'},
-  {'title': 'Stallone',           'assets': 'assets/effects/filters/stallone/Stallone.deepar'},
-  {'title': 'Viking Helmet',      'assets': 'assets/effects/filters/viking_helmet/viking_helmet.deepar'},
+  {'title': 'Fire',                'assets': 'assets/effects/filters/fire_effect/Fire_Effect.deepar'},
+  {'title': 'Vendetta',            'assets': 'assets/effects/filters/vendetta_mask/Vendetta_Mask.deepar'},
+  {'title': 'Flower',              'assets': 'assets/effects/filters/flower_face/flower_face.deepar'},
+  {'title': 'Devil Neon Horns',    'assets': 'assets/effects/filters/devil_neon_horns/Neon_Devil_Horns.deepar'},
+  {'title': 'Elephant Trunk',      'assets': 'assets/effects/filters/elephant_trunk/Elephant_Trunk.deepar'},
+  {'title': 'Emotion Meter',       'assets': 'assets/effects/filters/emotion_meter/Emotion_Meter.deepar'},
+  {'title': 'Emotions Exaggerator','assets': 'assets/effects/filters/emotions_exaggerator/Emotions_Exaggerator.deepar'},
+  {'title': 'Heart',               'assets': 'assets/effects/filters/heart/8bitHearts.deepar'},
+  {'title': 'Hope',                'assets': 'assets/effects/filters/hope/Hope.deepar'},
+  {'title': 'Humanoid',            'assets': 'assets/effects/filters/humanoid/Humanoid.deepar'},
+  {'title': 'Ping Pong',           'assets': 'assets/effects/filters/ping_pong/Ping_Pong.deepar'},
+  {'title': 'Simple',              'assets': 'assets/effects/filters/simple/MakeupLook.deepar'},
+  {'title': 'Slipt',               'assets': 'assets/effects/filters/slipt/Split_View_Look.deepar'},
+  {'title': 'Snail',               'assets': 'assets/effects/filters/snail/Snail.deepar'},
+  {'title': 'Stallone',            'assets': 'assets/effects/filters/stallone/Stallone.deepar'},
+  {'title': 'Viking Helmet',       'assets': 'assets/effects/filters/viking_helmet/viking_helmet.deepar'},
 ];
 
-// Keep a single service instance for the page
+// single service instance for this page
 final _deepAr = DeepArPlusService();
 
 class ReactionVideoDetailPage extends StatefulWidget {
@@ -57,16 +61,15 @@ class ReactionVideoDetailPage extends StatefulWidget {
 }
 
 class _ReactionVideoDetailPageState extends State<ReactionVideoDetailPage> {
-  String? _selectedEffect;       // asset path currently selected
-  File? _filteredVideo;          // output from export (when implemented)
-  bool _busy = false;            // local spinner
+  String? _selectedEffect;
+  File? _editedVideo;                 // <- edited result shown instead of original
+  bool _busy = false;
 
   static const MethodChannel _ch = MethodChannel('deepar_offline');
-  
   static const _androidKey = DEEPAR_ANDROID_KEY;
   static const _iosKey     = DEEPAR_IOS_KEY;
 
-  String get _effectiveVideoPath => _filteredVideo?.path ?? widget.videoPath;
+  String get _currentVideoPath => _editedVideo?.path ?? widget.videoPath;
 
   @override
   void initState() {
@@ -82,47 +85,55 @@ class _ReactionVideoDetailPageState extends State<ReactionVideoDetailPage> {
         iosKey: _iosKey,
         resolution: Resolution.medium,
       );
-      // set a default effect
       _selectedEffect = kDeeparEffectData.first['assets']!;
-      await _switchEffect(_selectedEffect!);
-    } catch (e, s) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('AR init failed')),
-        );
-      }
+    } catch (_) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('AR init failed')),
+      );
     } finally {
       if (mounted) setState(() => _busy = false);
     }
   }
 
-  Future<void> _switchEffect(String assetPath) async {
-    // if (!_deepAr.isReady) return;
-    // setState(() => _busy = true);
-    // try {
-    //   final localPath = await _deepAr.loadEffectFromAssets(assetPath);
-    //   await _deepAr.switchEffect(localPath);
-    //   _selectedEffect = assetPath;
-    // } catch (e) {
+  // ——— added: open pro_video_editor page and receive exported file ———
+  Future<void> _openEditor() async {
+    // Ensure native libs are ready (safe to call again)
+    try { MediaKit.ensureInitialized(); } catch (_) {}
 
-    // } finally {
-    //   if (mounted) setState(() => _busy = false);
-    // }
+    final input = _currentVideoPath;
+    if (input.isEmpty || !File(input).existsSync()) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Video file missing or unreadable.')),
+      );
+      return;
+    }
+
+    final result = await Navigator.of(context).push<File?>(
+      MaterialPageRoute(
+        builder: (_) => _VideoQuickEditorPage(inputPath: input),
+        fullscreenDialog: true,
+      ),
+    );
+
+    if (!mounted) return;
+    if (result != null && result.existsSync()) {
+      setState(() => _editedVideo = result);
+    }
   }
 
+  // (optional) your existing DeepAR offline processing kept as-is
   Future<void> _applyFilterToSavedVideo() async {
     final outputPath = await processVideo(
-      inputPath: '/data/user/0/insoblok.social.app/cache/SnapVideo.MOV',
+      inputPath: _currentVideoPath,
       androidLicenseKey: _androidKey,
       effectAssetPath: 'assets/effects/filters/fire_effect/Fire_Effect.deepar',
       width: 720,
       height: 1280,
       bitrate: 3 * 1000 * 1000,
-      keepAudio: true, // optional: try to keep original audio (see note)
+      keepAudio: true,
     );
-
-    // use outputPath (e.g., play or upload it)
-    print('Filtered video at: $outputPath');
+    debugPrint('Filtered video at: $outputPath');
   }
 
   static Future<String> _copyEffectToCache(String assetPath) async {
@@ -135,19 +146,17 @@ class _ReactionVideoDetailPageState extends State<ReactionVideoDetailPage> {
     await file.writeAsBytes(bytes.buffer.asUint8List());
     return file.path;
   }
-  
+
   static Future<String> processVideo({
     required String inputPath,
     required String androidLicenseKey,
-    required String effectAssetPath, // e.g. assets/effects/filters/flower_face/flower_face.deepar
+    required String effectAssetPath,
     int width = 720,
     int height = 1280,
     int bitrate = 3 * 1000 * 1000,
-    bool keepAudio = false, // optional: try remux original audio
+    bool keepAudio = false,
   }) async {
-    // copy effect to local file path
     final localEffectPath = await _copyEffectToCache(effectAssetPath);
-
     final tmp = await getTemporaryDirectory();
     final outPath = p.join(tmp.path, 'deepar_out_${DateTime.now().millisecondsSinceEpoch}.mp4');
 
@@ -168,10 +177,9 @@ class _ReactionVideoDetailPageState extends State<ReactionVideoDetailPage> {
     return result;
   }
 
-
   @override
   void dispose() {
-    _deepAr.disposeEngine();
+    try { _deepAr.disposeEngine(); } catch (_) {}
     super.dispose();
   }
 
@@ -190,7 +198,7 @@ class _ReactionVideoDetailPageState extends State<ReactionVideoDetailPage> {
         return Scaffold(
           body: Stack(
             children: [
-              // Blurred BG
+              // blurred bg (uses your AIImage)
               AIImage(widget.url, width: double.infinity, height: double.infinity),
               BackdropFilter(
                 filter: ImageFilter.blur(sigmaX: 20, sigmaY: 20),
@@ -200,7 +208,7 @@ class _ReactionVideoDetailPageState extends State<ReactionVideoDetailPage> {
                           mainAxisSize: MainAxisSize.min,
                           spacing: 24,
                           children: [
-                            // Annotations
+                            // annotations (unchanged)
                             Container(
                               padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 8),
                               child: Row(
@@ -225,9 +233,9 @@ class _ReactionVideoDetailPageState extends State<ReactionVideoDetailPage> {
                             ),
                             const SizedBox(height: 40),
 
-                            // Circular player (use filtered path if present)
-                            if (File(_effectiveVideoPath).existsSync())
-                              _CircularVideoPlayer(videoPath: _effectiveVideoPath)
+                            // player (shows edited output if available)
+                            if (File(_currentVideoPath).existsSync())
+                              _CircularVideoPlayer(videoPath: _currentVideoPath)
                             else
                               Container(
                                 decoration: BoxDecoration(
@@ -249,8 +257,17 @@ class _ReactionVideoDetailPageState extends State<ReactionVideoDetailPage> {
 
                             const SizedBox(height: 10),
 
-                            // Set / Cancel
-                            if(vm.enableEdit)
+                            // NEW: Edit button
+                              FilledButton.icon(
+                                onPressed: _openEditor,
+                                icon: const Icon(Icons.edit),
+                                label: const Text('Edit'),
+                              ),
+
+                            const SizedBox(height: 10),
+
+                            // Set / Cancel (unchanged)
+                            if (vm.enableEdit)
                               Row(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
@@ -277,7 +294,7 @@ class _ReactionVideoDetailPageState extends State<ReactionVideoDetailPage> {
 
                             const SizedBox(height: 10),
 
-                            // Reaction buttons
+                            // Reaction buttons (unchanged)
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
                               decoration: BoxDecoration(
@@ -323,8 +340,8 @@ class _ReactionVideoDetailPageState extends State<ReactionVideoDetailPage> {
                     : const SizedBox.shrink(),
               ),
 
-              // Effects picker (top-right)
-              if(vm.enableEdit)
+              // effects picker (unchanged)
+              if (vm.enableEdit)
                 SafeArea(
                   child: Align(
                     alignment: Alignment.topRight,
@@ -347,15 +364,14 @@ class _ReactionVideoDetailPageState extends State<ReactionVideoDetailPage> {
                             final title = (item['title'] ?? '').toString();
                             final path  = (item['assets'] ?? '').toString();
                             final selected = path == _selectedEffect;
-
                             return FilledButton(
                               style: FilledButton.styleFrom(
                                 backgroundColor: selected ? Colors.pink : Colors.white,
                                 foregroundColor: selected ? Colors.white : Colors.black,
                                 minimumSize: const Size(88, 40),
                               ),
-                              onPressed: (_deepAr.isReady && path.isNotEmpty)
-                                  ? () => _switchEffect(path)
+                              onPressed: path.isNotEmpty
+                                  ? () => setState(() => _selectedEffect = path)
                                   : null,
                               child: Text(title.isEmpty ? 'Effect ${i + 1}' : title),
                             );
@@ -445,9 +461,267 @@ class _CircularVideoPlayerState extends State<_CircularVideoPlayer> {
             width: 2,
           ),
         ),
-        child: VideoPlayer(_controller)
-           
+        child: _initialized
+            ? VideoPlayer(_controller)
+            : const Center(child: CircularProgressIndicator(strokeWidth: 2)),
       ),
     );
+  }
+}
+
+/// ─────────────────────────────────────────────────────────────
+/// Lightweight editor page using pro_video_editor + media_kit
+/// Pops with File on SAVE, or null on cancel
+/// ─────────────────────────────────────────────────────────────
+class _VideoQuickEditorPage extends StatefulWidget {
+  final String inputPath;
+  const _VideoQuickEditorPage({required this.inputPath});
+
+  @override
+  State<_VideoQuickEditorPage> createState() => _VideoQuickEditorPageState();
+}
+
+class _VideoQuickEditorPageState extends State<_VideoQuickEditorPage> {
+  VideoPlayerController? _preview;
+  Duration _total = Duration.zero;
+  Duration _start = Duration.zero;
+  Duration _end = Duration.zero;
+  bool _mute = false;
+  double _speed = 1.0;
+
+  bool _exporting = false;
+  double _progress = 0.0;
+  StreamSubscription<ProgressModel>? _sub;
+
+  @override
+  void initState() {
+    super.initState();
+    _initPreview();
+  }
+
+  Future<void> _initPreview() async {
+    try {
+      if (widget.inputPath.isEmpty || !File(widget.inputPath).existsSync()) {
+        throw Exception('Video file missing or unreadable.');
+      }
+      final ctrl = VideoPlayerController.file(File(widget.inputPath));
+      await ctrl.initialize();
+      if (!mounted) return;
+
+      final d = ctrl.value.duration;
+      setState(() {
+        _preview = ctrl;
+        _total  = (d.inMilliseconds <= 0) ? const Duration(milliseconds: 500) : d;
+        _start  = Duration.zero;
+        _end    = _total;
+      });
+
+      _preview!
+        ..setLooping(true)
+        ..play();
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Cannot open editor: $e')),
+      );
+      Navigator.of(context).pop<File?>(null);
+    }
+  }
+
+  @override
+  void dispose() {
+    _sub?.cancel();
+    _preview?.dispose();
+    super.dispose();
+  }
+
+  Future<void> _export() async {
+    if (_exporting) return;
+    setState(() {
+      _exporting = true;
+      _progress = 0;
+    });
+
+    try {
+      final tmp = await getTemporaryDirectory();
+      final outPath = p.join(tmp.path, 'edited_${DateTime.now().millisecondsSinceEpoch}.mp4');
+
+      // Clamp
+      final total = _total.inMilliseconds <= 0 ? const Duration(milliseconds: 500) : _total;
+      final s = _start < Duration.zero ? Duration.zero : _start;
+      final e = _end > total ? total : _end;
+      final startClamped = s > e ? Duration.zero : s;
+      final endClamped   = e < startClamped ? null : e;
+
+      final model = RenderVideoModel(
+        id: 'task_${DateTime.now().millisecondsSinceEpoch}',
+        video: EditorVideo.file(File(widget.inputPath)),
+        outputFormat: VideoOutputFormat.mp4,
+        enableAudio: !_mute,
+        playbackSpeed: _speed,
+        startTime: startClamped,
+        endTime: endClamped,
+        bitrate: 3 * 1000 * 1000,
+      );
+
+      final taskId = await ProVideoEditor.instance.renderVideoToFile(outPath, model);
+
+      _sub?.cancel();
+      _sub = ProVideoEditor.instance.progressStreamById(taskId).listen(
+        (p) => setState(() => _progress = p.progress.clamp(0, 1)),
+        onDone: () async {
+          _sub?.cancel(); _sub = null;
+          setState(() => _exporting = false);
+          final f = File(outPath);
+          if (await f.exists()) {
+            if (!mounted) return;
+            Navigator.of(context).pop<File>(f);
+          } else {
+            if (!mounted) return;
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(content: Text('Export failed')),
+            );
+          }
+        },
+        onError: (e) {
+          setState(() => _exporting = false);
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Export error: $e')),
+          );
+        },
+      );
+    } catch (e) {
+      setState(() => _exporting = false);
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Export failed: $e')),
+      );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final totalMs = _total.inMilliseconds.toDouble();
+    final safeMax = (totalMs.isFinite && totalMs > 0) ? totalMs : 500.0;
+
+    double startMs = _start.inMilliseconds.toDouble();
+    double endMs   = _end.inMilliseconds.toDouble();
+
+    if (!startMs.isFinite || startMs < 0) startMs = 0;
+    if (!endMs.isFinite   || endMs   < 0) endMs   = 0;
+    if (startMs > endMs) startMs = endMs;
+    if (startMs == endMs) endMs = (startMs + 1).clamp(0, safeMax);
+
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Edit Video'),
+        leading: IconButton(
+          icon: const Icon(Icons.close),
+          onPressed: () => Navigator.of(context).pop<File?>(null),
+        ),
+        actions: [
+          TextButton(
+            onPressed: _exporting ? null : _export,
+            child: const Text('SAVE'),
+          ),
+        ],
+      ),
+      body: Stack(
+        children: [
+          ListView(
+            padding: const EdgeInsets.all(16),
+            children: [
+              AspectRatio(
+                aspectRatio: (_preview?.value.isInitialized ?? false)
+                    ? _preview!.value.aspectRatio
+                    : 16 / 9,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.black,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: (_preview?.value.isInitialized ?? false)
+                      ? ClipRRect(
+                          borderRadius: BorderRadius.circular(12),
+                          child: VideoPlayer(_preview!),
+                        )
+                      : const Center(child: CircularProgressIndicator()),
+                ),
+              ),
+              const SizedBox(height: 16),
+
+              Text('Trim', style: Theme.of(context).textTheme.titleMedium),
+
+              RangeSlider(
+                min: 0.0,
+                max: safeMax,
+                values: RangeValues(startMs, endMs),
+                onChanged: (v) {
+                  final s = Duration(milliseconds: v.start.round());
+                  final e = Duration(milliseconds: v.end.round());
+                  setState(() {
+                    _start = (e < s) ? Duration(milliseconds: v.end.round()) : s;
+                    _end   = (e < s) ? Duration(milliseconds: v.end.round()) : e;
+                  });
+                },
+              ),
+
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(_fmt(Duration(milliseconds: startMs.round()))),
+                  Text(_fmt(Duration(milliseconds: endMs.round()))),
+                ],
+              ),
+              const SizedBox(height: 16),
+
+              SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                title: const Text('Mute audio'),
+                value: _mute,
+                onChanged: (v) => setState(() => _mute = v),
+              ),
+              const SizedBox(height: 8),
+
+              Text('Playback speed: ${_speed.toStringAsFixed(2)}x',
+                  style: Theme.of(context).textTheme.titleMedium),
+              Slider(
+                min: 0.25,
+                max: 2.0,
+                divisions: 7,
+                value: _speed,
+                onChanged: (v) => setState(() => _speed = v),
+              ),
+            ],
+          ),
+
+          if (_exporting)
+            Container(
+              color: Colors.black38,
+              child: Center(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const SizedBox(
+                      width: 52,
+                      height: 52,
+                      child: CircularProgressIndicator(strokeWidth: 4),
+                    ),
+                    const SizedBox(height: 12),
+                    Text('Exporting ${(_progress * 100).toStringAsFixed(0)}%'),
+                  ],
+                ),
+              ),
+            ),
+        ],
+      ),
+    );
+  }
+
+  String _fmt(Duration d) {
+    final h = d.inHours;
+    final m = d.inMinutes.remainder(60).toString().padLeft(2, '0');
+    final s = d.inSeconds.remainder(60).toString().padLeft(2, '0');
+    return h > 0 ? '$h:$m:$s' : '$m:$s';
   }
 }

@@ -27,7 +27,6 @@ class PageableView extends StatelessWidget {
       'Following',   
       'LookBook',
       'Marketplace',
-      // 'Marketplace',
     ];
 
     return ViewModelBuilder<DashboardProvider>.reactive(
@@ -186,6 +185,7 @@ class PageableView extends StatelessWidget {
                                   viewModel.onClickMenuItem(i);
                                 },
                                 isScrollable: true, // set to false if you want them evenly spaced
+                                tabAlignment: TabAlignment.center,   // center the tabs
                                 indicatorSize: TabBarIndicatorSize.label,
                                 indicator: RoundedUnderlineTabIndicator(
                                   thickness: 6,          // underline height (px)
@@ -197,7 +197,7 @@ class PageableView extends StatelessWidget {
                                 dividerColor: Colors.transparent,
                                 dividerHeight: 0,
 
-                                labelPadding: const EdgeInsets.symmetric(horizontal: 15),
+                                // labelPadding: const EdgeInsets.symmetric(horizontal: 15),
                                 overlayColor: MaterialStateProperty.all(Colors.transparent),
                                 labelColor: Colors.white,
                                 unselectedLabelColor: Colors.white.withOpacity(0.7),

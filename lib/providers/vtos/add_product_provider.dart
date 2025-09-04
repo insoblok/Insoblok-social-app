@@ -109,6 +109,7 @@ class AddProductProvider extends InSoBlokViewModel {
     clearErrors();
 
     var image = await _mediaPicker.onPickerSingleMedia(
+      context,
       isImage: isImage ?? true,
     );
     if (image != null) {
@@ -122,6 +123,7 @@ class AddProductProvider extends InSoBlokViewModel {
     clearErrors();
 
     var image = await _mediaPicker.onPickerSingleMedia(
+      context,
       isImage: isImage ?? true,
     );
     if (image != null) {

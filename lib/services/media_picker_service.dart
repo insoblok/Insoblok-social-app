@@ -10,127 +10,140 @@ import 'package:insoblok/utils/utils.dart';
 enum PickerAction { gallery, camera, deepAr }
 
 class MediaPickerService {
-  late BuildContext _context;
-  late ImagePicker _picker;
+  MediaPickerService();
 
-  void init(BuildContext context) {
-    _context = context;
-    _picker = ImagePicker();
-  }
+  // Keep the picker as a field, NOT a BuildContext.
+  final ImagePicker _picker = ImagePicker();
 
-  Future<List<XFile>> onPickerStoryMedia({int? limit}) async {
-    final action = await _showMediaSource();
-    logger.d(action);
+  /// Pick 1..N story medias. Opens a source sheet (Photos / Camera / DeepAR).
+  Future<List<XFile>> onPickerStoryMedia(
+    BuildContext context, {
+    int? limit,
+  }) async {
+    try {
+      final action = await _showMediaSource(context);
+      logger.d('mediaSource = $action');
 
-    if (action == null) return [];
+      if (action == null) return <XFile>[];
 
-    // Handle DeepAR
-    if (action == PickerAction.deepAr) {
-      final result = await Navigator.of(_context).push<Map<String, String?>>(
-        MaterialPageRoute(builder: (_) => const DeepARPlusPage()),
-      );
+      // DeepAR
+      if (action == PickerAction.deepAr) {
+        final result = await Navigator.of(context).push<Map<String, String?>>(
+          MaterialPageRoute(builder: (_) => const DeepARPlusPage()),
+        );
+
+        final medias = <XFile>[];
+        if (result != null) {
+          final photoPath = result['photo'];
+          final videoPath = result['video'];
+          if (photoPath?.isNotEmpty == true) medias.add(XFile(photoPath!));
+          if (videoPath?.isNotEmpty == true) medias.add(XFile(videoPath!));
+        }
+
+        if (medias.isEmpty) {
+          AIHelpers.showToast(msg: 'No media captured!');
+        }
+        logger.d('DeepAR medias: $medias');
+        return medias;
+      }
+
+      // Gallery/Camera permissions
+      final isAllowed = action == PickerAction.gallery
+          ? ((await PermissionService.requestGalleryPermission()) ?? false)
+          : ((await PermissionService.requestCameraPermission()) ?? false);
+
+      if (!isAllowed) {
+        AIHelpers.showToast(msg: 'Permission denied!');
+        return <XFile>[];
+      }
 
       final medias = <XFile>[];
-      if (result != null) {
-        final photoPath = result['photo'];
-        final videoPath = result['video'];
-        if (photoPath != null && photoPath.isNotEmpty) {
-          medias.add(XFile(photoPath));
+
+      if (action == PickerAction.camera) {
+        // Use your platform camera (may return content:// on Android)
+        final mediaPath = await MethodChannelService.onPlatformCameraPicker();
+        if (mediaPath != null && mediaPath.isNotEmpty) {
+          logger.d('camera path: $mediaPath');
+          medias.add(XFile(mediaPath));
         }
-        if (videoPath != null && videoPath.isNotEmpty) {
-          medias.add(XFile(videoPath));
-        }
+      } else {
+        // Gallery multi-picker (images + videos)
+        final selects = await onMultiMediaPicker(limit: limit);
+        medias.addAll(selects);
       }
 
       if (medias.isEmpty) {
-        AIHelpers.showToast(msg: 'No media captured!');
+        AIHelpers.showToast(msg: 'No selected medias!');
       }
-
-      logger.d("medias--- : $medias");
       return medias;
+    } catch (e, st) {
+      logger.e('onPickerStoryMedia error', error: e, stackTrace: st);
+      AIHelpers.showToast(msg: 'Couldn’t pick media. Please try again.');
+      return <XFile>[];
     }
-
-    // Gallery/Camera
-    final isAllowed = action == PickerAction.gallery
-        ? ((await PermissionService.requestGalleryPermission()) ?? false)
-        : ((await PermissionService.requestCameraPermission()) ?? false);
-
-    if (!isAllowed) {
-      AIHelpers.showToast(msg: 'Permission Denied!');
-      return [];
-    }
-
-    final medias = <XFile>[];
-
-    if (action == PickerAction.camera) {
-      // Your platform camera picker may return a content:// URI on Android.
-      final mediaPath = await MethodChannelService.onPlatformCameraPicker();
-      if (mediaPath != null) {
-        logger.d(mediaPath);
-        medias.add(XFile(mediaPath));
-      }
-    } else {
-      final selects = await onMultiMediaPicker(limit: limit);
-      medias.addAll(selects);
-    }
-
-    if (medias.isEmpty) {
-      AIHelpers.showToast(msg: 'No selected medias!');
-    }
-    return medias;
   }
 
-  Future<XFile?> onPickerSingleMedia({
+  /// Pick a single image or video. Uses the same source sheet.
+  Future<XFile?> onPickerSingleMedia(
+    BuildContext context, {
     required bool isImage,
     Duration? maxDuration,
   }) async {
-    final action = await _showMediaSource();
-    logger.d("mediaSource = $action");
-    if (action == null) return null;
+    try {
+      final action = await _showMediaSource(context);
+      logger.d('single media source = $action');
+      if (action == null) return null;
 
-    if (action == PickerAction.deepAr) {
-      final result = await Navigator.of(_context).push<Map<String, String?>>(
-        MaterialPageRoute(builder: (_) => const DeepARPlusPage()),
-      );
-      if (result != null) {
-        final p = isImage ? result['photo'] : result['video'];
-        if (p != null && p.isNotEmpty) return XFile(p);
+      if (action == PickerAction.deepAr) {
+        final result = await Navigator.of(context).push<Map<String, String?>>(
+          MaterialPageRoute(builder: (_) => const DeepARPlusPage()),
+        );
+        if (result != null) {
+          final p = isImage ? result['photo'] : result['video'];
+          if (p != null && p.isNotEmpty) return XFile(p);
+        }
+        AIHelpers.showToast(msg: 'No ${isImage ? 'image' : 'video'} captured!');
+        return null;
       }
-      AIHelpers.showToast(msg: 'No ${isImage ? 'image' : 'video'} captured!');
+
+      final isAllowed = action == PickerAction.gallery
+          ? ((await PermissionService.requestGalleryPermission()) ?? false)
+          : ((await PermissionService.requestCameraPermission()) ?? false);
+
+      if (!isAllowed) {
+        AIHelpers.showToast(msg: 'Permission denied!');
+        return null;
+      }
+
+      XFile? media;
+      if (isImage) {
+        media = action == PickerAction.gallery
+            ? await _picker.pickImage(source: ImageSource.gallery)
+            : await _picker.pickImage(source: ImageSource.camera);
+      } else {
+        media = await _picker.pickVideo(
+          source: action == PickerAction.gallery ? ImageSource.gallery : ImageSource.camera,
+          maxDuration: maxDuration,
+        );
+      }
+
+      if (media == null) {
+        AIHelpers.showToast(msg: 'No selected ${isImage ? 'image' : 'video'}!');
+      }
+      return media;
+    } catch (e, st) {
+      logger.e('onPickerSingleMedia error', error: e, stackTrace: st);
+      AIHelpers.showToast(msg: 'Couldn’t pick media. Please try again.');
       return null;
     }
-
-    final isAllowed = action == PickerAction.gallery
-        ? ((await PermissionService.requestGalleryPermission()) ?? false)
-        : ((await PermissionService.requestCameraPermission()) ?? false);
-
-    if (!isAllowed) {
-      AIHelpers.showToast(msg: 'Permission Denied!');
-      return null;
-    }
-
-    XFile? media;
-    if (isImage) {
-      media = action == PickerAction.gallery
-          ? await _picker.pickImage(source: ImageSource.gallery)
-          : await _picker.pickImage(source: ImageSource.camera);
-    } else {
-      media = await _picker.pickVideo(
-        source: action == PickerAction.gallery ? ImageSource.gallery : ImageSource.camera,
-        maxDuration: maxDuration,
-      );
-    }
-
-    if (media == null) {
-      AIHelpers.showToast(msg: 'No selected ${isImage ? 'image' : 'video'}!');
-    }
-    return media;
   }
 
-  Future<PickerAction?> _showMediaSource() {
+  /// Bottom sheet to choose source. Uses the *passed-in* context.
+  Future<PickerAction?> _showMediaSource(BuildContext context) {
     return showModalBottomSheet<PickerAction>(
-      context: _context,
-      builder: (context) {
+      context: context,
+      useRootNavigator: true, // helps if you have nested Navigators
+      builder: (sheetCtx) {
         return SafeArea(
           child: Container(
             width: double.infinity,
@@ -140,41 +153,43 @@ class MediaPickerService {
               mainAxisSize: MainAxisSize.min,
               children: [
                 InkWell(
-                  onTap: () => Navigator.of(context).pop(PickerAction.gallery),
+                  onTap: () => Navigator.of(sheetCtx).pop(PickerAction.gallery),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      AIImage(Icons.air, color: AIColors.pink),
+                      AIImage(Icons.photo_library, color: AIColors.pink),
                       const SizedBox(width: 12.0),
-                      Text('From Photos',
+                      Text(
+                        'From Photos',
                         style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: AIColors.pink),
                       ),
                     ],
                   ),
                 ),
-                // const SizedBox(height: 24.0),
+                const SizedBox(height: 24.0),
+                // If you still want stock camera separate from DeepAR, uncomment this block
                 // InkWell(
-                //   onTap: () => Navigator.of(context).pop(PickerAction.camera),
+                //   onTap: () => Navigator.of(sheetCtx).pop(PickerAction.camera),
                 //   child: Row(
                 //     mainAxisSize: MainAxisSize.min,
                 //     children: [
-                //       AIImage(Icons.camera, color: AIColors.pink),
+                //       AIImage(Icons.camera_alt, color: AIColors.pink),
                 //       const SizedBox(width: 12.0),
                 //       Text('From Camera',
-                //         style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: AIColors.pink),
-                //       ),
+                //           style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: AIColors.pink)),
                 //     ],
                 //   ),
                 // ),
-                const SizedBox(height: 24.0),
+                // const SizedBox(height: 24.0),
                 InkWell(
-                  onTap: () => Navigator.of(context).pop(PickerAction.deepAr),
+                  onTap: () => Navigator.of(sheetCtx).pop(PickerAction.deepAr),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       AIImage(Icons.camera_enhance, color: AIColors.pink),
                       const SizedBox(width: 12.0),
-                      Text('From Camera',
+                      Text(
+                        'From Camera',
                         style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: AIColors.pink),
                       ),
                     ],
@@ -189,49 +204,55 @@ class MediaPickerService {
   }
 
   Future<List<XFile>> onMultiImagePicker({int? limit}) async {
-    List<XFile> result = [];
-    var isAllowed = await PermissionService.requestGalleryPermission();
-    if (isAllowed == true) {
-      result = await _picker.pickMultiImage(limit: limit);
-    } else {
-      AIHelpers.showToast(msg: 'Permission Denided!');
+    try {
+      final ok = await PermissionService.requestGalleryPermission();
+      if (ok == true) {
+        return await _picker.pickMultiImage(limit: limit);
+      } else {
+        AIHelpers.showToast(msg: 'Permission denied!');
+        return <XFile>[];
+      }
+    } catch (e, st) {
+      logger.e('onMultiImagePicker error', error: e, stackTrace: st);
+      return <XFile>[];
     }
-    return result;
   }
 
   Future<List<XFile>> onMultiMediaPicker({int? limit}) async {
-    List<XFile> result = [];
-    var isAllowed = await PermissionService.requestGalleryPermission();
-    if (isAllowed == true) {
-      result = await _picker.pickMultipleMedia(limit: limit);
-    } else {
-      AIHelpers.showToast(msg: 'Permission Denided!');
+    try {
+      final ok = await PermissionService.requestGalleryPermission();
+      if (ok == true) {
+        // image_picker >= 1.0.7 supports optional `limit`
+        return await _picker.pickMultipleMedia(limit: limit);
+      } else {
+        AIHelpers.showToast(msg: 'Permission denied!');
+        return <XFile>[];
+      }
+    } catch (e, st) {
+      logger.e('onMultiMediaPicker error', error: e, stackTrace: st);
+      return <XFile>[];
     }
-    return result;
   }
 
   Future<List<String>> onGifPicker() async {
-    List<String> result = [];
-    var isAllowed = await PermissionService.requestGalleryPermission();
-    if (isAllowed == true) {
-      var pickerResult = await FilePicker.platform.pickFiles(
-        allowMultiple: true,
-        type: FileType.custom,
-        allowedExtensions: ['gif'],
-      );
-      if (pickerResult != null) {
-        List<String?> files =
-            pickerResult.files.map((file) => file.path).toList();
-        for (var file in files) {
-          if (file != null) {
-            result.add(file);
-          }
-        }
+    try {
+      final ok = await PermissionService.requestGalleryPermission();
+      if (ok == true) {
+        final pickerResult = await FilePicker.platform.pickFiles(
+          allowMultiple: true,
+          type: FileType.custom,
+          allowedExtensions: const ['gif'],
+        );
+        if (pickerResult == null) return <String>[];
+        return pickerResult.files.map((f) => f.path).whereType<String>().toList();
+      } else {
+        AIHelpers.showToast(msg: 'Permission denied!');
+        return <String>[];
       }
-    } else {
-      AIHelpers.showToast(msg: 'Permission Denided!');
+    } catch (e, st) {
+      logger.e('onGifPicker error', error: e, stackTrace: st);
+      return <String>[];
     }
-    return result;
   }
 
 }

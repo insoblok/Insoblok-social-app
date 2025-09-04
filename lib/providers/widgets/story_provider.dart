@@ -65,7 +65,7 @@ class StoryProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  bool _showFaceDialog = true;
+  bool _showFaceDialog = false;
   bool get showFaceDialog => _showFaceDialog;
   set showFaceDialog(bool f) {
     _showFaceDialog = f;
@@ -120,23 +120,29 @@ class StoryProvider extends InSoBlokViewModel {
 
     final auth = AuthHelper.user?.id;
 
-    if((auth == story.userId)){
+    // if((auth == story.userId)){
 
-      logger.d("resumeCapturing");
-      camera.resumeCapturing();
-    }
+    //   logger.d("resumeCapturing");
+    //   camera.resumeCapturing();
+    // }
+
+   logger.d("vybeCamEnabled : $vybeCamEnabled");
+    logger.d(auth);
+    logger.d(story.userId);
+
 
     if(vybeCamEnabled && (auth != story.userId)){
-      showFaceDialog = true;
+     
+      Timer _timer = Timer(Duration(seconds: 3), () {showFaceDialog = true;});
 
-      camera.onFrame = (String? path) {
-        logger.d("Trying to detect user expressions");
-        if (path != null) {
-          detectFace(path);
-        }
-      };
+    //   camera.onFrame = (String? path) {
+    //     logger.d("Trying to detect user expressions");
+    //     if (path != null) {
+    //       detectFace(path);
+    //     }
+    //   };
 
-      await camera.initialize();
+    //   await camera.initialize();
     }
 
     quillController = () {
@@ -150,9 +156,19 @@ class StoryProvider extends InSoBlokViewModel {
   }
 
   Future<void> captureReactionImage() async {
-    _isVideoReaction = false;
-    showFaceDialog = true;
 
+    _isVideoReaction = false;
+
+    showFaceDialog = true;
+    camera.onFrame = (String? path) {
+      logger.d("Trying to detect user expressions");
+      if (path != null) {
+        detectFace(path);
+      }
+    };
+
+    await camera.initialize();
+    
     final hadVideoPreview = _videoPath != null;
     if (hadVideoPreview) {
       _videoPath = null;
@@ -185,6 +201,8 @@ class StoryProvider extends InSoBlokViewModel {
     _isVideoReaction = true;
     showFaceDialog = true;
 
+  logger.d("call captureReactionVideo");
+
     // 1) Release the image stream completely to avoid buffer/ownership conflicts
     await camera.stopAndDispose();
 
@@ -193,6 +211,8 @@ class StoryProvider extends InSoBlokViewModel {
       refreshCount++;
       scheduleMicrotask(() {
         videoPath = path;
+
+        // videoPath = '/data/data/insoblok.social.app/cache/SnapVideo.MOV';
       });
     };
 
@@ -207,7 +227,7 @@ class StoryProvider extends InSoBlokViewModel {
 
   Future<void> detectFace(String link) async {
 
-    link = '/data/data/insoblok.social.app/cache/SnapImage.jpg';
+    // link = '/data/data/insoblok.social.app/cache/SnapImage.jpg';
 
     var faces = await GoogleVisionHelper.getFacesFromImage(link: link);
     var _annotations = await GoogleVisionHelper.analyzeLocalImage(link: link);
@@ -446,9 +466,9 @@ class StoryProvider extends InSoBlokViewModel {
     } else {
       story = story.copyWith(votes: votes);
       if (story.isVote() != null && story.isVote() == true) {
-        AIHelpers.showToast(msg: 'Vote Yes. Earn +1 TasteScore');
+        AIHelpers.showToast(msg: 'Vote No. Earn +1 TasteScore');
       } else {
-        AIHelpers.showToast(msg: 'Vote No. Feedback stays private');
+        AIHelpers.showToast(msg: 'Vote Yes. Feedback stays private');
       }
       notifyListeners();
     }

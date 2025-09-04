@@ -58,7 +58,7 @@ class AvatarProvider extends InSoBlokViewModel {
 
     await runBusyFuture(() async {
       try {
-        var result = await _avatarService.pickCropImage(ratioIndex!);
+        var result = await _avatarService.pickCropImage(context, ratioIndex!);
         if (result != null) {
           originPath = result;
         }
