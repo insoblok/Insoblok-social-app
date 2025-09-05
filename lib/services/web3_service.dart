@@ -2,10 +2,11 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
-import 'package:http/http.dart';
+import 'package:http/http.dart' as http;
 import 'package:insoblok/utils/helper.dart';
+import 'package:reown_appkit/solana/solana_web3/solana_web3.dart';
 import 'package:web3dart/credentials.dart';
-import 'package:web3dart/web3dart.dart';
+import 'package:web3dart/web3dart.dart' as web3;
 import 'package:web3dart/crypto.dart';
 import 'package:observable_ish/observable_ish.dart';
 import 'package:stacked/stacked.dart';
@@ -16,57 +17,93 @@ import 'package:get_it/get_it.dart';
 import 'package:convert/convert.dart';
 import 'package:insoblok/locator.dart';
 import 'package:decimal/decimal.dart';
+import 'package:insoblok/models/models.dart';
+
 
 class Web3Service with ListenableServiceMixin {
   final api = ApiService(baseUrl: INSOBLOK_WALLET_URL);
 
-  late Web3Client _evmClient;
+  late web3.Web3Client _evmClient;
   late SolanaClient _solanaClient;
 
 
-  final RxValue<Map<String, double>?> _allBalances = RxValue<Map<String, double>?>(null);
-  Map<String, double>? get allBalances => _allBalances.value;
+  final RxValue<Map<String, double>> _allBalances = RxValue<Map<String, double>>({});
+  Map<String, double> get allBalances => _allBalances.value;
 
-  final RxValue<Map<String, double>?> _allPrices = RxValue<Map<String, double>?>(null);
-  Map<String, double>? get allPrices => _allPrices.value;
+  final RxValue<Map<String, double>> _allPrices = RxValue<Map<String, double>>({});
+  Map<String, double> get allPrices => _allPrices.value;
 
-  final RxValue<List<Map<String, dynamic>>?> _transactions = RxValue<List<Map<String, dynamic>>?>([]);
-  List<Map<String, dynamic>>? get transactions => _transactions.value;
+  final RxValue<List<Map<String, dynamic>>> _transactions = RxValue<List<Map<String, dynamic>>>([]);
+  List<Map<String, dynamic>> get transactions => _transactions.value;
+
+  final RxValue<String> _paymentTransactionHash = RxValue<String>("");
+  String get paymentTransactionHash => _paymentTransactionHash.value;
 
   Timer? _timer;
+
+  String _paymentToAddress = '';
+  String get paymentToAddress => _paymentToAddress;
+  set paymentToAddress(String newAddress) {
+    _paymentToAddress = newAddress;
+    notifyListeners(); // Notify listeners about the change
+  }
+
+  String _paymentSelectedNetwork = "";
+  String get paymentSelectedNetwork => _paymentSelectedNetwork;
+  set paymentSelectedNetwork(String network) {
+    _paymentSelectedNetwork = network;
+    notifyListeners();
+  }
+
+  double _paymentAmount = 0.0;
+  double get paymentAmount => _paymentAmount;
+  set paymentAmount(double amount) {
+    _paymentAmount = amount;
+    notifyListeners();
+  }
+
+  double _transactionFee = -1;
+  double get transactionFee => _transactionFee;
+  set transactionFee(double fee) {
+    _transactionFee = fee;
+    notifyListeners();
+  }
+
+  RoomModel chatRoom = RoomModel();
+  UserModel chatUser = UserModel();
   /// constructor: setup client depending on network
   Web3Service() {
-    listenToReactiveValues([_allBalances, _allPrices, _transactions]);
+    listenToReactiveValues([_allBalances, _allPrices, _transactions, _paymentTransactionHash]);
   }
 
   void setNetwork({required String chain}) {
     switch (chain) {
       case "ethereum":
-        _evmClient = Web3Client(
+        _evmClient = web3.Web3Client(
           "$ETHEREUM_RPC_URL/$INFURA_PROJECT_ID",
-          Client(),
+          http.Client(),
         );
         break;
 
       case "sepolia":
       case "insoblok":
-        _evmClient = Web3Client(
+        _evmClient = web3.Web3Client(
           "$SEPOLIA_RPC_URL/$INFURA_PROJECT_ID",
-          Client(),
+          http.Client(),
         );
         break;
 
       case "bnb-mainnet":
-        _evmClient = Web3Client(
+        _evmClient = web3.Web3Client(
           "https://bsc-dataseed.binance.org/",
-          Client(),
+          http.Client(),
         );
         break;
 
       case "bnb-testnet":
-        _evmClient = Web3Client(
+        _evmClient = web3.Web3Client(
           "https://data-seed-prebsc-1-s1.binance.org:8545/",
-          Client(),
+          http.Client(),
         );
         break;
 
@@ -102,7 +139,7 @@ class Web3Service with ListenableServiceMixin {
   Future<double> getEthereumPriceInUsd() async {
     try {
       final url = Uri.parse(ETHER_PRICE_URL);
-      final response = await get(url);
+      final response = await http.get(url);
       if (response.statusCode == 200) {
         final data = jsonDecode(response.body);
         final price = (data["ethereum"]["usd"] as num).toDouble();
@@ -197,24 +234,24 @@ class Web3Service with ListenableServiceMixin {
       // Prepare transaction data
       Uint8List? transactionData;
       EthereumAddress? transactionTo;
-      EtherAmount? transactionValue;
+      web3.EtherAmount? transactionValue;
       
       if (isNativeToken) {
         // Native ETH transfer
         transactionTo = toAddress;
-        transactionValue = EtherAmount.fromBigInt(EtherUnit.wei, amountWei);
+        transactionValue = web3.EtherAmount.fromBigInt(web3.EtherUnit.wei, amountWei);
         transactionData = Uint8List(0);
       } else {
         // ERC-20 token transfer
         transactionTo = EthereumAddress.fromHex(tokenAddress);
-        transactionValue = EtherAmount.zero();
+        transactionValue = web3.EtherAmount.zero();
         transactionData = _encodeERC20Transfer(toAddress, amountWei);
       }
       
       // Sign the transaction
       final signedTx = await _evmClient.signTransaction(
         privateKey, 
-        Transaction(
+        web3.Transaction(
           from: from,
           to: transactionTo,
           nonce: nonce,
@@ -257,6 +294,7 @@ class Web3Service with ListenableServiceMixin {
       
       logger.d("This is request body: $body");
       final response = await api.postRequest("/evm/send", body);
+      _paymentTransactionHash.value = response["tx_hash"];
       logger.d("This is response: $response");
       return response;
       
@@ -392,31 +430,53 @@ class Web3Service with ListenableServiceMixin {
   }
 
   // Encode Ethereum address (32 bytes padded)
-Uint8List _encodeAddress(EthereumAddress address) {
-  final addressBytes = address.addressBytes;
-  return Uint8List.fromList([
-    ...List.filled(12, 0), // 12 bytes of padding
-    ...addressBytes, // 20 bytes address
-  ]);
-}
+  Uint8List _encodeAddress(EthereumAddress address) {
+    final addressBytes = address.addressBytes;
+    return Uint8List.fromList([
+      ...List.filled(12, 0), // 12 bytes of padding
+      ...addressBytes, // 20 bytes address
+    ]);
+  }
 
 // Encode uint256 (32 bytes)
-Uint8List _encodeUint256(BigInt value) {
-  final bytes = _bigIntToBytes(value);
-  return Uint8List.fromList([
-    ...List.filled(32 - bytes.length, 0), // Padding
-    ...bytes,
-  ]);
-}
-
-// Convert BigInt to bytes
-Uint8List _bigIntToBytes(BigInt number) {
-  var hex = number.toRadixString(16);
-  if (hex.length % 2 != 0) {
-    hex = '0$hex';
+  Uint8List _encodeUint256(BigInt value) {
+    final bytes = _bigIntToBytes(value);
+    return Uint8List.fromList([
+      ...List.filled(32 - bytes.length, 0), // Padding
+      ...bytes,
+    ]);
   }
-  return hexToBytes(hex);
-}
+
+  // Convert BigInt to bytes
+  Uint8List _bigIntToBytes(BigInt number) {
+    var hex = number.toRadixString(16);
+    if (hex.length % 2 != 0) {
+      hex = '0$hex';
+    }
+    return hexToBytes(hex);
+  }
+
+  Future<double> getTransactionFee(Credentials creds, String chain, EthereumAddress to, double amount) async {
+    double gasEstimate = 0;
+    try {
+      setNetwork(chain: chain);
+      final from = await creds.extractAddress();
+      // Example: estimating a simple ETH transfer
+      final result = await _evmClient.estimateGas(
+        sender: from,
+        to: to,
+        value: web3.EtherAmount.fromUnitAndValue(web3.EtherUnit.ether, amount.toBigInt())
+      );
+
+      gasEstimate = result.toDouble() / pow(10, 18).toDouble();
+    } catch(e) {
+      logger.d("An error occurred while estimating transaction fee, $e");
+    }
+    _transactionFee = gasEstimate;
+    logger.d("transaction fee is ${gasEstimate}");
+    return _transactionFee;
+    
+  }
 
 
 }

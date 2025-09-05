@@ -113,6 +113,7 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
+    - assets/icons/ic_success.gif
     - assets/fonts/
     - assets/data/
     # - assets/effects/filters/fire_effect/Fire_Effect.deepar

@@ -7,6 +7,7 @@ import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
+import 'package:insoblok/locator.dart';
 
 class AccountProvider extends InSoBlokViewModel {
   late BuildContext _context;
@@ -52,6 +53,8 @@ class AccountProvider extends InSoBlokViewModel {
 
   bool get isViewing =>
       (accountUser?.views ?? []).contains(AuthHelper.user?.id);
+
+  final Web3Service _web3Service = locator<Web3Service>();
 
   void init(BuildContext context, {UserModel? model}) async {
     this.context = context;
@@ -237,6 +240,8 @@ class AccountProvider extends InSoBlokViewModel {
       AIHelpers.showToast(msg: modelError.toString());
     } else {
       if (existedRoom != null) {
+        _web3Service.chatRoom = existedRoom;
+        _web3Service.chatUser = accountUser ?? UserModel();        
         await Routers.goToMessagePage(
           context,
           MessagePageData(room: existedRoom, chatUser: accountUser!),
@@ -376,6 +381,8 @@ class AccountProvider extends InSoBlokViewModel {
               id: accountUser!.id!,
             );
           }
+          _web3Service.chatRoom = existedRoom ?? RoomModel();
+          _web3Service.chatUser = accountUser ?? UserModel();   
           Routers.goToMessagePage(
             context,
             MessagePageData(room: existedRoom!, chatUser: accountUser!),

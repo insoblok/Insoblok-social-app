@@ -81,6 +81,7 @@ class MessageProvider extends InSoBlokViewModel {
   var scrollController = ScrollController();
   late FocusNode focusNode;
   late MediaPickerService _mediaPickerService;
+  final Web3Service _web3Service = locator<Web3Service>();
 
   Future<void> init(
     BuildContext context, {
@@ -137,6 +138,9 @@ class MessageProvider extends InSoBlokViewModel {
     messageService.markMessagesAsRead(room.id!);
 
     _mediaPickerService = locator<MediaPickerService>();
+
+    _web3Service.paymentToAddress = chatUser.walletAddress ?? "";
+
   }
 
   @override
@@ -288,6 +292,26 @@ class MessageProvider extends InSoBlokViewModel {
     }
     else {
       AIHelpers.showToast(msg: "Sent token successfully.");
+      try {
+        final network = kWalletTokenList.firstWhere((tk) => tk["chain"] == map["chain"]);
+        await messageService.sendPaidMessage(
+          chatRoomId: room.id!,
+          coin: CoinModel(
+            icon: AIImages.icSuccess,
+            type: map["chain"],
+            amount: map["amount"].toString(),
+            unit: network["short_name"].toString(),
+          ),
+        );
+        // await messageService.sendMessage(chatRoomId: room.id!, text: "Sent ${map["amount"]} ${map["chain"]}(s) Successfully.");
+        textController.text = '';
+      } catch (e) {
+        logger.d('Failed to send message: $e.toString()');
+        AIHelpers.showToast(msg: 'Failed to send message: $e.toString()');
+      } finally {
+        notifyListeners();
+        scrollToBottom();
+      }
     }
 
   }

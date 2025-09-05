@@ -35,6 +35,12 @@ const kRouterWalletSend = '/wallet-send';
 const kRouterCreateRoom = '/create-room';
 const kRouterMessage = '/message';
 const kRouterMessageSetting = '/message-setting';
+const kRouterChatView = '/chat-view';
+
+const kRouterChatPayment = '/message-payment';
+const kRouterPaymentAmount = '/payment-amount';
+const kRouterPaymentConfirm = '/payment-confirm';
+const kRouterPaymentResult = '/payment-result';
 
 const kRouterNews = '/news';
 const kRouterLookbook = '/lookbook';
@@ -170,6 +176,21 @@ class Navigation {
 
     // * MessageSettingPage
     initRoute(kRouterMessageSetting, (props) => MessageSettingPage());
+
+    //* ChatViewPage
+    initRoute(kRouterChatView, (props) => ChatView());
+
+    // * MessagePaymentFirstPage
+    initRoute(kRouterChatPayment, (props) => ChatPaymentPage());
+    
+    // * PaymentAmountPage
+    initRoute(kRouterPaymentAmount, (props) => PaymentAmountPage());
+
+    // * PaymentConfirmPage
+    initRoute(kRouterPaymentConfirm, (props) => PaymentConfirmPage());
+
+    // * PaymentResultPage
+    initRoute(kRouterPaymentResult, (props) => PaymentResultPage());
 
     // * News
     initRoute(kRouterNews, (props) => NewsPage());

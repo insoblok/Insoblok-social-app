@@ -12,9 +12,6 @@ import 'package:insoblok/widgets/widgets.dart';
 class WalletReceivePage extends StatelessWidget {
   const WalletReceivePage({super.key});
   
-  String formatDouble(double value, int decimals) {
-    return value.toStringAsFixed(decimals).replaceFirst(RegExp(r'\.?0+$'), '');
-  }
   @override
   Widget build(BuildContext context) {
 
@@ -64,7 +61,7 @@ class WalletReceivePage extends StatelessWidget {
                           ),
                           Expanded(child: Text(token['short_name']!.toString())),
                           Text(
-                                '${formatDouble(allBalances[token["chain"]] ?? 0, 10)} ${token["short_name"]}',
+                                '${AIHelpers.formatDouble(allBalances[token["chain"]] ?? 0, 10)} ${token["short_name"]}',
                                 style: Theme.of(context).textTheme.labelSmall,
                               ),
                         ],

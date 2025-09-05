@@ -12,6 +12,7 @@ class AIImages {
   static String imgSplash2 = 'assets/images/bg_splash_2.png';
   static String imgSplash3 = 'assets/images/bg_splash_3.png';
 
+  static String icSuccess = 'assets/icons/ic_success.gif';
   static String icYayOutline = 'assets/icons/ic_yay_outline.svg';
   static String icNayOutline = 'assets/icons/ic_nay_outline.svg';
   static String icYayFill = 'assets/icons/ic_yay_fill.svg';
@@ -35,6 +36,7 @@ class AIImages {
   static String icBottomUser = 'assets/icons/ic_user.svg';
   static String icBottomWalletFill = 'assets/icons/ic_wallet_fill.svg';
   static String icBottomWallet = 'assets/icons/ic_wallet.svg';
+  static String icDollar = 'assets/icons/ic_dollar.svg';
   static String icUsdt = 'assets/icons/ic_usdt.png';
   static String icXrp = 'assets/icons/ic_xrp.svg';
   static String icPostLookbook = 'assets/icons/ic_post_lookbook.png';

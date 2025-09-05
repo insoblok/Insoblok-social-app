@@ -207,6 +207,7 @@ extension MessageModelExt on MessageModel {
 
   Widget _paidContent() {
     var coin = CoinModel.fromJson(jsonDecode(content ?? '{}'));
+    final network = kWalletTokenList.firstWhere((tk) => tk["chain"] == coin.type);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -215,7 +216,8 @@ extension MessageModelExt on MessageModel {
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            AIImage(AIImages.icEthereumGold, width: 36.0, height: 36.0),
+            
+            AIImage(network["icon"], width: 36.0, height: 36.0),
             const SizedBox(width: 8.0),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -224,16 +226,23 @@ extension MessageModelExt on MessageModel {
                   '${coin.amount} ${coin.unit?.toUpperCase().replaceAll('ETHERUNIT.', '')}',
                   style: TextStyle(fontSize: 14.0, fontWeight: FontWeight.bold),
                 ),
-                Text('0.0016 USD', style: TextStyle(fontSize: 11.0)),
+                // Text('0.0016 USD', style: TextStyle(fontSize: 11.0)),
               ],
             ),
           ],
         ),
         const SizedBox(height: 8.0),
-        Text(
-          'Paid',
-          style: TextStyle(fontSize: 11.0, fontWeight: FontWeight.bold),
-        ),
+        // Image(image: NetworkImage(AIImages.icSuccess), width: 36.0, height: 36.0, fit: BoxFit.cover),
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+            GifView.asset(AIImages.icSuccess, width: 36.0, height: 36.0, loop: false, autoPlay: true),
+            Text(
+              'Successfully Sent',
+              style: TextStyle(fontSize: 11.0, fontWeight: FontWeight.bold),
+            ),
+          ]),
+        
       ],
     );
   }

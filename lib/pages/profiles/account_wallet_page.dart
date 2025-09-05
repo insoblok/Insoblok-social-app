@@ -11,10 +11,6 @@ import 'package:insoblok/models/models.dart';
 class AccountWalletPage extends StatelessWidget {
   const AccountWalletPage({super.key});
 
-  String formatDouble(double value, int decimals) {
-    return value.toStringAsFixed(decimals).replaceFirst(RegExp(r'\.?0+$'), '');
-  }
-
   Widget _buildStatusBadge(String status) {
     Color bgColor;
     Color textColor = Colors.white;
@@ -48,16 +44,6 @@ class AccountWalletPage extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  Future<void> _launchTransactionScan(String uri) async {
-    logger.d("Uri is $uri");
-    final Uri url = Uri.parse(uri);
-    if (await canLaunchUrl(url)) {
-      await launchUrl(url);
-    } else {
-      throw 'Could not launch $url';
-    }
   }
 
   @override
@@ -328,7 +314,7 @@ class AccountWalletPage extends StatelessWidget {
                                                         .toString(),
                                                   ),
                                                   Text(
-                                                    '${formatDouble(viewModel.allBalances?[token["chain"]] ?? 0, 10)} ${token["short_name"]}',
+                                                    '${AIHelpers.formatDouble(viewModel.allBalances?[token["chain"]] ?? 0, 10)} ${token["short_name"]}',
                                                     style:
                                                         Theme.of(
                                                           context,
@@ -414,7 +400,7 @@ class AccountWalletPage extends StatelessWidget {
                                                               .spaceBetween,
                                                       children: [
                                                         Text(
-                                                          '${formatDouble(token["amount"] ?? 0, 10)} ${token["short_name"] ?? ""}',
+                                                          '${AIHelpers.formatDouble(token["amount"] ?? 0, 10)} ${token["short_name"] ?? ""}',
                                                           style:
                                                               Theme.of(context)
                                                                   .textTheme
@@ -425,7 +411,7 @@ class AccountWalletPage extends StatelessWidget {
                                                             logger.d(
                                                               "Token is $token",
                                                             );
-                                                            _launchTransactionScan(
+                                                            AIHelpers.launchExternalSource(
                                                               '${token["scanUrl"]}/${token["tx_hash"]}',
                                                             );
                                                           },
