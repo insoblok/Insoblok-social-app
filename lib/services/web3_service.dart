@@ -26,6 +26,7 @@ class Web3Service with ListenableServiceMixin {
   late web3.Web3Client _evmClient;
   late SolanaClient _solanaClient;
 
+  final getIt = GetIt.instance;
 
   final RxValue<Map<String, double>> _allBalances = RxValue<Map<String, double>>({});
   Map<String, double> get allBalances => _allBalances.value;

@@ -83,6 +83,7 @@ class EthTransferRequest {
 class ReownService {
   late ReownAppKitModal _appKitModel;
   ReownAppKitModal get appKitModel => _appKitModel;
+  final Web3Service _web3Service = locator<Web3Service>();
 
   Future<void> init(BuildContext context) async {
     _appKitModel = ReownAppKitModal(
@@ -151,8 +152,7 @@ class ReownService {
   Future<Map<String, dynamic>?> onShowTransferModal(
     BuildContext parentContext, 
     String? address,
-    Future<void> Function(Map<String, dynamic>) handleClickSend,
-    ValueNotifier<bool> isSendingNotifier,
+    Future<void> Function(Map<String, dynamic>) handleClickSend
   ) async {
     List<UserModel?> allUsers = [];
     Map<String, dynamic> result = {};
@@ -313,55 +313,29 @@ class ReownService {
                 Row(
                   spacing: 24.0,
                   children: [
-                    ValueListenableBuilder<bool>(
-                      valueListenable: isSendingNotifier,
-                      builder: (context, isSending, _) {
-                        return Expanded(
-                          child: GestureDetector(
-                            onTap: isSending
-                              ? null
-                              : () async {
-                                  final amount = _amountController.text.trim();
-                                  if (amount.isEmpty || double.tryParse(amount) == null) {
-                                    AIHelpers.showToast(msg: "Please enter valid amount.");
-                                    return;
-                                  }
-                                  result = {
-                                    ...result,
-                                    "amount": double.parse(amount),
-                                  };
-                                  await handleClickSend(result);
-                              },
-                            child: Container(
-                              padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-                              decoration: BoxDecoration(
-                                color: isSending ? AIColors.pink.withOpacity(0.6) : AIColors.pink,
-                                borderRadius: BorderRadius.circular(8),
-                              ),
-                              child: Center(
-                                child: isSending
-                                    ? SizedBox(
-                                        width: 20,
-                                        height: 20,
-                                        child: CircularProgressIndicator(
-                                          strokeWidth: 2,
-                                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                                        ),
-                                      )
-                                    : Text(
-                                        "Send",
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                              ),
-                            ),
-                          ),
-                        );
-
-                      }
+                    Expanded(
+                      child: TextFillButton(
+                        text: "Send",
+                        color: AIColors.pink,
+                        onTap: () async { /// The above Dart code is using the `Navigator` class to pop the
+                        /// current route off the navigation stack and return a result to
+                        /// the previous route. This is commonly used in Flutter
+                        /// applications to navigate back to the previous screen and pass
+                        /// data back to it.
+                          final amount = _amountController.text.trim();
+                          logger.d("The amount input is $amount");
+                          if (amount.isEmpty || double.tryParse(amount) == null) {
+                            AIHelpers.showToast(msg: "Please enter valid amount.");
+                            return;
+                          }
+                          result = {
+                            ... result,
+                            "amount": double.parse(amount)
+                          };
+                          logger.d("Result is $result");
+                          await handleClickSend(result);
+                        }
+                      ),
                     ),
                     Expanded(
                       child: OutlineButton(
