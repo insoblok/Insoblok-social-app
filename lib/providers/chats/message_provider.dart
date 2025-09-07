@@ -276,7 +276,7 @@ class MessageProvider extends InSoBlokViewModel {
     await runBusyFuture(() async {
       try {
         final network = kWalletTokenList.firstWhere((tk) => tk["chain"] == map["chain"]);
-        final newTransaction = await web3Service.sendEvmToken(chatUser.walletAddress!, map["amount"].toDouble(), network, cryptoService.privateKey!);
+        final newTransaction = await _web3Service.sendEvmToken(chatUser.walletAddress!, map["amount"].toDouble(), network, cryptoService.privateKey!);
         if (newTransaction.isEmpty) {
           setError("Failed to send token due to server error.");
         }
@@ -319,7 +319,7 @@ class MessageProvider extends InSoBlokViewModel {
   Future<void> onPaidEth() async {
     isAddPop = false;
     final reownService = locator<ReownService>();
-    web3Service.getBalances(cryptoService.privateKey!.address.hex);
+    _web3Service.getBalances(cryptoService.privateKey!.address.hex);
     await reownService.onShowTransferModal(
       context,
       chatUser.walletAddress,

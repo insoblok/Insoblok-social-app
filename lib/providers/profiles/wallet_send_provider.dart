@@ -213,7 +213,7 @@ class WalletSendProvider extends InSoBlokViewModel {
 
     await runBusyFuture(() async {
       try {
-        currentTransaction = await web3Service.sendEvmToken(_receiverTextController.text.trim(), double.parse(_sendTokenTextController.text.trim()), kWalletTokenList[selectedFromToken], cryptoService.privateKey);
+        currentTransaction = await _web3Service.sendEvmToken(_receiverTextController.text.trim(), double.parse(_sendTokenTextController.text.trim()), kWalletTokenList[selectedFromToken], cryptoService.privateKey);
         // var model = transferService.getTransferModel(
         //   fromToken: fromToken,
         //   toToken: toToken,

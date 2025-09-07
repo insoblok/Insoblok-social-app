@@ -13,7 +13,6 @@ import 'package:stacked/stacked.dart';
 import 'package:solana/solana.dart';
 import 'package:insoblok/utils/const.dart';
 import 'package:insoblok/services/services.dart';
-import 'package:get_it/get_it.dart';
 import 'package:convert/convert.dart';
 import 'package:insoblok/locator.dart';
 import 'package:decimal/decimal.dart';
@@ -25,8 +24,6 @@ class Web3Service with ListenableServiceMixin {
 
   late web3.Web3Client _evmClient;
   late SolanaClient _solanaClient;
-
-  final getIt = GetIt.instance;
 
   final RxValue<Map<String, double>> _allBalances = RxValue<Map<String, double>>({});
   Map<String, double> get allBalances => _allBalances.value;
@@ -478,19 +475,4 @@ class Web3Service with ListenableServiceMixin {
     return _transactionFee;
     
   }
-
-
-}
-
-class Web3Helper {
-  static Web3Service get service => locator<Web3Service>(); 
-  static Map<String, double>? get allBalances => service.allBalances;
-  static Map<String, double>? get allPrices => service.allPrices;
-  static List<Map<String, dynamic>>? get transactions => service.transactions;
-
-  static Future<void> getBalances(String address) => service.getBalances(address);
-  static Future<void> getPrices() => service.getPrices();
-  static Future<void> getTransactions(String address) => service.getTransactions(address);
-  static void addTransaction(Map<String, dynamic> tx) => service.addTransaction(tx);
-
 }

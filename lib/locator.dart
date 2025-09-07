@@ -6,6 +6,7 @@ import 'package:insoblok/services/services.dart';
 GetIt locator = GetIt.I;
 
 void setupLocator() {
+  locator.registerSingleton(Web3Service());
   locator.registerSingleton(FirebaseService());
   locator.registerSingleton(AuthService());
   locator.registerSingleton(CryptoService());
@@ -14,7 +15,6 @@ void setupLocator() {
   locator.registerSingleton(MediaPickerService());
   locator.registerSingleton(ReownService());
   locator.registerSingleton(GoogleVisionService());
-  locator.registerSingleton(Web3Service());
   locator.registerFactory(() => UploadMediaProvider());
   locator.registerFactory(() => MessageProvider());
 }

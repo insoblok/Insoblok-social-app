@@ -25,13 +25,13 @@ class MyHttpOverrides extends HttpOverrides {
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
+  setupLocator();
   HttpOverrides.global = MyHttpOverrides();
   FlutterError.onError = (FlutterErrorDetails details) {
     logger.e('Error: $details');
   };
 
-  setupLocator();
-
+  
   AppLinks().uriLinkStream.listen((uri) {
     logger.d('onAppLink: $uri');
   });
