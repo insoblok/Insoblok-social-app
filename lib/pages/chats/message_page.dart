@@ -264,12 +264,6 @@ class MessagePage extends StatelessWidget {
                           ),
                           InkWell(
                             onTap: () {
-                              Routers.goToChatPaymentPage(context);
-                            },
-                            child:  AIImage(AIImages.icDollar, width: 36.0, height: 36.0),
-                          ),
-                          InkWell(
-                            onTap: () {
                               if (viewModel.isShowButton) {
                                 viewModel.sendMessage();
                               }

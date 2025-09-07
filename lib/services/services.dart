@@ -27,3 +27,4 @@ export 'cloudinary_cdn_service.dart';
 export 'crypto_service.dart';
 export 'web3_service.dart';
 export 'api_service.dart';
+export 'global_store.dart';

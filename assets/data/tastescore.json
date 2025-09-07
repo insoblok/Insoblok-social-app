@@ -58,33 +58,65 @@
     "xp_inso": [
         {
             "min": 0,
+<<<<<<< HEAD
             "max": 500,
             "rate": 50
+=======
+            "max": 100,
+            "inso": 1,
+            "rate": 0
+        },
+        {
+            "min": 100,
+            "max": 500,
+            "inso": 6,
+            "rate": 20
+>>>>>>> 108a6dd90840126df2947b9c6acd9d18d7fdf98d
         },
         {
             "min": 500,
             "max": 1000,
+<<<<<<< HEAD
             "rate": 40
+=======
+            "inso": 15,
+            "rate": 50
+>>>>>>> 108a6dd90840126df2947b9c6acd9d18d7fdf98d
         },
         {
             "min": 1000,
             "max": 2500,
+<<<<<<< HEAD
             "rate": 35
+=======
+            "inso": 50,
+            "rate": 100
+>>>>>>> 108a6dd90840126df2947b9c6acd9d18d7fdf98d
         },
         {
             "min": 2500,
             "max": 5000,
+<<<<<<< HEAD
             "rate": 30
+=======
+            "inso": 120,
+            "rate": 140
+>>>>>>> 108a6dd90840126df2947b9c6acd9d18d7fdf98d
         },
         {
             "min": 5000,
             "max": 10000,
+<<<<<<< HEAD
             "rate": 25
         },
         {
             "min": 10000,
             "max": 50000,
             "rate": 25
+=======
+            "inso": 300,
+            "rate": 200
+>>>>>>> 108a6dd90840126df2947b9c6acd9d18d7fdf98d
         }
     ],
     "user_level": [

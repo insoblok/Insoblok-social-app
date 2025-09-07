@@ -1,13 +1,13 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
-import 'package:insoblok/services/image_service.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:stacked/stacked.dart';
 
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/widgets/widgets.dart';
+import 'package:insoblok/services/services.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
 const kAccountAvatarSize = 92.0;
@@ -46,9 +46,9 @@ class AccountPage extends StatelessWidget {
                           child: const AccountPresentHeaderView(),
                         ),
                       ),
-                      SliverToBoxAdapter(child: const AccountFloatingView()),
+                      const SliverToBoxAdapter(child: AccountFloatingView()),
 
-                      /// 🔹 Added Stories / Galleries Tab
+                      // Tabs: Stories / Galleries
                       SliverToBoxAdapter(
                         child: Padding(
                           padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -75,12 +75,12 @@ class AccountPage extends StatelessWidget {
 
                       SliverList(
                         delegate: SliverChildListDelegate([
-                          /// ------------------ STORIES ------------------
+                          // ------------------ STORIES ------------------
                           if (viewModel.pageIndex == 0) ...{
                             if (viewModel.stories.isNotEmpty) ...{
                               GridView.count(
                                 shrinkWrap: true,
-                                controller: viewModel.controller,
+                                physics: const NeverScrollableScrollPhysics(),
                                 crossAxisCount: 3,
                                 mainAxisSpacing: 1.0,
                                 crossAxisSpacing: 1.0,
@@ -88,63 +88,40 @@ class AccountPage extends StatelessWidget {
                                 padding:
                                     const EdgeInsets.symmetric(vertical: 4.0),
                                 children: [
-                                  for (var story in viewModel.stories) ...{
-                                    InkWell(
-                                      onTap: () {
-                                        viewModel.goToDetailPage(
-                                          viewModel.stories.indexOf(story),
-                                        );
-                                      },
-                                      child: (story.medias ?? []).isNotEmpty
-                                          ? Stack(
-                                              children: [
-                                                AIImage(
-                                                  width: double.infinity,
-                                                  height: double.infinity,
-                                                  story.medias?.first.type ==
-                                                          'image'
-                                                      ? story
-                                                          .medias
-                                                          ?.first
-                                                          .link
-                                                      : story
-                                                          .medias
-                                                          ?.first
-                                                          .thumb,
-                                                  fit: BoxFit.cover,
-                                                ),
-                                                if ((story.medias ?? [])
-                                                        .length >
-                                                    1)
-                                                  const Positioned(
-                                                    top: 6.0,
-                                                    right: 6.0,
-                                                    child: Icon(
-                                                      Icons.filter_none_outlined,
-                                                      color: Colors.white,
-                                                    ),
-                                                  ),
-                                              ],
-                                            )
-                                          : Container(
-                                              color: AIColors.grey,
-                                              child: Align(
-                                                alignment: Alignment.center,
-                                                child: Padding(
-                                                  padding:
-                                                      const EdgeInsets.all(8),
-                                                  child:
-                                                      AIHelpers.htmlRender(
-                                                    story.text,
-                                                    fontSize:
-                                                        FontSize(21.0),
-                                                    textAlign:
-                                                        TextAlign.center,
-                                                  ),
-                                                ),
+                                  for (final story in viewModel.stories) ...{
+                                    if ((story.medias ?? []).isEmpty)
+                                      InkWell(
+                                        onTap: () {
+                                          viewModel.goToDetailPage(
+                                            viewModel.stories.indexOf(story),
+                                          );
+                                        },
+                                        child: Container(
+                                          color: AIColors.grey,
+                                          child: Align(
+                                            alignment: Alignment.center,
+                                            child: Padding(
+                                              padding: const EdgeInsets.all(8),
+                                              child: AIHelpers.htmlRender(
+                                                story.text,
+                                                fontSize: FontSize(21.0),
+                                                textAlign: TextAlign.center,
                                               ),
                                             ),
-                                    ),
+                                          ),
+                                        ),
+                                      )
+                                    else
+                                      _StoryTile(
+                                        story: story,
+                                        onTap: () {
+                                          viewModel.goToDetailPage(
+                                            viewModel.stories.indexOf(story),
+                                          );
+                                        },
+                                        buildMediaThumb: (url, {bool isVideo = false}) =>
+                                            _buildMediaThumbnail(context, url, isVideo: isVideo),
+                                      ),
                                   },
                                 ],
                               ),
@@ -156,8 +133,7 @@ class AccountPage extends StatelessWidget {
                               ),
                             },
                           },
-
-                          /// ------------------ GALLERIES ------------------
+                          // ------------------ GALLERIES ------------------
                           if (viewModel.pageIndex == 3) ...{
                             if (viewModel.isFetchingGallery) ...{
                               Container(
@@ -170,26 +146,23 @@ class AccountPage extends StatelessWidget {
                               viewModel.galleries.isNotEmpty
                                   ? GridView.count(
                                       shrinkWrap: true,
-                                      controller: viewModel.controller,
+                                      physics: const NeverScrollableScrollPhysics(),
                                       crossAxisCount: 3,
                                       mainAxisSpacing: 1.0,
                                       crossAxisSpacing: 1.0,
                                       childAspectRatio: 0.75,
-                                      padding: const EdgeInsets.symmetric(
-                                        vertical: 4.0,
-                                      ),
+                                      padding: const EdgeInsets.symmetric(vertical: 4.0),
                                       children: [
-                                        for (var gallery
-                                            in viewModel.galleries) ...{
+                                        for (final gallery in viewModel.galleries) ...{
                                           InkWell(
-                                            onTap: () =>
-                                                AIHelpers.goToDetailView(
+                                            onTap: () => AIHelpers.goToDetailView(
                                               context,
                                               medias: viewModel.galleries,
-                                              index: viewModel.galleries
-                                                  .indexOf(gallery),
+                                              index: viewModel.galleries.indexOf(gallery),
+                                              storyID:'',
+                                              storyUser:'',
                                             ),
-                                            child: _buildMediaThumbnail(gallery),
+                                            child: _buildMediaThumbnail(context, gallery),
                                           ),
                                         },
                                       ],
@@ -203,8 +176,7 @@ class AccountPage extends StatelessWidget {
                           },
 
                           SizedBox(
-                            height: MediaQuery.of(context).padding.bottom +
-                                40.0,
+                            height: MediaQuery.of(context).padding.bottom + 40.0,
                           ),
                         ]),
                       ),
@@ -236,20 +208,19 @@ class AccountPage extends StatelessWidget {
     }
   }
   
-  Widget _buildMediaThumbnail(String url) {
-    final lowerUrl = url.toLowerCase();
+  Widget _buildMediaThumbnail(BuildContext context, String url, {bool isVideo = false}) {
+    final detectVideo = isVideo || _looksLikeVideoUrl(url);
 
-    if (lowerUrl.contains('.mp4') || lowerUrl.contains('.mov')) {
+    if (detectVideo) {
       return FutureBuilder<Uint8List?>(
         future: _getVideoThumbnail(url),
         builder: (context, snapshot) {
-          if (snapshot.connectionState ==
-              ConnectionState.waiting) {
-            return const Center(
-                child: CircularProgressIndicator());
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
           }
-          if (snapshot.hasData) {
+          if (snapshot.hasData && snapshot.data != null) {
             return Stack(
+              fit: StackFit.expand,
               children: [
                 Image.memory(
                   snapshot.data!,
@@ -267,29 +238,44 @@ class AccountPage extends StatelessWidget {
               ],
             );
           }
-          return const Icon(
-            Icons.broken_image,
-            color: Colors.grey,
-          );
+          return const Icon(Icons.broken_image, color: Colors.grey);
         },
       );
     } else {
-      // Show image as before
-      return AIImage(url);
+      return AIImage(url, fit: BoxFit.cover);
     }
   }
 
-  Widget _buildTabButton(BuildContext context,
-      {required String label,
-      required bool isSelected,
-      required VoidCallback onTap}) {
+
+  bool _looksLikeVideoUrl(String url) {
+    final u = url.toLowerCase();
+    return u.endsWith('.mp4') ||
+        u.endsWith('.mov') ||
+        u.endsWith('.m3u8') ||
+        u.contains('/video/') ||
+        u.contains('video/upload');
+  }
+
+  Widget _buildTabButton(
+    BuildContext context, {
+    required String label,
+    required bool isSelected,
+    required VoidCallback onTap,
+  }) {
+    const gradient = LinearGradient(
+      begin: Alignment.centerLeft,
+      end: Alignment.centerRight,
+      colors: [Color(0xFFF30C6C), Color(0xFFC739EB)],
+    );
+
     return InkWell(
       onTap: onTap,
       borderRadius: BorderRadius.circular(20),
-      child: Container(
+      child: Ink(
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
         decoration: BoxDecoration(
-          color: isSelected ? Theme.of(context).primaryColor : Colors.transparent,
+          gradient: isSelected ? gradient : null,
+          color: isSelected ? null : Colors.transparent,
           border: Border.all(color: Theme.of(context).primaryColor),
           borderRadius: BorderRadius.circular(20),
         ),
@@ -305,3 +291,42 @@ class AccountPage extends StatelessWidget {
   }
 }
 
+class _StoryTile extends StatelessWidget {
+  final StoryModel story;
+  final VoidCallback onTap;
+
+  final Widget Function(String url, {bool isVideo}) buildMediaThumb;
+
+  const _StoryTile({
+    required this.story,
+    required this.onTap,
+    required this.buildMediaThumb,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final media = story.medias!.first;
+    final String link = media.link!;
+    final String? type = media.type;
+    final bool isVideo = (type?.toLowerCase() == 'video');
+
+    return InkWell(
+      onTap: onTap,
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          isVideo
+              ? buildMediaThumb(link, isVideo: true)
+              : AIImage(link, width: double.infinity, height: double.infinity, fit: BoxFit.cover),
+
+          if ((story.medias ?? []).length > 1)
+            const Positioned(
+              top: 6.0,
+              right: 6.0,
+              child: Icon(Icons.filter_none_outlined, color: Colors.white),
+            ),
+        ],
+      ),
+    );
+  }
+}

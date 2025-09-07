@@ -66,6 +66,7 @@ Map<String, dynamic> _$XpEarnModelToJson(_XpEarnModel instance) =>
 _XpInSoModel _$XpInSoModelFromJson(Map<String, dynamic> json) => _XpInSoModel(
   min: (json['min'] as num?)?.toInt(),
   max: (json['max'] as num?)?.toInt(),
+  inso: (json['inso'] as num?)?.toInt(),
   rate: (json['rate'] as num?)?.toInt(),
 );
 
@@ -73,6 +74,7 @@ Map<String, dynamic> _$XpInSoModelToJson(_XpInSoModel instance) =>
     <String, dynamic>{
       'min': instance.min,
       'max': instance.max,
+      'inso': instance.inso,
       'rate': instance.rate,
     };
 

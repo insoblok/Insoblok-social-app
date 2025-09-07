@@ -100,6 +100,7 @@ class VTOImageProvider extends InSoBlokViewModel {
     await runBusyFuture(() async {
       try {
         var image = await _mediaPickerService.onPickerSingleMedia(
+          context,
           isImage: true,
         );
         if (image != null) {

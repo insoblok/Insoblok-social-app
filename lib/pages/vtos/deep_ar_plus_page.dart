@@ -39,8 +39,7 @@ class _DeepARPlusPageState extends State<DeepARPlusPage> {
   File? lastPhoto;
   File? lastVideo;
 
-  // ===== Timer bits =====
-  final int _maxSeconds = 10;   // <- set 0 for “no auto-stop”
+  final int _maxSeconds = 10;   
   int _remaining = 0;
   bool _isFiltering = false;
   bool _isVideoLoading = false;
@@ -48,7 +47,6 @@ class _DeepARPlusPageState extends State<DeepARPlusPage> {
   Timer? _ticker;
   bool get _isRecording => deepAr.isRecording;
 
-  // ===== Zoom bits =====
   static const double _minZoom = 1.0;
   static const double _maxZoom = 4.0;
   double _zoom = 1.0;                    // current zoom factor
@@ -64,7 +62,7 @@ class _DeepARPlusPageState extends State<DeepARPlusPage> {
         androidKey: DEEPAR_ANDROID_KEY,
         iosKey: DEEPAR_IOS_KEY,
         resolution: Resolution.medium,
-        initialEffect: 'assets/effects/filters/fire_effect/Fire_Effect.deepar',
+        initialEffect: '',
       );
       if (mounted) setState(() {});
     });
@@ -86,12 +84,19 @@ class _DeepARPlusPageState extends State<DeepARPlusPage> {
   }
 
   // ===== Hardware zoom if available on controller =====
+  void _onSwitchCameraPressed() async {
+    try {
+      await deepAr.switchCamera();
+    } catch (e) {
+      debugPrint('Switch camera failed: $e');
+    }
+  }
+
+
   Future<void> _applyHardwareZoom(double z) async {
     try {
-      // If your plugin exposes setZoom(double) or setZoomFactor(double), call it here.
       await (deepAr.controller as dynamic).setZoom(z);
     } catch (_) {
-      // No hardware zoom available; preview zoom still works
     }
   }
 
@@ -111,7 +116,6 @@ class _DeepARPlusPageState extends State<DeepARPlusPage> {
     });
   }
 
-  // ===== Start/Stop with timer =====
   Future<void> _startRecordingWithTimer() async {
     if (!deepAr.isReady || _isRecording) return;
 
@@ -119,7 +123,6 @@ class _DeepARPlusPageState extends State<DeepARPlusPage> {
     if (!mounted) return;
 
     if (_maxSeconds <= 0) {
-      // No auto-stop; show REC
       setState(() {
         _isFiltering = true;
         _remaining = 0;
@@ -152,8 +155,8 @@ class _DeepARPlusPageState extends State<DeepARPlusPage> {
     _ticker = null;
 
     setState(() {
-      _isVideoLoading = true;  // show loader overlay
-      _isFiltering = false;    // hide timer
+      _isVideoLoading = true;  
+      _isFiltering = false;    
     });
 
     File? result;
@@ -177,7 +180,6 @@ class _DeepARPlusPageState extends State<DeepARPlusPage> {
     }
   }
 
-  // ===== Timer overlay =====
   Widget _recordTimerOverlay() {
     if (!_isFiltering) return const SizedBox.shrink();
 
@@ -235,7 +237,6 @@ class _DeepARPlusPageState extends State<DeepARPlusPage> {
     );
   }
 
-  // ===== Loader overlay =====
   Widget _loadingOverlay() {
     if (!_isVideoLoading) return const SizedBox.shrink();
     return Positioned.fill(
@@ -255,7 +256,6 @@ class _DeepARPlusPageState extends State<DeepARPlusPage> {
     );
   }
 
-  // ===== Zoom overlay (vertical slider + badge) =====
   Widget _zoomOverlay() {
     if (_isVideoLoading) return const SizedBox.shrink();
 
@@ -300,7 +300,6 @@ class _DeepARPlusPageState extends State<DeepARPlusPage> {
     );
   }
 
-  // ===== Pinch-to-zoom wrapper =====
   Widget _pinchZoomWrapper({required Widget child}) {
     return GestureDetector(
       onScaleStart: (d) {
@@ -323,6 +322,12 @@ class _DeepARPlusPageState extends State<DeepARPlusPage> {
       appBar: AppBar(
         title: const Text('DeepAR Filter'),
         actions: [
+          // Icon will appear beside "Done" (to its left in LTR locales).
+          IconButton(
+            tooltip: 'Switch camera',
+            onPressed: _onSwitchCameraPressed,
+            icon: const Icon(Icons.cameraswitch_outlined),
+          ),
           TextButton(
             onPressed: _finishAndReturn,
             child: const Text('Done'),
@@ -331,19 +336,14 @@ class _DeepARPlusPageState extends State<DeepARPlusPage> {
       ),
       body: Stack(
         children: [
-          // 1) AR preview with pinch-to-zoom
           Positioned.fill(
             child: _pinchZoomWrapper(
               child: DeepArPlusSurface(
                 service: deepAr,
-                // Keep your base scale (1.3) and multiply by _zoom for preview zoom
                 scale: deepAr.aspectRatio * 1.3 * _zoom,
               ),
             ),
           ),
-
-          // 2) Effects list (vertical list on the right)
-          // Put this inside your Stack (replacing the vertical ListView you had)
           Positioned(
             top: 8,
             left: 0,
@@ -385,15 +385,10 @@ class _DeepARPlusPageState extends State<DeepARPlusPage> {
               ),
             ),
           ),
-
-
-          // 3) Timer overlay (top)
           _recordTimerOverlay(),
 
-          // 4) Zoom overlay (right)
           _zoomOverlay(),
 
-          // 5) Capture controls
           SafeArea(
             child: Align(
               alignment: Alignment.bottomCenter,
@@ -443,38 +438,36 @@ class _DeepARPlusPageState extends State<DeepARPlusPage> {
             ),
           ),
 
-          // 6) Loader overlay
           _loadingOverlay(),
         ],
       ),
 
-      // Optional: quick peek
       bottomNavigationBar: (lastPhoto == null && lastVideo == null)
-          ? null
-          : Container(
-              color: Colors.black54,
-              padding: const EdgeInsets.all(12),
-              child: Row(
-                children: [
-                  if (lastPhoto != null)
-                    Expanded(
-                      child: Text(
-                        'Photo: ${lastPhoto!.path}',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  if (lastVideo != null)
-                    Expanded(
-                      child: Text(
-                        'Video: ${lastVideo!.path}',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                ],
-              ),
-            ),
+      ? null
+      : Container(
+          color: Colors.black54,
+          padding: const EdgeInsets.all(12),
+          child: Row(
+            children: [
+              if (lastPhoto != null)
+                Expanded(
+                  child: Text(
+                    'Photo: ${lastPhoto!.path}',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+              if (lastVideo != null)
+                Expanded(
+                  child: Text(
+                    'Video: ${lastVideo!.path}',
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+            ],
+          ),
+        ),
     );
   }
 }

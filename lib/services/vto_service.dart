@@ -69,30 +69,68 @@ class VTOService {
     String type = 'tops',
   }) async {
     try {
+
+      logger.d("modelUrl : $modelUrl");
+      logger.d("photoUrl : $photoUrl");
+      logger.d("type : $type");
+
+      if (modelUrl.isEmpty) return null;
+      if (photoUrl == null || photoUrl.isEmpty) return null;
+
       logger.d(modelUrl);
-      var id = await NetworkUtil.getVTOClothingUserImage(
+
+      final id = await NetworkUtil.getVTOClothingUserImage(
         model: modelUrl,
-        clothingModel: photoUrl!,
+        clothingModel: photoUrl,   // no !
         clothingType: type,
       );
-      if (id != null) {
-        // await Future.delayed(const Duration(minutes: 1));
-        // var result = await NetworkUtil.getVTOResult(id: id);
-        // logger.d(result);
-        Map<String, dynamic> result = {};
-        while (true) {
-          result = await NetworkUtil.getVTOStatus(id: id);
-          if (result['status'] == 'completed') break;
-        }
-        return (result['output'] as List).first;
-      } else {
-        logger.i('VTO Create ID Error!');
+
+      if (id == null) {
+        logger.i('VTO job creation failed: null id');
+        return null;
       }
-    } catch (e) {
+
+      // Poll status with backoff & timeout
+      const pollInterval = Duration(seconds: 1);
+      const maxWait = Duration(minutes: 2);
+      final deadline = DateTime.now().add(maxWait);
+
+      while (true) {
+        // Safety: stop polling after deadline
+        if (DateTime.now().isAfter(deadline)) {
+          logger.i('VTO polling timed out for id=$id');
+          return null;
+        }
+
+        final result = await NetworkUtil.getVTOStatus(id: id);
+        final status = (result['status'] ?? '').toString().toLowerCase();
+
+        if (status == 'completed') {
+          // Prefer explicit get result if your API requires it:
+          // final full = await NetworkUtil.getVTOResult(id: id);
+          // final outputs = (full?['output'] as List?) ?? const [];
+          final outputs = (result['output'] as List?) ?? const [];
+          if (outputs.isNotEmpty && outputs.first is String) {
+            return outputs.first as String;
+          }
+          logger.i('VTO completed but output is missing/invalid.');
+          return null;
+        }
+
+        if (status == 'failed' || status == 'error' || status == 'canceled') {
+          logger.i('VTO $status for id=$id: $result');
+          return null;
+        }
+
+        // still "queued" or "processing"
+        await Future.delayed(pollInterval);
+      }
+    } catch (e, _) {
       logger.e(e);
+      return null;
     }
-    return null;
   }
+
 
   Future<String?> convertVTOShoes({
     required String model,

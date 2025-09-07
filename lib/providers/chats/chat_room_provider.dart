@@ -81,7 +81,14 @@ class CreateRoomProvider extends InSoBlokViewModel {
   Future<void> onCreateRoom(UserModel user) async {
     if (isBusy) return;
     clearErrors();
-
+    const gradient = LinearGradient(
+      begin: Alignment.centerLeft,
+      end: Alignment.centerRight,
+      colors: [
+        Color(0xFFF30C6C), // pink
+        Color(0xFFC739EB), // purple
+      ],
+    );
     var dialog = await showDialog<bool>(
       context: context,
       builder: (context) {
@@ -95,7 +102,8 @@ class CreateRoomProvider extends InSoBlokViewModel {
                 vertical: 24.0,
               ),
               decoration: BoxDecoration(
-                color: AIColors.pink,
+                // color: AIColors.pink,
+                gradient: gradient,
                 borderRadius: BorderRadius.circular(16.0),
               ),
               child: Column(

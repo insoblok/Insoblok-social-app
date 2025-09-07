@@ -31,6 +31,7 @@ class PaymentAmountProvider extends InSoBlokViewModel{
   TextEditingController amountController = TextEditingController();
 
   double get amount => _web3Service.paymentAmount;
+
   @override
   List<ListenableServiceMixin> get listenableServices => [_web3Service];
 

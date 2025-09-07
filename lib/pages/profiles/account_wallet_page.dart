@@ -8,8 +8,19 @@ import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
 import 'package:insoblok/models/models.dart';
 
+  
+
+const kWalletActionList = [
+  // {'name': 'Buy', 'icon': Icons.add},
+  {'name': 'Send', 'icon': Icons.arrow_upward},
+  {'name': 'Receive', 'icon': Icons.arrow_downward},
+  {'name': 'Swap', 'icon': Icons.swap_calls},
+  // {'name': 'Bridge', 'icon': Icons.link},
+];
+
 class AccountWalletPage extends StatelessWidget {
   const AccountWalletPage({super.key});
+
 
   Widget _buildStatusBadge(String status) {
     Color bgColor;
@@ -496,7 +507,10 @@ void _showXpConvertSheet(BuildContext context, AccountWalletProvider parentVm) {
         viewModelBuilder: () => AccountRewardProvider(),
         onViewModelReady: (vm) async {
           // If you have a real XP value on parentVm, pass that instead.
-          vm.init(context, null);
+          vm.init(
+            context,
+            null
+          );
         },
         builder: (context, vm, __) {
           return RewardTransferView(viewModel: vm);
@@ -567,10 +581,6 @@ class RewardTransferView extends StatelessWidget {
                       ),
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        color:
-                            viewModel.selectXpInSo == inSoModel
-                                ? AIColors.white
-                                : Theme.of(context).colorScheme.onPrimary,
                       ),
                     ),
                   ),
@@ -586,7 +596,6 @@ class RewardTransferView extends StatelessWidget {
                   Row(
                     children: [
                       SizedBox(
-                        width: 80,
                         child: TextFormField(
                           decoration: InputDecoration(
                             hintText: '0',

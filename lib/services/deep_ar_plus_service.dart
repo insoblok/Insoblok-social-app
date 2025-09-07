@@ -4,18 +4,22 @@ import 'package:flutter/foundation.dart';
 import 'package:deepar_flutter_plus/deepar_flutter_plus.dart';
 
 class DeepArPlusService with ChangeNotifier {
-  DeepArControllerPlus? _controller;      // ← make it nullable (no single final instance)
+  DeepArControllerPlus? _controller;      
   bool _engineReady = false;
   bool _viewReady = false;
   bool _recording = false;
   bool _initInProgress = false;
+  bool _isFrontCamera = true;
+  String? _androidKey;
+  String? _iosKey;
+  Resolution _resolution = Resolution.medium;
+  String? _initialEffect;
 
   bool get isReady => _engineReady && (_viewReady || !Platform.isIOS);
   bool get isRecording => _recording;
   double get aspectRatio => _controller?.aspectRatio ?? 1.0;
   DeepArControllerPlus get controller => _controller!;
 
-  /// Initialize once. If already ready (or initializing), this is a no-op.
   Future<void> initialize({
     required String androidKey,
     required String iosKey,
@@ -23,10 +27,15 @@ class DeepArPlusService with ChangeNotifier {
     String? initialEffect,
     Duration iosViewTimeout = const Duration(seconds: 10),
   }) async {
-    if (_engineReady || _initInProgress) return;   // ← guard against repeats
+    if (_engineReady || _initInProgress) return;   
     _initInProgress = true;
 
-    _controller ??= DeepArControllerPlus();        // ← create a NEW instance when needed
+    _androidKey = androidKey;
+    _iosKey = iosKey;
+    _resolution = resolution;
+    _initialEffect = initialEffect;
+
+    _controller ??= DeepArControllerPlus();       
     try {
       final res = await _controller!.initialize(
         androidLicenseKey: androidKey,
@@ -88,12 +97,68 @@ class DeepArPlusService with ChangeNotifier {
     return null;
   }
 
-  /// Clean teardown. Crucially: drop the controller so a fresh one is created next time.
+  Future<void> switchCamera() async {
+    if (!isReady) return;
+
+    final dyn = _controller as dynamic;
+
+    // 1) Try: switchCameraFacing()
+    try {
+      final r = dyn.switchCameraFacing?.call();
+      if (r is Future) await r;
+      _isFrontCamera = !_isFrontCamera;
+      notifyListeners();
+      return;
+    } catch (_) {}
+
+    // 2) Try: switchCamera()
+    try {
+      final r = dyn.switchCamera?.call();
+      if (r is Future) await r;
+      _isFrontCamera = !_isFrontCamera;
+      notifyListeners();
+      return;
+    } catch (_) {}
+
+    // 3) Try: flipCamera()
+    try {
+      final r = dyn.flipCamera?.call();
+      if (r is Future) await r;
+      _isFrontCamera = !_isFrontCamera;
+      notifyListeners();
+      return;
+    } catch (_) {}
+
+    // 4) Fallback: reinitialize engine with toggled facing (if your plugin supports it at init)
+    // NOTE: deepar_flutter_plus initialize(...) might not expose facing. If it does (e.g. `cameraFacing:`),
+    // pass it here. Otherwise this fallback won’t change the camera.
+    await _fallbackReinitializeTogglingFacing();
+  }
+
+  Future<void> _fallbackReinitializeTogglingFacing() async {
+    if (_androidKey == null || _iosKey == null) return;
+
+    // Tear down
+    disposeEngine();
+
+    // Recreate (if your plugin supports passing facing at init, put it here)
+    await initialize(
+      androidKey: _androidKey!,
+      iosKey: _iosKey!,
+      resolution: _resolution,
+      initialEffect: _initialEffect,
+    );
+
+    // We flipped the flag, but without an init-facing param this may still be the same camera.
+    _isFrontCamera = !_isFrontCamera;
+    notifyListeners();
+  }
+
   void disposeEngine() {
     try {
       _controller?.destroy();
     } finally {
-      _controller = null;                 // ← KEY: allow a fresh instance on next initialize()
+      _controller = null;                
       _engineReady = false;
       _viewReady = false;
       _recording = false;
@@ -102,7 +167,6 @@ class DeepArPlusService with ChangeNotifier {
     }
   }
 
-  /// If you intentionally need to re-init (e.g., change resolution), use this.
   Future<void> reinitialize({
     required String androidKey,
     required String iosKey,
@@ -119,6 +183,4 @@ class DeepArPlusService with ChangeNotifier {
       iosViewTimeout: iosViewTimeout,
     );
   }
-
-  
 }

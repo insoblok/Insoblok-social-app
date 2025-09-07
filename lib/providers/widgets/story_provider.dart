@@ -1,18 +1,18 @@
 import 'dart:io';
 import 'dart:async';
 import 'package:flutter/material.dart';
-
-import 'package:flutter_quill/flutter_quill.dart';
 import 'package:image/image.dart' as img;
-import 'package:insoblok/utils/background_camera_capture.dart';
-import 'package:insoblok/utils/background_camera_video_capture.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:flutter_quill/flutter_quill.dart';
 import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
+
+import 'package:path_provider/path_provider.dart';
+import 'package:image/image.dart' as img;
 
 class StoryProvider extends InSoBlokViewModel {
   late BuildContext _context;
@@ -64,110 +64,179 @@ class StoryProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  bool _showFaceDialog = false;
+  bool get showFaceDialog => _showFaceDialog;
+
+  set showFaceDialog(bool f) {
+    _showFaceDialog = f;
+    notifyListeners();
+  }
+
+  String? _faceStatus;
+  String? get faceStatus => _faceStatus;
+  set faceStatus(String? s) {
+    _faceStatus = s;
+    notifyListeners();
+  }
+
+  String? _resultFaceUrl;
+  String? get resultFaceUrl => _resultFaceUrl;
+  set resultFaceUrl(String? s) {
+    _resultFaceUrl = s;
+    notifyListeners();
+  }
+
   late QuillController? quillController;
   var quillScrollController = ScrollController();
   var focusNode = FocusNode();
 
-  final camera = BackgroundCameraCapture();
+  final camera = BackgroundCameraCapture(
+    maxCaptures: 3,              // exactly 3 captures
+    stopStreamOnMax: true, 
+  );
   final videoCapture = BackgroundCameraVideoCapture();
   late int refreshCount = 0;
 
   Timer? capture_timer;
 
+  final globals = GlobalStore();
+  bool get vybeCamEnabled => globals.isVybeCamEnabled;
+
   void init(BuildContext context, {required StoryModel model}) async {
     this.context = context;
     story = model;
 
-    logger.d("current story id : ${story.id}");
+    logger.d("id of story: $story");
 
     refreshCount = 0;
     _videoPath = null;
-    
+
     final mediaPath = story.medias?[0].link;
-    if(mediaPath!.contains('.mov') || mediaPath.contains('.mp4')){
+    if (mediaPath!.contains('.mov') || mediaPath.contains('.mp4')) {
       _videoStoryPath = story.medias?[0].link;
-    }else{
+    } else {
       _videoStoryPath = null;
     }
-    
-    captureReactionImage();
+
+    final auth = AuthHelper.user?.id;
+
+    // if((auth == story.userId)){
+
+    //   logger.d("resumeCapturing");
+    //   camera.resumeCapturing();
+    // }
+
+   logger.d("vybeCamEnabled : $vybeCamEnabled");
+    logger.d(auth);
+    logger.d(story.userId);
+
+
+    if(vybeCamEnabled && (auth != story.userId)){
+     
+      Timer _timer = Timer(Duration(seconds: 3), () {showFaceDialog = true;});
+
+    //   camera.onFrame = (String? path) {
+    //     logger.d("Trying to detect user expressions");
+    //     if (path != null) {
+    //       detectFace(path);
+    //     }
+    //   };
+
+    //   await camera.initialize();
+    }
 
     quillController = () {
-      return QuillController.basic(
-        config: QuillControllerConfig(
-          clipboardConfig: QuillClipboardConfig(enableExternalRichPaste: true),
-        ),
-      );
-    }();
-
+        return QuillController.basic(
+          config: QuillControllerConfig(
+            clipboardConfig: QuillClipboardConfig(enableExternalRichPaste: true),
+          ),
+        );
+      }();
     fetchUser();
   }
-  
+
   Future<void> captureReactionImage() async {
-    
-    if(isVideoReaction) return;
+
+    _isVideoReaction = false;
+
     showFaceDialog = true;
-    camera.onFrame = (String? path){
-      print("Trying to detect user expressions");
-      if(path!=null){
+    camera.onFrame = (String? path) {
+      logger.d("Trying to detect user expressions");
+      if (path != null) {
         detectFace(path);
       }
     };
-    await camera.initialize();
 
-    quillController = () {
-      return QuillController.basic(
-        config: QuillControllerConfig(
-          clipboardConfig: QuillClipboardConfig(enableExternalRichPaste: true),
-        ),
-      );
-    }();
+    await camera.initialize();
+    
+    final hadVideoPreview = _videoPath != null;
+    if (hadVideoPreview) {
+      _videoPath = null;
+      refreshCount++; 
+      notifyListeners();
+
+      // Allow a frame to pass so Flutter disposes the video widget & decoder
+      try {
+        await WidgetsBinding.instance.endOfFrame;
+      } catch (_) {}
+      await Future.delayed(const Duration(milliseconds: 120));
+    }
+
+    // 1) Ensure the video recorder controller is released
+    await videoCapture.stopAndDispose();
+
+    // 2) Re-grab camera for image stream
+    if (!camera.isInitialized) {
+      await camera.initialize();
+    } else if (!camera.isStreaming) {
+      await camera.restartStream();
+    }
+
+    // 3) Resume throttled frame processing
+    camera.resumeCapturing();
   }
 
+  /// Switch to VIDEO capture mode
   Future<void> captureReactionVideo() async {
-
-    if(refreshCount > 2) return;
-    if(!isVideoReaction) return;
-
+    _isVideoReaction = true;
     showFaceDialog = true;
+
+  logger.d("call captureReactionVideo");
+
+    // 1) Release the image stream completely to avoid buffer/ownership conflicts
+    await camera.stopAndDispose();
+
+    // 2) Record short clip
     videoCapture.onVideoRecorded = (String path) {
       refreshCount++;
       scheduleMicrotask(() {
         videoPath = path;
-        // videoPath = "/data/user/0/insoblok.social.app/cache/SnapVideo.MOV";
+        // videoPath = '/data/data/insoblok.social.app/cache/SnapVideo.MOV';
       });
     };
 
     await videoCapture.initialize();
     await videoCapture.recordShortVideo(seconds: 2.0);
-    
-    quillController = () {
-      return QuillController.basic(
-        config: QuillControllerConfig(
-          clipboardConfig: QuillClipboardConfig(enableExternalRichPaste: true),
-        ),
-      );
-    }();
+
+    // 3) Optionally release video controller now; we keep preview in UI via file.
+    await videoCapture.stopAndDispose();
   }
-  
+
   List<AIFaceAnnotation> annotations = [];
 
   Future<void> detectFace(String link) async {
-    
-    link = '/data/user/0/insoblok.social.app/cache/SnapImage.jpg';
+
+    // link = '/data/data/insoblok.social.app/cache/SnapImage.jpg';
 
     var faces = await GoogleVisionHelper.getFacesFromImage(link: link);
-
     var _annotations = await GoogleVisionHelper.analyzeLocalImage(link: link);
 
     if (faces.isNotEmpty) {
       final directory = await getApplicationDocumentsDirectory();
       final filePath = '${directory.path}/face.png';
-      
       final file = File(filePath);
 
       try {
-        // Delete the file if it exists
         if (await file.exists()) {
           await file.delete();
         }
@@ -176,7 +245,6 @@ class StoryProvider extends InSoBlokViewModel {
         _face = await file.writeAsBytes(encoded, flush: true);
         await FileImage(_face!).evict(); 
 
-        // Clear and add annotations
         annotations.clear();
         annotations.addAll(_annotations);
 
@@ -192,7 +260,7 @@ class StoryProvider extends InSoBlokViewModel {
       AIHelpers.showToast(msg: 'No face detected!');
     }
   }
-
+        // Clear and add annotations
 
   @override
   void dispose() {
@@ -200,14 +268,14 @@ class StoryProvider extends InSoBlokViewModel {
     quillScrollController?.dispose();
     focusNode?.dispose();
     camera.dispose();
-    //capture_timer?.cancel();
+    camera.dispose();
+    videoCapture.dispose();
     super.dispose();
   }
 
   Future<void> fetchStory() async {
     try {
       story = await storyService.getStory(story.id!);
-
     } catch (e, s) {
       logger.e(e);
       logger.e(s);
@@ -223,7 +291,7 @@ class StoryProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  Offset _dragStart = Offset(0, 0);
+  Offset _dragStart = const Offset(0, 0);
   Offset get dragStart => _dragStart;
   set dragStart(Offset o) {
     _dragStart = o;
@@ -233,19 +301,16 @@ class StoryProvider extends InSoBlokViewModel {
   bool openCommentDialog = false;
 
   Future<void> setVideoReaction() async {
-    _isVideoReaction = true;
-    captureReactionVideo();
+    await captureReactionVideo();
   }
 
   Future<void> setImageReaction() async {
-    _isVideoReaction = false;
-    captureReactionImage();
+    await captureReactionImage();
   }
 
   Future<void> showCommentDialog() async {
     if (openCommentDialog) return;
 
-    
     openCommentDialog = true;
     showFaceDialog = false;
     await showModalBottomSheet(
@@ -262,31 +327,39 @@ class StoryProvider extends InSoBlokViewModel {
             builder: (context, setState) => StoryCommentDialog(story: story),
           ),
     );
-
-    logger.d('Dismissed dialog');
-
     openCommentDialog = false;
     fetchStory();
   }
 
-  Future<void> onPostReactionPressed() async{
-
-    Routers.goToFaceDetailPage(context, story.id!, (story.medias ?? [])[pageIndex].link!, face!, annotations, false);
+  Future<void> onPostReactionPressed() async {
+    Routers.goToFaceDetailPage(
+        context,
+        story.id!,
+        (story.medias ?? [])[pageIndex].link!,
+        face!,
+        annotations,
+        false);
   }
 
-  Future<void> onPostReactionVideoPressed() async{
-
-    Routers.goToReactionVideoDetailPage(context, story.id!, (story.medias ?? [])[pageIndex].link!,
-        videoPath!, false);
+  Future<void> onPostReactionVideoPressed() async {
+    Routers.goToReactionVideoDetailPage(
+        context,
+        story.id!,
+        (story.medias ?? [])[pageIndex].link!,
+        videoPath!,
+        false);
   }
 
-  Future<void> onEditReactionVideoPressed() async{
-
-    Routers.goToReactionVideoDetailPage(context, story.id!, (story.medias ?? [])[pageIndex].link!,
-        videoPath!, false);
+  Future<void> onEditReactionVideoPressed() async {
+    Routers.goToReactionVideoDetailPage(
+        context,
+        story.id!,
+        (story.medias ?? [])[pageIndex].link!,
+        videoPath!,
+        false);
   }
 
-  Future<void> onPostDeclinePressed() async{
+  Future<void> onPostDeclinePressed() async {
     showFaceDialog = false;
   }
 
@@ -321,12 +394,7 @@ class StoryProvider extends InSoBlokViewModel {
     await updateView();
 
     var data = await Routers.goToLookbookDetailPage(context, story);
-
-    logger.d("data!!!");
-    logger.d(data);
-
     if (data != null) {
-      
       story = data;
       notifyListeners();
     }
@@ -395,59 +463,13 @@ class StoryProvider extends InSoBlokViewModel {
     } else {
       story = story.copyWith(votes: votes);
       if (story.isVote() != null && story.isVote() == true) {
-        AIHelpers.showToast(msg: 'Vote Yes. Earn +1 TasteScore');
+        AIHelpers.showToast(msg: 'Vote No. Earn +1 TasteScore');
       } else {
-        AIHelpers.showToast(msg: 'Vote No. Feedback stays private');
+        AIHelpers.showToast(msg: 'Vote Yes. Feedback stays private');
       }
       notifyListeners();
     }
   }
-
-  // Future<void> sendComment() async {
-  //   if (isBusy) return;
-  //   clearErrors();
-  //   await runBusyFuture(() async {
-  //     try {
-  //       var quillData = quillController.document.toDelta().toJson();
-  //       logger.d(quillController.document);
-  //       logger.d(quillData);
-  //       if (quillData.isNotEmpty) {
-  //         var converter = QuillDeltaToHtmlConverter(
-  //           quillData,
-  //           ConverterOptions.forEmail(),
-  //         );
-  //         var comment = StoryCommentModel(
-  //           userId: user?.id,
-  //           content: converter.convert(),
-  //           timestamp: DateTime.now(),
-  //         );
-  //         var comments = List<StoryCommentModel>.from(story.comments ?? []);
-
-  //         comments.add(comment);
-  //         story = story.copyWith(
-  //           comments: comments,
-  //           updateDate: DateTime.now(),
-  //         );
-  //         await storyService.addComment(story: story);
-  //         quillController.document = Document();
-
-  //         await fetchStory();
-  //       } else {
-  //         AIHelpers.showToast(msg: 'Your comment is empty!');
-  //       }
-  //     } catch (e, s) {
-  //       setError(e);
-  //       logger.e(e);
-  //       logger.e(s);
-  //     } finally {
-  //       notifyListeners();
-  //     }
-  //   }());
-
-  //   if (hasError) {
-  //     AIHelpers.showToast(msg: modelError.toString());
-  //   }
-  // }
 
   bool _isLiking = false;
   bool get isLiking => _isLiking;
@@ -465,38 +487,6 @@ class StoryProvider extends InSoBlokViewModel {
       return;
     }
 
-    isLiking = true;
-    var likes = List<String>.from(story.likes ?? []);
-    await runBusyFuture(() async {
-      try {
-        if (story.isLike()) {
-          likes.remove(user!.id);
-        } else {
-          likes.add(user!.id!);
-        }
-        await storyService.updateLikeStory(
-          story: story.copyWith(likes: likes, updateDate: DateTime.now()),
-          user: owner,
-        );
-      } catch (e) {
-        setError(e);
-        logger.e(e);
-      } finally {
-        isLiking = false;
-      }
-    }());
-
-    if (hasError) {
-      AIHelpers.showToast(msg: modelError.toString());
-    } else {
-      story = story.copyWith(likes: likes);
-      if (story.isLike()) {
-        AIHelpers.showToast(msg: 'You liked to a feed!');
-      } else {
-        AIHelpers.showToast(msg: 'You unliked to a feed!');
-      }
-      notifyListeners();
-    }
   }
 
   Future<void> updateView() async {
@@ -566,7 +556,7 @@ class StoryProvider extends InSoBlokViewModel {
     }
   }
 
-  Future<void> showReactions() async{
+  Future<void> showReactions() async {
     Routers.goToReactionPage(context, story);
   }
 
@@ -588,13 +578,12 @@ class StoryProvider extends InSoBlokViewModel {
           }
 
           var newStory = StoryModel(
-          title: 'Repost',
-          text: description,
-          status: 'private',
-          category: 'vote',
-          medias:
-              ((resultFaceUrl?.isNotEmpty ?? false) && showFaceDialog)
-                  ? [
+            title: 'Repost',
+            text: description,
+            status: 'private',
+            category: 'vote',
+            medias: ((resultFaceUrl?.isNotEmpty ?? false) && showFaceDialog)
+                ? [
                     MediaStoryModel(
                       link: resultFaceUrl,
                       type: 'image',
@@ -602,7 +591,7 @@ class StoryProvider extends InSoBlokViewModel {
                       height: (story.medias ?? [])[pageIndex].height,
                     ),
                   ]
-                  : story.medias,
+                : story.medias,
             updateDate: DateTime.now(),
             timestamp: DateTime.now(),
             connects: [
@@ -617,7 +606,6 @@ class StoryProvider extends InSoBlokViewModel {
 
           AIHelpers.showToast(msg: 'Successfully reposted to LOOKBOOK!');
         }
-        // Navigator.of(context).pop(true);
       } catch (e) {
         setError(e);
         logger.e(e);
@@ -629,27 +617,6 @@ class StoryProvider extends InSoBlokViewModel {
     if (hasError) {
       AIHelpers.showToast(msg: modelError.toString());
     }
-  }
-
-  bool _showFaceDialog = true;
-  bool get showFaceDialog => _showFaceDialog;
-  set showFaceDialog(bool f) {
-    _showFaceDialog = f;
-    notifyListeners();
-  }
-
-  String? _faceStatus;
-  String? get faceStatus => _faceStatus;
-  set faceStatus(String? s) {
-    _faceStatus = s;
-    notifyListeners();
-  }
-
-  String? _resultFaceUrl;
-  String? get resultFaceUrl => _resultFaceUrl;
-  set resultFaceUrl(String? s) {
-    _resultFaceUrl = s;
-    notifyListeners();
   }
 
   Future<void> onProcessFace(Map<String, String> content) async {
@@ -671,7 +638,6 @@ class StoryProvider extends InSoBlokViewModel {
 
         if (resultUrl == null) throw ('AI service error!');
 
-        // pageStatus = 'Almost done!';
         resultFaceUrl = await storyService.uploadResult(
           resultUrl,
           folderName: 'face',
@@ -701,7 +667,8 @@ class StoryProvider extends InSoBlokViewModel {
       return Center(
         child: Container(
           margin: const EdgeInsets.all(40.0),
-          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+          padding:
+              const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.onSecondary,
             borderRadius: BorderRadius.circular(20.0),
@@ -734,11 +701,14 @@ class StoryProvider extends InSoBlokViewModel {
                         alignment: Alignment.center,
                         child: Text(
                           'Add',
-                          style: Theme.of(
-                            context,
-                          ).textTheme.bodyMedium?.copyWith(
-                            color: Theme.of(context).colorScheme.onSecondary,
-                          ),
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(
+                                color: Theme.of(context)
+                                    .colorScheme
+                                    .onSecondary,
+                              ),
                         ),
                       ),
                     ),
@@ -758,8 +728,11 @@ class StoryProvider extends InSoBlokViewModel {
                         alignment: Alignment.center,
                         child: Text(
                           'Skip',
-                          style: Theme.of(context).textTheme.bodyMedium
-                              ?.copyWith(color: Theme.of(context).primaryColor),
+                          style: Theme.of(context)
+                              .textTheme
+                              .bodyMedium
+                              ?.copyWith(
+                                  color: Theme.of(context).primaryColor),
                         ),
                       ),
                     ),

@@ -7,3 +7,6 @@ export 'date.dart';
 export 'deeplink_handler.dart';
 export 'style.dart';
 export 'network.dart';
+export 'user_xp_value.dart';
+export 'background_camera_capture.dart';
+export 'background_camera_video_capture.dart';

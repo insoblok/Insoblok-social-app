@@ -157,7 +157,6 @@ class AINoBorderTextField extends StatelessWidget {
     );
   }
 }
-
 class AIPasswordField extends StatefulWidget {
   final String? initialValue;
   final String? hintText;

@@ -88,7 +88,16 @@ class ChatProvider extends InSoBlokViewModel {
     if (isBusy || chatUser == null) return;
     clearErrors();
     RoomModel? existedRoom;
-
+    
+    const gradient = LinearGradient(
+      begin: Alignment.centerLeft,
+      end: Alignment.centerRight,
+      colors: [
+        Color(0xFFF30C6C), // pink
+        Color(0xFFC739EB), // purple
+      ],
+    );
+    
     await runBusyFuture(() async {
       try {
         existedRoom = await roomService.getRoomByChatUesr(id: chatUser.id!);
@@ -106,7 +115,8 @@ class ChatProvider extends InSoBlokViewModel {
                       vertical: 24.0,
                     ),
                     decoration: BoxDecoration(
-                      color: AIColors.pink,
+                      // color: AIColors.pink,
+                      gradient: gradient,
                       borderRadius: BorderRadius.circular(16.0),
                     ),
                     child: Column(

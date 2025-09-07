@@ -1,12 +1,12 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
+import 'package:flutter/material.dart';
 import 'package:insoblok/locator.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
-import 'package:insoblok/utils/const.dart';
 
 class AccountWalletProvider extends InSoBlokViewModel {
   late BuildContext _context;
@@ -21,8 +21,6 @@ class AccountWalletProvider extends InSoBlokViewModel {
   final List<TransferModel> _transfers = [];
 
   final List<TastescoreModel> _scores = [];
-
-
   List<TastescoreModel> get scores =>
       _scores..sort((b, a) => a.timestamp!.difference(b.timestamp!).inSeconds);
 
@@ -66,6 +64,8 @@ class AccountWalletProvider extends InSoBlokViewModel {
   List<ListenableServiceMixin> get listenableServices => [_web3Service];
 
   String? get address => cryptoService.privateKey!.address.hex;  
+
+  // double get totalBalance => balanceInso / 500 + balanceUsdt;
 
   int get totalScore {
       var result = 0;
@@ -138,8 +138,8 @@ class AccountWalletProvider extends InSoBlokViewModel {
   Future<void> onClickActions(int index) async {
     switch (index) {
       case 0:
-        // await onClickSend();
         await Routers.goToWalletSendPage(context);
+        // await onClickSend();
         break;
       case 2:
         await Routers.goToWalletSwapPage(context);
