@@ -6,6 +6,7 @@ import 'package:chewie/chewie.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:video_player/video_player.dart';
+import 'package:web3dart/web3dart.dart';
 
 import 'package:insoblok/locator.dart';
 import 'package:insoblok/models/models.dart';
@@ -78,6 +79,7 @@ class MessageProvider extends InSoBlokViewModel {
   var scrollController = ScrollController();
   late FocusNode focusNode;
   late MediaPickerService _mediaPickerService;
+  final Web3Service _web3Service = locator<Web3Service>();
 
   Future<void> init(
     BuildContext context, {
@@ -134,6 +136,9 @@ class MessageProvider extends InSoBlokViewModel {
     messageService.markMessagesAsRead(room.id!);
 
     _mediaPickerService = locator<MediaPickerService>();
+
+    _web3Service.paymentToAddress = chatUser.walletAddress ?? "";
+
   }
 
   @override
@@ -257,6 +262,74 @@ class MessageProvider extends InSoBlokViewModel {
     }
   }
 
+  Future<void> handleClickSend(Map<String, dynamic> map) async {
+    if(isBusy) {
+      return;
+    }
+    if(map["chain"] == null || map["amount"] == null) {
+      AIHelpers.showToast(msg: "Need to both enter token type and amount.");
+      return;
+    }
+    clearErrors();
+    setBusy(true);
+
+    await runBusyFuture(() async {
+      try {
+        final network = kWalletTokenList.firstWhere((tk) => tk["chain"] == map["chain"]);
+        final newTransaction = await _web3Service.sendEvmToken(chatUser.walletAddress!, map["amount"].toDouble(), network, cryptoService.privateKey!);
+        if (newTransaction.isEmpty) {
+          setError("Failed to send token due to server error.");
+        }
+      } catch (e) {
+        setError(e);
+      } finally {
+        setBusy(false);
+      }
+    }());
+
+    if (hasError) {
+      AIHelpers.showToast(msg: modelError.toString());
+    }
+    else {
+      AIHelpers.showToast(msg: "Sent token successfully.");
+      try {
+        final network = kWalletTokenList.firstWhere((tk) => tk["chain"] == map["chain"]);
+        await messageService.sendPaidMessage(
+          chatRoomId: room.id!,
+          coin: CoinModel(
+            icon: AIImages.icSuccess,
+            type: map["chain"],
+            amount: map["amount"].toString(),
+            unit: network["short_name"].toString(),
+          ),
+        );
+        // await messageService.sendMessage(chatRoomId: room.id!, text: "Sent ${map["amount"]} ${map["chain"]}(s) Successfully.");
+        textController.text = '';
+      } catch (e) {
+        logger.d('Failed to send message: $e.toString()');
+        AIHelpers.showToast(msg: 'Failed to send message: $e.toString()');
+      } finally {
+        notifyListeners();
+        scrollToBottom();
+      }
+    }
+
+  }
+
+  Future<void> onPaidEth() async {
+    isAddPop = false;
+    final reownService = locator<ReownService>();
+    _web3Service.getBalances(cryptoService.privateKey!.address.hex);
+    await reownService.onShowTransferModal(
+      context,
+      chatUser.walletAddress,
+      handleClickSend
+    );
+    /*
+    if (req != null) {
+      try {
+        logger.d("This is payment req $req");
+=======
   Future<void> onPaidEth() async {
     if (isBusy) return;
     clearErrors();
@@ -271,6 +344,7 @@ class MessageProvider extends InSoBlokViewModel {
     );
     if (req != null) {
       try {
+>>>>>>> 108a6dd90840126df2947b9c6acd9d18d7fdf98d
         await reownService.connect();
         if (reownService.isConnected) {
           if (chatUser.walletAddress == null) {
@@ -285,6 +359,8 @@ class MessageProvider extends InSoBlokViewModel {
         } else {
           throw ('Failed wallet connected!');
         }
+        final network = kWalletTokenList.firstWhere((tk) => tk["chain"] == req["chain"]);
+        web3Service.sendEvmToken(chatUser.walletAddress!, req["amount"], network, cryptoService.privateKey);
       } catch (e) {
         logger.e(e);
         setError(e);
@@ -300,6 +376,8 @@ class MessageProvider extends InSoBlokViewModel {
           coin: CoinModel(
             icon: AIImages.icEthereumGold,
             type: 'ETH',
+            amount: '${req["amount"]}',
+            unit: '${EtherUnit.ether}',
             amount: '${req.amount}',
             unit: '${req.unit}',
           ),
@@ -307,6 +385,7 @@ class MessageProvider extends InSoBlokViewModel {
         scrollController.jumpTo(scrollController.position.maxScrollExtent);
       }
     }
+    */
   }
 
   Future<bool> _showPreview({bool isImage = true}) async {

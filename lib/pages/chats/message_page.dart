@@ -7,6 +7,7 @@ import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/services/services.dart';
+import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
 
@@ -176,7 +177,7 @@ class MessagePage extends StatelessWidget {
                           ),
                         ),
                       ),
-
+                      /*
                       Padding(
                         padding: const EdgeInsets.only(
                           left: kRadiuMessagePicker + 12,
@@ -190,6 +191,7 @@ class MessagePage extends StatelessWidget {
                           ),
                         ),
                       ),
+                      */
                     },
                     Container(
                       margin: EdgeInsets.only(
@@ -259,6 +261,12 @@ class MessagePage extends StatelessWidget {
                                 },
                               ),
                             ),
+                          ),
+                          InkWell(
+                            onTap: () {
+                              Routers.goToChatPaymentPage(context);
+                            },
+                            child:  AIImage(AIImages.icDollar, width: 36.0, height: 36.0),
                           ),
                           InkWell(
                             onTap: () {

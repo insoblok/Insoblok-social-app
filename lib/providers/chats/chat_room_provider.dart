@@ -102,6 +102,7 @@ class CreateRoomProvider extends InSoBlokViewModel {
                 vertical: 24.0,
               ),
               decoration: BoxDecoration(
+                // color: AIColors.pink,
                 gradient: gradient,
                 borderRadius: BorderRadius.circular(16.0),
               ),

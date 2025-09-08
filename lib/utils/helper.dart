@@ -337,4 +337,18 @@ class AIHelpers {
       );
     },
   );
+
+  static String formatDouble(double value, int decimals) {
+    return value.toStringAsFixed(decimals).replaceFirst(RegExp(r'\.?0+$'), '');
+  }
+
+  static Future<void> launchExternalSource(String uri) async {
+    logger.d("Uri is $uri");
+    final Uri url = Uri.parse(uri);
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
+    } else {
+      throw 'Could not launch $url';
+    }
+  }
 }

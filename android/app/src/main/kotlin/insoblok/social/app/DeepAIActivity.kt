@@ -389,6 +389,7 @@ class DeepAIActivity : AppCompatActivity(), SurfaceHolder.Callback,
         }
 
         val cameraResolution = Size(width, height)
+//        val cameraSelector = CameraSelector.Builder().requireLensFacing(CameraSelector.LENS_FACING_FRONT).build()
         val cameraSelector = CameraSelector.Builder().requireLensFacing(lensFacing).build()
 
         if (useExternalCameraTexture) {

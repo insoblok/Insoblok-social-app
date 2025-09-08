@@ -68,9 +68,6 @@ class RoomProvider extends InSoBlokViewModel {
         if (room.userId == user?.id) {
           chatUserId = (room.userIds ?? [])[1];
         }
-
-        logger.d("chatUserId : $chatUserId");
-        
         chatUser = await userService.getUser(chatUserId!);
         if (chatUser == null) {
           setError('Firebase Error! Please try again later.');

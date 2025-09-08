@@ -181,18 +181,19 @@ class DashboardProvider extends InSoBlokViewModel {
         Routers.goToLookbookPage(context);
         break;
       case 2:
-        Routers.goToMarketPlacePage(context);
+        Routers.goToLeaderboardPage(context);
         break;
       case 3:
-        Routers.goToFriendPage(context);
+        Routers.goToMarketPlacePage(context);
         break;
       case 4:
+        Routers.goToFriendPage(context);
+        break;
+      case 5:
         Routers.goToNewsPage(context);
         break;
     }
   }
-
-
   
   @override
   void dispose() {

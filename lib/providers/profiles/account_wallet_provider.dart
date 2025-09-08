@@ -1,5 +1,7 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
-
+import 'package:stacked/stacked.dart';
+import 'package:flutter/material.dart';
 import 'package:insoblok/locator.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/routers/routers.dart';
@@ -32,8 +34,38 @@ class AccountWalletProvider extends InSoBlokViewModel {
       transferXpToInsoValues[1] - transferInsoToUsdtValues[0];
   double get balanceUsdt => transferInsoToUsdtValues[1];
 
+  List<String> get networkNames => kWalletTokenList.map((one) => one["chain"].toString()).toList();
 
-  double get totalBalance => balanceInso / 500 + balanceUsdt;
+  List<Map<String, dynamic>> enabledNetworks = [];
+  
+  String get networkString => enabledNetworks.length == 1 ? enabledNetworks[0]["displayName"] : "Enabled Networks";
+  
+  Map<String, double> tokenValues = {};
+
+  double totalBalance = 0;
+
+  List<Map<String, dynamic>> get filteredTransactions {
+    if (enabledNetworks.isEmpty) return [];
+    
+    return transactions?.where((txn) {
+      return enabledNetworks.any((network) => 
+          network['chain'] == txn['chain']);
+    }).toList() ?? [];
+  }
+
+  final Web3Service _web3Service = locator<Web3Service>();
+
+  Map<String, double>? get allBalances => _web3Service.allBalances;
+  Map<String, double>? get allPrices => _web3Service.allPrices;
+
+  List<Map<String, dynamic>>? get transactions => _web3Service.transactions ?? [];
+
+  @override
+  List<ListenableServiceMixin> get listenableServices => [_web3Service];
+
+  String? get address => cryptoService.privateKey!.address.hex;  
+
+  // double get totalBalance => balanceInso / 500 + balanceUsdt;
 
   int get totalScore {
       var result = 0;
@@ -67,9 +99,26 @@ class AccountWalletProvider extends InSoBlokViewModel {
     this.context = context;
 
     reownService = locator<ReownService>();
-
+    await Future.wait([
+      _web3Service.getBalances(address!),
+      _web3Service.getPrices(),
+      _web3Service.getTransactions(address!)
+    ]);
+    totalBalance = 0;
+    allBalances!.forEach((token, balance) {
+      final price = allPrices![token];
+      if (price != null) {
+        final value = balance * price;
+        tokenValues[token] = value;
+        totalBalance += value;
+      }
+    });
+    logger.d("All balances is $allBalances");
+    logger.d("Total balance is $totalBalance");
+    // transactions = await getTransactions(cryptoService.privateKey!.address.hex);
     getTransfers();
     getUserScore();
+    notifyListeners();
   }
 
   Future<void> getTransfers() async {
@@ -90,7 +139,8 @@ class AccountWalletProvider extends InSoBlokViewModel {
   Future<void> onClickActions(int index) async {
     switch (index) {
       case 0:
-        await onClickSend();
+        await Routers.goToWalletSendPage(context);
+        // await onClickSend();
         break;
       case 2:
         await Routers.goToWalletSwapPage(context);
@@ -123,6 +173,22 @@ class AccountWalletProvider extends InSoBlokViewModel {
       logger.e(e);
     } finally {
       isLoadingScore = false;
+    }
+  }
+
+  Future<Map<String, dynamic>> getDisplayData(TransactionModel tx) async {
+    try {
+      Map<String, dynamic> token = kWalletTokenList.firstWhere(
+        (one) => one["chain"] == tx.chain!,
+        orElse: () => {},
+      );
+      token["from_address"] = tx.from_address;
+      token["to_address"] = tx.to_address;
+      token["amount"] = tx.amount;
+      await Future.delayed(Duration(seconds: 0));
+      return token;
+    } catch (e) {
+      return {};
     }
   }
 }

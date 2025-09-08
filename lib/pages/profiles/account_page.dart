@@ -3,12 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:stacked/stacked.dart';
+
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/widgets/widgets.dart';
-import 'package:insoblok/services/image_service.dart';
-import 'package:insoblok/services/logger_service.dart';
-
+import 'package:insoblok/services/services.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
 
 const kAccountAvatarSize = 92.0;
@@ -86,7 +85,8 @@ class AccountPage extends StatelessWidget {
                                 mainAxisSpacing: 1.0,
                                 crossAxisSpacing: 1.0,
                                 childAspectRatio: 0.75,
-                                padding: const EdgeInsets.symmetric(vertical: 4.0),
+                                padding:
+                                    const EdgeInsets.symmetric(vertical: 4.0),
                                 children: [
                                   for (final story in viewModel.stories) ...{
                                     if ((story.medias ?? []).isEmpty)
@@ -133,7 +133,6 @@ class AccountPage extends StatelessWidget {
                               ),
                             },
                           },
-
                           // ------------------ GALLERIES ------------------
                           if (viewModel.pageIndex == 3) ...{
                             if (viewModel.isFetchingGallery) ...{
@@ -195,8 +194,6 @@ class AccountPage extends StatelessWidget {
     );
   }
 
-  // --------------- Helpers ---------------
-
   Future<Uint8List?> _getVideoThumbnail(String videoUrl) async {
     try {
       return await VideoThumbnail.thumbnailData(
@@ -210,7 +207,7 @@ class AccountPage extends StatelessWidget {
       return null;
     }
   }
-
+  
   Widget _buildMediaThumbnail(BuildContext context, String url, {bool isVideo = false}) {
     final detectVideo = isVideo || _looksLikeVideoUrl(url);
 
@@ -248,6 +245,7 @@ class AccountPage extends StatelessWidget {
       return AIImage(url, fit: BoxFit.cover);
     }
   }
+
 
   bool _looksLikeVideoUrl(String url) {
     final u = url.toLowerCase();

@@ -13,3 +13,4 @@ export 'leaderboard_provider.dart';
 export 'account_reward_provider.dart';
 export 'reward_detail_provider.dart';
 export 'wallet_swap_provider.dart';
+export 'wallet_send_provider.dart';

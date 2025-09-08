@@ -12,3 +12,4 @@ export 'vtos/vtos.dart';
 export 'news/news.dart';
 export 'profiles/reactions_provider.dart';
 export 'homes/lookbook_detail_provider.dart';
+export 'chats/chat_payment_provider.dart';

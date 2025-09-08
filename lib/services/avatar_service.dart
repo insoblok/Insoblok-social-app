@@ -1,9 +1,10 @@
 import 'dart:io';
 
+
+import 'package:insoblok/locator.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
-
 import 'package:insoblok/models/story_model.dart';
 import 'package:insoblok/services/cloudinary_cdn_service.dart';
 import 'package:insoblok/services/services.dart';
@@ -39,7 +40,6 @@ class CropAspectRatioPresetRatio23 implements CropAspectRatioPresetData {
 }
 
 class AvatarService {
-  /// NOTE: now requires `BuildContext` so we can open the source sheet safely.
   Future<String?> pickCropImage(BuildContext context, int index) async {
     try {
       final mediaService = MediaPickerService();
@@ -77,7 +77,6 @@ class AvatarService {
           ),
         ],
       );
-
       return cropResult?.path;
     } catch (e, st) {
       logger.e('pickCropImage error', error: e, stackTrace: st);

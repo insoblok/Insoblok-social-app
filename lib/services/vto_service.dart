@@ -63,8 +63,6 @@ const kProductAvailable = [
 ];
 
 class VTOService {
-
-
   Future<String?> convertVTOClothing({
     required String modelUrl,
     String? photoUrl,

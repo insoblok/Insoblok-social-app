@@ -83,6 +83,7 @@ class _DeepARPlusPageState extends State<DeepARPlusPage> {
     });
   }
 
+  // ===== Hardware zoom if available on controller =====
   void _onSwitchCameraPressed() async {
     try {
       await deepAr.switchCamera();
@@ -333,7 +334,6 @@ class _DeepARPlusPageState extends State<DeepARPlusPage> {
           ),
         ],
       ),
-
       body: Stack(
         children: [
           Positioned.fill(
@@ -344,7 +344,6 @@ class _DeepARPlusPageState extends State<DeepARPlusPage> {
               ),
             ),
           ),
-
           Positioned(
             top: 8,
             left: 0,
@@ -386,8 +385,6 @@ class _DeepARPlusPageState extends State<DeepARPlusPage> {
               ),
             ),
           ),
-
-
           _recordTimerOverlay(),
 
           _zoomOverlay(),

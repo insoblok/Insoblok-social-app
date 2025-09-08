@@ -12,8 +12,8 @@ import 'package:stacked/stacked.dart';
 import 'package:video_player/video_player.dart';
 
 import 'package:deepar_flutter_plus/deepar_flutter_plus.dart';
-import 'package:media_kit/media_kit.dart';
-import 'package:pro_video_editor/pro_video_editor.dart';
+// import 'package:media_kit/media_kit.dart';
+// import 'package:pro_video_editor/pro_video_editor.dart';
 
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/services/deep_ar_plus_service.dart';
@@ -99,7 +99,7 @@ class _ReactionVideoDetailPageState extends State<ReactionVideoDetailPage> {
   // ——— added: open pro_video_editor page and receive exported file ———
   Future<void> _openEditor() async {
     // Ensure native libs are ready (safe to call again)
-    try { MediaKit.ensureInitialized(); } catch (_) {}
+    // try { MediaKit.ensureInitialized(); } catch (_) {}
 
     final input = _currentVideoPath;
     if (input.isEmpty || !File(input).existsSync()) {
@@ -491,7 +491,7 @@ class _VideoQuickEditorPageState extends State<_VideoQuickEditorPage> {
 
   bool _exporting = false;
   double _progress = 0.0;
-  StreamSubscription<ProgressModel>? _sub;
+  // StreamSubscription<ProgressModel>? _sub;
 
   @override
   void initState() {
@@ -530,7 +530,7 @@ class _VideoQuickEditorPageState extends State<_VideoQuickEditorPage> {
 
   @override
   void dispose() {
-    _sub?.cancel();
+    // _sub?.cancel();
     _preview?.dispose();
     super.dispose();
   }
@@ -553,19 +553,20 @@ class _VideoQuickEditorPageState extends State<_VideoQuickEditorPage> {
       final startClamped = s > e ? Duration.zero : s;
       final endClamped   = e < startClamped ? null : e;
 
-      final model = RenderVideoModel(
-        id: 'task_${DateTime.now().millisecondsSinceEpoch}',
-        video: EditorVideo.file(File(widget.inputPath)),
-        outputFormat: VideoOutputFormat.mp4,
-        enableAudio: !_mute,
-        playbackSpeed: _speed,
-        startTime: startClamped,
-        endTime: endClamped,
-        bitrate: 3 * 1000 * 1000,
-      );
+      // final model = RenderVideoModel(
+      //   id: 'task_${DateTime.now().millisecondsSinceEpoch}',
+      //   video: EditorVideo.file(File(widget.inputPath)),
+      //   outputFormat: VideoOutputFormat.mp4,
+      //   enableAudio: !_mute,
+      //   playbackSpeed: _speed,
+      //   startTime: startClamped,
+      //   endTime: endClamped,
+      //   bitrate: 3 * 1000 * 1000,
+      // );
 
-      final taskId = await ProVideoEditor.instance.renderVideoToFile(outPath, model);
+      // final taskId = await ProVideoEditor.instance.renderVideoToFile(outPath, model);
 
+      /*
       _sub?.cancel();
       _sub = ProVideoEditor.instance.progressStreamById(taskId).listen(
         (p) => setState(() => _progress = p.progress.clamp(0, 1)),
@@ -590,6 +591,7 @@ class _VideoQuickEditorPageState extends State<_VideoQuickEditorPage> {
           );
         },
       );
+      */
     } catch (e) {
       setState(() => _exporting = false);
       if (!mounted) return;

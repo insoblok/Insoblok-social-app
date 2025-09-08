@@ -62,9 +62,7 @@ class TastescoreService {
     }
     
   }
-
   Future<void> postScore() async {
-
     var reward = UserXPValue.postXP;
 
     var tastescore = TastescoreModelExt.creatXpModel(
@@ -75,6 +73,7 @@ class TastescoreService {
     await tastescoreCollection.add(tastescore.toMap());
   }
 
+  
   Future<void> repostScore(StoryModel story) async {
     var reward = UserXPValue.postXP;
 

@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:googleapis/containeranalysis/v1.dart';
 
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/pages/pages.dart';
@@ -106,6 +107,10 @@ class Routers {
     return _pushToRoute(context, kRouterWalletSwap, null);
   }
 
+  static dynamic goToWalletSendPage(BuildContext context) {
+    return _pushToRoute(context, kRouterWalletSend, null);
+  }
+
   static dynamic goToCreateRoomPage(BuildContext context) {
     return _pushToRoute(context, kRouterCreateRoom, null);
   }
@@ -118,6 +123,25 @@ class Routers {
     return _pushToRoute(context, kRouterMessageSetting, null);
   }
 
+  static dynamic goToChatViewPage(BuildContext context) {
+    return _pushToRoute(context, kRouterChatView, null);
+  }
+
+  static dynamic goToChatPaymentPage(BuildContext context) {
+    return _pushToRoute(context, kRouterChatPayment, null);
+  }
+
+  static dynamic goToPaymentAmountPage(BuildContext context) {
+    return _pushToRoute(context, kRouterPaymentAmount, null);
+  }
+
+  static dynamic goToPaymentConfirmPage(BuildContext context) {
+    return _pushToRoute(context, kRouterPaymentConfirm, null);
+  }
+
+  static dynamic goToPaymentResultPage(BuildContext context) {
+    return _pushToRoute(context, kRouterPaymentResult, null);
+  }
   static dynamic goToLookbookPage(BuildContext context) {
     return _pushToRoute(context, kRouterLookbook, null);
   }

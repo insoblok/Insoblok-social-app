@@ -56,7 +56,6 @@ class FirebaseService {
   Future<void> signInFirebase() async {
     var credential = await FirebaseAuth.instance.signInAnonymously();
     _userCredential = credential;
-    logger.d("Signed in with temporary account.");
   }
 
   Future<void> signInEmail({
@@ -426,10 +425,6 @@ class FirebaseService {
     if (media is Map && media['url']  is String) return media['url']  as String;
     return null;
   }
-
-
-  
-
 }
 
 class FirebaseHelper {
@@ -624,6 +619,7 @@ class FirebaseHelper {
         newJson[key] = firebaseJson[key];
       }
     }
+    logger.d("This is new json: $newJson");
     return newJson;
   }
 }

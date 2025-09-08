@@ -1,10 +1,9 @@
 import 'dart:io';
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:image/image.dart' as img;
+import 'package:path_provider/path_provider.dart';
 import 'package:flutter_quill/flutter_quill.dart';
-
-import 'package:insoblok/utils/background_camera_capture.dart';
-import 'package:insoblok/utils/background_camera_video_capture.dart';
 import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/routers/routers.dart';
@@ -47,10 +46,10 @@ class StoryProvider extends InSoBlokViewModel {
   String? _videoPath;
   String? get videoPath => _videoPath;
   set videoPath(String? f) {
-    _videoPath = f;
+    _videoPath= f;
     notifyListeners();
   }
-
+  
   String? _videoStoryPath;
   String? get videoStoryPath => _videoStoryPath;
   set videoStoryPath(String? f) {
@@ -67,6 +66,7 @@ class StoryProvider extends InSoBlokViewModel {
 
   bool _showFaceDialog = false;
   bool get showFaceDialog => _showFaceDialog;
+
   set showFaceDialog(bool f) {
     _showFaceDialog = f;
     notifyListeners();
@@ -211,7 +211,6 @@ class StoryProvider extends InSoBlokViewModel {
       refreshCount++;
       scheduleMicrotask(() {
         videoPath = path;
-
         // videoPath = '/data/data/insoblok.social.app/cache/SnapVideo.MOV';
       });
     };
@@ -235,7 +234,6 @@ class StoryProvider extends InSoBlokViewModel {
     if (faces.isNotEmpty) {
       final directory = await getApplicationDocumentsDirectory();
       final filePath = '${directory.path}/face.png';
-
       final file = File(filePath);
 
       try {
@@ -245,7 +243,7 @@ class StoryProvider extends InSoBlokViewModel {
 
         final encoded = img.encodePng(faces[0]);
         _face = await file.writeAsBytes(encoded, flush: true);
-        await FileImage(_face!).evict();
+        await FileImage(_face!).evict(); 
 
         annotations.clear();
         annotations.addAll(_annotations);
@@ -262,17 +260,16 @@ class StoryProvider extends InSoBlokViewModel {
       AIHelpers.showToast(msg: 'No face detected!');
     }
   }
+        // Clear and add annotations
 
   @override
   void dispose() {
     quillController?.dispose();
-    quillScrollController.dispose();
-    focusNode.dispose();
-
-    // Fire-and-forget disposals
+    quillScrollController?.dispose();
+    focusNode?.dispose();
+    camera.dispose();
     camera.dispose();
     videoCapture.dispose();
-
     super.dispose();
   }
 
@@ -325,11 +322,11 @@ class StoryProvider extends InSoBlokViewModel {
         maxHeight: MediaQuery.of(context).size.height * 0.7,
         minHeight: MediaQuery.of(context).size.height * 0.2,
       ),
-      builder: (context) => StatefulBuilder(
-        builder: (context, setState) => StoryCommentDialog(story: story),
-      ),
+      builder:
+          (context) => StatefulBuilder(
+            builder: (context, setState) => StoryCommentDialog(story: story),
+          ),
     );
-
     openCommentDialog = false;
     fetchStory();
   }
@@ -490,38 +487,6 @@ class StoryProvider extends InSoBlokViewModel {
       return;
     }
 
-    isLiking = true;
-    var likes = List<String>.from(story.likes ?? []);
-    await runBusyFuture(() async {
-      try {
-        if (story.isLike()) {
-          likes.remove(user!.id);
-        } else {
-          likes.add(user!.id!);
-        }
-        await storyService.updateLikeStory(
-          story: story.copyWith(likes: likes, updateDate: DateTime.now()),
-          user: owner,
-        );
-      } catch (e) {
-        setError(e);
-        logger.e(e);
-      } finally {
-        isLiking = false;
-      }
-    }());
-
-    if (hasError) {
-      AIHelpers.showToast(msg: modelError.toString());
-    } else {
-      story = story.copyWith(likes: likes);
-      if (story.isLike()) {
-        AIHelpers.showToast(msg: 'You liked to a feed!');
-      } else {
-        AIHelpers.showToast(msg: 'You unliked to a feed!');
-      }
-      notifyListeners();
-    }
   }
 
   Future<void> updateView() async {

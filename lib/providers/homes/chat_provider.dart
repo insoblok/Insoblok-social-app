@@ -7,6 +7,7 @@ import 'package:insoblok/routers/router.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
+import 'package:insoblok/locator.dart';
 
 class ChatProvider extends InSoBlokViewModel {
   late BuildContext _context;
@@ -25,6 +26,8 @@ class ChatProvider extends InSoBlokViewModel {
     _balance = s;
     notifyListeners();
   }
+
+  final Web3Service _web3Service = locator<Web3Service>();
 
   Future<void> init(BuildContext context) async {
     this.context = context;
@@ -84,7 +87,6 @@ class ChatProvider extends InSoBlokViewModel {
   Future<void> gotoNewChat(UserModel? chatUser) async {
     if (isBusy || chatUser == null) return;
     clearErrors();
-
     RoomModel? existedRoom;
     
     const gradient = LinearGradient(
@@ -113,6 +115,7 @@ class ChatProvider extends InSoBlokViewModel {
                       vertical: 24.0,
                     ),
                     decoration: BoxDecoration(
+                      // color: AIColors.pink,
                       gradient: gradient,
                       borderRadius: BorderRadius.circular(16.0),
                     ),
@@ -184,6 +187,8 @@ class ChatProvider extends InSoBlokViewModel {
       AIHelpers.showToast(msg: modelError.toString());
     } else {
       if (existedRoom != null) {
+        _web3Service.chatRoom = existedRoom ?? RoomModel();
+        _web3Service.chatUser = chatUser;
         await Routers.goToMessagePage(
           context,
           MessagePageData(room: existedRoom!, chatUser: chatUser),

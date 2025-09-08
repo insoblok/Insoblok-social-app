@@ -26,6 +26,7 @@ class PageableView extends StatelessWidget {
     final menuTitles = [
       'Following',   
       'LookBook',
+      'Leaderboard',
       'Marketplace',
     ];
 
@@ -190,14 +191,13 @@ class PageableView extends StatelessWidget {
                                 indicator: RoundedUnderlineTabIndicator(
                                   thickness: 6,          // underline height (px)
                                   radius: 6,             // rounded ends
-                                  insets: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+                                  insets: const EdgeInsets.symmetric(horizontal: 0, vertical: 3),
                                   gradient: _pinkPurple, // pink→purple
                                 ),
 
                                 dividerColor: Colors.transparent,
                                 dividerHeight: 0,
-
-                                // labelPadding: const EdgeInsets.symmetric(horizontal: 15),
+                                labelPadding: const EdgeInsets.symmetric(horizontal: 8),
                                 overlayColor: MaterialStateProperty.all(Colors.transparent),
                                 labelColor: Colors.white,
                                 unselectedLabelColor: Colors.white.withOpacity(0.7),

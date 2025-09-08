@@ -26,7 +26,6 @@ class ReactionsPage extends StatelessWidget {
 
   Future<Uint8List?> _getVideoThumbnail(String videoUrl) async {
 
-    logger.d("_getVideoThumbnail: $videoUrl");
     
     try {
       return await VideoThumbnail.thumbnailData(
@@ -259,20 +258,16 @@ class _GridVideoPlayerState extends State<GridVideoPlayer>
       final id = m?.group(1);
       if (id == null) throw ArgumentError('Not a Vimeo player URL: $input');
       
-      logger.d("vimeo id $id");
 
       final res =
           await http.get(Uri.parse('https://player.vimeo.com/video/$id/config'));
 
-      logger.d("vimeo res ${res.statusCode}");
       if (res.statusCode != 200) {
         throw StateError('Vimeo config fetch failed: HTTP ${res.statusCode}');
       }
 
-      logger.d("vimeo body ${res.body}");
       final j = jsonDecode(res.body) as Map<String, dynamic>;
       // final j = jsonDecode(res.body) as Map<String, dynamic>;
-      logger.d("vimeo body ${res.body}");
       // Prefer progressive MP4
       final prog =
           (j['request']?['files']?['progressive'] as List?)?.cast<Map>() ?? [];

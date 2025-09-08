@@ -403,8 +403,6 @@ Future<Uint8List?> composeHypeImage({
   Future<void> onClickActionButton(int index) async {
     if (isBusy) return;
 
-    logger.d('button index: $index');
-
     switch (index) {
       case 0:
         await repost();
@@ -435,7 +433,6 @@ Future<Uint8List?> composeHypeImage({
 
       // 2qgkVmXyECgjlhr933nX
       logger.d("face detail user id");
-      logger.d(AuthHelper.user?.id);
       final usersRef = FirebaseFirestore.instance.collection("user");
       await usersRef.doc(AuthHelper.user?.id).update({
         "galleries": FieldValue.arrayUnion([link]),

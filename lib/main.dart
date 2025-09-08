@@ -1,12 +1,12 @@
-// lib/main.dart
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:app_links/app_links.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:provider/provider.dart';
 import 'package:stacked/stacked.dart';
-import 'package:media_kit/media_kit.dart';
+// import 'package:media_kit/media_kit.dart';
 
 import 'package:insoblok/locator.dart';
 import 'package:insoblok/pages/pages.dart';
@@ -28,9 +28,10 @@ final scaffoldKey = GlobalKey<ScaffoldMessengerState>();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  setupLocator();
 
   // REQUIRED for media_kit: platform libs must be in pubspec (see above).
-  MediaKit.ensureInitialized();
+  // MediaKit.ensureInitialized();
 
   HttpOverrides.global = MyHttpOverrides();
 
@@ -38,8 +39,7 @@ Future<void> main() async {
     logger.e('FlutterError: $details');
   };
 
-  setupLocator();
-
+  
   // If you need to listen before runApp, keep it simple & guarded.
   try {
     AppLinks().uriLinkStream.listen((uri) {

@@ -7,6 +7,7 @@ import 'package:insoblok/pages/bases/reaction_video_detail_page.dart';
 import 'package:insoblok/pages/pages.dart';
 import 'package:insoblok/pages/profiles/tastescore_page.dart';
 import 'package:insoblok/pages/profiles/wallet_swap_page.dart';
+import 'package:insoblok/pages/profiles/wallet_send_page.dart';
 import 'package:insoblok/providers/providers.dart';
 
 const kRouterBase = '/';
@@ -29,10 +30,17 @@ const kRouterAccountWallet = '/account-Wallet';
 const kRouterAccountReward = '/account-reward';
 const kRouterRewardDetail = '/reward-detail';
 const kRouterWalletSwap = '/wallet-swap';
+const kRouterWalletSend = '/wallet-send';
 
 const kRouterCreateRoom = '/create-room';
 const kRouterMessage = '/message';
 const kRouterMessageSetting = '/message-setting';
+const kRouterChatView = '/chat-view';
+
+const kRouterChatPayment = '/message-payment';
+const kRouterPaymentAmount = '/payment-amount';
+const kRouterPaymentConfirm = '/payment-confirm';
+const kRouterPaymentResult = '/payment-result';
 
 const kRouterNews = '/news';
 const kRouterLookbook = '/lookbook';
@@ -154,6 +162,9 @@ class Navigation {
     // * WalletSwapPage
     initRoute(kRouterWalletSwap, (props) => WalletSwapPage());
 
+    // * WalletSendPage
+    initRoute(kRouterWalletSend, (props) => WalletSendPage());
+    
     // * CreateRoomPage
     initRoute(kRouterCreateRoom, (props) => CreateRoomPage());
 
@@ -165,6 +176,21 @@ class Navigation {
 
     // * MessageSettingPage
     initRoute(kRouterMessageSetting, (props) => MessageSettingPage());
+
+    //* ChatViewPage
+    initRoute(kRouterChatView, (props) => ChatView());
+
+    // * MessagePaymentFirstPage
+    initRoute(kRouterChatPayment, (props) => ChatPaymentPage());
+    
+    // * PaymentAmountPage
+    initRoute(kRouterPaymentAmount, (props) => PaymentAmountPage());
+
+    // * PaymentConfirmPage
+    initRoute(kRouterPaymentConfirm, (props) => PaymentConfirmPage());
+
+    // * PaymentResultPage
+    initRoute(kRouterPaymentResult, (props) => PaymentResultPage());
 
     // * News
     initRoute(kRouterNews, (props) => NewsPage());

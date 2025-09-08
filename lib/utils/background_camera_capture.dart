@@ -234,7 +234,6 @@ class BackgroundCameraCapture {
 
       return file;
     } catch (e) {
-      // ignore: avoid_print
       print("Error capturing PNG: $e");
       return null;
     }
@@ -269,7 +268,6 @@ class BackgroundCameraCapture {
 
         completer.complete(file);
       } catch (e) {
-        // ignore: avoid_print
         print("Error capturing PNG from stream: $e");
         completer.complete(null);
       }

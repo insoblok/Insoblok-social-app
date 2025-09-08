@@ -7,13 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_html/flutter_html.dart';
 
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:insoblok/routers/routers.dart';
 import 'package:stacked/stacked.dart';
 import 'package:video_player/video_player.dart';
-import 'package:vimeo_video_player/vimeo_video_player.dart';
-import 'package:gradient_slide_to_act/gradient_slide_to_act.dart';
 
 import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
@@ -508,7 +505,6 @@ class _StoryMediaViewState extends State<StoryMediaView> {
         fit: ((widget.media.height ?? 1) / (widget.media.width ?? 1) > 1.2) ? BoxFit.cover : BoxFit.contain,
       );
     }
-    debugPrint("THis is media link ${widget.media.link}");
     return CloudinaryVideoPlayerWidget(videoUrl: widget.media.link!);
   }
 }
@@ -1297,6 +1293,7 @@ class _FaceReactionSliderState extends State<FaceReactionSlider> {
     return Stack(
       alignment: Alignment.center,
       children: [
+        /*
         GradientSlideToAct(
           key: _sliderKey,
           width: widget.width,
@@ -1318,7 +1315,7 @@ class _FaceReactionSliderState extends State<FaceReactionSlider> {
           ),
           onSubmit: _handleSubmit,
         ),
-
+        */
         // right-aligned label
         Positioned.fill(
           child: IgnorePointer( // so drags still work

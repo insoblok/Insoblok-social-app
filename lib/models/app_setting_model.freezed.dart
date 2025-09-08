@@ -882,7 +882,7 @@ int get hashCode => Object.hash(runtimeType,min,max,inso,rate);
 
 @override
 String toString() {
-  return 'XpInSoModel(min: $min, max: $max, rate: $rate)';
+  return 'XpInSoModel(min: $min, max: $max, inso: $inso, rate: $rate)';
 }
 
 
@@ -893,7 +893,7 @@ abstract mixin class $XpInSoModelCopyWith<$Res>  {
   factory $XpInSoModelCopyWith(XpInSoModel value, $Res Function(XpInSoModel) _then) = _$XpInSoModelCopyWithImpl;
 @useResult
 $Res call({
- int? min, int? max, int? rate
+ int? min, int? max, int? inso, int? rate
 });
 
 
@@ -910,10 +910,11 @@ class _$XpInSoModelCopyWithImpl<$Res>
 
 /// Create a copy of XpInSoModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? min = freezed,Object? max = freezed,Object? rate = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? min = freezed,Object? max = freezed,Object? inso = freezed,Object? rate = freezed,}) {
   return _then(_self.copyWith(
 min: freezed == min ? _self.min : min // ignore: cast_nullable_to_non_nullable
 as int?,max: freezed == max ? _self.max : max // ignore: cast_nullable_to_non_nullable
+as int?,inso: freezed == inso ? _self.inso : inso // ignore: cast_nullable_to_non_nullable
 as int?,rate: freezed == rate ? _self.rate : rate // ignore: cast_nullable_to_non_nullable
 as int?,
   ));
@@ -1000,10 +1001,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? min,  int? max,  int? rate)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( int? min,  int? max,  int? inso,  int? rate)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _XpInSoModel() when $default != null:
-return $default(_that.min,_that.max,_that.rate);case _:
+return $default(_that.min,_that.max,_that.inso,_that.rate);case _:
   return orElse();
 
 }
@@ -1021,10 +1022,10 @@ return $default(_that.min,_that.max,_that.rate);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? min,  int? max,  int? rate)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( int? min,  int? max,  int? inso,  int? rate)  $default,) {final _that = this;
 switch (_that) {
 case _XpInSoModel():
-return $default(_that.min,_that.max,_that.rate);case _:
+return $default(_that.min,_that.max,_that.inso,_that.rate);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -1041,10 +1042,10 @@ return $default(_that.min,_that.max,_that.rate);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? min,  int? max,  int? rate)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( int? min,  int? max,  int? inso,  int? rate)?  $default,) {final _that = this;
 switch (_that) {
 case _XpInSoModel() when $default != null:
-return $default(_that.min,_that.max,_that.rate);case _:
+return $default(_that.min,_that.max,_that.inso,_that.rate);case _:
   return null;
 
 }
@@ -1077,7 +1078,7 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _XpInSoModel&&(identical(other.min, min) || other.min == min)&&(identical(other.max, max) || other.max == max)&&(identical(other.rate, rate) || other.rate == rate));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _XpInSoModel&&(identical(other.min, min) || other.min == min)&&(identical(other.max, max) || other.max == max)&&(identical(other.inso, inso) || other.inso == inso)&&(identical(other.rate, rate) || other.rate == rate));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -1097,7 +1098,7 @@ abstract mixin class _$XpInSoModelCopyWith<$Res> implements $XpInSoModelCopyWith
   factory _$XpInSoModelCopyWith(_XpInSoModel value, $Res Function(_XpInSoModel) _then) = __$XpInSoModelCopyWithImpl;
 @override @useResult
 $Res call({
- int? min, int? max, int? rate
+ int? min, int? max, int? inso, int? rate
 });
 
 
@@ -1114,10 +1115,11 @@ class __$XpInSoModelCopyWithImpl<$Res>
 
 /// Create a copy of XpInSoModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? min = freezed,Object? max = freezed,Object? rate = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? min = freezed,Object? max = freezed,Object? inso = freezed,Object? rate = freezed,}) {
   return _then(_XpInSoModel(
 min: freezed == min ? _self.min : min // ignore: cast_nullable_to_non_nullable
 as int?,max: freezed == max ? _self.max : max // ignore: cast_nullable_to_non_nullable
+as int?,inso: freezed == inso ? _self.inso : inso // ignore: cast_nullable_to_non_nullable
 as int?,rate: freezed == rate ? _self.rate : rate // ignore: cast_nullable_to_non_nullable
 as int?,
   ));

@@ -48,12 +48,11 @@ class AuthService with ListenableServiceMixin {
   Future<UserModel?> signIn(String walletAddress, bool isVybeScan) async {
     await FirebaseHelper.signInFirebase();
     var credential = FirebaseHelper.userCredential;
-    logger.d(credential);
     _credentialRx.value = credential;
 
     var uid = credential.user?.uid;
     var authUser = await userService.getUserByWalletAddress(walletAddress);
-
+      logger.d("This is authUser: $authUser");
     if (authUser != null) {
       var tastescoreService = TastescoreService();
       var rewardDate = await tastescoreService.loginScore(authUser);

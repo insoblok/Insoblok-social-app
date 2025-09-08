@@ -90,7 +90,6 @@ class AddStoryPage extends StatelessWidget {
                       ),
                       UploadMediaWidget(),
                       const SizedBox(height: 40.0),
-
                       Container(
                           decoration: const BoxDecoration(
                             gradient: LinearGradient(

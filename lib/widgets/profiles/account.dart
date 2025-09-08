@@ -16,7 +16,6 @@ class AccountPresentHeaderView extends ViewModelWidget<AccountProvider> {
 
   @override
   Widget build(BuildContext context, viewModel) {
-
     return SizedBox(
       height:
           kProfileDiscoverHeight +
@@ -79,7 +78,6 @@ class AccountFloatingView extends ViewModelWidget<AccountProvider> {
 
   @override
   Widget build(BuildContext context, viewModel) {
-
     const gradient = LinearGradient(
       begin: Alignment.centerLeft,
       end: Alignment.centerRight,

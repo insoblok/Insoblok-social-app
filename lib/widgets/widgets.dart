@@ -25,4 +25,7 @@ export 'media_detail_widget.dart';
 export 'reward_widget.dart';
 export 'linear_progress_widget.dart';
 export 'tastescore_widget.dart';
+export 'wallet_address_widget.dart';
+export 'network_selection_modal_widget.dart';
+export 'number_plate_widget.dart';
 export 'verticalreactiontoggle.dart';

@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 
 import 'package:reown_appkit/reown_appkit.dart';
-
+import 'package:insoblok/locator.dart';
 import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
@@ -83,6 +83,7 @@ class EthTransferRequest {
 class ReownService {
   late ReownAppKitModal _appKitModel;
   ReownAppKitModal get appKitModel => _appKitModel;
+  final Web3Service _web3Service = locator<Web3Service>();
 
   Future<void> init(BuildContext context) async {
     _appKitModel = ReownAppKitModal(
@@ -147,28 +148,31 @@ class ReownService {
     functionName: 'totalSupply',
   );
 
-  Future<EthTransferRequest?> onShowTransferModal(
-    BuildContext context, {
+  Future<Map<String, dynamic>?> onShowTransferModal(
+    BuildContext parentContext, 
     String? address,
-  }) async {
+    Future<void> Function(Map<String, dynamic>) handleClickSend
+  ) async {
     List<UserModel?> allUsers = [];
+    Map<String, dynamic> result = {};
+    TextEditingController _amountController = TextEditingController();
     if (address == null) {
       allUsers.addAll(await UserService().getAllUsers());
     }
 
-    return showModalBottomSheet<EthTransferRequest>(
-      context: context,
+    return showModalBottomSheet<Map<String, dynamic>>(
+      context: parentContext,
       isScrollControlled: true,
       builder: (context) {
-        var result = EthTransferRequest(
-          recipientAddress: address,
-          unit: EtherUnit.wei,
-          amount: 1,
-        );
+        // var result = EthTransferRequest(
+        //   recipientAddress: address,
+        //   unit: EtherUnit.wei,
+        //   amount: 1,
+        // );
         var userNotifier = ValueNotifier<UserModel?>(
           allUsers.isNotEmpty ? allUsers.first : null,
         );
-        var unitNotifier = ValueNotifier(kEthUnitInfor.first);
+        var unitNotifier = ValueNotifier(kWalletTokenList.first["chain"] as String);
         var amountNotifier = ValueNotifier(1);
         return Container(
           decoration: BoxDecoration(
@@ -184,24 +188,63 @@ class ReownService {
             top: 24.0,
             bottom: 24.0 + MediaQuery.of(context).viewInsets.bottom,
           ),
-          child: Column(
-            spacing: 24.0,
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text('Etherium', style: Theme.of(context).textTheme.titleSmall),
-              if (address == null)
-                ValueListenableBuilder<UserModel?>(
-                  valueListenable: userNotifier,
+          child: SingleChildScrollView(
+            child: Column(
+              spacing: 24.0,
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text('P2P Payment', style: Theme.of(context).textTheme.titleSmall),
+                if (address == null)
+                  ValueListenableBuilder<UserModel?>(
+                    valueListenable: userNotifier,
+                    builder: (context, value, _) {
+                      return Column(
+                        spacing: 12.0,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Wallet Address'),
+                          Container(
+                            decoration: kNoBorderDecoration,
+                            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                            child: DropdownButton<UserModel>(
+                              isExpanded: true,
+                              value: value,
+                              dropdownColor:
+                                  Theme.of(context).colorScheme.onSecondary,
+                              icon: const Icon(Icons.keyboard_arrow_down),
+                              underline: Container(),
+                              items:
+                                  allUsers.map((user) {
+                                    return DropdownMenuItem(
+                                      value: user,
+                                      child: Text(
+                                        user!.fullName,
+                                        style: Theme.of(context).textTheme.bodySmall,
+                                      ),
+                                    );
+                                  }).toList(),
+                              onChanged: (value) {
+                                userNotifier.value = value;
+                                result["to"] = value?.walletAddress;
+                              },
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                ValueListenableBuilder<String>(
+                  valueListenable: unitNotifier,
                   builder: (context, value, _) {
                     return Column(
                       spacing: 12.0,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text('Wallet Address'),
+                        Text('Tokens'),
                         Container(
                           decoration: kNoBorderDecoration,
                           padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                          child: DropdownButton<UserModel>(
+                          child: DropdownButton<String>(
                             isExpanded: true,
                             value: value,
                             dropdownColor:
@@ -209,172 +252,102 @@ class ReownService {
                             icon: const Icon(Icons.keyboard_arrow_down),
                             underline: Container(),
                             items:
-                                allUsers.map((user) {
-                                  return DropdownMenuItem(
-                                    value: user,
-                                    child: Text(
-                                      user!.fullName,
-                                      style:
-                                          Theme.of(context).textTheme.bodySmall,
-                                    ),
-                                  );
-                                }).toList(),
-                            onChanged: (value) {
-                              userNotifier.value = value;
-                              result.recipientAddress = value?.walletAddress;
-                            },
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                ),
-              ValueListenableBuilder<dynamic>(
-                valueListenable: unitNotifier,
-                builder: (context, value, _) {
-                  return Column(
-                    spacing: 12.0,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Etherium Unit'),
-                      Container(
-                        decoration: kNoBorderDecoration,
-                        padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                        child: DropdownButton<dynamic>(
-                          isExpanded: true,
-                          value: value,
-                          dropdownColor:
-                              Theme.of(context).colorScheme.onSecondary,
-                          icon: const Icon(Icons.keyboard_arrow_down),
-                          underline: Container(),
-                          items:
-                              kEthUnitInfor.map((ethInfo) {
+                              kWalletTokenList.map((ethInfo) {
+                                final chainValue = (ethInfo["chain"] ?? "") as String;
                                 return DropdownMenuItem(
-                                  value: ethInfo,
+                                  value: chainValue,
                                   child: Text(
-                                    (ethInfo['title'] as String).toUpperCase(),
+                                    ((ethInfo['displayName'] ?? "") as String).toUpperCase(),
                                     style:
                                         Theme.of(context).textTheme.bodySmall,
                                   ),
                                 );
                               }).toList(),
-                          onChanged: (value) {
-                            unitNotifier.value = value;
-                            result.unit = value['unit'];
-                          },
+                            onChanged: (newValue) {
+                              unitNotifier.value = newValue!;
+                              result = {
+                                ... result,
+                                "chain": newValue
+                              };
+                              logger.d("Selected token $result");
+                              // result = selectedEthInfo;
+                            },
+                          ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(left: 12.0),
-                        child: Text(
-                          value['desc'],
-                          style: Theme.of(context).textTheme.labelLarge,
+                        // Padding(
+                        //   padding: const EdgeInsets.only(left: 12.0),
+                        //   child: Text(
+                        //     value,
+                        //     style: Theme.of(context).textTheme.labelLarge,
+                        //   ),
+                        // ),
+                      ],
+                    );
+                  },
+                ),
+                ValueListenableBuilder(
+                  valueListenable: amountNotifier,
+                  builder: (bContext, value, _) {
+                    return Column(
+                      spacing: 12.0,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('Transfer Amount'),
+                        AITextField(
+                            hintText: "Amount",
+                            borderColor: Colors.pink,
+                            controller: _amountController,
+                            // onChanged: (String? value) {
+                            //   result = {
+                            //     ... result,
+                            //     "amount": int.parse(value!)
+                            //   };
+                            //   logger.d("value changed $result");
+                            // },
                         ),
-                      ),
-                    ],
-                  );
-                },
-              ),
-              ValueListenableBuilder(
-                valueListenable: amountNotifier,
-                builder: (context, value, _) {
-                  return Column(
-                    spacing: 12.0,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('Transfer Amount'),
-                      Container(
-                        width: double.infinity,
-                        decoration: kNoBorderDecoration,
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 20.0,
-                          vertical: 12.0,
-                        ),
-                        alignment: Alignment.center,
-                        child: Text(value.toString()),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          InkWell(
-                            onTap: () {
-                              var updated = value - 100;
-                              if (updated < 1) {
-                                updated = 1;
-                              }
-                              amountNotifier.value = updated;
-                              result.amount = updated;
-                            },
-                            child: Text('-100'),
-                          ),
-                          InkWell(
-                            onTap: () {
-                              var updated = value - 10;
-                              if (updated < 1) {
-                                updated = 1;
-                              }
-                              amountNotifier.value = updated;
-                              result.amount = updated;
-                            },
-                            child: Text('-10'),
-                          ),
-                          InkWell(
-                            onTap: () {
-                              var updated = value - 1;
-                              if (updated < 1) {
-                                updated = 1;
-                              }
-                              amountNotifier.value = updated;
-                              result.amount = updated;
-                            },
-                            child: Text('-1'),
-                          ),
-                          InkWell(
-                            onTap: () {
-                              result.amount = value + 1;
-                              amountNotifier.value = value + 1;
-                            },
-                            child: Text('+1'),
-                          ),
-                          InkWell(
-                            onTap: () {
-                              result.amount = value + 10;
-                              amountNotifier.value = value + 10;
-                            },
-                            child: Text('+10'),
-                          ),
-                          InkWell(
-                            onTap: () {
-                              result.amount = value + 100;
-                              amountNotifier.value = value + 100;
-                            },
-                            child: Text('+100'),
-                          ),
                         ],
+                    );
+                  },
+                ),
+                Row(
+                  spacing: 24.0,
+                  children: [
+                    Expanded(
+                      child: TextFillButton(
+                        text: "Send",
+                        color: AIColors.pink,
+                        onTap: () async { /// The above Dart code is using the `Navigator` class to pop the
+                        /// current route off the navigation stack and return a result to
+                        /// the previous route. This is commonly used in Flutter
+                        /// applications to navigate back to the previous screen and pass
+                        /// data back to it.
+                          final amount = _amountController.text.trim();
+                          logger.d("The amount input is $amount");
+                          if (amount.isEmpty || double.tryParse(amount) == null) {
+                            AIHelpers.showToast(msg: "Please enter valid amount.");
+                            return;
+                          }
+                          result = {
+                            ... result,
+                            "amount": double.parse(amount)
+                          };
+                          logger.d("Result is $result");
+                          await handleClickSend(result);
+                        }
                       ),
-                    ],
-                  );
-                },
-              ),
-              Row(
-                spacing: 24.0,
-                children: [
-                  Expanded(
-                    child: TextFillButton(
-                      text: "Send",
-                      color: AIColors.pink,
-                      onTap: () => Navigator.of(context).pop(result),
                     ),
-                  ),
-                  Expanded(
-                    child: OutlineButton(
-                      onTap: () => Navigator.of(context).pop(),
-                      child: Text('Cancel'),
+                    Expanded(
+                      child: OutlineButton(
+                        onTap: () { 
+                          Navigator.of(context).pop();
+                        },
+                        child: Text('Cancel'),
+                      ),
                     ),
-                  ),
-                ],
-              ),
-            ],
+                  ],
+                ),
+              ],
+            ),
           ),
         );
       },

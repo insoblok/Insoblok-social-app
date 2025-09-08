@@ -10,3 +10,5 @@ export 'post_model.dart';
 export 'app_setting_model.dart';
 export 'tastescore_model.dart';
 export 'transfer_model.dart';
+export 'wallet_model.dart';
+export 'transaction_model.dart';
