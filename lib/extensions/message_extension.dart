@@ -239,7 +239,6 @@ extension MessageModelExt on MessageModel {
             GifView.asset(AIImages.icSuccess, width: 36.0, height: 36.0, loop: false, autoPlay: true),
             Text(
               'Successfully Sent',
-              style: TextStyle(fontSize: 11.0, fontWeight: FontWeight.bold),
             ),
           ]),
         

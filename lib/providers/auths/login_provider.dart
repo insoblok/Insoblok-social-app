@@ -9,9 +9,12 @@ import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
 import 'package:insoblok/pages/auths/import_wallet_dialog.dart';
+
+
 class LoginProvider extends InSoBlokViewModel {
   late BuildContext _context;
   BuildContext get context => _context;
+  
   set context(BuildContext context) {
     _context = context;
     notifyListeners();
@@ -56,13 +59,21 @@ class LoginProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  bool isCheckingWallet = true;
+
   void onPageChanged(int index) {
     _currentPage = index;
     notifyListeners();
   }
   
+  final globals = GlobalStore();
+  bool get enabled => globals.isVybeCamEnabled;
+
   Future<void> init(BuildContext context) async {
     this.context = context;
+
+
+    // logger.d("vybeCamEnabled in login: $enabled");
 
     _reownService = locator<ReownService>();
     await _reownService.init(context);
@@ -129,7 +140,6 @@ class LoginProvider extends InSoBlokViewModel {
               isCheckScan,
             );
 
-            logger.d("authUser : $authUser");
             Navigator.pop(buttonContext, null);
             
             if (authUser?.walletAddress?.isEmpty ?? true) {
@@ -215,14 +225,12 @@ class LoginProvider extends InSoBlokViewModel {
     try {
       await reownService.connect();
       if (reownService.isConnected) {
-        logger.d(reownService.walletAddress);
 
         var authUser = await AuthHelper.signIn(
           reownService.walletAddress!,
           isCheckScan,
         );
 
-        logger.d("authUser : $authUser");
         
         if (authUser?.walletAddress?.isEmpty ?? true) {
           Routers.goToRegisterFirstPage(
@@ -230,6 +238,9 @@ class LoginProvider extends InSoBlokViewModel {
             user: UserModel(walletAddress: reownService.walletAddress!),
           );
         } else {
+
+          globals.isVybeCamEnabled = isCheckScan;
+          await globals.save();
           AuthHelper.updateStatus('Online');
           Routers.goToMainPage(context);
         }
@@ -291,25 +302,29 @@ class LoginProvider extends InSoBlokViewModel {
   }
 
   Future<void> checkWalletStatus() async {
+    isCheckingWallet = true;
     _walletExists = await cryptoService.doesWalletExist();
+    isCheckingWallet = false;
     notifyListeners();
   } 
 
   Future<void> handleClickSignIn(BuildContext ctx) async {
-    try {
+    if(isBusy) return;
+    setBusy(true);
+    clearErrors();
+    runBusyFuture(() async {
+      try {
       final password = existingPasswordController.text.trim();
       UnlockedWallet unlockedWallet = await cryptoService.unlockFromStorage(password);
       if (unlockedWallet.address == "") { 
-        AIHelpers.showToast(msg: "Incorrect Password.");
+        setError("Incorrect Password.");
         return;
       }
-      debugPrint("This is unlocked address ${unlockedWallet.address}");
       var authUser = await AuthHelper.signIn(
         unlockedWallet.address,
         isCheckScan,
       );
 
-      logger.d("authUser : $authUser");
       if (authUser?.walletAddress?.isEmpty ?? true) {
         Routers.goToRegisterFirstPage(
           context,
@@ -321,9 +336,17 @@ class LoginProvider extends InSoBlokViewModel {
       }
     } catch (e) {
       logger.d(e);
-      AIHelpers.showToast(msg: "Failed to SignIn $e");
+      setError("Failed to SignIn $e");
     } finally {
       isClickCreateNewWallet = false;
+      setBusy(false);
     }
+    }());
+
+  if(hasError) {
+    AIHelpers.showToast(msg: modelError.toString());
+  }
+  
+
   }
 }

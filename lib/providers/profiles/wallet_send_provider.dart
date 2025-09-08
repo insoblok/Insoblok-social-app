@@ -36,7 +36,6 @@ class WalletSendProvider extends InSoBlokViewModel {
 
     getTransfers();
     // setBalances(balances);
-    logger.d("THis is before get balances and prices");
     await Future.wait([
       _web3Service.getBalances(address!),
       _web3Service.getPrices(),
@@ -221,7 +220,6 @@ class WalletSendProvider extends InSoBlokViewModel {
         //   to: (double.tryParse(toTokenTextController.text) ?? 0),
         // );
         // await transferService.addTransfer(transfer: model);
-        logger.d("This is before add Transaction $currentTransaction");
         if(currentTransaction.isEmpty) { 
           setError("Failed to send token due to internal server error");
         }

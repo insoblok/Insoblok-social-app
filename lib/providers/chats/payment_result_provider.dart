@@ -20,7 +20,7 @@ class PaymentResultProvider extends InSoBlokViewModel {
   Map<String, double> get allBalances => _web3Service.allBalances;
   Map<String, double> get allPrices => _web3Service.allPrices;
 
-  String get selectedNetwork => _web3Service.paymentSelectedNetwork;
+  String get selectedNetwork => _web3Service.paymentNetwork;
   double get amount => _web3Service.paymentAmount;
   String get toAddress => _web3Service.paymentToAddress;
   double get transactionFee => _web3Service.transactionFee;
@@ -36,12 +36,11 @@ class PaymentResultProvider extends InSoBlokViewModel {
     this.context = context;
     await _web3Service.getBalances(cryptoService.privateKey!.address.hex);
     await _web3Service.getPrices();
-    await _web3Service.getTransactionFee(cryptoService.privateKey!, _web3Service.paymentSelectedNetwork, EthereumAddress.fromHex(_web3Service.paymentToAddress), _web3Service.paymentAmount);
+    await _web3Service.getTransactionFee(cryptoService.privateKey!, _web3Service.paymentNetwork, EthereumAddress.fromHex(_web3Service.paymentToAddress), _web3Service.paymentAmount);
     logger.d("Balances are ${_web3Service.allBalances}");
   }
 
   void handleClickReturn(BuildContext context) {
-    logger.d("This is chatroom and user ${_web3Service.chatUser.firstName}");
     Routers.goToMessagePage(context, MessagePageData(room: _web3Service.chatRoom, chatUser: _web3Service.chatUser));
   }
 }

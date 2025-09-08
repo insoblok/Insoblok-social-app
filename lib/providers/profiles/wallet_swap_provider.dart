@@ -122,8 +122,6 @@ class WalletSwapProvider extends InSoBlokViewModel {
       kWalletTokenList[selectedFromToken]['name'].toString(),
       kWalletTokenList[index]['name'].toString(),
     );
-    logger.d(double.tryParse(fromTokenTextController.text));
-    logger.d(availableValue);
     if ((double.tryParse(fromTokenTextController.text) ?? 0) > availableValue ||
         (double.tryParse(fromTokenTextController.text) ?? 0) == 0) {
       isPossibleConvert = false;

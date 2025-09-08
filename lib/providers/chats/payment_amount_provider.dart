@@ -18,10 +18,9 @@ class PaymentAmountProvider extends InSoBlokViewModel{
     notifyListeners();
   }
 
-  final ReactiveValue<String> _selectedNetwork = ReactiveValue<String>(kWalletTokenList[0]["chain"].toString());
-  String get selectedNetwork =>  _selectedNetwork.value;
-  set selectedNetwork(String s) {
-    _selectedNetwork.value = s;
+  String get selectedNetwork => _web3Service.paymentNetwork;
+  set selectedNetwork(String network) {
+    _web3Service.paymentNetwork = network;
     notifyListeners();
   }
 
@@ -31,6 +30,11 @@ class PaymentAmountProvider extends InSoBlokViewModel{
   TextEditingController amountController = TextEditingController();
 
   double get amount => _web3Service.paymentAmount;
+  set amount(double a) {
+    _web3Service.paymentAmount = a;
+    notifyListeners();
+  }
+
   @override
   List<ListenableServiceMixin> get listenableServices => [_web3Service];
 
@@ -42,13 +46,6 @@ class PaymentAmountProvider extends InSoBlokViewModel{
     logger.d("Balances are ${_web3Service.allBalances}");
   }
 
-  void setPaymentSelectedNetwork(String network) {
-    _web3Service.paymentSelectedNetwork = network;
-  }
-
-  void setPaymentAmount(double amount) {
-    _web3Service.paymentAmount = amount;
-  }
 
   void updateAmount(String amount) {
     if(amount.isEmpty || double.tryParse(amount) == null) {
@@ -59,11 +56,10 @@ class PaymentAmountProvider extends InSoBlokViewModel{
   }
 
   void handleClickPreview(BuildContext context) {
-    if (amount > allBalances[selectedNetwork]!) {
+    if (amount > (allBalances[selectedNetwork] ?? 0).toDouble()) {
       AIHelpers.showToast(msg: "Please enter valid amount");
       return;
     }
-    setPaymentSelectedNetwork(selectedNetwork);
     Routers.goToPaymentConfirmPage(context);
   }
 }

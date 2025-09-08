@@ -205,7 +205,7 @@ class MessageProvider extends InSoBlokViewModel {
 
     isAddPop = false;
 
-    var image = await _mediaPickerService.onPickerSingleMedia(isImage: true);
+    var image = await _mediaPickerService.onPickerSingleMedia(context, isImage: true);
     if (image != null) {
       selectedFile = image;
       var isSend = await _showPreview(isImage: true);
@@ -228,7 +228,7 @@ class MessageProvider extends InSoBlokViewModel {
 
     isAddPop = false;
 
-    var video = await _mediaPickerService.onPickerSingleMedia(isImage: false);
+    var video = await _mediaPickerService.onPickerSingleMedia(context, isImage: false);
     if (video != null) {
       selectedFile = video;
       var isSend = await _showPreview(isImage: false);
@@ -329,6 +329,22 @@ class MessageProvider extends InSoBlokViewModel {
     if (req != null) {
       try {
         logger.d("This is payment req $req");
+=======
+  Future<void> onPaidEth() async {
+    if (isBusy) return;
+    clearErrors();
+
+    isAddPop = false;
+
+    final reownService = locator<ReownService>();
+
+    var req = await reownService.onShowTransferModal(
+      context,
+      address: chatUser.walletAddress,
+    );
+    if (req != null) {
+      try {
+>>>>>>> 108a6dd90840126df2947b9c6acd9d18d7fdf98d
         await reownService.connect();
         if (reownService.isConnected) {
           if (chatUser.walletAddress == null) {
@@ -362,6 +378,8 @@ class MessageProvider extends InSoBlokViewModel {
             type: 'ETH',
             amount: '${req["amount"]}',
             unit: '${EtherUnit.ether}',
+            amount: '${req.amount}',
+            unit: '${req.unit}',
           ),
         );
         scrollController.jumpTo(scrollController.position.maxScrollExtent);

@@ -78,6 +78,15 @@ class AccountFloatingView extends ViewModelWidget<AccountProvider> {
 
   @override
   Widget build(BuildContext context, viewModel) {
+    const gradient = LinearGradient(
+      begin: Alignment.centerLeft,
+      end: Alignment.centerRight,
+      colors: [
+        Color(0xFFF30C6C), // pink
+        Color(0xFFC739EB), // purple
+      ],
+    );
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -96,35 +105,35 @@ class AccountFloatingView extends ViewModelWidget<AccountProvider> {
                 style: Theme.of(context).textTheme.labelMedium,
               ),
 
-              // Wrap(
-              //   spacing: 12.0,
-              //   runSpacing: 8.0,
-              //   children:
-              //       (viewModel.accountUser?.linkInfo ?? []).map((info) {
-              //         return InkWell(
-              //           onTap: () {
-              //             if (info['type'] == 'wallet') {
-              //               viewModel.onClickInfo(0);
-              //             }
-              //           },
-              //           child: Row(
-              //             mainAxisSize: MainAxisSize.min,
-              //             children: [
-              //               AIImage(
-              //                 info['icon'],
-              //                 height: 18.0,
-              //                 color: AIColors.greyTextColor,
-              //               ),
-              //               const SizedBox(width: 4.0),
-              //               Text(
-              //                 info['title']!,
-              //                 style: Theme.of(context).textTheme.labelMedium,
-              //               ),
-              //             ],
-              //           ),
-              //         );
-              //       }).toList(),
-              // ),
+              Wrap(
+                spacing: 12.0,
+                runSpacing: 8.0,
+                children:
+                    (viewModel.accountUser?.linkInfo ?? []).map((info) {
+                      return InkWell(
+                        onTap: () {
+                          if (info['type'] == 'wallet') {
+                            viewModel.onClickInfo(0);
+                          }
+                        },
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            AIImage(
+                              info['icon'],
+                              height: 18.0,
+                              color: AIColors.greyTextColor,
+                            ),
+                            const SizedBox(width: 4.0),
+                            Text(
+                              info['title']!,
+                              style: Theme.of(context).textTheme.labelMedium,
+                            ),
+                          ],
+                        ),
+                      );
+                    }).toList(),
+              ),
               // Text.rich(
               //   TextSpan(
               //     children: [
@@ -222,23 +231,25 @@ class AccountFloatingView extends ViewModelWidget<AccountProvider> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        TextFillButton(
-                          onTap: () {
-                            viewModel.updateFollow();
-                          },
+                        Container(
                           height: 36,
                           width: 124,
-                          isBusy: viewModel.isBusy,
-                          color:
-                              viewModel.isFollowing
-                                  ? Theme.of(context).primaryColor
-                                  : Theme.of(
-                                    context,
-                                  ).colorScheme.secondary.withAlpha(64),
-                          text:
-                              viewModel.isFollowing ? 'Follow back' : 'Follow',
-                          fontWeight: FontWeight.normal,
-                          fontSize: 14.0,
+                          decoration: BoxDecoration(
+                            gradient: viewModel.isFollowing ? gradient : null,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: TextFillButton(
+                            onTap: viewModel.updateFollow,
+                            height: 36,
+                            width: 124,
+                            isBusy: viewModel.isBusy,
+                            color: viewModel.isFollowing
+                                ? Colors.transparent
+                                : Theme.of(context).colorScheme.secondary.withAlpha(64),
+                            text: viewModel.isFollowing ? 'Follow back' : 'Follow',
+                            fontWeight: FontWeight.normal,
+                            fontSize: 14.0,
+                          ),
                         ),
                         TextFillButton(
                           onTap: () {

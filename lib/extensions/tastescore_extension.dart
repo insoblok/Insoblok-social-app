@@ -1,13 +1,25 @@
 import 'package:insoblok/models/models.dart';
 
 class TastescoreType {
-  static String VOTE = 'vote';
-  static String REPOST = 'repost';
-  static String REMIX = 'remix';
-  static String FREESTYLE = 'post_freestyle';
-  static String WINCREATOR = 'win_creator';
+
   static String LOGIN = 'daily_bonus';
   static String REGISTER = 'register';
+  static String VOTE = 'vote';
+  static String POST = 'post';
+  static String REPOST = 'repost';
+  static String REPOSTED = 'reposted';
+  static String REMIX = 'remix';
+  static String REACTION = 'reaction';
+  static String REACTED = 'reacted';
+  static String COMMENT = 'comment';
+  static String REPLY = 'reply';
+  static String FOLLOW_UNFOLLOW = 'follow/unfollow';
+  static String TAGGING = 'tagging';
+  static String MENTIONS = 'mentions';
+  static String SHARE_OUTSIDE = 'share_outside';
+  
+  static String FREESTYLE = 'post_freestyle';
+  static String WINCREATOR = 'win_creator';
   static String BONUS = 'bonus';
 }
 
@@ -19,6 +31,13 @@ final kScoreDescription = {
   TastescoreType.WINCREATOR: 'Welcome to create a voted story',
   TastescoreType.LOGIN: 'Welcome to InSoBlok',
   TastescoreType.REGISTER: 'Welcome to InSoBlok',
+
+  TastescoreType.FOLLOW_UNFOLLOW: 'Followed/Unfollowed a story',
+  TastescoreType.TAGGING: 'Tagged a story',
+  TastescoreType.MENTIONS: 'Mentioned a story',
+  TastescoreType.SHARE_OUTSIDE: 'Shared a story outside',
+
+  
   'login': 'Welcome to InSoBlok',
   '${TastescoreType.REPOST}-${TastescoreType.BONUS}':
       'Someone have given a vote to your fork story.',
@@ -60,3 +79,4 @@ extension TastescoreModelExt on TastescoreModel {
     );
   }
 }
+

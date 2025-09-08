@@ -28,3 +28,4 @@ export 'tastescore_widget.dart';
 export 'wallet_address_widget.dart';
 export 'network_selection_modal_widget.dart';
 export 'number_plate_widget.dart';
+export 'verticalreactiontoggle.dart';

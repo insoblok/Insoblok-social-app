@@ -148,7 +148,6 @@ class ReownService {
     functionName: 'totalSupply',
   );
 
-  
   Future<Map<String, dynamic>?> onShowTransferModal(
     BuildContext parentContext, 
     String? address,
@@ -683,4 +682,3 @@ class ReownService {
     },
   ];
 }
-

@@ -37,6 +37,16 @@ class Web3Service with ListenableServiceMixin {
   final RxValue<String> _paymentTransactionHash = RxValue<String>("");
   String get paymentTransactionHash => _paymentTransactionHash.value;
 
+  final RxValue<double> _transactionFee = RxValue<double>(0.0);
+  double get transactionFee => _transactionFee.value;
+
+  final ReactiveValue<String> _paymentNetwork = ReactiveValue<String>(kWalletTokenList[0]["chain"].toString());
+  String get paymentNetwork =>  _paymentNetwork.value;
+  set paymentNetwork(String s) {
+    _paymentNetwork.value = s;
+    notifyListeners();
+  }
+
   Timer? _timer;
 
   String _paymentToAddress = '';
@@ -46,13 +56,6 @@ class Web3Service with ListenableServiceMixin {
     notifyListeners(); // Notify listeners about the change
   }
 
-  String _paymentSelectedNetwork = "";
-  String get paymentSelectedNetwork => _paymentSelectedNetwork;
-  set paymentSelectedNetwork(String network) {
-    _paymentSelectedNetwork = network;
-    notifyListeners();
-  }
-
   double _paymentAmount = 0.0;
   double get paymentAmount => _paymentAmount;
   set paymentAmount(double amount) {
@@ -60,18 +63,12 @@ class Web3Service with ListenableServiceMixin {
     notifyListeners();
   }
 
-  double _transactionFee = -1;
-  double get transactionFee => _transactionFee;
-  set transactionFee(double fee) {
-    _transactionFee = fee;
-    notifyListeners();
-  }
 
   RoomModel chatRoom = RoomModel();
   UserModel chatUser = UserModel();
   /// constructor: setup client depending on network
   Web3Service() {
-    listenToReactiveValues([_allBalances, _allPrices, _transactions, _paymentTransactionHash]);
+    listenToReactiveValues([_allBalances, _allPrices, _transactions, _paymentTransactionHash, _transactionFee]);
   }
 
   void setNetwork({required String chain}) {
@@ -165,9 +162,11 @@ class Web3Service with ListenableServiceMixin {
         result[balance["chain"]] = balance["balance"];
       }
       _allBalances.value = result;
+      notifyListeners();
     } catch (e) {
       logger.d("Error: $e");
       _allBalances.value = {};
+      notifyListeners();
     }
   }
 
@@ -178,6 +177,7 @@ class Web3Service with ListenableServiceMixin {
     } catch (e) {
       _allPrices.value = { "insoblok": 0, "usdt": 1, "xrp": 0, "ethereum": 0, "sepolia": 0};
     }
+    notifyListeners();
   }
 
   Future<Map<String, dynamic>> sendEvmToken(
@@ -209,7 +209,6 @@ class Web3Service with ListenableServiceMixin {
       BigInt maxFeeWei;
       BigInt maxPriorityFeeWei;
       int nonce;
-      logger.d("This is native token: $isNativeToken, $tokenAddress");
       if (isNativeToken) {
         // For native ETH: Get gas parameters directly from node
         final gasPrice = await _evmClient.getGasPrice();
@@ -290,14 +289,14 @@ class Web3Service with ListenableServiceMixin {
         "is_native_token": isNativeToken.toString(),
       };
       
-      logger.d("This is request body: $body");
       final response = await api.postRequest("/evm/send", body);
       _paymentTransactionHash.value = response["tx_hash"];
-      logger.d("This is response: $response");
+      notifyListeners();
       return response;
       
     } catch (e) {
       logger.d("Caught an Exception like $e");
+      notifyListeners();
       return {};
     }
 }
@@ -345,6 +344,7 @@ class Web3Service with ListenableServiceMixin {
         return tx;
       }).toList();
       _transactions.value = results; 
+      notifyListeners();
     }
     catch (e) {
       logger.d(e);
@@ -361,6 +361,7 @@ class Web3Service with ListenableServiceMixin {
     final newTransactions = [...current, tx];
     newTransactions.sort((a, b) => b["timestamp"]!.compareTo(a["timestamp"]!));
     _transactions.value = newTransactions;
+    notifyListeners();
   }
 
   Future<void> getTransactionStatus(String hash, String chain, String address) async {
@@ -369,7 +370,6 @@ class Web3Service with ListenableServiceMixin {
       _timer = Timer.periodic(Duration(seconds: 3), (timer) async {
         logger.d("We are about to get transaction status.");
         final response = await api.getRequest("/evm/transaction/$chain/$hash");
-        logger.d("THis is transaction status $response");
         if (response["status"] != "pending") {
           logger.d("Cancelling the timer");
           final current = _transactions.value ?? [];
@@ -400,7 +400,6 @@ class Web3Service with ListenableServiceMixin {
     required double amount,
     required String chain
   }) async {
-      logger.d("This is get quote body $from, $to, $amount, $chain");
       final response = await api.postRequest('/evm/transaction/get-quote', {
         'from_address': from,
         'to': to,
@@ -470,9 +469,10 @@ class Web3Service with ListenableServiceMixin {
     } catch(e) {
       logger.d("An error occurred while estimating transaction fee, $e");
     }
-    _transactionFee = gasEstimate;
+    _transactionFee.value = gasEstimate;
+    notifyListeners();
     logger.d("transaction fee is ${gasEstimate}");
-    return _transactionFee;
+    return gasEstimate;
     
   }
 }

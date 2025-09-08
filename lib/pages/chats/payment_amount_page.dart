@@ -39,7 +39,7 @@ class PaymentAmountPage extends StatelessWidget {
                           GestureDetector(
                             onTap:() {
                               viewModel.controller.value = (viewModel.allBalances[viewModel.selectedNetwork] ?? "").toString();
-                              viewModel.setPaymentAmount(viewModel.allBalances[viewModel.selectedNetwork] ?? 0);
+                              viewModel.amount = (viewModel.allBalances[viewModel.selectedNetwork] ?? 0);
                             },
                             child: Text("Use Max")
                           )

@@ -44,10 +44,11 @@ abstract class XpEarnModel with _$XpEarnModel {
 @freezed
 abstract class XpInSoModel with _$XpInSoModel {
   @JsonSerializable(fieldRename: FieldRename.snake)
-  factory XpInSoModel({int? min, int? max, int? rate}) = _XpInSoModel;
+  factory XpInSoModel({int? min, int? max, int? inso, int? rate}) = _XpInSoModel;
 
   factory XpInSoModel.fromJson(Map<String, dynamic> json) =>
       _$XpInSoModelFromJson(json);
+
 }
 
 @freezed

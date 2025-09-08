@@ -61,14 +61,11 @@ class DashboardProvider extends InSoBlokViewModel {
     });
   }
 
-  @override
-  void dispose() {
-    _pageController.dispose();
-    super.dispose();
-  }
-
   final List<NewsModel> _allNewses = [];
   List<NewsModel> get showNewses => _allNewses;
+
+  final TextEditingController searchController = TextEditingController();
+  final FocusNode searchFocusNode = FocusNode();
 
   Future<void> fetchNewsData() async {
     if (isBusy) return;
@@ -157,17 +154,34 @@ class DashboardProvider extends InSoBlokViewModel {
     fetchStoryData();
   }
 
+  void onSearchChanged(String value) {
+    // TODO: filter your stories/users/etc. here if desired
+    notifyListeners(); // so suffix clear button appears/disappears
+  }
+
+  void onSearchSubmitted(String value) {
+    // TODO: submit search / navigate / fetch results
+  }
+
+  void clearSearch() {
+    searchController.clear();
+    notifyListeners();
+  }
+
   Future<void> onClickMenuItem(int index) async {
     
     switch (index) {
+      // case 0:
+      //   Routers.goToLeaderboardPage(context); 
+      //   break;
       case 0:
-        Routers.goToLeaderboardPage(context); 
-        break;
-      case 1:
         Routers.goToFollowingPage(context);
         break;
-      case 2:
+      case 1:
         Routers.goToLookbookPage(context);
+        break;
+      case 2:
+        Routers.goToLeaderboardPage(context);
         break;
       case 3:
         Routers.goToMarketPlacePage(context);
@@ -180,4 +194,13 @@ class DashboardProvider extends InSoBlokViewModel {
         break;
     }
   }
+  
+  @override
+  void dispose() {
+    _pageController.dispose();
+    searchController.dispose();
+    searchFocusNode.dispose();
+    super.dispose();
+  }
+
 }

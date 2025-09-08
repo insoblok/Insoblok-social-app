@@ -354,6 +354,7 @@ class StoryContentProvider extends InSoBlokViewModel {
               updateDate: DateTime.now(),
             );
             await storyService.addComment(story: story);
+            await tastScoreService.commentScore();
             _comments.insert(0, comment.copyWith(id: commentid));
           }
         } else {

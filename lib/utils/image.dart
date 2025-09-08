@@ -37,6 +37,8 @@ class AIImages {
   static String icBottomWalletFill = 'assets/icons/ic_wallet_fill.svg';
   static String icBottomWallet = 'assets/icons/ic_wallet.svg';
   static String icDollar = 'assets/icons/ic_dollar.svg';
+  static String icBottomLeaderboardFill = 'assets/icons/ic_leaderboard_fill.png';
+  static String icBottomLeaderboard = 'assets/icons/ic_leaderboard.png';
   static String icUsdt = 'assets/icons/ic_usdt.png';
   static String icXrp = 'assets/icons/ic_xrp.svg';
   static String icPostLookbook = 'assets/icons/ic_post_lookbook.png';
@@ -56,6 +58,8 @@ class AIImages {
   static String icGif = 'assets/icons/ic_gif.svg';
   static String icCamera = 'assets/icons/ic_camera.svg';
   static String icFire = 'assets/icons/ic_fire.png';
+  static String icDelete = 'assets/icons/ic_delete.png';
+  static String icRefresh = 'assets/icons/ic_refresh.svg';
   
   static String icMenuProfile = 'assets/icons/ic_user.svg';
   static String icMenuLists = 'assets/icons/ic_list.svg';
@@ -90,6 +94,7 @@ class AIImages {
   static String icCoinInso = 'assets/icons/ic_inso.png';
   static String icCoinEther = 'assets/icons/ic_eth.svg';
   static String icUserXP = 'assets/icons/ic_xrp.svg';
+  // static String icUserXP = 'assets/icons/ic_xp2.png';
 
   static String imgEmptyList = 'assets/images/gif_empty_list.gif';
 

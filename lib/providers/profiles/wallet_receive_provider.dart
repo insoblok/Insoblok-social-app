@@ -4,7 +4,7 @@ import 'package:insoblok/models/models.dart';
 import 'package:insoblok/pages/pages.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
-
+import 'package:insoblok/locator.dart';
 class WalletReceiveProvider extends InSoBlokViewModel {
   late BuildContext _context;
   BuildContext get context => _context;
@@ -20,6 +20,7 @@ class WalletReceiveProvider extends InSoBlokViewModel {
     this.context = context;
     getTransfers();
   }
+  final Web3Service _web3service = locator<Web3Service>();
 
   final List<TransferModel> _transfers = [];
 
@@ -173,7 +174,7 @@ class WalletReceiveProvider extends InSoBlokViewModel {
 
     await runBusyFuture(() async {
       try {
-        web3Service.sendEvmToken(receiverTextController.text.trim(), double.parse(sendTokenTextController.text.trim()), kWalletTokenList[selectedFromToken], cryptoService.privateKey!);
+       _web3service.sendEvmToken(receiverTextController.text.trim(), double.parse(sendTokenTextController.text.trim()), kWalletTokenList[selectedFromToken], cryptoService.privateKey!);
         // var model = transferService.getTransferModel(
         //   fromToken: fromToken,
         //   toToken: toToken,

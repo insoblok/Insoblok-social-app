@@ -157,7 +157,6 @@ class AINoBorderTextField extends StatelessWidget {
     );
   }
 }
-
 class AIPasswordField extends StatefulWidget {
   final String? initialValue;
   final String? hintText;
@@ -170,6 +169,7 @@ class AIPasswordField extends StatefulWidget {
   final void Function()? onEditingComplete;
   final void Function(String)? onFieldSubmitted;
   final void Function(String?)? onSaved;
+  final String? Function(String?)? validator;
 
   const AIPasswordField({
     super.key,
@@ -184,6 +184,7 @@ class AIPasswordField extends StatefulWidget {
     this.onEditingComplete,
     this.onFieldSubmitted,
     this.onSaved,
+    this.validator,
   });
 
   @override
@@ -249,6 +250,7 @@ class _AIPasswordFieldState extends State<AIPasswordField> {
         onEditingComplete: widget.onEditingComplete,
         onFieldSubmitted: widget.onFieldSubmitted,
         onSaved: widget.onSaved,
+        validator: widget.validator,
       ),
     );
   }

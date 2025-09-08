@@ -1,12 +1,12 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-
 import 'package:app_links/app_links.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:provider/provider.dart';
 import 'package:stacked/stacked.dart';
+// import 'package:media_kit/media_kit.dart';
 
 import 'package:insoblok/locator.dart';
 import 'package:insoblok/pages/pages.dart';
@@ -23,25 +23,34 @@ class MyHttpOverrides extends HttpOverrides {
   }
 }
 
-void main() {
+final Navigation _navigation = Navigation();
+final scaffoldKey = GlobalKey<ScaffoldMessengerState>();
+
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   setupLocator();
+
+  // REQUIRED for media_kit: platform libs must be in pubspec (see above).
+  // MediaKit.ensureInitialized();
+
   HttpOverrides.global = MyHttpOverrides();
+
   FlutterError.onError = (FlutterErrorDetails details) {
-    logger.e('Error: $details');
+    logger.e('FlutterError: $details');
   };
 
   
-  AppLinks().uriLinkStream.listen((uri) {
-    logger.d('onAppLink: $uri');
-  });
+  // If you need to listen before runApp, keep it simple & guarded.
+  try {
+    AppLinks().uriLinkStream.listen((uri) {
+      logger.d('onAppLink: $uri');
+    });
+  } catch (e) {
+    logger.w('AppLinks init failed: $e');
+  }
 
-  runApp(MaterialApp(home: const InSoBlokApp()));
+  runApp(const InSoBlokApp());
 }
-
-final Navigation _navigation = Navigation();
-
-final scaffoldKey = GlobalKey<ScaffoldMessengerState>();
 
 class InSoBlokApp extends StatelessWidget {
   const InSoBlokApp({super.key});
@@ -49,7 +58,9 @@ class InSoBlokApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MultiProvider(
-      providers: [ChangeNotifierProvider(create: (context) => AppProvider())],
+      providers: [
+        ChangeNotifierProvider(create: (_) => AppProvider()),
+      ],
       child: ViewModelBuilder<AppProvider>.reactive(
         viewModelBuilder: () => AppProvider(),
         onViewModelReady: (viewModel) => viewModel.init(context),
@@ -57,20 +68,29 @@ class InSoBlokApp extends StatelessWidget {
           return MaterialApp(
             title: 'InSoBlok',
             debugShowCheckedModeBanner: false,
+
+            // THEMING
             themeMode: AppSettingHelper.themeMode,
             theme: AppSettingHelper.lightTheme,
             darkTheme: AppSettingHelper.darkTheme,
+
+            // ROUTING
             initialRoute: kRouterBase,
             onGenerateRoute: _navigation.router.generator,
             scaffoldMessengerKey: scaffoldKey,
-            home: SplashPage(),
+
+            // If you also want to show SplashPage by route, put it in the router.
+            // Otherwise, uncomment next line to force a home page:
+            // home: SplashPage(),
+
+            // LOCALIZATION
             localizationsDelegates: const [
               GlobalMaterialLocalizations.delegate,
               GlobalWidgetsLocalizations.delegate,
               GlobalCupertinoLocalizations.delegate,
               FlutterQuillLocalizations.delegate,
             ],
-            supportedLocales: [Locale('en', 'US')],
+            supportedLocales: const [Locale('en', 'US')],
           );
         },
       ),

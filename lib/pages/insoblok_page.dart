@@ -409,6 +409,7 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
     var pages = [
       PageableView(),
       AccountWalletPage(),
+      LeaderboardPage(),
       LookbookView(),
       ChatView(),
       ProfileView(),
@@ -494,12 +495,12 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
                                   style:
                                       Theme.of(context).textTheme.displayLarge,
                                 ),
-                                // Text(
-                                //   (viewModel.user?.nickId?.isEmpty ?? true)
-                                //       ? '@${viewModel.user?.fullName ?? 'unknown'}'
-                                //       : '@${viewModel.user?.nickId}',
-                                //   style: Theme.of(context).textTheme.labelLarge,
-                                // ),
+                                Text(
+                                  viewModel.user!.nickId!.isEmpty
+                                      ? '@${viewModel.user?.fullName}'
+                                      : '@${viewModel.user?.nickId}',
+                                  style: Theme.of(context).textTheme.labelLarge,
+                                ),
                               ],
                             ),
                             InkWell(
@@ -654,6 +655,9 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
                                               ? AIImages.icBottomWalletFill
                                               : AIImages.icBottomWallet,
                                       label: 'Wallet',
+                                      //         ? AIImages.icBottomLeaderboardFill
+                                      //         : AIImages.icBottomLeaderboard,
+                                      // label: 'Leaderboard',
                                       color:
                                           viewModel.pageIndex == 1
                                               ? AIColors.pink
@@ -664,16 +668,16 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
                                   Expanded(
                                     child: AIBottomBar(
                                       onTap: () {
-                                        viewModel.pageIndex = 3;
-                                        viewModel.dotIndex = 3;
+                                        viewModel.pageIndex = 4;
+                                        viewModel.dotIndex = 4;
                                       },
                                       icon:
-                                          viewModel.pageIndex == 3
+                                          viewModel.pageIndex == 4
                                               ? AIImages.icBottomMessageFill
                                               : AIImages.icBottomMessage,
                                       label: 'Chat',
                                       color:
-                                          viewModel.pageIndex == 3
+                                          viewModel.pageIndex == 4
                                               ? AIColors.pink
                                               : AIColors.white,
                                     ),
@@ -681,15 +685,17 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
                                   Expanded(
                                     child: AIBottomBar(
                                       onTap: () {
+                                        viewModel.pageIndex = 5;
+                                        viewModel.dotIndex = 5;
                                         Routers.goToAccountPage(context);
                                       },
                                       icon:
-                                          viewModel.pageIndex == 4
+                                          viewModel.pageIndex == 5
                                               ? AIImages.icBottomUserFill
                                               : AIImages.icBottomUser,
                                       label: 'Profile',
                                       color:
-                                          viewModel.pageIndex == 4
+                                          viewModel.pageIndex == 5
                                               ? AIColors.pink
                                               : AIColors.white,
                                     ),

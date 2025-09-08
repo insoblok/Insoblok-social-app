@@ -66,6 +66,8 @@ class _StoryCarouselViewState extends State<StoryCarouselView> {
               context,
               medias: medias.map((media) => media.link!).toList(),
               index: 0,
+              storyID:'',
+              storyUser:''
             ),
         child: SizedBox(
           width: double.infinity,
@@ -113,6 +115,8 @@ class _StoryCarouselViewState extends State<StoryCarouselView> {
                           context,
                           medias: medias.map((media) => media.link!).toList(),
                           index: index,
+                          storyID:'',
+                          storyUser:''
                         ),
                     child: SizedBox(
                       width: double.infinity,

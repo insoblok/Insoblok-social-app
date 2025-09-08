@@ -131,8 +131,9 @@ class UserService {
 
   UserModel? _getUserFromDoc(DocumentSnapshot<Map<String, dynamic>> doc) {
     var json = doc.data();
+    logger.d("This is doc json: $json");
     if (json != null) {
-      json['id'] = doc.id;
+      json['id'] = doc.id ?? -1;
       return UserModel.fromJson(json);
     }
     return null;

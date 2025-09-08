@@ -15,6 +15,7 @@ import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 
 import 'package:path/path.dart' as p;
+
 class FirebaseService {
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyAN4xG1SxbgazfmqjxG84yX4Il1DV01Jxc',
@@ -55,7 +56,6 @@ class FirebaseService {
   Future<void> signInFirebase() async {
     var credential = await FirebaseAuth.instance.signInAnonymously();
     _userCredential = credential;
-    logger.d("Signed in with temporary account.");
   }
 
   Future<void> signInEmail({
@@ -419,6 +419,12 @@ class FirebaseService {
     }
   }
 
+  String? extractMediaUrl(dynamic media) {
+    if (media is String) return media;
+    if (media is Map && media['link'] is String) return media['link'] as String;
+    if (media is Map && media['url']  is String) return media['url']  as String;
+    return null;
+  }
 }
 
 class FirebaseHelper {
@@ -487,6 +493,106 @@ class FirebaseHelper {
   static Future<void> deleteImage(String imageUrl) =>
       service.deleteImage(imageUrl);
 
+  static Future<void> deleteGalleryImage(String imageUrl) async {
+    
+    logger.d("delete imageUrl: $imageUrl");
+
+    final usersRef = FirebaseFirestore.instance.collection("user");
+    await usersRef.doc(AuthHelper.user?.id).update({
+      "galleries": FieldValue.arrayRemove([imageUrl]), // removes all exact matches
+    });
+  }
+
+  static Future<int> deleteMedias(String storyId, int index) async {
+    final docRef = FirebaseFirestore.instance.collection('story').doc(storyId);
+
+    // Run Firestore mutation and return both new length + removed URL
+    final result = await FirebaseFirestore.instance
+        .runTransaction<Map<String, dynamic>>((tx) async {
+      final snap = await tx.get(docRef);
+      if (!snap.exists) {
+        throw StateError('Story $storyId not found');
+      }
+
+      final data = (snap.data() as Map<String, dynamic>?) ?? {};
+      final List<dynamic> medias = List<dynamic>.from(data['medias'] ?? []);
+
+      if (index < 0 || index >= medias.length) {
+        throw RangeError.index(index, medias, 'index', null, medias.length);
+      }
+
+      final removed = medias.removeAt(index);
+      tx.update(docRef, {'medias': medias});
+
+      return {
+        'len': medias.length,
+        'url': service.extractMediaUrl(removed), // your existing helper
+      };
+    });
+
+    // Best-effort Storage delete (outside the transaction)
+    final String? url = result['url'] as String?;
+    if (url != null && url.startsWith('http')) {
+      try {
+        await FirebaseStorage.instance.refFromURL(url).delete();
+      } catch (e) {
+        // log/ignore as needed
+        // print('Storage delete failed: $e');
+      }
+    }
+
+    return result['len'] as int;
+  }
+
+  static Future<void> deleteStory(String storyId) async {
+
+    await removeStoryFromUserActions(userId: AuthHelper.user!.id!, storyId: storyId, alsoDeleteStoryDoc: false);
+    await FirebaseFirestore.instance
+        .collection('story')   // use your exact collection name
+        .doc(storyId)
+        .delete();
+  }
+
+  static Future<void> removeStoryFromUserActions({
+    required String userId,
+    required String storyId,
+    bool alsoDeleteStoryDoc = false,
+  }) async {
+    final db = FirebaseFirestore.instance;
+    final userRef  = db.collection('user').doc(userId);
+    final storyRef = db.collection('story').doc(storyId);
+
+    await db.runTransaction((tx) async {
+      final userSnap = await tx.get(userRef);
+      final data = (userSnap.data() as Map<String, dynamic>?) ?? {};
+      final List<dynamic> actions =
+          List<dynamic>.from(data['user_actions'] ?? const []);
+
+      if (actions.isNotEmpty && actions.every((e) => e is String)) {
+        // Fast path: array of strings
+        tx.update(userRef, {
+          'user_actions': FieldValue.arrayRemove([storyId]),
+        });
+      } else {
+        // General path: array of maps or mixed
+        actions.removeWhere((e) {
+          if (e is String) return e == storyId;
+          if (e is Map) {
+            final id = e['id'] ?? e['storyId'] ?? e['ref'] ?? e['docId'];
+            final typeOk = (e['type'] == null) || (e['type'] == 'story');
+            return id == storyId && typeOk;
+          }
+          return false;
+        });
+        tx.update(userRef, {'user_actions': actions});
+      }
+
+      if (alsoDeleteStoryDoc) {
+        tx.delete(storyRef);
+      }
+    });
+  }
+  
   static Map<String, dynamic> fromConvertJson(
     Map<String, dynamic> firebaseJson,
   ) {
@@ -513,6 +619,7 @@ class FirebaseHelper {
         newJson[key] = firebaseJson[key];
       }
     }
+    logger.d("This is new json: $newJson");
     return newJson;
   }
 }

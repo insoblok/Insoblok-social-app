@@ -8,8 +8,19 @@ import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
 import 'package:insoblok/models/models.dart';
 
+  
+
+const kWalletActionList = [
+  // {'name': 'Buy', 'icon': Icons.add},
+  {'name': 'Send', 'icon': Icons.arrow_upward},
+  {'name': 'Receive', 'icon': Icons.arrow_downward},
+  {'name': 'Swap', 'icon': Icons.swap_calls},
+  // {'name': 'Bridge', 'icon': Icons.link},
+];
+
 class AccountWalletPage extends StatelessWidget {
   const AccountWalletPage({super.key});
+
 
   Widget _buildStatusBadge(String status) {
     Color bgColor;
@@ -88,6 +99,16 @@ class AccountWalletPage extends StatelessWidget {
                               children: [
                                 AccountWalletIconCover(
                                   child: AIImage(
+                                    AIImages.icRefresh,
+                                    color: Theme.of(context).primaryColor,
+                                  ),
+                                  onTap: () {
+                                    viewModel.init(context);
+                                  }
+                                ),
+                                SizedBox(width: 16.0),
+                                AccountWalletIconCover(
+                                  child: AIImage(
                                     AIImages.icCamera,
                                     color: Theme.of(context).primaryColor,
                                   ),
@@ -112,36 +133,37 @@ class AccountWalletPage extends StatelessWidget {
                         ],
                       ),
                       const SizedBox(height: 20.0),
-                      Container(
-                        padding: const EdgeInsets.all(16.0),
-                        decoration: BoxDecoration(
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.secondary.withAlpha(16),
-                          borderRadius: BorderRadius.circular(8.0),
-                          boxShadow: [
-                            BoxShadow(
-                              color: AIColors.black.withAlpha(50),
-                              spreadRadius: 2,
-                              blurRadius: 2,
-                            ),
-                          ],
-                        ),
-                        child: Column(
-                          children: [
-                            Text(
-                              '\$${viewModel.totalBalance.toStringAsFixed(2)}',
-                              style: TextStyle(
-                                fontSize: 32,
-                                fontWeight: FontWeight.bold,
+                      SizedBox(
+                        width: double.infinity,
+                        child: Container(
+                          padding: const EdgeInsets.all(16.0),
+                          decoration: BoxDecoration(
+                            color: Theme.of(context).colorScheme.secondary.withAlpha(16),
+                            borderRadius: BorderRadius.circular(8.0),
+                            boxShadow: [
+                              BoxShadow(
+                                color: AIColors.black.withAlpha(50),
+                                spreadRadius: 2,
+                                blurRadius: 2,
                               ),
-                            ),
-                            Text(
-                              'Total balance',
-                              style: Theme.of(context).textTheme.bodyLarge,
-                            ),
-                            const SizedBox(height: 16.0),
-                          ],
+                            ],
+                          ),
+                          child: Column(
+                            children: [
+                              Text(
+                                '\$${viewModel.totalBalance.toStringAsFixed(2)}',
+                                style: TextStyle(
+                                  fontSize: 32,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                'Total balance',
+                                style: Theme.of(context).textTheme.bodyLarge,
+                              ),
+                              const SizedBox(height: 16.0),
+                            ],
+                          ),
                         ),
                       ),
                       const SizedBox(height: 24.0),
@@ -496,7 +518,10 @@ void _showXpConvertSheet(BuildContext context, AccountWalletProvider parentVm) {
         viewModelBuilder: () => AccountRewardProvider(),
         onViewModelReady: (vm) async {
           // If you have a real XP value on parentVm, pass that instead.
-          vm.init(context, null);
+          vm.init(
+            context,
+            null
+          );
         },
         builder: (context, vm, __) {
           return RewardTransferView(viewModel: vm);
@@ -567,10 +592,6 @@ class RewardTransferView extends StatelessWidget {
                       ),
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        color:
-                            viewModel.selectXpInSo == inSoModel
-                                ? AIColors.white
-                                : Theme.of(context).colorScheme.onPrimary,
                       ),
                     ),
                   ),
@@ -586,7 +607,6 @@ class RewardTransferView extends StatelessWidget {
                   Row(
                     children: [
                       SizedBox(
-                        width: 80,
                         child: TextFormField(
                           decoration: InputDecoration(
                             hintText: '0',

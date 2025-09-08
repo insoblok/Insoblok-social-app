@@ -35,6 +35,13 @@ class ReactionsProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  bool _isStoryOwner = false;
+  bool get isStoryOwner => _isStoryOwner;
+  set isStoryOwner(bool f) {
+    _isStoryOwner = f;
+    notifyListeners();
+  }
+
   /// Selected image URLs
   final List<String> _selectedImages = [];
   List<String> get selectedImages => _selectedImages;
@@ -48,6 +55,12 @@ class ReactionsProvider extends InSoBlokViewModel {
   Future<void> init(BuildContext context, {StoryModel? story}) async {
     this.context = context;
     logger.d("init function!");
+    
+    final auth = AuthHelper.user?.id;
+
+    if(auth == story?.userId){
+      _isStoryOwner = true;
+    }
     
     this.story = story!;
     await fetchReactions(story.id!);

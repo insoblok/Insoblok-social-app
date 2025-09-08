@@ -92,6 +92,7 @@ dependencies:
   hex: ^0.2.0
   web3dart: ^2.7.2
   solana: ^0.31.2+1
+  mocktail: ^1.0.4
 
 dev_dependencies:
   flutter_test:
@@ -101,6 +102,7 @@ dev_dependencies:
   json_serializable: any
   freezed: any
   build_runner: any
+  test: ^1.25.15
 
 dependency_overrides:
   freezed: ^3.1.0
@@ -113,7 +115,6 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
-    - assets/icons/ic_success.gif
     - assets/fonts/
     - assets/data/
     # - assets/effects/filters/fire_effect/Fire_Effect.deepar

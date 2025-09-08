@@ -194,7 +194,15 @@ class LoginPage extends StatelessWidget {
                 ),
 
                 // Conditional wallet buttons
-                if(viewModel.walletExists)
+                if(viewModel.isCheckingWallet)
+                  Column(
+                    children: [
+                      CircularProgressIndicator(strokeWidth: 2),
+                      Text("Checking wallet status ...")
+                    ],
+                  )
+                
+                else if(viewModel.walletExists)
                   Column(
                     children: [
                       Container(
@@ -205,9 +213,11 @@ class LoginPage extends StatelessWidget {
                       ),
                       Container(
                         margin: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 10.0),
-                        child: OutlineButton(
-                          onTap: () => viewModel.handleClickSignIn(context),
-                          child: const Text("Unlock")
+                        child: GradientPillButton(
+                          onPressed: () => viewModel.handleClickSignIn(context),
+                          loading: viewModel.isBusy,
+                          loadingText: "",
+                          text: "Unlock"
                         )
                       ),
                     ]        
@@ -357,97 +367,3 @@ class LoginPageView extends StatelessWidget {
   }
 }
 
-class GradientPillButton extends StatelessWidget {
-  final String text;
-  final VoidCallback? onPressed;
-  final double height;
-  final double radius;
-
-  /// When true, shows a spinner and disables taps.
-  final bool loading;
-
-  /// Optional label while loading (defaults to [text]).
-  final String? loadingText;
-
-  const GradientPillButton({
-    super.key,
-    required this.text,
-    required this.onPressed,
-    this.height = 48,
-    this.radius = 10,
-    this.loading = false,
-    this.loadingText,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    const gradient = LinearGradient(
-      begin: Alignment.centerLeft,
-      end: Alignment.centerRight,
-      colors: [
-        Color(0xFFF30C6C), // pink
-        Color(0xFFC739EB), // purple
-      ],
-    );
-
-    return ConstrainedBox(
-      constraints: BoxConstraints.tightFor(height: height),
-      child: Material(
-        color: Colors.transparent,
-        borderRadius: BorderRadius.circular(radius),
-        child: Ink(
-          decoration: BoxDecoration(
-            gradient: gradient,
-            borderRadius: BorderRadius.circular(radius),
-          ),
-          child: InkWell(
-            borderRadius: BorderRadius.circular(radius),
-            onTap: loading ? null : onPressed,
-            child: Center(
-              child: AnimatedSwitcher(
-                duration: const Duration(milliseconds: 180),
-                switchInCurve: Curves.easeOut,
-                switchOutCurve: Curves.easeIn,
-                child: loading
-                    ? Row(
-                        key: const ValueKey('loading'),
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          SizedBox(
-                            width: 20,
-                            height: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2.4,
-                              valueColor:
-                                  const AlwaysStoppedAnimation<Color>(Colors.white),
-                              backgroundColor: Colors.white24,
-                            ),
-                          ),
-                          const SizedBox(width: 12),
-                          Text(
-                            loadingText ?? text,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                        ],
-                      )
-                    : Text(
-                        text,
-                        key: const ValueKey('idle'),
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-              ),
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}
