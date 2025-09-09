@@ -244,7 +244,7 @@ class LoginPage extends StatelessWidget {
                           loadingText: 'Importing …',
                           onPressed: viewModel.isClickImportWallet
                               ? null
-                              : () => viewModel.showImportDialog(context),
+                              : () => viewModel.showImportDialog(viewModel.context),
                         ),
                       )
                     ]

@@ -71,7 +71,7 @@ class LoginProvider extends InSoBlokViewModel {
 
   Future<void> init(BuildContext context) async {
     this.context = context;
-
+    logger.d("Width and height is ${MediaQuery.of(context).size.width}, ${MediaQuery.of(context).size.height}");
 
     // logger.d("vybeCamEnabled in login: $enabled");
 
@@ -284,9 +284,9 @@ class LoginProvider extends InSoBlokViewModel {
   }
 
   void showImportDialog(BuildContext ctx) {
-    
     showDialog(
       context: ctx,
+      useSafeArea: false,
       builder: (context) => ImportWalletDialog(cryptoService: cryptoService),
     ).then((result) {
       if (result != null) {

@@ -475,4 +475,19 @@ class Web3Service with ListenableServiceMixin {
     return gasEstimate;
     
   }
+
+  Future<String> transfer(String chain, EthereumAddress to, double amount) async {
+    try {
+      final response = await api.postRequest("/evm/transaction/transfer", {
+        "recipient": to.hex,
+        "amount": amount,
+        "chain": chain
+      });
+      return response["tx_hash"] ?? "";
+    } catch (e) {
+      logger.d("Exception raised while transferring $e");
+    }
+    return "";
+  }
+
 }

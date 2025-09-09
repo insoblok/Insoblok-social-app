@@ -619,7 +619,6 @@ class FirebaseHelper {
         newJson[key] = firebaseJson[key];
       }
     }
-    logger.d("This is new json: $newJson");
     return newJson;
   }
 }

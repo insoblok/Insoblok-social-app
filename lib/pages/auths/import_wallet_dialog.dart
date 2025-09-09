@@ -8,7 +8,6 @@ import 'package:insoblok/widgets/widgets.dart';
 
 class ImportWalletDialog extends StatefulWidget {
   final CryptoService cryptoService;
-
   const ImportWalletDialog({super.key, required this.cryptoService});
 
   @override
@@ -35,6 +34,7 @@ class _ImportWalletDialogState extends State<ImportWalletDialog> {
   }
 
   void _goToNextStep() {
+    logger.d("Width and height in import dialog is ${MediaQuery.of(context).size.width}, ${MediaQuery.of(context).size.height}");
     if (_currentStep == 0) {
       if (_validateSecret(_secretController.text) == null) {
         setState(() {
@@ -152,27 +152,29 @@ class _ImportWalletDialogState extends State<ImportWalletDialog> {
   }
 
   void _showSeedPhraseConfirmation(BuildContext context) {
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => SeedPhraseConfirmationDialog(
-        originalSeedPhrase: _secretController.text.trim(),
-        onConfirm: () {
-          _importWallet(context);
-        },
-        onCancel: () {
-          Navigator.pop(context); // Close confirmation dialog
-          setState(() {
-            _isLoading = false;
-          });
-        },
-      ),
-    );
-  }
-  List<int> _getRandomWordIndices(int totalWords) {
-    final indices = List<int>.generate(totalWords, (i) => i);
-    indices.shuffle();
-    return indices.sublist(0, 3).toList()..sort();
+    if (_validatePassword(_passwordController.text) == null && 
+          _validateConfirmPassword(_confirmPasswordController.text) == null) {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (context) => SeedPhraseConfirmationDialog(
+          originalSeedPhrase: _secretController.text.trim(),
+          onConfirm: () {
+            _importWallet(context);
+          },
+          onCancel: () {
+            Navigator.pop(context); // Close confirmation dialog
+            setState(() {
+              _isLoading = false;
+            });
+          },
+        ),
+      );
+    }
+    else {
+        _formKey.currentState?.validate();
+    }
+    
   }
 
   Widget _buildHeader(BuildContext context) {
@@ -464,10 +466,15 @@ class _ImportWalletDialogState extends State<ImportWalletDialog> {
 
   @override
   Widget build(BuildContext context) {
+    logger.d("Width and height in build function is ${MediaQuery.of(context).size.width}, ${MediaQuery.of(context).size.height}");
+
     return Dialog(
       backgroundColor: AIColors.modalBackground,
+      insetPadding: EdgeInsets.zero,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: Padding(
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
         padding: const EdgeInsets.all(24),
         child: SingleChildScrollView(
           child: Column(

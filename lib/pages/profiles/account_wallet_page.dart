@@ -238,6 +238,7 @@ class AccountWalletPage extends StatelessWidget {
                                     OutlineButton(
                                       onTap: () async {
                                         // Open the modal and wait for the result
+                                        /*
                                         final result = await showModalBottomSheet<
                                           Map<String, dynamic>
                                         >(
@@ -262,6 +263,7 @@ class AccountWalletPage extends StatelessWidget {
                                           viewModel.enabledNetworks =
                                               result["enabledNetworks"];
                                         }
+                                        */
                                       },
                                       child: Text(viewModel.networkString),
                                       borderColor: Colors.transparent,
@@ -592,6 +594,10 @@ class RewardTransferView extends StatelessWidget {
                       ),
                       textAlign: TextAlign.center,
                       style: TextStyle(
+                        color:
+                            viewModel.selectXpInSo == inSoModel
+                                ? AIColors.white
+                                : Theme.of(context).colorScheme.onPrimary,
                       ),
                     ),
                   ),
@@ -607,6 +613,7 @@ class RewardTransferView extends StatelessWidget {
                   Row(
                     children: [
                       SizedBox(
+                        width: 80,
                         child: TextFormField(
                           decoration: InputDecoration(
                             hintText: '0',

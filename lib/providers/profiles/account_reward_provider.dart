@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 
 import 'package:collection/collection.dart';
@@ -6,6 +7,7 @@ import 'package:insoblok/models/models.dart';
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
+import 'package:insoblok/locator.dart';
 
 class AccountRewardProvider extends InSoBlokViewModel {
   late BuildContext _context;
@@ -21,6 +23,8 @@ class AccountRewardProvider extends InSoBlokViewModel {
     _owner = u;
     notifyListeners();
   }
+
+  final Web3Service _web3service = locator<Web3Service>();
 
   void init(BuildContext context, UserModel? user) async {
     this.context = context;
@@ -232,7 +236,12 @@ class AccountRewardProvider extends InSoBlokViewModel {
               to: inSoValue,
             );
             await transferService.addTransfer(transfer: model);
-            AIHelpers.showToast(msg: 'Successfully converted your XP!');
+            
+            String txHash = await _web3service.transfer("insoblok", cryptoService.privateKey!.address, inSoValue * pow(10, 18));
+            logger.d("Transaction has is $txHash");
+            if(txHash.isEmpty) {
+              setError("Failed to convert your XP.");
+            }
           }
         } catch (e) {
           setError(e);
@@ -250,6 +259,7 @@ class AccountRewardProvider extends InSoBlokViewModel {
       if (hasError) {
         AIHelpers.showToast(msg: modelError.toString());
       } else {
+        AIHelpers.showToast(msg: "Successfully converted XP into INSO");
         fetchData();
       }
     }
@@ -306,13 +316,13 @@ class AccountRewardProvider extends InSoBlokViewModel {
   double convertedInSo() {
     if (isTypingXp) {
       var xp = double.tryParse(xpValue!) ?? 0;
-      var rate = 0;
-      for (XpInSoModel inSoModel
-          in (AppSettingHelper.appSettingModel?.xpInso ?? [])) {
-        if ((xp >= (inSoModel.min ?? 0)) && (xp < (inSoModel.max ?? 0))) {
-          rate = inSoModel.rate ?? 0;
-        }
-      }
+      var rate = 100;
+      // for (XpInSoModel inSoModel
+      //     in (AppSettingHelper.appSettingModel?.xpInso ?? [])) {
+      //   if ((xp >= (inSoModel.min ?? 0)) && (xp < (inSoModel.max ?? 0))) {
+      //     rate = inSoModel.rate ?? 0;
+      //   }
+      // }
       double insoValue = xp / rate;
       return insoValue;
     } else {
