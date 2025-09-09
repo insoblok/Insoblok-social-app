@@ -8,6 +8,7 @@ import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
 import 'package:insoblok/locator.dart';
+import 'package:flutter_toggle_button/flutter_toggle_button.dart';
 
 class AccountProvider extends InSoBlokViewModel {
   late BuildContext _context;
@@ -41,6 +42,24 @@ class AccountProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  final globals = GlobalStore();
+  bool get enabled => globals.isRRCVideoCapture;
+
+  bool _isRRCImage = false;
+  bool get isRRCImage => _isRRCImage;
+
+  void setRRCImage(bool value) {
+    if (_isRRCImage == value) return;
+    _isRRCImage = value;
+
+    savePreference();
+    notifyListeners();
+  }
+
+
+  // Optional helper if you want a toggle
+  void toggleRRCImage() => setRRCImage(!_isRRCImage);
+
   List<String> _followingList = [];
   List<String> get followingList => _followingList;
   set followingList(List<String> i) {
@@ -60,6 +79,8 @@ class AccountProvider extends InSoBlokViewModel {
     this.context = context;
     accountUser = model ?? AuthHelper.user;
 
+    _isRRCImage = !enabled;
+
     await fetchStories();
     await getUserScore();
     await fetchFollowings();
@@ -72,6 +93,14 @@ class AccountProvider extends InSoBlokViewModel {
   void setPageIndex(int index) {
     pageIndex = index;
     notifyListeners();
+  }
+
+  Future<void> savePreference() async {
+    globals.isRRCVideoCapture = !isRRCImage;
+
+    logger.d("isRRCImage : ${globals.isRRCVideoCapture}");
+
+    await globals.save();
   }
 
   Future<void> fetchStories() async {
