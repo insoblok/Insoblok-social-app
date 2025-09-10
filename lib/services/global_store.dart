@@ -7,7 +7,7 @@ class GlobalStore {
   factory GlobalStore() => _i;
 
   // Example global(s)
-  bool isVybeCamEnabled = false;
+  bool isVybeCamEnabled = true;
   bool isRRCVideoCapture = true;
   String? walletAddress;
 

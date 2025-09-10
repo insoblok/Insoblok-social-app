@@ -90,10 +90,11 @@ class StoryListCell extends StatelessWidget {
               // ======== BOTTOM GRADIENT OVERLAY (text/info only) ========
               Column(
                 children: [
-                  const Spacer(flex: 2),
+                  // const Spacer(flex: 2),
                   Expanded(
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 2.0),
+                      alignment: Alignment.bottomCenter,
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 80.0),
                       decoration: const BoxDecoration(
                         gradient: LinearGradient(
                           begin: Alignment.topCenter,
@@ -724,11 +725,11 @@ class StoryYayNayWidget extends ViewModelWidget<StoryProvider> {
                 ),
                 child: InkWell(
                   borderRadius: BorderRadius.circular(radius),
-                  onTap: () => viewModel.updateVote(false),
+                  // onTap: () => viewModel.updateVote(true),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
                     child: VoteFloatingButton(
-                      onTap: () => viewModel.updateVote(false),
+                      onTap: () => viewModel.updateVote(true),
                       text: 'Not',
                       textColor: AIColors.white,
                       src: AIImages.icFireNot,
