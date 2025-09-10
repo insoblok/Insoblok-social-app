@@ -135,6 +135,8 @@ class VTOImageProvider extends InSoBlokViewModel {
 
   Future<void> onClickConvert() async {
 
+    logger.d("product : $product");
+
     if (product.category == ProductCategory.CLOTHING) {
       if(product.categoryName == "Hat/Cap"){
         await _productToModelConvert();

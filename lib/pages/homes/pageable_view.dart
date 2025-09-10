@@ -85,52 +85,6 @@ class PageableView extends StatelessWidget {
                                 ),
                               ),
                               const SizedBox(width: 0),
-                              SizedBox(
-                                height: _kTabsHeight,
-                                child: DefaultTabController(
-                                  length: menuTitles.length,
-                                  initialIndex: viewModel.tabIndex.clamp(0, menuTitles.length - 1),
-                                  child: Scrollbar(
-                                    controller: _tabScrollController,
-                                    thumbVisibility: true, // Make scrollbar visible
-                                    child: SingleChildScrollView(
-                                      controller: _tabScrollController,
-                                      scrollDirection: Axis.horizontal,
-                                      physics: const BouncingScrollPhysics(), // Better scrolling feel
-                                      child: SizedBox(
-                                        width: MediaQuery.of(context).size.width - 80, // You need to calculate this
-                                        child: TabBar(
-                                          onTap: (i) {
-                                            viewModel.tabIndex = i;
-                                            viewModel.onClickMenuItem(i);
-                                          },
-                                          isScrollable: true, // Disable TabBar's built-in scrolling
-                                          tabAlignment: TabAlignment.center,
-                                          indicatorSize: TabBarIndicatorSize.label,
-                                          indicator: RoundedUnderlineTabIndicator(
-                                            thickness: 6,
-                                            radius: 6,
-                                            insets: const EdgeInsets.symmetric(horizontal: 0, vertical: 3),
-                                            gradient: _pinkPurple,
-                                          ),
-                                          dividerColor: Colors.transparent,
-                                          dividerHeight: 0,
-                                          labelPadding: const EdgeInsets.symmetric(horizontal: 8),
-                                          overlayColor: MaterialStateProperty.all(Colors.transparent),
-                                          labelColor: Colors.white,
-                                          unselectedLabelColor: Colors.white.withOpacity(0.7),
-                                          labelStyle: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                                                fontWeight: FontWeight.w700,
-                                              ),
-                                          tabs: [
-                                            for (final t in menuTitles) Tab(text: t),
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                              ),
                               Expanded(
                                 child: AnimatedSwitcher(
                                   duration: const Duration(milliseconds: 150),
@@ -144,7 +98,7 @@ class PageableView extends StatelessWidget {
                                                 .colorScheme
                                                 .secondary
                                                 .withAlpha(16),
-                                            border: BoxBorder.all(color: Colors.red),  
+                                            border: BoxBorder.all(color: Colors.white.withOpacity(0.2)),  
                                             borderRadius: BorderRadius.circular(16),
                                           ),
                                           alignment: Alignment.centerLeft,
@@ -194,10 +148,52 @@ class PageableView extends StatelessWidget {
                                             ),
                                           ),
                                         )
-                                      : const SizedBox(
-                                          key: ValueKey('search-off'),
-                                          height: _kTopRowHeight,
+                                      : SizedBox(
+                                      height: _kTabsHeight,
+                                      child: DefaultTabController(
+                                        length: menuTitles.length,
+                                        initialIndex: viewModel.tabIndex.clamp(0, menuTitles.length - 1),
+                                        child: Scrollbar(
+                                          controller: _tabScrollController,
+                                          thumbVisibility: true, // Make scrollbar visible
+                                          child: SingleChildScrollView(
+                                            controller: _tabScrollController,
+                                            scrollDirection: Axis.horizontal,
+                                            physics: const BouncingScrollPhysics(), // Better scrolling feel
+                                            child: SizedBox(
+                                              width: MediaQuery.of(context).size.width - 80, // You need to calculate this
+                                              child: TabBar(
+                                                onTap: (i) {
+                                                  viewModel.tabIndex = i;
+                                                  viewModel.onClickMenuItem(i);
+                                                },
+                                                isScrollable: true, // Disable TabBar's built-in scrolling
+                                                tabAlignment: TabAlignment.center,
+                                                indicatorSize: TabBarIndicatorSize.label,
+                                                indicator: RoundedUnderlineTabIndicator(
+                                                  thickness: 6,
+                                                  radius: 6,
+                                                  insets: const EdgeInsets.symmetric(horizontal: 0, vertical: 3),
+                                                  gradient: _pinkPurple,
+                                                ),
+                                                dividerColor: Colors.transparent,
+                                                dividerHeight: 0,
+                                                labelPadding: const EdgeInsets.symmetric(horizontal: 8),
+                                                overlayColor: MaterialStateProperty.all(Colors.transparent),
+                                                labelColor: Colors.white,
+                                                unselectedLabelColor: Colors.white.withOpacity(0.7),
+                                                labelStyle: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                                                      fontWeight: FontWeight.w700,
+                                                    ),
+                                                tabs: [
+                                                  for (final t in menuTitles) Tab(text: t),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
                                         ),
+                                      ),
+                                    ),
                                 ),
                               ),
                               const SizedBox(width: 2),

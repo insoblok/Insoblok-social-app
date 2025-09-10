@@ -125,9 +125,9 @@ class StoryProvider extends InSoBlokViewModel {
     } else {
       _videoStoryPath = null;
     }
-    final globals = GlobalStore();
 
     showFaceDialog = false;
+    final globals = GlobalStore();
     _isVideoReaction = globals.isRRCVideoCapture;
     logger.d("globals.isRRCVideoCapture : ${globals.isRRCVideoCapture}");
     // _isVideoReaction = false;

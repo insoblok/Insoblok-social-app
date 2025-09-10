@@ -111,7 +111,7 @@ class StoryListCell extends StatelessWidget {
                             margin: const EdgeInsets.only(left: 1.0, bottom: 20.0),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.end,
-                              spacing: 12.0,
+                              // spacing: 12.0,
                               children: [
                                 if (viewModel.story.category == 'vote') const StoryYayNayWidget(),
                                 Container(
@@ -687,7 +687,7 @@ class StoryYayNayWidget extends ViewModelWidget<StoryProvider> {
                 ),
                 child: InkWell(
                   borderRadius: BorderRadius.circular(radius),
-                  onTap: () => viewModel.updateVote(false),
+                  // onTap: () => viewModel.updateVote(false),
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
                     child: VoteFloatingButton(

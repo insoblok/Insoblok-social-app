@@ -178,39 +178,30 @@ class _ImportWalletDialogState extends State<ImportWalletDialog> {
   }
 
   Widget _buildHeader(BuildContext context) {
-    return SafeArea(
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Opacity(
-            opacity: 0,
-            child: IconButton(
-              icon: Icon(Icons.close),
-              onPressed: null,
-            ),
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Text(
+          _currentStep == 0 ? 'Import Wallet' : 'Set Password',
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 20,
+            fontWeight: FontWeight.bold,
           ),
-          Text(
-            _currentStep == 0 ? 'Import Wallet' : 'Set Password',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 20,
-              fontWeight: FontWeight.bold,
-            ),
+        ),
+        
+        // Show close button only in first step or add confirmation for closing
+        if (_currentStep == 0)
+          IconButton(
+            icon: Icon(Icons.close, color: Colors.grey[400]),
+            onPressed: () => Navigator.of(context).pop(),
+          )
+        else
+          IconButton(
+            icon: Icon(Icons.arrow_back, color: Colors.grey[400]),
+            onPressed: _goToPreviousStep,
           ),
-          
-          // Show close button only in first step or add confirmation for closing
-          if (_currentStep == 0)
-            IconButton(
-              icon: Icon(Icons.close, color: Colors.grey[400]),
-              onPressed: () => Navigator.of(context).pop(),
-            )
-          else
-            IconButton(
-              icon: Icon(Icons.arrow_back, color: Colors.grey[400]),
-              onPressed: _goToPreviousStep,
-            ),
-        ],
-      )
+      ],
     );
   }
 
@@ -422,6 +413,7 @@ class _ImportWalletDialogState extends State<ImportWalletDialog> {
     );
   }
 
+
   Widget _buildActionButtons() {
     return SizedBox(
       width: double.infinity,
@@ -450,7 +442,6 @@ class _ImportWalletDialogState extends State<ImportWalletDialog> {
               ),
     );
   }
-  
   Widget _buildPasswordValidationHint() {
     final passwordError = _validatePassword(_passwordController.text);
     final confirmError = _validateConfirmPassword(_confirmPasswordController.text);
@@ -475,6 +466,7 @@ class _ImportWalletDialogState extends State<ImportWalletDialog> {
 
   @override
   Widget build(BuildContext context) {
+    logger.d("Width and height in build function is ${MediaQuery.of(context).size.width}, ${MediaQuery.of(context).size.height}");
 
     return Dialog(
       backgroundColor: AIColors.modalBackground,

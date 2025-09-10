@@ -8,9 +8,6 @@ import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
-import 'package:insoblok/routers/routers.dart';
-import 'package:insoblok/models/models.dart';
-
 
 final kLandingPageData = [
   {
@@ -63,527 +60,297 @@ class LoginPage extends StatelessWidget {
         final hideBrand = hideBrandOn0 || hideBrandOn1;
 
         return ViewModelBuilder<LoginProvider>.reactive(
-          viewModelBuilder: () => LoginProvider(),
-          onViewModelReady: (viewModel) => viewModel.init(context),
-          builder: (context, viewModel, _) {
-            final cp = viewModel.currentPage; // 0 or 1
+  viewModelBuilder: () => LoginProvider(),
+  onViewModelReady: (viewModel) => viewModel.init(context),
+  builder: (context, viewModel, _) {
+    final cp = viewModel.currentPage; // 0 or 1
 
-            // Corrected visibility rules based on your comments:
-            // Page 0: Show brand, show top subtitle, show bottom tagline
-            // Page 1: Hide brand, hide top subtitle, hide bottom tagline
-            
-            final hideBrand = (cp == 1);          // Hide brand on page 1
-            final hideTopSubtitle = (cp == 1);    // Hide top subtitle on page 1
-            final hideBottomTagline = (cp == 1);  // Hide bottom tagline on page 1
+    // Corrected visibility rules based on your comments:
+    // Page 0: Show brand, show top subtitle, show bottom tagline
+    // Page 1: Hide brand, hide top subtitle, hide bottom tagline
+    
+    final hideBrand = (cp == 1);          // Hide brand on page 1
+    final hideTopSubtitle = (cp == 1);    // Hide top subtitle on page 1
+    final hideBottomTagline = (cp == 1);  // Hide bottom tagline on page 1
 
-            Future<void> _handleClickCreateNewWallet(BuildContext buildContext) async {
-              
-              showDialog<String>(
-                context: buildContext,
-                builder: (bContext) {
-                  final TextEditingController _passwordController = TextEditingController();
-                  final TextEditingController _confirmController = TextEditingController();
-
-                  return _CreateWalletDialog(
-                    passwordController: _passwordController,
-                    confirmController: _confirmController,
-                    onCancel: () {
-                      viewModel.isClickCreateNewWallet = false;
-                    },
-                    onCreateWallet: (password) async {
-                      try {
-                        final newWalletResult = await viewModel.cryptoService.createAndStoreWallet(password);
-                        var authUser = await AuthHelper.signIn(
-                          newWalletResult.address,
-                          viewModel.isCheckScan,
-                        );
-
-                        Navigator.pop(bContext);
-                        
-                        if (authUser?.walletAddress?.isEmpty ?? true) {
-                          Routers.goToRegisterFirstPage(
-                            buildContext,
-                            user: UserModel(walletAddress: newWalletResult.address),
-                          );
-                        } else {
-                          AuthHelper.updateStatus('Online');
-                          Routers.goToMainPage(buildContext);
-                        }
-                      } catch (e) {
-                        logger.e(e);
-                        rethrow; // Re-throw to handle in the dialog
-                      }
-                    },
-                  );
-                },
-              ).then((_) {
-                viewModel.isClickCreateNewWallet = false;
-              });
-            }
-
-            // Separate StatefulWidget for the dialog
-            
-
-            return Scaffold(
-              backgroundColor: AIColors.landingBackgroundColor,
-              body: SafeArea(
-                child: SingleChildScrollView(
-                  padding: EdgeInsets.only(
-                    bottom: MediaQuery.of(context).viewInsets.bottom,
+    return Scaffold(
+      backgroundColor: AIColors.landingBackgroundColor,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              minHeight: MediaQuery.of(context).size.height -
+                  MediaQuery.of(context).padding.top -
+                  MediaQuery.of(context).padding.bottom,
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                // TOP: Brand + subtitle area
+                Container(
+                  width: double.infinity,
+                  margin: EdgeInsets.only(
+                    top: MediaQuery.of(context).padding.top,
+                    left: 32.0,
                   ),
-                  child: ConstrainedBox(
-                    constraints: BoxConstraints(
-                      minHeight: MediaQuery.of(context).size.height -
-                          MediaQuery.of(context).padding.top -
-                          MediaQuery.of(context).padding.bottom,
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        // TOP: Brand + subtitle area
-                        Container(
-                          width: double.infinity,
-                          margin: EdgeInsets.only(
-                            top: MediaQuery.of(context).padding.top,
-                            left: 32.0,
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // "LivVybe" + TM - Hide on page 1
-                              keepSpace(
-                                visible: !hideBrand,
-                                child: Row(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                  ],
-                                ),
-                              ),
-
-                              // Subtitle: "Swipe. React. Remix. Get Paid" - Hide on page 1
-                              keepSpace(
-                                visible: !hideTopSubtitle,
-                                child: Text(
-                                  'Swipe. React. Remix. Get Paid',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(fontSize: 25.0, color: AIColors.white),
-                                ),
-                              ),
-                            ],
-                          ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // "LivVybe" + TM - Hide on page 1
+                      keepSpace(
+                        visible: !hideBrand,
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                          ],
                         ),
+                      ),
 
-                        // MIDDLE: pager of images
-                        Padding(
-                          padding: const EdgeInsets.only(top: 1.0, bottom: 1.0),
-                          child: AspectRatio(
-                            aspectRatio: 1.0, // Square aspect ratio
-                            child: PageView(
-                              controller: viewModel.pageController,
-                              onPageChanged: viewModel.onPageChanged,
-                              children: [
-                                for (var data in kLandingPageData) ...{
-                                  LoginPageView(data: data),
-                                },
-                              ],
-                            ),
-                          ),
+                      // Subtitle: "Swipe. React. Remix. Get Paid" - Hide on page 1
+                      keepSpace(
+                        visible: !hideTopSubtitle,
+                        child: Text(
+                          'Swipe. React. Remix. Get Paid',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(fontSize: 25.0, color: AIColors.white),
                         ),
+                      ),
+                    ],
+                  ),
+                ),
 
-                        // dots
-                        SmoothPageIndicator(
-                          controller: viewModel.pageController,
-                          count: 2,
-                          effect: ExpandingDotsEffect(
-                            dotWidth: 36.0,
-                            dotHeight: 4.0,
-                            spacing: 4.0,
-                            dotColor: AIColors.white,
-                            activeDotColor: AIColors.pink,
-                          ),
+                // MIDDLE: pager of images
+                Padding(
+  padding: const EdgeInsets.only(top: 1.0, bottom: 1.0),
+  child: AspectRatio(
+    aspectRatio: 1.0, // Square aspect ratio
+    child: PageView(
+      controller: viewModel.pageController,
+      onPageChanged: viewModel.onPageChanged,
+      children: [
+        for (var data in kLandingPageData) ...{
+          LoginPageView(data: data),
+        },
+      ],
+    ),
+  ),
+),
+
+                // dots
+                SmoothPageIndicator(
+                  controller: viewModel.pageController,
+                  count: 2,
+                  effect: ExpandingDotsEffect(
+                    dotWidth: 36.0,
+                    dotHeight: 4.0,
+                    spacing: 4.0,
+                    dotColor: AIColors.white,
+                    activeDotColor: AIColors.pink,
+                  ),
+                ),
+
+                Container(
+                  width: double.infinity,
+                  alignment: Alignment.center,
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 1),
+                  child: Visibility(
+                    visible: !hideBottomTagline, // Hide on page 1
+                    maintainSize: true,
+                    maintainAnimation: true,
+                    maintainState: true,
+                    child: RichText(
+                      textAlign: TextAlign.center,
+                      text: TextSpan(
+                        style: const TextStyle(
+                          fontSize: 20,
+                          height: 1.25,
+                          color: Colors.white,
+                          fontWeight: FontWeight.w600,
                         ),
-
-                        Container(
-                          width: double.infinity,
-                          alignment: Alignment.center,
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 1),
-                          child: Visibility(
-                            visible: !hideBottomTagline, // Hide on page 1
-                            maintainSize: true,
-                            maintainAnimation: true,
-                            maintainState: true,
-                            child: RichText(
-                              textAlign: TextAlign.center,
-                              text: TextSpan(
-                                style: const TextStyle(
-                                  fontSize: 20,
-                                  height: 1.25,
-                                  color: Colors.white,
+                        children: [
+                          const TextSpan(text: 'Connect, Vybe and build your\n'),
+                          const TextSpan(text: 'Tastescore'),
+                          WidgetSpan(
+                            alignment: PlaceholderAlignment.top,
+                            child: Transform.translate(
+                              offset: const Offset(0, -6),
+                              child: Text(
+                                '™',
+                                style: TextStyle(
+                                  fontSize: 10,
+                                  color: Colors.white.withOpacity(0.7),
                                   fontWeight: FontWeight.w600,
                                 ),
-                                children: [
-                                  const TextSpan(text: 'Connect, Vybe and build your\n'),
-                                  const TextSpan(text: 'Tastescore'),
-                                  WidgetSpan(
-                                    alignment: PlaceholderAlignment.top,
-                                    child: Transform.translate(
-                                      offset: const Offset(0, -6),
-                                      child: Text(
-                                        '™',
-                                        style: TextStyle(
-                                          fontSize: 10,
-                                          color: Colors.white.withOpacity(0.7),
-                                          fontWeight: FontWeight.w600,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ],
                               ),
                             ),
                           ),
-                        ),
-
-                        // Conditional wallet buttons
-                        if(viewModel.isCheckingWallet)
-                          Column(
-                            children: [
-                              CircularProgressIndicator(strokeWidth: 2),
-                              Text("Checking wallet status ...")
-                            ],
-                          )
-                        
-                        else if(viewModel.walletExists)
-                          Column(
-                            children: [
-                              Container(
-                                margin: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 10.0),
-                                child: AIPasswordField(
-                                  controller: viewModel.existingPasswordController
-                                )
-                              ),
-                              Container(
-                                margin: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 10.0),
-                                child: GradientPillButton(
-                                  onPressed: () => viewModel.handleClickSignIn(context),
-                                  loading: viewModel.isBusy,
-                                  loadingText: "",
-                                  text: "Unlock"
-                                )
-                              ),
-                            ]        
-                          )
-                        else
-                          Column(
-                            children: [ 
-                              Container(
-                                color: AIColors.darkScaffoldBackground.withAlpha(48),
-                                margin: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 5.0),
-                                child: GradientPillButton(
-                                  text: 'Create a New Wallet',
-                                  loadingText: 'Creating …',
-                                  onPressed: viewModel.isClickCreateNewWallet
-                                      ? null
-                                      : () => _handleClickCreateNewWallet(context),
-                                ),
-                              ),
-                              Container(
-                                color: AIColors.darkScaffoldBackground.withAlpha(48),
-                                margin: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 5.0),
-                                child: GradientPillButton(
-                                  text: 'Import From an Existing Wallet',
-                                  loadingText: 'Importing …',
-                                  onPressed: viewModel.isClickImportWallet
-                                      ? null
-                                      : () => viewModel.showImportDialog(viewModel.context),
-                                ),
-                              )
-                            ]
-                          ),
-
-                        // checkbox
-                        Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 1),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Text(
-                                'Enable Vybecam',
-                                style: TextStyle(color: AIColors.white, fontSize: 18.0), 
-                              ),
-                              const SizedBox(width: 50),
-                              Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  SwitchTheme(
-                                    data: SwitchThemeData(
-                                      trackColor: MaterialStateProperty.resolveWith((states) =>
-                                          states.contains(MaterialState.selected)
-                                              ? Colors.indigo
-                                              : Colors.indigo.withOpacity(0.15)),
-                                      thumbColor: MaterialStateProperty.resolveWith((states) =>
-                                          states.contains(MaterialState.selected)
-                                              ? Colors.white
-                                              : Colors.indigo),
-                                      trackOutlineColor:
-                                          const MaterialStatePropertyAll<Color>(Colors.indigo),
-                                      trackOutlineWidth:
-                                          const MaterialStatePropertyAll<double>(2),
-                                    ),
-                                    child: Switch(
-                                      value: viewModel.isCheckScan,
-                                      onChanged: (v) {
-                                        viewModel.isCheckScan = v;
-                                        viewModel.notifyListeners();
-                                      },
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        // footer
-                        Padding(
-                          padding: const EdgeInsets.only(bottom: 48.0, top: 10.0),
-                          child: Column(
-                            children: [
-                              Text(
-                                'By proceeding you accept',
-                                style: TextStyle(color: AIColors.white, fontSize: 18.0),
-                              ),
-                              const SizedBox(height: 8.0),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  InkWell(
-                                    onTap: () => AIHelpers.loadUrl(kPrivacyUrl),
-                                    child: Text(
-                                      'Terms of Use',
-                                      style: TextStyle(
-                                        fontSize: 18.0,
-                                        color: AIColors.pink,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 4),
-                                  Text(
-                                    'and',
-                                    style: TextStyle(color: AIColors.white, fontSize: 18.0),
-                                  ),
-                                  const SizedBox(width: 4),
-                                  InkWell(
-                                    onTap: () => AIHelpers.loadUrl(kPrivacyUrl),
-                                    child: Text(
-                                      'Privacy Policy',
-                                      style: TextStyle(
-                                        color: AIColors.pink,
-                                        fontSize: 18.0,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
-}
 
-class _CreateWalletDialog extends StatefulWidget {
-  final TextEditingController passwordController;
-  final TextEditingController confirmController;
-  final VoidCallback onCancel;
-  final Future Function(String) onCreateWallet;
-
-  const _CreateWalletDialog({
-    required this.passwordController,
-    required this.confirmController,
-    required this.onCancel,
-    required this.onCreateWallet,
-  });
-
-  @override
-  State<_CreateWalletDialog> createState() => _CreateWalletDialogState();
-}
-
-class _CreateWalletDialogState extends State<_CreateWalletDialog> {
-  bool _processing = false;
-
-  Future<void> _handleOkClick() async {
-    final password = widget.passwordController.text.trim();
-    final confirm = widget.confirmController.text.trim();
-
-    if (password.isEmpty || confirm.isEmpty) {
-      AIHelpers.showToast(msg: "Please enter both fields.");
-      return;
-    }
-    if (password != confirm) {
-      AIHelpers.showToast(msg: "Passwords don't match.");
-      return;
-    }
-
-    setState(() {
-      _processing = true;
-    });
-
-    try {
-      await widget.onCreateWallet(password);
-    } catch (e) {
-      AIHelpers.showToast(msg: "Failed to create wallet: $e");
-      setState(() {
-        _processing = false;
-      });
-    }
-  }
-
-  void _handleClickCancel() {
-    widget.onCancel();
-    Navigator.pop(context);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Dialog(
-      insetPadding: EdgeInsets.zero, // full screen
-      backgroundColor: Colors.transparent,
-      child: SizedBox.expand(
-        child: Container(
-          decoration: BoxDecoration(
-            color: AIColors.modalBackground,
-            borderRadius: BorderRadius.circular(16),
-          ),
-          child: Column(
-            children: [
-              // 🔹 Header with title + close button
-              SizedBox(height: 16),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Opacity(
-                      opacity: 0,
-                      child: IconButton(
-                        icon: Icon(Icons.close),
-                        onPressed: null,
-                      ),
-                    ),
-                    const Text(
-                      "Create a New Wallet",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                      ),
-                    ),
-                    IconButton(
-                      icon: const Icon(Icons.close, color: Colors.white),
-                      onPressed: _handleClickCancel,
-                    ),
-                  ],
-                ),
-              ),
-              SizedBox(height: 32),
-
-              // 🔹 Content
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
-                child: Column(
-                      children: [
-                        
-                        AIPasswordField(
-                          hintText: "Password",
-                          controller: widget.passwordController
-                        ),
-                        const SizedBox(height: 18),
-                        AIPasswordField(
-                          hintText: "Confirm Password",
-                          controller: widget.confirmController)
-                        ,
-                      ],
-                    ),
-              ),
+                // Conditional wallet buttons
+                if(viewModel.isCheckingWallet)
+                  Column(
+                    children: [
+                      CircularProgressIndicator(strokeWidth: 2),
+                      Text("Checking wallet status ...")
+                    ],
+                  )
                 
-
-
-              // 🔹 Footer actions
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    TextButton(
-                      onPressed: _processing ? null : _handleClickCancel,
-                      child: const Text(
-                        "Cancel",
-                        style: TextStyle(color: Colors.grey),
+                else if(viewModel.walletExists)
+                  Column(
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 10.0),
+                        child: AIPasswordField(
+                          controller: viewModel.existingPasswordController
+                        )
                       ),
-                    ),
-                    const SizedBox(width: 8),
-                    GestureDetector(
-                      onTap: _processing ? null : _handleOkClick,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          gradient: const LinearGradient(
-                            begin: Alignment.centerLeft,
-                            end: Alignment.centerRight,
-                            colors: [
-                              Color(0xFFF30C6C), // pink
-                              Color(0xFFC739EB), // purple
-                            ],
-                          ),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 24.0, vertical: 8.0),
-                          child: AnimatedSwitcher(
-                            duration: const Duration(milliseconds: 180),
-                            switchInCurve: Curves.easeOut,
-                            switchOutCurve: Curves.easeIn,
-                            transitionBuilder: (child, animation) {
-                              return FadeTransition(
-                                  opacity: animation, child: child);
-                            },
-                            child: _processing
-                                ? const SizedBox(
-                                    width: 20,
-                                    height: 20,
-                                    child: CircularProgressIndicator(strokeWidth: 2.0, color: Colors.white),
-                                  )
-                                : const Text("OK"),
-                          ),
+                      Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 10.0),
+                        child: GradientPillButton(
+                          onPressed: () => viewModel.handleClickSignIn(context),
+                          loading: viewModel.isBusy,
+                          loadingText: "",
+                          text: "Unlock"
+                        )
+                      ),
+                    ]        
+                  )
+                else
+                  Column(
+                    children: [ 
+                      Container(
+                        color: AIColors.darkScaffoldBackground.withAlpha(48),
+                        margin: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 5.0),
+                        child: GradientPillButton(
+                          text: 'Create a New Wallet',
+                          loadingText: 'Creating …',
+                          onPressed: viewModel.isClickCreateNewWallet
+                              ? null
+                              : () => viewModel.handleClickCreateNewWallet(context),
                         ),
                       ),
-                    ),
-                  ],
+                      Container(
+                        color: AIColors.darkScaffoldBackground.withAlpha(48),
+                        margin: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 5.0),
+                        child: GradientPillButton(
+                          text: 'Import From an Existing Wallet',
+                          loadingText: 'Importing …',
+                          onPressed: viewModel.isClickImportWallet
+                              ? null
+                              : () => viewModel.showImportDialog(viewModel.context),
+                        ),
+                      )
+                    ]
+                  ),
+
+                // checkbox
+                Container(
+                  margin: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 1),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Text(
+                        'Enable Vybecam',
+                        style: TextStyle(color: AIColors.white, fontSize: 18.0), 
+                      ),
+                      const SizedBox(width: 50),
+                      Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SwitchTheme(
+                            data: SwitchThemeData(
+                              trackColor: MaterialStateProperty.resolveWith((states) =>
+                                  states.contains(MaterialState.selected)
+                                      ? Colors.indigo
+                                      : Colors.indigo.withOpacity(0.15)),
+                              thumbColor: MaterialStateProperty.resolveWith((states) =>
+                                  states.contains(MaterialState.selected)
+                                      ? Colors.white
+                                      : Colors.indigo),
+                              trackOutlineColor:
+                                  const MaterialStatePropertyAll<Color>(Colors.indigo),
+                              trackOutlineWidth:
+                                  const MaterialStatePropertyAll<double>(2),
+                            ),
+                            child: Switch(
+                              value: viewModel.isCheckScan,
+                              onChanged: (v) {
+                                viewModel.isCheckScan = v;
+                                viewModel.notifyListeners();
+                              },
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+
+                // footer
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 48.0, top: 10.0),
+                  child: Column(
+                    children: [
+                      Text(
+                        'By proceeding you accept',
+                        style: TextStyle(color: AIColors.white, fontSize: 18.0),
+                      ),
+                      const SizedBox(height: 8.0),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          InkWell(
+                            onTap: () => AIHelpers.loadUrl(kPrivacyUrl),
+                            child: Text(
+                              'Terms of Use',
+                              style: TextStyle(
+                                fontSize: 18.0,
+                                color: AIColors.pink,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 4),
+                          Text(
+                            'and',
+                            style: TextStyle(color: AIColors.white, fontSize: 18.0),
+                          ),
+                          const SizedBox(width: 4),
+                          InkWell(
+                            onTap: () => AIHelpers.loadUrl(kPrivacyUrl),
+                            child: Text(
+                              'Privacy Policy',
+                              style: TextStyle(
+                                color: AIColors.pink,
+                                fontSize: 18.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
+  },
+);},
+    );
   }
-
 }
-
-
 
 class LoginPageView extends StatelessWidget {
   final dynamic data;
