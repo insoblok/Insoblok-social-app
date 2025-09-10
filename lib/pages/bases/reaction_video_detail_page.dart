@@ -12,13 +12,17 @@ import 'package:stacked/stacked.dart';
 import 'package:video_player/video_player.dart';
 
 import 'package:deepar_flutter_plus/deepar_flutter_plus.dart';
-// import 'package:media_kit/media_kit.dart';
-// import 'package:pro_video_editor/pro_video_editor.dart';
+import 'package:media_kit/media_kit.dart';
+import 'package:pro_video_editor/pro_video_editor.dart';
 
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/services/deep_ar_plus_service.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
+
+// import 'package:pro_video_editor_example/features/editor/pages/video_editor_basic_example_page.dart';
+// import 'package:pro_video_editor_example/features/editor/pages/video_editor_grounded_example_page.dart';
+
 
 final kDeeparEffectData = [
   {'title': 'Fire',                'assets': 'assets/effects/filters/fire_effect/Fire_Effect.deepar'},
@@ -111,7 +115,9 @@ class _ReactionVideoDetailPageState extends State<ReactionVideoDetailPage> {
 
     final result = await Navigator.of(context).push<File?>(
       MaterialPageRoute(
-        builder: (_) => _VideoQuickEditorPage(inputPath: input),
+        // builder: (_) => _VideoQuickEditorPage(inputPath: input),
+        builder: (_) => ProVideoEditorPage(),
+        
         fullscreenDialog: true,
       ),
     );
@@ -384,7 +390,7 @@ class _ReactionVideoDetailPageState extends State<ReactionVideoDetailPage> {
 
               const CustomCircleBackButton(),
 
-              if (vm.isBusy || _busy)
+              if (vm.isBusy)
                 Container(
                   color: Colors.black26,
                   child: const Center(child: Loader(size: 60)),
@@ -469,10 +475,7 @@ class _CircularVideoPlayerState extends State<_CircularVideoPlayer> {
   }
 }
 
-/// ─────────────────────────────────────────────────────────────
-/// Lightweight editor page using pro_video_editor + media_kit
-/// Pops with File on SAVE, or null on cancel
-/// ─────────────────────────────────────────────────────────────
+
 class _VideoQuickEditorPage extends StatefulWidget {
   final String inputPath;
   const _VideoQuickEditorPage({required this.inputPath});
@@ -726,4 +729,107 @@ class _VideoQuickEditorPageState extends State<_VideoQuickEditorPage> {
     final s = d.inSeconds.remainder(60).toString().padLeft(2, '0');
     return h > 0 ? '$h:$m:$s' : '$m:$s';
   }
+}
+
+
+class ProVideoEditorPage extends StatefulWidget {
+  /// Creates the [ProVideoEditorPage] widget.
+  const ProVideoEditorPage({super.key});
+
+  @override
+  State<ProVideoEditorPage> createState() => _ProVideoEditorPageState();
+}
+
+class _ProVideoEditorPageState extends State<ProVideoEditorPage> {
+  String _platformVersion = 'Unknown';
+  final List<_ExampleListItem> _exampleList = [
+    // _ExampleListItem(
+    //   icon: Icons.info_outline,
+    //   title: 'Video-Metadata',
+    //   // pageBuilder: () => const VideoMetadataExamplePage(),
+    // ),
+    // _ExampleListItem(
+    //   icon: Icons.image_outlined,
+    //   title: 'Thumbnails',
+    //   // pageBuilder: () => const ThumbnailExamplePage(),
+    // ),
+    // _ExampleListItem(
+    //   icon: Icons.developer_board_outlined,
+    //   title: 'Video-Renderer',
+    //   // pageBuilder: () => const VideoRendererPage(),
+    // ),
+    // _ExampleListItem(
+    //   icon: Icons.edit,
+    //   title: 'Video-Editor',
+    //   // pageBuilder: () => const VideoEditorBasicExamplePage(),
+    // ),
+    // _ExampleListItem(
+    //   icon: Icons.grass_outlined,
+    //   title: 'Video-Editor Grounded-Design',
+    //   // pageBuilder: () => const VideoEditorGroundedExamplePage(),
+    // ),
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    initPlatformState();
+  }
+
+  Future<void> initPlatformState() async {
+    String platformVersion;
+    try {
+      platformVersion = await ProVideoEditor.instance.getPlatformVersion() ??
+          'Unknown platform version';
+    } on PlatformException {
+      platformVersion = 'Failed to get platform version.';
+    }
+
+    if (!mounted) return;
+
+    setState(() {
+      _platformVersion = platformVersion;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Pro Video Editor')),
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView(
+              children: _exampleList.map((item) {
+                return ListTile(
+                  leading: Icon(item.icon),
+                  title: Text(item.title),
+                  trailing: const Icon(Icons.chevron_right),
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (_) => item.pageBuilder()),
+                    );
+                  },
+                );
+              }).toList(),
+            ),
+          ),
+          const SizedBox(height: 50),
+          Center(child: Text('Running on: $_platformVersion\n')),
+        ],
+      ),
+    );
+  }
+}
+
+class _ExampleListItem {
+  _ExampleListItem({
+    required this.icon,
+    required this.title,
+    required this.pageBuilder,
+  });
+  final IconData icon;
+  final String title;
+  final Widget Function() pageBuilder;
 }
