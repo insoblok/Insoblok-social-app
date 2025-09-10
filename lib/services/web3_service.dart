@@ -334,16 +334,29 @@ class Web3Service with ListenableServiceMixin {
     try {
       final dynamic response = await api.getRequest("/common/transactions/$address");
       final List<Map<String, dynamic>> txs = List<Map<String, dynamic>>.from(response);
-      txs.sort((a, b) => b["timestamp"]!.compareTo(a["timestamp"]!));
       List<Map<String, dynamic>> results = txs.map((tx) {
-        final network = kWalletTokenList.firstWhere((element) => element["chain"] == tx["chain"]);
-        tx["displayName"] = network["displayName"];
-        tx["icon"] = network["icon"];
-        tx["short_name"] = network["short_name"];
-        tx["scanUrl"] = network["scanUrl"];
+        if(tx["chain"] != null) {
+          final network = kWalletTokenList.firstWhere((element) => element["chain"] == tx["chain"]);
+          tx["displayName"] = network["displayName"];
+          tx["icon"] = network["icon"];
+          tx["short_name"] = network["short_name"];
+          tx["scanUrl"] = network["scanUrl"];
+        }
+        else {
+          final from_network = kWalletTokenList.firstWhere((element) => element["chain"] == tx["from_token_network"]);
+          final to_network = kWalletTokenList.firstWhere((element) => element["chain"] == tx["to_token_network"]);
+          tx["from_network_display_name"] = from_network["displayName"];
+          tx["to_network_display_name"] = to_network["displayName"];
+          tx["from_network_icon"] = from_network["icon"];
+          tx["to_network_icon"] = to_network["icon"];
+          tx["from_network_short_name"] = from_network["short_name"];
+          tx["to_network_short_name"] = to_network["short_name"];
+          tx["from_network_scanUrl"] = from_network["scanUrl"];
+          tx["to_network_scanUrl"] = to_network["scanUrl"];
+        }
         return tx;
       }).toList();
-      _transactions.value = results; 
+      _transactions.value = results;
       notifyListeners();
     }
     catch (e) {
@@ -488,6 +501,22 @@ class Web3Service with ListenableServiceMixin {
       logger.d("Exception raised while transferring $e");
     }
     return "";
+  }
+
+  Future<Map<String, dynamic>> getINSOByXP(double xpAmount, double insoAmount, String toAddress) async {
+    try {
+      final response = await api.postRequest('/swap/get-inso-from-xp', {
+        "from_amount": xpAmount,
+        "to_amount": insoAmount,
+        "to_address": toAddress,
+      });
+      logger.d("Result is $response");
+      Map<String, dynamic> result = response as Map<String, dynamic>;
+      return result;
+    } catch (e) {
+      logger.d("Exception raised while converting XP to INSO ${e.toString()}");
+    }
+    return {};
   }
 
 }
