@@ -66,7 +66,12 @@ class LoginProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  bool processing = false;
+  bool _processing = false;
+  bool get processing => _processing;
+  set processing(bool proc) {
+    _processing = proc;
+    notifyListeners();
+  }
   
   final globals = GlobalStore();
   bool get enabled => globals.isVybeCamEnabled;
@@ -98,146 +103,41 @@ class LoginProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  @override
-  void dispose() {
-    _pageController.dispose();
-    _timer.cancel();
+  // @override
+  // void dispose() {
+  //   _pageController.dispose();
+  //   _timer.cancel();
 
-    super.dispose();
-  }
+  //   super.dispose();
+  // }
 
-  Future<void> handleClickCreateNewWallet(BuildContext buildContext) async {
-    if(isClickCreateNewWallet) return;
-    isClickCreateNewWallet = true;
-    final scaffoldContext = buildContext;
-    showDialog<String>(
-      context: buildContext,
-      builder: (bContext) {
-        final TextEditingController _passwordController = TextEditingController();
-        final TextEditingController _confirmController = TextEditingController();
-        bool _obscurePassword = true;
-        bool _obscureConfirm = true;
+  Future<void> createNewWallet(BuildContext ctx, String password) async {
+    if(processing) return;
+    processing = true;
+    notifyListeners();
 
-    // Handler function
-        void _handleOkClick(BuildContext ctx, BuildContext buttonContext) async {
-          final password = _passwordController.text.trim();
-          final confirm = _confirmController.text.trim();
+    try {
+      final newWalletResult = await cryptoService.createAndStoreWallet(password);
+      var authUser = await AuthHelper.signIn(
+        newWalletResult.address,
+        isCheckScan,
+      );
 
-          if (password.isEmpty || confirm.isEmpty) {
-            AIHelpers.showToast(msg: "Please enter both fields.");
-            return;
-          }
-          if (password != confirm) {
-            AIHelpers.showToast(msg: "Passwords don't match.");
-            return;
-          }
-
-          // ✅ Both match → call your wallet creation function
-          // createNewWallet(password);
-          
-          try {
-            processing = true;
-            final newWalletResult = await cryptoService.createAndStoreWallet(password);
-            var authUser = await AuthHelper.signIn(
-              newWalletResult.address,
-              isCheckScan,
-            );
-
-            Navigator.pop(ctx, null);
-            
-            if (authUser?.walletAddress?.isEmpty ?? true) {
-              Routers.goToRegisterFirstPage(
-                context,
-                user: UserModel(walletAddress: newWalletResult.address),
-              );
-            } else {
-              AuthHelper.updateStatus('Online');
-              Routers.goToMainPage(context);
-            }
-            } catch (e) {
-              logger.e(e);
-            }
-            processing = false;
-            notifyListeners();
-        }
-
-        void _handleClickCancel(BuildContext ctx) {
-          isClickCreateNewWallet = false;
-          Navigator.pop(ctx, null);
-        }
-
-        return StatefulBuilder(
-          builder: (context, setState) {
-            return AlertDialog(
-              backgroundColor: AIColors.modalBackground,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              title: const Text(
-                "Set Password",
-                style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  AIPasswordField(
-                    controller: _passwordController
-                  ),
-                  const SizedBox(height: 12),
-                  AIPasswordField(
-                    controller: _confirmController
-                  )
-                  ],
-              ),
-              actions: [
-                TextButton(
-                  onPressed: () => _handleClickCancel(context),
-                  child: const Text(
-                    "Cancel",
-                    style: TextStyle(color: Colors.grey),
-                  ),
-                ),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.pink,
-                      foregroundColor: Colors.white, 
-                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8.0),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                    ),
-                  onPressed: () {
-                    if(!processing) {
-                      _handleOkClick(scaffoldContext, context);
-                    }  
-                  },
-                  child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
-                    child: AnimatedSwitcher(
-                      duration: const Duration(milliseconds: 180),
-                      switchInCurve: Curves.easeOut,
-                      switchOutCurve: Curves.easeIn,
-                      transitionBuilder: (child, animation) {
-                        return FadeTransition(opacity: animation, child: child);
-                      },
-                      child: processing
-                          ? CircularProgressIndicator(strokeWidth: 2.0)
-                          : Text("OK"),
-                    ),
-                  ),
-                ),
-              ],
-            );
-          },
+      Navigator.pop(ctx, null);
+      
+      if (authUser?.walletAddress?.isEmpty ?? true) {
+        Routers.goToRegisterFirstPage(
+          context,
+          user: UserModel(walletAddress: newWalletResult.address),
         );
-      },
-    );
-
-
-  }
+      } else {
+        AuthHelper.updateStatus('Online');
+        Routers.goToMainPage(context);
+      }
+    } catch (e) {
+      logger.e(e);
+    }
+  } 
 
   Future<void> login() async {
     if (isClickCreateNewWallet) return;
