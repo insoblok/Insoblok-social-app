@@ -177,8 +177,8 @@ class StoryProvider extends InSoBlokViewModel {
     final c = Completer<String?>();
     videoCapture.onVideoRecorded = (String path) {
       scheduleMicrotask(() {
-        videoPath = path;
-        // videoPath = '/data/data/insoblok.social.app/cache/SnapVideo.MOV';
+        // videoPath = path;
+        videoPath = '/data/data/insoblok.social.app/cache/SnapVideo.MOV';
         notifyListeners();  
         if (!c.isCompleted) c.complete(path);
       });
@@ -194,7 +194,7 @@ class StoryProvider extends InSoBlokViewModel {
 
   Future<void> detectFace(String link) async {
 
-    // link = '/data/data/insoblok.social.app/cache/SnapImage.jpg';
+    link = '/data/data/insoblok.social.app/cache/SnapImage.jpg';
 
     var faces = await GoogleVisionHelper.getFacesFromImage(link: link);
     var _annotations = await GoogleVisionHelper.analyzeLocalImage(link: link);

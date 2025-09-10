@@ -113,6 +113,13 @@ class AIHelpers {
     return null; // No match found
   }
 
+  static Future<void> shareStoryToLookbook(
+    BuildContext context, {
+    required StoryModel story,
+  }) async {
+    
+  }
+
   static Future<void> shareStory(
     BuildContext context, {
     required StoryModel story,

@@ -41,10 +41,7 @@ class AccountXPDashboardView extends ViewModelWidget<AccountProvider> {
               ),
             ],
           ),
-
-
           const SizedBox(height: 8),
-          
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [

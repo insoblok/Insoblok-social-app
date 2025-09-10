@@ -412,7 +412,7 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
       LeaderboardPage(),
       LookbookView(),
       ChatView(),
-      ProfileView(),
+      PageableView(),
     ];
     // var selectedIcon = [
     //   AIImages.icBottomHomeFill,
