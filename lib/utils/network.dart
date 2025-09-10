@@ -23,8 +23,6 @@ class NetworkUtil {
           'category': clothingType,
         },
       );
-      logger.d("response.data");
-      logger.d(response.data);
       return response.data['id'];
     } on DioException catch (e) {
       logger.e(e.message);
@@ -62,7 +60,7 @@ class NetworkUtil {
     String? age, // Number value between 30 and 70, for the model age
   }) async {
     try {
-      var response = await NetworkHelper.theneApiRequest(
+      var response = await NetworkHelper.vtoApiRequest(
         'ai_model_jewelry',
         method: APIMETHOD.post,
         postParams: {
@@ -76,8 +74,6 @@ class NetworkUtil {
           'age': age,
         },
       );
-      
-      logger.d("response.data of hat model");
       logger.d(response.data);
       return response.data;
     } on DioException catch (e) {

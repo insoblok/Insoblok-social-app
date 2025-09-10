@@ -117,6 +117,8 @@ class StoryProvider extends InSoBlokViewModel {
     refreshCount = 0;
     _videoPath = null;
 
+    logger.d("vybeCamEnabled in init: $vybeCamEnabled");
+
     final mediaPath = story.medias?[0].link;
     if (mediaPath!.contains('.mov') || mediaPath.contains('.mp4')) {
       _videoStoryPath = story.medias?[0].link;
@@ -124,6 +126,7 @@ class StoryProvider extends InSoBlokViewModel {
       _videoStoryPath = null;
     }
 
+    showFaceDialog = false;
     final globals = GlobalStore();
     _isVideoReaction = globals.isRRCVideoCapture;
     logger.d("globals.isRRCVideoCapture : ${globals.isRRCVideoCapture}");
@@ -141,16 +144,13 @@ class StoryProvider extends InSoBlokViewModel {
 
   Future<void> startRRC() async{
 
-    logger.d("vybeCamEnabled : $vybeCamEnabled");
-
     if(showFaceDialog)
       return;
 
     final auth = AuthHelper.user?.id;
+    logger.d("vybeCamEnabled in start: $vybeCamEnabled");
 
-    logger.d("vybeCamEnabled : $vybeCamEnabled");
-
-    if( (auth != story.userId)){
+    if(vybeCamEnabled && (auth != story.userId)){
       showFaceDialog = true;
     }
   }
@@ -424,9 +424,9 @@ class StoryProvider extends InSoBlokViewModel {
     } else {
       story = story.copyWith(votes: votes);
       if (story.isVote() != null && story.isVote() == true) {
-        AIHelpers.showToast(msg: 'Vote No. Earn +1 TasteScore');
+        AIHelpers.showToast(msg: 'Vote No.');
       } else {
-        AIHelpers.showToast(msg: 'Vote Yes. Feedback stays private');
+        AIHelpers.showToast(msg: 'Vote Yes.');
       }
       notifyListeners();
     }

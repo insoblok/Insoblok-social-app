@@ -20,7 +20,6 @@ class PageableView extends StatelessWidget {
   static const double _kTopRowHeight = 40.0;
   static const double _kTabsHeight   = 40.0;
   static const double _kGap          = 5.0;
-
   @override
   Widget build(BuildContext context) {
     final menuTitles = [
@@ -29,6 +28,7 @@ class PageableView extends StatelessWidget {
       'Leaderboard',
       'Marketplace',
     ];
+    final ScrollController _tabScrollController = ScrollController();
 
     return ViewModelBuilder<DashboardProvider>.reactive(
       viewModelBuilder: () => DashboardProvider(),
@@ -65,157 +65,160 @@ class PageableView extends StatelessWidget {
                 left: 0,
                 right: 0,
                 child: Padding(
-                  padding: EdgeInsets.only(top: safeTop, left: 12, right: 12),
+                  padding: EdgeInsets.only(left: 12, right: 12),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       // --- Logo + Search row ---
-                      SizedBox(
-                        height: _kTopRowHeight,
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.center,
-                          children: [
-                            InkWell(
-                              onTap: () {},
-                              borderRadius: BorderRadius.circular(12),
-                              child: AIImage(
-                                AIImages.icCoinInso,
-                                width: 28,
-                                height: 28,
+                      SafeArea(
+                        child: SizedBox(
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              InkWell(
+                                onTap: () {},
+                                borderRadius: BorderRadius.circular(12),
+                                child: AIImage(
+                                  AIImages.icCoinInso,
+                                  width: 28,
+                                  height: 28,
+                                ),
                               ),
-                            ),
-                            const SizedBox(width: 12),
-
-                            Expanded(
-                              child: AnimatedSwitcher(
-                                duration: const Duration(milliseconds: 150),
-                                child: viewModel.showSearch
-                                    ? Container(
-                                        key: const ValueKey('search-on'),
-                                        height: _kTopRowHeight,
-                                        padding: const EdgeInsets.symmetric(horizontal: 6),
-                                        decoration: BoxDecoration(
-                                          color: Theme.of(context)
-                                              .colorScheme
-                                              .secondary
-                                              .withAlpha(16),
-                                          borderRadius: BorderRadius.circular(16),
-                                        ),
-                                        alignment: Alignment.centerLeft,
-                                        child: TextField(
-                                          controller: viewModel.searchController,
-                                          focusNode: viewModel.searchFocusNode,
-                                          autofocus: true,
-                                          onChanged: viewModel.onSearchChanged,
-                                          onSubmitted: viewModel.onSearchSubmitted,
-                                          style: TextStyle(
-                                            fontSize: 14,
-                                            color: AIColors.white,
+                              const SizedBox(width: 0),
+                              Expanded(
+                                child: AnimatedSwitcher(
+                                  duration: const Duration(milliseconds: 150),
+                                  child: viewModel.showSearch
+                                      ? Container(
+                                          key: const ValueKey('search-on'),
+                                          height: _kTopRowHeight,
+                                          padding: const EdgeInsets.symmetric(horizontal: 0),
+                                          decoration: BoxDecoration(
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .secondary
+                                                .withAlpha(16),
+                                            border: BoxBorder.all(color: Colors.white.withOpacity(0.2)),  
+                                            borderRadius: BorderRadius.circular(16),
                                           ),
-                                          cursorColor: Theme.of(context).colorScheme.secondary,
-                                          decoration: InputDecoration(
-                                            isDense: true,
-                                            hintText: 'Search for people and groups',
-                                            hintStyle:  TextStyle(
+                                          alignment: Alignment.centerLeft,
+                                          child: TextField(
+                                            controller: viewModel.searchController,
+                                            focusNode: viewModel.searchFocusNode,
+                                            autofocus: true,
+                                            onChanged: viewModel.onSearchChanged,
+                                            onSubmitted: viewModel.onSearchSubmitted,
+                                            style: TextStyle(
                                               fontSize: 14,
                                               color: AIColors.white,
-                                              fontWeight: FontWeight.normal,
                                             ),
-                                            border: InputBorder.none,
-                                            contentPadding: const EdgeInsets.symmetric(vertical: 10),
-                                            prefixIcon: Padding(
-                                              padding: const EdgeInsets.all(12),
-                                              child: AIImage(
-                                                AIImages.icBottomSearch,
-                                                width: 14, height: 14,
+                                            cursorColor: Theme.of(context).colorScheme.secondary,
+                                            decoration: InputDecoration(
+                                              isDense: true,
+                                              hintText: 'Search for people and groups',
+                                              hintStyle:  TextStyle(
+                                                fontSize: 14,
+                                                color: AIColors.white,
+                                                fontWeight: FontWeight.normal,
+                                              ),
+                                              border: InputBorder.none,
+                                              contentPadding: const EdgeInsets.symmetric(vertical: 10),
+                                              prefixIcon: Padding(
+                                                padding: const EdgeInsets.all(12),
+                                                child: AIImage(
+                                                  AIImages.icBottomSearch,
+                                                  width: 14, height: 14,
+                                                ),
+                                              ),
+                                              suffixIcon: viewModel.searchController.text.isNotEmpty
+                                                  ? IconButton(
+                                                      tooltip: 'Clear',
+                                                      splashRadius: 18,
+                                                      icon: Icon(
+                                                        Icons.close,
+                                                        size: 18,
+                                                        color: Theme.of(context).colorScheme.secondary,
+                                                      ),
+                                                      onPressed: () {
+                                                        viewModel.clearSearch();
+                                                        viewModel.searchFocusNode.requestFocus();
+                                                      },
+                                                    )
+                                                  : null,
+                                            ),
+                                          ),
+                                        )
+                                      : SizedBox(
+                                      height: _kTabsHeight,
+                                      child: DefaultTabController(
+                                        length: menuTitles.length,
+                                        initialIndex: viewModel.tabIndex.clamp(0, menuTitles.length - 1),
+                                        child: Scrollbar(
+                                          controller: _tabScrollController,
+                                          thumbVisibility: true, // Make scrollbar visible
+                                          child: SingleChildScrollView(
+                                            controller: _tabScrollController,
+                                            scrollDirection: Axis.horizontal,
+                                            physics: const BouncingScrollPhysics(), // Better scrolling feel
+                                            child: SizedBox(
+                                              width: MediaQuery.of(context).size.width - 80, // You need to calculate this
+                                              child: TabBar(
+                                                onTap: (i) {
+                                                  viewModel.tabIndex = i;
+                                                  viewModel.onClickMenuItem(i);
+                                                },
+                                                isScrollable: true, // Disable TabBar's built-in scrolling
+                                                tabAlignment: TabAlignment.center,
+                                                indicatorSize: TabBarIndicatorSize.label,
+                                                indicator: RoundedUnderlineTabIndicator(
+                                                  thickness: 6,
+                                                  radius: 6,
+                                                  insets: const EdgeInsets.symmetric(horizontal: 0, vertical: 3),
+                                                  gradient: _pinkPurple,
+                                                ),
+                                                dividerColor: Colors.transparent,
+                                                dividerHeight: 0,
+                                                labelPadding: const EdgeInsets.symmetric(horizontal: 8),
+                                                overlayColor: MaterialStateProperty.all(Colors.transparent),
+                                                labelColor: Colors.white,
+                                                unselectedLabelColor: Colors.white.withOpacity(0.7),
+                                                labelStyle: Theme.of(context).textTheme.headlineMedium?.copyWith(
+                                                      fontWeight: FontWeight.w700,
+                                                    ),
+                                                tabs: [
+                                                  for (final t in menuTitles) Tab(text: t),
+                                                ],
                                               ),
                                             ),
-                                            suffixIcon: viewModel.searchController.text.isNotEmpty
-                                                ? IconButton(
-                                                    tooltip: 'Clear',
-                                                    splashRadius: 18,
-                                                    icon: Icon(
-                                                      Icons.close,
-                                                      size: 18,
-                                                      color: Theme.of(context).colorScheme.secondary,
-                                                    ),
-                                                    onPressed: () {
-                                                      viewModel.clearSearch();
-                                                      viewModel.searchFocusNode.requestFocus();
-                                                    },
-                                                  )
-                                                : null,
                                           ),
                                         ),
-                                      )
-                                    : const SizedBox(
-                                        key: ValueKey('search-off'),
-                                        height: _kTopRowHeight,
                                       ),
-                              ),
-                            ),
-                            const SizedBox(width: 12),
-
-                            InkWell(
-                              onTap: () => viewModel.showSearch = !viewModel.showSearch,
-                              borderRadius: BorderRadius.circular(12),
-                              child: AIImage(
-                                AIImages.icBottomSearch,
-                                width: 24,
-                                height: 24,
-                                color: Theme.of(context).colorScheme.secondary,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-
-                      const SizedBox(height: _kGap),
-
-                      // --- Text tabs with rounded underline ---
-                      SizedBox(
-                        height: _kTabsHeight,
-                        child: DefaultTabController(
-                          length: menuTitles.length,
-                          initialIndex: viewModel.tabIndex.clamp(0, menuTitles.length - 1),
-                          child: Builder(
-                            builder: (context) {
-                              return TabBar(
-                                onTap: (i) {
-                                  viewModel.tabIndex = i;
-                                  viewModel.onClickMenuItem(i);
-                                },
-                                isScrollable: true, // set to false if you want them evenly spaced
-                                tabAlignment: TabAlignment.center,   // center the tabs
-                                indicatorSize: TabBarIndicatorSize.label,
-                                indicator: RoundedUnderlineTabIndicator(
-                                  thickness: 6,          // underline height (px)
-                                  radius: 6,             // rounded ends
-                                  insets: const EdgeInsets.symmetric(horizontal: 0, vertical: 3),
-                                  gradient: _pinkPurple, // pink→purple
-                                ),
-
-                                dividerColor: Colors.transparent,
-                                dividerHeight: 0,
-                                labelPadding: const EdgeInsets.symmetric(horizontal: 8),
-                                overlayColor: MaterialStateProperty.all(Colors.transparent),
-                                labelColor: Colors.white,
-                                unselectedLabelColor: Colors.white.withOpacity(0.7),
-                                labelStyle: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                                      fontWeight: FontWeight.w700,
                                     ),
-                                tabs: [
-                                  for (final t in menuTitles) Tab(text: t),
-                                ],
-                              );
-                            },
+                                ),
+                              ),
+                              const SizedBox(width: 2),
+
+                              InkWell(
+                                onTap: () => viewModel.showSearch = !viewModel.showSearch,
+                                borderRadius: BorderRadius.circular(12),
+                                child: AIImage(
+                                  AIImages.icBottomSearch,
+                                  width: 18,
+                                  height: 18,
+                                  color: Theme.of(context).colorScheme.secondary,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
-                    ],
+                      const SizedBox(height: _kGap),
+
+                      // --- Text tabs with rounded underline ---
+                      ],
                   ),
                 ),
-              ),
+              )
             ],
           ),
         );

@@ -7,13 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_html/flutter_html.dart';
 
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:insoblok/routers/routers.dart';
 import 'package:stacked/stacked.dart';
 import 'package:video_player/video_player.dart';
-import 'package:vimeo_video_player/vimeo_video_player.dart';
-import 'package:gradient_slide_to_act/gradient_slide_to_act.dart';
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 
 import 'package:insoblok/extensions/extensions.dart';
@@ -93,9 +90,11 @@ class StoryListCell extends StatelessWidget {
               // ======== BOTTOM GRADIENT OVERLAY (text/info only) ========
               Column(
                 children: [
+                  // const Spacer(flex: 2),
                   Expanded(
                     child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 2.0),
+                      alignment: Alignment.bottomCenter,
+                      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 80.0),
                       decoration: const BoxDecoration(
                         gradient: LinearGradient(
                           begin: Alignment.topCenter,
@@ -108,16 +107,15 @@ class StoryListCell extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         spacing: 1.0,
                         children: [
-                          const Spacer(),
                           Container(
                             margin: const EdgeInsets.only(left: 1.0, bottom: 20.0),
                             child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              spacing: 12.0,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              // spacing: 12.0,
                               children: [
                                 if (viewModel.story.category == 'vote') const StoryYayNayWidget(),
                                 Container(
-                                  margin: EdgeInsets.only(bottom: marginBottom ?? 0),
+                                  margin: EdgeInsets.only(bottom: 0),
                                   child: Row(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
@@ -256,7 +254,6 @@ class StoryListCell extends StatelessWidget {
                         ),
                         label: '${(viewModel.story.views ?? []).length}',
                       ),
-
                       StoryActionButton(
                         src: AIImage(
                           AIImages.icComment,
@@ -649,7 +646,6 @@ class _StoryMediaViewState extends State<StoryMediaView> {
         fit: ((widget.media.height ?? 1) / (widget.media.width ?? 1) > 1.2) ? BoxFit.cover : BoxFit.fitWidth,
       );
     }
-    debugPrint("THis is media link ${widget.media.link}");
     return CloudinaryVideoPlayerWidget(videoUrl: widget.media.link!);
   }
 }
@@ -661,91 +657,94 @@ class StoryYayNayWidget extends ViewModelWidget<StoryProvider> {
 
     final radius = 24.0;
     
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Ink(
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,           
-                  colors: [Colors.orange, Colors.deepOrangeAccent],
-                ),
-                borderRadius: BorderRadius.circular(radius),
-
-                
-                boxShadow: 
-                viewModel.story.isVote() == true
-                ? [
-                  BoxShadow(
-                    color: const Color.fromARGB(255, 180, 109, 3).withOpacity(0.5),
-                    blurRadius: 10,                        
-                    spreadRadius: 5,                       
-                    offset: const Offset(0, 3),            
+    return Container(
+      child: Column(
+        children: [
+          const SizedBox(height: 40.0),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Ink(
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,           
+                    colors: [Colors.orange, Colors.deepOrangeAccent],
                   ),
-                ] : [],
-              ),
-              child: InkWell(
-                borderRadius: BorderRadius.circular(radius),
-                onTap: () => viewModel.updateVote(false),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
-                  child: VoteFloatingButton(
-                    onTap: () => viewModel.updateVote(false),
-                    text: 'Hot',
-                    textColor: AIColors.white,
-                    src: AIImages.icFireHot,
-                    imgSize: 30,
-                    backgroundColor: Colors.transparent,
-                    borderColor: AIColors.orange
-                  ),
+                  borderRadius: BorderRadius.circular(radius),
+      
+                  
+                  boxShadow: 
+                  viewModel.story.isVote() == true
+                  ? [
+                    BoxShadow(
+                      color: const Color.fromARGB(255, 180, 109, 3).withOpacity(0.5),
+                      blurRadius: 10,                        
+                      spreadRadius: 5,                       
+                      offset: const Offset(0, 3),            
+                    ),
+                  ] : [],
                 ),
-              ),
-            ),
-
-            const SizedBox(width: 30),
-            Ink(
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,          
-                  colors: [Colors.blue, Colors.white],
-                ),
-                borderRadius: BorderRadius.circular(radius),
-                
-                boxShadow: viewModel.story.isVote() == true 
-                ? [
-                  BoxShadow(
-                    color: Colors.blue.withOpacity(0.5), 
-                    blurRadius: 10,                       
-                    spreadRadius: 5,                      
-                    offset: const Offset(0, 3),           
-                  ),
-                ] : [],
-              ),
-              child: InkWell(
-                borderRadius: BorderRadius.circular(radius),
-                onTap: () => viewModel.updateVote(false),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
-                  child: VoteFloatingButton(
-                    onTap: () => viewModel.updateVote(false),
-                    text: 'Not',
-                    textColor: AIColors.white,
-                    src: AIImages.icFireNot,
-                    imgSize: 30,
-                    backgroundColor: Colors.transparent,
-                    borderColor: AIColors.lightBlue
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(radius),
+                  // onTap: () => viewModel.updateVote(false),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+                    child: VoteFloatingButton(
+                      onTap: () => viewModel.updateVote(false),
+                      text: 'Hot',
+                      textColor: AIColors.white,
+                      src: AIImages.icFireHot,
+                      imgSize: 30,
+                      backgroundColor: Colors.transparent,
+                      borderColor: AIColors.orange
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 70),
-      ],
+      
+              const SizedBox(width: 30),
+              Ink(
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,          
+                    colors: [Colors.blue, Colors.white],
+                  ),
+                  borderRadius: BorderRadius.circular(radius),
+                  
+                  boxShadow: viewModel.story.isVote() == true 
+                  ? [
+                    BoxShadow(
+                      color: Colors.blue.withOpacity(0.5), 
+                      blurRadius: 10,                       
+                      spreadRadius: 5,                      
+                      offset: const Offset(0, 3),           
+                    ),
+                  ] : [],
+                ),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(radius),
+                  // onTap: () => viewModel.updateVote(true),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+                    child: VoteFloatingButton(
+                      onTap: () => viewModel.updateVote(true),
+                      text: 'Not',
+                      textColor: AIColors.white,
+                      src: AIImages.icFireNot,
+                      imgSize: 30,
+                      backgroundColor: Colors.transparent,
+                      borderColor: AIColors.lightBlue
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 60.0),
+        ],
+      ),
     );
   }
 }
@@ -956,7 +955,6 @@ class CommentFaceModalView extends ViewModelWidget<StoryProvider> {
   @override
   Widget build(BuildContext context, viewModel) {
     final face = viewModel.face;
-
     final visible = viewModel.showFaceDialog == true;
     if (!visible || face == null) return const SizedBox.shrink();
 
@@ -1283,8 +1281,6 @@ class _CircularVideoPlayerState extends State<_CircularVideoPlayer> {
 /// Start → 3,2,1 → loader → show still (draggable) → SLIDE (no check) → 3,2,1 → recording → video preview
 /// =====================
 
-
-/// The stages for the slider.
 enum _ReactionStage {
   idleStart,
   countingStill,
@@ -1328,10 +1324,7 @@ class FaceReactionSlider extends StatefulWidget {
     this.videoReadyKnobChild,
   });
 
-  /// Long dimension (horizontal: width, vertical: height on-screen)
   final double width;
-
-  /// Thickness (horizontal: height, vertical: width on-screen)
   final double height;
 
   /// Layout direction
@@ -1361,6 +1354,7 @@ class FaceReactionSlider extends StatefulWidget {
 }
 
 class _FaceReactionSliderState extends State<FaceReactionSlider> {
+
   final GlobalKey _sliderKey = GlobalKey();
   int _sliderNonce = 0;
 
@@ -1426,6 +1420,7 @@ class _FaceReactionSliderState extends State<FaceReactionSlider> {
   }
 
   Future<void> _startSecondCountdownAndRecord() async {
+    
     setState(() => _stage = _ReactionStage.countingVideo);
     await _runCountdown(
       onTickEndSetStage: () => setState(() => _stage = _ReactionStage.recording),
@@ -1489,6 +1484,9 @@ class _FaceReactionSliderState extends State<FaceReactionSlider> {
   }
 
   Widget _buildKnob() {
+
+    logger.d("_stage : $_stage");
+
     final knobSize = widget.height - 4.0;
 
     Widget content;

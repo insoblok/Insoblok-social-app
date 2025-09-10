@@ -127,6 +127,8 @@ class NetworkService with ListenableServiceMixin {
     // };
     var pParm = postParams ?? {};
 
+    logger.d(pParm);
+
     // var reqData = FormData.fromMap(pParm);
 
     var dio =
@@ -134,10 +136,6 @@ class NetworkService with ListenableServiceMixin {
           ..options.queryParameters = _nonNullJson(queryParams)
           ..options.method = method
           ..interceptors.add(apiInterceptor);
-
-    logger.d("path of dio: $path");
-    logger.d("path of pParm: $pParm");
-
     final response = await dio.request(
       path,
       data: pParm,
@@ -145,7 +143,6 @@ class NetworkService with ListenableServiceMixin {
       onReceiveProgress: onReceiveProgress,
     );
 
-    logger.d("path of response: $response");
     var endTime = DateTime.now();
     logger.i(endTime.difference(startTime).inMilliseconds);
     return response;
@@ -168,6 +165,8 @@ class NetworkService with ListenableServiceMixin {
       'password': kDefaultVTOPassword,
       ...(postParams ?? {}),
     };
+
+    logger.d(pParm);
 
     var reqData = FormData.fromMap(pParm);
 
