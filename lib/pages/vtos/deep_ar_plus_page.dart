@@ -326,7 +326,7 @@ class _DeepARPlusPageState extends State<DeepARPlusPage> {
           IconButton(
             tooltip: 'Switch camera',
             onPressed: _onSwitchCameraPressed,
-            icon: const Icon(Icons.cameraswitch_outlined),
+            icon: const Icon(Icons.cameraswitch_outlined, color: Colors.pink),
           ),
           TextButton(
             onPressed: _finishAndReturn,

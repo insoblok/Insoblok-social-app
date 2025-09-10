@@ -1,9 +1,10 @@
 import 'dart:io';
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:image/image.dart' as img;
-import 'package:path_provider/path_provider.dart';
 import 'package:flutter_quill/flutter_quill.dart';
+
+import 'package:insoblok/utils/background_camera_capture.dart';
+import 'package:insoblok/utils/background_camera_video_capture.dart';
 import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/routers/routers.dart';
@@ -36,6 +37,13 @@ class StoryProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  bool _isCapturingTimer = false;
+  bool get isCapturingTimer => _isCapturingTimer;
+  set isCapturingTimer(bool f) {
+    _isCapturingTimer = f;
+    notifyListeners();
+  }
+
   bool _isVideoReaction = false;
   bool get isVideoReaction => _isVideoReaction;
   set isVideoReaction(bool f) {
@@ -46,10 +54,10 @@ class StoryProvider extends InSoBlokViewModel {
   String? _videoPath;
   String? get videoPath => _videoPath;
   set videoPath(String? f) {
-    _videoPath= f;
+    _videoPath = f;
     notifyListeners();
   }
-  
+
   String? _videoStoryPath;
   String? get videoStoryPath => _videoStoryPath;
   set videoStoryPath(String? f) {
@@ -66,7 +74,6 @@ class StoryProvider extends InSoBlokViewModel {
 
   bool _showFaceDialog = false;
   bool get showFaceDialog => _showFaceDialog;
-
   set showFaceDialog(bool f) {
     _showFaceDialog = f;
     notifyListeners();
@@ -91,7 +98,7 @@ class StoryProvider extends InSoBlokViewModel {
   var focusNode = FocusNode();
 
   final camera = BackgroundCameraCapture(
-    maxCaptures: 3,              // exactly 3 captures
+    maxCaptures: 1,             
     stopStreamOnMax: true, 
   );
   final videoCapture = BackgroundCameraVideoCapture();
@@ -106,10 +113,11 @@ class StoryProvider extends InSoBlokViewModel {
     this.context = context;
     story = model;
 
-    logger.d("id of story: $story");
-
+    await updateView();
     refreshCount = 0;
     _videoPath = null;
+
+    logger.d("vybeCamEnabled in init: $vybeCamEnabled");
 
     final mediaPath = story.medias?[0].link;
     if (mediaPath!.contains('.mov') || mediaPath.contains('.mp4')) {
@@ -118,32 +126,11 @@ class StoryProvider extends InSoBlokViewModel {
       _videoStoryPath = null;
     }
 
-    final auth = AuthHelper.user?.id;
-
-    // if((auth == story.userId)){
-
-    //   logger.d("resumeCapturing");
-    //   camera.resumeCapturing();
-    // }
-
-   logger.d("vybeCamEnabled : $vybeCamEnabled");
-    logger.d(auth);
-    logger.d(story.userId);
-
-
-    if(vybeCamEnabled && (auth != story.userId)){
-     
-      Timer _timer = Timer(Duration(seconds: 3), () {showFaceDialog = true;});
-
-    //   camera.onFrame = (String? path) {
-    //     logger.d("Trying to detect user expressions");
-    //     if (path != null) {
-    //       detectFace(path);
-    //     }
-    //   };
-
-    //   await camera.initialize();
-    }
+    showFaceDialog = false;
+    final globals = GlobalStore();
+    _isVideoReaction = globals.isRRCVideoCapture;
+    logger.d("globals.isRRCVideoCapture : ${globals.isRRCVideoCapture}");
+    // _isVideoReaction = false;
 
     quillController = () {
         return QuillController.basic(
@@ -155,9 +142,20 @@ class StoryProvider extends InSoBlokViewModel {
     fetchUser();
   }
 
-  Future<void> captureReactionImage() async {
+  Future<void> startRRC() async{
 
-    _isVideoReaction = false;
+    if(showFaceDialog)
+      return;
+
+    final auth = AuthHelper.user?.id;
+    logger.d("vybeCamEnabled in start: $vybeCamEnabled");
+
+    if(vybeCamEnabled && (auth != story.userId)){
+      showFaceDialog = true;
+    }
+  }
+
+  Future<void> captureReactionImage() async {
 
     showFaceDialog = true;
     camera.onFrame = (String? path) {
@@ -168,58 +166,28 @@ class StoryProvider extends InSoBlokViewModel {
     };
 
     await camera.initialize();
-    
-    final hadVideoPreview = _videoPath != null;
-    if (hadVideoPreview) {
-      _videoPath = null;
-      refreshCount++; 
-      notifyListeners();
-
-      // Allow a frame to pass so Flutter disposes the video widget & decoder
-      try {
-        await WidgetsBinding.instance.endOfFrame;
-      } catch (_) {}
-      await Future.delayed(const Duration(milliseconds: 120));
-    }
-
-    // 1) Ensure the video recorder controller is released
-    await videoCapture.stopAndDispose();
-
-    // 2) Re-grab camera for image stream
-    if (!camera.isInitialized) {
-      await camera.initialize();
-    } else if (!camera.isStreaming) {
-      await camera.restartStream();
-    }
-
-    // 3) Resume throttled frame processing
-    camera.resumeCapturing();
   }
 
   /// Switch to VIDEO capture mode
-  Future<void> captureReactionVideo() async {
-    _isVideoReaction = true;
+  Future<String?> captureReactionVideo() async {
     showFaceDialog = true;
 
-  logger.d("call captureReactionVideo");
-
-    // 1) Release the image stream completely to avoid buffer/ownership conflicts
     await camera.stopAndDispose();
 
-    // 2) Record short clip
+    final c = Completer<String?>();
     videoCapture.onVideoRecorded = (String path) {
-      refreshCount++;
       scheduleMicrotask(() {
         videoPath = path;
         // videoPath = '/data/data/insoblok.social.app/cache/SnapVideo.MOV';
+        notifyListeners();  
+        if (!c.isCompleted) c.complete(path);
       });
     };
 
     await videoCapture.initialize();
     await videoCapture.recordShortVideo(seconds: 2.0);
-
-    // 3) Optionally release video controller now; we keep preview in UI via file.
     await videoCapture.stopAndDispose();
+    return c.future;
   }
 
   List<AIFaceAnnotation> annotations = [];
@@ -230,44 +198,37 @@ class StoryProvider extends InSoBlokViewModel {
 
     var faces = await GoogleVisionHelper.getFacesFromImage(link: link);
     var _annotations = await GoogleVisionHelper.analyzeLocalImage(link: link);
-
     if (faces.isNotEmpty) {
       final directory = await getApplicationDocumentsDirectory();
       final filePath = '${directory.path}/face.png';
       final file = File(filePath);
-
       try {
         if (await file.exists()) {
           await file.delete();
         }
-
         final encoded = img.encodePng(faces[0]);
         _face = await file.writeAsBytes(encoded, flush: true);
-        await FileImage(_face!).evict(); 
-
+        await FileImage(_face!).evict();
         annotations.clear();
         annotations.addAll(_annotations);
-
         logger.d('✅ face.png replaced at $filePath');
       } catch (e) {
         logger.e('❌ Failed to write new face.png: $e');
         AIHelpers.showToast(msg: 'Failed to write new reaction image');
       }
-
       notifyListeners();
     } else {
       logger.e("No face detected!");
       AIHelpers.showToast(msg: 'No face detected!');
     }
   }
-        // Clear and add annotations
 
   @override
   void dispose() {
     quillController?.dispose();
-    quillScrollController?.dispose();
-    focusNode?.dispose();
-    camera.dispose();
+    quillScrollController.dispose();
+    focusNode.dispose();
+
     camera.dispose();
     videoCapture.dispose();
     super.dispose();
@@ -322,11 +283,11 @@ class StoryProvider extends InSoBlokViewModel {
         maxHeight: MediaQuery.of(context).size.height * 0.7,
         minHeight: MediaQuery.of(context).size.height * 0.2,
       ),
-      builder:
-          (context) => StatefulBuilder(
-            builder: (context, setState) => StoryCommentDialog(story: story),
-          ),
+      builder: (context) => StatefulBuilder(
+        builder: (context, setState) => StoryCommentDialog(story: story),
+      ),
     );
+
     openCommentDialog = false;
     fetchStory();
   }
@@ -463,9 +424,9 @@ class StoryProvider extends InSoBlokViewModel {
     } else {
       story = story.copyWith(votes: votes);
       if (story.isVote() != null && story.isVote() == true) {
-        AIHelpers.showToast(msg: 'Vote No. Earn +1 TasteScore');
+        AIHelpers.showToast(msg: 'Vote No.');
       } else {
-        AIHelpers.showToast(msg: 'Vote Yes. Feedback stays private');
+        AIHelpers.showToast(msg: 'Vote Yes.');
       }
       notifyListeners();
     }
@@ -487,6 +448,38 @@ class StoryProvider extends InSoBlokViewModel {
       return;
     }
 
+    isLiking = true;
+    var likes = List<String>.from(story.likes ?? []);
+    await runBusyFuture(() async {
+      try {
+        if (story.isLike()) {
+          likes.remove(user!.id);
+        } else {
+          likes.add(user!.id!);
+        }
+        await storyService.updateLikeStory(
+          story: story.copyWith(likes: likes, updateDate: DateTime.now()),
+          user: owner,
+        );
+      } catch (e) {
+        setError(e);
+        logger.e(e);
+      } finally {
+        isLiking = false;
+      }
+    }());
+
+    if (hasError) {
+      AIHelpers.showToast(msg: modelError.toString());
+    } else {
+      story = story.copyWith(likes: likes);
+      if (story.isLike()) {
+        AIHelpers.showToast(msg: 'You liked to a feed!');
+      } else {
+        AIHelpers.showToast(msg: 'You unliked to a feed!');
+      }
+      notifyListeners();
+    }
   }
 
   Future<void> updateView() async {

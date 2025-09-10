@@ -7,9 +7,8 @@ import 'package:flutter_quill/flutter_quill.dart';
 import 'package:provider/provider.dart';
 import 'package:stacked/stacked.dart';
 // import 'package:media_kit/media_kit.dart';
-
+import 'package:flutter/services.dart';
 import 'package:insoblok/locator.dart';
-import 'package:insoblok/pages/pages.dart';
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
@@ -29,7 +28,7 @@ final scaffoldKey = GlobalKey<ScaffoldMessengerState>();
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   setupLocator();
-
+  // SystemChrome.setEnabledSystemUIMode(SystemUiMode.manual, overlays: []);
   // REQUIRED for media_kit: platform libs must be in pubspec (see above).
   // MediaKit.ensureInitialized();
 

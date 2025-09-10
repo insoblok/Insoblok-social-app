@@ -1,8 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:http/http.dart' as http;
 
 import 'package:image_picker/image_picker.dart';
 import 'package:image/image.dart' as img;
@@ -132,12 +134,26 @@ class VTOImageProvider extends InSoBlokViewModel {
   }
 
   Future<void> onClickConvert() async {
+
+    logger.d("product : $product");
+
     if (product.category == ProductCategory.CLOTHING) {
-      await _clothingConvert();
+      if(product.categoryName == "Hat/Cap"){
+        await _productToModelConvert();
+      }else{
+        await _clothingConvert();
+      }
+      
     } else if (product.category == ProductCategory.SHOES) {
-      await _shoesConvert();
+      await _productToModelConvert();
     } else if (product.category == ProductCategory.JEWELRY) {
-      await _jewelryConvert();
+
+      if(product.categoryName == "Sunglasses"){
+        await _productToModelConvert();
+      }else{
+        await _jewelryConvert();
+      }
+      
     } else {
       AIHelpers.showToast(msg: 'No support this feature yet!');
     }
@@ -363,6 +379,9 @@ class VTOImageProvider extends InSoBlokViewModel {
           country: selectedCountry?.name,
           age: age == null ? null : '$age',
         );
+
+        logger.d("resultUrl : $resultUrl");
+        
         if (resultUrl == null) {
           throw ('Failed AI Convertor!');
         }
@@ -394,6 +413,102 @@ class VTOImageProvider extends InSoBlokViewModel {
             await productService.updateProduct(
               id: product.id!,
               product: product,
+            );
+          }
+        } else {
+          throw ('Failed server error!');
+        }
+      } catch (e) {
+        setError(e);
+        logger.e(e);
+      } finally {
+        isConverting = false;
+      }
+    }());
+
+    if (hasError) {
+      AIHelpers.showToast(msg: modelError.toString());
+    }
+  }
+
+  Future<void> _productToModelConvert() async {
+    if (selectedFile == null) {
+      AIHelpers.showToast(msg: 'Please select a origin photo!');
+      return;
+    }
+
+    if (isBusy) return;
+    clearErrors();
+
+    await runBusyFuture(() async {
+      try {
+        isConverting = true;
+        if (originUrl?.isEmpty ?? true) {
+          MediaStoryModel model = await CloudinaryCDNService.uploadImageToCDN(XFile(selectedFile!.path));
+          originUrl = model.link;
+        }
+
+        if (originUrl?.isEmpty ?? true) {
+          throw ('Failed origin image uploaded!');
+        }
+
+        var resultUrl = await vtoService.convertVTOGlasses(
+          modelUrl: product.modelImage!,
+          photoUrl: originUrl,
+          type: product.type ?? 'tops',
+        );
+
+        logger.d("resultUrl in VTO: $resultUrl");
+        if (resultUrl == null) {
+          throw ('Failed AI Convertor!');
+        }
+
+        _resultFile = await NetworkHelper.downloadFile(
+          resultUrl,
+          type: 'gallery',
+          ext: 'png',
+        );
+        if (_resultFile == null) {
+          throw ('Failed result file downloaded!');
+        }
+
+        final MediaStoryModel resultModel = await CloudinaryCDNService.uploadImageToCDN(XFile(_resultFile!.path));
+
+        if (resultModel.link != null) {
+          serverUrl = resultModel.link;
+
+          List<MediaStoryModel> medias = [];
+          medias.addAll(product.medias ?? []);
+
+          if (!medias.map((m) => m.link).toList().contains(serverUrl)) {
+            medias.insert(0, MediaStoryModel(link: serverUrl, type: 'image'));
+            logger.d(medias.length);
+            product = product.copyWith(
+              medias: medias,
+              updateDate: DateTime.now(),
+            );
+            await productService.updateProduct(
+              id: product.id!,
+              product: product,
+            );
+
+            var originImgbytes = await File(_selectedFile!.path).readAsBytes();
+            var originDecodedImage = img.decodeImage(originImgbytes);
+
+            var resultImgbytes = await File(_resultFile!.path).readAsBytes();
+            var resultDecodedImage = img.decodeImage(resultImgbytes);
+
+            await Routers.goToVTODetailPage(
+              context,
+              VTODetailPageModel(
+                product: product,
+                originImage: originUrl!,
+                originImgWidth: originDecodedImage?.width.toDouble(),
+                originImgHeight: originDecodedImage?.height.toDouble(),
+                resultImage: serverUrl!,
+                resultImgWidth: resultDecodedImage?.width.toDouble(),
+                resultImgHeight: resultDecodedImage?.height.toDouble(),
+              ),
             );
           }
         } else {

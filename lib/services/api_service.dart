@@ -1,7 +1,7 @@
 import 'dart:core';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-
+import 'package:insoblok/services/services.dart';
 class ApiService {
   final String baseUrl;
 
@@ -29,6 +29,8 @@ class ApiService {
     final url = Uri.parse('$baseUrl$endpoint');
 
     try {
+        logger.d("request is $body");
+
       final response = await http.post(
         url,
         headers: {"Content-Type": "application/json"},
@@ -36,6 +38,7 @@ class ApiService {
       );
 
       if (response.statusCode == 200) {
+        logger.d("response is ${response.body}");
         return jsonDecode(response.body);
       } else {
         throw Exception('POST failed: ${response.statusCode} - ${response.body}');

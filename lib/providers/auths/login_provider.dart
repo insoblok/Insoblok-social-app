@@ -65,6 +65,8 @@ class LoginProvider extends InSoBlokViewModel {
     _currentPage = index;
     notifyListeners();
   }
+
+  bool processing = false;
   
   final globals = GlobalStore();
   bool get enabled => globals.isVybeCamEnabled;
@@ -134,13 +136,14 @@ class LoginProvider extends InSoBlokViewModel {
           // createNewWallet(password);
           
           try {
+            processing = true;
             final newWalletResult = await cryptoService.createAndStoreWallet(password);
             var authUser = await AuthHelper.signIn(
               newWalletResult.address,
               isCheckScan,
             );
 
-            Navigator.pop(buttonContext, null);
+            Navigator.pop(ctx, null);
             
             if (authUser?.walletAddress?.isEmpty ?? true) {
               Routers.goToRegisterFirstPage(
@@ -154,7 +157,8 @@ class LoginProvider extends InSoBlokViewModel {
             } catch (e) {
               logger.e(e);
             }
-          
+            processing = false;
+            notifyListeners();
         }
 
         void _handleClickCancel(BuildContext ctx) {
@@ -198,14 +202,32 @@ class LoginProvider extends InSoBlokViewModel {
                 ),
                 ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.pink[400],
-                    foregroundColor: Colors.white,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+                      backgroundColor: Colors.pink,
+                      foregroundColor: Colors.white, 
+                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8.0),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                  onPressed: () {
+                    if(!processing) {
+                      _handleOkClick(scaffoldContext, context);
+                    }  
+                  },
+                  child: Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
+                    child: AnimatedSwitcher(
+                      duration: const Duration(milliseconds: 180),
+                      switchInCurve: Curves.easeOut,
+                      switchOutCurve: Curves.easeIn,
+                      transitionBuilder: (child, animation) {
+                        return FadeTransition(opacity: animation, child: child);
+                      },
+                      child: processing
+                          ? CircularProgressIndicator(strokeWidth: 2.0)
+                          : Text("OK"),
                     ),
                   ),
-                  onPressed: () => _handleOkClick(scaffoldContext, context),
-                  child: const Text("OK"),
                 ),
               ],
             );
