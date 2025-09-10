@@ -270,7 +270,8 @@ class StoryListCell extends StatelessWidget {
                           width: kStoryAvatarSize * 0.4,
                         ),
                         label: '',
-                        onTap: () => AIHelpers.shareStory(context, story: story),
+                        // onTap: () => AIHelpers.shareStoryToLookbook(context, story: story),
+                        onTap: () => viewModel.repost(),
                       ),
                       StoryActionButton(
                         src: AIImage(

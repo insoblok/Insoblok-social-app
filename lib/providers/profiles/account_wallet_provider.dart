@@ -61,7 +61,7 @@ class AccountWalletProvider extends InSoBlokViewModel {
         }
       });
     }).toList() ?? [];
-    logger.d("Filtered transactions are ${filtered.length}");
+    logger.d("Filtered transactions are ${transactions!.length}, ${filtered.length}");
     return filtered;
   }
 

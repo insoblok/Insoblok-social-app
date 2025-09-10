@@ -499,15 +499,57 @@ class AccountWalletPage extends StatelessWidget {
                                                 Row(
                                                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                                                   children: [
-                                                    Text(
-                                                      "${token['from_amount'] ?? '0'}  ${token['from_network_short_name'] ?? ''}",
+                                                    Column(
+                                                      children: [
+                                                        Text(
+                                                          "${token['from_amount'] ?? '0'}  ${token['from_network_short_name'] ?? ''}",
+                                                        ),
+                                                        Text(
+                                                          "\$${((token['from_amount']) ?? 0) * (viewModel.allPrices?[token["from_network"]] ?? 0)}"
+                                                        )
+                                                      ],
                                                     ),
                                                     Text("  ===>  "),
-                                                    Text(
-                                                      "${token['to_amount'] ?? '0'}  ${token['to_network_short_name'] ?? ''}",
+                                                    Column(
+                                                      children: [
+                                                        Text(
+                                                          "${token['to_amount'] ?? '0'}  ${token['to_network_short_name'] ?? ''}",
+                                                        ),
+                                                        Text(
+                                                          "\$${((token['to_amount']) ?? 0) * (viewModel.allPrices?[token["to_network"]] ?? 0)}"
+                                                        )
+                                                      ],
                                                     ),
                                                   ],
                                                 ),
+                                                const SizedBox(height: 6.0),
+                                                Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  children:[
+                                                    Opacity(opacity: 0),
+                                                    GestureDetector(
+                                                      onTap: () {
+                                                        logger.d(
+                                                          "Token is $token",
+                                                        );
+                                                        AIHelpers.launchExternalSource(
+                                                          '${token["to_network_scanUrl"]}/${token["tx_hash"]}',
+                                                        );
+                                                      },
+                                                      child: Text(
+                                                        'View Transaction',
+                                                        style: TextStyle(
+                                                          color:
+                                                              Colors.pink,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    _buildStatusBadge(
+                                                      token["status"] ??
+                                                          '',
+                                                    ),
+                                                  ]
+                                                )
                                               ] 
                                             ),
                                           ),

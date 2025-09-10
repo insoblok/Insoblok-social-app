@@ -102,6 +102,8 @@ dependencies:
   circular_countdown_timer: ^0.2.4
   flutter_toggle_button: ^0.0.4
   zo_animated_border: ^1.0.1
+  qr_flutter: ^4.1.0
+
   
 dev_dependencies:
   flutter_test:
