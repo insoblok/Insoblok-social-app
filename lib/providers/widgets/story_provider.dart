@@ -129,31 +129,8 @@ class StoryProvider extends InSoBlokViewModel {
     final globals = GlobalStore();
 
     final auth = AuthHelper.user?.id;
-
-    // if((auth == story.userId)){
-
-    //   logger.d("resumeCapturing");
-    //   camera.resumeCapturing();
-    // }
-
-   logger.d("vybeCamEnabled : $vybeCamEnabled");
-    logger.d(auth);
-    logger.d(story.userId);
-
-
-    if(vybeCamEnabled && (auth != story.userId)){
-     
-      Timer _timer = Timer(Duration(seconds: 3), () {showFaceDialog = true;});
-
-    //   camera.onFrame = (String? path) {
-    //     logger.d("Trying to detect user expressions");
-    //     if (path != null) {
-    //       detectFace(path);
-    //     }
-    //   };
-
-    //   await camera.initialize();
-    }
+    showFaceDialog = false;
+   _isVideoReaction = true;
 
     quillController = () {
         return QuillController.basic(
@@ -172,7 +149,7 @@ class StoryProvider extends InSoBlokViewModel {
 
     final auth = AuthHelper.user?.id;
 
-    if(vybeCamEnabled && (auth != story.userId)){
+    if(auth != story.userId){
       showFaceDialog = true;
     }
   }

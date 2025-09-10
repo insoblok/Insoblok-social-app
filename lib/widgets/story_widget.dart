@@ -7,13 +7,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_html/flutter_html.dart';
 
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:insoblok/routers/routers.dart';
 import 'package:stacked/stacked.dart';
 import 'package:video_player/video_player.dart';
-import 'package:vimeo_video_player/vimeo_video_player.dart';
-import 'package:gradient_slide_to_act/gradient_slide_to_act.dart';
 import 'package:circular_countdown_timer/circular_countdown_timer.dart';
 
 import 'package:insoblok/extensions/extensions.dart';
@@ -109,16 +106,15 @@ class StoryListCell extends StatelessWidget {
                         mainAxisSize: MainAxisSize.min,
                         spacing: 1.0,
                         children: [
-                          const Spacer(),
                           Container(
                             margin: const EdgeInsets.only(left: 1.0, bottom: 20.0),
                             child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.end,
                               spacing: 12.0,
                               children: [
                                 if (viewModel.story.category == 'vote') const StoryYayNayWidget(),
                                 Container(
-                                  margin: EdgeInsets.only(bottom: marginBottom ?? 0),
+                                  margin: EdgeInsets.only(bottom: 0),
                                   child: Row(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
@@ -660,91 +656,94 @@ class StoryYayNayWidget extends ViewModelWidget<StoryProvider> {
 
     final radius = 24.0;
     
-    return Column(
-      children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Ink(
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,           
-                  colors: [Colors.orange, Colors.deepOrangeAccent],
-                ),
-                borderRadius: BorderRadius.circular(radius),
-
-                
-                boxShadow: 
-                viewModel.story.isVote() == true
-                ? [
-                  BoxShadow(
-                    color: const Color.fromARGB(255, 180, 109, 3).withOpacity(0.5),
-                    blurRadius: 10,                        
-                    spreadRadius: 5,                       
-                    offset: const Offset(0, 3),            
+    return Container(
+      child: Column(
+        children: [
+          const SizedBox(height: 40.0),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Ink(
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,           
+                    colors: [Colors.orange, Colors.deepOrangeAccent],
                   ),
-                ] : [],
-              ),
-              child: InkWell(
-                borderRadius: BorderRadius.circular(radius),
-                onTap: () => viewModel.updateVote(false),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
-                  child: VoteFloatingButton(
-                    onTap: () => viewModel.updateVote(false),
-                    text: 'Hot',
-                    textColor: AIColors.white,
-                    src: AIImages.icFireHot,
-                    imgSize: 30,
-                    backgroundColor: Colors.transparent,
-                    borderColor: AIColors.orange
-                  ),
+                  borderRadius: BorderRadius.circular(radius),
+      
+                  
+                  boxShadow: 
+                  viewModel.story.isVote() == true
+                  ? [
+                    BoxShadow(
+                      color: const Color.fromARGB(255, 180, 109, 3).withOpacity(0.5),
+                      blurRadius: 10,                        
+                      spreadRadius: 5,                       
+                      offset: const Offset(0, 3),            
+                    ),
+                  ] : [],
                 ),
-              ),
-            ),
-
-            const SizedBox(width: 30),
-            Ink(
-              decoration: BoxDecoration(
-                gradient: const LinearGradient(
-                  begin: Alignment.centerLeft,
-                  end: Alignment.centerRight,          
-                  colors: [Colors.blue, Colors.white],
-                ),
-                borderRadius: BorderRadius.circular(radius),
-                
-                boxShadow: viewModel.story.isVote() == true 
-                ? [
-                  BoxShadow(
-                    color: Colors.blue.withOpacity(0.5), 
-                    blurRadius: 10,                       
-                    spreadRadius: 5,                      
-                    offset: const Offset(0, 3),           
-                  ),
-                ] : [],
-              ),
-              child: InkWell(
-                borderRadius: BorderRadius.circular(radius),
-                onTap: () => viewModel.updateVote(false),
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
-                  child: VoteFloatingButton(
-                    onTap: () => viewModel.updateVote(false),
-                    text: 'Not',
-                    textColor: AIColors.white,
-                    src: AIImages.icFireNot,
-                    imgSize: 30,
-                    backgroundColor: Colors.transparent,
-                    borderColor: AIColors.lightBlue
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(radius),
+                  onTap: () => viewModel.updateVote(false),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+                    child: VoteFloatingButton(
+                      onTap: () => viewModel.updateVote(false),
+                      text: 'Hot',
+                      textColor: AIColors.white,
+                      src: AIImages.icFireHot,
+                      imgSize: 30,
+                      backgroundColor: Colors.transparent,
+                      borderColor: AIColors.orange
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
-        ),
-        const SizedBox(height: 70),
-      ],
+      
+              const SizedBox(width: 30),
+              Ink(
+                decoration: BoxDecoration(
+                  gradient: const LinearGradient(
+                    begin: Alignment.centerLeft,
+                    end: Alignment.centerRight,          
+                    colors: [Colors.blue, Colors.white],
+                  ),
+                  borderRadius: BorderRadius.circular(radius),
+                  
+                  boxShadow: viewModel.story.isVote() == true 
+                  ? [
+                    BoxShadow(
+                      color: Colors.blue.withOpacity(0.5), 
+                      blurRadius: 10,                       
+                      spreadRadius: 5,                      
+                      offset: const Offset(0, 3),           
+                    ),
+                  ] : [],
+                ),
+                child: InkWell(
+                  borderRadius: BorderRadius.circular(radius),
+                  onTap: () => viewModel.updateVote(false),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+                    child: VoteFloatingButton(
+                      onTap: () => viewModel.updateVote(false),
+                      text: 'Not',
+                      textColor: AIColors.white,
+                      src: AIImages.icFireNot,
+                      imgSize: 30,
+                      backgroundColor: Colors.transparent,
+                      borderColor: AIColors.lightBlue
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+          const SizedBox(height: 60.0),
+        ],
+      ),
     );
   }
 }

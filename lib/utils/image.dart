@@ -83,8 +83,8 @@ class AIImages {
   static String icView = 'assets/icons/ic_view.png';
   static String icGallery = 'assets/icons/ic_photo_gallery.png';
   static String icFireFlame = 'assets/icons/ic_fire_flame.png';
-  static String icFireHot = 'assets/icons/ic_fire_hot.svg';
-  static String icFireNot = 'assets/icons/ic_fire_not.svg';
+  static String icFireHot = 'assets/icons/ic_fire_hot.png';
+  static String icFireNot = 'assets/icons/ic_fire_not.png';
 
 
   static String icVoteUp = 'assets/icons/ic_up_arrow.png';
