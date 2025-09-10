@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:reown_appkit/modal/services/analytics_service/models/analytics_event.dart';
 
 import 'package:stacked/stacked.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -374,9 +375,109 @@ class AccountWalletPage extends StatelessWidget {
                                   ),
                                   child: Column(
                                     children: [
-                                      for (var token
-                                          in viewModel
-                                              .filteredTransactions) ...[
+                                      for (var token in viewModel.filteredTransactions) ...[
+                                        token["chain"] != null ?
+                                          Container(
+                                            padding: const EdgeInsets.all(10.0),
+                                            margin: const EdgeInsets.only(
+                                              bottom: 8.0,
+                                            ),
+                                            decoration: BoxDecoration(
+                                              color: Theme.of(context)
+                                                  .colorScheme
+                                                  .secondary
+                                                  .withAlpha(18),
+                                              borderRadius: BorderRadius.circular(
+                                                8.0,
+                                              ),
+                                            ),
+                                            child: Row(
+                                              children: [
+                                                // AIImage(token["icon"], width: 36.0, height: 36.0),
+                                                const SizedBox(width: 12.0),
+                                                Expanded(
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment.start,
+                                                    children: [
+                                                      Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        children: [
+                                                          WalletAddressWidget(
+                                                            address:
+                                                                token["from_address"] ??
+                                                                '',
+                                                          ),
+                                                          const Text("=> "),
+                                                          WalletAddressWidget(
+                                                            address:
+                                                                token["to_address"] ??
+                                                                '',
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        children: [
+                                                          Text(
+                                                            '${AIHelpers.formatDouble(token["amount"] ?? 0, 10)} ${token["short_name"] ?? ""}',
+                                                            style:
+                                                                Theme.of(context)
+                                                                    .textTheme
+                                                                    .labelSmall,
+                                                          ),
+                                                          GestureDetector(
+                                                            onTap: () {
+                                                              logger.d(
+                                                                "Token is $token",
+                                                              );
+                                                              AIHelpers.launchExternalSource(
+                                                                '${token["scanUrl"]}/${token["tx_hash"]}',
+                                                              );
+                                                            },
+                                                            child: Text(
+                                                              'View Transaction',
+                                                              style: TextStyle(
+                                                                color:
+                                                                    Colors.pink,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          Column(
+                                                            crossAxisAlignment:
+                                                                CrossAxisAlignment
+                                                                    .end,
+                                                            children: [
+                                                              Text(
+                                                                '\$${(viewModel.tokenValues[token["chain"]] ?? 0).toStringAsFixed(2)}',
+                                                                style:
+                                                                    Theme.of(
+                                                                          context,
+                                                                        )
+                                                                        .textTheme
+                                                                        .headlineMedium,
+                                                              ),
+                                                              const SizedBox(
+                                                                height: 4.0,
+                                                              ),
+                                                              _buildStatusBadge(
+                                                                token["status"] ??
+                                                                    '',
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ) :
                                         Container(
                                           padding: const EdgeInsets.all(10.0),
                                           margin: const EdgeInsets.only(
@@ -391,91 +492,24 @@ class AccountWalletPage extends StatelessWidget {
                                               8.0,
                                             ),
                                           ),
-                                          child: Row(
-                                            children: [
-                                              // AIImage(token["icon"], width: 36.0, height: 36.0),
-                                              const SizedBox(width: 12.0),
-                                              Expanded(
-                                                child: Column(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Column(
+                                              children: [
+                                                Row(
+                                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
                                                   children: [
-                                                    Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
-                                                      children: [
-                                                        WalletAddressWidget(
-                                                          address:
-                                                              token["from_address"] ??
-                                                              '',
-                                                        ),
-                                                        const Text("=> "),
-                                                        WalletAddressWidget(
-                                                          address:
-                                                              token["to_address"] ??
-                                                              '',
-                                                        ),
-                                                      ],
+                                                    Text(
+                                                      "${token['from_amount'] ?? '0'}  ${token['from_network_short_name'] ?? ''}",
                                                     ),
-                                                    Row(
-                                                      mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .spaceBetween,
-                                                      children: [
-                                                        Text(
-                                                          '${AIHelpers.formatDouble(token["amount"] ?? 0, 10)} ${token["short_name"] ?? ""}',
-                                                          style:
-                                                              Theme.of(context)
-                                                                  .textTheme
-                                                                  .labelSmall,
-                                                        ),
-                                                        GestureDetector(
-                                                          onTap: () {
-                                                            logger.d(
-                                                              "Token is $token",
-                                                            );
-                                                            AIHelpers.launchExternalSource(
-                                                              '${token["scanUrl"]}/${token["tx_hash"]}',
-                                                            );
-                                                          },
-                                                          child: Text(
-                                                            'View Transaction',
-                                                            style: TextStyle(
-                                                              color:
-                                                                  Colors.pink,
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        Column(
-                                                          crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .end,
-                                                          children: [
-                                                            Text(
-                                                              '\$${(viewModel.tokenValues[token["chain"]] ?? 0).toStringAsFixed(2)}',
-                                                              style:
-                                                                  Theme.of(
-                                                                        context,
-                                                                      )
-                                                                      .textTheme
-                                                                      .headlineMedium,
-                                                            ),
-                                                            const SizedBox(
-                                                              height: 4.0,
-                                                            ),
-                                                            _buildStatusBadge(
-                                                              token["status"] ??
-                                                                  '',
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ],
+                                                    Text("  ===>  "),
+                                                    Text(
+                                                      "${token['to_amount'] ?? '0'}  ${token['to_network_short_name'] ?? ''}",
                                                     ),
                                                   ],
                                                 ),
-                                              ),
-                                            ],
+                                              ] 
+                                            ),
                                           ),
                                         ),
                                       ],

@@ -236,11 +236,13 @@ class AccountRewardProvider extends InSoBlokViewModel {
             );
             // await transferService.addTransfer(transfer: model);
             
-            String txHash = await _web3service.transfer("insoblok", cryptoService.privateKey!.address, inSoValue);
-            logger.d("Transaction has is $txHash");
-            if(txHash.isEmpty) {
-              setError("Failed to convert your XP.");
-            }
+            // String txHash = await _web3service.transfer("insoblok", cryptoService.privateKey!.address, inSoValue);
+            final result = await _web3service.getINSOByXP(xpValue ?? 0, inSoValue, cryptoService.privateKey!.address.hex);
+
+            logger.d("Transaction has is $result");
+            // if(txHash.isEmpty) {
+            //   setError("Failed to convert your XP.");
+            // }
           }
         } catch (e) {
           setError(e);
