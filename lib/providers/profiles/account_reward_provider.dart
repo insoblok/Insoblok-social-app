@@ -223,7 +223,6 @@ class AccountRewardProvider extends InSoBlokViewModel {
         isPossibleConvert) {
       if (isBusy) return;
       clearErrors();
-
       await runBusyFuture(() async {
         try {
           if (AuthHelper.user != null) {
@@ -235,9 +234,9 @@ class AccountRewardProvider extends InSoBlokViewModel {
               from: xpValue ?? 0,
               to: inSoValue,
             );
-            await transferService.addTransfer(transfer: model);
+            // await transferService.addTransfer(transfer: model);
             
-            String txHash = await _web3service.transfer("insoblok", cryptoService.privateKey!.address, inSoValue * pow(10, 18));
+            String txHash = await _web3service.transfer("insoblok", cryptoService.privateKey!.address, inSoValue);
             logger.d("Transaction has is $txHash");
             if(txHash.isEmpty) {
               setError("Failed to convert your XP.");
@@ -317,17 +316,19 @@ class AccountRewardProvider extends InSoBlokViewModel {
     if (isTypingXp) {
       var xp = double.tryParse(xpValue!) ?? 0;
       var rate = 100;
-      // for (XpInSoModel inSoModel
-      //     in (AppSettingHelper.appSettingModel?.xpInso ?? [])) {
-      //   if ((xp >= (inSoModel.min ?? 0)) && (xp < (inSoModel.max ?? 0))) {
-      //     rate = inSoModel.rate ?? 0;
-      //   }
-      // }
+      for (XpInSoModel inSoModel
+          in (AppSettingHelper.appSettingModel?.xpInso ?? [])) {
+        if ((xp >= (inSoModel.min ?? 0)) && (xp < (inSoModel.max ?? 0))) {
+          rate = inSoModel.rate ?? 0;
+        }
+      }
       double insoValue = xp / rate;
       return insoValue;
     } else {
       if (selectXpInSo == null) return 0;
       double insoValue = selectXpInSo!.max! * selectXpInSo!.rate! / 100;
+      if (insoValue == 0.0) insoValue = 1.0;
+      logger.d("insoValues is $insoValue");
       return insoValue;
     }
   }

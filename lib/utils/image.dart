@@ -82,6 +82,14 @@ class AIImages {
   static String icRepost = 'assets/icons/ic_repost.png';
   static String icView = 'assets/icons/ic_view.png';
   static String icGallery = 'assets/icons/ic_photo_gallery.png';
+  static String icFireFlame = 'assets/icons/ic_fire_flame.png';
+  static String icFireHot = 'assets/icons/ic_fire_hot.png';
+  static String icFireNot = 'assets/icons/ic_fire_not.png';
+
+
+  static String icVoteUp = 'assets/icons/ic_up_arrow.png';
+  static String icVoteDown = 'assets/icons/ic_down_arrow.png';
+  
   static String icReactionVideo = 'assets/icons/ic_reaction_video.png';
   static String icReactionImage = 'assets/icons/ic_reaction_image.png';
 
@@ -93,8 +101,8 @@ class AIImages {
   static String icCoinXrp = 'assets/icons/ic_xrp.png';
   static String icCoinInso = 'assets/icons/ic_inso.png';
   static String icCoinEther = 'assets/icons/ic_eth.svg';
-  static String icUserXP = 'assets/icons/ic_xrp.svg';
-  // static String icUserXP = 'assets/icons/ic_xp2.png';
+  //static String icUserXP = 'assets/icons/ic_xrp.svg';
+  static String icUserXP = 'assets/icons/ic_xp2.png';
 
   static String imgEmptyList = 'assets/images/gif_empty_list.gif';
 

@@ -733,9 +733,7 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: InkWell(
-                    onTap: () {
-                      viewModel.goToAddPost();
-                    },
+                    onTap: viewModel.goToAddPost,
                     child: Container(
                       width: 64,
                       height: 64,
@@ -751,10 +749,14 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
                         width: 52,
                         height: 52,
                         decoration: BoxDecoration(
-                          color: Theme.of(context).primaryColor,
+                          gradient: const LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [Colors.red, Colors.purple],
+                          ),
                           borderRadius: BorderRadius.circular(26.0),
                         ),
-                        child: Icon(Icons.add, size: 36, color: AIColors.white),
+                        child: const Icon(Icons.add, size: 36, color: Colors.white),
                       ),
                     ),
                   ),

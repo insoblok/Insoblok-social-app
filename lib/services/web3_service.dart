@@ -479,7 +479,7 @@ class Web3Service with ListenableServiceMixin {
   Future<String> transfer(String chain, EthereumAddress to, double amount) async {
     try {
       final response = await api.postRequest("/evm/transaction/transfer", {
-        "recipient": to.hex,
+        "recipient": to.hex.toString(),
         "amount": amount,
         "chain": chain
       });
