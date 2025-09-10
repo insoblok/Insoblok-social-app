@@ -44,6 +44,7 @@ class AIColors {
   static Color lightPink = Color.fromARGB(255, 236, 131, 170);
   static Color purple = Color(0xFF724DBD);
   static Color lightPurple = Color(0xFFE0C3FC);
+  static Color orange = Color(0xFFFFA500);
   static Color red = Color(0xFFCE395F);
   static Color lightRed = Color.fromARGB(255, 194, 118, 137);
   static Color green = Color(0xFF59BC6C);

@@ -317,13 +317,14 @@ class AccountRewardProvider extends InSoBlokViewModel {
     if (isTypingXp) {
       var xp = double.tryParse(xpValue!) ?? 0;
       var rate = 100;
-      // for (XpInSoModel inSoModel
-      //     in (AppSettingHelper.appSettingModel?.xpInso ?? [])) {
-      //   if ((xp >= (inSoModel.min ?? 0)) && (xp < (inSoModel.max ?? 0))) {
-      //     rate = inSoModel.rate ?? 0;
-      //   }
-      // }
+      for (XpInSoModel inSoModel
+          in (AppSettingHelper.appSettingModel?.xpInso ?? [])) {
+        if ((xp >= (inSoModel.min ?? 0)) && (xp < (inSoModel.max ?? 0))) {
+          rate = inSoModel.rate ?? 0;
+        }
+      }
       double insoValue = xp / rate;
+      logger.d("rate and value is $rate, $insoValue");
       return insoValue;
     } else {
       if (selectXpInSo == null) return 0;

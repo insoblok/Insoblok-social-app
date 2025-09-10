@@ -21,6 +21,31 @@ class AccountXPDashboardView extends ViewModelWidget<AccountProvider> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Row(
+            children: [
+              Text(
+                'RRC Image',
+                style: Theme.of(context).textTheme.labelLarge,
+              ),
+              const Spacer(),
+              Transform.scale(
+                scale: 0.8, // << make it smaller (try 0.7–0.9)
+                alignment: Alignment.centerRight,
+                child: Switch.adaptive(
+                  value: viewModel.isRRCImage,
+                  onChanged: viewModel.setRRCImage,
+                  activeColor: Theme.of(context).primaryColor,
+
+                  // Optional: reduce minimum tap target from 48px
+                  materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                ),
+              ),
+            ],
+          ),
+
+
+          const SizedBox(height: 8),
+          
+          Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(

@@ -7,18 +7,21 @@ class GlobalStore {
   factory GlobalStore() => _i;
 
   // Example global(s)
-  bool isVybeCamEnabled = false;
+  bool isVybeCamEnabled = true;
+  bool isRRCVideoCapture = true;
   String? walletAddress;
 
   Future<void> load() async {
     final sp = await SharedPreferences.getInstance();
     isVybeCamEnabled = sp.getBool('isVybeCamEnabled') ?? false;
+    isRRCVideoCapture = sp.getBool('isRRCVideoCapture') ?? false;
     walletAddress    = sp.getString('walletAddress');
   }
 
   Future<void> save() async {
     final sp = await SharedPreferences.getInstance();
     await sp.setBool('isVybeCamEnabled', isVybeCamEnabled);
+    await sp.setBool('isRRCVideoCapture', isRRCVideoCapture);
     if (walletAddress != null) {
       await sp.setString('walletAddress', walletAddress!);
     } else {

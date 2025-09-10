@@ -291,3 +291,37 @@ class _RoundedUnderlinePainter extends BoxPainter {
     canvas.drawRRect(rrect, paint);
   }
 }
+
+
+class TopSearchBar extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox.expand( // <-- fill the available width & fixed height from parent
+      child: Container(
+        // optional left/right padding to match page gutters
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.secondary.withAlpha(16),
+          borderRadius: BorderRadius.circular(16.0),
+        ),
+        child: Row(
+          children: [
+            AIImage(AIImages.icBottomSearch, width: 14, height: 14),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                'Search for people and groups',
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                  fontSize: 14,
+                  color: AIColors.greyTextColor,
+                  fontWeight: FontWeight.normal,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
