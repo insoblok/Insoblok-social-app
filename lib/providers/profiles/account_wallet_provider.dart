@@ -152,7 +152,9 @@ class AccountWalletProvider extends InSoBlokViewModel {
     switch (index) {
       case 0:
         await Routers.goToWalletSendPage(context);
-        // await onClickSend();
+        break;
+      case 1:
+        await Routers.goToWalletReceivePage(context);
         break;
       case 2:
         await Routers.goToWalletSwapPage(context);

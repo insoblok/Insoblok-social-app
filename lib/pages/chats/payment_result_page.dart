@@ -30,7 +30,7 @@ class PaymentResultPage extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 Padding(
-                  padding: const EdgeInsets.all(24.0),
+                  padding: const EdgeInsets.all(16.0),
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -38,7 +38,7 @@ class PaymentResultPage extends StatelessWidget {
                         children: [
                           Text('Sent ${network["short_name"].toString()}',
                             style: TextStyle(
-                              fontSize: 28,
+                              fontSize: 24,
                               fontWeight: FontWeight.bold
                             )
                           ),
@@ -46,7 +46,7 @@ class PaymentResultPage extends StatelessWidget {
                           Text(
                             "Submitted",
                             style: TextStyle(
-                              fontSize: 20,
+                              fontSize: 18,
                               fontWeight: FontWeight.bold
                             )
                           ),
@@ -61,7 +61,7 @@ class PaymentResultPage extends StatelessWidget {
                               fontSize: 16,
                             ),
                           ),
-                          const SizedBox(height: 28.0),
+                          const SizedBox(height: 20.0),
                           Text(
                             '${DateFormat("EEEE, MMM d, y h:mm a").format(DateTime.now())}',
                             style: TextStyle(

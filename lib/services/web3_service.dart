@@ -358,7 +358,6 @@ class Web3Service with ListenableServiceMixin {
         }
         return tx;
       }).toList();
-      logger.d("Response is $results");
 
       _transactions.value = results;
       notifyListeners();

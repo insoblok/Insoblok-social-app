@@ -6,6 +6,7 @@ import 'package:insoblok/locator.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/routers/router.dart';
 import 'package:insoblok/utils/utils.dart';
+import 'package:insoblok/models/models.dart';
 
 class PaymentConfirmProvider extends InSoBlokViewModel {
   
@@ -44,11 +45,11 @@ class PaymentConfirmProvider extends InSoBlokViewModel {
       return;
     }   
     clearErrors();
+    Map<String, dynamic> network = kWalletTokenList.firstWhere((tk) => tk["chain"] == _web3Service.paymentNetwork);
     
     await runBusyFuture(() async {
       try {
         setBusy(true);
-        Map<String, dynamic> network = kWalletTokenList.firstWhere((tk) => tk["chain"] == _web3Service.paymentNetwork);
         final result = await _web3Service.sendEvmToken(_web3Service.paymentToAddress, _web3Service.paymentAmount, network, cryptoService.privateKey);
         if(result.isEmpty) setError("Failed to send token due to internal server error.");
       } catch (e) {
@@ -63,6 +64,8 @@ class PaymentConfirmProvider extends InSoBlokViewModel {
       AIHelpers.showToast(msg: modelError.toString());
       return;
     }
+    final CoinModel coin = CoinModel(icon: network["icon"], type: "paid", unit: network["short_name"], amount: _web3Service.paymentAmount.toString());
+    messageService.sendPaidMessage(chatRoomId: _web3Service.chatRoom.id ?? "", coin: coin);
     Routers.goToPaymentResultPage(context);
   }
 }

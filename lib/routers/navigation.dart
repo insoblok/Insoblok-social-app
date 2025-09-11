@@ -6,6 +6,7 @@ import 'package:insoblok/models/models.dart';
 import 'package:insoblok/pages/bases/reaction_video_detail_page.dart';
 import 'package:insoblok/pages/pages.dart';
 import 'package:insoblok/pages/profiles/tastescore_page.dart';
+import 'package:insoblok/pages/profiles/wallet_receive_page.dart';
 import 'package:insoblok/pages/profiles/wallet_swap_page.dart';
 import 'package:insoblok/pages/profiles/wallet_send_page.dart';
 import 'package:insoblok/providers/providers.dart';
@@ -31,6 +32,7 @@ const kRouterAccountReward = '/account-reward';
 const kRouterRewardDetail = '/reward-detail';
 const kRouterWalletSwap = '/wallet-swap';
 const kRouterWalletSend = '/wallet-send';
+const kRouterWalletReceive = '/wallet-receive';
 
 const kRouterCreateRoom = '/create-room';
 const kRouterMessage = '/message';
@@ -165,6 +167,9 @@ class Navigation {
     // * WalletSendPage
     initRoute(kRouterWalletSend, (props) => WalletSendPage());
     
+    // * WalletReceivePage
+    initRoute(kRouterWalletReceive, (props) => WalletReceivePage());
+
     // * CreateRoomPage
     initRoute(kRouterCreateRoom, (props) => CreateRoomPage());
 
