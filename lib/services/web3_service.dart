@@ -345,6 +345,8 @@ class Web3Service with ListenableServiceMixin {
         else {
           final from_network = kWalletTokenList.firstWhere((element) => element["chain"] == tx["from_token_network"]);
           final to_network = kWalletTokenList.firstWhere((element) => element["chain"] == tx["to_token_network"]);
+          tx["from_network"] = from_network["chain"];
+          tx["to_network"] = to_network["chain"];
           tx["from_network_display_name"] = from_network["displayName"];
           tx["to_network_display_name"] = to_network["displayName"];
           tx["from_network_icon"] = from_network["icon"];
@@ -356,6 +358,7 @@ class Web3Service with ListenableServiceMixin {
         }
         return tx;
       }).toList();
+
       _transactions.value = results;
       notifyListeners();
     }

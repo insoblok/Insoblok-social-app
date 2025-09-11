@@ -111,6 +111,10 @@ class Routers {
     return _pushToRoute(context, kRouterWalletSend, null);
   }
 
+  static dynamic goToWalletReceivePage(BuildContext context) {
+    return _pushToRoute(context, kRouterWalletReceive, null);
+  }
+
   static dynamic goToCreateRoomPage(BuildContext context) {
     return _pushToRoute(context, kRouterCreateRoom, null);
   }

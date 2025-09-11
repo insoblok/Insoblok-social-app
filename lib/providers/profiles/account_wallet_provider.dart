@@ -61,7 +61,7 @@ class AccountWalletProvider extends InSoBlokViewModel {
         }
       });
     }).toList() ?? [];
-    logger.d("Filtered transactions are ${filtered.length}");
+    logger.d("Filtered transactions are ${transactions!.length}, ${filtered.length}");
     return filtered;
   }
 
@@ -152,7 +152,9 @@ class AccountWalletProvider extends InSoBlokViewModel {
     switch (index) {
       case 0:
         await Routers.goToWalletSendPage(context);
-        // await onClickSend();
+        break;
+      case 1:
+        await Routers.goToWalletReceivePage(context);
         break;
       case 2:
         await Routers.goToWalletSwapPage(context);

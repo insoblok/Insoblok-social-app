@@ -31,6 +31,7 @@ class MessagePage extends StatelessWidget {
       viewModelBuilder: () => MessageProvider(),
       onViewModelReady: (viewModel) => viewModel.init(context, data: data),
       builder: (context, viewModel, _) {
+
         var bottomInset = MediaQuery.of(context).viewInsets.bottom;
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (bottomInset > 0) {
@@ -113,23 +114,24 @@ class MessagePage extends StatelessWidget {
             child: Column(
               children: [
                 Expanded(
-                  child: ListView.separated(
-                    controller: viewModel.scrollController,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 12.0,
-                      vertical: 24.0,
+                  child: viewModel.messages.length == 0 ? Center(child: Text("No messages yet")) : 
+                    ListView.separated(
+                      controller: viewModel.scrollController,
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12.0,
+                        vertical: 24.0,
+                      ),
+                      itemBuilder: (context, index) {
+                        var message = viewModel.messages[index];
+                        return message.item(
+                          context,
+                          chatUser: viewModel.chatUser,
+                        );
+                      },
+                      separatorBuilder:
+                          (context, index) => const SizedBox(height: 8.0),
+                      itemCount: viewModel.messages.length,
                     ),
-                    itemBuilder: (context, index) {
-                      var message = viewModel.messages[index];
-                      return message.item(
-                        context,
-                        chatUser: viewModel.chatUser,
-                      );
-                    },
-                    separatorBuilder:
-                        (context, index) => const SizedBox(height: 8.0),
-                    itemCount: viewModel.messages.length,
-                  ),
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,

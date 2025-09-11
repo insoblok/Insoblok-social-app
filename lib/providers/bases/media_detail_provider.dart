@@ -350,6 +350,15 @@ class MediaDetailProvider extends InSoBlokViewModel {
 
         var path = await _makeRemixImage();
 
+        logger.d("resultRemixImageUrl path: $path");
+
+        // resultRemixImageUrl = await storyService.uploadResult(
+        //   path!,
+        //   folderName: 'remix',
+        //   postCategory: 'lookbook',
+        //   storyID: null,
+        // );
+
         MediaStoryModel model = await CloudinaryCDNService.uploadImageToCDN(XFile(path!));
         resultRemixImageUrl = model.link;
 

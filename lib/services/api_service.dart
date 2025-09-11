@@ -38,7 +38,6 @@ class ApiService {
       );
 
       if (response.statusCode == 200) {
-        logger.d("response is ${response.body}");
         return jsonDecode(response.body);
       } else {
         throw Exception('POST failed: ${response.statusCode} - ${response.body}');

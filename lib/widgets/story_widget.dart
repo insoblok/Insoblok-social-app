@@ -311,7 +311,7 @@ class StoryListCell extends StatelessWidget {
                 child: Padding(
                   padding: EdgeInsets.only(
                     left: 10,
-                    bottom: (marginBottom ?? 0) + 50 + MediaQuery.of(context).padding.bottom,
+                    bottom: 150,
                   ),
                   child: AnimatedSwitcher(
                     duration: const Duration(milliseconds: 250),

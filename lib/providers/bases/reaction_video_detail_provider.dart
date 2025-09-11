@@ -9,7 +9,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/utils/utils.dart';
-import 'package:media_kit/media_kit.dart';
 
 class ReactionVideoDetailProvider extends InSoBlokViewModel {
   late BuildContext _context;
@@ -98,9 +97,6 @@ class ReactionVideoDetailProvider extends InSoBlokViewModel {
     this.storyID = storyID;
     this.videoPath = videoPath;
     enableEdit = editable;
-
-    WidgetsFlutterBinding.ensureInitialized();
-    MediaKit.ensureInitialized();
   }
 
   Future<void> detectFace(String link) async {
