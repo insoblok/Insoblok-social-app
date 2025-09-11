@@ -384,7 +384,7 @@ class _ReactionVideoDetailPageState extends State<ReactionVideoDetailPage> {
 
               const CustomCircleBackButton(),
 
-              if (vm.isBusy || _busy)
+              if (vm.isBusy)
                 Container(
                   color: Colors.black26,
                   child: const Center(child: Loader(size: 60)),

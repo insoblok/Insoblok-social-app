@@ -45,358 +45,349 @@ class StoryListCell extends StatelessWidget {
       builder: (context, viewModel, _) {
         return InkWell(
           onTap: () => {viewModel.startRRC()},
-          child: Stack(
-            children: [
-              // ======== MEDIA ========
-              if ((story.medias ?? []).isNotEmpty)
-                Container(
-                  margin: const EdgeInsets.only(bottom: 100),  // bottom margin (outside)
-                  padding: const EdgeInsets.only(bottom: 24), // bottom padding (inside)
-                  child : PageView.builder(
-                    itemCount: (viewModel.story.medias ?? []).length,
-                    itemBuilder: (context, index) {
-                      if (viewModel.videoStoryPath == null) {
-                        return StoryMediaView(
-                          media: ((viewModel.resultFaceUrl?.isNotEmpty ?? false) &&
-                                  viewModel.showFaceDialog)
-                              ? MediaStoryModel(
-                                  link: viewModel.resultFaceUrl,
-                                  type: 'image',
-                                  width: (story.medias ?? [])[viewModel.pageIndex].width,
-                                  height: (story.medias ?? [])[viewModel.pageIndex].height,
-                                )
-                              : (story.medias ?? [])[viewModel.pageIndex],
-                        );
-                      } else {
-                        return _CircularVideoPlayer(videoPath: viewModel.videoStoryPath!);
-                      }
-                    },
-                    onPageChanged: (value) => viewModel.pageIndex = value,
+          child: Container(
+            padding: const EdgeInsets.all(0.0),
+            child: Stack(
+              children: [
+                // ======== MEDIA ========
+                if ((story.medias ?? []).isNotEmpty)
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 40),  // bottom margin (outside)
+                    padding: const EdgeInsets.only(bottom: 24), // bottom padding (inside)
+                    child : PageView.builder(
+                      itemCount: (viewModel.story.medias ?? []).length,
+                      itemBuilder: (context, index) {
+                        if (viewModel.videoStoryPath == null) {
+                          return StoryMediaView(
+                            media: ((viewModel.resultFaceUrl?.isNotEmpty ?? false) &&
+                                    viewModel.showFaceDialog)
+                                ? MediaStoryModel(
+                                    link: viewModel.resultFaceUrl,
+                                    type: 'image',
+                                    width: (story.medias ?? [])[viewModel.pageIndex].width,
+                                    height: (story.medias ?? [])[viewModel.pageIndex].height,
+                                  )
+                                : (story.medias ?? [])[viewModel.pageIndex],
+                          );
+                        } else {
+                          return _CircularVideoPlayer(videoPath: viewModel.videoStoryPath!);
+                        }
+                      },
+                      onPageChanged: (value) => viewModel.pageIndex = value,
+                    )
                   )
-                )
-              else
-                Align(
-                  alignment: Alignment.center,
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 124.0),
-                    child: AIHelpers.htmlRender(
-                      story.text,
-                      fontSize: FontSize(32.0),
-                      textAlign: TextAlign.center,
+                else
+                  Align(
+                    alignment: Alignment.center,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 124.0),
+                      child: AIHelpers.htmlRender(
+                        story.text,
+                        fontSize: FontSize(32.0),
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                   ),
-                ),
-
-              // ======== BOTTOM GRADIENT OVERLAY (text/info only) ========
-              Column(
-                children: [
-                  // const Spacer(flex: 2),
-                  Expanded(
-                    child: Container(
-                      alignment: Alignment.bottomCenter,
-                      padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 80.0),
-                      decoration: const BoxDecoration(
-                        gradient: LinearGradient(
-                          begin: Alignment.topCenter,
-                          end: Alignment.bottomCenter,
-                          colors: [Color(0x00000000), Color(0xCF000000)],
+            
+                // ======== BOTTOM GRADIENT OVERLAY (text/info only) ========
+                Column(
+                  children: [
+                    // const Spacer(flex: 2),
+                    Expanded(
+                      child: Container(
+                        alignment: Alignment.bottomCenter,
+                        
+                        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 80.0),
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: [Color(0x00000000), Color(0xCF000000)],
+                          ),
                         ),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisSize: MainAxisSize.min,
-                        spacing: 1.0,
-                        children: [
-                          Container(
-                            margin: const EdgeInsets.only(left: 1.0, bottom: 20.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              // spacing: 12.0,
-                              children: [
-                                if (viewModel.story.category == 'vote') const StoryYayNayWidget(),
-                                Container(
-                                  margin: EdgeInsets.only(bottom: 0),
-                                  child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      // Avatar (your existing widget)
-                                      SizedBox(
-                                        width: kStoryAvatarSize * 0.8,
-                                        height: kStoryAvatarSize * 0.8,
-                                        child: Stack(
-                                          children: [
-                                            InkWell(
-                                              onTap: viewModel.onTapUserAvatar,
-                                              child: AIAvatarImage(
-                                                key: GlobalKey(debugLabel: 'story-${story.id}'),
-                                                viewModel.owner?.avatar,
-                                                width: kStoryAvatarSize * 0.8,
-                                                height: kStoryAvatarSize * 0.8,
-                                                fullname: viewModel.owner?.fullName ?? 'Test',
-                                                textSize: 24,
-                                                isBorder: true,
-                                                borderWidth: 2,
-                                                borderRadius: kStoryAvatarSize / 2,
-                                              ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            Container(
+                              margin: const EdgeInsets.only(left: 0.0, bottom: 20.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  if(viewModel.showFaceDialog)
+                                  Container(
+                                    child: Padding(
+                                      padding: EdgeInsets.only(left: 00, bottom: 0),
+                                      child: ZoMultiColorBorder(
+                                        // the ring stays mounted; only its child swaps
+                                        colors: const [Colors.orange, Colors.white, Colors.green, Colors.indigo, Colors.pink],
+                                        strokeWidth: 3,
+                                        borderRadius: 75, // if your widget expects a double radius
+                                        child: Padding(
+                                          // 0.1 px is okay but effectively invisible; keep or set to 1.0
+                                          padding: const EdgeInsets.all(0.1),
+                                          child: Container(
+                                            width: 48,
+                                            height: 48,
+                                            alignment: Alignment.center,
+                                            decoration: const BoxDecoration(
+                                              color: Colors.transparent,
+                                              shape: BoxShape.circle,
                                             ),
-                                            // Align(
-                                            //   alignment: Alignment.bottomCenter,
-                                            //   child: Container(
-                                            //     width: 16,
-                                            //     height: 16,
-                                            //     decoration: BoxDecoration(
-                                            //       gradient: const LinearGradient(
-                                            //         begin: Alignment.topLeft,
-                                            //         end: Alignment.bottomRight,
-                                            //         colors: [Colors.white, Colors.grey],
-                                            //       ),
-                                            //       borderRadius: BorderRadius.circular(8.0),
-                                            //     ),
-                                            //     child: Icon(Icons.add, size: 12, color: AIColors.white),
-                                            //   ),
-                                            // ),
-                                          ],
+                                            // Only the inside content animates
+                                            child: AnimatedSwitcher(
+                                              duration: const Duration(milliseconds: 250),
+                                              switchInCurve: Curves.easeOut,
+                                              switchOutCurve: Curves.easeIn,
+                                              layoutBuilder: (currentChild, previousChildren) {
+                                                // keeps size stable while animating
+                                                return Stack(
+                                                  alignment: Alignment.center,
+                                                  children: <Widget>[
+                                                    ...previousChildren,
+                                                    if (currentChild != null) currentChild,
+                                                  ],
+                                                );
+                                              },
+                                              child: viewModel.isCapturingTimer
+                                                  ? _ReadyPreview(
+                                                      key: const ValueKey('state-ready'),
+                                                      isVideo: viewModel.isVideoReaction,
+                                                      videoPath: viewModel.videoPath,
+                                                      hasFace: viewModel.face != null,
+                                                    )
+                                                  : _Counting(
+                                                      key: const ValueKey('state-count'),
+                                                      isVideo: viewModel.isVideoReaction,
+                                                      onStartVideo: viewModel.captureReactionVideo,
+                                                      onStartImage: viewModel.captureReactionImage,
+                                                      onComplete: () {
+                                                        // Flip provider flag AFTER this frame; avoids "notify during build"
+                                                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                                                          viewModel.completeTimer(); // sets isCapturingTimer = true + notifyListeners()
+                                                        });
+                                                      },
+                                                    ),
+                                            ),
+                                          ),
                                         ),
                                       ),
-
-                                      const SizedBox(width: 10),
-
-                                      // Right side: name/timestamp + (optional) progress
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            // First row: Name + (optional "Following" pill) + time
-                                            Wrap(
-                                              crossAxisAlignment: WrapCrossAlignment.center,
-                                              alignment: WrapAlignment.start,
-                                              spacing: 8,
-                                              runSpacing: 4,
-                                              children: [
-                                                Text(
-                                                  viewModel.owner?.fullName ?? '---',
-                                                  style: Theme.of(context).textTheme.headlineMedium,
+                                    ),
+                                  ),
+                
+                                  if (viewModel.story.category == 'vote') const StoryYayNayWidget(),
+                                  Container(
+                                    margin: EdgeInsets.only(bottom: 0),
+                                    child: Row(
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      children: [
+                                        // Avatar (your existing widget)
+                                        SizedBox(
+                                          width: kStoryAvatarSize * 0.8,
+                                          height: kStoryAvatarSize * 0.8,
+                                          child: Stack(
+                                            children: [
+                                              InkWell(
+                                                onTap: viewModel.onTapUserAvatar,
+                                                child: AIAvatarImage(
+                                                  key: GlobalKey(debugLabel: 'story-${story.id}'),
+                                                  viewModel.owner?.avatar,
+                                                  width: kStoryAvatarSize * 0.8,
+                                                  height: kStoryAvatarSize * 0.8,
+                                                  fullname: viewModel.owner?.fullName ?? 'Test',
+                                                  textSize: 24,
+                                                  isBorder: true,
+                                                  borderWidth: 2,
+                                                  borderRadius: kStoryAvatarSize / 2,
                                                 ),
-
-                                                
-                                                Text(
-                                                  '· ${viewModel.story.timestamp?.timeago}',
-                                                  style: Theme.of(context).textTheme.headlineMedium,
-                                                ),
-                                              ],
-                                            ),
-
-                                            const SizedBox(height: 6),
-
-                                            // Second line: Progress (with a small avatar dot like the screenshot)
-                                            if (viewModel.story.category == 'vote')
-                                              Row(
-                                                crossAxisAlignment: CrossAxisAlignment.center,
+                                              ),
+                                              // Align(
+                                              //   alignment: Alignment.bottomCenter,
+                                              //   child: Container(
+                                              //     width: 16,
+                                              //     height: 16,
+                                              //     decoration: BoxDecoration(
+                                              //       gradient: const LinearGradient(
+                                              //         begin: Alignment.topLeft,
+                                              //         end: Alignment.bottomRight,
+                                              //         colors: [Colors.white, Colors.grey],
+                                              //       ),
+                                              //       borderRadius: BorderRadius.circular(8.0),
+                                              //     ),
+                                              //     child: Icon(Icons.add, size: 12, color: AIColors.white),
+                                              //   ),
+                                              // ),
+                                            ],
+                                          ),
+                                        ),
+            
+                                        const SizedBox(width: 10),
+            
+                                        // Right side: name/timestamp + (optional) progress
+                                        Expanded(
+                                          child: Column(
+                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              // First row: Name + (optional "Following" pill) + time
+                                              Wrap(
+                                                crossAxisAlignment: WrapCrossAlignment.center,
+                                                alignment: WrapAlignment.start,
+                                                spacing: 8,
+                                                runSpacing: 4,
                                                 children: [
-                                                  // tiny avatar beside progress line
-                                                  Expanded(
-                                                    child: Text(
-                                                      'Vybe Virtual Try-On + progress (${viewModel.story.votes?.length ?? 0} / 5 Looks Today)',
-                                                      style: const TextStyle(fontSize: 10.0, fontWeight: FontWeight.bold),
-                                                      maxLines: 2,
-                                                      overflow: TextOverflow.ellipsis,
-                                                    ),
+                                                  Text(
+                                                    viewModel.owner?.fullName ?? '---',
+                                                    style: Theme.of(context).textTheme.headlineSmall,
                                                   ),
-                                                  const SizedBox(width: 8),
-                                                  Container(
-                                                    padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
-                                                    decoration: BoxDecoration(
-                                                      color: Theme.of(context).colorScheme.secondary.withAlpha(16),
-                                                      borderRadius: BorderRadius.circular(16.0),
-                                                    ),
+            
+                                                  
+                                                  Text(
+                                                    '· ${viewModel.story.timestamp?.timeago}',
+                                                    style: Theme.of(context).textTheme.headlineSmall,
                                                   ),
                                                 ],
                                               ),
-                                          ],
+            
+                                              const SizedBox(height: 6),
+            
+                                              // Second line: Progress (with a small avatar dot like the screenshot)
+                                              if (viewModel.story.category == 'vote')
+                                                Row(
+                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                  children: [
+                                                    // tiny avatar beside progress line
+                                                    Expanded(
+                                                      child: Text(
+                                                        'Vybe Virtual Try-On + progress (${viewModel.story.votes?.length ?? 0} / 5 Looks Today)',
+                                                        style: const TextStyle(fontSize: 10.0, fontWeight: FontWeight.bold),
+                                                        maxLines: 2,
+                                                        overflow: TextOverflow.ellipsis,
+                                                      ),
+                                                    ),
+                                                    const SizedBox(width: 8),
+                                                    Container(
+                                                      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
+                                                      decoration: BoxDecoration(
+                                                        color: Theme.of(context).colorScheme.secondary.withAlpha(16),
+                                                        borderRadius: BorderRadius.circular(16.0),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                            ],
+                                          ),
                                         ),
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              ],
+                                      ],
+                                    ),
+                                  )
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+            
+                // ======== RIGHT ACTIONS ========
+                Align(
+                  alignment: Alignment.bottomRight,
+                  child: Container(
+                    margin: EdgeInsets.only(
+                      right: 8.0,
+                      bottom: marginBottom != null ? marginBottom! + 5 : 5,
+                    ),
+                    padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 0.0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      spacing: 12.0,
+                      children: [
+                        
+                        StoryActionButton(
+                          src: Padding(
+                            padding: const EdgeInsets.only(bottom: 6), // <-- gap between icon & count
+                            child: AIImage(
+                              AIImages.icView,
+                              color: Theme.of(context).colorScheme.secondary,
+                              width: kStoryAvatarSize * 0.46,
                             ),
                           ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-
-              // ======== RIGHT ACTIONS ========
-              Align(
-                alignment: Alignment.bottomRight,
-                child: Container(
-                  margin: EdgeInsets.only(
-                    right: 8.0,
-                    bottom: marginBottom != null ? marginBottom! + 5 : 5,
-                  ),
-                  padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 16.0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    spacing: 12.0,
-                    children: [
-                      
-                      StoryActionButton(
-                        src: Padding(
-                          padding: const EdgeInsets.only(bottom: 6), // <-- gap between icon & count
-                          child: AIImage(
-                            AIImages.icView,
+                          label: '${(viewModel.story.views ?? []).length}',
+                        ),
+                        StoryActionButton(
+                          src: AIImage(
+                            AIImages.icComment,
                             color: Theme.of(context).colorScheme.secondary,
-                            width: kStoryAvatarSize * 0.46,
+                            width: kStoryAvatarSize * 0.5,
                           ),
+                          label: '${(viewModel.story.comments ?? []).length}',
+                          onTap: () => viewModel.showCommentDialog(),
                         ),
-                        label: '${(viewModel.story.views ?? []).length}',
-                      ),
-                      StoryActionButton(
-                        src: AIImage(
-                          AIImages.icComment,
-                          color: Theme.of(context).colorScheme.secondary,
-                          width: kStoryAvatarSize * 0.5,
+                        StoryActionButton(
+                          src: AIImage(
+                            AIImages.icShare,
+                            color: Theme.of(context).colorScheme.secondary,
+                            width: kStoryAvatarSize * 0.4,
+                          ),
+                          label: '',
+                          // onTap: () => AIHelpers.shareStoryToLookbook(context, story: story),
+                          onTap: () => viewModel.repost(),
                         ),
-                        label: '${(viewModel.story.comments ?? []).length}',
-                        onTap: () => viewModel.showCommentDialog(),
-                      ),
-                      StoryActionButton(
-                        src: AIImage(
-                          AIImages.icShare,
-                          color: Theme.of(context).colorScheme.secondary,
-                          width: kStoryAvatarSize * 0.4,
+                        StoryActionButton(
+                          src: AIImage(
+                            AIImages.icGallery,
+                            color: Theme.of(context).colorScheme.secondary,
+                            width: kStoryAvatarSize * 0.5,
+                          ),
+                          onTap: () => viewModel.showReactions(),
                         ),
-                        label: '',
-                        // onTap: () => AIHelpers.shareStoryToLookbook(context, story: story),
-                        onTap: () => viewModel.repost(),
-                      ),
-                      StoryActionButton(
-                        src: AIImage(
-                          AIImages.icGallery,
-                          color: Theme.of(context).colorScheme.secondary,
-                          width: kStoryAvatarSize * 0.5,
+            
+                        StoryActionButton(
+                          src: AIImage(
+                            AIImages.icVoteUp,
+                            color: AIColors.orange,
+                            width: kStoryAvatarSize * 0.5,
+                          ),
+                          label: '${(viewModel.story.cntNay)}',
                         ),
-                        onTap: () => viewModel.showReactions(),
-                      ),
-
-                      StoryActionButton(
-                        src: AIImage(
-                          AIImages.icVoteUp,
-                          color: AIColors.orange,
-                          width: kStoryAvatarSize * 0.5,
+            
+                        StoryActionButton(
+                          src: AIImage(
+                            AIImages.icVoteDown,
+                            color: Colors.blue,
+                            width: kStoryAvatarSize * 0.5,
+                          ),
+                          label: '${(viewModel.story.cntYay)}',
                         ),
-                        label: '${(viewModel.story.cntNay)}',
-                      ),
-
-                      StoryActionButton(
-                        src: AIImage(
-                          AIImages.icVoteDown,
-                          color: Colors.blue,
-                          width: kStoryAvatarSize * 0.5,
-                        ),
-                        label: '${(viewModel.story.cntYay)}',
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-
-              // ======== BOTTOM-LEFT: SLIDER ========
-              if(viewModel.showFaceDialog)
-              Align(
-                alignment: Alignment.bottomLeft,
-                child: Padding(
-                  padding: EdgeInsets.only(
-                    left: 10,
-                    bottom: 150,
-                  ),
-                  child: AnimatedSwitcher(
-                    duration: const Duration(milliseconds: 250),
-                    switchInCurve: Curves.easeOut,
-                    switchOutCurve: Curves.easeIn,
-                    child: ZoMultiColorBorder(
-                      key: const ValueKey('zo-border-wrapper'),
-                      colors: [
-                        Colors.orange,
-                        Colors.white,
-                        Colors.green,
-                        Colors.indigo,
-                        Colors.pink,
                       ],
-                      strokeWidth: 3,
-                      borderRadius: 75,
-                      child: Padding(
-                        padding: const EdgeInsets.all(0.1),
-                        child: Container(
-                          width: 48,
-                          height: 48,
-                          alignment: Alignment.center,
-                          decoration: BoxDecoration(
-                            color: Colors.transparent,
-                            shape: BoxShape.circle,
-                          ),
-                          child: SizedBox(
-
-                          child: (viewModel.isCapturingTimer == false)
-                            ? MiniCountdownTimer(
-                                size: 40,
-                                duration: 4,
-                                onStart: (viewModel.isVideoReaction
-                                    ? viewModel.captureReactionVideo
-                                    : viewModel.captureReactionImage),
-                                onComplete: () {
-                                  viewModel.isCapturingTimer = true;
-                                  // if you need UI update here: viewModel.notifyListeners();
-                                },
-                              )
-                            : (viewModel.isVideoReaction)
-                                ? _SliderSpotPreview(
-                                    key: const ValueKey('preview-video'),
-                                    width: 35,
-                                    height: 45,
-                                    child: (viewModel.videoPath != null)
-                                        ? const CommentFaceVideoModalView(marginBottom: 0)
-                                        : const Center(child: Loader(size: 40.0)),
-                                  )
-                                : _SliderSpotPreview(
-                                    key: const ValueKey('preview-face'),
-                                    width: 35,
-                                    height: 45,
-                                    child: (viewModel.face != null)
-                                        ? const CommentFaceModalView(marginBottom: 0)
-                                        : const Center(child: Loader(size: 40.0)),
-                                  ),
-                          ),
-                        ),
+                    ),
+                  ),
+                ),
+            
+                // ======== BOTTOM-LEFT: SLIDER ========
+            
+                // ======== PAGE INDICATOR ========
+                if ((viewModel.story.medias ?? []).length > 1)
+                  Positioned(
+                    left: 20.0,
+                    top: MediaQuery.of(context).padding.top + 90.0,
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.onSecondary.withAlpha(64),
+                        borderRadius: BorderRadius.circular(24.0),
+                      ),
+                      child: Text(
+                        '${viewModel.pageIndex + 1} / ${(viewModel.story.medias ?? []).length}',
+                        style: Theme.of(context).textTheme.titleSmall,
                       ),
                     ),
                   ),
-                ),
-              ),
-
-              // ======== PAGE INDICATOR ========
-              if ((viewModel.story.medias ?? []).length > 1)
-                Positioned(
-                  left: 20.0,
-                  top: MediaQuery.of(context).padding.top + 90.0,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
-                    decoration: BoxDecoration(
-                      color: Theme.of(context).colorScheme.onSecondary.withAlpha(64),
-                      borderRadius: BorderRadius.circular(24.0),
-                    ),
-                    child: Text(
-                      '${viewModel.pageIndex + 1} / ${(viewModel.story.medias ?? []).length}',
-                      style: Theme.of(context).textTheme.titleSmall,
-                    ),
-                  ),
-                ),
-
-              if (viewModel.isBusy) const Center(child: Loader(size: 60.0)),
-            ],
+            
+                if (viewModel.isBusy) const Center(child: Loader(size: 60.0)),
+              ],
+            ),
           ),
         );
       },
@@ -657,11 +648,11 @@ class StoryYayNayWidget extends ViewModelWidget<StoryProvider> {
   Widget build(BuildContext context, viewModel) {
 
     final radius = 24.0;
-    
+    logger.d("all votes are ${viewModel.story.votes}, ${viewModel.story.votes?.length}");
+    logger.d("current vote status is ${viewModel.story.isVote()}");
     return Container(
       child: Column(
         children: [
-          const SizedBox(height: 40.0),
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
@@ -673,8 +664,6 @@ class StoryYayNayWidget extends ViewModelWidget<StoryProvider> {
                     colors: [Colors.orange, Colors.deepOrangeAccent],
                   ),
                   borderRadius: BorderRadius.circular(radius),
-      
-                  
                   boxShadow: 
                   viewModel.story.isVote() == true
                   ? [
@@ -692,12 +681,16 @@ class StoryYayNayWidget extends ViewModelWidget<StoryProvider> {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
                     child: VoteFloatingButton(
-                      onTap: () => viewModel.updateVote(false),
+                      onTap: () {
+                        if(viewModel.story.isVote() != true) {
+                          viewModel.updateVote(true);
+                        }
+                      },
                       text: 'Hot',
                       textColor: AIColors.white,
                       src: AIImages.icFireHot,
-                      imgSize: 30,
-                      backgroundColor: Colors.transparent,
+                      imgSize: 24,
+                      backgroundColor: viewModel.story.isVote() == true ? Colors.orange : Colors.transparent,
                       borderColor: AIColors.orange
                     ),
                   ),
@@ -707,17 +700,11 @@ class StoryYayNayWidget extends ViewModelWidget<StoryProvider> {
               const SizedBox(width: 30),
               Ink(
                 decoration: BoxDecoration(
-                  gradient: const LinearGradient(
-                    begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,          
-                    colors: [Colors.blue, Colors.white],
-                  ),
                   borderRadius: BorderRadius.circular(radius),
-                  
-                  boxShadow: viewModel.story.isVote() == true 
+                  boxShadow: viewModel.story.isVote() == false 
                   ? [
                     BoxShadow(
-                      color: Colors.blue.withOpacity(0.5), 
+                      color: Colors.blue, 
                       blurRadius: 10,                       
                       spreadRadius: 5,                      
                       offset: const Offset(0, 3),           
@@ -730,12 +717,16 @@ class StoryYayNayWidget extends ViewModelWidget<StoryProvider> {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
                     child: VoteFloatingButton(
-                      onTap: () => viewModel.updateVote(true),
+                      onTap: () {
+                        if(viewModel.story.isVote() != false) {
+                          viewModel.updateVote(false);
+                        }
+                      },
                       text: 'Not',
                       textColor: AIColors.white,
                       src: AIImages.icFireNot,
-                      imgSize: 30,
-                      backgroundColor: Colors.transparent,
+                      imgSize: 24,
+                      backgroundColor: viewModel.story.isVote() == false ? AIColors.lightBlue : Colors.transparent,
                       borderColor: AIColors.lightBlue
                     ),
                   ),
@@ -743,7 +734,7 @@ class StoryYayNayWidget extends ViewModelWidget<StoryProvider> {
               ),
             ],
           ),
-          const SizedBox(height: 60.0),
+          const SizedBox(height: 15.0),
         ],
       ),
     );
@@ -1850,6 +1841,152 @@ class _MiniCountdownTimerState extends State<MiniCountdownTimer> {
         onStart: () => widget.onStart?.call(),
         onChange: (ts) => widget.onChange?.call(ts),
         onComplete: () => widget.onComplete?.call(),
+      ),
+    );
+  }
+}
+
+class _Counting extends StatefulWidget {
+  const _Counting({
+    super.key,
+    required this.isVideo,
+    required this.onStartVideo,
+    required this.onStartImage,
+    required this.onComplete,
+    this.size = 40,      // optional: visual size of the circle
+    this.startFrom = 3,  // optional: start number (defaults to 3)
+  });
+
+  final bool isVideo;
+  final Future<void> Function() onStartVideo;
+  final Future<void> Function() onStartImage;
+  final VoidCallback onComplete;
+
+  final double size;
+  final int startFrom;
+
+  @override
+  State<_Counting> createState() => _CountingState();
+}
+
+class _CountingState extends State<_Counting> {
+  late int _left;              // 3 -> 2 -> 1
+  Timer? _timer;
+
+  @override
+  void initState() {
+    super.initState();
+    _left = widget.startFrom <= 0 ? 1 : widget.startFrom;
+
+    // Tick every 1 second to show 3,2,1.
+    _timer = Timer.periodic(const Duration(seconds: 1), (t) {
+      if (!mounted) return;
+
+      if (_left > 1) {
+        setState(() => _left--); // 3->2, 2->1
+        return;
+      }
+
+      // _left == 1 just finished its full second on screen.
+      t.cancel();
+
+      // Start the capture AFTER the countdown.
+      // Fire-and-forget so UI can swap immediately.
+      unawaited(_startCapture());
+
+      // Let the final "1" paint, then notify completion.
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted) widget.onComplete();
+      });
+    });
+  }
+
+  Future<void> _startCapture() async {
+    try {
+      if (widget.isVideo) {
+        await widget.onStartVideo();
+      } else {
+        await widget.onStartImage();
+      }
+    } catch (_) {
+      // swallow errors; the caller can show a fallback if needed
+    }
+  }
+
+  @override
+  void dispose() {
+    _timer?.cancel();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: widget.size,
+      height: widget.size,
+      child: DecoratedBox(
+        decoration: const BoxDecoration(
+          shape: BoxShape.circle,
+          color: Colors.black54,
+        ),
+        child: Center(
+          child: Text(
+            '$_left',
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w800,
+              fontSize: 14,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+// Tiny helper to silence "unawaited" lint; or use package:pedantic if you have it.
+void unawaited(Future<void> future) {}
+
+/// The “ready” content (video/face preview inside the ring).
+class _ReadyPreview extends StatelessWidget {
+  const _ReadyPreview({
+    super.key,
+    required this.isVideo,
+    required this.videoPath,
+    required this.hasFace,
+  });
+
+  final bool isVideo;
+  final String? videoPath;
+  final bool hasFace;
+
+  @override
+  Widget build(BuildContext context) {
+    if (isVideo) {
+      return SizedBox(
+        width: 35,
+        height: 45,
+        child: _SliderSpotPreview(
+          key: const ValueKey('preview-video'),
+          width: 35,
+          height: 45,
+          child: (videoPath != null)
+              ? const CommentFaceVideoModalView(marginBottom: 0)
+              : const Center(child: Loader(size: 40.0)),
+        ),
+      );
+    }
+
+    return SizedBox(
+      width: 35,
+      height: 45,
+      child: _SliderSpotPreview(
+        key: const ValueKey('preview-face'),
+        width: 35,
+        height: 45,
+        child: hasFace
+            ? const CommentFaceModalView(marginBottom: 0)
+            : const Center(child: Loader(size: 40.0)),
       ),
     );
   }

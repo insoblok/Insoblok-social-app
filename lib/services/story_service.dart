@@ -283,6 +283,7 @@ class StoryService {
     required UserModel? user,
     required bool? isVote,
   }) async {
+    logger.d("This is saving story ${story.toMap()}");
     await storyCollection.doc(story.id).update(story.toMap());
 
     if (user != null) {

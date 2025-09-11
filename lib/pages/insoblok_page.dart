@@ -461,10 +461,7 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
                 children: [
                   SizedBox(height: MediaQuery.of(context).padding.top),
                   Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24.0,
-                      vertical: 16.0,
-                    ),
+                    
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -620,9 +617,9 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
                         ClipRRect(
                           borderRadius: BorderRadius.all(Radius.circular(16)),
                           child: BottomBarBackgroundView(
-                            height: 56,
+                            height: 48,
                             child: Padding(
-                              padding: EdgeInsets.only(top: 8.0, bottom: 8.0),
+                              padding: EdgeInsets.only(top: 6.0, bottom: 2.0),
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceAround,

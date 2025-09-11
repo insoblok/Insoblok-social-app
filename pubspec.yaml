@@ -105,6 +105,8 @@ dependencies:
   qr_flutter: ^4.1.0
 
   
+  # pro_video_editor_example: any
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
