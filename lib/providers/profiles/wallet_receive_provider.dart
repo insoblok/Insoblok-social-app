@@ -13,12 +13,9 @@ class WalletReceiveProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  var sendTokenTextController = TextEditingController();
-  var receiverTextController = TextEditingController();
 
   Future<void> init(BuildContext context) async {
     this.context = context;
-    getTransfers();
   }
   final Web3Service _web3service = locator<Web3Service>();
 
@@ -87,36 +84,6 @@ class WalletReceiveProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  void selectFromToken(int index) {
-    selectedFromToken = index;
-    switch (kWalletTokenList[index]['name']) {
-      case 'INSO':
-        availableValue = balances["inso"]!;
-        break;
-      case 'USDT':
-        availableValue = balances["usdt"]!;
-        break;
-      case 'XRP':
-        availableValue = 0;
-      case 'eth':
-        availableValue = balances["ethereum"]!;
-      case 'seth':
-        availableValue = balances["sepolia"]!;
-        break;
-    }
-    logger.d("Available Value is $availableValue");
-    getRate(
-      kWalletTokenList[index]['name'].toString(),
-      kWalletTokenList[selectedToToken]['name'].toString(),
-    );
-    if ((double.tryParse(sendTokenTextController.text) ?? 0) > availableValue) {
-      isPossibleConvert = false;
-    } else {
-      isPossibleConvert = true;
-    }
-    notifyListeners();
-  }
-
   void selectToToken(int index) {
     selectedToToken = index;
     getRate(
@@ -134,67 +101,5 @@ class WalletReceiveProvider extends InSoBlokViewModel {
     // }
   }
 
-  void changingSendTokenValue(String? fromToken) {
-    if (fromToken == null) return;
-    if ((double.tryParse(fromToken) ?? 0) > availableValue ||
-        (double.tryParse(fromToken) ?? 0) == 0) {
-      isPossibleConvert = false;
-    } else {
-      isPossibleConvert = true;
-    }
-
-    sendTokenTextController.text =
-        ((double.tryParse(fromToken) ?? 0) * convertRate).toString();
-    notifyListeners();
-  }
-
-  Future<void> getTransfers() async {
-    isInitLoading = true;
-    try {
-      _transfers.clear();
-      var t = await transferService.getTransfers(user!.id!);
-      _transfers.addAll(t);
-    } catch (e) {
-      setError(e);
-      logger.e(e);
-    } finally {
-      isInitLoading = false;
-      selectFromToken(0);
-    }
-  }
-
-  Future<void> sendToken() async {
-    if (isBusy) return;
-    if (availableValue < double.parse(sendTokenTextController.text.trim())) {
-      logger.d("Insufficient balance.");
-      AIHelpers.showToast(msg: "Insufficient Token Balance.");
-      return;
-    }
-    clearErrors();
-
-    await runBusyFuture(() async {
-      try {
-       _web3service.sendEvmToken(receiverTextController.text.trim(), double.parse(sendTokenTextController.text.trim()), kWalletTokenList[selectedFromToken], cryptoService.privateKey!);
-        // var model = transferService.getTransferModel(
-        //   fromToken: fromToken,
-        //   toToken: toToken,
-        //   from: (double.tryParse(fromTokenTextController.text) ?? 0),
-        //   to: (double.tryParse(toTokenTextController.text) ?? 0),
-        // );
-        // await transferService.addTransfer(transfer: model);
-        AIHelpers.showToast(msg: 'Successfully sent!');
-      } catch (e) {
-        setError(e);
-        logger.e(e);
-      } finally {
-        isPossibleConvert = false;
-        sendTokenTextController.text = '0';
-        getTransfers();
-        notifyListeners();
-      }
-    }());
-    if (hasError) {
-      AIHelpers.showToast(msg: modelError.toString());
-    }
-  }
+  
 }

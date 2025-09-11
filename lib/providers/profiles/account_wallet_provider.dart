@@ -46,11 +46,23 @@ class AccountWalletProvider extends InSoBlokViewModel {
 
   List<Map<String, dynamic>> get filteredTransactions {
     if (enabledNetworks.isEmpty) return [];
-    
-    return transactions?.where((txn) {
-      return enabledNetworks.any((network) => 
-          network['chain'] == txn['chain']);
+    // return transactions?.where((txn) {
+    //   return enabledNetworks.any((network) => 
+    //       network['chain'] == txn['chain']);
+    // }).toList() ?? [];
+    final filtered = transactions?.where((txn) {
+      return enabledNetworks.any((network) {
+        if (txn["chain"] != null) {
+          return network['chain'] == txn['chain'];
+        }
+        else {
+          return (txn["from_token_network"] == network["chain"] || 
+                  txn["to_token_network"] == network["chain"]);
+        }
+      });
     }).toList() ?? [];
+    logger.d("Filtered transactions are ${transactions!.length}, ${filtered.length}");
+    return filtered;
   }
 
   final Web3Service _web3Service = locator<Web3Service>();
@@ -140,7 +152,9 @@ class AccountWalletProvider extends InSoBlokViewModel {
     switch (index) {
       case 0:
         await Routers.goToWalletSendPage(context);
-        // await onClickSend();
+        break;
+      case 1:
+        await Routers.goToWalletReceivePage(context);
         break;
       case 2:
         await Routers.goToWalletSwapPage(context);

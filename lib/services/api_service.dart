@@ -29,7 +29,7 @@ class ApiService {
     final url = Uri.parse('$baseUrl$endpoint');
 
     try {
-        logger.d("request is $body");
+        logger.d("request is $url, $body");
 
       final response = await http.post(
         url,
@@ -38,7 +38,6 @@ class ApiService {
       );
 
       if (response.statusCode == 200) {
-        logger.d("response is ${response.body}");
         return jsonDecode(response.body);
       } else {
         throw Exception('POST failed: ${response.statusCode} - ${response.body}');

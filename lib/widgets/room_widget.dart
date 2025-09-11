@@ -59,12 +59,17 @@ class RoomItemView extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  viewModel.chatUser!.avatarStatusView(
-                    width: kAvatarSize,
-                    height: kAvatarSize,
-                    borderWidth: 2.0,
-                    textSize: 18.0,
-                  ),
+                  if (viewModel.chatUser != null)
+                    viewModel.chatUser!.avatarStatusView(
+                      width: kAvatarSize,
+                      height: kAvatarSize,
+                      borderWidth: 2.0,
+                      textSize: 18.0,
+                    )
+                  else
+                    Opacity(
+                      opacity: 0,
+                    ),
                   const SizedBox(width: 12.0),
                   Expanded(
                     child: Column(

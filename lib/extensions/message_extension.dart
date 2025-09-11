@@ -207,12 +207,13 @@ extension MessageModelExt on MessageModel {
 
   Widget _paidContent() {
     var coin = CoinModel.fromJson(jsonDecode(content ?? '{}'));
-    final network = kWalletTokenList.firstWhere((tk) => tk["chain"] == coin.type);
+    final network = kWalletTokenList.firstWhere((tk) => tk["short_name"] == coin.unit);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text('Transaction', style: TextStyle(fontSize: 11.0)),
         const SizedBox(height: 8.0),
+        
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -233,14 +234,14 @@ extension MessageModelExt on MessageModel {
         ),
         const SizedBox(height: 8.0),
         // Image(image: NetworkImage(AIImages.icSuccess), width: 36.0, height: 36.0, fit: BoxFit.cover),
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-            GifView.asset(AIImages.icSuccess, width: 36.0, height: 36.0, loop: false, autoPlay: true),
-            Text(
-              'Successfully Sent',
-            ),
-          ]),
+        Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+          GifView.asset(AIImages.icSuccess, width: 36.0, height: 36.0, loop: false, autoPlay: true),
+          Text(
+            'Successfully Sent',
+          ),
+        ]),
         
       ],
     );
