@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/services/services.dart';
@@ -56,31 +57,55 @@ class UploadMediaWidget extends ViewModelWidget<AddStoryProvider> {
                     ),
                 Align(
                   alignment: Alignment.topRight,
-                  child: InkWell(
-                    onTap: () => viewModel.onRemoveMedia(media),
-                    child: Container(
-                      margin: const EdgeInsets.only(top: 4.0, right: 4.0),
-                      width: 28.0,
-                      height: 28.0,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: AppSettingHelper.transparentBackground,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                    if (media.isUploaded == false && media.isUploading == false)
+                      InkWell(
+                        onTap: () async {
+                          String result = await viewModel.onEditMedia(media);
+                          UploadMediaItem item = UploadMediaItem(file: XFile(result));
+                          viewModel.setMedia(item, index);
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.only(top: 4.0, right: 4.0),
+                          width: 28.0,
+                          height: 28.0,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: AppSettingHelper.transparentBackground,
+                          ),
+                          child:
+                              Icon(Icons.edit, size: 18.0),
+                        ),
                       ),
-                      child:
-                          media.isUploaded
-                              ? Icon(
-                                Icons.check,
-                                size: 18.0,
-                                color: AIColors.pink,
-                              )
-                              : media.isUploading
-                              ? Loader(
-                                size: 20.0,
-                                color: AIColors.red,
-                                strokeWidth: 0.5,
-                              )
-                              : Icon(Icons.close, size: 18.0),
-                    ),
+                      InkWell(
+                        onTap: () => viewModel.onRemoveMedia(media),
+                        child: Container(
+                          margin: const EdgeInsets.only(top: 4.0, right: 4.0),
+                          width: 28.0,
+                          height: 28.0,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: AppSettingHelper.transparentBackground,
+                          ),
+                          child:
+                              media.isUploaded
+                                  ? Icon(
+                                    Icons.check,
+                                    size: 18.0,
+                                    color: AIColors.pink,
+                                  )
+                                  : media.isUploading
+                                  ? Loader(
+                                    size: 20.0,
+                                    color: AIColors.red,
+                                    strokeWidth: 0.5,
+                                  )
+                                  : Icon(Icons.close, size: 18.0),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],

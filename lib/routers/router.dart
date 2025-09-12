@@ -6,8 +6,7 @@ import 'package:insoblok/models/models.dart';
 import 'package:insoblok/pages/pages.dart';
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/routers/routers.dart';
-import 'package:insoblok/services/vision_service.dart';
-
+import 'package:insoblok/services/services.dart';
 class Routers {
   static dynamic _pushToRoute(BuildContext context, String route, props) {
     return Navigator.pushNamed(context, route, arguments: props);
@@ -164,6 +163,14 @@ class Routers {
 
   static dynamic goToAddStoryPage(BuildContext context) {
     return _pushToRoute(context, kRouterAddStory, null);
+  }
+
+  static dynamic goToVideoEditorPage(BuildContext context, String path) {
+    return _pushToRoute(context, kRouterVideoEditor, path);
+  }
+
+  static dynamic goToImageEditorPage(BuildContext context, String path) {
+    return _pushToRoute(context, kRouterImageEditor, path);
   }
 
   static dynamic goToVTOImagePage(BuildContext context, ProductModel product) {
