@@ -2,6 +2,8 @@ import 'dart:io';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
+import 'package:stacked/stacked.dart';
+
 
 import 'package:insoblok/utils/background_camera_capture.dart';
 import 'package:insoblok/utils/background_camera_video_capture.dart';
@@ -11,6 +13,7 @@ import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
+import 'package:insoblok/locator.dart';
 
 import 'package:path_provider/path_provider.dart';
 import 'package:image/image.dart' as img;
@@ -22,6 +25,7 @@ class StoryProvider extends InSoBlokViewModel {
     _context = context;
     notifyListeners();
   }
+
 
   late StoryModel _story;
   StoryModel get story => _story;
@@ -109,7 +113,6 @@ class StoryProvider extends InSoBlokViewModel {
   final globals = GlobalStore();
   bool get vybeCamEnabled => globals.isVybeCamEnabled;
 
-  
 
   void init(BuildContext context, {required StoryModel model}) async {
     this.context = context;

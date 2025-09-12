@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:observable_ish/observable_ish.dart';
 
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/routers/router.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
+import 'package:stacked/stacked.dart';
 
 class DashboardProvider extends InSoBlokViewModel {
   late BuildContext _context;
@@ -56,7 +58,14 @@ class DashboardProvider extends InSoBlokViewModel {
     });
 
     fetchStoryData();
+
     storyService.getStoryUpdated().listen((updated) {
+      isUpdated = true;
+    });
+
+    storyService.getStoriesStream().listen((sList) {
+      logger.d("Story updated $sList");
+      _stories.value = sList;
       isUpdated = true;
     });
   }
@@ -99,8 +108,12 @@ class DashboardProvider extends InSoBlokViewModel {
     }
   }
 
-  final List<StoryModel> _stories = [];
-  List<StoryModel> get stories => _stories;
+  final ReactiveValue<List<StoryModel>> _stories = ReactiveValue<List<StoryModel>>([]);
+  List<StoryModel> get stories => _stories.value;
+  set stories(List<StoryModel> s) {
+    _stories.value = s;
+    notifyListeners();
+  }
 
   Future<void> fetchStoryData() async {
     if (isBusy) return;
@@ -122,9 +135,9 @@ class DashboardProvider extends InSoBlokViewModel {
         }
 
         // }
-        _stories.clear();
+        _stories.value.clear();
         logger.d(storydatas.length);
-        _stories.addAll(storydatas);
+        _stories.value.addAll(storydatas);
         isUpdated = false;
       } catch (e) {
         setError(e);

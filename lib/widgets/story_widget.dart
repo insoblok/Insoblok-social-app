@@ -28,13 +28,13 @@ class StoryListCell extends StatelessWidget {
   final bool? enableDetail;
   final bool? enableReaction;
   final double? marginBottom;
-
   const StoryListCell({
     super.key,
     required this.story,
     this.enableDetail,
     this.enableReaction,
     this.marginBottom,
+
   });
 
   @override
