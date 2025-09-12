@@ -9,6 +9,7 @@ import 'package:insoblok/pages/profiles/tastescore_page.dart';
 import 'package:insoblok/pages/profiles/wallet_receive_page.dart';
 import 'package:insoblok/pages/profiles/wallet_swap_page.dart';
 import 'package:insoblok/pages/profiles/wallet_send_page.dart';
+import 'package:insoblok/pages/stories/video_edit_page.dart';
 import 'package:insoblok/providers/providers.dart';
 
 const kRouterBase = '/';
@@ -59,6 +60,8 @@ const kRouterLookbookDetail = '/lookbook-detail';
 const kRouterNewsDetail = '/news-detail';
 const kRouterPostDetail = '/post-detail';
 const kRouterReaction = '/reaction';
+const kRouterVideoEditor = '/video-editor';
+const kRouterImageEditor = '/image-editor';
 
 const kRouterQuillDescription = '/quill-description';
 const kRouterPrivacy = '/privacy-police';
@@ -243,6 +246,8 @@ class Navigation {
       (props) => ReactionsPage(story: props!),
     );
 
+
+
     // * NewsDetailPage
     initRoute<NewsModel>(
       kRouterNewsDetail,
@@ -340,5 +345,9 @@ class Navigation {
       kRouterUserList,
       (props) => UserListPage(users: props ?? []),
     );
+
+    initRoute(kRouterVideoEditor, (props) => VideoEditorPage(path: props.toString()));
+
+    initRoute(kRouterImageEditor, (props) => ImageEditorPage(path: props.toString()));
   }
 }

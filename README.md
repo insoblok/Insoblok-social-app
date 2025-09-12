@@ -58,7 +58,7 @@ exports.fetchNews = functions.https.onRequest((request, response) => {
   response.send("Hello from Firebase!");
 });
 
-firebase login
+firebase login 
 firebase logout
 npx eslint index.js --fix
 firebase deploy --only functions

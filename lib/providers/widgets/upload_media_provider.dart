@@ -2,19 +2,15 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
-import 'package:image/image.dart' as img;
-import 'package:path_provider/path_provider.dart';
 import 'package:stacked/stacked.dart';
 import 'package:insoblok/services/cloudinary_cdn_service.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
-
-import 'package:insoblok/locator.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
-
+import 'package:mime/mime.dart';
 class UploadMediaItem {
   final XFile? file;
 
@@ -22,6 +18,16 @@ class UploadMediaItem {
   bool isUploaded = false;
 
   UploadMediaItem({this.file});
+
+  FileType getFileType() {
+    final mimeType = lookupMimeType(file!.path) ?? '';
+    logger.d("File infor is ${file!.path}, ${mimeType}");
+    if (mimeType.startsWith('image/')) return FileType.image;
+    if (mimeType.startsWith('video/')) return FileType.video;
+    if (mimeType.startsWith('audio/')) return FileType.audio;
+    
+    return FileType.custom;
+  }
 }
 
 class UploadMediaProvider extends ReactiveViewModel {
@@ -32,8 +38,12 @@ class UploadMediaProvider extends ReactiveViewModel {
     this.context = context;
   }
 
-  List<UploadMediaItem> medias = [];
-
+  List<UploadMediaItem> _medias = [];
+  List<UploadMediaItem> get medias => _medias;
+  set medias(List<UploadMediaItem> m) {
+    _medias = m;
+    notifyListeners();
+  }
   // * PICK IMAGES FROM GALLERY
   Future<void> addMedias(BuildContext context, {String? title, int? maxImages}) async {
 
@@ -55,12 +65,20 @@ class UploadMediaProvider extends ReactiveViewModel {
     notifyListeners();
   }
 
+  void setMedia(UploadMediaItem media, int index) {
+    var m = [ ... medias ];
+    m[index] = media;
+    medias = m;
+  }
+
+
   void removeMedia(UploadMediaItem media) {
     if (!media.isUploaded && !media.isUploaded) {
       medias.remove(media);
       notifyListeners();
     }
   }
+
 
   void removeMediaByIndex(int index) {
     if(index < medias.length) medias.removeAt(index);

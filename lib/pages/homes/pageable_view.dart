@@ -34,7 +34,6 @@ class PageableView extends StatelessWidget {
       viewModelBuilder: () => DashboardProvider(),
       onViewModelReady: (viewModel) => viewModel.init(context),
       builder: (context, viewModel, _) {
-        final safeTop = MediaQuery.of(context).padding.top;
 
         return AppBackgroundView(
           child: Stack(
@@ -184,6 +183,7 @@ class PageableView extends StatelessWidget {
                                                 unselectedLabelColor: Colors.white.withOpacity(0.7),
                                                 labelStyle: Theme.of(context).textTheme.headlineMedium?.copyWith(
                                                       fontWeight: FontWeight.w700,
+                                                      fontSize: 14,
                                                     ),
                                                 tabs: [
                                                   for (final t in menuTitles) Tab(text: t),
