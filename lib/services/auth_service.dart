@@ -52,7 +52,6 @@ class AuthService with ListenableServiceMixin {
 
     var uid = credential.user?.uid;
     var authUser = await userService.getUserByWalletAddress(walletAddress);
-      logger.d("This is authUser: $authUser");
     if (authUser != null) {
       var tastescoreService = TastescoreService();
       var rewardDate = await tastescoreService.loginScore(authUser);

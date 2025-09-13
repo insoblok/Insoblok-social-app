@@ -5,3 +5,5 @@ export 'lookbook_page.dart';
 export 'following_page.dart';
 export 'friend_page.dart';
 export 'reactions_page.dart';
+export 'video_edit_page.dart';
+export 'image_edit_page.dart';

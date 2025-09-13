@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:insoblok/locator.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/providers/providers.dart';
@@ -15,9 +16,12 @@ class AddStoryProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  final MediaPickerService mediaPickerService = locator<MediaPickerService>();
+
   var scrollController = ScrollController();
   final _mediaProvider = locator<UploadMediaProvider>();
   UploadMediaProvider get mediaProvider => _mediaProvider;
+
 
   String _title = '';
   String get title => _title;
@@ -116,6 +120,27 @@ class AddStoryProvider extends InSoBlokViewModel {
   void onRemoveMedia(UploadMediaItem media) {
     mediaProvider.removeMedia(media);
     notifyListeners();
+  }
+
+  Future<String> onEditMedia(UploadMediaItem media) async {
+    String result = "";
+    logger.d("File type is ${media.getFileType()}");
+
+    if (media.getFileType() == FileType.video) {
+      result = await Routers.goToVideoEditorPage(context, media.file!.path);
+    }
+    else if (media.getFileType() == FileType.image) {
+      logger.d("GOing to image editor ${media.file!.path}");
+      await Routers.goToImageEditorPage(context, media.file!.path);
+      result = mediaPickerService.editedImagePath;
+      logger.d("mediapickerservice path is ${result}");
+    }
+    logger.d("Video Editor result is $result");
+    return result;
+  }
+
+  void setMedia(UploadMediaItem media, int index) {
+    mediaProvider.setMedia(media, index);
   }
 
   String _txtUploadButton = 'Post Story';

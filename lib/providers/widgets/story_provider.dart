@@ -109,10 +109,12 @@ class StoryProvider extends InSoBlokViewModel {
   final globals = GlobalStore();
   bool get vybeCamEnabled => globals.isVybeCamEnabled;
 
+  
+
   void init(BuildContext context, {required StoryModel model}) async {
     this.context = context;
     story = model;
-
+    logger.d("This is story ${story}");
     await updateView();
     refreshCount = 0;
     _videoPath = null;
@@ -127,8 +129,8 @@ class StoryProvider extends InSoBlokViewModel {
     }
 
     showFaceDialog = false;
-    final globals = GlobalStore();
-    _isVideoReaction = globals.isRRCVideoCapture;
+
+    _isVideoReaction = globals.isRRCVideoCapture;  
     logger.d("globals.isRRCVideoCapture : ${globals.isRRCVideoCapture}");
     // _isVideoReaction = false;
 
@@ -158,20 +160,27 @@ class StoryProvider extends InSoBlokViewModel {
   Future<void> captureReactionImage() async {
 
     showFaceDialog = true;
+    isCapturingTimer = true;
     camera.onFrame = (String? path) {
       logger.d("Trying to detect user expressions");
       if (path != null) {
         detectFace(path);
+        notifyListeners();
       }
     };
 
     await camera.initialize();
   }
 
+  Future<void> completeTimer() async {
+    isCapturingTimer = true;
+    notifyListeners();     
+  }
+
   /// Switch to VIDEO capture mode
   Future<String?> captureReactionVideo() async {
     showFaceDialog = true;
-
+    isCapturingTimer = true;
     await camera.stopAndDispose();
 
     final c = Completer<String?>();
@@ -408,10 +417,12 @@ class StoryProvider extends InSoBlokViewModel {
           user: owner,
           isVote: isVote,
         );
+        logger.d("votes are: ${story.votes}");
 
         if (isVote) {
           tastScoreService.voteScore(story);
         }
+        notifyListeners();
       } catch (e) {
         setError(e);
         logger.e(e);

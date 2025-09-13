@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:stacked/stacked.dart';
 
 import 'package:insoblok/pages/vtos/deep_ar_plus_page.dart';
 import 'package:insoblok/services/services.dart';
@@ -9,11 +10,18 @@ import 'package:insoblok/utils/utils.dart';
 
 enum PickerAction { gallery, camera, deepAr }
 
-class MediaPickerService {
+class MediaPickerService with ListenableServiceMixin {
   MediaPickerService();
 
   // Keep the picker as a field, NOT a BuildContext.
   final ImagePicker _picker = ImagePicker();
+
+  String _editedImagePath = "";
+  String get editedImagePath => _editedImagePath;
+  set editedImagePath(String s) {
+    _editedImagePath = s;
+    notifyListeners();
+  }
 
   /// Pick 1..N story medias. Opens a source sheet (Photos / Camera / DeepAR).
   Future<List<XFile>> onPickerStoryMedia(
