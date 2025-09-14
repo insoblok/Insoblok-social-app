@@ -1,11 +1,8 @@
 import 'dart:io';
 
-
-import 'package:insoblok/locator.dart';
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
-import 'package:insoblok/models/story_model.dart';
 import 'package:insoblok/services/cloudinary_cdn_service.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';

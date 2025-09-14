@@ -25,7 +25,25 @@ class WalletSwapPage extends StatelessWidget {
             flexibleSpace: AppBackgroundView(),
           ),
           body: AppBackgroundView(
-            child: ListView(
+            child: viewModel.isBusy ? 
+            Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Loader(
+                    color: Colors.pink,
+                    size: 60
+                  ),
+                  SizedBox(height: 18),
+                  Text(
+                    "",
+                    style: TextStyle(
+                      fontSize: 20
+                    )
+                  ),
+                ],
+              ) 
+            ) :ListView(
               physics: BouncingScrollPhysics(),
               padding: const EdgeInsets.symmetric(
                 horizontal: 20.0,
@@ -46,53 +64,25 @@ class WalletSwapPage extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     spacing: 4.0,
                     children: [
-                      Row(
+                      for (var token in kWalletTokenList) ... [
+                        Row(
                         spacing: 12.0,
                         children: [
                           AIImage(
-                            AIImages.icCoinInso,
+                            token['icon'],
                             width: 36.0,
                             height: 36.0,
                           ),
-                          Expanded(child: Text('INSO')),
+                          Expanded(child: Text(token['short_name']!.toString())),
                           Text(
-                            viewModel.balanceInso.toStringAsFixed(2),
-                            style: Theme.of(context).textTheme.headlineMedium,
-                          ),
+                                '${AIHelpers.formatDouble(viewModel.allBalances?[token["chain"]] ?? 0, 10)} ${token["short_name"]}',
+                                style: Theme.of(context).textTheme.labelSmall,
+                              ),
                         ],
                       ),
                       const SizedBox(height: 8.0),
-                      Row(
-                        spacing: 12.0,
-                        children: [
-                          AIImage(
-                            AIImages.icCoinUsdt,
-                            width: 36.0,
-                            height: 36.0,
-                          ),
-                          Expanded(child: Text('USDT')),
-                          Text(
-                            viewModel.balanceUsdt.toStringAsFixed(2),
-                            style: Theme.of(context).textTheme.headlineMedium,
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 8.0),
-                      Row(
-                        spacing: 12.0,
-                        children: [
-                          AIImage(
-                            AIImages.icCoinXrp,
-                            width: 36.0,
-                            height: 36.0,
-                          ),
-                          Expanded(child: Text('XRP')),
-                          Text(
-                            '0.00',
-                            style: Theme.of(context).textTheme.headlineMedium,
-                          ),
-                        ],
-                      ),
+                      
+                      ],
                     ],
                   ),
                 ),

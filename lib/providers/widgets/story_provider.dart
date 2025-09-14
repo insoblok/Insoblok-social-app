@@ -418,6 +418,7 @@ class StoryProvider extends InSoBlokViewModel {
           user: owner,
           isVote: isVote,
         );
+        logger.d("updated votes are $votes");
 
         if (isVote) {
           tastScoreService.voteScore(story);

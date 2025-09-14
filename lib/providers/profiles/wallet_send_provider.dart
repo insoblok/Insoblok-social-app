@@ -33,16 +33,19 @@ class WalletSendProvider extends InSoBlokViewModel {
   Future<void> init(BuildContext context) async {
     // this.context = context;
     _focusNode = FocusNode();
-
+    setBusy(true);
     getTransfers();
     // setBalances(balances);
     await Future.wait([
       _web3Service.getBalances(address!),
       _web3Service.getPrices(),
-      _web3Service.getTransactions(address!)
+      _web3Service.getTransactions(address!),
     ]);
+    sendTokenTextController.text = (allBalances?["insoblok"] ?? "0").toString();
+    allBalances?["xp"] = (accountService.availableXP).toDouble();
+    logger.d("all balances are ${allBalances}");
     notifyListeners(); 
-
+    setBusy(false);
   }
 
   final List<TransferModel> _transfers = [];
@@ -110,7 +113,6 @@ class WalletSendProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-
   Map<String, dynamic> currentTransaction = {};
 
   final api = ApiService(baseUrl: INSOBLOK_WALLET_URL);
@@ -126,10 +128,17 @@ class WalletSendProvider extends InSoBlokViewModel {
         break;
       case 'xrp':
         availableValue = allBalances!["xrp"] ?? 0;
+        break;
       case 'eth':
         availableValue = allBalances!["ethereum"] ?? 0;
+        break;
       case 'seth':
         availableValue = allBalances!["sepolia"] ?? 0;
+        break;
+      case 'xp':
+        availableValue = allBalances!["xp"] ?? 0;
+        break;
+      default:
         break;
     }
     logger.d("Available Value is $availableValue");
@@ -142,6 +151,7 @@ class WalletSendProvider extends InSoBlokViewModel {
     } else {
       isPossibleConvert = true;
     }
+    sendTokenTextController.text = availableValue.toString();
     notifyListeners();
   }
 

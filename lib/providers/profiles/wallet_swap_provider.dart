@@ -4,6 +4,8 @@ import 'package:insoblok/models/models.dart';
 import 'package:insoblok/pages/pages.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
+import 'package:insoblok/locator.dart';
+
 
 final kSwapRate = [
   {'from': TransferTokenName.INSO, 'to': TransferTokenName.USDT, 'rate': 0.01},
@@ -25,12 +27,30 @@ class WalletSwapProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  final Web3Service _web3Service = locator<Web3Service>();
   var fromTokenTextController = TextEditingController();
   var toTokenTextController = TextEditingController();
+  
+  Map<String, double>? get allBalances => _web3Service.allBalances;
+  Map<String, double>? get allPrices => _web3Service.allPrices;
+
+  String? get address => cryptoService.privateKey!.address.hex;  
 
   Future<void> init(BuildContext context) async {
     this.context = context;
+    setBusy(true);
     getTransfers();
+    await Future.wait([
+      _web3Service.getBalances(address!),
+      _web3Service.getPrices(),
+      _web3Service.getTransactions(address!),
+    ]);
+    allBalances?["xp"] = (accountService.availableXP).toDouble();
+    fromTokenTextController.text = (allBalances?["insoblok"] ?? "0").toString();
+    toTokenTextController.text = (allBalances?["insoblok"] ?? "0").toString();
+    
+    notifyListeners(); 
+    setBusy(false);
   }
 
   final List<TransferModel> _transfers = [];
@@ -90,14 +110,25 @@ class WalletSwapProvider extends InSoBlokViewModel {
   void selectFromToken(int index) {
     selectedFromToken = index;
     switch (kWalletTokenList[index]['name']) {
-      case 'INSO':
-        availableValue = balanceInso;
+      case 'inso':
+        availableValue = allBalances!["insoblok"] ?? 0;
         break;
-      case 'USDT':
-        availableValue = balanceUsdt;
+      case 'usdt':
+        availableValue = allBalances!["usdt"] ?? 0;
         break;
-      case 'XRP':
-        availableValue = 0;
+      case 'xrp':
+        availableValue = allBalances!["xrp"] ?? 0;
+        break;
+      case 'eth':
+        availableValue = allBalances!["ethereum"] ?? 0;
+        break;
+      case 'seth':
+        availableValue = allBalances!["sepolia"] ?? 0;
+        break;
+      case 'xp':
+        availableValue = allBalances!["xp"] ?? 0;
+        break;
+      default:
         break;
     }
     getRate(
@@ -110,6 +141,7 @@ class WalletSwapProvider extends InSoBlokViewModel {
     } else {
       isPossibleConvert = true;
     }
+    fromTokenTextController.text = availableValue.toString();
     toTokenTextController.text =
         ((double.tryParse(fromTokenTextController.text) ?? 0) * convertRate)
             .toStringAsFixed(2);

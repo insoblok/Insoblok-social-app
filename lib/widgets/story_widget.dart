@@ -389,7 +389,7 @@ class StoryListCell extends StatelessWidget {
                             color: AIColors.orange,
                             width: kStoryAvatarSize * 0.5,
                           ),
-                          label: '${(viewModel.story.cntNay)}',
+                          label: '${(viewModel.story.cntYay)}',
                         ),
             
                         StoryActionButton(
@@ -398,7 +398,7 @@ class StoryListCell extends StatelessWidget {
                             color: Colors.blue,
                             width: kStoryAvatarSize * 0.5,
                           ),
-                          label: '${(viewModel.story.cntYay)}',
+                          label: '${(viewModel.story.cntNay)}',
                         ),
                       ],
                     ),

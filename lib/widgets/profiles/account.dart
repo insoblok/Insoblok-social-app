@@ -201,7 +201,7 @@ class AccountFloatingView extends ViewModelWidget<AccountProvider> {
                           style: Theme.of(context).textTheme.titleSmall,
                         ),
                         Text(
-                          'Follwers',
+                          'Followers',
                           style: Theme.of(context).textTheme.labelMedium,
                         ),
                       ],
