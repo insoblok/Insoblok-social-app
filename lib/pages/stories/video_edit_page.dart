@@ -276,7 +276,12 @@ class _VideoEditorPageState
   /// Closes the video editor
   void onCloseEditor(EditorMode editorMode) async {
     if (editorMode != EditorMode.main) return Navigator.pop(context);
-    if (_outputPath != null) {
+    if (/// The code you provided is a comment in Dart programming language. Comments are used to add
+    /// explanations or notes in the code for better understanding. In Dart, single-line comments
+    /// start with `//` and multi-line comments start with `/*` and end with `*/`. The text
+    /// `_outputPath` is not executable code, but rather a comment that may indicate the purpose or
+    /// intention of a variable or code block.
+    _outputPath != null) {
       // Handle preview navigation if needed
       Navigator.pop(context, _outputPath);
     } else {

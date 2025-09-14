@@ -11,15 +11,16 @@ import 'package:insoblok/widgets/widgets.dart';
 const kUserAvatarSize = 56.0;
 
 class LeaderboardUserView extends StatelessWidget {
-  final String userId;
+  final UserScoreModel user;
   final int score;
   final int cellIndex;
-
+  final bool displayProgress;
   const LeaderboardUserView({
     super.key,
-    required this.userId,
+    required this.user,
     required this.score,
     required this.cellIndex,
+    required this.displayProgress,
   });
 
   @override
@@ -27,7 +28,7 @@ class LeaderboardUserView extends StatelessWidget {
     return ViewModelBuilder<UserProvider>.reactive(
       viewModelBuilder: () => UserProvider(),
       onViewModelReady:
-          (viewModel) => viewModel.init(context, id: userId, score: score),
+          (viewModel) => viewModel.init(context, id: user.id, score: score),
       builder: (context, viewModel, _) {
         var userData = viewModel.owner;
         return Padding(
@@ -40,8 +41,14 @@ class LeaderboardUserView extends StatelessWidget {
                 vertical: 12.0,
               ),
               decoration: BoxDecoration(
-                color: viewModel.getRankColor(cellIndex),
-                borderRadius: BorderRadius.circular(12.0),
+                color: AIColors.leaderBoardBackground,
+                borderRadius: BorderRadius.circular(1.0),
+                border: Border(
+                  bottom: BorderSide(
+                    color: Colors.white.withAlpha(40),
+                    width: 2.0
+                  )
+                ),
                 boxShadow: [
                   BoxShadow(
                     color: Theme.of(
@@ -53,109 +60,110 @@ class LeaderboardUserView extends StatelessWidget {
                   ),
                 ],
               ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  userData == null
-                      ? ShimmerContainer(
-                        child: Container(
-                          width: kUserAvatarSize,
-                          height: kUserAvatarSize,
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            shape: BoxShape.circle,
-                          ),
-                        ),
+              child: Container(
+                decoration: BoxDecoration(
+                  
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      (cellIndex + 1).toString(),
+                      style: TextStyle(
+                        fontSize: 32,
+                        color: viewModel.getRankColor(cellIndex),
                       )
-                      : Stack(
-                        children: [
-                          userData.avatarStatusView(
+                    ),
+                    SizedBox(width: 24),
+                    userData == null
+                        ? ShimmerContainer(
+                          child: Container(
                             width: kUserAvatarSize,
                             height: kUserAvatarSize,
-                            borderWidth: 3.0,
-                            textSize: 18.0,
-                            showStatus: false,
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              shape: BoxShape.circle,
+                            ),
                           ),
-                          if (cellIndex == 0)
-                            Positioned(
-                            bottom: 0.0,
-                            right: 0.0,
-                            child: Container(
-                              width: 24.0,
-                              height: 24.0,
-                              padding: EdgeInsets.all(1),
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  color: Theme.of(context).primaryColor,
+                        )
+                        : Stack(
+                          children: [
+                            userData.avatarStatusView(
+                              width: kUserAvatarSize,
+                              height: kUserAvatarSize,
+                              borderWidth: 3.0,
+                              textSize: 18.0,
+                              showStatus: false,
+                            ),
+                            if (cellIndex == 0)
+                              Positioned(
+                              bottom: 0.0,
+                              right: 0.0,
+                              child: Container(
+                                width: 24.0,
+                                height: 24.0,
+                                padding: EdgeInsets.all(1),
+                                decoration: BoxDecoration(
+                                  border: Border.all(
+                                    color: Theme.of(context).primaryColor,
+                                  ),
+                                  color:
+                                      Theme.of(context).scaffoldBackgroundColor,
+                                  shape: BoxShape.circle,
                                 ),
-                                color:
-                                    Theme.of(context).scaffoldBackgroundColor,
-                                shape: BoxShape.circle,
-                              ),
-                              child: AIImage(
-                                AIImages.imgLevel(5),
+                                child: AIImage(
+                                  AIImages.imgLevel(5),
+                                ),
                               ),
                             ),
+                          ],
+                        ),
+                    const SizedBox(width: 12.0),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        spacing: 4.0,
+                        children: [
+                          Text(
+                                userData?.fullName ?? "___",
+                                style: Theme.of(context).textTheme.bodyMedium,
+                              ),
+                          Text(
+                                userData?.timestamp?.timeago ?? 'Unknown time',
+                                style: Theme.of(context).textTheme.labelSmall,
+                              ),
+                              if(displayProgress == true)
+                          AnimatiedLinearProgressIndicator(
+                            value:user.indicatorValue,
+                            minHeight: 6,
+                            borderRadius: 12,
+                            backgroundColor: AIColors.leaderBoardScoreProgressBackground,
+                            color: AIColors.leaderBoardScoreProgressForeground,
                           ),
                         ],
                       ),
-                  const SizedBox(width: 12.0),
-                  Expanded(
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      spacing: 4.0,
+                    ),
+                    SizedBox(width: 18.0),
+                    Row(
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        userData == null
-                            ? ShimmerContainer(
-                              child: Container(
-                                width: 150.0,
-                                height: 16,
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(8.0),
-                                ),
-                              ),
-                            )
-                            : Text(
-                              userData.fullName,
-                              style: Theme.of(context).textTheme.bodyMedium,
-                            ),
-                        userData == null
-                            ? ShimmerContainer(
-                              child: Container(
-                                width: 80.0,
-                                height: 16,
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(8.0),
-                                ),
-                              ),
-                            )
-                            : Text(
-                              userData.timestamp?.timeago ?? '10m ago',
-                              style: Theme.of(context).textTheme.labelSmall,
-                            ),
+                        Text(
+                          score.toString(),
+                          style: TextStyle(
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.bold,
+                            color: viewModel.getRankColor(cellIndex)
+                          ),
+                        ),
+                        Text(
+                          ' XP',
+                          style: TextStyle(fontSize: 14.0, color: viewModel.getRankColor(cellIndex)),
+                          
+                        ),
                       ],
                     ),
-                  ),
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text(
-                        score.toString(),
-                        style: TextStyle(
-                          fontSize: 26.0,
-                          color: AIColors.pink,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        ' XP',
-                        style: TextStyle(fontSize: 18.0, color: AIColors.pink),
-                      ),
-                    ],
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),

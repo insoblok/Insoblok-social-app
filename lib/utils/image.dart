@@ -116,5 +116,8 @@ class AIImages {
   static String icFaceRage = 'assets/icons/ic_emoji_grinning_squinting.png';
   static String icFaceCool = 'assets/icons/ic_emoji_smiling_sunglasses.png';
 
+  static String icArrowRight = 'assets/icons/ic_arrow_right.svg';
+  static String icArrowLeft = 'assets/icons/ic_arrow_left.svg';
+
   static String imgVybe = 'assets/images/img_vybe.png';
 }

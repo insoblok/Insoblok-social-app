@@ -19,13 +19,9 @@
     <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission
-        android:name="android.permission.READ_EXTERNAL_STORAGE"
-        android:maxSdkVersion="32" 
-        tools:replace="android:maxSdkVersion" />
+        android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission
-        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
-        android:maxSdkVersion="29" 
-        tools:replace="android:maxSdkVersion" />
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <!--    For android api 13-->
     <uses-permission android:name="android.permission.GALLERY" />
     <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />

@@ -57,6 +57,26 @@ class UserScoreModel {
     }
     return result;
   }
+
+  List<UserLevelModel> get userLevels =>
+      AppSettingHelper.appSettingModel?.userLevel ?? [];
+
+  UserLevelModel get userLevel {
+    for (var userLevel in userLevels) {
+      if ((userLevel.min ?? 0) <= xpTotal &&
+          xpTotal < (userLevel.max ?? 1000000000)) {
+        return userLevel;
+      }
+    }
+    return userLevels.first;
+  }
+
+  double get indicatorValue {
+    var min = userLevel.min ?? 0;
+    var max = userLevel.max ?? 0;
+    return (xpTotal - min) / (max - min);
+  }
+
 }
 
 class LeaderboardProvider extends InSoBlokViewModel {
@@ -77,6 +97,10 @@ class LeaderboardProvider extends InSoBlokViewModel {
 
   List<UserScoreModel> get monthlyLeaderboard =>
       _leaderboard.sorted((b, a) => a.xpMonth - b.xpMonth).toList();
+
+  List<UserScoreModel> get totalLeaderboard =>
+      _leaderboard.sorted((b, a) => a.xpTotal - b.xpTotal).toList();
+
 
   int _tabIndex = 0;
   int get tabIndex => _tabIndex;
@@ -105,7 +129,6 @@ class LeaderboardProvider extends InSoBlokViewModel {
           }
         }
 
-        logger.d(_leaderboard.length);
       } catch (e) {
         logger.e(e);
         setError(e);

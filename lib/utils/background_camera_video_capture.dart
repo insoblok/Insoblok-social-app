@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:camera/camera.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
-
+import 'package:insoblok/services/services.dart';
 class BackgroundCameraVideoCapture {
   CameraController? _controller;
   bool _initialized = false;
@@ -61,37 +61,40 @@ class BackgroundCameraVideoCapture {
 
   /// Record a short video (default 1.5 seconds)
   Future<void> recordShortVideo({double seconds = 1.5}) async {
-    if (!isInitialized) await initialize();
-    final c = _controller!;
-    if (c.value.isRecordingVideo) {
+    try {
+      if (!isInitialized) await initialize();
+      final c = _controller!;
+      if (c.value.isRecordingVideo) {
+        // ignore: avoid_print
+        print("Already recording, skipping.");
+        return;
+      }
+
+      await c.startVideoRecording();
       // ignore: avoid_print
-      print("Already recording, skipping.");
-      return;
-    }
+      print("Recording started... ${c.value.isRecordingVideo}");
 
-    await c.startVideoRecording();
-    // ignore: avoid_print
-    print("Recording started...");
+      final ms = (seconds * 1000).round();
+      await Future.delayed(Duration(milliseconds: ms));
+      String? outPath;
+      if (c.value.isRecordingVideo) {
+        final xfile = await c.stopVideoRecording();
 
-    final ms = (seconds * 1000).round();
-    await Future.delayed(Duration(milliseconds: ms));
+        final dir = await getTemporaryDirectory();
+        final ext = Platform.isIOS ? 'mov' : 'mp4';
+        final ts = DateTime.now().millisecondsSinceEpoch;
+        outPath = "${dir.path}/short_video_$ts.$ext";
+        logger.d("Recording path is $outPath");
+        await xfile.saveTo(outPath);
+        // ignore: avoid_print
+        print("Recording stopped. Saved to: $outPath");
+      }
 
-    String? outPath;
-    if (c.value.isRecordingVideo) {
-      final xfile = await c.stopVideoRecording();
-
-      final dir = await getTemporaryDirectory();
-      final ext = Platform.isIOS ? 'mov' : 'mp4';
-      final ts = DateTime.now().millisecondsSinceEpoch;
-      outPath = "${dir.path}/short_video_$ts.$ext";
-
-      await xfile.saveTo(outPath);
-      // ignore: avoid_print
-      print("Recording stopped. Saved to: $outPath");
-    }
-
-    if (outPath != null && onVideoRecorded != null) {
-      onVideoRecorded!(outPath);
+      if (outPath != null && onVideoRecorded != null) {
+        onVideoRecorded!(outPath);
+      }
+    } catch (e) {
+      logger.d("Excepting raised while capturing ${e.toString()}");
     }
   }
 

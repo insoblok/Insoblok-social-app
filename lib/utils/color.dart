@@ -57,4 +57,7 @@ class AIColors {
   static Color silver = Color(0xFFC0C0C0);
   static Color bronze = Color(0xFFCD7F32);
   static Color modalBackground = Color(0xFF130037);
+  static Color leaderBoardBackground = Color(0xFF1A1B2F);
+  static Color leaderBoardScoreProgressBackground = Color(0xFF5D5E72);
+  static Color leaderBoardScoreProgressForeground = Color(0xFF4EF3D1);
 }

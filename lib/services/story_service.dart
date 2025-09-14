@@ -1,15 +1,27 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:stacked/stacked.dart';
+import 'package:observable_ish/observable_ish.dart';
 
 import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/cloudinary_cdn_service.dart';
 import 'package:insoblok/services/services.dart';
 
-class StoryService {
+class StoryService with ListenableServiceMixin {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   CollectionReference<Map<String, dynamic>> get storyCollection =>
       _firestore.collection('story');
 
+  final RxValue<List<StoryModel>> _stories = RxValue<List<StoryModel>>([]);
+  List<StoryModel> get stories => _stories.value;
+  set stories(List<StoryModel> s) {
+    _stories.value = s;
+    notifyListeners();
+  } 
+
+  StoryService() {
+    listenToReactiveValues([_stories]);
+  }
   Future<StoryModel> getStory(String id) async {
     var doc = await storyCollection.doc(id).get();
     return StoryModel.fromJson({'id': doc.id, ...(doc.data() ?? {})});
@@ -33,7 +45,6 @@ class StoryService {
         } else {
           if ((story.allowUsers ?? []).contains(AuthHelper.user!.id!)) {
             if (story.userId != null) {
-              logger.d("story.allowUsers ref.id : $story");
               result.add(story);
             }
           }
@@ -42,6 +53,8 @@ class StoryService {
         logger.e(e.message);
       }
     }
+    _stories.value = result;
+    notifyListeners();
     return result;
   }
 
@@ -162,13 +175,22 @@ class StoryService {
   }
 
   // Get stories updated
-  Stream<UpdatedStoryModel?> getStoryUpdated() {
+  Stream<StoryModel?> getStoryUpdated() {
     return storyCollection.doc('updated').snapshots().map((doc) {
-      logger.d(doc.data());
       if (doc.data() == null) return null;
-      return UpdatedStoryModel.fromJson(doc.data()!);
+      return StoryModel.fromJson(doc.data()!);
     });
   }
+
+  Stream<List<StoryModel>> getStoriesStream() {
+  return storyCollection.snapshots().map((snapshot) {
+    return snapshot.docs.map((doc) {
+      var data = doc.data();
+      data['id'] = doc.id; // attach the doc id
+      return StoryModel.fromJson(data);
+    }).toList();
+  });
+}
 
   final tastescoreService = TastescoreService();
 
@@ -193,9 +215,6 @@ class StoryService {
     
     var staus = story.status;
 
-    logger.d("staus after post: $staus");
-    
-    logger.d("postStory: status ref.id: ${ref.id}");
     // ignore: unnecessary_null_comparison
     if (staus != null && staus == 'private' && ref.id != null) {
       addUserAction(ref.id);
@@ -283,9 +302,8 @@ class StoryService {
     required UserModel? user,
     required bool? isVote,
   }) async {
-    logger.d("This is saving story ${story.toMap()}");
     await storyCollection.doc(story.id).update(story.toMap());
-
+    await getStories();
     if (user != null) {
       var votes = List<UserActionModel>.from(user.actions ?? []);
       var index = votes.indexWhere(

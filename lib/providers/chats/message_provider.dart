@@ -6,7 +6,6 @@ import 'package:chewie/chewie.dart';
 import 'package:flutter_expandable_fab/flutter_expandable_fab.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:video_player/video_player.dart';
-import 'package:web3dart/web3dart.dart';
 
 import 'package:insoblok/locator.dart';
 import 'package:insoblok/models/models.dart';
@@ -23,7 +22,7 @@ class MessageProvider extends InSoBlokViewModel {
   }
 
   final _key = GlobalKey<ExpandableFabState>();
-  GlobalKey<ExpandableFabState> get key => _key;
+    GlobalKey<ExpandableFabState> get key => _key;
 
   late RoomModel _room;
   RoomModel get room => _room;
