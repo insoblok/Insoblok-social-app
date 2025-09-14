@@ -24,7 +24,26 @@ class WalletSendPage extends StatelessWidget {
             flexibleSpace: AppBackgroundView(),
           ),
           body: AppBackgroundView(
-            child: ListView(
+            child: viewModel.isBusy ? 
+            Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Loader(
+                    color: Colors.pink,
+                    size: 60
+                  ),
+                  SizedBox(height: 18),
+                  Text(
+                    "",
+                    style: TextStyle(
+                      fontSize: 20
+                    )
+                  ),
+                ],
+              ) 
+            ) :
+            ListView(
               physics: BouncingScrollPhysics(),
               padding: const EdgeInsets.symmetric(
                 horizontal: 20.0,

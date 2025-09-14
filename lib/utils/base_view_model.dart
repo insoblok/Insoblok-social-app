@@ -13,6 +13,8 @@ abstract class InSoBlokViewModel extends ReactiveViewModel {
 
   final CryptoService cryptoService = CryptoHelper.service;
   
+  final AccountService accountService = AccountService();
+
   final _newsService = NewsService();
   NewsService get newsService => _newsService;
 

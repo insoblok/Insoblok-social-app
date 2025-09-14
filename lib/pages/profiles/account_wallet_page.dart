@@ -71,7 +71,23 @@ class AccountWalletPage extends StatelessWidget {
             flexibleSpace: AppBackgroundView(),
           ),
           body: AppBackgroundView(
-            child: Column(
+            child: viewModel.isBusy ?
+            Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Loader(
+                    size: 60.0,
+                    color: Colors.pink
+                  ),
+                  Text(
+                    "",
+                    style: TextStyle(fontSize: 24)
+                  )
+                ]
+              )
+            ) :
+            Column(
               children: [
                 // Header section
                 Padding(
@@ -623,7 +639,15 @@ class RewardTransferView extends StatelessWidget {
         color: Theme.of(context).scaffoldBackgroundColor,
         borderRadius: BorderRadius.circular(8.0),
       ),
-      child: Column(
+      child: viewModel.isBusy ?
+      Center(child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Loader(size: 60, color: Colors.pink),
+          Text("... Loading Data"),
+        ],
+      )) :
+      Column(
         children: [
           Text(
             'Available : ${viewModel.availableXP} XP',

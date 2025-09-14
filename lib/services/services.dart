@@ -28,3 +28,4 @@ export 'crypto_service.dart';
 export 'web3_service.dart';
 export 'api_service.dart';
 export 'global_store.dart';
+export 'account_service.dart';

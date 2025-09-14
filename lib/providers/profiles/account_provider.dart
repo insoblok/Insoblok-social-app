@@ -8,7 +8,6 @@ import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
 import 'package:insoblok/locator.dart';
-import 'package:flutter_toggle_button/flutter_toggle_button.dart';
 
 class AccountProvider extends InSoBlokViewModel {
   late BuildContext _context;

@@ -1,4 +1,3 @@
-import 'dart:math';
 import 'package:flutter/material.dart';
 
 import 'package:collection/collection.dart';
@@ -235,7 +234,6 @@ class AccountRewardProvider extends InSoBlokViewModel {
               to: inSoValue,
             );
             await transferService.addTransfer(transfer: model);
-            
             // String txHash = await _web3service.transfer("insoblok", cryptoService.privateKey!.address, inSoValue);
             final result = await _web3service.getINSOByXP(xpValue ?? 0, inSoValue, cryptoService.privateKey!.address.hex);
 
@@ -329,8 +327,6 @@ class AccountRewardProvider extends InSoBlokViewModel {
     } else {
       if (selectXpInSo == null) return 0;
       double insoValue = selectXpInSo!.max! * selectXpInSo!.rate! / 100;
-      if (insoValue == 0.0) insoValue = 1.0;
-      logger.d("insoValues is $insoValue");
       return insoValue;
     }
   }

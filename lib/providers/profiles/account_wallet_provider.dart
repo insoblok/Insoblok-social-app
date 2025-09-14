@@ -111,6 +111,7 @@ class AccountWalletProvider extends InSoBlokViewModel {
     this.context = context;
 
     reownService = locator<ReownService>();
+    setBusy(true);
     await Future.wait([
       _web3Service.getBalances(address!),
       _web3Service.getPrices(),
@@ -131,6 +132,7 @@ class AccountWalletProvider extends InSoBlokViewModel {
     getTransfers();
     getUserScore();
     notifyListeners();
+    setBusy(false);
   }
 
   Future<void> getTransfers() async {
