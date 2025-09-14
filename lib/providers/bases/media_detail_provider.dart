@@ -157,7 +157,6 @@ class MediaDetailProvider extends InSoBlokViewModel {
     _medias.addAll(model.medias);
     _storyID = model.storyID;
 
-    logger.d("_storyID : $_storyID");
 
     _storyUser = model.storyUser;
     index = model.index;
@@ -236,7 +235,6 @@ class MediaDetailProvider extends InSoBlokViewModel {
     String? resultColor;
 
     await runBusyFuture(() async {
-
       try {
         if (selectedProduct != null) {
           if(selectedProduct!.category == "Shoes"){
@@ -302,7 +300,6 @@ class MediaDetailProvider extends InSoBlokViewModel {
 
           if(length == 0){
             await FirebaseHelper.deleteStory(storyID);
-            logger.d("_medias in length: $length");
             _isFeedDeleting = false;
           }
 
@@ -350,7 +347,6 @@ class MediaDetailProvider extends InSoBlokViewModel {
 
         var path = await _makeRemixImage();
 
-        logger.d("resultRemixImageUrl path: $path");
 
         // resultRemixImageUrl = await storyService.uploadResult(
         //   path!,
@@ -362,7 +358,6 @@ class MediaDetailProvider extends InSoBlokViewModel {
         MediaStoryModel model = await CloudinaryCDNService.uploadImageToCDN(XFile(path!));
         resultRemixImageUrl = model.link;
 
-        logger.d("resultRemixImageUrl: $resultRemixImageUrl");
 
         MediaStoryModel? media;
         if (resultRemixImageUrl != null) {
@@ -389,7 +384,6 @@ class MediaDetailProvider extends InSoBlokViewModel {
 
         await storyService.postStory(story: newStory);
 
-        logger.d("newStory: $newStory");
         AIHelpers.showToast(msg: 'Successfully reposted to LOOKBOOK!');
 
         goToLookbookPage();

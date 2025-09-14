@@ -76,7 +76,7 @@ class UserProvider extends InSoBlokViewModel {
     } else if (pos == 2) {
       return AIColors.bronze;
     }
-    return Theme.of(context).colorScheme.secondary.withAlpha(16);
+    return Colors.white;
   }
 
   Future<void> goToDetailPage() async {

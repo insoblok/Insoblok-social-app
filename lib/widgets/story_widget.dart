@@ -2,8 +2,11 @@
 
 import 'dart:io';
 import 'dart:async';
+import 'dart:ui';
+import 'package:path_provider/path_provider.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_html/flutter_html.dart';
 
@@ -28,7 +31,8 @@ class StoryListCell extends StatelessWidget {
   final bool? enableDetail;
   final bool? enableReaction;
   final double? marginBottom;
-  const StoryListCell({
+
+  StoryListCell({
     super.key,
     required this.story,
     this.enableDetail,
@@ -37,24 +41,48 @@ class StoryListCell extends StatelessWidget {
 
   });
 
+  final PageController _pageController = PageController();
+
+  Future<String?> _makeRemixImage() async {
+    var globalkey = GlobalKey();
+    var boundary =
+        globalkey.currentContext?.findRenderObject() as RenderRepaintBoundary?;
+    if (boundary != null) {
+      var image = await boundary.toImage();
+      var byteData = await image.toByteData(format: ImageByteFormat.png);
+      var pngBytes = byteData?.buffer.asUint8List();
+
+      final directory = (await getApplicationDocumentsDirectory()).path;
+      var imgFile = File('$directory/screenshot.png');
+      await imgFile.writeAsBytes(pngBytes!);
+      return imgFile.path;
+    }
+
+    return null;
+  }
+ 
+  int _currentPage = 0;
+
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<StoryProvider>.reactive(
       viewModelBuilder: () => StoryProvider(),
       onViewModelReady: (viewModel) => viewModel.init(context, model: story),
       builder: (context, viewModel, _) {
-        return InkWell(
-          onTap: () => {viewModel.startRRC()},
-          child: Container(
-            padding: const EdgeInsets.all(0.0),
+        logger.d("ViewModel face is ${viewModel.face}");
+        return 
+          InkWell(
+            onTap: () => {viewModel.startRRC()},
             child: Stack(
               children: [
                 // ======== MEDIA ========
                 if ((story.medias ?? []).isNotEmpty)
-                  Container(
-                    margin: const EdgeInsets.only(bottom: 40),  // bottom margin (outside)
-                    padding: const EdgeInsets.only(bottom: 24), // bottom padding (inside)
-                    child : PageView.builder(
+                  PageView.builder(
+                      controller: _pageController,
+                      onPageChanged: (page) {
+                        viewModel.pageIndex = page;
+                        _currentPage = page;
+                      },
                       itemCount: (viewModel.story.medias ?? []).length,
                       itemBuilder: (context, index) {
                         if (viewModel.videoStoryPath == null) {
@@ -67,15 +95,13 @@ class StoryListCell extends StatelessWidget {
                                     width: (story.medias ?? [])[viewModel.pageIndex].width,
                                     height: (story.medias ?? [])[viewModel.pageIndex].height,
                                   )
-                                : (story.medias ?? [])[viewModel.pageIndex],
+                                : (story.medias ?? [])[index],
                           );
                         } else {
                           return _CircularVideoPlayer(videoPath: viewModel.videoStoryPath!);
                         }
                       },
-                      onPageChanged: (value) => viewModel.pageIndex = value,
                     )
-                  )
                 else
                   Align(
                     alignment: Alignment.center,
@@ -88,7 +114,6 @@ class StoryListCell extends StatelessWidget {
                       ),
                     ),
                   ),
-            
                 // ======== BOTTOM GRADIENT OVERLAY (text/info only) ========
                 Column(
                   children: [
@@ -258,7 +283,7 @@ class StoryListCell extends StatelessWidget {
                                                     // tiny avatar beside progress line
                                                     Expanded(
                                                       child: Text(
-                                                        'Vybe Virtual Try-On + progress (${viewModel.story.votes?.length ?? 0} / 5 Looks Today)',
+                                                        'Vybe VTO + progress (${viewModel.story.votes?.length ?? 0} / 5 Looks Today)',
                                                         style: const TextStyle(fontSize: 10.0, fontWeight: FontWeight.bold),
                                                         maxLines: 2,
                                                         overflow: TextOverflow.ellipsis,
@@ -301,9 +326,23 @@ class StoryListCell extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 0.0),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
-                      spacing: 12.0,
+                      spacing: 5.0,
                       children: [
-                        
+                        if(viewModel.pageIndex > 0)
+                        StoryActionButton(
+                          src: Padding(
+                            padding: const EdgeInsets.only(bottom: 6), // <-- gap between icon & count
+                            child: AIImage(
+                              AIImages.icBottomLook,
+                              color: Theme.of(context).colorScheme.secondary,
+                              width: kStoryAvatarSize * 0.46,
+                            ),
+                          ),
+                          onTap: () async {
+                            List<String> mediaString = (viewModel.story.medias ?? []).map((m) => m.link ?? "").toList();
+                            await AIHelpers.goToDetailView(context, medias: mediaString);
+                          }
+                        ),
                         StoryActionButton(
                           src: Padding(
                             padding: const EdgeInsets.only(bottom: 6), // <-- gap between icon & count
@@ -334,6 +373,7 @@ class StoryListCell extends StatelessWidget {
                           // onTap: () => AIHelpers.shareStoryToLookbook(context, story: story),
                           onTap: () => viewModel.repost(),
                         ),
+                        SizedBox(height: 1.0),
                         StoryActionButton(
                           src: AIImage(
                             AIImages.icGallery,
@@ -364,7 +404,70 @@ class StoryListCell extends StatelessWidget {
                     ),
                   ),
                 ),
-            
+                if ((story.medias ?? []).length > 1)
+                Align(
+                  alignment: Alignment.centerLeft,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: InkWell(
+                      onTap:
+                          () {
+                            if (_pageController.hasClients) {
+                              final prevPage = _pageController.page!.toInt() - 1;
+                              if (prevPage > -1) {
+                                _pageController.animateToPage(
+                                  prevPage,
+                                  duration: Duration(milliseconds: 300),
+                                  curve: Curves.easeInOut,
+                                );
+                              }
+                            }
+                          },
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          AIImage(
+                            AIImages.icArrowLeft,
+                            height: 36.0,
+                            color: Colors.grey
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                if ((story.medias ?? []).length > 1)
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: InkWell(
+                      onTap:
+                          () {
+                            if (_pageController.hasClients) {
+                              final nextPage = _pageController.page!.toInt() + 1;
+                              if (nextPage < (viewModel.story.medias ?? []).length) {
+                                _pageController.animateToPage(
+                                  nextPage,
+                                  duration: Duration(milliseconds: 300),
+                                  curve: Curves.easeInOut,
+                                );
+                              }
+                            }
+                          },
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          AIImage(
+                            AIImages.icArrowRight,
+                            color: Colors.grey,
+                            height: 36.0,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
                 // ======== BOTTOM-LEFT: SLIDER ========
             
                 // ======== PAGE INDICATOR ========
@@ -387,9 +490,8 @@ class StoryListCell extends StatelessWidget {
             
                 if (viewModel.isBusy) const Center(child: Loader(size: 60.0)),
               ],
-            ),
-          ),
-        );
+            )
+          );
       },
     );
   }
@@ -648,8 +750,6 @@ class StoryYayNayWidget extends ViewModelWidget<StoryProvider> {
   Widget build(BuildContext context, viewModel) {
 
     final radius = 24.0;
-    logger.d("all votes are ${viewModel.story.votes}, ${viewModel.story.votes?.length}");
-    logger.d("current vote status is ${viewModel.story.isVote()}");
     return Container(
       child: Column(
         children: [
@@ -753,7 +853,7 @@ class StoryActionButton extends StatelessWidget {
       child: Column(
         children: [
           src,
-          if (label != null) Text(label!, style: Theme.of(context).textTheme.bodySmall),
+          if (label != null && label?.isEmpty == false) Text(label!, style: Theme.of(context).textTheme.bodySmall),
         ],
       ),
     );
@@ -1227,7 +1327,6 @@ class _CircularVideoPlayerState extends State<_CircularVideoPlayer> {
   void initState() {
     super.initState();
 
-    logger.d("videoPath : ${widget.videoPath}");
 
     if (widget.videoPath.startsWith('http')) {
       _controller = VideoPlayerController.network(widget.videoPath);
@@ -1477,7 +1576,6 @@ class _FaceReactionSliderState extends State<FaceReactionSlider> {
 
   Widget _buildKnob() {
 
-    logger.d("_stage : $_stage");
 
     final knobSize = widget.height - 4.0;
 
@@ -1962,6 +2060,7 @@ class _ReadyPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    logger.d("isVideo is $isVideo, $videoPath");
     if (isVideo) {
       return SizedBox(
         width: 35,

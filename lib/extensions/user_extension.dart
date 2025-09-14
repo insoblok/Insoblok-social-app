@@ -95,7 +95,7 @@ extension UserModelExt on UserModel {
                 ),
                 width: borderWidth ?? 4,
               ),
-              borderRadius: BorderRadius.circular(30.0),
+              borderRadius: BorderRadius.circular(width ?? 60 / 2),
             ),
             child: ClipOval(
               child:

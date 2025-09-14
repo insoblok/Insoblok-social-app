@@ -117,12 +117,9 @@ class StoryProvider extends InSoBlokViewModel {
   void init(BuildContext context, {required StoryModel model}) async {
     this.context = context;
     story = model;
-    logger.d("This is story ${story}");
     await updateView();
     refreshCount = 0;
     _videoPath = null;
-
-    logger.d("vybeCamEnabled in init: $vybeCamEnabled");
 
     final mediaPath = story.medias?[0].link;
     if (mediaPath!.contains('.mov') || mediaPath.contains('.mp4')) {
@@ -134,7 +131,6 @@ class StoryProvider extends InSoBlokViewModel {
     showFaceDialog = false;
 
     _isVideoReaction = globals.isRRCVideoCapture;  
-    logger.d("globals.isRRCVideoCapture : ${globals.isRRCVideoCapture}");
     // _isVideoReaction = false;
 
     quillController = () {
@@ -148,12 +144,11 @@ class StoryProvider extends InSoBlokViewModel {
   }
 
   Future<void> startRRC() async{
-
-    if(showFaceDialog)
+    if(showFaceDialog) {
       return;
+    }
 
     final auth = AuthHelper.user?.id;
-    logger.d("vybeCamEnabled in start: $vybeCamEnabled");
 
     if(vybeCamEnabled && (auth != story.userId)){
       showFaceDialog = true;
@@ -185,11 +180,12 @@ class StoryProvider extends InSoBlokViewModel {
     showFaceDialog = true;
     isCapturingTimer = true;
     await camera.stopAndDispose();
-
+    logger.d("capturereactionvideo");
     final c = Completer<String?>();
     videoCapture.onVideoRecorded = (String path) {
       scheduleMicrotask(() {
         videoPath = path;
+        logger.d("VideoPath is $path");
         // videoPath = '/data/data/insoblok.social.app/cache/SnapVideo.MOV';
         notifyListeners();  
         if (!c.isCompleted) c.complete(path);
@@ -197,7 +193,9 @@ class StoryProvider extends InSoBlokViewModel {
     };
 
     await videoCapture.initialize();
+    logger.d("initialized video");
     await videoCapture.recordShortVideo(seconds: 2.0);
+    logger.d("recordedvideo");
     await videoCapture.stopAndDispose();
     return c.future;
   }
@@ -420,7 +418,6 @@ class StoryProvider extends InSoBlokViewModel {
           user: owner,
           isVote: isVote,
         );
-        logger.d("votes are: ${story.votes}");
 
         if (isVote) {
           tastScoreService.voteScore(story);
@@ -574,7 +571,6 @@ class StoryProvider extends InSoBlokViewModel {
     await runBusyFuture(() async {
       try {
         var hasDescription = await _showDescriptionDialog();
-        logger.d("hasDescription: $hasDescription");
 
         String? description;
         if (hasDescription == true) {
@@ -630,7 +626,6 @@ class StoryProvider extends InSoBlokViewModel {
     if (isBusy) return;
     clearErrors();
 
-    logger.d(content);
 
     faceStatus = 'Generating...';
 
@@ -666,6 +661,10 @@ class StoryProvider extends InSoBlokViewModel {
       }
     }
     return false;
+  }
+
+  Future<void> handleClickRemix() async {
+    
   }
 
   Future<bool?> _showDescriptionDialog() => showDialog<bool>(

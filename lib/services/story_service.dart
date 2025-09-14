@@ -45,7 +45,6 @@ class StoryService with ListenableServiceMixin {
         } else {
           if ((story.allowUsers ?? []).contains(AuthHelper.user!.id!)) {
             if (story.userId != null) {
-              logger.d("story.allowUsers ref.id : $story");
               result.add(story);
             }
           }
@@ -178,7 +177,6 @@ class StoryService with ListenableServiceMixin {
   // Get stories updated
   Stream<StoryModel?> getStoryUpdated() {
     return storyCollection.doc('updated').snapshots().map((doc) {
-      logger.d(doc.data());
       if (doc.data() == null) return null;
       return StoryModel.fromJson(doc.data()!);
     });
@@ -217,9 +215,6 @@ class StoryService with ListenableServiceMixin {
     
     var staus = story.status;
 
-    logger.d("staus after post: $staus");
-    
-    logger.d("postStory: status ref.id: ${ref.id}");
     // ignore: unnecessary_null_comparison
     if (staus != null && staus == 'private' && ref.id != null) {
       addUserAction(ref.id);
@@ -307,7 +302,6 @@ class StoryService with ListenableServiceMixin {
     required UserModel? user,
     required bool? isVote,
   }) async {
-    logger.d("This is saving story ${story.toMap()}");
     await storyCollection.doc(story.id).update(story.toMap());
     await getStories();
     if (user != null) {
