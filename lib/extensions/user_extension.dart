@@ -168,7 +168,7 @@ extension UserModelExt on UserModel {
   List<Map<String, dynamic>> get linkInfo => [
     if (website != null)
       {'type': 'website', 'title': website!, 'icon': AIImages.icLink},
-    {'type': 'since', 'title': 'Joined $sinceStr', 'icon': AIImages.icCalendar},
+    {'type': 'since', 'title': '$sinceStr', 'icon': AIImages.icCalendar},
     {
       'type': 'location',
       'title': country ?? 'United State',
@@ -177,6 +177,8 @@ extension UserModelExt on UserModel {
     if (id == AuthHelper.user?.id)
       {'type': 'wallet', 'title': 'My Wallet', 'icon': Icons.wallet},
   ];
+
+
 
   Map<String, dynamic> toMap() {
     Map<String, dynamic> result = {
@@ -202,6 +204,7 @@ extension UserModelExt on UserModel {
       'reward_date': rewardDate,
       'transfered_xp': transferedXP,
       'transfered_inso': transferedInSo,
+      'favorite_tokens': favoriteTokens,
       'is_premium': isPremium,
       'likes': (likes),
       'follows': (follows),

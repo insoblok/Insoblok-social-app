@@ -238,4 +238,20 @@ class LoginProvider extends InSoBlokViewModel {
   
 
   }
+
+
+  void handleClickForgotPassword() {
+    _walletExists = false;
+    notifyListeners();
+  }
+
+  void handleSignInWithPassword() {
+    _walletExists = true;
+    notifyListeners();
+  }
+
+  Future<void> handleClickSignInWithFaceID() async {
+    Map<String, String>? result = await LocalAuthService.accessWalletWithFaceId();
+    
+  }
 }

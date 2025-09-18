@@ -69,7 +69,6 @@ class StoryListCell extends StatelessWidget {
       viewModelBuilder: () => StoryProvider(),
       onViewModelReady: (viewModel) => viewModel.init(context, model: story),
       builder: (context, viewModel, _) {
-        logger.d("ViewModel face is ${viewModel.face}");
         return 
           InkWell(
             onTap: () => {viewModel.startRRC()},

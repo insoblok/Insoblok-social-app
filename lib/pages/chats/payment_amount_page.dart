@@ -7,15 +7,15 @@ import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
 
 class PaymentAmountPage extends StatelessWidget {
-  
-  PaymentAmountPage({super.key});
+  final Map<String, dynamic> args;
+  PaymentAmountPage({super.key, required this.args});
 
   @override build(BuildContext context) {
-    return ViewModelBuilder<PaymentAmountProvider>.reactive(
-      viewModelBuilder: () => PaymentAmountProvider(),
-      onViewModelReady: (viewModel) => viewModel.init(context),
+    return ViewModelBuilder<WalletSendProvider>.reactive(
+      viewModelBuilder: () => WalletSendProvider(),
+      onViewModelReady: (viewModel) => viewModel.init(context, args["sender"].toString(), args["receiver"].toString(), args["network"].toString(), double.parse(args["amount"].toString())),
       builder: (context, viewModel, _) {
-        final network = kWalletTokenList.firstWhere((tk) => tk["chain"] == viewModel.selectedNetwork);
+        print("network is ${viewModel.network}");
         return Scaffold(
           appBar: AppBar(
             title: Text("P2P Payment Amount"),
@@ -38,8 +38,7 @@ class PaymentAmountPage extends StatelessWidget {
                           Text('Tokens'),
                           GestureDetector(
                             onTap:() {
-                              viewModel.controller.value = (viewModel.allBalances[viewModel.selectedNetwork] ?? "").toString();
-                              viewModel.amount = (viewModel.allBalances[viewModel.selectedNetwork] ?? 0);
+                              viewModel.handleClickMax();
                             },
                             child: Text("Use Max")
                           )
@@ -53,14 +52,14 @@ class PaymentAmountPage extends StatelessWidget {
                               padding: const EdgeInsets.symmetric(horizontal: 20.0),
                               child: DropdownButton<String>(
                                 isExpanded: true,
-                                value: viewModel.selectedNetwork,
+                                value: viewModel.network,
                                 dropdownColor:
                                     Theme.of(context).colorScheme.onSecondary,
                                 icon: const Icon(Icons.keyboard_arrow_down),
                                 underline: Container(),
                                 items:
                                   kWalletTokenList.map((ethInfo) {
-                                    final chainValue = (ethInfo["chain"] ?? "") as String;
+                                    final chainValue = (ethInfo["chain"] ?? "").toString();
                                     return DropdownMenuItem(
                                       value: chainValue,
                                       child: Text(
@@ -71,7 +70,9 @@ class PaymentAmountPage extends StatelessWidget {
                                     );
                                   }).toList(),
                                 onChanged: (newValue) {
-                                  viewModel.selectedNetwork = newValue!;
+                                  if(newValue == null) return;
+                                  viewModel.network = newValue;
+                                  viewModel.selectedNetwork = kWalletTokenList.firstWhere((one) => one["chain"].toString() == newValue);
                                 },
                               ),
                             ),
@@ -80,7 +81,7 @@ class PaymentAmountPage extends StatelessWidget {
                       ),
                       Padding(
                         padding: const EdgeInsets.all(8.0),
-                        child: Text('Balance: ${viewModel.allBalances[viewModel.selectedNetwork] ?? "" } ${network["short_name"]}'),
+                        child: Text('Balance: ${viewModel.allBalances[viewModel.network] ?? "0" } ${viewModel.selectedNetwork["short_name"] ?? ""}'),
                       ),
                       const SizedBox(height: 16.0),
                       // Row(

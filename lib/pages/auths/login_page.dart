@@ -10,7 +10,7 @@ import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
 import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/models/models.dart';
-
+import 'package:insoblok/pages/pages.dart';
 
 final kLandingPageData = [
   {
@@ -34,6 +34,7 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     // helper that hides but preserves space/position
     Widget keepSpace({required bool visible, required Widget child}) {
       return Visibility(
@@ -99,16 +100,20 @@ class LoginPage extends StatelessWidget {
                         );
 
                         Navigator.pop(bContext);
+                        logger.d("Wallet creation result is ${newWalletResult.address}, ${newWalletResult.mnemonic}");
+                        await showDialog(
+                          context: context,
+                          barrierDismissible: false,
+                          builder: (context) => SeedPhraseConfirmationWidget(
+                            seedWords: (newWalletResult.mnemonic ?? "").split(" ").toList(), 
+                            onConfirmed: () {
+                              Routers.goToRegisterFirstPage(buildContext,
+                                user: UserModel(walletAddress: newWalletResult.address)
+                              );
+                            } 
+                          )
+                        );
                         
-                        if (authUser?.walletAddress?.isEmpty ?? true) {
-                          Routers.goToRegisterFirstPage(
-                            buildContext,
-                            user: UserModel(walletAddress: newWalletResult.address),
-                          );
-                        } else {
-                          AuthHelper.updateStatus('Online');
-                          Routers.goToMainPage(buildContext);
-                        }
                       } catch (e) {
                         logger.e(e);
                         rethrow; // Re-throw to handle in the dialog
@@ -144,8 +149,8 @@ class LoginPage extends StatelessWidget {
                         Container(
                           width: double.infinity,
                           margin: EdgeInsets.only(
-                            top: MediaQuery.of(context).padding.top,
-                            left: 32.0,
+                            top: 16,
+                            left: 16.0,
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -271,6 +276,19 @@ class LoginPage extends StatelessWidget {
                                   text: "Unlock"
                                 )
                               ),
+                              Center(
+                                child: GestureDetector(
+                                  onTap: viewModel.handleClickForgotPassword,
+                                  child: Text(
+                                    "Forgot Password",
+                                    style: TextStyle(
+                                      color: Colors.blue,            // blue like a hyperlink
+                                      decoration: TextDecoration.underline, // underline
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ),
+                              )
                             ]        
                           )
                         else
@@ -296,6 +314,19 @@ class LoginPage extends StatelessWidget {
                                   onPressed: viewModel.isClickImportWallet
                                       ? null
                                       : () => viewModel.showImportDialog(viewModel.context),
+                                ),
+                              ),
+                              Center(
+                                child: GestureDetector(
+                                  onTap: viewModel.handleSignInWithPassword,
+                                  child: Text(
+                                    "Sign In with Password",
+                                    style: TextStyle(
+                                      color: Colors.blue,            // blue like a hyperlink
+                                      decoration: TextDecoration.underline, // underline
+                                      fontSize: 16,
+                                    ),
+                                  ),
                                 ),
                               )
                             ]

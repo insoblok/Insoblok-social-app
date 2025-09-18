@@ -114,6 +114,10 @@ class Routers {
     return _pushToRoute(context, kRouterWalletReceive, null);
   }
 
+  static dynamic goToWalletReceiveConfirmPage(BuildContext context) {
+    return _pushToRoute(context, kRouterWalletReceiveConfirm, null);
+  }
+
   static dynamic goToCreateRoomPage(BuildContext context) {
     return _pushToRoute(context, kRouterCreateRoom, null);
   }
@@ -130,16 +134,29 @@ class Routers {
     return _pushToRoute(context, kRouterChatView, null);
   }
 
-  static dynamic goToChatPaymentPage(BuildContext context) {
-    return _pushToRoute(context, kRouterChatPayment, null);
+  static dynamic goToChatPaymentPage(BuildContext context, String s, String r) {
+    Map<String, String> args = {};
+    args["sender"] = s;
+    args["receiver"] = r;
+    return _pushToRoute(context, kRouterChatPayment, args);
   }
 
-  static dynamic goToPaymentAmountPage(BuildContext context) {
-    return _pushToRoute(context, kRouterPaymentAmount, null);
+  static dynamic goToPaymentAmountPage(BuildContext context, String s, String r, String n, double amount) {
+    Map<String, dynamic> args = {};
+    args["sender"] = s;
+    args["receiver"] = r;
+    args["network"] = n;
+    args["amount"] = amount;
+    return _pushToRoute(context, kRouterPaymentAmount, args);
   }
 
-  static dynamic goToPaymentConfirmPage(BuildContext context) {
-    return _pushToRoute(context, kRouterPaymentConfirm, null);
+  static dynamic goToPaymentConfirmPage(BuildContext context, String s, String r, String n, double amt) {
+    Map<String, dynamic> args = {};
+    args["sender"] = s;
+    args["receiver"] = r;
+    args["network"] = n;
+    args["amount"] = amt;
+    return _pushToRoute(context, kRouterPaymentConfirm, args);
   }
 
   static dynamic goToPaymentResultPage(BuildContext context) {
@@ -264,5 +281,9 @@ class Routers {
     List<UserModel>? users,
   }) {
     return _pushToRoute(context, kRouterUserList, users);
+  }
+
+  static dynamic goToFavoritesPage(BuildContext context) {
+    return _pushToRoute(context, kRouterFavorites, null);
   }
 }

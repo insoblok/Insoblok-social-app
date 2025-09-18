@@ -1,5 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:insoblok/pages/profiles/profiles.dart';
+import 'package:observable_ish/observable_ish.dart';
 import 'package:stacked/stacked.dart';
 import 'package:flutter/material.dart';
 import 'package:insoblok/locator.dart';
@@ -15,6 +17,20 @@ class AccountWalletProvider extends InSoBlokViewModel {
     _context = context;
     notifyListeners();
   }
+
+  int _currentIndex = 0;
+  int get currentIndex => _currentIndex;
+
+  void setIndex(int index) {
+    _currentIndex = index;
+    notifyListeners();
+  }
+
+  final List<Widget> pages = const [
+    Center(child: AccountWalletHomePage()),
+    Center(child: WalletFavoritesPage()),
+    Center(child: Text("Profile Page")),
+  ];
 
   late ReownService reownService;
 
@@ -36,13 +52,21 @@ class AccountWalletProvider extends InSoBlokViewModel {
 
   List<String> get networkNames => kWalletTokenList.map((one) => one["chain"].toString()).toList();
 
-  List<Map<String, dynamic>> enabledNetworks = [];
-  
+  List<Map<String, dynamic>> enabledNetworks = [kWalletTokenList[0], kWalletTokenList[1], kWalletTokenList[3], kWalletTokenList[4]];
+  setEnabledNetworks(List<Map<String, dynamic>> nets) {
+    enabledNetworks = nets;
+    notifyListeners();
+  }
   String get networkString => enabledNetworks.length == 1 ? enabledNetworks[0]["displayName"] : "Enabled Networks";
   
   Map<String, double> tokenValues = {};
 
   double totalBalance = 0;
+
+  void getAvailableXP() {
+    final values = transferService.getXpToInsoBalance(_transfers);
+    availableXP = totalScore - values[0];
+  }
 
   List<Map<String, dynamic>> get filteredTransactions {
     if (enabledNetworks.isEmpty) return [];
@@ -61,15 +85,15 @@ class AccountWalletProvider extends InSoBlokViewModel {
         }
       });
     }).toList() ?? [];
-    logger.d("Filtered transactions are ${transactions!.length}, ${filtered.length}");
     return filtered;
   }
 
   final Web3Service _web3Service = locator<Web3Service>();
+  final AuthService authService = AuthService();
 
   Map<String, double>? get allBalances => _web3Service.allBalances;
   Map<String, double>? get allPrices => _web3Service.allPrices;
-
+  Map<String, double>? get allChanges => _web3Service.allChanges;
   List<Map<String, dynamic>>? get transactions => _web3Service.transactions ?? [];
 
   @override
@@ -87,11 +111,13 @@ class AccountWalletProvider extends InSoBlokViewModel {
       }
       return result;
     }
-    
-  int get availableXP {
-    return totalScore - transferXpToInsoValues[0].toInt();
-    // return 5000;
-  }
+
+  double availableXP = 0;
+
+  // int get availableXP {
+  //   return totalScore - transferXpToInsoValues[0].toInt();
+  //   // return 5000;
+  // }
 
   bool _isLoadingScore = false;
   bool get isLoadingScore => _isLoadingScore;
@@ -107,16 +133,46 @@ class AccountWalletProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  String _query = "";
+  String get query => _query;
+  
+  List<Map<String, dynamic>> get filteredItems =>
+      kWalletTokenList.where((item) => item["chain"].toString().toLowerCase().contains(_query.toLowerCase())).toList();
+
+  final Set<Map<String, dynamic>> _selectedItems = {};
+  Set<Map<String, dynamic>> get selectedItems => _selectedItems;
+
+  void updateQuery(String value) {
+    _query = value;
+    logger.d("Search text is $_query");
+    notifyListeners();
+  }
+
+  void toggleSelection(Map<String, dynamic> item) {
+    if (_selectedItems.contains(item)) {
+      _selectedItems.remove(item);
+    } else {
+      _selectedItems.add(item);
+    }
+    notifyListeners();
+  }
+
   Future<void> init(BuildContext context) async {
     this.context = context;
 
     reownService = locator<ReownService>();
     setBusy(true);
+
+
     await Future.wait([
       _web3Service.getBalances(address!),
+      
       _web3Service.getPrices(),
-      _web3Service.getTransactions(address!)
+      _web3Service.getTransactions(address!),
+      getTransfers(),
+      getUserScore(),
     ]);
+    getAvailableXP();
     totalBalance = 0;
     allBalances!.forEach((token, balance) {
       final price = allPrices![token];
@@ -126,12 +182,9 @@ class AccountWalletProvider extends InSoBlokViewModel {
         totalBalance += value;
       }
     });
-    logger.d("All balances is $allBalances");
-    logger.d("Total balance is $totalBalance");
     // transactions = await getTransactions(cryptoService.privateKey!.address.hex);
-    getTransfers();
-    getUserScore();
     notifyListeners();
+    allBalances!["xp"] = availableXP;
     setBusy(false);
   }
 
@@ -206,5 +259,38 @@ class AccountWalletProvider extends InSoBlokViewModel {
     } catch (e) {
       return {};
     }
+  }
+
+  void handleClickFavorites(BuildContext ctx) {
+    Routers.goToFavoritesPage(ctx);
+  }
+
+  Future<void> toggleFavorite(String network) async {
+    logger.d("Toggle $network");
+    String message = "";
+    var tokens = (AuthHelper.user?.favoriteTokens ?? []).toList();
+    try {
+      if (tokens.contains(network)) {
+        tokens.remove(network);
+        message = "successfully removed $network from favorites";
+      }
+      else {
+        tokens.add(network);
+        message = "successfully added $network to favorites";
+      }
+      UserModel newUser = user!.copyWith(favoriteTokens: tokens);
+      await AuthHelper.updateUser(newUser);
+
+    } catch (e) {
+      message = "Failed to ${tokens.contains(network) ? 'remove' : 'add' } $network to favorites.";
+      logger.d("Exception raised while toggle favorites ${e.toString()}");
+    }
+    logger.d("Updated user is ${user?.favoriteTokens}");
+    AIHelpers.showToast(msg: message);
+    notifyListeners();
+  }
+
+  bool checkFavorite(String network) {
+    return AuthHelper.user?.favoriteTokens?.contains(network) == true;
   }
 }

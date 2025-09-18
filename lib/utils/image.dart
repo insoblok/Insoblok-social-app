@@ -30,6 +30,7 @@ class AIImages {
   static String icBottomMarket = 'assets/icons/ic_chart_hoz.svg';
   static String icBottomNotiFill = 'assets/icons/ic_notifications_fill.svg';
   static String icBottomNoti = 'assets/icons/ic_notifications.svg';
+  static String icBottomFavorite = 'assets/icons/ic_favorite.svg';
   static String icBottomMessageFill = 'assets/icons/ic_comment_fill.png';
   static String icBottomMessage = 'assets/icons/ic_comment.png';
   static String icBottomUserFill = 'assets/icons/ic_user_fill.svg';
@@ -97,10 +98,10 @@ class AIImages {
     return 'assets/images/img_level_0$level.png';
   }
 
-  static String icCoinUsdt = 'assets/icons/ic_usdt.png';
-  static String icCoinXrp = 'assets/icons/ic_xrp.png';
+  static String icCoinUsdt = 'assets/icons/ic_usdt.svg';
+  static String icCoinXrp = 'assets/icons/ic_xrp2.png';
   static String icCoinInso = 'assets/icons/ic_inso.png';
-  static String icCoinEther = 'assets/icons/ic_eth.svg';
+  static String icCoinEther = 'assets/icons/ic_eth2.svg';
   //static String icUserXP = 'assets/icons/ic_xrp.svg';
   static String icUserXP = 'assets/icons/ic_xp2.png';
 

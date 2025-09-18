@@ -8,12 +8,12 @@ import 'package:insoblok/widgets/widgets.dart';
 import 'package:insoblok/routers/routers.dart';
 
 class ChatPaymentPage extends StatelessWidget {
-  const ChatPaymentPage({super.key});
-
+  final Map<String, String> args;
+  const ChatPaymentPage({super.key, required this.args});
   @override build(BuildContext context) {
-    return ViewModelBuilder<ChatPaymentProvider>.reactive(
-      viewModelBuilder: () => ChatPaymentProvider(),
-      onViewModelReady: (viewModel) => viewModel.init(context),
+    return ViewModelBuilder<WalletSendProvider>.reactive(
+      viewModelBuilder: () => WalletSendProvider(),
+      onViewModelReady: (viewModel) => viewModel.init(context, args["sender"] ?? "", args["receiver"] ?? "", "", 0),
       builder: (context, viewModel, _) {
         return Scaffold(
           appBar: AppBar(
@@ -22,36 +22,41 @@ class ChatPaymentPage extends StatelessWidget {
             flexibleSpace: AppBackgroundView(),
           ),
           body: AppBackgroundView(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 40.0, horizontal: 24),
-                  child: Column(
-                    children: [
-                        AITextField(
-                          hintText: "From",
-                          controller: viewModel.fromAddressTextEditingController,
-                        ),
-                        const SizedBox(height: 24),
-                        AITextField(
-                          hintText: "To",
-                          controller: viewModel.toAddressTextEditingController, // ← Fixed controller name
-                      ),                   
-                    ],
+            child: SafeArea(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                mainAxisSize: MainAxisSize.max,
+                children: [
+                  Expanded(
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 40.0, horizontal: 24),
+                      child: Column(
+                        children: [
+                            AITextField(
+                              hintText: "From",
+                              controller: viewModel.senderController
+                            ),
+                            const SizedBox(height: 24),
+                            AITextField(
+                              hintText: "To",
+                              controller: viewModel.receiverController
+                          ),                   
+                        ],
+                      ),
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 80.0, horizontal: 24),
-                  child: GradientPillButton(
-                    text: "Next",
-                    loadingText: " ... Loading ",
-                    onPressed: () {
-                      Routers.goToPaymentAmountPage(context);
-                    }
-                  ),
-                )
-              ],
+                  Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 80.0, horizontal: 24),
+                    child: GradientPillButton(
+                      text: "Next",
+                      loadingText: " ... Loading ",
+                      onPressed: () {
+                        Routers.goToPaymentAmountPage(context, viewModel.senderController.text.trim(), viewModel.receiverController.text.trim(), "", 0);
+                      }
+                    ),
+                  )
+                ],
+              ),
             ),
           )
         );

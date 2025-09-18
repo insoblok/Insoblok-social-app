@@ -20,10 +20,12 @@ class AccountService with ListenableServiceMixin {
   AccountService() {
     getUserScore(owner?.id ?? "");
     getTransfers(owner?.id ?? "");
+    getUsersScoreList();
   }
 
   List<TastescoreModel> get scores =>
       _scores..sort((b, a) => a.timestamp!.difference(b.timestamp!).inSeconds);
+  final UserService userService = UserService();
 
   int get totalScore {
     var result = 0;
@@ -109,6 +111,8 @@ class AccountService with ListenableServiceMixin {
     notifyListeners();
   }
 
+  int userRankIndex = 0;
+
   final List<TransferModel> _transfers = [];
 
   List<double> get transferValues =>
@@ -116,6 +120,7 @@ class AccountService with ListenableServiceMixin {
 
   List<double> get transferValues1 =>
       transferService.getInsoToUsdtBalance(_transfers);
+
 
   Future<void> getTransfers(String userId) async {
     if (userId.isEmpty) return;
@@ -129,4 +134,37 @@ class AccountService with ListenableServiceMixin {
     }
   }
 
+
+  Future<void> getUsersScoreList() async {
+    try {
+      var scores = await tastScoreService.getScoreList();
+      var newMap = groupBy(scores, (obj) => obj.userId);
+      for (var key in newMap.keys) {
+        if (key != null) {
+          var score = UserScoreModel(id: key, scores: newMap[key] ?? []);
+          
+          _usersScoreList.add(score);
+        }
+      }
+      for (int i = 0; i < userTotalScores.length; i++) {
+        if (userTotalScores[i].id == owner!.id) {
+          userRankIndex = i + 1;
+          break;
+        }
+      }
+      userRank =
+          ((userTotalScores.length - userRankIndex) *
+                  100 /
+                  userTotalScores.length)
+              .toInt();
+    } catch (e) {
+      logger.e(e);
+    } finally {
+      notifyListeners();
+    }
+  }
+  
+  Future<UserModel?> toggleFavorite(String network) async {
+    
+  }
 }

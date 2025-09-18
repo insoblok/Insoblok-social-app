@@ -43,7 +43,7 @@ class WalletSwapPage extends StatelessWidget {
                   ),
                 ],
               ) 
-            ) :ListView(
+            ) : ListView(
               physics: BouncingScrollPhysics(),
               padding: const EdgeInsets.symmetric(
                 horizontal: 20.0,

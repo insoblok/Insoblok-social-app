@@ -5,6 +5,7 @@ import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/widgets/widgets.dart';
+import 'package:insoblok/pages/pages.dart';
 
 class ImportWalletDialog extends StatefulWidget {
   final CryptoService cryptoService;
@@ -93,7 +94,7 @@ class _ImportWalletDialogState extends State<ImportWalletDialog> {
 
       logger.d("authUser : $authUser");
       Navigator.pop(ctx, null);
-      Navigator.pop(ctx, null);
+      if(_selectedMethod == ImportMethod.mnemonic) Navigator.pop(ctx, null);
       if (authUser?.walletAddress?.isEmpty ?? true) {
         Routers.goToRegisterFirstPage(
           ctx,
@@ -115,7 +116,7 @@ class _ImportWalletDialogState extends State<ImportWalletDialog> {
     if (value == null || value.isEmpty) {
       return 'Please enter your ${_selectedMethod == ImportMethod.mnemonic ? 'mnemonic phrase' : 'private key'}';
     }
-
+    logger.d("Input is $value");
     if (_selectedMethod == ImportMethod.mnemonic) {
       final words = value.trim().split(RegExp(r'\s+'));
       if (words.length != 12 && words.length != 24) {
@@ -168,6 +169,7 @@ class _ImportWalletDialogState extends State<ImportWalletDialog> {
               _isLoading = false;
             });
           },
+          showSeedPhrase: false,
         ),
       );
     }
@@ -178,31 +180,38 @@ class _ImportWalletDialogState extends State<ImportWalletDialog> {
   }
 
   Widget _buildHeader(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          _currentStep == 0 ? 'Import Wallet' : 'Set Password',
-          style: TextStyle(
-            color: Colors.white,
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
+    return Stack(
+        children: [
+      // Title in the center (fills available space)
+          Align(
+            child: Center(
+              child: Text(
+                _currentStep == 0 ? 'Import Wallet' : 'Set Password',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
           ),
-        ),
-        
-        // Show close button only in first step or add confirmation for closing
-        if (_currentStep == 0)
-          IconButton(
-            icon: Icon(Icons.close, color: Colors.grey[400]),
-            onPressed: () => Navigator.of(context).pop(),
+          
+          // Right button
+          Positioned(
+            right: -10,
+            top: -10,
+            child:_currentStep == 0 ? 
+              IconButton(
+                icon: Icon(Icons.close, color: Colors.grey[400]),
+                onPressed: () => Navigator.of(context).pop(),
+              ) :
+              IconButton(
+                icon: Icon(Icons.arrow_back, color: Colors.grey[400]),
+                onPressed: _goToPreviousStep,
+              )
           )
-        else
-          IconButton(
-            icon: Icon(Icons.arrow_back, color: Colors.grey[400]),
-            onPressed: _goToPreviousStep,
-          ),
-      ],
-    );
+        ],
+      );
   }
 
   Widget _buildMethodSelector() {
@@ -415,31 +424,38 @@ class _ImportWalletDialogState extends State<ImportWalletDialog> {
 
 
   Widget _buildActionButtons() {
-    return SizedBox(
-      width: double.infinity,
-      child: _currentStep == 0
-          ? GradientPillButton(
-              text: "Continue",
-              onPressed: _goToNextStep,
-            )
-          : _currentStep == 1
-            ? GradientPillButton(
-                text: "Import Wallet",
-                onPressed: () {
-                  if (_selectedMethod == ImportMethod.mnemonic) {
-                    _showSeedPhraseConfirmation(context);
-                  } else {
-                    _importWallet(context);
-                  }
-                },
-              )
-            : GradientPillButton(
-                text: "Confirm & Import Wallet",
-                loading: _isLoading,
-                loadingText: "... Verifying",
-                onPressed: () {
-                }                  
-              ),
+    return Column(
+      children: [
+        SizedBox(
+          width: double.infinity,
+          child: _currentStep == 0
+              ? GradientPillButton(
+                  text: "Continue",
+                  onPressed: _goToNextStep,
+                )
+              : _currentStep == 1
+                ? GradientPillButton(
+                    text: "Import Wallet",
+                    onPressed: () {
+                      if (_selectedMethod == ImportMethod.mnemonic) {
+                        _showSeedPhraseConfirmation(context);
+                      } else {
+                        _importWallet(context);
+                      }
+                    },
+                    loading: _isLoading,
+                    loadingText: "... importing",
+                  )
+                : GradientPillButton(
+                    text: "Confirm & Import Wallet",
+                    loading: _isLoading,
+                    loadingText: "... Verifying",
+                    onPressed: () {
+                    }                  
+                  ),
+        ),
+        SizedBox(height: 40.0)
+      ],
     );
   }
   Widget _buildPasswordValidationHint() {
@@ -473,296 +489,48 @@ class _ImportWalletDialogState extends State<ImportWalletDialog> {
       insetPadding: EdgeInsets.zero,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       child: Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
+        decoration: BoxDecoration(
+          border: BoxBorder.all(color: Colors.white)
+        ),
         padding: const EdgeInsets.all(24),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
+        child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              _buildHeader(context),
-              const SizedBox(height: 16),
+              Column(
+                mainAxisSize: MainAxisSize.max,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  SizedBox(height: 32.0),
+                  _buildHeader(context),
+                  const SizedBox(height: 64),
 
-              if (_currentStep == 0) ...[
-                _buildMethodSelector(),
-                const SizedBox(height: 24),
-              ],
+                  if (_currentStep == 0) ...[
+                    _buildMethodSelector(),
+                    const SizedBox(height: 48),
+                  ],
 
-              Form(
-                key: _formKey,
-                child: _currentStep == 0
-                    ? _buildSecretInputStep()
-                    : _currentStep == 1
-                      ? _buildPasswordInputStep()
-                      : _buildConfirmationStep(),
+                  Form(
+                    key: _formKey,
+                    child: _currentStep == 0
+                        ? _buildSecretInputStep()
+                        : _currentStep == 1
+                          ? _buildPasswordInputStep()
+                          : _buildConfirmationStep(),
+                  ),
+
+                  const SizedBox(height: 20),
+
+                  if (_errorMessage != null) _buildErrorMessage(),
+
+                  if (_errorMessage != null) const SizedBox(height: 16),
+
+                  
+                ],
               ),
-
-              const SizedBox(height: 20),
-
-              if (_errorMessage != null) _buildErrorMessage(),
-
-              if (_errorMessage != null) const SizedBox(height: 16),
-
               _buildActionButtons(),
             ],
           ),
-        ),
-      ),
-    );
-  }
-}
-
-// Seed Phrase Confirmation Dialog
-// Seed Phrase Confirmation Dialog with Full Re-input
-class SeedPhraseConfirmationDialog extends StatefulWidget {
-  final String originalSeedPhrase;
-  final VoidCallback onConfirm;
-  final VoidCallback onCancel;
-
-  const SeedPhraseConfirmationDialog({
-    super.key,
-    required this.originalSeedPhrase,
-    required this.onConfirm,
-    required this.onCancel,
-  });
-
-  @override
-  State<SeedPhraseConfirmationDialog> createState() => _SeedPhraseConfirmationDialogState();
-}
-
-class _SeedPhraseConfirmationDialogState extends State<SeedPhraseConfirmationDialog> {
-  final TextEditingController _confirmationController = TextEditingController();
-  final FocusNode _confirmationFocusNode = FocusNode();
-  String? _errorMessage;
-  bool _isChecking = false;
-
-  bool get _isConfirmed {
-    final enteredPhrase = _confirmationController.text.trim();
-    final originalPhrase = widget.originalSeedPhrase.trim();
-    return enteredPhrase.toLowerCase() == originalPhrase.toLowerCase();
-  }
-
-  void _checkConfirmation() {
-    setState(() {
-      _isChecking = true;
-    });
-
-    Future.delayed(const Duration(milliseconds: 300), () {
-      if (_isConfirmed) {
-        widget.onConfirm();
-      } else {
-        setState(() {
-          _errorMessage = 'Seed phrases do not match. Please try again.';
-          _isChecking = false;
-        });
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _confirmationController.dispose();
-    _confirmationFocusNode.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Dialog(
-      backgroundColor: AIColors.modalBackground,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-      child: Padding(
-        padding: const EdgeInsets.all(24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // Header
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Confirm Seed Phrase',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
-                IconButton(
-                  icon: Icon(Icons.close, color: Colors.grey[400]),
-                  onPressed: widget.onCancel,
-                ),
-              ],
-            ),
-            
-            const SizedBox(height: 16),
-            
-            // Instructions
-            Text(
-              'Please re-enter your seed phrase to confirm you have it correctly',
-              style: TextStyle(
-                color: Colors.grey[400],
-                fontSize: 14,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            
-            const SizedBox(height: 8),
-            
-            Text(
-              'This ensures you have properly backed up your recovery phrase',
-              style: TextStyle(
-                color: Colors.orange[300],
-                fontSize: 12,
-                fontWeight: FontWeight.w500,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            
-            const SizedBox(height: 24),
-            
-            // Seed Phrase Input
-            TextFormField(
-              controller: _confirmationController,
-              focusNode: _confirmationFocusNode,
-              maxLines: 3,
-              style: const TextStyle(color: Colors.white),
-              decoration: InputDecoration(
-                contentPadding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
-                labelText: 'Re-enter Seed Phrase',
-                labelStyle: Theme.of(context).textTheme.labelLarge,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16.0),
-                  borderSide: const BorderSide(width: 0.33),
-                ),
-                enabledBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16.0),
-                  borderSide: BorderSide(width: 0.33, color: AIColors.borderColor),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(16.0),
-                  borderSide: BorderSide(
-                    width: 0.33,
-                    color: Theme.of(context).primaryColor,
-                  ),
-                ),
-                suffixIcon: _confirmationController.text.isNotEmpty
-                    ? IconButton(
-                        icon: Icon(Icons.clear, color: Colors.grey[400], size: 20),
-                        onPressed: () {
-                          _confirmationController.clear();
-                          setState(() {
-                            _errorMessage = null;
-                          });
-                        },
-                      )
-                    : null,
-              ),
-              onChanged: (value) {
-                setState(() {
-                  _errorMessage = null;
-                });
-              },
-            ),
-            
-            const SizedBox(height: 16),
-            
-            // Word count indicator
-            
-            const SizedBox(height: 8),
-            
-            // Error message
-            if (_errorMessage != null)
-              Container(
-                width: double.infinity,
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.red[900]!.withOpacity(0.3),
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                child: Row(
-                  children: [
-                    Icon(Icons.error_outline, color: Colors.red[200], size: 16),
-                    const SizedBox(width: 8),
-                    Expanded(
-                      child: Text(
-                        _errorMessage!,
-                        style: TextStyle(color: Colors.red[200], fontSize: 12),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            
-            if (_errorMessage != null) const SizedBox(height: 16),
-            
-            // Buttons
-            Row(
-              children: [
-                Expanded(
-                  child: TextButton(
-                    onPressed: widget.onCancel,
-                    style: TextButton.styleFrom(
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(32),
-                        side: BorderSide(color: Colors.grey[600]!),
-                      ),
-                    ),
-                    child: Text(
-                      'Cancel',
-                      style: TextStyle(color: Colors.grey[400]),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: _confirmationController.text.isNotEmpty && !_isChecking
-                        ? () {
-                          _checkConfirmation();
-                        }
-                        : null,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: _isConfirmed 
-                          ? Colors.green 
-                          : Theme.of(context).primaryColor,
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(32),
-                      ),
-                    ),
-                    child: _isChecking
-                        ? SizedBox(
-                            height: 20,
-                            width: 20,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              valueColor: AlwaysStoppedAnimation(Colors.white),
-                            ),
-                          )
-                        : Text(
-                            'Confirm',
-                            style: TextStyle(color: Colors.white),
-                          ),
-                  ),
-                ),
-              ],
-            ),
-            
-            const SizedBox(height: 8),
-            
-            // Help text
-            Text(
-              'Make sure the seed phrase matches exactly',
-              style: TextStyle(
-                color: Colors.grey[500],
-                fontSize: 12,
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }

@@ -6,7 +6,8 @@ import 'package:insoblok/models/models.dart';
 import 'package:insoblok/pages/bases/reaction_video_detail_page.dart';
 import 'package:insoblok/pages/pages.dart';
 import 'package:insoblok/pages/profiles/tastescore_page.dart';
-import 'package:insoblok/pages/profiles/wallet_receive_page.dart';
+import 'package:insoblok/pages/profiles/wallet_favorites_page.dart';
+import 'package:insoblok/pages/profiles/wallet_receive_confirm_page.dart';
 import 'package:insoblok/pages/profiles/wallet_swap_page.dart';
 import 'package:insoblok/pages/profiles/wallet_send_page.dart';
 import 'package:insoblok/pages/stories/video_edit_page.dart';
@@ -34,6 +35,7 @@ const kRouterRewardDetail = '/reward-detail';
 const kRouterWalletSwap = '/wallet-swap';
 const kRouterWalletSend = '/wallet-send';
 const kRouterWalletReceive = '/wallet-receive';
+const kRouterWalletReceiveConfirm = '/wallet-receive-confirm';
 
 const kRouterCreateRoom = '/create-room';
 const kRouterMessage = '/message';
@@ -75,7 +77,7 @@ const kRouterMarketPlace = '/market-place';
 const kRouterFaceDetail = '/face-detail';
 const kRouterReactionVideoDetail = '/reaction-video-detail';
 const kRouterUserList = '/user-list';
-
+const kRouterFavorites = '/wallet-favorites';
 class Navigation {
   final router = fluro.FluroRouter();
 
@@ -173,6 +175,9 @@ class Navigation {
     // * WalletReceivePage
     initRoute(kRouterWalletReceive, (props) => WalletReceivePage());
 
+    initRoute(kRouterWalletReceiveConfirm, (props) => WalletReceiveConfirmPage());
+
+
     // * CreateRoomPage
     initRoute(kRouterCreateRoom, (props) => CreateRoomPage());
 
@@ -189,13 +194,13 @@ class Navigation {
     initRoute(kRouterChatView, (props) => ChatView());
 
     // * MessagePaymentFirstPage
-    initRoute(kRouterChatPayment, (props) => ChatPaymentPage());
+    initRoute<Map<String, String>>(kRouterChatPayment, (props) => ChatPaymentPage(args: props!));
     
     // * PaymentAmountPage
-    initRoute(kRouterPaymentAmount, (props) => PaymentAmountPage());
+    initRoute<Map<String, dynamic>>(kRouterPaymentAmount, (props) => PaymentAmountPage(args: props!));
 
     // * PaymentConfirmPage
-    initRoute(kRouterPaymentConfirm, (props) => PaymentConfirmPage());
+    initRoute<Map<String, dynamic>>(kRouterPaymentConfirm, (props) => PaymentConfirmPage(args: props!));
 
     // * PaymentResultPage
     initRoute(kRouterPaymentResult, (props) => PaymentResultPage());
@@ -349,5 +354,7 @@ class Navigation {
     initRoute(kRouterVideoEditor, (props) => VideoEditorPage(path: props.toString()));
 
     initRoute(kRouterImageEditor, (props) => ImageEditorPage(path: props.toString()));
+
+    initRoute(kRouterFavorites, (props) => WalletFavoritesPage());
   }
 }

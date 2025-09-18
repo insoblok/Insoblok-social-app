@@ -38,7 +38,7 @@ class UserService {
       var doc =
           await _userCollection
               .queryBy(UserQuery.walletAddress, value: address)
-              .get();
+              .get(const GetOptions(source: Source.server));
       if (doc.docs.isEmpty) return null;
       return _getUserFromDoc(doc.docs.first);
     } on FirebaseException catch (e) {
@@ -79,6 +79,7 @@ class UserService {
   }
 
   Future<void> updateUser(UserModel user) async {
+    logger.d("THis is user update data ${user.favoriteTokens.toString()}");
     await _userCollection.doc(user.id).update({...user.toMap()});
   }
 
@@ -136,6 +137,14 @@ class UserService {
       return UserModel.fromJson(json);
     }
     return null;
+  }
+
+  Stream<UserModel?> getUserUpdated() {
+    return _userCollection.doc('updated').snapshots().map((doc) {
+      logger.d("user is updated");
+      if (doc.data() == null) return null;
+      return UserModel.fromJson(doc.data()!);
+    });
   }
 }
 

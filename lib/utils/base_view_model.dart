@@ -48,6 +48,9 @@ abstract class InSoBlokViewModel extends ReactiveViewModel {
   final MethodChannelService _methodChannelService = MethodChannelService();
   MethodChannelService get methodChannelService => _methodChannelService;
 
+  final LocalAuthService _localAuthService = LocalAuthService();
+  LocalAuthService get localAuthService => _localAuthService;
+
   @override
   List<ListenableServiceMixin> get listenableServices => [authService];
 }

@@ -408,7 +408,7 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
     // var titles = ['Home', 'Vybe', 'Wallet', 'Chat', 'Profile'];
     var pages = [
       PageableView(),
-      AccountWalletPage(),
+      // AccountWalletPage(),
       LeaderboardPage(),
       LookbookView(),
       ChatView(),
@@ -644,8 +644,9 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
                                   Expanded(
                                     child: AIBottomBar(
                                       onTap: () {
-                                        viewModel.pageIndex = 1;
-                                        viewModel.dotIndex = 1;
+                                        // viewModel.pageIndex = 1;
+                                        // viewModel.dotIndex = 1;
+                                        Routers.goToAccountWalletPage(context);
                                       },
                                       icon:
                                           viewModel.pageIndex == 1
@@ -665,16 +666,16 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
                                   Expanded(
                                     child: AIBottomBar(
                                       onTap: () {
-                                        viewModel.pageIndex = 4;
-                                        viewModel.dotIndex = 4;
+                                        viewModel.pageIndex = 3;
+                                        viewModel.dotIndex = 3;
                                       },
                                       icon:
-                                          viewModel.pageIndex == 4
+                                          viewModel.pageIndex == 3
                                               ? AIImages.icBottomMessageFill
                                               : AIImages.icBottomMessage,
                                       label: 'Chat',
                                       color:
-                                          viewModel.pageIndex == 4
+                                          viewModel.pageIndex == 3
                                               ? AIColors.pink
                                               : AIColors.white,
                                     ),
@@ -682,17 +683,17 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
                                   Expanded(
                                     child: AIBottomBar(
                                       onTap: () {
-                                        viewModel.pageIndex = 5;
-                                        viewModel.dotIndex = 5;
+                                        viewModel.pageIndex = 4;
+                                        viewModel.dotIndex = 4;
                                         Routers.goToAccountPage(context);
                                       },
                                       icon:
-                                          viewModel.pageIndex == 5
+                                          viewModel.pageIndex == 4
                                               ? AIImages.icBottomUserFill
                                               : AIImages.icBottomUser,
                                       label: 'Profile',
                                       color:
-                                          viewModel.pageIndex == 5
+                                          viewModel.pageIndex == 4
                                               ? AIColors.pink
                                               : AIColors.white,
                                     ),

@@ -72,7 +72,7 @@ class TastescoreService {
     );
     await tastescoreCollection.add(tastescore.toMap());
   }
-
+  
   
   Future<void> repostScore(StoryModel story) async {
     var reward = UserXPValue.postXP;
@@ -219,7 +219,6 @@ class TastescoreService {
         logger.e(e.message);
       }
     }
-    logger.d(scoreList.length);
     return scoreList;
   }
 

@@ -73,7 +73,7 @@ class AccountProvider extends InSoBlokViewModel {
       (accountUser?.views ?? []).contains(AuthHelper.user?.id);
 
   final Web3Service _web3Service = locator<Web3Service>();
-
+  
   void init(BuildContext context, {UserModel? model}) async {
     this.context = context;
     accountUser = model ?? AuthHelper.user;
@@ -88,7 +88,9 @@ class AccountProvider extends InSoBlokViewModel {
   }
 
   final List<StoryModel> stories = [];
-
+  
+  int get userRank => accountService.userRankIndex;
+  
   void setPageIndex(int index) {
     pageIndex = index;
     notifyListeners();

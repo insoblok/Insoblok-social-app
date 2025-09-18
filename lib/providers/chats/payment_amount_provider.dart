@@ -55,11 +55,4 @@ class PaymentAmountProvider extends InSoBlokViewModel{
     _web3Service.paymentAmount = double.parse(amount); 
   }
 
-  void handleClickPreview(BuildContext context) {
-    if (amount > (allBalances[selectedNetwork] ?? 0).toDouble()) {
-      AIHelpers.showToast(msg: "Please enter valid amount");
-      return;
-    }
-    Routers.goToPaymentConfirmPage(context);
-  }
 }

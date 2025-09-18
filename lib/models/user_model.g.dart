@@ -53,6 +53,10 @@ _UserModel _$UserModelFromJson(Map<String, dynamic> json) => _UserModel(
       (json['actions'] as List<dynamic>?)
           ?.map((e) => UserActionModel.fromJson(e as Map<String, dynamic>))
           .toList(),
+  favoriteTokens:
+      (json['favorite_tokens'] as List<dynamic>?)
+          ?.map((e) => e as String)
+          .toList(),
 );
 
 Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
@@ -89,6 +93,7 @@ Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
       'user_actions': instance.userActions,
       'galleries': instance.galleries,
       'actions': instance.actions,
+      'favorite_tokens': instance.favoriteTokens,
     };
 
 _UserActionModel _$UserActionModelFromJson(Map<String, dynamic> json) =>

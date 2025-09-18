@@ -6,19 +6,20 @@ import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
 import 'package:insoblok/services/services.dart';
-import 'package:insoblok/routers/router.dart';
 
 class PaymentConfirmPage extends StatelessWidget {
-  const PaymentConfirmPage({super.key});
+  final Map<String, dynamic> args;
+  const PaymentConfirmPage({super.key, required this.args});
 
   @override build(BuildContext context) {
-    return ViewModelBuilder<PaymentConfirmProvider>.reactive(
-      viewModelBuilder: () => PaymentConfirmProvider(),
-      onViewModelReady: (viewModel) => viewModel.init(context),
+    logger.d("Payment information is $args");
+    return ViewModelBuilder<WalletSendProvider>.reactive(
+      viewModelBuilder: () => WalletSendProvider(),
+      onViewModelReady: (viewModel) => viewModel.init(context, args["sender"].toString(), args["receiver"].toString(), args["network"].toString(), double.parse(args["amount"].toString())),
       builder: (context, viewModel, _) {
-        final network = kWalletTokenList.firstWhere((tk) => tk["chain"].toString() == viewModel.selectedNetwork);
-        final price = (viewModel.amount ?? 0) * (viewModel.allPrices[viewModel.selectedNetwork] ?? 0);
-        final fee = viewModel.transactionFee * (viewModel.allPrices[viewModel.selectedNetwork] ?? 0).toDouble();
+        final network = kWalletTokenList.firstWhere((tk) => tk["chain"].toString() == viewModel.network);
+        final price = viewModel.amount! * viewModel.allPrices[viewModel.network!]!;
+        final fee = viewModel.transactionFee * (viewModel.allPrices[viewModel.network!] ?? 0).toDouble();
         final totalPrice = price + fee;
         return Scaffold(
           appBar: AppBar(
@@ -44,7 +45,7 @@ class PaymentConfirmPage extends StatelessWidget {
                               children: [
                                 Text(
                 
-                                  "\$${ price.toStringAsFixed(2) }",
+                                  "\$${ (price).toStringAsFixed(2) }",
                                   style: TextStyle(
                                     fontSize: 36,
                                     color: Colors.blueAccent,
@@ -60,7 +61,7 @@ class PaymentConfirmPage extends StatelessWidget {
                                 AIImage(network["icon"], width: 32.0, height: 32.0),
                                 const SizedBox(width: 12.0),
                                 Text(
-                                  "${AIHelpers.formatDouble(viewModel.amount, 10) ?? 0} ${network['short_name'] ?? ""}",
+                                  "${AIHelpers.formatDouble(viewModel.amount ?? 0, 10) ?? 0} ${network['short_name'] ?? ""}",
                                   style: TextStyle(
                                     fontSize: 24
                                   )
@@ -89,7 +90,7 @@ class PaymentConfirmPage extends StatelessWidget {
                       
                                 )
                               ),
-                              Text(viewModel.toAddress ?? "",
+                              Text(viewModel.receiver ?? "",
                                 style: TextStyle(
                                   fontSize: 14
                                 )
@@ -207,8 +208,8 @@ class PaymentConfirmPage extends StatelessWidget {
                       text: "Send Now",
                       loading: viewModel.isBusy,
                       loadingText: "Sending ...",
-                      onPressed: () {
-                        viewModel.handleClickSend(context);
+                      onPressed: () async {
+                        await viewModel.handleClickSend(context);
                       }
                     ),
                 )

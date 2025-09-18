@@ -31,6 +31,10 @@ class Web3Service with ListenableServiceMixin {
   final RxValue<Map<String, double>> _allPrices = RxValue<Map<String, double>>({});
   Map<String, double> get allPrices => _allPrices.value;
 
+  final RxValue<Map<String, double>> _allChanges = RxValue<Map<String, double>>({});
+  Map<String, double> get allChanges => _allChanges.value;
+
+
   final RxValue<List<Map<String, dynamic>>> _transactions = RxValue<List<Map<String, dynamic>>>([]);
   List<Map<String, dynamic>> get transactions => _transactions.value;
 
@@ -131,14 +135,13 @@ class Web3Service with ListenableServiceMixin {
 
 
   /// 
-  Future<double> getEthereumPriceInUsd() async {
+  Future<dynamic> getPricesInUSD() async {
     try {
-      final url = Uri.parse(ETHER_PRICE_URL);
+      final url = Uri.parse(TOKEN_PRICES_URL);
       final response = await http.get(url);
       if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
-        final price = (data["ethereum"]["usd"] as num).toDouble();
-        return price;
+        return jsonDecode(response.body);
+        
       } else {
         throw Exception("Failed to fetch Ethereum price: ${response.statusCode}");
       }
@@ -172,9 +175,20 @@ class Web3Service with ListenableServiceMixin {
 
   Future<void> getPrices() async {
     try {
-      double price = await getEthereumPriceInUsd();
-      _allPrices.value = { "insoblok": 0, "usdt": 1, "xrp": 0, "ethereum": price, "sepolia": 0};
+      final prices = await getPricesInUSD();
+      logger.d("Prices are $prices");
+      Map<String, double> values = {};
+      Map<String, double> changeValues = {};
+      for (var tk in kWalletTokenList) {
+          values[tk["chain"].toString()] = (prices?[tk["coingecko_id"]]?["usd"] ?? 0).toDouble();
+          changeValues[tk["chain"].toString()] = (prices?[tk["coingecko_id"]]?["usd_24h_change"] ?? 0).toDouble();
+      }
+      logger.d("values are $values");
+      _allPrices.value = values;
+      _allChanges.value = changeValues;
+
     } catch (e) {
+      logger.d("Exception raised while getting prices ${e.toString()}");
       _allPrices.value = { "insoblok": 0, "usdt": 1, "xrp": 0, "ethereum": 0, "sepolia": 0};
     }
     notifyListeners();

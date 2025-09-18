@@ -29,7 +29,6 @@ class ApiService {
     final url = Uri.parse('$baseUrl$endpoint');
 
     try {
-        logger.d("request is $url, $body");
 
       final response = await http.post(
         url,
