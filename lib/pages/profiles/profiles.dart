@@ -16,3 +16,4 @@ export 'reward_detail_page.dart';
 export 'wallet_receive_page.dart';
 export 'wallet_receive_confirm_page.dart';
 export 'wallet_favorites_page.dart';
+export 'token_detail_page.dart';

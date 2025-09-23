@@ -164,7 +164,4 @@ class AccountService with ListenableServiceMixin {
     }
   }
   
-  Future<UserModel?> toggleFavorite(String network) async {
-    
-  }
 }

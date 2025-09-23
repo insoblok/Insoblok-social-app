@@ -35,7 +35,6 @@ class _ImportWalletDialogState extends State<ImportWalletDialog> {
   }
 
   void _goToNextStep() {
-    logger.d("Width and height in import dialog is ${MediaQuery.of(context).size.width}, ${MediaQuery.of(context).size.height}");
     if (_currentStep == 0) {
       if (_validateSecret(_secretController.text) == null) {
         setState(() {
@@ -116,7 +115,6 @@ class _ImportWalletDialogState extends State<ImportWalletDialog> {
     if (value == null || value.isEmpty) {
       return 'Please enter your ${_selectedMethod == ImportMethod.mnemonic ? 'mnemonic phrase' : 'private key'}';
     }
-    logger.d("Input is $value");
     if (_selectedMethod == ImportMethod.mnemonic) {
       final words = value.trim().split(RegExp(r'\s+'));
       if (words.length != 12 && words.length != 24) {
@@ -482,7 +480,6 @@ class _ImportWalletDialogState extends State<ImportWalletDialog> {
 
   @override
   Widget build(BuildContext context) {
-    logger.d("Width and height in build function is ${MediaQuery.of(context).size.width}, ${MediaQuery.of(context).size.height}");
 
     return Dialog(
       backgroundColor: AIColors.modalBackground,

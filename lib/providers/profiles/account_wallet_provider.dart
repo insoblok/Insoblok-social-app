@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:insoblok/pages/profiles/profiles.dart';
 import 'package:observable_ish/observable_ish.dart';
 import 'package:stacked/stacked.dart';
-import 'package:flutter/material.dart';
 import 'package:insoblok/locator.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/routers/routers.dart';
@@ -31,6 +30,13 @@ class AccountWalletProvider extends InSoBlokViewModel {
     Center(child: WalletFavoritesPage()),
     Center(child: Text("Profile Page")),
   ];
+
+  final RxValue<int> _viewType = RxValue<int>(0);
+  int get viewType => _viewType.value;
+  set viewType(int v) {
+    _viewType.value = v;
+    notifyListeners();
+  } 
 
   late ReownService reownService;
 
@@ -96,6 +102,26 @@ class AccountWalletProvider extends InSoBlokViewModel {
   Map<String, double>? get allChanges => _web3Service.allChanges;
   List<Map<String, dynamic>>? get transactions => _web3Service.transactions ?? [];
 
+  Map<String, dynamic> tokenDetails = {};
+
+  Future<void> getTokenDetails(String coingecko_id) async {
+    if(isBusy) { 
+      logger.d("is busy. returning...");
+      return;
+    }
+    clearErrors();
+    setBusy(true);
+    await runBusyFuture(() async {
+      final response = await _web3Service.getTokenDetails(coingecko_id);
+      tokenDetails = response;
+      notifyListeners();
+    }());
+
+    setBusy(false);
+    
+  }
+
+
   @override
   List<ListenableServiceMixin> get listenableServices => [_web3Service];
 
@@ -142,9 +168,68 @@ class AccountWalletProvider extends InSoBlokViewModel {
   final Set<Map<String, dynamic>> _selectedItems = {};
   Set<Map<String, dynamic>> get selectedItems => _selectedItems;
 
+  final Map<String, Map<String, dynamic>> chartRanges = {
+    "1H": {
+      "interval": "1m",
+      "limit": 61,
+    }, 
+    "1D": {
+      "interval": "15m",
+      "limit": 97,
+    }, 
+    "1W": {
+      "interval": "1h",
+      "limit": 169,
+    }, 
+    "1M": {
+      "interval": "4h",
+      "limit": 200,
+    }, 
+    "3M": {
+      "interval": "12h",
+      "limit": 200,
+    }
+  };
+
+  List<Map<String, dynamic>> get chartRangesList => chartRanges.entries.map<Map<String, dynamic>>((entry) {
+    return {
+        "label": entry.key,
+        "interval": entry.value["interval"],
+        "limit": entry.value["limit"],
+    };
+  }).toList();
+  
+  String _selectedChartRange = "1H";
+  String get selectedChartRange => _selectedChartRange;
+  set selectedChartRange(String s) {
+    _selectedChartRange = s;
+    notifyListeners();
+  }
+
+  final Map<String, String> priceData = {
+    "1H": "Price data for 1 Hour",
+    "1D": "Price data for 1 Day",
+    "1W": "Price data for 1 Week",
+    "1M": "Price data for 1 Month",
+    "3M": "Price data for 3 Months",
+  };
+
+  void selectChartRange(String tab) {
+    _selectedChartRange = tab;
+    notifyListeners();
+  }
+
+  bool showingMarketData = true;
+
+  void toggleShowMarketData() {
+    showingMarketData = !showingMarketData;
+    notifyListeners();
+  }
+
+  String get currentChartData => priceData[_selectedChartRange] ?? "No data";
+
   void updateQuery(String value) {
     _query = value;
-    logger.d("Search text is $_query");
     notifyListeners();
   }
 
@@ -266,7 +351,6 @@ class AccountWalletProvider extends InSoBlokViewModel {
   }
 
   Future<void> toggleFavorite(String network) async {
-    logger.d("Toggle $network");
     String message = "";
     var tokens = (AuthHelper.user?.favoriteTokens ?? []).toList();
     try {
@@ -285,7 +369,6 @@ class AccountWalletProvider extends InSoBlokViewModel {
       message = "Failed to ${tokens.contains(network) ? 'remove' : 'add' } $network to favorites.";
       logger.d("Exception raised while toggle favorites ${e.toString()}");
     }
-    logger.d("Updated user is ${user?.favoriteTokens}");
     AIHelpers.showToast(msg: message);
     notifyListeners();
   }
@@ -293,4 +376,13 @@ class AccountWalletProvider extends InSoBlokViewModel {
   bool checkFavorite(String network) {
     return AuthHelper.user?.favoriteTokens?.contains(network) == true;
   }
+
+  handleClickFavoriteToken(BuildContext ctx, Map<String, dynamic> network) {
+    if (network["binance_id"].isEmpty) {
+      AIHelpers.showToast(msg: "No details for this token.");
+      return;
+    }
+    Routers.goToTokenDetailPage(ctx, network);
+  }
+
 }

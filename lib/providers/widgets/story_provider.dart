@@ -32,7 +32,6 @@ class StoryProvider extends InSoBlokViewModel {
   set story(StoryModel model) {
     _story = model;
     notifyListeners();
-    logger.d(story.cntYay);
   }
   bool _isComment = false;
   bool get isComment => _isComment;

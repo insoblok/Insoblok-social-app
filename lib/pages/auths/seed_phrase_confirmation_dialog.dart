@@ -30,7 +30,6 @@ class SeedPhraseConfirmationDialogState extends State<SeedPhraseConfirmationDial
   @override
   void initState() {
     super.initState();
-    logger.d("original seed phrases are ${widget.originalSeedPhrase}");
   }
 
   bool get _isConfirmed {
@@ -76,6 +75,13 @@ class SeedPhraseConfirmationDialogState extends State<SeedPhraseConfirmationDial
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
+                Opacity(
+                  opacity: 0,
+                  child: IconButton(
+                    icon: Icon(Icons.close, color: Colors.grey[400]),
+                    onPressed: () {},
+                  ),
+                ),
                 Text(
                   'Confirm Seed Phrase',
                   style: TextStyle(

@@ -130,17 +130,6 @@ class AccountWalletHomePage extends StatelessWidget {
                                     color: Theme.of(context).primaryColor,
                                   ),
                                 ),
-                                SizedBox(width: 8.0),
-                                AccountWalletIconCover(
-                                  child: AIImage(
-                                    AIImages.icBottomFavorite,
-                                    backgroundColor: Colors.pink,
-                                    color: Theme.of(context).primaryColor,
-                                  ),
-                                  onTap: () {
-                                    viewModel.handleClickFavorites(context);
-                                  } 
-                                ),
                               ],
                             ),
                           ),

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:intl/intl.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -350,5 +351,19 @@ class AIHelpers {
     } else {
       throw 'Could not launch $url';
     }
+  }
+
+  static String formatNumbers(double value) {
+    return NumberFormat.decimalPattern('en_US').format(value);
+  }
+
+
+  static String formatLargeNumberSmart(num number) {
+    final formatter = NumberFormat.decimalPattern();
+    if (number >= 1e12) return (number / 1e12).toStringAsFixed(2) + 'T';
+    if (number >= 1e9) return (number / 1e9).toStringAsFixed(2) + 'B';
+    if (number >= 1e6) return (number / 1e6).toStringAsFixed(2) + 'M';
+    if (number >= 1e3) return (number / 1e3).toStringAsFixed(2) + 'K';
+    return formatter.format(number); // fallback with commas
   }
 }

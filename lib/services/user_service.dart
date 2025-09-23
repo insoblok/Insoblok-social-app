@@ -79,7 +79,6 @@ class UserService {
   }
 
   Future<void> updateUser(UserModel user) async {
-    logger.d("THis is user update data ${user.favoriteTokens.toString()}");
     await _userCollection.doc(user.id).update({...user.toMap()});
   }
 

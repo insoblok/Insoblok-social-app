@@ -36,3 +36,5 @@ export 'video_progress_alert.dart';
 export 'pixel_transparent_painter.dart';
 export 'preview_image.dart';
 export 'seed_phrase_confirmation_widget.dart';
+export 'crypto_sparkline_widget.dart';
+export 'spark_line_chart.dart';

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:observable_ish/observable_ish.dart';
 
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/routers/router.dart';
@@ -64,7 +63,6 @@ class DashboardProvider extends InSoBlokViewModel {
     });
 
     storyService.getStoriesStream().listen((sList) {
-      logger.d("Story updated $sList");
       _stories.value = sList;
       isUpdated = true;
     });
@@ -127,16 +125,8 @@ class DashboardProvider extends InSoBlokViewModel {
         // } else {
         storydatas = await storyService.getStories();
 
-        final auth = AuthHelper.user?.id;
-        logger.d("auth : $auth");
-
-        for (final s in storydatas) {
-          logger.d('---id=${s.id}');
-        }
-
         // }
         _stories.value.clear();
-        logger.d(storydatas.length);
         _stories.value.addAll(storydatas);
         isUpdated = false;
       } catch (e) {

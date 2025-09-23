@@ -38,6 +38,10 @@ class Routers {
     _pushToRoute(context, kRouterRegister, user);
   }
 
+  static dynamic goToPincodePage(BuildContext context) {
+    _pushToRoute(context, kRouterLoginPincode, null);
+  }
+
   static dynamic goToMainPage(BuildContext context) {
     _pushReplacement(context, kRouterMain, null);
   }
@@ -285,5 +289,9 @@ class Routers {
 
   static dynamic goToFavoritesPage(BuildContext context) {
     return _pushToRoute(context, kRouterFavorites, null);
+  }
+
+  static dynamic goToTokenDetailPage(BuildContext context, Map<String, dynamic> args) {
+    return _pushToRoute(context, kRouterTokenDetail, args);
   }
 }

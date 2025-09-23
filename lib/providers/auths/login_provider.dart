@@ -7,7 +7,6 @@ import 'package:insoblok/models/models.dart';
 import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
-import 'package:insoblok/widgets/widgets.dart';
 import 'package:insoblok/pages/auths/import_wallet_dialog.dart';
 
 
@@ -31,6 +30,15 @@ class LoginProvider extends InSoBlokViewModel {
   PageController get pageController => _pageController;
   int _currentPage = 0;
   int get currentPage => _currentPage;
+
+  static const loginMethods = ["Login with Password", "Login with Face ID"];
+
+  String _loginMethod = loginMethods[0];
+  String get loginMethod => _loginMethod;
+  set loginMethod(String s) {
+    _loginMethod = s;
+    notifyListeners();
+  }
 
   final _existingPasswordController = TextEditingController();
   TextEditingController get existingPasswordController => _existingPasswordController;
@@ -71,15 +79,15 @@ class LoginProvider extends InSoBlokViewModel {
   final globals = GlobalStore();
   bool get enabled => globals.isVybeCamEnabled;
 
+  bool checkingFace = false;
+  LocalAuthService localAuthService = LocalAuthService();
+
   Future<void> init(BuildContext context) async {
     this.context = context;
-    logger.d("Width and height is ${MediaQuery.of(context).size.width}, ${MediaQuery.of(context).size.height}");
-
     // logger.d("vybeCamEnabled in login: $enabled");
 
     _reownService = locator<ReownService>();
     await _reownService.init(context);
-
     _timer = Timer.periodic(Duration(seconds: 3), (Timer timer) {
       if (_currentPage < 1) {
         _currentPage++;
@@ -96,6 +104,16 @@ class LoginProvider extends InSoBlokViewModel {
 
     checkWalletStatus();
     notifyListeners();
+  }
+
+  Future<void> checkFace() async {
+    checkingFace = true;
+    UnlockedWallet wallet = await localAuthService.accessWalletWithFaceId();
+    logger.d("Wallet is ${wallet.address}");
+    checkingFace = false;
+    if (wallet.address.isEmpty) {
+      handleChangeLoginMethod(loginMethods[0]);
+    }
   }
 
   @override
@@ -195,6 +213,7 @@ class LoginProvider extends InSoBlokViewModel {
     _walletExists = await cryptoService.doesWalletExist();
     isCheckingWallet = false;
     notifyListeners();
+    if (_walletExists) await checkFace();
   } 
 
   Future<void> handleClickSignIn(BuildContext ctx) async {
@@ -250,8 +269,11 @@ class LoginProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  Future<void> handleClickSignInWithFaceID() async {
-    Map<String, String>? result = await LocalAuthService.accessWalletWithFaceId();
-    
+  void handleChangeLoginMethod(String method) {
+    if(method.isEmpty) return;
+    loginMethod = method;
+    if (method == loginMethods[0]) {
+      Routers.goToPincodePage(context);
+    }
   }
 }

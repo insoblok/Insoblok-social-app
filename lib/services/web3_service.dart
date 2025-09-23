@@ -3,6 +3,8 @@ import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
 import 'package:http/http.dart' as http;
+import 'package:web_socket_channel/web_socket_channel.dart';
+import 'package:web_socket_channel/io.dart';
 import 'package:insoblok/utils/helper.dart';
 import 'package:reown_appkit/solana/solana_web3/solana_web3.dart';
 import 'package:web3dart/credentials.dart';
@@ -71,8 +73,49 @@ class Web3Service with ListenableServiceMixin {
   RoomModel chatRoom = RoomModel();
   UserModel chatUser = UserModel();
   /// constructor: setup client depending on network
+  
+  WebSocketChannel? channel;
+  
   Web3Service() {
-    listenToReactiveValues([_allBalances, _allPrices, _transactions, _paymentTransactionHash, _transactionFee]);
+    listenToReactiveValues([_allBalances, _allPrices, _allChanges, _transactions, _paymentTransactionHash, _transactionFee]);
+    _initializeWebSocket();
+  }
+
+  void _initializeWebSocket() {
+    try {
+      String path = kWalletTokenList.map((tk)=> tk["binance_id"].toString().isEmpty ? "" : "/${tk['binance_id'].toString()}@ticker/${tk['binance_id'].toString()}@markPrice" ).toList().join("");
+      logger.d("started to connect ws");
+      channel = IOWebSocketChannel.connect('wss://fstream.binance.com/stream?streams=$path');
+      channel?.stream.listen(
+        (data) {
+          try {
+            final jsonData = json.decode(data);
+            // _processTickerData(jsonData);
+            logger.d("Json data is $jsonData");
+            final splits = jsonData["stream"].toString().split('@');
+            final binanceId = splits[0];
+            final opType = splits[1];
+            Map<String, dynamic> token = kWalletTokenList.firstWhere((tk) => tk["binance_id"].toString() == binanceId);
+            if(opType == "markPrice") {
+              Map<String, double> curPrices = { ... allPrices };
+              curPrices[token["chain"]] = jsonData["data"]["p"].toDouble();
+              _allPrices.value = curPrices;
+            }
+            else if (opType == "ticker") {
+              Map<String, double> curChanges = { ... allChanges };
+              curChanges[token["chain"]] = jsonData["data"]["p"].toDouble();
+              _allChanges.value = curChanges;
+            }
+            notifyListeners();
+          } catch (e) {
+            logger.d('Error parsing WebSocket data: $e');
+          }
+        },
+        onError: (error) => logger.d('WebSocket error: $error'),
+      );
+    } catch (e) {
+      logger.d("An exception raised while initializing websocket ${e.toString()}");
+    }
   }
 
   void setNetwork({required String chain}) {
@@ -139,14 +182,15 @@ class Web3Service with ListenableServiceMixin {
     try {
       final url = Uri.parse(TOKEN_PRICES_URL);
       final response = await http.get(url);
+      logger.d("This is price response ${response.body}, $TOKEN_PRICES_URL");
       if (response.statusCode == 200) {
         return jsonDecode(response.body);
-        
       } else {
-        throw Exception("Failed to fetch Ethereum price: ${response.statusCode}");
+        logger.d("Failed to get prices ${response.body.toString()}");
+        return {};
       }
     } catch (e) {
-      logger.d("Error fetching Ethereum price: $e");
+      logger.d("Error fetching token prices: ${e.toString()}");
       return 0.0;
     }
   }
@@ -176,20 +220,26 @@ class Web3Service with ListenableServiceMixin {
   Future<void> getPrices() async {
     try {
       final prices = await getPricesInUSD();
-      logger.d("Prices are $prices");
       Map<String, double> values = {};
       Map<String, double> changeValues = {};
       for (var tk in kWalletTokenList) {
-          values[tk["chain"].toString()] = (prices?[tk["coingecko_id"]]?["usd"] ?? 0).toDouble();
-          changeValues[tk["chain"].toString()] = (prices?[tk["coingecko_id"]]?["usd_24h_change"] ?? 0).toDouble();
+          final price = prices.where((pr) => pr["symbol"].toString().toLowerCase() == tk["binance_id"].toString().toLowerCase()).toList();
+          if (price.isEmpty) {
+            values[tk["chain"].toString()] = 0;
+            changeValues[tk["chain"].toString()] = 0;
+          }
+          else {
+            values[tk["chain"].toString()] = double.parse((price[0]?["lastPrice"] ?? 0).toString());
+            changeValues[tk["chain"].toString()] = double.parse((price[0]?["priceChangePercent"] ?? 0).toString());
+          }
       }
-      logger.d("values are $values");
       _allPrices.value = values;
       _allChanges.value = changeValues;
 
     } catch (e) {
       logger.d("Exception raised while getting prices ${e.toString()}");
       _allPrices.value = { "insoblok": 0, "usdt": 1, "xrp": 0, "ethereum": 0, "sepolia": 0};
+      _allChanges.value = { "insoblok": 0, "usdt": 0, "xrp": 0, "ethereum": 0, "sepolia": 0};
     }
     notifyListeners();
   }
@@ -535,5 +585,31 @@ class Web3Service with ListenableServiceMixin {
     }
     return {};
   }
+
+  Future<Map<String, dynamic>> getTokenDetails(String coingecko_id) async {
+  if (coingecko_id.isEmpty) {
+    logger.w("Empty coingecko_id provided");
+    return {};
+  }
+
+  try {
+    final String url = "$TOKEN_DETAILS_COINGECKO_URL/$coingecko_id";
+    final dynamic response = await api.getRequestWithFullUrl(url);
+    
+    if (response is Map<String, dynamic>) {
+      return response;
+    } else {
+      logger.w("Invalid response format from API for $coingecko_id");
+      return {};
+    }
+  } catch (e, stackTrace) {
+    logger.e(
+      "Exception raised while getting token details for $coingecko_id",
+      error: e,
+      stackTrace: stackTrace
+    );
+    return {};
+  }
+}
 
 }

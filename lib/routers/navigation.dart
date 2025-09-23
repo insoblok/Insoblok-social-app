@@ -18,6 +18,8 @@ const kRouterLogin = '/login';
 const kRouterRegister = '/register';
 const kRouterRegisterFirst = '/register-first';
 const kRouterRegisterSecond = '/register-second';
+const kRouterLoginPincode = "/login-pincode";
+
 const kRouterMain = '/main';
 
 const kRouterAccount = '/account';
@@ -78,6 +80,7 @@ const kRouterFaceDetail = '/face-detail';
 const kRouterReactionVideoDetail = '/reaction-video-detail';
 const kRouterUserList = '/user-list';
 const kRouterFavorites = '/wallet-favorites';
+const kRouterTokenDetail = '/token-detail';
 class Navigation {
   final router = fluro.FluroRouter();
 
@@ -126,6 +129,9 @@ class Navigation {
       kRouterRegisterSecond,
       (props) => RegisterSecondPage(user: props!),
     );
+
+    // * Pincode Signin Page
+    initRoute(kRouterLoginPincode, (props) => PinCodePage());
 
     // * MainPage
     initRoute(kRouterMain, (props) => InSoBlokPage());
@@ -356,5 +362,7 @@ class Navigation {
     initRoute(kRouterImageEditor, (props) => ImageEditorPage(path: props.toString()));
 
     initRoute(kRouterFavorites, (props) => WalletFavoritesPage());
+
+    initRoute<Map<String, dynamic>>(kRouterTokenDetail, (props) => TokenDetailPage(network: props!));
   }
 }
