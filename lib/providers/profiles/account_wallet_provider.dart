@@ -63,7 +63,7 @@ class AccountWalletProvider extends InSoBlokViewModel {
     enabledNetworks = nets;
     notifyListeners();
   }
-  String get networkString => enabledNetworks.length == 1 ? enabledNetworks[0]["displayName"] : "Enabled Networks";
+  String get networkString => enabledNetworks.length == 1 ? enabledNetworks[0]["displayName"] : "Networks";
   
   Map<String, double> tokenValues = {};
 
@@ -291,7 +291,7 @@ class AccountWalletProvider extends InSoBlokViewModel {
   Future<void> onClickActions(int index) async {
     switch (index) {
       case 0:
-        await Routers.goToWalletSendPage(context);
+        await Routers.goToWalletSendOnePage(context);
         break;
       case 1:
         await Routers.goToWalletReceivePage(context);

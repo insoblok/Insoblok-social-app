@@ -41,7 +41,7 @@ class AIImages {
   static String icBottomLeaderboardFill = 'assets/icons/ic_leaderboard_fill.png';
   static String icBottomLeaderboard = 'assets/icons/ic_leaderboard.png';
   static String icUsdt = 'assets/icons/ic_usdt.png';
-  static String icXrp = 'assets/icons/ic_xrp.svg';
+  static String icXrp = 'assets/icons/ic_xrp2.svg';
   static String icPostLookbook = 'assets/icons/ic_post_lookbook.png';
   static String icPostReaction = 'assets/icons/ic_post_reaction.png';
   static String icLookBook = 'assets/icons/ic_lookbook.png';
@@ -99,7 +99,7 @@ class AIImages {
   }
 
   static String icCoinUsdt = 'assets/icons/ic_usdt.svg';
-  static String icCoinXrp = 'assets/icons/ic_xrp2.png';
+  static String icCoinXrp = 'assets/icons/ic_xrp2.svg';
   static String icCoinInso = 'assets/icons/ic_inso.png';
   static String icCoinEther = 'assets/icons/ic_eth2.svg';
   //static String icUserXP = 'assets/icons/ic_xrp.svg';

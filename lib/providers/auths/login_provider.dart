@@ -213,47 +213,48 @@ class LoginProvider extends InSoBlokViewModel {
     _walletExists = await cryptoService.doesWalletExist();
     isCheckingWallet = false;
     notifyListeners();
-    if (_walletExists) await checkFace();
+    // if (_walletExists) await checkFace();
   } 
 
   Future<void> handleClickSignIn(BuildContext ctx) async {
-    if(isBusy) return;
-    setBusy(true);
-    clearErrors();
-    runBusyFuture(() async {
-      try {
-      final password = existingPasswordController.text.trim();
-      UnlockedWallet unlockedWallet = await cryptoService.unlockFromStorage(password);
-      if (unlockedWallet.address == "") { 
-        setError("Incorrect Password.");
-        return;
-      }
-      var authUser = await AuthHelper.signIn(
-        unlockedWallet.address,
-        isCheckScan,
-      );
+  //   if(isBusy) return;
+  //   setBusy(true);
+  //   clearErrors();
+  //   runBusyFuture(() async {
+  //     try {
+  //     final password = existingPasswordController.text.trim();
+  //     UnlockedWallet unlockedWallet = await cryptoService.unlockFromStorage(password);
+  //     if (unlockedWallet.address == "") { 
+  //       setError("Incorrect Password.");
+  //       return;
+  //     }
+  //     var authUser = await AuthHelper.signIn(
+  //       unlockedWallet.address,
+  //       isCheckScan,
+  //     );
 
-      if (authUser?.walletAddress?.isEmpty ?? true) {
-        Routers.goToRegisterFirstPage(
-          context,
-          user: UserModel(walletAddress: unlockedWallet.address),
-        );
-      } else {
-        AuthHelper.updateStatus('Online');
-        Routers.goToMainPage(context);
-      }
-    } catch (e) {
-      logger.d(e);
-      setError("Failed to SignIn $e");
-    } finally {
-      isClickCreateNewWallet = false;
-      setBusy(false);
-    }
-    }());
+  //     if (authUser?.walletAddress?.isEmpty ?? true) {
+  //       Routers.goToRegisterFirstPage(
+  //         context,
+  //         user: UserModel(walletAddress: unlockedWallet.address),
+  //       );
+  //     } else {
+  //       AuthHelper.updateStatus('Online');
+  //       Routers.goToMainPage(context);
+  //     }
+  //   } catch (e) {
+  //     logger.d(e);
+  //     setError("Failed to SignIn $e");
+  //   } finally {
+  //     isClickCreateNewWallet = false;
+  //     setBusy(false);
+  //   }
+  //   }());
 
-  if(hasError) {
-    AIHelpers.showToast(msg: modelError.toString());
-  }
+  // if(hasError) {
+  //   AIHelpers.showToast(msg: modelError.toString());
+  // }
+    Routers.goToPincodePage(context);
   
 
   }

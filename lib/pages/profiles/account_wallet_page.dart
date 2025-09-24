@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 import 'package:insoblok/providers/providers.dart';
-import 'package:insoblok/widgets/widgets.dart';
 import 'package:insoblok/utils/utils.dart';
-import 'package:insoblok/services/services.dart';
 
 
 class AccountWalletPage extends StatelessWidget {
@@ -24,42 +22,35 @@ class AccountWalletPage extends StatelessWidget {
               },
             ),
             centerTitle: true,
-            flexibleSpace: AppBackgroundView(),
+            // flexibleSpace: AppBackgroundView(),
           ),
-          body:  AppBackgroundView(
+          body:  Container(
+            color: Colors.black,
             child: viewModel.pages[viewModel.currentIndex]
           ),
           bottomNavigationBar: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-              colors: [
-                AIColors.lightPurple.withAlpha(32),
-                AIColors.lightBlue.withAlpha(32),
-                AIColors.lightPurple.withAlpha(32),
-                AIColors.lightTeal.withAlpha(32),
-              ],
-              stops: [0.0, 0.4, 0.7, 1.0],
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-            ),
-            ),
             child: BottomNavigationBar(
               currentIndex: viewModel.currentIndex,
               backgroundColor: Colors.transparent,
+              selectedItemColor: Colors.white, // active color
+              unselectedItemColor: Colors.grey, // inactive color
               onTap: viewModel.setIndex,
               items: const [
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.home),
+                  icon: Icon(Icons.home_outlined),      // inactive icon
+                  activeIcon: Icon(Icons.home),         // active icon
                   label: "Home",
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.area_chart),
+                  icon: Icon(Icons.area_chart_outlined), // inactive icon
+                  activeIcon: Icon(Icons.area_chart),    // active icon
                   label: "Favorites",
                 ),
               ],
             ),
-          ),
-          );
+          )
+
+        );
       },
     );
   }

@@ -66,7 +66,7 @@ class InSoBlokApp extends StatelessWidget {
           return MaterialApp(
             title: 'InSoBlok',
             debugShowCheckedModeBanner: false,
-
+            
             // THEMING
             themeMode: AppSettingHelper.themeMode,
             theme: AppSettingHelper.lightTheme,

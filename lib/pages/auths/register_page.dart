@@ -56,7 +56,10 @@ class RegisterPage extends StatelessWidget {
                     text: "Register",
                     color: AIColors.pink,
                     isBusy: viewModel.isBusy,
-                    onTap: viewModel.onClickRegister,
+                    onTap: () async {
+                      await FirebaseHelper.signInFirebase();
+                      await viewModel.onClickRegister();
+                    },
                   ),
                   SizedBox(height: MediaQuery.of(context).viewPadding.bottom),
                 ],

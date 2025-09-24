@@ -1,6 +1,5 @@
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:local_auth/local_auth.dart';
-// import 'package:local_auth_ios/local_auth_ios.dart';
 import 'package:local_auth_android/local_auth_android.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/models/models.dart';
@@ -31,13 +30,12 @@ class LocalAuthService {
       final bool isAvailable = await _localAuth.isDeviceSupported();
       final bool canCheckBiometrics = await _localAuth.canCheckBiometrics;
       final List<BiometricType> availableBiometrics = await _localAuth.getAvailableBiometrics();
-      logger.d("available biometrics is $availableBiometrics");
       Map<String, dynamic> logData = {};
       logData["isAvailable"] = isAvailable;
       logData["canCheckBiometrics"] = canCheckBiometrics;
       logData["availableBiometrics"] = availableBiometrics.join(",");
       apiService.logRequest(logData);
-      return isAvailable && canCheckBiometrics && availableBiometrics.isNotEmpty && availableBiometrics.contains(BiometricType.face);
+      return isAvailable && canCheckBiometrics && availableBiometrics.isNotEmpty;
     } catch (e) {
       logger.d('Error checking biometric availability: $e');
       apiService.logRequest({"result": "failed", "message": 'Error checking biometric availability: $e  : isFaceIDAvailable'});
@@ -57,16 +55,16 @@ class LocalAuthService {
       logger.d("Face Unlock is not available");
       apiService.logRequest({"result": "failed", "message": 'Face Unlock is not available: authenticateWithBiometrics'});
 
-      return false;
+      // return false;
     }
     try {
       final bool isAuthenticated = await _localAuth.authenticate(
-        localizedReason: 'Use Device Passcode',
+        localizedReason: 'Use Face Recognition',
         authMessages: [
           AndroidAuthMessages(
-            signInTitle: 'Wallet Authentication',
+            signInTitle: 'Wallet Sign In',
             cancelButton: 'Cancel',
-            biometricHint: 'Touch sensor',
+            biometricHint: 'Place your face in front of your phone',
             biometricNotRecognized: 'Biometric not recognized. Try again.',
             biometricRequiredTitle: 'Biometric Required',
             biometricSuccess: 'Biometric authentication successful',
@@ -75,7 +73,7 @@ class LocalAuthService {
             goToSettingsButton: 'Go to Settings',
             goToSettingsDescription: 'Please set up your biometric authentication',
           ),
-          // IOSAuthMessages(
+          // const IOSAuthMessages(
           //   cancelButton: 'Cancel',
           //   goToSettingsButton: 'Settings',
           //   goToSettingsDescription: 'Please set up your Face ID or Touch ID.',
@@ -84,7 +82,8 @@ class LocalAuthService {
           // ),
         ],
         options: const AuthenticationOptions(
-          biometricOnly: false, // Allow device passcode as fallback
+          biometricOnly: true, // Allow device passcode as fallback
+          useErrorDialogs: true,
           stickyAuth: true,
         ),
       );

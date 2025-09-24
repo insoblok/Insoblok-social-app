@@ -85,11 +85,13 @@ class AuthService with ListenableServiceMixin {
   }
 
   Future<UserModel?> signUp(UserModel newUser) async {
-    var uid = credential?.user?.uid;
+    final resp = await FirebaseAuth.instance.signInAnonymously();
+    var uid = resp.user?.uid;
+    logger.d("THis is inside signup $uid");
     if (uid != null) {
       var ipAddress = IpAddress(type: RequestType.json);
       var data = await ipAddress.getIpAddress();
-
+      logger.d("ip address data is $data");
       var resultUser = await userService.createUser(
         newUser.copyWith(
           uid: uid,

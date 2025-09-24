@@ -98,12 +98,12 @@ class Web3Service with ListenableServiceMixin {
             Map<String, dynamic> token = kWalletTokenList.firstWhere((tk) => tk["binance_id"].toString() == binanceId);
             if(opType == "markPrice") {
               Map<String, double> curPrices = { ... allPrices };
-              curPrices[token["chain"]] = jsonData["data"]["p"].toDouble();
+              curPrices[token["chain"]] = double.parse(jsonData["data"]["p"]);
               _allPrices.value = curPrices;
             }
             else if (opType == "ticker") {
               Map<String, double> curChanges = { ... allChanges };
-              curChanges[token["chain"]] = jsonData["data"]["p"].toDouble();
+              curChanges[token["chain"]] = double.parse(jsonData["data"]["p"]);
               _allChanges.value = curChanges;
             }
             notifyListeners();

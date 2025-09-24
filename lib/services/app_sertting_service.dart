@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 
 import 'package:observable_ish/observable_ish.dart';
 import 'package:stacked/stacked.dart';
-
+import 'package:google_fonts/google_fonts.dart';
 import 'package:insoblok/locator.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/utils/utils.dart';
@@ -210,80 +210,80 @@ class AppSettingService with ListenableServiceMixin {
       type: BottomNavigationBarType.fixed,
     ),
     textTheme: TextTheme(
-      titleLarge: TextStyle(
+      titleLarge: GoogleFonts.lato(
         color: AIColors.darkTextColor,
         fontSize: 22.0,
         fontWeight: FontWeight.w800,
       ),
-      titleMedium: TextStyle(
+      titleMedium: GoogleFonts.lato(
         color: AIColors.darkTextColor,
         fontSize: 19.0,
         fontWeight: FontWeight.w800,
       ),
-      titleSmall: TextStyle(
+      titleSmall: GoogleFonts.lato(
         color: AIColors.darkTextColor,
         fontSize: 17.0,
         fontWeight: FontWeight.w800,
       ),
-      bodyLarge: TextStyle(
+      bodyLarge: GoogleFonts.lato(
         fontSize: 17.0,
         color: AIColors.darkTextColor,
         fontWeight: FontWeight.w700,
       ),
-      bodyMedium: TextStyle(
+      bodyMedium: GoogleFonts.lato(
         fontSize: 14.0,
         color: AIColors.darkTextColor,
         fontWeight: FontWeight.w500,
       ),
-      bodySmall: TextStyle(
+      bodySmall: GoogleFonts.lato(
         fontSize: 12.0,
         color: AIColors.darkTextColor,
         fontWeight: FontWeight.w500,
       ),
 
-      labelLarge: TextStyle(
+      labelLarge: GoogleFonts.lato(
         fontSize: 16.0,
         color: AIColors.greyTextColor,
         fontWeight: FontWeight.w400,
       ),
-      labelMedium: TextStyle(
+      labelMedium: GoogleFonts.lato(
         fontSize: 14.0,
         color: AIColors.greyTextColor,
         fontWeight: FontWeight.w400,
       ),
-      labelSmall: TextStyle(
+      labelSmall: GoogleFonts.lato(
         fontSize: 12.0,
         color: AIColors.greyTextColor,
         fontWeight: FontWeight.w400,
       ),
 
-      displayLarge: TextStyle(
+      displayLarge: GoogleFonts.lato(
         fontSize: 19.0,
         color: AIColors.darkTextColor,
         fontWeight: FontWeight.w700,
       ),
-      displayMedium: TextStyle(
+      displayMedium: GoogleFonts.lato(
         fontSize: 18.0,
         color: AIColors.darkTextColor,
         fontWeight: FontWeight.w400,
       ),
-      displaySmall: TextStyle(
+      displaySmall: GoogleFonts.lato(
         fontSize: 10.0,
         color: AIColors.darkTextColor,
         fontWeight: FontWeight.w300,
       ),
 
-      headlineLarge: TextStyle(
+      headlineLarge: GoogleFonts.lato(
         fontSize: 19.0,
         color: AIColors.darkTextColor,
         fontWeight: FontWeight.w700,
       ),
-      headlineMedium: TextStyle(
+      headlineMedium: GoogleFonts.lato(
         fontSize: 15.0,
         fontWeight: FontWeight.bold,
         color: AIColors.darkTextColor,
       ),
-      headlineSmall: TextStyle(
+      headlineSmall: GoogleFonts.lato(
         fontSize: 13.0,
         fontWeight: FontWeight.bold,
         color: AIColors.darkTextColor,

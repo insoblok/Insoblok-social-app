@@ -12,9 +12,7 @@ class AccountWalletIconCover extends StatelessWidget {
     return InkWell(
       onTap: onTap,
       child: Container(
-        width: 40.0,
-        height: 40.0,
-        padding: const EdgeInsets.all(10.0),
+        padding: const EdgeInsets.all(0.0),
         decoration: BoxDecoration(
           color: Theme.of(context).colorScheme.secondary.withAlpha(16),
           borderRadius: BorderRadius.circular(8.0),

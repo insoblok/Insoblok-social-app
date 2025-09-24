@@ -12,7 +12,6 @@ import 'package:insoblok/widgets/widgets.dart';
 import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/pages/pages.dart';
-import 'package:insoblok/services/services.dart';
 
 final kLandingPageData = [
   {
@@ -68,62 +67,63 @@ class LoginPage extends StatelessWidget {
             final hideTopSubtitle = (cp == 1);    // Hide top subtitle on page 1
             final hideBottomTagline = (cp == 1);  // Hide bottom tagline on page 1
 
-            Future<void> _handleClickCreateNewWallet(BuildContext buildContext) async {
+            void _handleClickCreateNewWallet(BuildContext buildContext) {
               
-              showDialog<String>(
-                context: buildContext,
-                builder: (bContext) {
-                  final TextEditingController _passwordController = TextEditingController();
-                  final TextEditingController _confirmController = TextEditingController();
+              Routers.goToPincodeRegisterPage(buildContext);
+              // showDialog<String>(
+              //   context: buildContext,
+              //   builder: (bContext) {
+              //     final TextEditingController _passwordController = TextEditingController();
+              //     final TextEditingController _confirmController = TextEditingController();
 
-                  return _CreateWalletDialog(
-                    passwordController: _passwordController,
-                    confirmController: _confirmController,
-                    onCancel: () {
-                      viewModel.isClickCreateNewWallet = false;
-                    },
-                    onCreateWallet: (password) async {
-                      try {
-                        final newWalletResult = await viewModel.cryptoService.createAndStoreWallet(password);
+              //     return _CreateWalletDialog(
+              //       passwordController: _passwordController,
+              //       confirmController: _confirmController,
+              //       onCancel: () {
+              //         viewModel.isClickCreateNewWallet = false;
+              //       },
+              //       onCreateWallet: (password) async {
+              //         try {
+              //           final newWalletResult = await viewModel.cryptoService.createAndStoreWallet(password);
 
-                        Navigator.pop(bContext);
-                        logger.d("Wallet creation result is ${newWalletResult.address}, ${newWalletResult.mnemonic}");
-                        await showDialog(
-                          context: context,
-                          barrierDismissible: false,
-                          builder: (context) => SeedPhraseConfirmationWidget(
-                            seedWords: (newWalletResult.mnemonic ?? "").split(" ").toList(), 
-                            onConfirmed: () {
-                              showDialog(
-                                context: context,
-                                barrierDismissible: false,
-                                builder: (context) => SeedPhraseConfirmationDialog(
-                                  originalSeedPhrase: newWalletResult.mnemonic!.trim(),
-                                  onConfirm: () {
-                                    Routers.goToRegisterFirstPage(buildContext,
-                                      user: UserModel(walletAddress: newWalletResult.address)
-                                    );
-                                  },
-                                  onCancel: () {
-                                    Navigator.pop(context); // Close confirmation dialog
-                                  },
-                                  showSeedPhrase: false,
-                                ),
-                              );
-                            } 
-                          )
-                        );
+              //           Navigator.pop(bContext);
+              //           logger.d("Wallet creation result is ${newWalletResult.address}, ${newWalletResult.mnemonic}");
+              //           await showDialog(
+              //             context: context,
+              //             barrierDismissible: false,
+              //             builder: (context) => SeedPhraseConfirmationWidget(
+              //               seedWords: (newWalletResult.mnemonic ?? "").split(" ").toList(), 
+              //               onConfirmed: () {
+              //                 showDialog(
+              //                   context: context,
+              //                   barrierDismissible: false,
+              //                   builder: (context) => SeedPhraseConfirmationDialog(
+              //                     originalSeedPhrase: newWalletResult.mnemonic!.trim(),
+              //                     onConfirm: () {
+              //                       Routers.goToRegisterFirstPage(buildContext,
+              //                         user: UserModel(walletAddress: newWalletResult.address)
+              //                       );
+              //                     },
+              //                     onCancel: () {
+              //                       Navigator.pop(context); // Close confirmation dialog
+              //                     },
+              //                     showSeedPhrase: false,
+              //                   ),
+              //                 );
+              //               } 
+              //             )
+              //           );
                         
-                      } catch (e) {
-                        logger.e(e);
-                        rethrow; // Re-throw to handle in the dialog
-                      }
-                    },
-                  );
-                },
-              ).then((_) {
-                viewModel.isClickCreateNewWallet = false;
-              });
+              //         } catch (e) {
+              //           logger.e(e);
+              //           rethrow; // Re-throw to handle in the dialog
+              //         }
+              //       },
+              //     );
+              //   },
+              // ).then((_) {
+              //   viewModel.isClickCreateNewWallet = false;
+              // });
             }
 
             // Separate StatefulWidget for the dialog
@@ -261,6 +261,17 @@ class LoginPage extends StatelessWidget {
                         else if(viewModel.walletExists)
                           Column(
                             children: [
+                                  Container(
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                                      child: GradientPillButton(
+                                        text: "Sign In", 
+                                        onPressed: () {
+                                          viewModel.handleClickSignIn(context);
+                                        }
+                                      ),
+                                    ),
+                                  ),
                                   // child: DropdownButton<String>(
                                   //   value: viewModel.loginMethod,
                                   //   isExpanded: true,

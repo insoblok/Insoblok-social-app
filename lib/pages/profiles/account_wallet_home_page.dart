@@ -1,19 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:reown_appkit/modal/services/analytics_service/models/analytics_event.dart';
-
 import 'package:stacked/stacked.dart';
-import 'package:url_launcher/url_launcher.dart';
+import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
 import 'package:insoblok/models/models.dart';
+import 'package:google_fonts/google_fonts.dart';
 
   
-class AccountWalletHomePage extends StatelessWidget {
+class AccountWalletHomePage extends StatefulWidget {
   const AccountWalletHomePage({super.key});
 
+  @override
+  State<AccountWalletHomePage> createState() => AccountWalletHomePageState();
+}
 
+class AccountWalletHomePageState extends State<AccountWalletHomePage> {
+
+  
   Widget _buildStatusBadge(String status) {
     Color bgColor;
     Color textColor = Colors.white;
@@ -40,7 +45,7 @@ class AccountWalletHomePage extends StatelessWidget {
       ),
       child: Text(
         status,
-        style: TextStyle(
+        style: GoogleFonts.lato(
           fontSize: 12.0,
           fontWeight: FontWeight.bold,
           color: textColor,
@@ -48,6 +53,8 @@ class AccountWalletHomePage extends StatelessWidget {
       ),
     );
   }
+
+  String? selectedTopItem;
 
   @override
   Widget build(BuildContext context) {
@@ -84,116 +91,279 @@ class AccountWalletHomePage extends StatelessWidget {
                   child: Column(
                     children: [
                       Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
-                          AIAvatarImage(
-                            viewModel.user?.avatar,
-                            width: 60,
-                            height: 60,
-                            fullname: viewModel.user?.nickId ?? 'Test',
-                            textSize: 24,
-                            isBorder: true,
-                            borderWidth: 3,
-                            borderRadius: 30,
+                          Flexible(
+                            child: GestureDetector(
+                              onTap: () async {
+                                // Open the modal and wait for the result
+                                
+                                final result = await showModalBottomSheet<
+                                  Map<String, dynamic>
+                                >(
+                                  context: context,
+                                  isScrollControlled: true,
+                                  builder:
+                                      (
+                                        context,
+                                      ) { 
+                                        return NetworkSelectionModal(
+                                        // Pass initial state to the modal
+                                          initialSelected:
+                                              viewModel.enabledNetworks,
+                                        );
+                                      }
+                                );
+                                if (result != null) {
+                                  viewModel.enabledNetworks =
+                                      result["enabledNetworks"];
+                                  viewModel.setEnabledNetworks(result["enabledNetworks"]);
+                                }
+                                
+                              },
+                              child: Row(
+                                children: [
+                                  viewModel.enabledNetworks.length == 1 ? 
+                                  AIImage(
+                                    viewModel.enabledNetworks[0]["icon"],
+                                    width: 24,
+                                    height: 24,
+                                  ) :
+                                  Text(
+                                    viewModel.networkString,
+                                    style: GoogleFonts.lato(),
+                                  ),
+                                  Icon(Icons.arrow_drop_down)
+                                ],
+                              ),
+                            ),
                           ),
-                          Expanded(
+                          Container(
                             // This Expanded is now a direct child of Row
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                AccountWalletIconCover(
-                                  child: AIImage(
-                                    AIImages.icRefresh,
-                                    color: Theme.of(context).primaryColor,
-                                  ),
-                                  onTap: () {
-                                    viewModel.init(context);
-                                  }
+                            child: DropdownButtonHideUnderline(
+                              child: DropdownButton2<String>(
+                                iconStyleData: const IconStyleData(
+                                  icon: SizedBox.shrink(),
                                 ),
-                                SizedBox(width: 8.0),
-                                AccountWalletIconCover(
-                                  child: AIImage(
-                                    AIImages.icCamera,
-                                    color: Theme.of(context).primaryColor,
-                                  ),
+                                isExpanded: false,
+                                hint: Icon(Icons.menu),
+                                alignment: AlignmentDirectional.centerEnd,
+                                onChanged: (value) {
+                                  
+                                },
+                                dropdownStyleData: DropdownStyleData(
+    // Padding inside the dropdown menu
+                                  padding: EdgeInsets.all(8),
                                 ),
-                                SizedBox(width: 8.0),
-                                AccountWalletIconCover(
-                                  child: AIImage(
-                                    AIImages.icMenuQrCode,
-                                    color: Theme.of(context).primaryColor,
+                                items: [
+                                  DropdownMenuItem(
+                                    value: "Action",
+                                    child: AccountWalletIconCover(
+                                      child: AIImage(
+                                        AIImages.icRefresh,
+                                        color: Theme.of(context).primaryColor,
+                                      ),
+                                      onTap: () {
+                                        viewModel.init(context);
+
+                                      }
+                                    ),
                                   ),
-                                ),
-                                SizedBox(width: 8.0),
-                                AccountWalletIconCover(
-                                  child: AIImage(
-                                    AIImages.icBottomNoti,
-                                    color: Theme.of(context).primaryColor,
+                                  DropdownMenuItem(
+                                    value: "Another action",
+                                    child: AccountWalletIconCover(
+                                      child: AIImage(
+                                        AIImages.icCamera,
+                                        color: Theme.of(context).primaryColor,
+                                      ),
+                                      onTap: () {},
+                                    ),
                                   ),
-                                ),
-                              ],
+                                  DropdownMenuItem(
+                                    value: "Something else here",
+                                    child: AccountWalletIconCover(
+                                      child: AIImage(
+                                        AIImages.icMenuQrCode,
+                                        color: Theme.of(context).primaryColor,
+                                      ),
+                                      onTap: () {},
+                                    ),
+                                  ),
+                                  DropdownMenuItem(
+                                    value: "Something else here",
+                                    child: AccountWalletIconCover(
+                                      child: AIImage(
+                                        AIImages.icBottomNoti,
+                                        color: Theme.of(context).primaryColor,
+                                      ),
+                                      onTap: () {},
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
                         ],
                       ),
+                      SizedBox(height: 24.0),
+                      Row(children: [
+                        
+                      ]),
                       SizedBox(
                         width: double.infinity,
                         child: Container(
-                          padding: const EdgeInsets.symmetric(vertical: 32.0),
+                          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 32.0),
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              transform: GradientRotation(109.6 * 3.1415926535 / 180), // convert degrees to radians
+                              stops: [0.112, 0.537, 1.002], // match CSS percentage stops
+                              colors: [
+                                Color.fromRGBO(9, 9, 121, 1),    // rgba(9,9,121,1)
+                                Color.fromRGBO(144, 6, 161, 1),  // rgba(144,6,161,1)
+                                Color.fromRGBO(0, 212, 255, 1),  // rgba(0,212,255,1)
+                              ],
+                            ),
+                            borderRadius: BorderRadius.circular(18),
+                          ),
                           child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.center,
                             children: [
                               Text(
-                                '\$ ${viewModel.totalBalance.toStringAsFixed(2)}',
-                                style: TextStyle(
+                                '\$${viewModel.totalBalance.toStringAsFixed(2)}',
+                                style: GoogleFonts.lato(
                                   fontSize: 32,
-                                  fontWeight: FontWeight.bold,
+                                  fontWeight: FontWeight.w900,
                                 ),
                               ),
                             ],
                           ),
                         ),
                       ),
-                      Container(
-                        padding: EdgeInsets.symmetric(vertical: 16.0),
-                        decoration: BoxDecoration(
-                          border: Border(bottom: BorderSide(
-                            color: Colors.grey.shade800,
-                            width: 1.0
-                          ))
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceAround,
-                          children: [
-                            for (var item in kWalletActionList) ...{
-                              InkWell(
-                                onTap:
-                                    () => viewModel.onClickActions(
-                                      kWalletActionList.indexOf(item),
-                                    ),
-                                child: Column(
-                                  children: [
-                                    Container(
-                                      width: 60.0,
-                                      height: 60.0,
-                                      // color: Colors.pink,
-                                      decoration: BoxDecoration(
-                                        color: Colors.pink.withAlpha(150),
-                                        borderRadius: BorderRadius.circular(30.0),
-                                      ),
-                                      child: AIImage(
-                                        item['icon'],
-                                        width: 28,
-                                        height: 28,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 8.0),
-                                    Text(item['name'] as String),
-                                  ],
+                      SizedBox(height: 16.0),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children:[
+                          Container(
+                            padding: EdgeInsets.all(0),
+                            decoration: BoxDecoration(
+                              border: BoxBorder.all(color: Colors.white),
+                              borderRadius: BorderRadius.circular(24) 
+                            ),
+                            child: ElevatedButton.icon(
+                              onPressed: () {
+                                viewModel.onClickActions(0);
+                              },
+                              icon: Container(
+                                decoration: const BoxDecoration(
+                                  color: Colors.white,
+                                  shape: BoxShape.circle,
+                                ),
+                                padding: const EdgeInsets.all(6), // space inside the circle
+                                child: const Icon(
+                                  Icons.call_made, // ↗ similar icon
+                                  size: 24,
+                                  color: Colors.black,
                                 ),
                               ),
-                            },
-                          ],
-                        ),
+                              label: Text(
+                                "Send",
+                                style: GoogleFonts.lato(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.black,
+                                padding: EdgeInsets.only(left: 4, right: 18),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30), // pill shape
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 8.0),
+                          Container(
+                            padding: EdgeInsets.all(0),
+                            decoration: BoxDecoration(
+                              border: BoxBorder.all(color: Colors.white),
+                              borderRadius: BorderRadius.circular(24) 
+                            ),
+                            child: ElevatedButton.icon(
+                              onPressed: () {
+                                viewModel.onClickActions(1);
+                              },
+                              icon: Container(
+                                decoration: const BoxDecoration(
+                                  color: Colors.white,
+                                  shape: BoxShape.circle,
+                                ),
+                                padding: const EdgeInsets.all(6), // space inside the circle
+                                child: const Icon(
+                                  Icons.call_received, // ↗ similar icon
+                                  size: 24,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              label: Text(
+                                "Receive",
+                                style: GoogleFonts.lato(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.black,
+                                padding: EdgeInsets.only(left: 4, right: 18),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30), // pill shape
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 8.0),
+                          Container(
+                            padding: EdgeInsets.all(0),
+                            decoration: BoxDecoration(
+                              border: BoxBorder.all(color: Colors.white),
+                              borderRadius: BorderRadius.circular(24) 
+                            ),
+                            child: ElevatedButton.icon(
+                              onPressed: () {
+                                viewModel.onClickActions(2);
+                              },
+                              icon: Container(
+                                decoration: const BoxDecoration(
+                                  color: Colors.white,
+                                  shape: BoxShape.circle,
+                                ),
+                                padding: const EdgeInsets.all(6), // space inside the circle
+                                child: const Icon(
+                                  Icons.swap_horiz, // ↗ similar icon
+                                  size: 24,
+                                  color: Colors.black,
+                                ),
+                              ),
+                              label: Text(
+                                "Swap",
+                                style: GoogleFonts.lato(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.black,
+                                padding: EdgeInsets.only(left: 4, right: 18),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30), // pill shape
+                                ),
+                              ),
+                            ),
+                          ),
+                        ]
                       ),
+
                     ],
                   ),
                 ),
@@ -208,6 +378,8 @@ class AccountWalletHomePage extends StatelessWidget {
                         // Tab Bar
                         Container(
                           child: TabBar(
+                            indicatorColor: Colors.transparent,
+                            labelColor: Colors.white,
                             tabs: [
                               Tab(text: 'Tokens'),
                               Tab(text: 'Activities'),
@@ -229,36 +401,6 @@ class AccountWalletHomePage extends StatelessWidget {
                                 ),
                                 child: Column(
                                   children: [
-                                    OutlineButton(
-                                      onTap: () async {
-                                        // Open the modal and wait for the result
-                                        
-                                        final result = await showModalBottomSheet<
-                                          Map<String, dynamic>
-                                        >(
-                                          context: context,
-                                          isScrollControlled: true,
-                                          builder:
-                                              (
-                                                context,
-                                              ) { 
-                                                return NetworkSelectionModal(
-                                                // Pass initial state to the modal
-                                                initialSelected:
-                                                    viewModel.enabledNetworks,
-                                              );
-                                              }
-                                        );
-                                        if (result != null) {
-                                          viewModel.enabledNetworks =
-                                              result["enabledNetworks"];
-                                          viewModel.setEnabledNetworks(result["enabledNetworks"]);
-                                        }
-                                        
-                                      },
-                                      child: Text(viewModel.networkString),
-                                      borderColor: Colors.transparent,
-                                    ),
                                     const SizedBox(height: 0.0),
                                     for (var token
                                         in viewModel.enabledNetworks) ...[
@@ -268,19 +410,9 @@ class AccountWalletHomePage extends StatelessWidget {
                                           bottom: 8.0,
                                         ),
                                         decoration: BoxDecoration(
-                                          border: Border(bottom: BorderSide(
-                                            color: Colors.grey.shade800,
-                                            width: 1.0
-                                          ))
+                                          color: Colors.grey.withAlpha(30),
+                                          borderRadius: BorderRadius.circular(12)
                                         ),
-                                        // decoration: BoxDecoration(
-                                        //   color: Theme.of(
-                                        //     context,
-                                        //   ).colorScheme.secondary.withAlpha(18),
-                                        //   borderRadius: BorderRadius.circular(
-                                        //     8.0,
-                                        //   ),
-                                        // ),
                                         child: GestureDetector(
                                           onTap: () {
                                             if (token["chain"] == 'xp') _showXpConvertSheet(context, viewModel);
@@ -289,7 +421,7 @@ class AccountWalletHomePage extends StatelessWidget {
                                           children: [
                                             ClipOval(
                                               child: Container(
-                                                color: Colors.grey.shade400,
+                                                color: Colors.blueAccent,
                                                 child: AIImage(
                                                   token["icon"],
                                                   width: 36.0,
@@ -305,15 +437,15 @@ class AccountWalletHomePage extends StatelessWidget {
                                                     CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    token["short_name"]
-                                                        .toString(),
+                                                    token["short_name"].toString(),
+                                                    style: Theme.of(context).textTheme.bodyLarge
                                                   ),
                                                   Text(
                                                     '${AIHelpers.formatDouble(viewModel.allBalances?[token["chain"]] ?? 0, 10)} ${token["short_name"]}',
                                                     style:
                                                         Theme.of(
                                                           context,
-                                                        ).textTheme.labelSmall,
+                                                        ).textTheme.labelMedium,
                                                   ),
                                                 ],
                                               ),
@@ -323,15 +455,15 @@ class AccountWalletHomePage extends StatelessWidget {
                                               style:
                                                   Theme.of(
                                                     context,
-                                                  ).textTheme.headlineMedium,
+                                                  ).textTheme.titleLarge,
                                             ),
-                                            IconButton(
-                                              onPressed: () {
-                                                viewModel.toggleFavorite(token["chain"]);
-                                              },
-                                              icon: Icon(viewModel.checkFavorite(token["chain"]) == true ? Icons.star : Icons.star_border),
-                                              color: Colors.amberAccent
-                                            )
+                                            // IconButton(
+                                            //   onPressed: () {
+                                            //     viewModel.toggleFavorite(token["chain"]);
+                                            //   },
+                                            //   icon: Icon(viewModel.checkFavorite(token["chain"]) == true ? Icons.star : Icons.star_border),
+                                            //   color: Colors.amberAccent
+                                            // )
                                           ],
                                         )
                                       ),
@@ -340,7 +472,6 @@ class AccountWalletHomePage extends StatelessWidget {
                                   ],
                                 ),
                               ),
-
                               // Activities Tab
                               SingleChildScrollView(
                                 padding: const EdgeInsets.symmetric(
@@ -369,6 +500,10 @@ class AccountWalletHomePage extends StatelessWidget {
                                             //     8.0,
                                             //   ),
                                             // ),
+                                            decoration: BoxDecoration(
+                                              color: Colors.grey.withAlpha(30),
+                                              borderRadius: BorderRadius.circular(12)
+                                            ),
                                             child: Row(
                                               children: [
                                                 // AIImage(token["icon"], width: 36.0, height: 36.0),
@@ -419,9 +554,9 @@ class AccountWalletHomePage extends StatelessWidget {
                                                             },
                                                             child: Text(
                                                               'View Transaction',
-                                                              style: TextStyle(
+                                                              style: GoogleFonts.lato(
                                                                 color:
-                                                                    Colors.pink,
+                                                                    Colors.blueAccent,
                                                               ),
                                                             ),
                                                           ),
@@ -470,6 +605,10 @@ class AccountWalletHomePage extends StatelessWidget {
                                           //     8.0,
                                           //   ),
                                           // ),
+                                          decoration: BoxDecoration(
+                                            color: Colors.grey.withAlpha(30),
+                                            borderRadius: BorderRadius.circular(12)
+                                          ),
                                           child: Padding(
                                             padding: const EdgeInsets.all(8.0),
                                             child: Column(
@@ -516,9 +655,9 @@ class AccountWalletHomePage extends StatelessWidget {
                                                       },
                                                       child: Text(
                                                         'View Transaction',
-                                                        style: TextStyle(
+                                                        style: GoogleFonts.lato(
                                                           color:
-                                                              Colors.pink,
+                                                              Colors.blueAccent,
                                                         ),
                                                       ),
                                                     ),

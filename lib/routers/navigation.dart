@@ -15,6 +15,7 @@ import 'package:insoblok/providers/providers.dart';
 
 const kRouterBase = '/';
 const kRouterLogin = '/login';
+const kRouterPincodeRegister = '/register-pincode';
 const kRouterRegister = '/register';
 const kRouterRegisterFirst = '/register-first';
 const kRouterRegisterSecond = '/register-second';
@@ -36,6 +37,7 @@ const kRouterAccountReward = '/account-reward';
 const kRouterRewardDetail = '/reward-detail';
 const kRouterWalletSwap = '/wallet-swap';
 const kRouterWalletSend = '/wallet-send';
+const kRouterWalletSendOne = 'wallet-send-one';
 const kRouterWalletReceive = '/wallet-receive';
 const kRouterWalletReceiveConfirm = '/wallet-receive-confirm';
 
@@ -112,6 +114,9 @@ class Navigation {
     // * LoginPage
     initRoute(kRouterLogin, (props) => LoginPage());
 
+    // * PincodeRegisterPage
+    initRoute(kRouterPincodeRegister, (props) => PinCodeRegistrationPage());
+
     // * RegisterPage
     initRoute<UserModel>(
       kRouterRegister,
@@ -178,6 +183,8 @@ class Navigation {
     // * WalletSendPage
     initRoute(kRouterWalletSend, (props) => WalletSendPage());
     
+    initRoute(kRouterWalletSendOne, (props) => WalletSendOnePage());
+
     // * WalletReceivePage
     initRoute(kRouterWalletReceive, (props) => WalletReceivePage());
 

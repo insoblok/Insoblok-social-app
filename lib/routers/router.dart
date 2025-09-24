@@ -20,6 +20,10 @@ class Routers {
     _pushReplacement(context, kRouterLogin, null);
   }
 
+  static dynamic goToPincodeRegisterPage(BuildContext context) {
+    _pushReplacement(context, kRouterPincodeRegister, null);
+  }
+
   static dynamic goToRegisterFirstPage(
     BuildContext context, {
     UserModel? user,
@@ -112,6 +116,10 @@ class Routers {
 
   static dynamic goToWalletSendPage(BuildContext context) {
     return _pushToRoute(context, kRouterWalletSend, null);
+  }
+
+  static dynamic goToWalletSendOnePage(BuildContext context) {
+    return _pushToRoute(context, kRouterWalletSendOne, null);
   }
 
   static dynamic goToWalletReceivePage(BuildContext context) {
