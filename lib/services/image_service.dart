@@ -270,6 +270,7 @@ class AIAvatarDefaultView extends StatelessWidget {
   final double? height;
   final double? borderWidth;
   final double? borderRadius;
+  final bool? borderGradient;
 
   const AIAvatarDefaultView({
     super.key,
@@ -279,6 +280,7 @@ class AIAvatarDefaultView extends StatelessWidget {
     this.height,
     this.borderWidth,
     this.borderRadius,
+    this.borderGradient,
   });
 
   @override
@@ -287,10 +289,10 @@ class AIAvatarDefaultView extends StatelessWidget {
       width: width ?? 60,
       height: height ?? 60,
       decoration: BoxDecoration(
-        border: GradientBoxBorder(
+        border: borderGradient != null && borderGradient == true ?GradientBoxBorder(
           gradient: LinearGradient(colors: getGradientColors(fullname.length)),
           width: borderWidth ?? 2,
-        ),
+        ) : null,
         borderRadius: BorderRadius.circular(borderRadius ?? 30.0),
       ),
 
@@ -323,6 +325,7 @@ class AIAvatarImage extends StatelessWidget {
   final double? textSize;
   final double? borderWidth;
   final double? borderRadius;
+  final bool? borderGradient;
   final bool noCache;
   final Color? backgroundColor;
   final bool noTransitions;
@@ -339,6 +342,7 @@ class AIAvatarImage extends StatelessWidget {
     this.borderWidth,
     this.borderRadius,
     this.noCache = false,
+    this.borderGradient = true,
     this.backgroundColor,
     this.noTransitions = false,
     this.hasSpinner = false,
@@ -401,6 +405,7 @@ class AIAvatarImage extends StatelessWidget {
           height: height,
           borderWidth: borderWidth,
           borderRadius: borderRadius,
+          borderGradient: borderGradient
         );
   }
 }

@@ -103,7 +103,7 @@ class AddProductPage extends StatelessWidget {
                                   child: Text(
                                     category,
                                     style:
-                                        Theme.of(context).textTheme.bodySmall,
+                                      Theme.of(context).textTheme.bodySmall,
                                   ),
                                 );
                               }).toList(),

@@ -5,7 +5,7 @@ import 'package:flutter/services.dart';
 
 import 'package:observable_ish/observable_ish.dart';
 import 'package:stacked/stacked.dart';
-
+import 'package:google_fonts/google_fonts.dart';
 import 'package:insoblok/locator.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/utils/utils.dart';

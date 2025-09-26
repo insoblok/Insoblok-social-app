@@ -6,7 +6,8 @@ import 'package:insoblok/models/models.dart';
 import 'package:insoblok/pages/bases/reaction_video_detail_page.dart';
 import 'package:insoblok/pages/pages.dart';
 import 'package:insoblok/pages/profiles/tastescore_page.dart';
-import 'package:insoblok/pages/profiles/wallet_receive_page.dart';
+import 'package:insoblok/pages/profiles/wallet_favorites_page.dart';
+import 'package:insoblok/pages/profiles/wallet_receive_confirm_page.dart';
 import 'package:insoblok/pages/profiles/wallet_swap_page.dart';
 import 'package:insoblok/pages/profiles/wallet_send_page.dart';
 import 'package:insoblok/pages/stories/video_edit_page.dart';
@@ -14,9 +15,12 @@ import 'package:insoblok/providers/providers.dart';
 
 const kRouterBase = '/';
 const kRouterLogin = '/login';
+const kRouterPincodeRegister = '/register-pincode';
 const kRouterRegister = '/register';
 const kRouterRegisterFirst = '/register-first';
 const kRouterRegisterSecond = '/register-second';
+const kRouterLoginPincode = "/login-pincode";
+
 const kRouterMain = '/main';
 
 const kRouterAccount = '/account';
@@ -33,7 +37,9 @@ const kRouterAccountReward = '/account-reward';
 const kRouterRewardDetail = '/reward-detail';
 const kRouterWalletSwap = '/wallet-swap';
 const kRouterWalletSend = '/wallet-send';
+const kRouterWalletSendOne = 'wallet-send-one';
 const kRouterWalletReceive = '/wallet-receive';
+const kRouterWalletReceiveConfirm = '/wallet-receive-confirm';
 
 const kRouterCreateRoom = '/create-room';
 const kRouterMessage = '/message';
@@ -75,7 +81,8 @@ const kRouterMarketPlace = '/market-place';
 const kRouterFaceDetail = '/face-detail';
 const kRouterReactionVideoDetail = '/reaction-video-detail';
 const kRouterUserList = '/user-list';
-
+const kRouterFavorites = '/wallet-favorites';
+const kRouterTokenDetail = '/token-detail';
 class Navigation {
   final router = fluro.FluroRouter();
 
@@ -107,6 +114,9 @@ class Navigation {
     // * LoginPage
     initRoute(kRouterLogin, (props) => LoginPage());
 
+    // * PincodeRegisterPage
+    initRoute<String>(kRouterPincodeRegister, (props) => PinCodeRegistrationPage(mnemonic: props!));
+
     // * RegisterPage
     initRoute<UserModel>(
       kRouterRegister,
@@ -124,6 +134,9 @@ class Navigation {
       kRouterRegisterSecond,
       (props) => RegisterSecondPage(user: props!),
     );
+
+    // * Pincode Signin Page
+    initRoute(kRouterLoginPincode, (props) => PinCodePage());
 
     // * MainPage
     initRoute(kRouterMain, (props) => InSoBlokPage());
@@ -170,8 +183,13 @@ class Navigation {
     // * WalletSendPage
     initRoute(kRouterWalletSend, (props) => WalletSendPage());
     
+    initRoute(kRouterWalletSendOne, (props) => WalletSendOnePage());
+
     // * WalletReceivePage
     initRoute(kRouterWalletReceive, (props) => WalletReceivePage());
+
+    initRoute(kRouterWalletReceiveConfirm, (props) => WalletReceiveConfirmPage());
+
 
     // * CreateRoomPage
     initRoute(kRouterCreateRoom, (props) => CreateRoomPage());
@@ -189,13 +207,13 @@ class Navigation {
     initRoute(kRouterChatView, (props) => ChatView());
 
     // * MessagePaymentFirstPage
-    initRoute(kRouterChatPayment, (props) => ChatPaymentPage());
+    initRoute<Map<String, String>>(kRouterChatPayment, (props) => ChatPaymentPage(args: props!));
     
     // * PaymentAmountPage
-    initRoute(kRouterPaymentAmount, (props) => PaymentAmountPage());
+    initRoute<Map<String, dynamic>>(kRouterPaymentAmount, (props) => PaymentAmountPage(args: props!));
 
     // * PaymentConfirmPage
-    initRoute(kRouterPaymentConfirm, (props) => PaymentConfirmPage());
+    initRoute<Map<String, dynamic>>(kRouterPaymentConfirm, (props) => PaymentConfirmPage(args: props!));
 
     // * PaymentResultPage
     initRoute(kRouterPaymentResult, (props) => PaymentResultPage());
@@ -349,5 +367,9 @@ class Navigation {
     initRoute(kRouterVideoEditor, (props) => VideoEditorPage(path: props.toString()));
 
     initRoute(kRouterImageEditor, (props) => ImageEditorPage(path: props.toString()));
+
+    initRoute(kRouterFavorites, (props) => WalletFavoritesPage());
+
+    initRoute<Map<String, dynamic>>(kRouterTokenDetail, (props) => TokenDetailPage(network: props!));
   }
 }

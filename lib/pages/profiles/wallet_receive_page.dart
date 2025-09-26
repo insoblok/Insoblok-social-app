@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 
 import 'package:stacked/stacked.dart';
-import 'package:provider/provider.dart';
-
-import 'package:insoblok/pages/pages.dart';
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
-import 'package:insoblok/locator.dart';
 
 class WalletReceivePage extends StatelessWidget {
   const WalletReceivePage({super.key});
@@ -16,63 +12,172 @@ class WalletReceivePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    final CryptoService cryptoService = locator<CryptoService>();
-    return ViewModelBuilder<WalletReceiveProvider>.reactive(
-      viewModelBuilder: () => WalletReceiveProvider(),
-      onViewModelReady: (viewModel) => viewModel.init(context),
+    return ViewModelBuilder<WalletSendProvider>.reactive(
+      viewModelBuilder: () => WalletSendProvider(),
+      onViewModelReady: (viewModel) => viewModel.init(context, "", "", "", 0),
       builder: (context, viewModel, _) {
         return Scaffold(
           resizeToAvoidBottomInset: true,
           appBar: AppBar(
-            title: Text('Receive'),
+            title: Text('My Wallet'),
             centerTitle: true,
             flexibleSpace: AppBackgroundView(),
           ),
           body: AppBackgroundView(
-            child: Padding(
+            child: viewModel.isBusy ? 
+            Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Loader(
+                    color: Colors.pink,
+                    size: 60
+                  ),
+                  SizedBox(height: 18),
+                  Text(
+                    "",
+                    style: TextStyle(
+                      fontSize: 20
+                    )
+                  ),
+                ],
+              ) 
+            ) :
+            ListView(
+              physics: BouncingScrollPhysics(),
               padding: const EdgeInsets.symmetric(
                 horizontal: 20.0,
                 vertical: 24.0,
               ),
-              child: Column(
-                children: [
-                  SizedBox(height: 12.0),
-                  WalletQrDisplay(
-                    data: cryptoService.privateKey!.address.hex,
-                    title: "",
-                    subtitle: "",
-                    size: 200,
-                    backgroundColor: Colors.white,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(12.0),
+                  decoration: BoxDecoration(
+                    color: Theme.of(
+                      context,
+                    ).colorScheme.secondary.withAlpha(16),
+                    borderRadius: BorderRadius.circular(12.0),
                   ),
-                  SizedBox(height: 12.0),
-                  Center(
-                    child: Text(
-                      "${cryptoService.privateKey!.address.hex}",
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 18,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  SizedBox(height: 8.0),
-                  Center(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "Copy Address",
-                          style: TextStyle(
-                            fontSize: 15,
+                  alignment: Alignment.centerLeft,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    spacing: 4.0,
+                    children: [
+                      for (var token in kWalletTokenList) ... [
+                        Row(
+                        spacing: 12.0,
+                        children: [
+                          ClipOval(
+                            child: Container(
+                              color: Colors.grey.shade400,
+                              child: AIImage(
+                                token["icon"],
+                                width: 36.0,
+                                height: 36.0,
+                              ),
+                            ),
                           ),
-                        )
-                      ]
+                          Expanded(child: Text(token['short_name']!.toString())),
+                          Text(
+                                '${AIHelpers.formatDouble(viewModel.allBalances?[token["chain"]] ?? 0, 10)} ${token["short_name"]}',
+                                style: Theme.of(context).textTheme.labelSmall,
+                              ),
+                        ],
+                      ),
+                      const SizedBox(height: 8.0),
+                      
+                      ],
+                    ],
+                  ),
+                ),
+                /*
+                const SizedBox(height: 16.0),
+                Text(
+                  'Select from Token',
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                const SizedBox(height: 16.0),
+                SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Row(
+                    spacing: 12,
+                    children: [
+                      for (var i = 0; i < kWalletTokenList.length; i++) ...{
+                        TagView(
+                          tag: kWalletTokenList[i]['name'].toString() ?? 'tag',
+                          height: 34,
+                          isSelected:
+                              viewModel.selectedFromToken == i ? true : false,
+                          textSize: 14.0,
+                          onTap: () {
+                            viewModel.selectFromToken(i);
+                          },
+                        ),
+                      },
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 12.0),
+                Container(
+                  decoration: kCardDecoration,
+                  padding: EdgeInsets.only(left: 8.0, right: 8.0),
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                      hintText: '0',
+                      hintTextDirection: TextDirection.rtl,
+                      hintStyle: TextStyle(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      border: InputBorder.none,
                     ),
-                  )
-                ],
-
-              ) 
+                    keyboardType: TextInputType.number,
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    maxLines: 1,
+                    textDirection: TextDirection.rtl,
+                    controller: viewModel.sendTokenTextController,
+                  ),
+                ),
+                const SizedBox(height: 16.0),
+                Text(
+                  'Receiver',
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                const SizedBox(height: 15.0),
+                Container(
+                  decoration: kCardDecoration,
+                  padding: EdgeInsets.only(left: 8.0, right: 8.0),
+                  child: TextFormField(
+                    decoration: InputDecoration(
+                      hintText: '',
+                      hintTextDirection: TextDirection.rtl,
+                      hintStyle: TextStyle(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                        fontSize: 18,
+                        fontWeight: FontWeight.bold,
+                      ),
+                      border: InputBorder.none,
+                    ),
+                    keyboardType: TextInputType.text,
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                    maxLines: 1,
+                    textDirection: TextDirection.rtl,
+                    controller: viewModel.receiverTextController,
+                  ),
+                ),
+                */
+                const SizedBox(height: 48.0),
+                GradientPillButton(
+                  text: "Next",
+                  onPressed: () {
+                    viewModel.handleClickNextOnReceivePage(context);
+                  },
+                  loading: viewModel.isBusy,
+                  loadingText: "... Loading ",
+                ),
+              ],
             ),
           ),
         );

@@ -12,6 +12,7 @@ import 'package:insoblok/models/models.dart';
 import 'package:insoblok/pages/pages.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
+import 'package:insoblok/routers/routers.dart';
 
 class MessageProvider extends InSoBlokViewModel {
   late BuildContext _context;
@@ -387,6 +388,11 @@ class MessageProvider extends InSoBlokViewModel {
     */
   }
 
+    void handleClickDollarIcon(BuildContext ctx) {
+      Routers.goToChatPaymentPage(ctx, cryptoService.privateKey!.address.hex, chatUser.walletAddress!);
+    }
+
+
   Future<bool> _showPreview({bool isImage = true}) async {
     return await showDialog<bool>(
           context: context,
@@ -538,6 +544,7 @@ class _VideoPreviewState extends State<VideoPreview> {
       ),
     );
   }
+
 
   @override
   void dispose() {

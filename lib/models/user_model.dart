@@ -41,6 +41,7 @@ abstract class UserModel with _$UserModel {
     List<String>? userActions,
     List<String>? galleries,
     List<UserActionModel>? actions,
+    List<String>? favoriteTokens,
   }) = _UserModel;
 
   factory UserModel.fromJson(Map<String, dynamic> json) =>

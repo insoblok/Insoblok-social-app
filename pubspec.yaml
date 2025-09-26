@@ -108,8 +108,15 @@ dependencies:
   gal: ^2.3.2
   vibration: ^3.1.1
   mime: ^2.0.0
-  # pro_video_editor_example: any
+  local_auth: ^2.3.0
+  local_auth_darwin: ^1.5.0
 
+  crypto: ^3.0.6
+  ed25519_hd_key: ^2.3.0
+  web_socket_channel: ^3.0.3
+  dropdown_button2: ^2.3.9
+  google_fonts: ^4.0.4
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -119,6 +126,7 @@ dev_dependencies:
   freezed: any
   build_runner: any
   test: ^1.25.15
+
 
 dependency_overrides:
   freezed: ^3.1.0

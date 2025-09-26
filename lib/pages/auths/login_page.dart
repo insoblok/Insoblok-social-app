@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:collection/collection.dart';
 import 'package:insoblok/widgets/text_widget.dart';
 
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -10,7 +11,7 @@ import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
 import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/models/models.dart';
-
+import 'package:insoblok/pages/pages.dart';
 
 final kLandingPageData = [
   {
@@ -29,11 +30,15 @@ final kLandingPageData = [
   
 ];
 
+typedef MenuEntry = DropdownMenuEntry<String>;
+
 class LoginPage extends StatelessWidget {
   const LoginPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+
+
     // helper that hides but preserves space/position
     Widget keepSpace({required bool visible, required Widget child}) {
       return Visibility(
@@ -45,27 +50,13 @@ class LoginPage extends StatelessWidget {
       );
     }
 
-    return ViewModelBuilder<LoginProvider>.reactive(
-      viewModelBuilder: () => LoginProvider(),
-      onViewModelReady: (viewModel) => viewModel.init(context),
-      builder: (context, viewModel, _) {
-        final cp = viewModel.currentPage; // 0 or 1
-
-        // Rules:
-        // cp == 1 → hide "LivVybe", and hide the TWO bottom-tagline texts
-        final hideBrandOn0 = (cp == 0);
-        final hideBottomTaglineOn0 = (cp == 0);
-
-        // cp == 0 → hide "LivVybe" and hide the top subtitle "Swipe. React. Remix. Get Paid"
-        final hideBrandOn1 = (cp == 1);
-        final hideTopSubtitleOn1 = (cp == 1);
-
-        final hideBrand = hideBrandOn0 || hideBrandOn1;
-
         return ViewModelBuilder<LoginProvider>.reactive(
           viewModelBuilder: () => LoginProvider(),
           onViewModelReady: (viewModel) => viewModel.init(context),
           builder: (context, viewModel, _) {
+            final List<MenuEntry> menuEntries = UnmodifiableListView<MenuEntry>(
+              LoginProvider.loginMethods.map<MenuEntry>((String name) => MenuEntry(value: name, label: name)),
+            );
             final cp = viewModel.currentPage; // 0 or 1
 
             // Corrected visibility rules based on your comments:
@@ -76,49 +67,63 @@ class LoginPage extends StatelessWidget {
             final hideTopSubtitle = (cp == 1);    // Hide top subtitle on page 1
             final hideBottomTagline = (cp == 1);  // Hide bottom tagline on page 1
 
-            Future<void> _handleClickCreateNewWallet(BuildContext buildContext) async {
+            void _handleClickCreateNewWallet(BuildContext buildContext) {
               
-              showDialog<String>(
-                context: buildContext,
-                builder: (bContext) {
-                  final TextEditingController _passwordController = TextEditingController();
-                  final TextEditingController _confirmController = TextEditingController();
+              Routers.goToPincodeRegisterPage(buildContext, "");
+              // showDialog<String>(
+              //   context: buildContext,
+              //   builder: (bContext) {
+              //     final TextEditingController _passwordController = TextEditingController();
+              //     final TextEditingController _confirmController = TextEditingController();
 
-                  return _CreateWalletDialog(
-                    passwordController: _passwordController,
-                    confirmController: _confirmController,
-                    onCancel: () {
-                      viewModel.isClickCreateNewWallet = false;
-                    },
-                    onCreateWallet: (password) async {
-                      try {
-                        final newWalletResult = await viewModel.cryptoService.createAndStoreWallet(password);
-                        var authUser = await AuthHelper.signIn(
-                          newWalletResult.address,
-                          viewModel.isCheckScan,
-                        );
+              //     return _CreateWalletDialog(
+              //       passwordController: _passwordController,
+              //       confirmController: _confirmController,
+              //       onCancel: () {
+              //         viewModel.isClickCreateNewWallet = false;
+              //       },
+              //       onCreateWallet: (password) async {
+              //         try {
+              //           final newWalletResult = await viewModel.cryptoService.createAndStoreWallet(password);
 
-                        Navigator.pop(bContext);
+              //           Navigator.pop(bContext);
+              //           logger.d("Wallet creation result is ${newWalletResult.address}, ${newWalletResult.mnemonic}");
+              //           await showDialog(
+              //             context: context,
+              //             barrierDismissible: false,
+              //             builder: (context) => SeedPhraseConfirmationWidget(
+              //               seedWords: (newWalletResult.mnemonic ?? "").split(" ").toList(), 
+              //               onConfirmed: () {
+              //                 showDialog(
+              //                   context: context,
+              //                   barrierDismissible: false,
+              //                   builder: (context) => SeedPhraseConfirmationDialog(
+              //                     originalSeedPhrase: newWalletResult.mnemonic!.trim(),
+              //                     onConfirm: () {
+              //                       Routers.goToRegisterFirstPage(buildContext,
+              //                         user: UserModel(walletAddress: newWalletResult.address)
+              //                       );
+              //                     },
+              //                     onCancel: () {
+              //                       Navigator.pop(context); // Close confirmation dialog
+              //                     },
+              //                     showSeedPhrase: false,
+              //                   ),
+              //                 );
+              //               } 
+              //             )
+              //           );
                         
-                        if (authUser?.walletAddress?.isEmpty ?? true) {
-                          Routers.goToRegisterFirstPage(
-                            buildContext,
-                            user: UserModel(walletAddress: newWalletResult.address),
-                          );
-                        } else {
-                          AuthHelper.updateStatus('Online');
-                          Routers.goToMainPage(buildContext);
-                        }
-                      } catch (e) {
-                        logger.e(e);
-                        rethrow; // Re-throw to handle in the dialog
-                      }
-                    },
-                  );
-                },
-              ).then((_) {
-                viewModel.isClickCreateNewWallet = false;
-              });
+              //         } catch (e) {
+              //           logger.e(e);
+              //           rethrow; // Re-throw to handle in the dialog
+              //         }
+              //       },
+              //     );
+              //   },
+              // ).then((_) {
+              //   viewModel.isClickCreateNewWallet = false;
+              // });
             }
 
             // Separate StatefulWidget for the dialog
@@ -144,8 +149,8 @@ class LoginPage extends StatelessWidget {
                         Container(
                           width: double.infinity,
                           margin: EdgeInsets.only(
-                            top: MediaQuery.of(context).padding.top,
-                            left: 32.0,
+                            top: 16,
+                            left: 16.0,
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
@@ -256,21 +261,134 @@ class LoginPage extends StatelessWidget {
                         else if(viewModel.walletExists)
                           Column(
                             children: [
-                              Container(
-                                margin: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 10.0),
-                                child: AIPasswordField(
-                                  controller: viewModel.existingPasswordController
-                                )
-                              ),
-                              Container(
-                                margin: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 10.0),
-                                child: GradientPillButton(
-                                  onPressed: () => viewModel.handleClickSignIn(context),
-                                  loading: viewModel.isBusy,
-                                  loadingText: "",
-                                  text: "Unlock"
-                                )
-                              ),
+                                  Container(
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                                      child: GradientPillButton(
+                                        text: "Sign In", 
+                                        onPressed: () {
+                                          viewModel.handleClickSignIn(context);
+                                        }
+                                      ),
+                                    ),
+                                  ),
+                                  // child: DropdownButton<String>(
+                                  //   value: viewModel.loginMethod,
+                                  //   isExpanded: true,
+                                  //   icon: const Icon(Icons.keyboard_arrow_down),
+                                  //   dropdownColor: Theme.of(context).colorScheme.onSecondary,
+                                  //   items: viewModel.loginMethods.map((String value) {
+                                  //     return DropdownMenuItem<String>(
+                                  //       value: value,
+                                  //       child: Align(
+                                  //         alignment: Alignment.center,
+                                  //         child: Text(
+                                  //           value,
+                                  //           style: Theme.of(context).textTheme.bodyLarge
+                                  //         ),
+                                  //       ),
+                                  //     );
+                                  //   }).toList(),
+                                  //   onChanged: (String? newValue) {
+                                  //       viewModel.handleChangeLoginMethod(newValue ?? "");
+                                  //   },
+                                  // ),
+                              //     Container(
+                              //       decoration: BoxDecoration(
+                              //         border: Border.all(color: Colors.pink, width: 1), // border color & width
+                              //         borderRadius: BorderRadius.circular(36), // border radius
+                              //       ),
+                              //       child: DropdownButtonHideUnderline(
+                              //         child: DropdownMenuTheme(
+                              //           data: DropdownMenuThemeData(
+                              //             inputDecorationTheme: InputDecorationTheme(
+                              //               border: InputBorder.none, // removes default white border
+                              //               enabledBorder: InputBorder.none,
+                              //               focusedBorder: InputBorder.none,
+                              //               contentPadding: EdgeInsets.symmetric(
+                              //                 horizontal: 42,
+                              //               ),
+                              //             ),
+                              //             menuStyle: MenuStyle(
+                              //               backgroundColor: MaterialStateProperty.all(Colors.black87),
+                              //               padding: MaterialStateProperty.all(
+                              //                 EdgeInsets.symmetric(vertical: 3, horizontal: 6),
+                              //               ),
+                              //             )
+                              //           ),
+                              //         child: DropdownMenu<String>(
+                              //           initialSelection: LoginProvider.loginMethods.first,
+                              //           width: MediaQuery.of(context).size.width * 0.7,
+                              //           textStyle: const TextStyle(
+                              //             color: Colors.white,
+                              //             fontSize: 16,
+                              //             height: 1.2,
+                              //             textBaseline: TextBaseline.alphabetic,
+                              //           ),
+                              //           onSelected: (value) => viewModel.handleChangeLoginMethod(value!),
+                              //           dropdownMenuEntries: LoginProvider.loginMethods.map((method) {
+                              //             return DropdownMenuEntry<String>(
+                              //               value: method,
+                              //               label: method,
+                              //               style: ButtonStyle(
+                              //                 alignment: Alignment.center,
+                              //                 padding: const MaterialStatePropertyAll(
+                              //                   EdgeInsets.symmetric(horizontal: 12, vertical: 14),
+                              //                 ),
+                              //                 backgroundColor: MaterialStateProperty.resolveWith<Color?>(
+                              //                   (states) {
+                              //                     if (states.contains(WidgetState.focused)) {
+                              //                       return Colors.pink; // active background
+                              //                     }
+                              //                     return Colors.transparent;
+                              //                   },
+                              //                 ),
+                              //                 foregroundColor: MaterialStateProperty.resolveWith<Color>(
+                              //                   (states) {
+                              //                     if (states.contains(WidgetState.focused)) {
+                              //                       return Colors.white; // active text
+                              //                     }
+                              //                     return Colors.white70; // inactive text
+                              //                   },
+                              //                 ),
+                              //                 shape: MaterialStatePropertyAll(
+                              //                   RoundedRectangleBorder(
+                              //                     borderRadius: BorderRadius.circular(12),
+                              //                   ),
+                              //                 ),
+                              //                 minimumSize: MaterialStateProperty.all(
+                              //                   Size(MediaQuery.of(context).size.width * 0.7, 48), 
+                              //                 ),
+                              //                 elevation: MaterialStateProperty.resolveWith<double>(
+                              //                   (states) {
+                              //                     if (method == viewModel.loginMethod) {
+                              //                       return 3.0; // shadow elevation when focused
+                              //                     }
+                              //                     return 0.0;
+                              //                   },
+                              //                 ),
+                              //                 shadowColor: MaterialStateProperty.all(Colors.grey),
+                              //               ),
+                              //             );
+                              //           }).toList(),
+                              //         ),
+                              //       ),
+                              //     ),
+                              // ),
+                              SizedBox(height: 8.0),
+                              Center(
+                                child: GestureDetector(
+                                  onTap: viewModel.handleClickForgotPassword,
+                                  child: Text(
+                                    "Forgot Password",
+                                    style: TextStyle(
+                                      color: Colors.blue,            // blue like a hyperlink
+                                      decoration: TextDecoration.underline, // underline
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ),
+                              )
                             ]        
                           )
                         else
@@ -297,10 +415,22 @@ class LoginPage extends StatelessWidget {
                                       ? null
                                       : () => viewModel.showImportDialog(viewModel.context),
                                 ),
+                              ),
+                              Center(
+                                child: GestureDetector(
+                                  onTap: viewModel.handleSignInWithPassword,
+                                  child: Text(
+                                    "Sign In",
+                                    style: TextStyle(
+                                      color: Colors.blue,            // blue like a hyperlink
+                                      decoration: TextDecoration.underline, // underline
+                                      fontSize: 16,
+                                    ),
+                                  ),
+                                ),
                               )
                             ]
                           ),
-
                         // checkbox
                         Container(
                           margin: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 1),
@@ -397,11 +527,9 @@ class LoginPage extends StatelessWidget {
                 ),
               ),
             );
-          },
+          }
         );
-      },
-    );
-  }
+    }
 }
 
 class _CreateWalletDialog extends StatefulWidget {
@@ -504,28 +632,24 @@ class _CreateWalletDialogState extends State<_CreateWalletDialog> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
                 child: Column(
-                      children: [
-                        
-                        AIPasswordField(
-                          hintText: "Password",
-                          controller: widget.passwordController
-                        ),
-                        const SizedBox(height: 18),
-                        AIPasswordField(
-                          hintText: "Confirm Password",
-                          controller: widget.confirmController)
-                        ,
-                      ],
+                  children: [
+                    AIPasswordField(
+                      hintText: "Password",
+                      controller: widget.passwordController
+                    ),
+                    const SizedBox(height: 18),
+                    AIPasswordField(
+                      hintText: "Confirm Password",
+                      controller: widget.confirmController)
+                    ,
+                  ],
                     ),
               ),
-                
-
-
               // 🔹 Footer actions
               Padding(
                 padding: const EdgeInsets.all(16),
                 child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     TextButton(
                       onPressed: _processing ? null : _handleClickCancel,
@@ -534,7 +658,7 @@ class _CreateWalletDialogState extends State<_CreateWalletDialog> {
                         style: TextStyle(color: Colors.grey),
                       ),
                     ),
-                    const SizedBox(width: 8),
+                    const SizedBox(width: 24.0),
                     GestureDetector(
                       onTap: _processing ? null : _handleOkClick,
                       child: Container(

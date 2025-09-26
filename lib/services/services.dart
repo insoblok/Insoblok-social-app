@@ -29,3 +29,4 @@ export 'web3_service.dart';
 export 'api_service.dart';
 export 'global_store.dart';
 export 'account_service.dart';
+export 'local_auth_service.dart';

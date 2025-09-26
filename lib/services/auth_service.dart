@@ -12,8 +12,13 @@ import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 
 class AuthService with ListenableServiceMixin {
+  
   final RxValue<UserModel?> _userRx = RxValue<UserModel?>(null);
   UserModel? get user => _userRx.value;
+  set user(UserModel? u) {
+    _userRx.value = u;
+    notifyListeners();
+  }
 
   final RxValue<UserCredential?> _credentialRx = RxValue<UserCredential?>(null);
   UserCredential? get credential => _credentialRx.value;
@@ -25,6 +30,8 @@ class AuthService with ListenableServiceMixin {
 
   AuthService() {
     listenToReactiveValues([_userRx, _credentialRx, _isVybeScan]);
+  
+    
   }
 
   Future<void> updateUser(UserModel model) async {
@@ -38,6 +45,13 @@ class AuthService with ListenableServiceMixin {
 
   void init() {
     _userService = UserService();
+
+    _userService.getUserUpdated().listen((updatedUser) {
+      if (updatedUser?.id == user?.id) {
+        _userRx.value = updatedUser;
+        notifyListeners();
+      }
+    });
   }
 
   Future<void> updateStatus(String status) async {
@@ -71,11 +85,13 @@ class AuthService with ListenableServiceMixin {
   }
 
   Future<UserModel?> signUp(UserModel newUser) async {
-    var uid = credential?.user?.uid;
+    final resp = await FirebaseAuth.instance.signInAnonymously();
+    var uid = resp.user?.uid;
+    logger.d("THis is inside signup $uid");
     if (uid != null) {
       var ipAddress = IpAddress(type: RequestType.json);
       var data = await ipAddress.getIpAddress();
-
+      logger.d("ip address data is $data");
       var resultUser = await userService.createUser(
         newUser.copyWith(
           uid: uid,
@@ -144,6 +160,7 @@ class AuthService with ListenableServiceMixin {
     //   throw Exception('No matched email or password!');
     // }
   }
+  
 }
 
 class AuthHelper {

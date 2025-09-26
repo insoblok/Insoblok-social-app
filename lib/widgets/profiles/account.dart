@@ -97,13 +97,13 @@ class AccountFloatingView extends ViewModelWidget<AccountProvider> {
             spacing: 4.0,
             children: [
               Text(
-                '${viewModel.accountUser?.fullName}',
-                style: Theme.of(context).textTheme.titleMedium,
+                '${viewModel.accountUser?.fullName ?? viewModel.accountUser?.nickId}',
+                style: Theme.of(context).textTheme.titleSmall,
               ),
-              Text(
-                '@${viewModel.accountUser?.nickId}',
-                style: Theme.of(context).textTheme.labelMedium,
-              ),
+              // Text(
+              //   '@${viewModel.accountUser?.nickId}',
+              //   style: Theme.of(context).textTheme.labelMedium,
+              // ),
 
               Wrap(
                 spacing: 12.0,
@@ -127,7 +127,7 @@ class AccountFloatingView extends ViewModelWidget<AccountProvider> {
                             const SizedBox(width: 4.0),
                             Text(
                               info['title']!,
-                              style: Theme.of(context).textTheme.labelMedium,
+                              style: Theme.of(context).textTheme.labelSmall,
                             ),
                           ],
                         ),
@@ -159,15 +159,16 @@ class AccountFloatingView extends ViewModelWidget<AccountProvider> {
               //     ],
               //   ),
               // ),
+              SizedBox(height: 8.0),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
                   SizedBox(
-                    width: 80.0,
+                    width: 60.0,
                     child: Column(
                       children: [
                         Text(
-                          '${viewModel.userLevel.level}',
+                          '${viewModel.userRank}',
                           style: Theme.of(context).textTheme.titleSmall,
                         ),
                         Text(
@@ -177,6 +178,14 @@ class AccountFloatingView extends ViewModelWidget<AccountProvider> {
                       ],
                     ),
                   ),
+                  Container(
+                    width: 1,              // thickness
+                    height: 42,            // height of the separator
+                    color: Colors.grey,    // color
+                  ),
+
+
+                  
                   SizedBox(
                     width: 80.0,
                     child: Column(
@@ -191,6 +200,11 @@ class AccountFloatingView extends ViewModelWidget<AccountProvider> {
                         ),
                       ],
                     ),
+                  ),
+                  Container(
+                    width: 1,              // thickness
+                    height: 42,            // height of the separator
+                    color: Colors.grey,    // color
                   ),
                   SizedBox(
                     width: 80.0,
@@ -207,8 +221,13 @@ class AccountFloatingView extends ViewModelWidget<AccountProvider> {
                       ],
                     ),
                   ),
+                  Container(
+                    width: 1,              // thickness
+                    height: 42,            // height of the separator
+                    color: Colors.grey,    // color
+                  ),
                   SizedBox(
-                    width: 80.0,
+                    width: 60.0,
                     child: Column(
                       children: [
                         Text(

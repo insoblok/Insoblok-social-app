@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'package:intl/intl.dart';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -16,7 +17,7 @@ import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:vsc_quill_delta_to_html/vsc_quill_delta_to_html.dart';
-
+import 'package:get_ip_address/get_ip_address.dart';
 
 final _tastScoreService = TastescoreService();
 TastescoreService get tastScoreService => _tastScoreService;
@@ -350,5 +351,31 @@ class AIHelpers {
     } else {
       throw 'Could not launch $url';
     }
+  }
+
+  static String formatNumbers(double value) {
+    return NumberFormat.decimalPattern('en_US').format(value);
+  }
+
+
+  static String formatLargeNumberSmart(num number) {
+    final formatter = NumberFormat.decimalPattern();
+    if (number >= 1e12) return (number / 1e12).toStringAsFixed(2) + 'T';
+    if (number >= 1e9) return (number / 1e9).toStringAsFixed(2) + 'B';
+    if (number >= 1e6) return (number / 1e6).toStringAsFixed(2) + 'M';
+    if (number >= 1e3) return (number / 1e3).toStringAsFixed(2) + 'K';
+    return formatter.format(number); // fallback with commas
+  }
+
+  static Future<String> getIPAddress() async {
+    try {
+      final ipAddress = IpAddress(type: RequestType.json);
+      final data = await ipAddress.getIpAddress();
+      return data["ip"].toString();
+    } catch (e) {
+      logger.d("Exception raised while getting ip address $e");
+      return "";
+    }
+    
   }
 }

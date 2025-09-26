@@ -20,6 +20,10 @@ class Routers {
     _pushReplacement(context, kRouterLogin, null);
   }
 
+  static dynamic goToPincodeRegisterPage(BuildContext context, String mnemonic) {
+    _pushReplacement(context, kRouterPincodeRegister, mnemonic);
+  }
+
   static dynamic goToRegisterFirstPage(
     BuildContext context, {
     UserModel? user,
@@ -36,6 +40,10 @@ class Routers {
 
   static dynamic goToRegisterPage(BuildContext context, {UserModel? user}) {
     _pushToRoute(context, kRouterRegister, user);
+  }
+
+  static dynamic goToPincodePage(BuildContext context) {
+    _pushToRoute(context, kRouterLoginPincode, null);
   }
 
   static dynamic goToMainPage(BuildContext context) {
@@ -110,8 +118,16 @@ class Routers {
     return _pushToRoute(context, kRouterWalletSend, null);
   }
 
+  static dynamic goToWalletSendOnePage(BuildContext context) {
+    return _pushToRoute(context, kRouterWalletSendOne, null);
+  }
+
   static dynamic goToWalletReceivePage(BuildContext context) {
     return _pushToRoute(context, kRouterWalletReceive, null);
+  }
+
+  static dynamic goToWalletReceiveConfirmPage(BuildContext context) {
+    return _pushToRoute(context, kRouterWalletReceiveConfirm, null);
   }
 
   static dynamic goToCreateRoomPage(BuildContext context) {
@@ -130,16 +146,29 @@ class Routers {
     return _pushToRoute(context, kRouterChatView, null);
   }
 
-  static dynamic goToChatPaymentPage(BuildContext context) {
-    return _pushToRoute(context, kRouterChatPayment, null);
+  static dynamic goToChatPaymentPage(BuildContext context, String s, String r) {
+    Map<String, String> args = {};
+    args["sender"] = s;
+    args["receiver"] = r;
+    return _pushToRoute(context, kRouterChatPayment, args);
   }
 
-  static dynamic goToPaymentAmountPage(BuildContext context) {
-    return _pushToRoute(context, kRouterPaymentAmount, null);
+  static dynamic goToPaymentAmountPage(BuildContext context, String s, String r, String n, double amount) {
+    Map<String, dynamic> args = {};
+    args["sender"] = s;
+    args["receiver"] = r;
+    args["network"] = n;
+    args["amount"] = amount;
+    return _pushToRoute(context, kRouterPaymentAmount, args);
   }
 
-  static dynamic goToPaymentConfirmPage(BuildContext context) {
-    return _pushToRoute(context, kRouterPaymentConfirm, null);
+  static dynamic goToPaymentConfirmPage(BuildContext context, String s, String r, String n, double amt) {
+    Map<String, dynamic> args = {};
+    args["sender"] = s;
+    args["receiver"] = r;
+    args["network"] = n;
+    args["amount"] = amt;
+    return _pushToRoute(context, kRouterPaymentConfirm, args);
   }
 
   static dynamic goToPaymentResultPage(BuildContext context) {
@@ -264,5 +293,13 @@ class Routers {
     List<UserModel>? users,
   }) {
     return _pushToRoute(context, kRouterUserList, users);
+  }
+
+  static dynamic goToFavoritesPage(BuildContext context) {
+    return _pushToRoute(context, kRouterFavorites, null);
+  }
+
+  static dynamic goToTokenDetailPage(BuildContext context, Map<String, dynamic> args) {
+    return _pushToRoute(context, kRouterTokenDetail, args);
   }
 }

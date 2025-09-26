@@ -55,6 +55,7 @@ class FirebaseService {
 
   Future<void> signInFirebase() async {
     var credential = await FirebaseAuth.instance.signInAnonymously();
+    logger.d("Credeintial is $credential");
     _userCredential = credential;
   }
 

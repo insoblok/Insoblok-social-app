@@ -7,7 +7,6 @@ import 'package:flutter_quill/flutter_quill.dart';
 import 'package:provider/provider.dart';
 import 'package:stacked/stacked.dart';
 import 'package:media_kit/media_kit.dart';
-import 'package:flutter/services.dart';
 import 'package:insoblok/locator.dart';
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/routers/routers.dart';
@@ -67,7 +66,7 @@ class InSoBlokApp extends StatelessWidget {
           return MaterialApp(
             title: 'InSoBlok',
             debugShowCheckedModeBanner: false,
-
+            
             // THEMING
             themeMode: AppSettingHelper.themeMode,
             theme: AppSettingHelper.lightTheme,

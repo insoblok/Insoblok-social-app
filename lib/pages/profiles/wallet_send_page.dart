@@ -14,7 +14,7 @@ class WalletSendPage extends StatelessWidget {
 
     return ViewModelBuilder<WalletSendProvider>.reactive(
       viewModelBuilder: () => WalletSendProvider(),
-      onViewModelReady: (viewModel) => viewModel.init(context),
+      onViewModelReady: (viewModel) => viewModel.init(context, "", "", "", 0),
       builder: (context, viewModel, _) {
         return Scaffold(
           resizeToAvoidBottomInset: true,
@@ -68,10 +68,15 @@ class WalletSendPage extends StatelessWidget {
                         Row(
                         spacing: 12.0,
                         children: [
-                          AIImage(
-                            token['icon'],
-                            width: 36.0,
-                            height: 36.0,
+                          ClipOval(
+                            child: Container(
+                              color: Colors.grey.shade400,
+                              child: AIImage(
+                                token["icon"],
+                                width: 36.0,
+                                height: 36.0,
+                              ),
+                            ),
                           ),
                           Expanded(child: Text(token['short_name']!.toString())),
                           Text(
@@ -86,102 +91,15 @@ class WalletSendPage extends StatelessWidget {
                     ],
                   ),
                 ),
-                const SizedBox(height: 16.0),
-                Text(
-                  'Select from Token',
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                const SizedBox(height: 16.0),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    spacing: 12,
-                    children: [
-                      for (var i = 0; i < kWalletTokenList.length; i++) ...{
-                        TagView(
-                          tag: kWalletTokenList[i]['name'].toString() ?? 'tag',
-                          height: 34,
-                          isSelected:
-                              viewModel.selectedFromToken == i ? true : false,
-                          textSize: 14.0,
-                          onTap: () {
-                            viewModel.selectFromToken(i);
-                          },
-                        ),
-                      },
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 12.0),
-                Container(
-                  decoration: kCardDecoration,
-                  padding: EdgeInsets.only(left: 8.0, right: 8.0),
-                  child: TextFormField(
-                    decoration: InputDecoration(
-                      hintText: '0',
-                      hintTextDirection: TextDirection.rtl,
-                      hintStyle: TextStyle(
-                        color: Theme.of(context).colorScheme.onPrimary,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      border: InputBorder.none,
-                    ),
-                    keyboardType: TextInputType.number,
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                    maxLines: 1,
-                    textDirection: TextDirection.rtl,
-                    controller: viewModel.sendTokenTextController,
-                  ),
-                ),
-                const SizedBox(height: 16.0),
-                Text(
-                  'Receiver',
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                const SizedBox(height: 15.0),
-                Container(
-                  decoration: kCardDecoration,
-                  padding: EdgeInsets.only(left: 8.0, right: 8.0),
-                  child: TextFormField(
-                    decoration: InputDecoration(
-                      hintText: '',
-                      hintTextDirection: TextDirection.rtl,
-                      hintStyle: TextStyle(
-                        color: Theme.of(context).colorScheme.onPrimary,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                      border: InputBorder.none,
-                    ),
-                    keyboardType: TextInputType.text,
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                    maxLines: 1,
-                    textDirection: TextDirection.rtl,
-                    controller: viewModel.receiverTextController,
-                  ),
-                ),
                 const SizedBox(height: 48.0),
-                TextFillButton(
-                  onTap: () async {
-                    await viewModel.sendToken();
-                    // addTransaction(viewModel.currentTransaction);
-                    // viewModel.getTransactionStatus(viewModel.currentTransaction["tx_hash"], viewModel.currentTransaction["chain"]);
-
+                GradientPillButton(
+                  text: "Next",
+                  onPressed: () {
+                    viewModel.handleClickNextOnSendPage(context);
                   },
-                  height: 48,
-                  isBusy: viewModel.isBusy,
-                  color:
-                      viewModel.selectedFromToken !=
-                                  viewModel.selectedToToken &&
-                              viewModel.isPossibleConvert
-                          ? Theme.of(context).primaryColor
-                          : Theme.of(
-                            context,
-                          ).colorScheme.secondary.withAlpha(64),
-                  text:
-                      'Send ${kWalletTokenList[viewModel.selectedFromToken]['name'] ?? 'tag'}',
-                ),
+                  loading: viewModel.isBusy,
+                  loadingText: "... Loading ",
+                )
               ],
             ),
           ),

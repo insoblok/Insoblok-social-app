@@ -30,6 +30,7 @@ class AIImages {
   static String icBottomMarket = 'assets/icons/ic_chart_hoz.svg';
   static String icBottomNotiFill = 'assets/icons/ic_notifications_fill.svg';
   static String icBottomNoti = 'assets/icons/ic_notifications.svg';
+  static String icBottomFavorite = 'assets/icons/ic_favorite.svg';
   static String icBottomMessageFill = 'assets/icons/ic_comment_fill.png';
   static String icBottomMessage = 'assets/icons/ic_comment.png';
   static String icBottomUserFill = 'assets/icons/ic_user_fill.svg';
@@ -40,13 +41,18 @@ class AIImages {
   static String icBottomLeaderboardFill = 'assets/icons/ic_leaderboard_fill.png';
   static String icBottomLeaderboard = 'assets/icons/ic_leaderboard.png';
   static String icUsdt = 'assets/icons/ic_usdt.png';
-  static String icXrp = 'assets/icons/ic_xrp.svg';
+  static String icXrp = 'assets/icons/ic_xrp2.svg';
   static String icPostLookbook = 'assets/icons/ic_post_lookbook.png';
   static String icPostReaction = 'assets/icons/ic_post_reaction.png';
   static String icLookBook = 'assets/icons/ic_lookbook.png';
   
   static String icTopEffect = 'assets/icons/ic_effect_2.svg';
   static String icFavoriteFill = 'assets/icons/ic_favourite_fill.svg';
+  static String icFavoriteStroke = 'assets/icons/ic_favourite_stroke.svg';
+  static String icStarFill = 'assets/icons/ic_star_fill.svg';
+  static String icStarStroke = 'assets/icons/ic_star_stroke.svg';
+  static String icHistoryFill = 'assets/icons/ic_history_fill.svg';
+  static String icHistoryStroke = 'assets/icons/ic_history.svg';
   static String icFavorite = 'assets/icons/ic_favourite.svg';
   static String icCommit = 'assets/icons/ic_commit.svg';
   static String icRetwitter = 'assets/icons/ic_retweet.svg';
@@ -97,10 +103,10 @@ class AIImages {
     return 'assets/images/img_level_0$level.png';
   }
 
-  static String icCoinUsdt = 'assets/icons/ic_usdt.png';
-  static String icCoinXrp = 'assets/icons/ic_xrp.png';
+  static String icCoinUsdt = 'assets/icons/ic_usdt.svg';
+  static String icCoinXrp = 'assets/icons/ic_xrp2.svg';
   static String icCoinInso = 'assets/icons/ic_inso.png';
-  static String icCoinEther = 'assets/icons/ic_eth.svg';
+  static String icCoinEther = 'assets/icons/ic_eth2.svg';
   //static String icUserXP = 'assets/icons/ic_xrp.svg';
   static String icUserXP = 'assets/icons/ic_xp2.png';
 

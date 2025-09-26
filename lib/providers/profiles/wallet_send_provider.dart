@@ -1,10 +1,12 @@
 import 'package:stacked/stacked.dart';
 import 'package:flutter/material.dart';
+import 'package:web3dart/web3dart.dart';
 import 'package:insoblok/locator.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
-
+import 'package:insoblok/routers/routers.dart';
+import 'package:insoblok/widgets/widgets.dart';
 
 class WalletSendProvider extends InSoBlokViewModel {
   // late BuildContext _context;
@@ -14,36 +16,47 @@ class WalletSendProvider extends InSoBlokViewModel {
   //   notifyListeners();
   // }
 
-  final TextEditingController _sendTokenTextController = TextEditingController();
-  final TextEditingController _receiverTextController = TextEditingController();
-  TextEditingController get sendTokenTextController => _sendTokenTextController;
-  TextEditingController get receiverTextController => _receiverTextController;
+  final TextEditingController senderController = TextEditingController();
+  final TextEditingController receiverController = TextEditingController();
 
+  final NumberPlateController controller = NumberPlateController();
 
   late FocusNode _focusNode;
-  final Web3Service _web3Service = locator<Web3Service>();
-  Map<String, double>? get allBalances => _web3Service.allBalances;
-  Map<String, double>? get allPrices => _web3Service.allPrices;
+  final Web3Service web3Service = locator<Web3Service>();
+  Map<String, double> get allBalances => web3Service.allBalances;
+  Map<String, double> get allPrices => web3Service.allPrices;
 
   @override
-  List<ListenableServiceMixin> get listenableServices => [_web3Service];
+  List<ListenableServiceMixin> get listenableServices => [web3Service];
 
   String? get address => cryptoService.privateKey!.address.hex;  
 
-  Future<void> init(BuildContext context) async {
+  String? sender;
+  String? receiver;
+  String? network;
+  double? amount;
+  Map<String, dynamic> selectedNetwork = {};
+  
+  Future<void> _empty() async {}
+
+  Future<void> init(BuildContext context, String s, String r, String n, double amt) async {
     // this.context = context;
     _focusNode = FocusNode();
+    sender = s;
+    receiver = r;
+    if(n.isEmpty) network = kWalletTokenList.first["chain"].toString();
+    else network = n;
+    amount = amt;
+    senderController.text = s;
+    receiverController.text = r;
     setBusy(true);
-    getTransfers();
-    // setBalances(balances);
     await Future.wait([
-      _web3Service.getBalances(address!),
-      _web3Service.getPrices(),
-      _web3Service.getTransactions(address!),
+      web3Service.getBalances(address!),
+      web3Service.getPrices(),
+      web3Service.getTransactions(address!),
+      s.isNotEmpty && r.isNotEmpty && n.isNotEmpty && amt > 0 ? web3Service.getTransactionFee(cryptoService.privateKey!, n, EthereumAddress.fromHex(r), amt) :  _empty()
     ]);
-    sendTokenTextController.text = (allBalances?["insoblok"] ?? "0").toString();
-    allBalances?["xp"] = (accountService.availableXP).toDouble();
-    logger.d("all balances are ${allBalances}");
+    allBalances["xp"] = (accountService.availableXP).toDouble();
     notifyListeners(); 
     setBusy(false);
   }
@@ -117,112 +130,46 @@ class WalletSendProvider extends InSoBlokViewModel {
 
   final api = ApiService(baseUrl: INSOBLOK_WALLET_URL);
 
-  void selectFromToken(int index) {
-    selectedFromToken = index;
-    switch (kWalletTokenList[index]['name']) {
-      case 'inso':
-        availableValue = allBalances!["insoblok"] ?? 0;
-        break;
-      case 'usdt':
-        availableValue = allBalances!["usdt"] ?? 0;
-        break;
-      case 'xrp':
-        availableValue = allBalances!["xrp"] ?? 0;
-        break;
-      case 'eth':
-        availableValue = allBalances!["ethereum"] ?? 0;
-        break;
-      case 'seth':
-        availableValue = allBalances!["sepolia"] ?? 0;
-        break;
-      case 'xp':
-        availableValue = allBalances!["xp"] ?? 0;
-        break;
-      default:
-        break;
-    }
-    logger.d("Available Value is $availableValue");
-    getRate(
-      kWalletTokenList[index]['name'].toString(),
-      kWalletTokenList[selectedToToken]['name'].toString(),
-    );
-    if ((double.tryParse(_sendTokenTextController.text) ?? 0) > availableValue) {
-      isPossibleConvert = false;
-    } else {
-      isPossibleConvert = true;
-    }
-    sendTokenTextController.text = availableValue.toString();
-    notifyListeners();
-  }
 
-  void selectToToken(int index) {
-    selectedToToken = index;
-    getRate(
-      kWalletTokenList[selectedFromToken]['name'].toString(),
-      kWalletTokenList[index]['name'].toString(),
-    );
-    notifyListeners();
-  }
+  double get transactionFee => web3Service.transactionFee;
 
-  void getRate(String? from, String? to) {
-    // for (var rate in kSwapRate) {
-    //   if (rate['from'] == from && rate['to'] == to) {
-    //     convertRate = rate['rate'] as double;
-    //   }
-    // }
-  }
-
-  void changingSendTokenValue(String? fromToken) {
-    if (fromToken == null) return;
-    if ((double.tryParse(fromToken) ?? 0) > availableValue ||
-        (double.tryParse(fromToken) ?? 0) == 0) {
-      isPossibleConvert = false;
-    } else {
-      isPossibleConvert = true;
-    }
-
-    _sendTokenTextController.text =
-        ((double.tryParse(fromToken) ?? 0) * convertRate).toString();
-    notifyListeners();
-  }
-
-  Future<void> getTransfers() async {
-    isInitLoading = true;
+  Future<void> handleClickSend(BuildContext ctx) async {
     try {
-      _transfers.clear();
-      var t = await transferService.getTransfers(user!.id!);
-      _transfers.addAll(t);
+
+      await sendToken(sender ?? "", receiver ?? "", network ?? "", amount ?? 0, cryptoService.privateKey!);
+      logger.d("Network is $network");
+      final selectedNetwork = kWalletTokenList.firstWhere((tk)=>tk["chain"] == network!);
+      final CoinModel coin = CoinModel(icon: selectedNetwork["icon"].toString(), type: "paid", unit: selectedNetwork["short_name"].toString(), amount: web3Service.paymentAmount.toString());
+      messageService.sendPaidMessage(chatRoomId: web3Service.chatRoom.id ?? "", coin: coin);
+      Routers.goToPaymentResultPage(ctx);
     } catch (e) {
-      setError(e);
-      logger.e(e);
-    } finally {
-      isInitLoading = false;
-      selectFromToken(0);
+      logger.d("Exception raised while sending ${e.toString()}");
     }
   }
 
-  Future<void> sendToken() async {
+  Future<void> sendToken(String s, String r, String n, double amt, EthPrivateKey pk) async {
     if (isBusy) return;
     setBusy(true);
-    if (_receiverTextController.text.trim() == "") {
-      AIHelpers.showToast(msg: "Please enter the receiver address.");
-      setError("Please enter the receiver address.");
+    if ((s).trim() == "" || r.trim() == "" || amt == 0) {
+      AIHelpers.showToast(msg: "Please enter valid information.");
+      setError("Please enter valid information.");
       return;
     }
-    if (availableValue < double.parse(_sendTokenTextController.text.trim())) {
+    if ((allBalances[network] ?? 0) < amt) {
       logger.d("Insufficient balance.");
       AIHelpers.showToast(msg: "Insufficient Token Balance.");
       setError("Insufficient Token Balance.");
       return;
     }
-    cryptoService.to_address = _receiverTextController.text.trim();
-    cryptoService.from_address = cryptoService.privateKey!.address.hex;
+    cryptoService.to_address = r;
+    // cryptoService.from_address = cryptoService.privateKey!.address.hex;
+    cryptoService.from_address = s;
 
     clearErrors();
 
     await runBusyFuture(() async {
       try {
-        currentTransaction = await _web3Service.sendEvmToken(_receiverTextController.text.trim(), double.parse(_sendTokenTextController.text.trim()), kWalletTokenList[selectedFromToken], cryptoService.privateKey);
+        currentTransaction = await web3Service.sendEvmToken(r, amt, kWalletTokenList[selectedFromToken], pk);
         // var model = transferService.getTransferModel(
         //   fromToken: fromToken,
         //   toToken: toToken,
@@ -237,7 +184,6 @@ class WalletSendProvider extends InSoBlokViewModel {
         setError(e);
         logger.e(e);
       } finally {
-        getTransfers();
         setBusy(false);
       }
     }());
@@ -246,16 +192,44 @@ class WalletSendProvider extends InSoBlokViewModel {
       return;
     }
     AIHelpers.showToast(msg: 'Successfully sent!');
-    _web3Service.getTransactionStatus(currentTransaction["tx_hash"], kWalletTokenList[selectedFromToken]["chain"].toString(), cryptoService.privateKey!.address.hex);
-    _web3Service.addTransaction(currentTransaction);
-    logger.d("Web3Service transaction length is ${_web3Service.transactions!.length}");
+    web3Service.getTransactionStatus(currentTransaction["tx_hash"], kWalletTokenList[selectedFromToken]["chain"].toString(), cryptoService.privateKey!.address.hex);
+    web3Service.addTransaction(currentTransaction);
   }
 
+  void handleClickNextOnSendPage(BuildContext ctx) {
+    Routers.goToChatPaymentPage(ctx, cryptoService.privateKey!.address.hex, "");
+  }
+
+  void handleClickMax() {
+    controller.value = (allBalances[network!] ?? 0).toString();
+    amount = allBalances[network!] ?? 0;
+  }
+
+  void handleClickPreview(BuildContext context) {
+    if ((amount ?? 0) > (allBalances[network] ?? 0).toDouble()) {
+      AIHelpers.showToast(msg: "Please enter valid amount");
+      return;
+    }
+    Routers.goToPaymentConfirmPage(context, sender ?? "", receiver ?? "", network ?? "", amount ?? 0);
+  }
+
+  void updateAmount(String amt) {
+    if(amt.isEmpty || double.tryParse(amt) == null) {
+      AIHelpers.showToast(msg: "Please enter valid amount.");
+      return;
+    }
+    amount = double.parse(amt);
+    web3Service.paymentAmount = double.parse(amt); 
+  }
+
+  void handleClickNextOnReceivePage(BuildContext ctx) {
+    Routers.goToWalletReceiveConfirmPage(ctx);
+  }
   @override
   void dispose() {
     // Clean up any resources
-    _sendTokenTextController.dispose();
-    _receiverTextController.dispose();
+    senderController.dispose();
+    receiverController.dispose();
     _focusNode.dispose();
     super.dispose();
   }

@@ -35,7 +35,7 @@ class CryptoService {
 
   // Secure storage keys (you can version these)
   static const String _vaultKey = 'wallet_vault_v1';
-
+  static const String _pincodeKey = "wallet_pincode";
   final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
   final Random _rng = Random.secure();
 
@@ -185,7 +185,7 @@ class CryptoService {
     );
 
     await _secureStorage.write(key: _vaultKey, value: encryptedVault);
-
+    await _secureStorage.write(key: _pincodeKey, value: password);
     final creds = EthPrivateKey.fromHex(privHex);
     final address = await creds.extractAddress();
     final newWalletResult = NewWalletResult(
@@ -212,9 +212,11 @@ class CryptoService {
       password: password,
       plaintext: Uint8List.fromList(utf8.encode(mnemonic)),
     );
-
+    logger.d("entered password is $password, $encryptedVault");
     await _secureStorage.write(key: _vaultKey, value: encryptedVault);
-
+    await _secureStorage.write(key: _pincodeKey, value: password);
+    final vault = await _secureStorage.read(key: _vaultKey);
+    logger.d("Stored vault is $vault");
     final creds = EthPrivateKey.fromHex(privHex);
     final address = await creds.extractAddress();
     _mnemonic = mnemonic;
@@ -243,6 +245,7 @@ class CryptoService {
     );
 
     await _secureStorage.write(key: _vaultKey, value: encryptedVault);
+    await _secureStorage.write(key: _pincodeKey, value: password);
 
     final creds = EthPrivateKey.fromHex(normalizedPrivHex);
     _privateKey = creds;
@@ -373,6 +376,7 @@ class CryptoService {
 
   Future<bool> doesWalletExist() async {
     final vault = await _secureStorage.read(key: _vaultKey);
+    logger.d("secure storage value is $vault");
     return vault != null;
   }
 }

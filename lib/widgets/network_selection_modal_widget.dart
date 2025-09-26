@@ -100,6 +100,10 @@ class _NetworkSelectionModalState extends State<NetworkSelectionModal>
               const SizedBox(width: 16),
               Expanded(
                 child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.pink,  // background color
+                    foregroundColor: Colors.white, // text (and icon) color
+                  ),
                   onPressed: () {
                     // Prepare the data to return to HomePage
                     final selectedNetworks = <Map<String, dynamic>>[];

@@ -31,12 +31,10 @@ class ChatPaymentProvider extends InSoBlokViewModel {
   TextEditingController fromAddressTextEditingController = TextEditingController();
   TextEditingController toAddressTextEditingController = TextEditingController();
 
-  final Web3Service _web3Service = locator<Web3Service>();
+  final Web3Service web3Service = locator<Web3Service>();
 
   Future<void> init(BuildContext context) async {
     this.context = context;
-    fromAddressTextEditingController.text = cryptoService.privateKey!.address.hex ?? "Empty";
-    toAddressTextEditingController.text = _web3Service.paymentToAddress;
   }
 
 
