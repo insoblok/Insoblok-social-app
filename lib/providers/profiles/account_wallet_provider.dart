@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:insoblok/pages/profiles/profiles.dart';
-import 'package:observable_ish/observable_ish.dart';
 import 'package:stacked/stacked.dart';
 import 'package:insoblok/locator.dart';
 import 'package:insoblok/models/models.dart';
@@ -25,19 +24,28 @@ class AccountWalletProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  var _pageIndex = 0;
+  int get pageIndex => _pageIndex;
+  set pageIndex(int i) {
+    _pageIndex = i;
+    notifyListeners();
+  }
+
+  var _dotIndex = 0;
+  int get dotIndex => _dotIndex;
+  set dotIndex(int i) {
+    _dotIndex = i;
+    notifyListeners();
+  }
+
   final List<Widget> pages = const [
     Center(child: AccountWalletHomePage()),
     Center(child: WalletFavoritesPage()),
-    Center(child: Text("Profile Page")),
+    Center(child: WalletActivitiesPage()),
+    Center(child: WalletNotificationsPage()),
   ];
 
-  final RxValue<int> _viewType = RxValue<int>(0);
-  int get viewType => _viewType.value;
-  set viewType(int v) {
-    _viewType.value = v;
-    notifyListeners();
-  } 
-
+  
   late ReownService reownService;
 
   final List<TransferModel> _transfers = [];
@@ -159,11 +167,8 @@ class AccountWalletProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  String _query = "";
-  String get query => _query;
   
-  List<Map<String, dynamic>> get filteredItems =>
-      kWalletTokenList.where((item) => item["chain"].toString().toLowerCase().contains(_query.toLowerCase())).toList();
+      
 
   final Set<Map<String, dynamic>> _selectedItems = {};
   Set<Map<String, dynamic>> get selectedItems => _selectedItems;
@@ -228,11 +233,7 @@ class AccountWalletProvider extends InSoBlokViewModel {
 
   String get currentChartData => priceData[_selectedChartRange] ?? "No data";
 
-  void updateQuery(String value) {
-    _query = value;
-    notifyListeners();
-  }
-
+  
   void toggleSelection(Map<String, dynamic> item) {
     if (_selectedItems.contains(item)) {
       _selectedItems.remove(item);

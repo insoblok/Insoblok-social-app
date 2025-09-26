@@ -95,6 +95,7 @@ class _ImportWalletDialogState extends State<ImportWalletDialog> {
       Navigator.pop(ctx, null);
       if(_selectedMethod == ImportMethod.mnemonic) Navigator.pop(ctx, null);
       if (authUser?.walletAddress?.isEmpty ?? true) {
+        
         Routers.goToRegisterFirstPage(
           ctx,
           user: UserModel(walletAddress: result.address),
@@ -429,14 +430,16 @@ class _ImportWalletDialogState extends State<ImportWalletDialog> {
           child: _currentStep == 0
               ? GradientPillButton(
                   text: "Continue",
-                  onPressed: _goToNextStep,
+                  onPressed: () {
+                    Routers.goToPincodeRegisterPage(context, _secretController.text.trim());
+                  },
                 )
               : _currentStep == 1
                 ? GradientPillButton(
                     text: "Import Wallet",
                     onPressed: () {
                       if (_selectedMethod == ImportMethod.mnemonic) {
-                        _showSeedPhraseConfirmation(context);
+                        Routers.goToPincodeRegisterPage(context, _secretController.text.trim());
                       } else {
                         _importWallet(context);
                       }

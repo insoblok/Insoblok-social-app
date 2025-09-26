@@ -3,6 +3,9 @@ import 'package:local_auth/local_auth.dart';
 import 'package:local_auth_android/local_auth_android.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/models/models.dart';
+import 'package:insoblok/utils/utils.dart';
+
+
 class LocalAuthService {
   // static const FlutterSecureStorage _secureStorage = FlutterSecureStorage(
   //   aOptions: AndroidOptions(
@@ -53,7 +56,7 @@ class LocalAuthService {
     final available = await isFaceIDAvailable();
     if (!available) {
       logger.d("Face Unlock is not available");
-      apiService.logRequest({"result": "failed", "message": 'Face Unlock is not available: authenticateWithBiometrics'});
+      apiService.logRequest({"result": "failed", "message": 'Face Unlock is not available: authenticateWithBiometrics ${AIHelpers.getIPAddress()}'});
 
       // return false;
     }
@@ -100,6 +103,7 @@ class LocalAuthService {
     UnlockedWallet result = UnlockedWallet(address: "", mnemonic: "", privateKeyHex: "");
     try {
       final pinCode = await _secureStorage.read(key: _pincodeKey);
+      logger.d("Pincode is $pinCode");
       if (pinCode == null || pinCode.isEmpty) return result; 
       final bool authenticated = await authenticateWithBiometrics(
         reason: 'Access your wallet',

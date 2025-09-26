@@ -5,7 +5,7 @@ import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:web_socket_channel/io.dart';
-import 'package:insoblok/utils/helper.dart';
+import 'package:insoblok/utils/utils.dart';
 import 'package:reown_appkit/solana/solana_web3/solana_web3.dart';
 import 'package:web3dart/credentials.dart';
 import 'package:web3dart/web3dart.dart' as web3;
@@ -13,10 +13,8 @@ import 'package:web3dart/crypto.dart';
 import 'package:observable_ish/observable_ish.dart';
 import 'package:stacked/stacked.dart';
 import 'package:solana/solana.dart';
-import 'package:insoblok/utils/const.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:convert/convert.dart';
-import 'package:insoblok/locator.dart';
 import 'package:decimal/decimal.dart';
 import 'package:insoblok/models/models.dart';
 
@@ -611,5 +609,49 @@ class Web3Service with ListenableServiceMixin {
     return {};
   }
 }
+
+  Future<List<String>> getAvailableTokenIds() async {
+    try {
+      final listResponse = await api.getRequestWithFullUrl(TOKEN_LIST_COINGECKO_URL);
+      List<Map<String, dynamic>> lists = (listResponse as List).cast<Map<String, dynamic>>();
+      List<String> availableTokenIds = lists.where((one) {
+        Map<String, dynamic> platforms = one["platforms"] as Map<String, dynamic>;
+        return platforms.keys.any((elem) => kAvailableNetworks.contains(elem));
+      })
+      .map((one) => one["id"].toString())
+      .toList();
+      return availableTokenIds;
+    } catch (e) {
+      logger.d("Exception raised while getting token list. $e");
+    }
+    return [];
+  }
+
+  Future<List<Map<String, dynamic>>> searchTokensBySymbol(String query, List<String> availableIds) async {
+    try {
+      final listResponse = await api.getRequestWithFullUrl("$TOKEN_SEARCH_COINGECKO_URL$query");
+      List<Map<String, dynamic>> lists = (listResponse["coins"] as List).cast<Map<String, dynamic>>();
+      final response = lists.where((one) => availableIds.contains(one["id"].toString())).toList();
+      return response;
+    } catch (e) {
+      logger.d("Exception raised while getting token list. $e");
+    }
+    return [];
+  }
+
+  Future<List<Map<String, dynamic>>> getFavoriteTokensByIds(List<String> ids) async {
+    try {
+      logger.d("Favorite tokens are $ids");
+      final response = await api.getRequestWithFullUrl("$TOKEN_MARKETS_COINGECKO_URL${ids.join(',')}");
+      logger.d("Response is $response");
+      List<Map<String, dynamic>> lists = (response as List).cast<Map<String, dynamic>>();
+      return lists;
+    } catch (e) {
+      logger.d("Exception raised while getting favorite token information. $e");
+    }
+    return [];
+  }
+
+  
 
 }

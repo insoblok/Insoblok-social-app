@@ -48,6 +48,11 @@ class AIImages {
   
   static String icTopEffect = 'assets/icons/ic_effect_2.svg';
   static String icFavoriteFill = 'assets/icons/ic_favourite_fill.svg';
+  static String icFavoriteStroke = 'assets/icons/ic_favourite_stroke.svg';
+  static String icStarFill = 'assets/icons/ic_star_fill.svg';
+  static String icStarStroke = 'assets/icons/ic_star_stroke.svg';
+  static String icHistoryFill = 'assets/icons/ic_history_fill.svg';
+  static String icHistoryStroke = 'assets/icons/ic_history.svg';
   static String icFavorite = 'assets/icons/ic_favourite.svg';
   static String icCommit = 'assets/icons/ic_commit.svg';
   static String icRetwitter = 'assets/icons/ic_retweet.svg';

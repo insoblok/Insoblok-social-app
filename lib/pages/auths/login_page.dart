@@ -69,7 +69,7 @@ class LoginPage extends StatelessWidget {
 
             void _handleClickCreateNewWallet(BuildContext buildContext) {
               
-              Routers.goToPincodeRegisterPage(buildContext);
+              Routers.goToPincodeRegisterPage(buildContext, "");
               // showDialog<String>(
               //   context: buildContext,
               //   builder: (bContext) {

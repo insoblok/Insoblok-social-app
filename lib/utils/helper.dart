@@ -17,7 +17,7 @@ import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:vsc_quill_delta_to_html/vsc_quill_delta_to_html.dart';
-
+import 'package:get_ip_address/get_ip_address.dart';
 
 final _tastScoreService = TastescoreService();
 TastescoreService get tastScoreService => _tastScoreService;
@@ -365,5 +365,17 @@ class AIHelpers {
     if (number >= 1e6) return (number / 1e6).toStringAsFixed(2) + 'M';
     if (number >= 1e3) return (number / 1e3).toStringAsFixed(2) + 'K';
     return formatter.format(number); // fallback with commas
+  }
+
+  static Future<String> getIPAddress() async {
+    try {
+      final ipAddress = IpAddress(type: RequestType.json);
+      final data = await ipAddress.getIpAddress();
+      return data["ip"].toString();
+    } catch (e) {
+      logger.d("Exception raised while getting ip address $e");
+      return "";
+    }
+    
   }
 }

@@ -20,8 +20,8 @@ class Routers {
     _pushReplacement(context, kRouterLogin, null);
   }
 
-  static dynamic goToPincodeRegisterPage(BuildContext context) {
-    _pushReplacement(context, kRouterPincodeRegister, null);
+  static dynamic goToPincodeRegisterPage(BuildContext context, String mnemonic) {
+    _pushReplacement(context, kRouterPincodeRegister, mnemonic);
   }
 
   static dynamic goToRegisterFirstPage(

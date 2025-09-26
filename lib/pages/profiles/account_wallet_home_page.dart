@@ -19,41 +19,6 @@ class AccountWalletHomePage extends StatefulWidget {
 class AccountWalletHomePageState extends State<AccountWalletHomePage> {
 
   
-  Widget _buildStatusBadge(String status) {
-    Color bgColor;
-    Color textColor = Colors.white;
-
-    switch (status.toLowerCase()) {
-      case "success":
-        bgColor = Colors.green;
-        break;
-      case "pending":
-        bgColor = Colors.orange;
-        break;
-      case "failed":
-        bgColor = Colors.red;
-        break;
-      default:
-        bgColor = Colors.grey;
-    }
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
-      decoration: BoxDecoration(
-        color: bgColor,
-        borderRadius: BorderRadius.circular(6.0),
-      ),
-      child: Text(
-        status,
-        style: GoogleFonts.lato(
-          fontSize: 12.0,
-          fontWeight: FontWeight.bold,
-          color: textColor,
-        ),
-      ),
-    );
-  }
-
   String? selectedTopItem;
 
   @override
@@ -131,112 +96,80 @@ class AccountWalletHomePageState extends State<AccountWalletHomePage> {
                                   ) :
                                   Text(
                                     viewModel.networkString,
-                                    style: GoogleFonts.lato(),
                                   ),
                                   Icon(Icons.arrow_drop_down)
                                 ],
                               ),
                             ),
                           ),
-                          Container(
-                            // This Expanded is now a direct child of Row
-                            child: DropdownButtonHideUnderline(
-                              child: DropdownButton2<String>(
-                                iconStyleData: const IconStyleData(
-                                  icon: SizedBox.shrink(),
+                          Row(
+                            children: [
+                              AccountWalletIconCover(
+                                child: AIImage(
+                                  AIImages.icRefresh,
+                                  color: Colors.white,
                                 ),
-                                isExpanded: false,
-                                hint: Icon(Icons.menu),
-                                alignment: AlignmentDirectional.centerEnd,
-                                onChanged: (value) {
-                                  
-                                },
-                                dropdownStyleData: DropdownStyleData(
-    // Padding inside the dropdown menu
-                                  padding: EdgeInsets.all(8),
-                                ),
-                                items: [
-                                  DropdownMenuItem(
-                                    value: "Action",
-                                    child: AccountWalletIconCover(
-                                      child: AIImage(
-                                        AIImages.icRefresh,
-                                        color: Theme.of(context).primaryColor,
-                                      ),
-                                      onTap: () {
-                                        viewModel.init(context);
+                                onTap: () {
+                                  viewModel.init(context);
 
-                                      }
-                                    ),
-                                  ),
-                                  DropdownMenuItem(
-                                    value: "Another action",
-                                    child: AccountWalletIconCover(
-                                      child: AIImage(
-                                        AIImages.icCamera,
-                                        color: Theme.of(context).primaryColor,
-                                      ),
-                                      onTap: () {},
-                                    ),
-                                  ),
-                                  DropdownMenuItem(
-                                    value: "Something else here",
-                                    child: AccountWalletIconCover(
-                                      child: AIImage(
-                                        AIImages.icMenuQrCode,
-                                        color: Theme.of(context).primaryColor,
-                                      ),
-                                      onTap: () {},
-                                    ),
-                                  ),
-                                  DropdownMenuItem(
-                                    value: "Something else here",
-                                    child: AccountWalletIconCover(
-                                      child: AIImage(
-                                        AIImages.icBottomNoti,
-                                        color: Theme.of(context).primaryColor,
-                                      ),
-                                      onTap: () {},
-                                    ),
-                                  ),
-                                ],
+                                }
                               ),
-                            ),
+                              SizedBox(width: 12.0),
+                              AccountWalletIconCover(
+                                child: AIImage(
+                                  AIImages.icCamera,
+                                  color: Colors.white,
+                                ),
+                                onTap: () {},
+                              ),
+                              SizedBox(width: 12.0),
+                              AccountWalletIconCover(
+                                child: AIImage(
+                                  AIImages.icMenuQrCode,
+                                  color: Colors.white,
+                                ),
+                                onTap: () {},
+                              ),
+                            ]
                           ),
                         ],
                       ),
                       SizedBox(height: 24.0),
-                      Row(children: [
-                        
-                      ]),
                       SizedBox(
                         width: double.infinity,
                         child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 32.0),
+                          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                           decoration: BoxDecoration(
                             gradient: LinearGradient(
+                              colors: [Colors.blue.shade700, Colors.red.shade700, Colors.blue.shade700],
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
-                              transform: GradientRotation(109.6 * 3.1415926535 / 180), // convert degrees to radians
-                              stops: [0.112, 0.537, 1.002], // match CSS percentage stops
-                              colors: [
-                                Color.fromRGBO(9, 9, 121, 1),    // rgba(9,9,121,1)
-                                Color.fromRGBO(144, 6, 161, 1),  // rgba(144,6,161,1)
-                                Color.fromRGBO(0, 212, 255, 1),  // rgba(0,212,255,1)
-                              ],
                             ),
                             borderRadius: BorderRadius.circular(18),
                           ),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Text(
+                                    "Your balance"
+                                  )
+                                ],
+                              ),
                               Text(
                                 '\$${viewModel.totalBalance.toStringAsFixed(2)}',
-                                style: GoogleFonts.lato(
+                                style: TextStyle(
                                   fontSize: 32,
                                   fontWeight: FontWeight.w900,
                                 ),
                               ),
+                              Opacity(
+                                opacity: 0,
+                                child: Text(""),
+                              )
                             ],
                           ),
                         ),
@@ -269,7 +202,7 @@ class AccountWalletHomePageState extends State<AccountWalletHomePage> {
                               ),
                               label: Text(
                                 "Send",
-                                style: GoogleFonts.lato(
+                                style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 16,
                                 ),
@@ -308,7 +241,7 @@ class AccountWalletHomePageState extends State<AccountWalletHomePage> {
                               ),
                               label: Text(
                                 "Receive",
-                                style: GoogleFonts.lato(
+                                style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 16,
                                 ),
@@ -347,7 +280,7 @@ class AccountWalletHomePageState extends State<AccountWalletHomePage> {
                               ),
                               label: Text(
                                 "Swap",
-                                style: GoogleFonts.lato(
+                                style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 16,
                                 ),
@@ -368,325 +301,100 @@ class AccountWalletHomePageState extends State<AccountWalletHomePage> {
                   ),
                 ),
 
-                // Tab section - This is where the main content goes
                 Expanded(
-                  // This Expanded is a direct child of Column
-                  child: DefaultTabController(
-                    length: 2,
-                    child: Column(
-                      children: [
-                        // Tab Bar
-                        Container(
-                          child: TabBar(
-                            indicatorColor: Colors.transparent,
-                            labelColor: Colors.white,
-                            tabs: [
-                              Tab(text: 'Tokens'),
-                              Tab(text: 'Activities'),
-                            ],
-                            dividerColor: Colors.transparent,
-                          ),
+                  child:  
+                      SingleChildScrollView(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 16.0,
+                          vertical: 4.0,
                         ),
-
-                        // Tab Bar View
-                        Expanded(
-                          // This Expanded is a direct child of Column
-                          child: TabBarView(
-                            children: [
-                              // Tokens Tab
-                              SingleChildScrollView(
-                                padding: const EdgeInsets.symmetric(
-                                  horizontal: 16.0,
-                                  vertical: 4.0,
+                        child: Column(
+                          children: [
+                            const SizedBox(height: 0.0),
+                            for (var token
+                                in viewModel.enabledNetworks) ...[
+                              Container(
+                                padding: const EdgeInsets.all(10.0),
+                                margin: const EdgeInsets.only(
+                                  bottom: 8.0,
                                 ),
-                                child: Column(
-                                  children: [
-                                    const SizedBox(height: 0.0),
-                                    for (var token
-                                        in viewModel.enabledNetworks) ...[
-                                      Container(
-                                        padding: const EdgeInsets.all(10.0),
-                                        margin: const EdgeInsets.only(
-                                          bottom: 8.0,
-                                        ),
-                                        decoration: BoxDecoration(
-                                          color: Colors.grey.withAlpha(30),
-                                          borderRadius: BorderRadius.circular(12)
-                                        ),
-                                        child: GestureDetector(
-                                          onTap: () {
-                                            if (token["chain"] == 'xp') _showXpConvertSheet(context, viewModel);
-                                          },
-                                          child: Row(
-                                          children: [
-                                            ClipOval(
-                                              child: Container(
-                                                color: Colors.blueAccent,
-                                                child: AIImage(
-                                                  token["icon"],
-                                                  width: 36.0,
-                                                  height: 36.0,
-                                                ),
-                                              ),
-                                            ),
-                                            SizedBox(width: 12.0),
-                                            Expanded(
-                                              // This Expanded is a direct child of Row
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  Text(
-                                                    token["short_name"].toString(),
-                                                    style: Theme.of(context).textTheme.bodyLarge
-                                                  ),
-                                                  Text(
-                                                    '${AIHelpers.formatDouble(viewModel.allBalances?[token["chain"]] ?? 0, 10)} ${token["short_name"]}',
-                                                    style:
-                                                        Theme.of(
-                                                          context,
-                                                        ).textTheme.labelMedium,
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                            Text(
-                                              '\$${(viewModel.tokenValues[token["chain"]] ?? 0).toStringAsFixed(2)}',
-                                              style:
-                                                  Theme.of(
-                                                    context,
-                                                  ).textTheme.titleLarge,
-                                            ),
-                                            // IconButton(
-                                            //   onPressed: () {
-                                            //     viewModel.toggleFavorite(token["chain"]);
-                                            //   },
-                                            //   icon: Icon(viewModel.checkFavorite(token["chain"]) == true ? Icons.star : Icons.star_border),
-                                            //   color: Colors.amberAccent
-                                            // )
-                                          ],
-                                        )
-                                      ),
-                                      ),
-                                    ],
+                                decoration: BoxDecoration(
+                                  color: Colors.grey.withAlpha(30),
+                                  borderRadius: BorderRadius.circular(12),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.grey.withAlpha(20), // shadow color with opacity
+                                      spreadRadius: 2, // how much the shadow spreads
+                                      blurRadius: 1,   // how soft the shadow looks
+                                      offset: Offset(5, 5), // changes the shadow position (x, y)
+                                    ),
                                   ],
                                 ),
-                              ),
-                              // Activities Tab
-                              SingleChildScrollView(
-                                padding: const EdgeInsets.symmetric(
-                                  vertical: 4.0,
-                                ),
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                    horizontal: 16.0,
-                                    vertical: 12.0,
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      for (var token in viewModel.filteredTransactions) ...[
-                                        token["chain"] != null ?
-                                          Container(
-                                            padding: const EdgeInsets.all(10.0),
-                                            margin: const EdgeInsets.only(
-                                              bottom: 8.0,
-                                            ),
-                                            // decoration: BoxDecoration(
-                                            //   color: Theme.of(context)
-                                            //       .colorScheme
-                                            //       .secondary
-                                            //       .withAlpha(18),
-                                            //   borderRadius: BorderRadius.circular(
-                                            //     8.0,
-                                            //   ),
-                                            // ),
-                                            decoration: BoxDecoration(
-                                              color: Colors.grey.withAlpha(30),
-                                              borderRadius: BorderRadius.circular(12)
-                                            ),
-                                            child: Row(
-                                              children: [
-                                                // AIImage(token["icon"], width: 36.0, height: 36.0),
-                                                const SizedBox(width: 12.0),
-                                                Expanded(
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment.start,
-                                                    children: [
-                                                      Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
-                                                        children: [
-                                                          WalletAddressWidget(
-                                                            address:
-                                                                token["from_address"] ??
-                                                                '',
-                                                          ),
-                                                          const Text("=> "),
-                                                          WalletAddressWidget(
-                                                            address:
-                                                                token["to_address"] ??
-                                                                '',
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
-                                                        children: [
-                                                          Text(
-                                                            '${AIHelpers.formatDouble(token["amount"] ?? 0, 10)} ${token["short_name"] ?? ""}',
-                                                            style:
-                                                                Theme.of(context)
-                                                                    .textTheme
-                                                                    .labelSmall,
-                                                          ),
-                                                          GestureDetector(
-                                                            onTap: () {
-                                                              logger.d(
-                                                                "Token is $token",
-                                                              );
-                                                              AIHelpers.launchExternalSource(
-                                                                '${token["scanUrl"]}/${token["tx_hash"]}',
-                                                              );
-                                                            },
-                                                            child: Text(
-                                                              'View Transaction',
-                                                              style: GoogleFonts.lato(
-                                                                color:
-                                                                    Colors.blueAccent,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          Column(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .end,
-                                                            children: [
-                                                              Text(
-                                                                '\$${(viewModel.tokenValues[token["chain"]] ?? 0).toStringAsFixed(2)}',
-                                                                style:
-                                                                    Theme.of(
-                                                                          context,
-                                                                        )
-                                                                        .textTheme
-                                                                        .headlineMedium,
-                                                              ),
-                                                              const SizedBox(
-                                                                height: 4.0,
-                                                              ),
-                                                              _buildStatusBadge(
-                                                                token["status"] ??
-                                                                    '',
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ) :
-                                        Container(
-                                          padding: const EdgeInsets.all(10.0),
-                                          margin: const EdgeInsets.only(
-                                            bottom: 8.0,
-                                          ),
-                                          // decoration: BoxDecoration(
-                                          //   color: Theme.of(context)
-                                          //       .colorScheme
-                                          //       .secondary
-                                          //       .withAlpha(18),
-                                          //   borderRadius: BorderRadius.circular(
-                                          //     8.0,
-                                          //   ),
-                                          // ),
-                                          decoration: BoxDecoration(
-                                            color: Colors.grey.withAlpha(30),
-                                            borderRadius: BorderRadius.circular(12)
-                                          ),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Column(
-                                              children: [
-                                                Row(
-                                                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                                  children: [
-                                                    Column(
-                                                      children: [
-                                                        Text(
-                                                          "${token['from_amount'] ?? '0'}  ${token['from_network_short_name'] ?? ''}",
-                                                        ),
-                                                        Text(
-                                                          "\$${((token['from_amount']) ?? 0) * (viewModel.allPrices?[token["from_network"]] ?? 0)}"
-                                                        )
-                                                      ],
-                                                    ),
-                                                    Text("  ===>  "),
-                                                    Column(
-                                                      children: [
-                                                        Text(
-                                                          "${token['to_amount'] ?? '0'}  ${token['to_network_short_name'] ?? ''}",
-                                                        ),
-                                                        Text(
-                                                          "\$${((token['to_amount']) ?? 0) * (viewModel.allPrices?[token["to_network"]] ?? 0)}"
-                                                        )
-                                                      ],
-                                                    ),
-                                                  ],
-                                                ),
-                                                const SizedBox(height: 6.0),
-                                                Row(
-                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                  children:[
-                                                    Opacity(opacity: 0),
-                                                    GestureDetector(
-                                                      onTap: () {
-                                                        logger.d(
-                                                          "Token is $token",
-                                                        );
-                                                        AIHelpers.launchExternalSource(
-                                                          '${token["to_network_scanUrl"]}/${token["tx_hash"]}',
-                                                        );
-                                                      },
-                                                      child: Text(
-                                                        'View Transaction',
-                                                        style: GoogleFonts.lato(
-                                                          color:
-                                                              Colors.blueAccent,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    _buildStatusBadge(
-                                                      token["status"] ??
-                                                          '',
-                                                    ),
-                                                  ]
-                                                )
-                                              ] 
-                                            ),
-                                          ),
+                                child: GestureDetector(
+                                  onTap: () {
+                                    if (token["chain"] == 'xp') _showXpConvertSheet(context, viewModel);
+                                  },
+                                  child: Row(
+                                  children: [
+                                    ClipOval(
+                                      child: Container(
+                                        color: Colors.blueAccent,
+                                        child: AIImage(
+                                          token["icon"],
+                                          width: 36.0,
+                                          height: 36.0,
                                         ),
-                                      ],
-                                    ],
-                                  ),
-                                ),
+                                      ),
+                                    ),
+                                    SizedBox(width: 12.0),
+                                    Expanded(
+                                      // This Expanded is a direct child of Row
+                                      child: Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            token["short_name"].toString(),
+                                            style: Theme.of(context).textTheme.labelLarge
+                                          ),
+                                          Text(
+                                            '${AIHelpers.formatDouble(viewModel.allBalances?[token["chain"]] ?? 0, 10)} ${token["short_name"]}',
+                                            style:
+                                                Theme.of(
+                                                  context,
+                                                ).textTheme.labelMedium,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Text(
+                                      '\$${(viewModel.tokenValues[token["chain"]] ?? 0).toStringAsFixed(2)}',
+                                      style:
+                                          Theme.of(
+                                            context,
+                                          ).textTheme.labelLarge,
+                                    ),
+                                    // IconButton(
+                                    //   onPressed: () {
+                                    //     viewModel.toggleFavorite(token["chain"]);
+                                    //   },
+                                    //   icon: Icon(viewModel.checkFavorite(token["chain"]) == true ? Icons.star : Icons.star_border),
+                                    //   color: Colors.amberAccent
+                                    // )
+                                  ],
+                                )
+                              ),
                               ),
                             ],
-                          ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ),
+                      ),
+                      // Activities Tab
                 ),
-              ],
+              ]     
             ),
           );
-      },
+      }
     );
   }
 }

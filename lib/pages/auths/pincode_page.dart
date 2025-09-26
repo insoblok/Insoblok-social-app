@@ -107,6 +107,7 @@ class _PinCodePageState extends State<PinCodePage> with SingleTickerProviderStat
     } catch (_) {} finally {
       setState(() {
         status = "Wrong password. Try again";
+        enteredPin = "";
         signing = false;
       });
     }
@@ -146,7 +147,7 @@ class _PinCodePageState extends State<PinCodePage> with SingleTickerProviderStat
         ),
         child: Text(
           number,
-          style: TextStyle(fontSize: buttonSize * 0.6, color: Colors.white, fontWeight: FontWeight.w400),
+          style: TextStyle(fontSize: 32, color: Colors.white, fontWeight: FontWeight.w400),
         ),
       ),
     );
@@ -195,7 +196,7 @@ class _PinCodePageState extends State<PinCodePage> with SingleTickerProviderStat
     logger.d("Wallet is ${wallet.address}");
     if (wallet.address.isEmpty) {
       setState(() {
-        checkFaceStatus = "Face Unlock Failed. Try again with PinCode.";
+        checkFaceStatus = "Biometric Unlock Failed. Try again with PinCode.";
       });
     }
   }
@@ -258,7 +259,7 @@ class _PinCodePageState extends State<PinCodePage> with SingleTickerProviderStat
                                   SizedBox(height: 28),
 
                                   // Label
-                                  Text('Face ID', style: TextStyle(color: Colors.white.withOpacity(0.95), fontSize: 28, fontWeight: FontWeight.w600)),
+                                  Text('Biometric Auth', style: TextStyle(color: Colors.white.withOpacity(0.95), fontSize: 28, fontWeight: FontWeight.w600)),
 
                                   SizedBox(height: 8),
 
@@ -286,55 +287,74 @@ class _PinCodePageState extends State<PinCodePage> with SingleTickerProviderStat
                           SizedBox(height: 16)
                         ],
                       ),
+                    ),
+                    Align(
+                      alignment: Alignment.bottomRight,
+                      child: Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: GestureDetector(
+                          onTap: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text(
+                            "Cancel",
+                            style: TextStyle(color: Colors.white70, fontSize: 16),
+                          ),
+                        ),
+                      )
                     )
                   ],
                 ),
               ),
-              SingleChildScrollView(  
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Container(
-                      child: Column(
-                        children: [
-                          SizedBox(height: MediaQuery.of(context).size.height * 0.05),
-                          Icon(Icons.lock, color: Colors.white, size: 36),
-                          SizedBox(height: 16),
-                            FractionallySizedBox(
-                              widthFactor: 0.7,
-                              child: Column(
-                                children:[ 
-                                  Text(
-                                    status,
-                                    textAlign: TextAlign.center,
-                                    style: TextStyle(color: Colors.white, fontSize: 24),
-                                  ),
-                                  SizedBox(height: 16.0),
-                                  _buildPinDots(),
-                                ],
+                
+                ConstrainedBox(
+                  constraints: BoxConstraints(
+                      minHeight: MediaQuery.of(context).size.height,
+                    ),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        child: Column(
+                          children: [
+                            SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+                            Icon(Icons.lock, color: Colors.white, size: 36),
+                            SizedBox(height: 16),
+                              FractionallySizedBox(
+                                widthFactor: 0.7,
+                                child: Column(
+                                  children:[ 
+                                    Text(
+                                      status,
+                                      textAlign: TextAlign.center,
+                                      style: TextStyle(color: Colors.white, fontSize: 24),
+                                    ),
+                                    SizedBox(height: 16.0),
+                                    _buildPinDots(),
+                                  ],
+                                ),
                               ),
+                            SizedBox(height: MediaQuery.of(context).size.height * 0.04),
+                            // Spacer(),
+                            _buildKeypad(),
+                            ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 2),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            GestureDetector(
+                              onTap: () => Navigator.pop(context),
+                              child: Text("Cancel", style: TextStyle(color: Colors.white70, fontSize: 16)),
                             ),
-                          SizedBox(height: MediaQuery.of(context).size.height * 0.04),
-                          // Spacer(),
-                          _buildKeypad(),
                           ],
+                        ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 20),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          GestureDetector(
-                            onTap: () => Navigator.pop(context),
-                            child: Text("Cancel", style: TextStyle(color: Colors.white70, fontSize: 16)),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              )
             ]
           ),
       )

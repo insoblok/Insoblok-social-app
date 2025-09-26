@@ -115,7 +115,7 @@ class Navigation {
     initRoute(kRouterLogin, (props) => LoginPage());
 
     // * PincodeRegisterPage
-    initRoute(kRouterPincodeRegister, (props) => PinCodeRegistrationPage());
+    initRoute<String>(kRouterPincodeRegister, (props) => PinCodeRegistrationPage(mnemonic: props!));
 
     // * RegisterPage
     initRoute<UserModel>(

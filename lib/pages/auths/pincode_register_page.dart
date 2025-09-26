@@ -8,8 +8,9 @@ import 'package:insoblok/pages/pages.dart';
 
 
 class PinCodeRegistrationPage extends StatefulWidget {
-  const PinCodeRegistrationPage({Key? key}) : super(key: key);
-
+  const PinCodeRegistrationPage({Key? key, required this.mnemonic}) : super(key: key);
+  final String mnemonic;
+ 
   @override
   _PinRegistrationPageState createState() => _PinRegistrationPageState();
 }
@@ -94,64 +95,108 @@ class _PinRegistrationPageState extends State<PinCodeRegistrationPage> {
   }
 
   Widget _buildKeypad() {
-    final buttons = [
-      "1","2","3",
-      "4","5","6",
-      "7","8","9",
-      "","0","⌫",
-    ];
+  final buttons = [
+    "1","2","3",
+    "4","5","6",
+    "7","8","9",
+    "","0","⌫",
+  ];
 
-    return GridView.builder(
-      shrinkWrap: true,
-      itemCount: buttons.length,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 3,
-        childAspectRatio: 1.2,
-      ),
-      itemBuilder: (context, index) {
-        final label = buttons[index];
-        if (label == "") {
-          return const SizedBox.shrink();
-        }
-        return GestureDetector(
-          onTap: () {
-            if (label == "⌫") {
-              _onDelete();
-            } else {
-              _onKeyTap(label);
-            }
-          },
-          child: Center(
-            child: Text(
-              label,
-              style: const TextStyle(color: Colors.white, fontSize: 24),
+  final double buttonSize = (MediaQuery.of(context).size.width) * 0.22;
+
+  return GridView.builder(
+    shrinkWrap: true,
+    itemCount: buttons.length,
+    gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+      crossAxisCount: 3,
+      childAspectRatio: 1.2,
+    ),
+    itemBuilder: (context, index) {
+      final label = buttons[index];
+      if (label == "") {
+        return const SizedBox.shrink();
+      }
+
+      return Center(
+        child: Material(
+          color: Colors.transparent, // transparent background
+          child: InkWell(
+            onTap: () {
+              if (label == "⌫") {
+                _onDelete();
+              } else {
+                _onKeyTap(label);
+              }
+            },
+            borderRadius: BorderRadius.circular(40), // circular ripple
+            child: Container(
+              width: buttonSize,
+              height: buttonSize,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.red.withOpacity(0.5), // circle background
+              ),
+              alignment: Alignment.center,
+              child: Text(
+                label,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 24,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
             ),
           ),
-        );
-      },
-    );
-  }
+        ),
+      );
+    },
+  );
+}
 
   Future<void> _handleClickCreate(BuildContext bContext, String pin) async {
+    
     try {
-      final newWalletResult = await cryptoService.createAndStoreWallet(pin);
+      String mnemonic = "";
+      String address = "";
+      if (widget.mnemonic.isEmpty) {
+        final newWalletResult =  await cryptoService.createAndStoreWallet(pin);
+        mnemonic = newWalletResult.mnemonic ?? "";
+        address = newWalletResult.address;
+      }
+      else {
+        final unlockWalletResult = await cryptoService.importFromMnemonic(widget.mnemonic, pin);
+        mnemonic = widget.mnemonic;
+        address = unlockWalletResult.address;
+      }
 
-      logger.d("Wallet creation result is ${newWalletResult.address}, ${newWalletResult.mnemonic}");
+      logger.d("Wallet creation result is $address, $mnemonic");
+      if(widget.mnemonic.isEmpty)
       await showDialog(
         context: context,
         barrierDismissible: false,
         builder: (context) => SeedPhraseConfirmationWidget(
-          seedWords: (newWalletResult.mnemonic ?? "").split(" ").toList(), 
+          seedWords: mnemonic.split(" ").toList(), 
           onConfirmed: () {
             showDialog(
               context: context,
               barrierDismissible: false,
               builder: (context) => SeedPhraseConfirmationDialog(
-                originalSeedPhrase: newWalletResult.mnemonic!.trim(),
-                onConfirm: () {
-                  Routers.goToRegisterFirstPage(bContext,
-                    user: UserModel(walletAddress: newWalletResult.address)
+                originalSeedPhrase: mnemonic.trim(),
+                onConfirm: () async {
+                  var authUser = await AuthHelper.signIn(
+                    address,
+                    true,
                   );
+
+                  if (authUser?.walletAddress?.isEmpty ?? true) {
+                    Routers.goToRegisterFirstPage(
+                      bContext,
+                      user: UserModel(walletAddress: address),
+                    );
+                  } else {
+                    AuthHelper.updateStatus('Online');
+                    Routers.goToMainPage(bContext);
+                  }
                 },
                 onCancel: () {
                   Navigator.pop(context); // Close confirmation dialog
@@ -163,6 +208,35 @@ class _PinRegistrationPageState extends State<PinCodeRegistrationPage> {
         )
       );
       
+      else {
+        await showDialog(
+          context: context,
+          barrierDismissible: false,
+          builder: (context) => SeedPhraseConfirmationDialog(
+            originalSeedPhrase: mnemonic.trim(),
+            onConfirm: () async {
+              var authUser = await AuthHelper.signIn(
+                address,
+                true,
+              );
+
+              if (authUser?.walletAddress?.isEmpty ?? true) {
+                Routers.goToRegisterFirstPage(
+                  bContext,
+                  user: UserModel(walletAddress: address),
+                );
+              } else {
+                AuthHelper.updateStatus('Online');
+                Routers.goToMainPage(bContext);
+              }
+            },
+            onCancel: () {
+              Navigator.pop(context); // Close confirmation dialog
+            },
+            showSeedPhrase: false,
+          ),
+        );
+      }
     } catch (e) {
       logger.e(e);
       rethrow; // Re-throw to handle in the dialog

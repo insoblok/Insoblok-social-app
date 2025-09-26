@@ -210,80 +210,80 @@ class AppSettingService with ListenableServiceMixin {
       type: BottomNavigationBarType.fixed,
     ),
     textTheme: TextTheme(
-      titleLarge: GoogleFonts.lato(
+      titleLarge: TextStyle(
         color: AIColors.darkTextColor,
         fontSize: 22.0,
         fontWeight: FontWeight.w800,
       ),
-      titleMedium: GoogleFonts.lato(
+      titleMedium: TextStyle(
         color: AIColors.darkTextColor,
         fontSize: 19.0,
         fontWeight: FontWeight.w800,
       ),
-      titleSmall: GoogleFonts.lato(
+      titleSmall: TextStyle(
         color: AIColors.darkTextColor,
         fontSize: 17.0,
         fontWeight: FontWeight.w800,
       ),
-      bodyLarge: GoogleFonts.lato(
+      bodyLarge: TextStyle(
         fontSize: 17.0,
         color: AIColors.darkTextColor,
         fontWeight: FontWeight.w700,
       ),
-      bodyMedium: GoogleFonts.lato(
+      bodyMedium: TextStyle(
         fontSize: 14.0,
         color: AIColors.darkTextColor,
         fontWeight: FontWeight.w500,
       ),
-      bodySmall: GoogleFonts.lato(
+      bodySmall: TextStyle(
         fontSize: 12.0,
         color: AIColors.darkTextColor,
         fontWeight: FontWeight.w500,
       ),
 
-      labelLarge: GoogleFonts.lato(
+      labelLarge: TextStyle(
         fontSize: 16.0,
         color: AIColors.greyTextColor,
         fontWeight: FontWeight.w400,
       ),
-      labelMedium: GoogleFonts.lato(
+      labelMedium: TextStyle(
         fontSize: 14.0,
         color: AIColors.greyTextColor,
         fontWeight: FontWeight.w400,
       ),
-      labelSmall: GoogleFonts.lato(
+      labelSmall: TextStyle(
         fontSize: 12.0,
         color: AIColors.greyTextColor,
         fontWeight: FontWeight.w400,
       ),
 
-      displayLarge: GoogleFonts.lato(
+      displayLarge: TextStyle(
         fontSize: 19.0,
         color: AIColors.darkTextColor,
         fontWeight: FontWeight.w700,
       ),
-      displayMedium: GoogleFonts.lato(
+      displayMedium: TextStyle(
         fontSize: 18.0,
         color: AIColors.darkTextColor,
         fontWeight: FontWeight.w400,
       ),
-      displaySmall: GoogleFonts.lato(
+      displaySmall: TextStyle(
         fontSize: 10.0,
         color: AIColors.darkTextColor,
         fontWeight: FontWeight.w300,
       ),
 
-      headlineLarge: GoogleFonts.lato(
+      headlineLarge: TextStyle(
         fontSize: 19.0,
         color: AIColors.darkTextColor,
         fontWeight: FontWeight.w700,
       ),
-      headlineMedium: GoogleFonts.lato(
+      headlineMedium: TextStyle(
         fontSize: 15.0,
         fontWeight: FontWeight.bold,
         color: AIColors.darkTextColor,
       ),
-      headlineSmall: GoogleFonts.lato(
+      headlineSmall: TextStyle(
         fontSize: 13.0,
         fontWeight: FontWeight.bold,
         color: AIColors.darkTextColor,

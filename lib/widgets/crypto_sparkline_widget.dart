@@ -6,11 +6,13 @@ import 'package:insoblok/services/services.dart';
 
 class CryptoSparklineWidget extends StatefulWidget {
   final String symbol;
-  final double width;
-  final double height;
-  final String interval;
-  final int limit;
-  final bool showYLabel;
+  final double? width;
+  final double? height;
+  final String? interval;
+  final int? limit;
+  final bool? showYLabel;
+  final List<double>? data;
+  final bool? increased;
   const CryptoSparklineWidget({
     super.key,
     required this.symbol,
@@ -19,6 +21,8 @@ class CryptoSparklineWidget extends StatefulWidget {
     this.interval="1h",
     this.limit = 24,
     this.showYLabel = true,
+    this.data,
+    this.increased,
   });
 
   @override
@@ -28,7 +32,6 @@ class CryptoSparklineWidget extends StatefulWidget {
 class _CryptoSparklineState extends State<CryptoSparklineWidget> {
   List<double> _priceData = [];
   bool _isLoading = true;
-  double _currentPrice = 0;
   double _changePercent = 0;
 
   @override
@@ -39,37 +42,36 @@ class _CryptoSparklineState extends State<CryptoSparklineWidget> {
 
   Future<void> _fetchSparklineData() async {
     try {
-      // Binance API for historical data
-      final response = await http.get(
-        Uri.parse('https://testnet.binancefuture.com/fapi/v1/klines?symbol=${widget.symbol}&interval=${widget.interval}&limit=${widget.limit}'),
-      );
+      List<double> prices = [];
+      if (widget.data == null || (widget.data ?? []).isEmpty) {
+        final response = await http.get(
+          Uri.parse('https://testnet.binancefuture.com/fapi/v1/klines?symbol=${widget.symbol}&interval=${widget.interval}&limit=${widget.limit}'),
+        );
 
-      if (response.statusCode == 200) {
-        final List<dynamic> data = json.decode(response.body);
-        final List<double> prices = data.map<double>((item) => double.parse(item[4].toString())).toList();
+        if (response.statusCode == 200) {
+          final List<dynamic> data = json.decode(response.body);
+          prices = data.map<double>((item) => double.parse(item[4].toString())).toList();
+        }
+      }
+      else {
+        prices = widget.data ?? [];
+      }
         
         // Get current price and change
-        final currentPrice = prices.isNotEmpty ? prices.last : 0;
-        final previousPrice = prices.length > 1 ? prices[prices.length - 2] : 0;
-        final changePercent = previousPrice > 0 ? ((currentPrice - previousPrice) / previousPrice) * 100 : 0;
-
-        setState(() {
-          _priceData = prices;
-          _currentPrice = currentPrice.toDouble();
-          _changePercent = changePercent.toDouble();
-          _isLoading = false;
-        });
-      }
+        
+      setState(() {
+        _priceData = prices;
+        _isLoading = false;
+      });
     } catch (e) {
-      print('Error fetching sparkline data: $e');
+      logger.d('Error fetching sparkline data: $e');
       setState(() => _isLoading = false);
     }
   }
 
   Color _getChartColor() {
-    if (_changePercent > 0) return Colors.green;
-    if (_changePercent < 0) return Colors.red;
-    return Colors.grey;
+    if (widget.increased ?? false) return Colors.green;
+    else return Colors.red;
   }
 
   @override
@@ -94,10 +96,10 @@ class _CryptoSparklineState extends State<CryptoSparklineWidget> {
                     )
                   : SparkLineChart(
                       data: _priceData,
-                      width: widget.width,
-                      height: widget.height,
+                      width: widget.width!,
+                      height: widget.height!,
                       color: _getChartColor(),
-                      showYLabel: widget.showYLabel,
+                      showYLabel: widget.showYLabel!,
                     ),
             ],
           ),
