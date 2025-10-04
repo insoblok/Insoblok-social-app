@@ -33,6 +33,8 @@ class WalletSwapProvider extends InSoBlokViewModel {
   
   Map<String, double>? get allBalances => _web3Service.allBalances;
   Map<String, double>? get allPrices => _web3Service.allPrices;
+  
+  CryptoService cryptoService = locator<CryptoService>();
 
   String? get address => cryptoService.privateKey!.address.hex;  
 

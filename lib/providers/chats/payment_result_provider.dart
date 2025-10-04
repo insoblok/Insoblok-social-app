@@ -30,6 +30,7 @@ class PaymentResultProvider extends InSoBlokViewModel {
   @override
   List<ListenableServiceMixin> get listenableServices => [_web3Service];
   
+  CryptoService cryptoService = locator<CryptoService>();
 
 
   Future<void> init(BuildContext context) async {

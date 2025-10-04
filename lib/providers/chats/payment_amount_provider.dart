@@ -37,6 +37,8 @@ class PaymentAmountProvider extends InSoBlokViewModel{
 
   @override
   List<ListenableServiceMixin> get listenableServices => [_web3Service];
+  
+  CryptoService cryptoService = locator<CryptoService>();
 
   final NumberPlateController controller = NumberPlateController();
 

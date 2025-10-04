@@ -137,16 +137,16 @@ class SeedPhraseConfirmationDialogState extends State<SeedPhraseConfirmationDial
                   labelStyle: Theme.of(context).textTheme.labelLarge,
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16.0),
-                    borderSide: const BorderSide(width: 0.33),
+                    borderSide: const BorderSide(width: 0.66),
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16.0),
-                    borderSide: BorderSide(width: 0.33, color: AIColors.borderColor),
+                    borderSide: BorderSide(width: 0.66, color: AIColors.borderColor),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(16.0),
                     borderSide: BorderSide(
-                      width: 0.33,
+                      width: 0.66,
                       color: Theme.of(context).primaryColor,
                     ),
                   ),

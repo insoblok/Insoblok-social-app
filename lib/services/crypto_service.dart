@@ -28,7 +28,7 @@ class CryptoService {
 
   String? get mnemonic => _mnemonic;
   EthPrivateKey? get privateKey => _privateKey;
-
+  
   String? from_address;
   String? to_address;
 
@@ -187,6 +187,8 @@ class CryptoService {
     await _secureStorage.write(key: _vaultKey, value: encryptedVault);
     await _secureStorage.write(key: _pincodeKey, value: password);
     final creds = EthPrivateKey.fromHex(privHex);
+    _privateKey = creds;
+    logger.d("addrss is ${privateKey?.address.hex}");
     final address = await creds.extractAddress();
     final newWalletResult = NewWalletResult(
         address: address.hex,
@@ -376,7 +378,6 @@ class CryptoService {
 
   Future<bool> doesWalletExist() async {
     final vault = await _secureStorage.read(key: _vaultKey);
-    logger.d("secure storage value is $vault");
     return vault != null;
   }
 }
@@ -386,4 +387,5 @@ class CryptoHelper {
 
   static EthPrivateKey? get privateKey => service.privateKey;
   static String? get mnemonic => service.mnemonic;
+  static String? get address => service.privateKey?.address.hex ?? "";
 }

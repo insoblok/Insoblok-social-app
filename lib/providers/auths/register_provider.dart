@@ -36,7 +36,6 @@ class RegisterProvider extends InSoBlokViewModel {
   }
 
   Future<void> onClickRegister() async {
-    FirebaseHelper.signInFirebase();
     if (isBusy) return;
     clearErrors();
     int xpScore = 0;

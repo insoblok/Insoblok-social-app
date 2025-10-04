@@ -111,6 +111,11 @@ class AppSettingService with ListenableServiceMixin {
         color: AIColors.lightTextColor,
         fontWeight: FontWeight.w700,
       ),
+      bodyLarge500: TextStyle(
+        fontSize: 17.0,
+        color: AIColors.lightTextColor,
+        fontWeight: FontWeight.w500,
+      ),
       bodyMedium: TextStyle(
         fontSize: 14.0,
         color: AIColors.lightTextColor,
@@ -179,12 +184,12 @@ class AppSettingService with ListenableServiceMixin {
   ThemeData get darkTheme => ThemeData(
     fontFamily: 'Geist',
     colorScheme: ColorScheme.fromSeed(
-      seedColor: AIColors.pink,
-      primary: AIColors.pink,
+      seedColor: AIColors.white,
+      primary: Colors.blueAccent,
       onPrimary: AIColors.white,
-      secondary: AIColors.white,
-      onSecondary: AIColors.black,
-      primaryContainer: AIColors.darkBackground,
+      secondary: AIColors.grey,
+      onSecondary: AIColors.grey,
+      // primaryContainer: AIColors.darkBackground,
       onPrimaryContainer: AIColors.darkGreyBackground,
     ),
     scaffoldBackgroundColor: AIColors.darkBackground,

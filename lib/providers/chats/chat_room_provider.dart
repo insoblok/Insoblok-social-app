@@ -89,64 +89,6 @@ class CreateRoomProvider extends InSoBlokViewModel {
         Color(0xFFC739EB), // purple
       ],
     );
-    var dialog = await showDialog<bool>(
-      context: context,
-      builder: (context) {
-        return Scaffold(
-          backgroundColor: AIColors.transparent,
-          body: Center(
-            child: Container(
-              margin: const EdgeInsets.symmetric(horizontal: 32.0),
-              padding: const EdgeInsets.symmetric(
-                horizontal: 24.0,
-                vertical: 24.0,
-              ),
-              decoration: BoxDecoration(
-                // color: AIColors.pink,
-                gradient: gradient,
-                borderRadius: BorderRadius.circular(16.0),
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                    children: [
-                      Text(
-                        "Create Room",
-                        style: TextStyle(
-                          fontSize: 18.0,
-                          color: AIColors.white,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      const Spacer(),
-                      IconButton(
-                        onPressed: () => Navigator.of(context).pop(),
-                        icon: Icon(Icons.close, color: AIColors.white),
-                      ),
-                    ],
-                  ),
-                  const SizedBox(height: 24.0),
-                  Text(
-                    "Are you sure want to chat with the selected user?",
-                    style: TextStyle(fontSize: 16.0, color: AIColors.white),
-                  ),
-                  const SizedBox(height: 24.0),
-                  TextFillButton(
-                    onTap: () => Navigator.of(context).pop(true),
-                    text: 'Create',
-                    color: AIColors.pink,
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-    );
-
-    if (dialog != true) return;
 
     isCreatingRoom = true;
     await runBusyFuture(() async {

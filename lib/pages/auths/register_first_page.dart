@@ -51,6 +51,38 @@ class RegisterFirstPage extends StatelessWidget {
                     prefixIcon: Icon(Icons.account_circle_outlined),
                     onChanged: viewModel.updateLastName,
                   ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SwitchTheme(
+                        data: SwitchThemeData(
+                          trackColor: MaterialStateProperty.resolveWith((states) =>
+                              states.contains(MaterialState.selected)
+                                  ? Colors.indigo
+                                  : Colors.indigo.withOpacity(0.15)),
+                          thumbColor: MaterialStateProperty.resolveWith((states) =>
+                              states.contains(MaterialState.selected)
+                                  ? Colors.white
+                                  : Colors.indigo),
+                          trackOutlineColor:
+                              const MaterialStatePropertyAll<Color>(Colors.indigo),
+                          trackOutlineWidth:
+                              const MaterialStatePropertyAll<double>(2),
+                        ),
+                        child: Switch(
+                          value: viewModel.biometricEnabled,
+                          onChanged: (v) {
+                            viewModel.updateBiometric(v);
+                          },
+                        ),
+                      ),
+                      SizedBox(width: 16.0),
+                      Text(
+                        "Enable Face ID Authentication",
+                        style: Theme.of(context).textTheme.bodyLarge
+                      )
+                    ],
+                  ),
                   const Spacer(),
                   TextFillButton(
                     text: "Next",

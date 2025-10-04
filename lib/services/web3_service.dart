@@ -89,7 +89,7 @@ class Web3Service with ListenableServiceMixin {
           try {
             final jsonData = json.decode(data);
             // _processTickerData(jsonData);
-            logger.d("Json data is $jsonData");
+            // logger.d("Json data is $jsonData");
             final splits = jsonData["stream"].toString().split('@');
             final binanceId = splits[0];
             final opType = splits[1];
@@ -200,6 +200,7 @@ class Web3Service with ListenableServiceMixin {
         "chain": "",
         "address": address
       };
+      logger.d("address is $address");
 
       final balances = await api.postRequest("/evm/balance", body);
       Map<String, double> result = {};

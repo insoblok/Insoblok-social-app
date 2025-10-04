@@ -53,10 +53,10 @@ class RegisterSecondPage extends StatelessWidget {
                   ),
                   const Spacer(),
                   TextFillButton(
-                    text: "Next",
+                    text: "Register",
                     color: AIColors.pink,
                     isBusy: viewModel.isBusy,
-                    onTap: viewModel.onClickNext,
+                    onTap: viewModel.onClickRegister,
                   ),
                   SizedBox(height: MediaQuery.of(context).viewPadding.bottom),
                 ],

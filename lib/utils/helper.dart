@@ -1,9 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:intl/intl.dart';
+import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -378,4 +379,51 @@ class AIHelpers {
     }
     
   }
+
+  // static List<Color> getGradientColors(String input) {
+  //   final hash = input.codeUnits.fold(0, (a, b) => a + b);
+  //   final random = Random(hash);
+
+  //   // pick two colors from Material colors
+  //   final List<Color> palette = [
+  //     Colors.red,
+  //     Colors.pink,
+  //     Colors.purple,
+  //     Colors.deepPurple,
+  //     Colors.indigo,
+  //     Colors.blue,
+  //     Colors.lightBlue,
+  //     Colors.cyan,
+  //     Colors.teal,
+  //     Colors.green,
+  //     Colors.lightGreen,
+  //     Colors.lime,
+  //     Colors.amber,
+  //     Colors.orange,
+  //     Colors.deepOrange,
+  //   ];
+
+  //   final color1 = palette[random.nextInt(palette.length)];
+  //   final color2 = palette[random.nextInt(palette.length)];
+
+  //   return [color1, color2];
+  // }
+
+  static Color _getBaseColor(String input) {
+    final hash = input.codeUnits.fold(0, (a, b) => a + b);
+    final hue = (hash % 360).toDouble(); // map to color wheel
+    return HSLColor.fromAHSL(1.0, hue, 0.6, 0.5).toColor(); 
+  }
+
+  // Create a gradient with a lighter/darker shade
+  static List<Color> getGradientColors(String input) {
+    final base = _getBaseColor(input);
+
+    final hsl = HSLColor.fromColor(base);
+    final lighter = hsl.withLightness((hsl.lightness + 0.2).clamp(0.0, 1.0));
+    final darker = hsl.withLightness((hsl.lightness - 0.2).clamp(0.0, 1.0));
+
+    return [lighter.toColor(), darker.toColor()];
+  }
+
 }

@@ -35,7 +35,7 @@ class AddProductPage extends StatelessWidget {
                   child: Text('Name of Product'),
                 ),
                 Container(
-                  decoration: kTextFieldDecoration,
+                  decoration: kNoBorderDecoration,
                   child: AINoBorderTextField(
                     hintText: 'Input product name',
                     initialValue: viewModel.product.name,
@@ -185,7 +185,7 @@ class AddProductPage extends StatelessWidget {
                                           : null,
                                   border: Border.all(
                                     color: Theme.of(context).primaryColor,
-                                    width: 0.33,
+                                    width: 0.75,
                                   ),
                                   borderRadius: BorderRadius.circular(24.0),
                                 ),

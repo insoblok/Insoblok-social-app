@@ -4,8 +4,13 @@ import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
 import 'package:insoblok/routers/routers.dart';
+import 'package:insoblok/utils/utils.dart';
+import 'package:insoblok/services/services.dart';
+import 'package:insoblok/locator.dart';
+
 class AccountWalletPage extends StatelessWidget {
-  const AccountWalletPage({super.key});
+  AccountWalletPage({super.key});
+  final CryptoService cryptoService = locator<CryptoService>();
 
   @override
   Widget build(BuildContext context) {
@@ -24,12 +29,11 @@ class AccountWalletPage extends StatelessWidget {
             centerTitle: true,
             // flexibleSpace: AppBackgroundView(),
           ),
-          body:  Stack(
-            children: [
-              Container(
-                color: Colors.black,
-                child: viewModel.pages[viewModel.pageIndex]
-              ),
+          body: Container(
+            color: Colors.black,
+            child: viewModel.pages[viewModel.pageIndex]
+          ),
+              /*
               Align(
                   alignment: Alignment.bottomCenter,
                   child: Padding(
@@ -43,9 +47,9 @@ class AccountWalletPage extends StatelessWidget {
                         ClipRRect(
                           borderRadius: BorderRadius.all(Radius.circular(16)),
                           child: BottomBarBackgroundView(
-                            height: 48,
+                            height: 42,
                             child: Padding(
-                              padding: EdgeInsets.only(top: 6.0, bottom: 2.0),
+                              padding: EdgeInsets.only(top: 2.0, bottom: 2.0),
                               child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceAround,
@@ -60,6 +64,7 @@ class AccountWalletPage extends StatelessWidget {
                                           viewModel.pageIndex == 0
                                               ? AIImages.icBottomWalletFill
                                               : AIImages.icBottomWallet,
+                                      iconSize: 24,
                                       label: 'Home',
                                       color:
                                           viewModel.pageIndex == 0
@@ -79,6 +84,7 @@ class AccountWalletPage extends StatelessWidget {
                                               ? AIImages.icStarFill
                                               : AIImages.icStarStroke,
                                       label: 'Favorites',
+                                      iconSize: 24,
                                       color:
                                           viewModel.pageIndex == 1
                                               ? AIColors.pink
@@ -96,6 +102,7 @@ class AccountWalletPage extends StatelessWidget {
                                               ? AIImages.icHistoryFill
                                               : AIImages.icHistoryStroke,
                                       label: 'Activities',
+                                      iconSize: 24,
                                       color:
                                           viewModel.pageIndex == 2
                                               ? AIColors.pink
@@ -113,6 +120,7 @@ class AccountWalletPage extends StatelessWidget {
                                               ? AIImages.icBottomNotiFill
                                               : AIImages.icBottomNoti,
                                       label: 'Notifications',
+                                      iconSize: 24,
                                       color:
                                           viewModel.pageIndex == 3
                                               ? AIColors.pink
@@ -149,7 +157,51 @@ class AccountWalletPage extends StatelessWidget {
                     )
                   )
               )
-            ],
+              */
+          bottomNavigationBar: AppBackgroundView(
+            child: BottomNavigationBar(
+              onTap: (page) {
+                viewModel.pageIndex = page;
+              },
+              items: [
+                BottomNavigationBarItem(
+                  icon: AIImage(
+                      viewModel.pageIndex == 0 ? AIImages.icBottomWalletFill : AIImages.icBottomWallet,
+                      width: 21.0,
+                      height: 21.0,
+                      color: Colors.white
+                    ),
+                  label: ""
+                ),
+                BottomNavigationBarItem(
+                  icon: AIImage(
+                      viewModel.pageIndex == 1 ? AIImages.icBottomFavoriteFill : AIImages.icBottomFavorite,
+                      width: 21.0,
+                      height: 21.0,
+                      color: Colors.white
+                    ),
+                  label: ""
+                ),
+                BottomNavigationBarItem(
+                  icon: AIImage(
+                      viewModel.pageIndex == 2 ? AIImages.icHistoryFill : AIImages.icHistoryStroke,
+                      width: 21.0,
+                      height: 21.0,
+                      color: Colors.white
+                    ),
+                  label: ""
+                ),
+                BottomNavigationBarItem(
+                  icon: AIImage(
+                      viewModel.pageIndex == 3 ? AIImages.icBottomNotiFill : AIImages.icBottomNoti,
+                      width: 21.0,
+                      height: 21.0,
+                      color: Colors.white
+                    ),
+                  label: ""
+                ),
+
+            ])
           ),
         );
       },

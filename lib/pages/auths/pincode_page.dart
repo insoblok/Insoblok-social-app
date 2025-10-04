@@ -6,20 +6,26 @@ import 'package:insoblok/locator.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/utils/utils.dart';
+import 'package:insoblok/widgets/widgets.dart'; // Add this import
 
 class PinCodePage extends StatefulWidget {
+  
+  const PinCodePage({super.key});
+
   @override
-  _PinCodePageState createState() => _PinCodePageState();
+  State<PinCodePage> createState() => _PinCodePageState();
 }
 
 class _PinCodePageState extends State<PinCodePage> with SingleTickerProviderStateMixin {
+
+  final ApiService apiService = ApiService(baseUrl: "");
   String enteredPin = "";
   final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
   final String _pincodeKey = "wallet_pincode";
   int? pinCodeLength;
   CryptoService cryptoService = locator<CryptoService>();
   bool signing = false;
-  String status = "Swipe up for Face ID or Enter Passcode";
+  String status = " Enter Passcode ";
   late AnimationController _controller;
   late Animation<double> _pulse;
   late PageController _pageController;
@@ -45,7 +51,6 @@ class _PinCodePageState extends State<PinCodePage> with SingleTickerProviderStat
       setState(() {
         checkFaceStatus = "Authenticating...";
       });
-      _checkFace();
     });
     _loadPinLength();
   }
@@ -71,13 +76,13 @@ class _PinCodePageState extends State<PinCodePage> with SingleTickerProviderStat
         if (enteredPin.isNotEmpty) {
           enteredPin = enteredPin.substring(0, enteredPin.length - 1);
         }
-      } else {
+      } else if (value != "OK") {
         if (enteredPin.length < pinCodeLength!) {
           enteredPin += value;
         }
       }
     });
-    if (enteredPin.length == 6) {
+    if (value == "OK" || enteredPin.length == 6) {
       await signIn(ctx);
     }
   }
@@ -92,7 +97,7 @@ class _PinCodePageState extends State<PinCodePage> with SingleTickerProviderStat
       UnlockedWallet unlockedWallet = await cryptoService.unlockFromStorage(enteredPin);
       if (unlockedWallet.address.isNotEmpty) {
         var authUser = await AuthHelper.signIn(unlockedWallet.address, false);
-
+        logger.d("authUser: ${authUser?.walletAddress}");
         if (authUser?.walletAddress?.isEmpty ?? true) {
           Routers.goToRegisterFirstPage(
             context,
@@ -102,9 +107,11 @@ class _PinCodePageState extends State<PinCodePage> with SingleTickerProviderStat
           AuthHelper.updateStatus('Online');
           Routers.goToMainPage(context);
         }
-        return;
       }
-    } catch (_) {} finally {
+      return;
+    } catch (e) {
+      logger.d("Exception occurred while getting wallet address. $e");
+    } finally {
       setState(() {
         status = "Wrong password. Try again";
         enteredPin = "";
@@ -113,96 +120,10 @@ class _PinCodePageState extends State<PinCodePage> with SingleTickerProviderStat
     }
   }
 
-  Widget _buildPinDots() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: List.generate(6, (index) {
-        bool filled = index < enteredPin.length;
-        return Container(
-          margin: EdgeInsets.symmetric(horizontal: 12),
-          width: 14,
-          height: 14,
-          decoration: BoxDecoration(
-            color: filled ? Colors.white : Colors.transparent,
-            border: Border.all(color: Colors.white, width: 1.5),
-            shape: BoxShape.circle,
-          ),
-        );
-      }),
-    );
-  }
-
-  Widget _buildNumberButton(String number) {
-    final double buttonSize = (MediaQuery.of(context).size.width) * 0.22;
-    return InkWell(
-      onTap: () => _onKeyPressed(number, context),
-      borderRadius: BorderRadius.circular(50),
-      child: Container(
-        width: buttonSize,
-        height: buttonSize,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: Colors.red.withOpacity(0.5),
-          shape: BoxShape.circle,
-        ),
-        child: Text(
-          number,
-          style: TextStyle(fontSize: 32, color: Colors.white, fontWeight: FontWeight.w400),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildKeypad() {
-    final numbers = [
-      ["1", "2", "3"],
-      ["4", "5", "6"],
-      ["7", "8", "9"],
-      ["", "0", "back"]
-    ];
-    final double buttonSize = (MediaQuery.of(context).size.width) * 0.22;
-    logger.d("button size is $buttonSize");
-    return Column(
-      children: numbers.map((row) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 8),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: row.map((item) {
-              if (item.isEmpty) {
-                return SizedBox(width: buttonSize, height: buttonSize);
-              } else if (item == "back") {
-                return SizedBox(
-                  width: buttonSize,
-                  height: buttonSize,
-                  child: IconButton(
-                    onPressed: () => _onKeyPressed("back", context),
-                    icon: Icon(Icons.backspace, color: Colors.white, size: 28),
-                  ),
-                );
-              } else {
-                return _buildNumberButton(item);
-              }
-            }).toList(),
-          ),
-        );
-      }).toList(),
-    );
-  }
-
-  Future<void> _checkFace() async {
-    
-    UnlockedWallet wallet = await localAuthService.accessWalletWithFaceId();
-    logger.d("Wallet is ${wallet.address}");
-    if (wallet.address.isEmpty) {
-      setState(() {
-        checkFaceStatus = "Biometric Unlock Failed. Try again with PinCode.";
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    final double buttonSize = (MediaQuery.of(context).size.width) * 0.18;
+    
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
@@ -218,10 +139,12 @@ class _PinCodePageState extends State<PinCodePage> with SingleTickerProviderStat
             scrollDirection: Axis.vertical,
             onPageChanged: (index) {
               if (index == 0 ) {
-                _checkFace();
+                // _checkFace();
               }
             },
             children: [
+              // Face ID Page (unchanged)
+              /*
               Container(
                 child: Stack(
                   children: [
@@ -234,8 +157,6 @@ class _PinCodePageState extends State<PinCodePage> with SingleTickerProviderStat
                         ),
                       ),
                     ),
-
-                    // Content
                     SafeArea(
                       child: Column(
                         children: [
@@ -244,7 +165,6 @@ class _PinCodePageState extends State<PinCodePage> with SingleTickerProviderStat
                               child: Column(
                                 mainAxisSize: MainAxisSize.min,
                                 children: [
-                                  // Animated pulsing Face ID frame
                                   AnimatedBuilder(
                                     animation: _pulse,
                                     builder: (context, child) {
@@ -255,20 +175,11 @@ class _PinCodePageState extends State<PinCodePage> with SingleTickerProviderStat
                                     },
                                     child: _FaceIdIcon(size: 160),
                                   ),
-
                                   SizedBox(height: 28),
-
-                                  // Label
                                   Text('Biometric Auth', style: TextStyle(color: Colors.white.withOpacity(0.95), fontSize: 28, fontWeight: FontWeight.w600)),
-
                                   SizedBox(height: 8),
-
-                                  // Hint text
                                   Text(checkFaceStatus, style: TextStyle(color: Colors.white.withOpacity(0.7))),
-
                                   SizedBox(height: 40),
-
-                                  // Small hint for fallback
                                   Padding(
                                     padding: const EdgeInsets.symmetric(horizontal: 36.0),
                                     child: Text(
@@ -282,8 +193,6 @@ class _PinCodePageState extends State<PinCodePage> with SingleTickerProviderStat
                               ),
                             ),
                           ),
-
-                          // Bottom padding to simulate edge area
                           SizedBox(height: 16)
                         ],
                       ),
@@ -306,63 +215,59 @@ class _PinCodePageState extends State<PinCodePage> with SingleTickerProviderStat
                   ],
                 ),
               ),
-                
-                ConstrainedBox(
-                  constraints: BoxConstraints(
-                      minHeight: MediaQuery.of(context).size.height,
-                    ),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Container(
-                        child: Column(
-                          children: [
-                            SizedBox(height: MediaQuery.of(context).size.height * 0.05),
-                            Icon(Icons.lock, color: Colors.white, size: 36),
-                            SizedBox(height: 16),
-                              FractionallySizedBox(
-                                widthFactor: 0.7,
-                                child: Column(
-                                  children:[ 
-                                    Text(
-                                      status,
-                                      textAlign: TextAlign.center,
-                                      style: TextStyle(color: Colors.white, fontSize: 24),
-                                    ),
-                                    SizedBox(height: 16.0),
-                                    _buildPinDots(),
-                                  ],
-                                ),
-                              ),
-                            SizedBox(height: MediaQuery.of(context).size.height * 0.04),
-                            // Spacer(),
-                            _buildKeypad(),
-                            ],
-                        ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 2),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            GestureDetector(
-                              onTap: () => Navigator.pop(context),
-                              child: Text("Cancel", style: TextStyle(color: Colors.white70, fontSize: 16)),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+              */
+              // PIN Code Page with combined widget
+              ConstrainedBox(
+                constraints: BoxConstraints(
+                  minHeight: MediaQuery.of(context).size.height,
                 ),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Container(
+                      child: Column(
+                        children: [
+                          SizedBox(height: MediaQuery.of(context).size.height * 0.05),
+                          
+                          PinCodeInputWidget(
+                            enteredPin: enteredPin,
+                            pinLength: pinCodeLength ?? 6,
+                            onKeyPressed: (value) => _onKeyPressed(value, context),
+                            status: status,
+                            dotColor: Colors.white,
+                            filledColor: Colors.white,
+                            buttonColor: Colors.red,
+                            textColor: Colors.white,
+                            buttonSize: buttonSize,
+                            dotSize: 14,
+                            dotSpacing: 12,
+                            showBackButton: true,
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 2),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          GestureDetector(
+                            onTap: () => Navigator.pop(context),
+                            child: Text("Cancel", style: TextStyle(color: Colors.white70, fontSize: 16)),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
             ]
           ),
-      )
+        )
       )
     );
   }
 }
-
 
 class _FaceIdIcon extends StatelessWidget {
   final double size;
@@ -376,14 +281,11 @@ class _FaceIdIcon extends StatelessWidget {
       child: Stack(
         alignment: Alignment.center,
         children: [
-          // Rounded square frame corners
           Positioned.fill(
             child: CustomPaint(
               painter: _FramePainter(),
             ),
           ),
-
-          // Simple face made from basic shapes
           Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -407,19 +309,12 @@ class _FramePainter extends CustomPainter {
 
     final cornerLength = size.width * 0.18;
 
-    // Top-left
     canvas.drawLine(Offset(0, cornerLength), Offset(0, 0), paint);
     canvas.drawLine(Offset(0, 0), Offset(cornerLength, 0), paint);
-
-    // Top-right
     canvas.drawLine(Offset(size.width - cornerLength, 0), Offset(size.width, 0), paint);
     canvas.drawLine(Offset(size.width, 0), Offset(size.width, cornerLength), paint);
-
-    // Bottom-left
     canvas.drawLine(Offset(0, size.height - cornerLength), Offset(0, size.height), paint);
     canvas.drawLine(Offset(0, size.height), Offset(cornerLength, size.height), paint);
-
-    // Bottom-right
     canvas.drawLine(Offset(size.width - cornerLength, size.height), Offset(size.width, size.height), paint);
     canvas.drawLine(Offset(size.width, size.height - cornerLength), Offset(size.width, size.height), paint);
   }

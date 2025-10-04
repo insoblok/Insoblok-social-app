@@ -23,9 +23,9 @@ class PageableView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final menuTitles = [
-      'Following',   
+      // 'Following',   
       'LookBook',
-      'Leaderboard',
+      // 'Leaderboard',
       'Marketplace',
     ];
     final ScrollController _tabScrollController = ScrollController();
@@ -199,13 +199,13 @@ class PageableView extends StatelessWidget {
                               const SizedBox(width: 2),
 
                               InkWell(
-                                onTap: () => viewModel.showSearch = !viewModel.showSearch,
+                                onTap: () {},
                                 borderRadius: BorderRadius.circular(12),
                                 child: AIImage(
-                                  AIImages.icBottomSearch,
+                                  AIImages.icSetting,
                                   width: 18,
                                   height: 18,
-                                  color: Theme.of(context).colorScheme.secondary,
+                                  color: Theme.of(context).colorScheme.onPrimary,
                                 ),
                               ),
                             ],

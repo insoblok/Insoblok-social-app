@@ -28,6 +28,7 @@ class WalletSendProvider extends InSoBlokViewModel {
 
   @override
   List<ListenableServiceMixin> get listenableServices => [web3Service];
+  CryptoService cryptoService = locator<CryptoService>();
 
   String? get address => cryptoService.privateKey!.address.hex;  
 

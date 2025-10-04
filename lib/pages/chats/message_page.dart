@@ -280,7 +280,7 @@ class MessagePage extends StatelessWidget {
                               Icons.send,
                               color:
                                   viewModel.isShowButton
-                                      ? Theme.of(context).primaryColor
+                                      ? Theme.of(context).colorScheme.onPrimary
                                       : Theme.of(context).colorScheme.secondary,
                               size: 20.0,
                             ),

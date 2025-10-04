@@ -64,7 +64,7 @@ class VTOImagePage extends StatelessWidget {
                     child: Container(
                       decoration: BoxDecoration(
                         border: Border.all(
-                          width: 0.33,
+                          width: 0.66,
                           color: Theme.of(context).primaryColor,
                         ),
                         borderRadius: BorderRadius.circular(16.0),
@@ -164,7 +164,7 @@ class VTOInformationView extends ViewModelWidget<VTOImageProvider> {
                   decoration: BoxDecoration(
                     border: Border.all(
                       color: Theme.of(context).primaryColor,
-                      width: 0.33,
+                      width: 0.66,
                     ),
                     borderRadius: BorderRadius.circular(24.0),
                   ),

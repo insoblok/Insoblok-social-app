@@ -21,6 +21,8 @@ class MessageProvider extends InSoBlokViewModel {
     _context = context;
     notifyListeners();
   }
+  
+  CryptoService cryptoService = locator<CryptoService>();
 
   final _key = GlobalKey<ExpandableFabState>();
     GlobalKey<ExpandableFabState> get key => _key;

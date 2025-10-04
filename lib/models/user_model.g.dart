@@ -23,6 +23,7 @@ _UserModel _$UserModelFromJson(Map<String, dynamic> json) => _UserModel(
   nickId: json['nick_id'] as String?,
   lat: (json['lat'] as num?)?.toDouble(),
   lon: (json['lon'] as num?)?.toDouble(),
+  biometricEnabled: json['biometric_enabled'] as bool?,
   ipAddress: json['ip_address'] as String?,
   updateDate:
       json['update_date'] == null
@@ -57,6 +58,13 @@ _UserModel _$UserModelFromJson(Map<String, dynamic> json) => _UserModel(
       (json['favorite_tokens'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList(),
+  socials:
+      (json['socials'] as List<dynamic>?)
+          ?.map(
+            (e) =>
+                SocialMediaModel.fromJson(Map<String, String>.from(e as Map)),
+          )
+          .toList(),
 );
 
 Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
@@ -77,6 +85,7 @@ Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
       'nick_id': instance.nickId,
       'lat': instance.lat,
       'lon': instance.lon,
+      'biometric_enabled': instance.biometricEnabled,
       'ip_address': instance.ipAddress,
       'update_date': instance.updateDate?.toIso8601String(),
       'timestamp': instance.timestamp?.toIso8601String(),
@@ -94,6 +103,7 @@ Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
       'galleries': instance.galleries,
       'actions': instance.actions,
       'favorite_tokens': instance.favoriteTokens,
+      'socials': instance.socials,
     };
 
 _UserActionModel _$UserActionModelFromJson(Map<String, dynamic> json) =>
@@ -127,3 +137,12 @@ _UserCountryModel _$UserCountryModelFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$UserCountryModelToJson(_UserCountryModel instance) =>
     <String, dynamic>{'name': instance.name, 'code': instance.code};
+
+_SocialMediaModel _$SocialMediaModelFromJson(Map<String, dynamic> json) =>
+    _SocialMediaModel(
+      media: json['media'] as String?,
+      account: json['account'] as String?,
+    );
+
+Map<String, dynamic> _$SocialMediaModelToJson(_SocialMediaModel instance) =>
+    <String, dynamic>{'media': instance.media, 'account': instance.account};

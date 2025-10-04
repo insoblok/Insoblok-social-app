@@ -32,6 +32,24 @@ class RoomService {
     return result;
   }
 
+  // Get rooms with pagination
+  Future<QuerySnapshot<Map<String, dynamic>>> getRoomsPage({
+    required int limit,
+    DocumentSnapshot<Map<String, dynamic>>? startAfter,
+  }) async {
+    Query<Map<String, dynamic>> baseQuery = _firestore
+        .collection('room')
+        .where('user_ids', arrayContains: AuthHelper.user?.id)
+        // Avoid composite index requirement; sort client-side by update_date
+        .orderBy(FieldPath.documentId);
+
+    if (startAfter != null) {
+      baseQuery = baseQuery.startAfterDocument(startAfter);
+    }
+
+    return await baseQuery.limit(limit).get();
+  }
+
   // Find a room
   Future<RoomModel?> getRoomByChatUesr({required String id}) async {
     try {

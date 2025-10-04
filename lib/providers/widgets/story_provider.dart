@@ -143,7 +143,7 @@ class StoryProvider extends InSoBlokViewModel {
   }
 
   Future<void> startRRC() async{
-    if(showFaceDialog) {
+    if(showFaceDialog || (story.reactions ?? []).isEmpty) {
       return;
     }
 

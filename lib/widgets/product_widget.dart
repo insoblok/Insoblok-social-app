@@ -29,7 +29,7 @@ class ProductImageView extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12.0),
               border: Border.all(
-                width: 0.33,
+                width: 0.66,
                 color: Theme.of(context).primaryColor,
               ),
             ),

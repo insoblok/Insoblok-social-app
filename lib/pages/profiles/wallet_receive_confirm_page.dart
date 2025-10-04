@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'package:stacked/stacked.dart';
 import 'package:provider/provider.dart';
 
-import 'package:insoblok/pages/pages.dart';
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
@@ -64,7 +64,13 @@ class WalletReceiveConfirmPage extends StatelessWidget {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(Icons.copy),
+                        IconButton(
+                          icon: Icon(Icons.copy),
+                          onPressed: () {
+                            Clipboard.setData(ClipboardData(text: cryptoService.privateKey!.address.hex));
+                            AIHelpers.showToast(msg: "Copied address to Clipboard");
+                          }
+                        ),
                         SizedBox(width: 24.0),
                         Text(
                           "Copy Address",
