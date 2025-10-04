@@ -28,10 +28,15 @@ class LoginProvider extends InSoBlokViewModel {
   late Timer _timer;
   final _pageController = PageController(initialPage: 0);
   PageController get pageController => _pageController;
+  
+  CryptoService cryptoService = locator<CryptoService>();
+  
   int _currentPage = 0;
   int get currentPage => _currentPage;
 
   static const loginMethods = ["Login with Password", "Login with Face ID"];
+
+  final ApiService apiService = ApiService(baseUrl: "");
 
   String _loginMethod = loginMethods[0];
   String get loginMethod => _loginMethod;
@@ -79,8 +84,13 @@ class LoginProvider extends InSoBlokViewModel {
   final globals = GlobalStore();
   bool get enabled => globals.isVybeCamEnabled;
 
-  bool checkingFace = false;
-  LocalAuthService localAuthService = LocalAuthService();
+
+  String _checkFaceStatus = "";
+  String get checkFaceStatus => _checkFaceStatus;
+  set checkFaceStatus(String s) {
+    _checkFaceStatus = s;
+    notifyListeners();
+  }
 
   Future<void> init(BuildContext context) async {
     this.context = context;
@@ -102,18 +112,15 @@ class LoginProvider extends InSoBlokViewModel {
       );
     }); 
 
-    checkWalletStatus();
-    notifyListeners();
-  }
-
-  Future<void> checkFace() async {
-    checkingFace = true;
-    UnlockedWallet wallet = await localAuthService.accessWalletWithFaceId();
-    logger.d("Wallet is ${wallet.address}");
-    checkingFace = false;
-    if (wallet.address.isEmpty) {
-      handleChangeLoginMethod(loginMethods[0]);
+    await checkWalletStatus();
+    if(!walletExists) return;
+    if (AuthHelper.user?.biometricEnabled ?? false) {
+      await checkFace(context);
     }
+    else {
+      Routers.goToPincodePage(context);
+    }
+    notifyListeners();
   }
 
   @override
@@ -216,50 +223,6 @@ class LoginProvider extends InSoBlokViewModel {
     // if (_walletExists) await checkFace();
   } 
 
-  Future<void> handleClickSignIn(BuildContext ctx) async {
-  //   if(isBusy) return;
-  //   setBusy(true);
-  //   clearErrors();
-  //   runBusyFuture(() async {
-  //     try {
-  //     final password = existingPasswordController.text.trim();
-  //     UnlockedWallet unlockedWallet = await cryptoService.unlockFromStorage(password);
-  //     if (unlockedWallet.address == "") { 
-  //       setError("Incorrect Password.");
-  //       return;
-  //     }
-  //     var authUser = await AuthHelper.signIn(
-  //       unlockedWallet.address,
-  //       isCheckScan,
-  //     );
-
-  //     if (authUser?.walletAddress?.isEmpty ?? true) {
-  //       Routers.goToRegisterFirstPage(
-  //         context,
-  //         user: UserModel(walletAddress: unlockedWallet.address),
-  //       );
-  //     } else {
-  //       AuthHelper.updateStatus('Online');
-  //       Routers.goToMainPage(context);
-  //     }
-  //   } catch (e) {
-  //     logger.d(e);
-  //     setError("Failed to SignIn $e");
-  //   } finally {
-  //     isClickCreateNewWallet = false;
-  //     setBusy(false);
-  //   }
-  //   }());
-
-  // if(hasError) {
-  //   AIHelpers.showToast(msg: modelError.toString());
-  // }
-    Routers.goToPincodePage(context);
-  
-
-  }
-
-
   void handleClickForgotPassword() {
     _walletExists = false;
     notifyListeners();
@@ -277,4 +240,32 @@ class LoginProvider extends InSoBlokViewModel {
       Routers.goToPincodePage(context);
     }
   }
+
+  Future<void> checkFace(BuildContext ctx) async {
+    
+    UnlockedWallet wallet = await localAuthService.accessWalletWithFaceId();
+    logger.d("Wallet is ${wallet.address}");
+    if (wallet.address.isEmpty) {
+      checkFaceStatus = "Biometric Unlock Failed. Try again with PinCode.";
+      apiService.logRequest({"result": "failed", "message": 'Face Unlock Failed: _checkFace ${await AIHelpers.getIPAddress()}'});
+      Routers.goToPincodePage(ctx);
+    }
+    else {
+      checkFaceStatus = "Biometric Auth success. Please wait ...";
+      apiService.logRequest({"result": "success", "message": 'Face Unlock Success: _checkFace ${await AIHelpers.getIPAddress()}'});
+
+      var authUser = await AuthHelper.signIn(wallet.address, false);
+
+        if (authUser?.walletAddress?.isEmpty ?? true) {
+          Routers.goToRegisterFirstPage(
+            context,
+            user: UserModel(walletAddress: wallet.address),
+          );
+        } else {
+          AuthHelper.updateStatus('Online');
+          Routers.goToMainPage(context);
+        }
+    }
+  }
+
 }

@@ -17,7 +17,7 @@ class NewsListCell extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
       decoration: BoxDecoration(
         border: Border(
-          top: BorderSide(color: AIColors.speraterColor, width: 0.33),
+          top: BorderSide(color: AIColors.speraterColor, width: 0.66),
         ),
       ),
       child: InkWell(
@@ -27,7 +27,7 @@ class NewsListCell extends StatelessWidget {
           children: [
             Container(
               decoration: BoxDecoration(
-                border: Border.all(width: 0.33, color: AIColors.speraterColor),
+                border: Border.all(width: 0.66, color: AIColors.speraterColor),
                 borderRadius: BorderRadius.circular(12.0),
               ),
               child: ClipRRect(

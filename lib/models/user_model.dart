@@ -25,6 +25,7 @@ abstract class UserModel with _$UserModel {
     String? nickId,
     double? lat,
     double? lon,
+    bool? biometricEnabled,
     String? ipAddress,
     DateTime? updateDate,
     DateTime? timestamp,
@@ -42,6 +43,8 @@ abstract class UserModel with _$UserModel {
     List<String>? galleries,
     List<UserActionModel>? actions,
     List<String>? favoriteTokens,
+    List<SocialMediaModel>? socials,
+
   }) = _UserModel;
 
   factory UserModel.fromJson(Map<String, dynamic> json) =>
@@ -70,4 +73,16 @@ abstract class UserCountryModel with _$UserCountryModel {
   factory UserCountryModel({String? name, String? code}) = _UserCountryModel;
   factory UserCountryModel.fromJson(Map<String, dynamic> json) =>
       _$UserCountryModelFromJson(json);
+}
+
+@freezed
+abstract class SocialMediaModel with _$SocialMediaModel {
+  @JsonSerializable(fieldRename: FieldRename.snake)
+  factory SocialMediaModel({
+    String? media,
+    String? account,
+  }) = _SocialMediaModel;
+
+  factory SocialMediaModel.fromJson(Map<String, String> json) => 
+    _$SocialMediaModelFromJson(FirebaseHelper.fromConvertJson(json));
 }

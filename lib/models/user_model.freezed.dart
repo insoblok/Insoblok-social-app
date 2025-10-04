@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$UserModel {
 
- String? get id; String? get uid; String? get walletAddress; String? get avatar; String? get firstName; String? get lastName; String? get email; String? get password; String? get city; String? get country; String? get website; String? get desc; String? get discovery; String? get nickId; double? get lat; double? get lon; String? get ipAddress; DateTime? get updateDate; DateTime? get timestamp; String? get status; bool? get hasVotePost; bool? get freeStyle; bool? get isPremium; int? get rewardDate; int? get transferedXP; int? get transferedInSo; List<String>? get likes; List<String>? get follows; List<String>? get views; List<String>? get userActions; List<String>? get galleries; List<UserActionModel>? get actions; List<String>? get favoriteTokens;
+ String? get id; String? get uid; String? get walletAddress; String? get avatar; String? get firstName; String? get lastName; String? get email; String? get password; String? get city; String? get country; String? get website; String? get desc; String? get discovery; String? get nickId; double? get lat; double? get lon; bool? get biometricEnabled; String? get ipAddress; DateTime? get updateDate; DateTime? get timestamp; String? get status; bool? get hasVotePost; bool? get freeStyle; bool? get isPremium; int? get rewardDate; int? get transferedXP; int? get transferedInSo; List<String>? get likes; List<String>? get follows; List<String>? get views; List<String>? get userActions; List<String>? get galleries; List<UserActionModel>? get actions; List<String>? get favoriteTokens; List<SocialMediaModel>? get socials;
 /// Create a copy of UserModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $UserModelCopyWith<UserModel> get copyWith => _$UserModelCopyWithImpl<UserModel>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserModel&&(identical(other.id, id) || other.id == id)&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.walletAddress, walletAddress) || other.walletAddress == walletAddress)&&(identical(other.avatar, avatar) || other.avatar == avatar)&&(identical(other.firstName, firstName) || other.firstName == firstName)&&(identical(other.lastName, lastName) || other.lastName == lastName)&&(identical(other.email, email) || other.email == email)&&(identical(other.password, password) || other.password == password)&&(identical(other.city, city) || other.city == city)&&(identical(other.country, country) || other.country == country)&&(identical(other.website, website) || other.website == website)&&(identical(other.desc, desc) || other.desc == desc)&&(identical(other.discovery, discovery) || other.discovery == discovery)&&(identical(other.nickId, nickId) || other.nickId == nickId)&&(identical(other.lat, lat) || other.lat == lat)&&(identical(other.lon, lon) || other.lon == lon)&&(identical(other.ipAddress, ipAddress) || other.ipAddress == ipAddress)&&(identical(other.updateDate, updateDate) || other.updateDate == updateDate)&&(identical(other.timestamp, timestamp) || other.timestamp == timestamp)&&(identical(other.status, status) || other.status == status)&&(identical(other.hasVotePost, hasVotePost) || other.hasVotePost == hasVotePost)&&(identical(other.freeStyle, freeStyle) || other.freeStyle == freeStyle)&&(identical(other.isPremium, isPremium) || other.isPremium == isPremium)&&(identical(other.rewardDate, rewardDate) || other.rewardDate == rewardDate)&&(identical(other.transferedXP, transferedXP) || other.transferedXP == transferedXP)&&(identical(other.transferedInSo, transferedInSo) || other.transferedInSo == transferedInSo)&&const DeepCollectionEquality().equals(other.likes, likes)&&const DeepCollectionEquality().equals(other.follows, follows)&&const DeepCollectionEquality().equals(other.views, views)&&const DeepCollectionEquality().equals(other.userActions, userActions)&&const DeepCollectionEquality().equals(other.galleries, galleries)&&const DeepCollectionEquality().equals(other.actions, actions)&&const DeepCollectionEquality().equals(other.favoriteTokens, favoriteTokens));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is UserModel&&(identical(other.id, id) || other.id == id)&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.walletAddress, walletAddress) || other.walletAddress == walletAddress)&&(identical(other.avatar, avatar) || other.avatar == avatar)&&(identical(other.firstName, firstName) || other.firstName == firstName)&&(identical(other.lastName, lastName) || other.lastName == lastName)&&(identical(other.email, email) || other.email == email)&&(identical(other.password, password) || other.password == password)&&(identical(other.city, city) || other.city == city)&&(identical(other.country, country) || other.country == country)&&(identical(other.website, website) || other.website == website)&&(identical(other.desc, desc) || other.desc == desc)&&(identical(other.discovery, discovery) || other.discovery == discovery)&&(identical(other.nickId, nickId) || other.nickId == nickId)&&(identical(other.lat, lat) || other.lat == lat)&&(identical(other.lon, lon) || other.lon == lon)&&(identical(other.biometricEnabled, biometricEnabled) || other.biometricEnabled == biometricEnabled)&&(identical(other.ipAddress, ipAddress) || other.ipAddress == ipAddress)&&(identical(other.updateDate, updateDate) || other.updateDate == updateDate)&&(identical(other.timestamp, timestamp) || other.timestamp == timestamp)&&(identical(other.status, status) || other.status == status)&&(identical(other.hasVotePost, hasVotePost) || other.hasVotePost == hasVotePost)&&(identical(other.freeStyle, freeStyle) || other.freeStyle == freeStyle)&&(identical(other.isPremium, isPremium) || other.isPremium == isPremium)&&(identical(other.rewardDate, rewardDate) || other.rewardDate == rewardDate)&&(identical(other.transferedXP, transferedXP) || other.transferedXP == transferedXP)&&(identical(other.transferedInSo, transferedInSo) || other.transferedInSo == transferedInSo)&&const DeepCollectionEquality().equals(other.likes, likes)&&const DeepCollectionEquality().equals(other.follows, follows)&&const DeepCollectionEquality().equals(other.views, views)&&const DeepCollectionEquality().equals(other.userActions, userActions)&&const DeepCollectionEquality().equals(other.galleries, galleries)&&const DeepCollectionEquality().equals(other.actions, actions)&&const DeepCollectionEquality().equals(other.favoriteTokens, favoriteTokens)&&const DeepCollectionEquality().equals(other.socials, socials));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hashAll([runtimeType,id,uid,walletAddress,avatar,firstName,lastName,email,password,city,country,website,desc,discovery,nickId,lat,lon,ipAddress,updateDate,timestamp,status,hasVotePost,freeStyle,isPremium,rewardDate,transferedXP,transferedInSo,const DeepCollectionEquality().hash(likes),const DeepCollectionEquality().hash(follows),const DeepCollectionEquality().hash(views),const DeepCollectionEquality().hash(userActions),const DeepCollectionEquality().hash(galleries),const DeepCollectionEquality().hash(actions),const DeepCollectionEquality().hash(favoriteTokens)]);
+int get hashCode => Object.hashAll([runtimeType,id,uid,walletAddress,avatar,firstName,lastName,email,password,city,country,website,desc,discovery,nickId,lat,lon,biometricEnabled,ipAddress,updateDate,timestamp,status,hasVotePost,freeStyle,isPremium,rewardDate,transferedXP,transferedInSo,const DeepCollectionEquality().hash(likes),const DeepCollectionEquality().hash(follows),const DeepCollectionEquality().hash(views),const DeepCollectionEquality().hash(userActions),const DeepCollectionEquality().hash(galleries),const DeepCollectionEquality().hash(actions),const DeepCollectionEquality().hash(favoriteTokens),const DeepCollectionEquality().hash(socials)]);
 
 @override
 String toString() {
-  return 'UserModel(id: $id, uid: $uid, walletAddress: $walletAddress, avatar: $avatar, firstName: $firstName, lastName: $lastName, email: $email, password: $password, city: $city, country: $country, website: $website, desc: $desc, discovery: $discovery, nickId: $nickId, lat: $lat, lon: $lon, ipAddress: $ipAddress, updateDate: $updateDate, timestamp: $timestamp, status: $status, hasVotePost: $hasVotePost, freeStyle: $freeStyle, isPremium: $isPremium, rewardDate: $rewardDate, transferedXP: $transferedXP, transferedInSo: $transferedInSo, likes: $likes, follows: $follows, views: $views, userActions: $userActions, galleries: $galleries, actions: $actions, favoriteTokens: $favoriteTokens)';
+  return 'UserModel(id: $id, uid: $uid, walletAddress: $walletAddress, avatar: $avatar, firstName: $firstName, lastName: $lastName, email: $email, password: $password, city: $city, country: $country, website: $website, desc: $desc, discovery: $discovery, nickId: $nickId, lat: $lat, lon: $lon, biometricEnabled: $biometricEnabled, ipAddress: $ipAddress, updateDate: $updateDate, timestamp: $timestamp, status: $status, hasVotePost: $hasVotePost, freeStyle: $freeStyle, isPremium: $isPremium, rewardDate: $rewardDate, transferedXP: $transferedXP, transferedInSo: $transferedInSo, likes: $likes, follows: $follows, views: $views, userActions: $userActions, galleries: $galleries, actions: $actions, favoriteTokens: $favoriteTokens, socials: $socials)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $UserModelCopyWith<$Res>  {
   factory $UserModelCopyWith(UserModel value, $Res Function(UserModel) _then) = _$UserModelCopyWithImpl;
 @useResult
 $Res call({
- String? id, String? uid, String? walletAddress, String? avatar, String? firstName, String? lastName, String? email, String? password, String? city, String? country, String? website, String? desc, String? discovery, String? nickId, double? lat, double? lon, String? ipAddress, DateTime? updateDate, DateTime? timestamp, String? status, bool? hasVotePost, bool? freeStyle, bool? isPremium, int? rewardDate, int? transferedXP, int? transferedInSo, List<String>? likes, List<String>? follows, List<String>? views, List<String>? userActions, List<String>? galleries, List<UserActionModel>? actions, List<String>? favoriteTokens
+ String? id, String? uid, String? walletAddress, String? avatar, String? firstName, String? lastName, String? email, String? password, String? city, String? country, String? website, String? desc, String? discovery, String? nickId, double? lat, double? lon, bool? biometricEnabled, String? ipAddress, DateTime? updateDate, DateTime? timestamp, String? status, bool? hasVotePost, bool? freeStyle, bool? isPremium, int? rewardDate, int? transferedXP, int? transferedInSo, List<String>? likes, List<String>? follows, List<String>? views, List<String>? userActions, List<String>? galleries, List<UserActionModel>? actions, List<String>? favoriteTokens, List<SocialMediaModel>? socials
 });
 
 
@@ -65,7 +65,7 @@ class _$UserModelCopyWithImpl<$Res>
 
 /// Create a copy of UserModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? uid = freezed,Object? walletAddress = freezed,Object? avatar = freezed,Object? firstName = freezed,Object? lastName = freezed,Object? email = freezed,Object? password = freezed,Object? city = freezed,Object? country = freezed,Object? website = freezed,Object? desc = freezed,Object? discovery = freezed,Object? nickId = freezed,Object? lat = freezed,Object? lon = freezed,Object? ipAddress = freezed,Object? updateDate = freezed,Object? timestamp = freezed,Object? status = freezed,Object? hasVotePost = freezed,Object? freeStyle = freezed,Object? isPremium = freezed,Object? rewardDate = freezed,Object? transferedXP = freezed,Object? transferedInSo = freezed,Object? likes = freezed,Object? follows = freezed,Object? views = freezed,Object? userActions = freezed,Object? galleries = freezed,Object? actions = freezed,Object? favoriteTokens = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? uid = freezed,Object? walletAddress = freezed,Object? avatar = freezed,Object? firstName = freezed,Object? lastName = freezed,Object? email = freezed,Object? password = freezed,Object? city = freezed,Object? country = freezed,Object? website = freezed,Object? desc = freezed,Object? discovery = freezed,Object? nickId = freezed,Object? lat = freezed,Object? lon = freezed,Object? biometricEnabled = freezed,Object? ipAddress = freezed,Object? updateDate = freezed,Object? timestamp = freezed,Object? status = freezed,Object? hasVotePost = freezed,Object? freeStyle = freezed,Object? isPremium = freezed,Object? rewardDate = freezed,Object? transferedXP = freezed,Object? transferedInSo = freezed,Object? likes = freezed,Object? follows = freezed,Object? views = freezed,Object? userActions = freezed,Object? galleries = freezed,Object? actions = freezed,Object? favoriteTokens = freezed,Object? socials = freezed,}) {
   return _then(_self.copyWith(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String?,uid: freezed == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
@@ -83,7 +83,8 @@ as String?,discovery: freezed == discovery ? _self.discovery : discovery // igno
 as String?,nickId: freezed == nickId ? _self.nickId : nickId // ignore: cast_nullable_to_non_nullable
 as String?,lat: freezed == lat ? _self.lat : lat // ignore: cast_nullable_to_non_nullable
 as double?,lon: freezed == lon ? _self.lon : lon // ignore: cast_nullable_to_non_nullable
-as double?,ipAddress: freezed == ipAddress ? _self.ipAddress : ipAddress // ignore: cast_nullable_to_non_nullable
+as double?,biometricEnabled: freezed == biometricEnabled ? _self.biometricEnabled : biometricEnabled // ignore: cast_nullable_to_non_nullable
+as bool?,ipAddress: freezed == ipAddress ? _self.ipAddress : ipAddress // ignore: cast_nullable_to_non_nullable
 as String?,updateDate: freezed == updateDate ? _self.updateDate : updateDate // ignore: cast_nullable_to_non_nullable
 as DateTime?,timestamp: freezed == timestamp ? _self.timestamp : timestamp // ignore: cast_nullable_to_non_nullable
 as DateTime?,status: freezed == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
@@ -100,7 +101,8 @@ as List<String>?,userActions: freezed == userActions ? _self.userActions : userA
 as List<String>?,galleries: freezed == galleries ? _self.galleries : galleries // ignore: cast_nullable_to_non_nullable
 as List<String>?,actions: freezed == actions ? _self.actions : actions // ignore: cast_nullable_to_non_nullable
 as List<UserActionModel>?,favoriteTokens: freezed == favoriteTokens ? _self.favoriteTokens : favoriteTokens // ignore: cast_nullable_to_non_nullable
-as List<String>?,
+as List<String>?,socials: freezed == socials ? _self.socials : socials // ignore: cast_nullable_to_non_nullable
+as List<SocialMediaModel>?,
   ));
 }
 
@@ -185,10 +187,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? id,  String? uid,  String? walletAddress,  String? avatar,  String? firstName,  String? lastName,  String? email,  String? password,  String? city,  String? country,  String? website,  String? desc,  String? discovery,  String? nickId,  double? lat,  double? lon,  String? ipAddress,  DateTime? updateDate,  DateTime? timestamp,  String? status,  bool? hasVotePost,  bool? freeStyle,  bool? isPremium,  int? rewardDate,  int? transferedXP,  int? transferedInSo,  List<String>? likes,  List<String>? follows,  List<String>? views,  List<String>? userActions,  List<String>? galleries,  List<UserActionModel>? actions,  List<String>? favoriteTokens)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? id,  String? uid,  String? walletAddress,  String? avatar,  String? firstName,  String? lastName,  String? email,  String? password,  String? city,  String? country,  String? website,  String? desc,  String? discovery,  String? nickId,  double? lat,  double? lon,  bool? biometricEnabled,  String? ipAddress,  DateTime? updateDate,  DateTime? timestamp,  String? status,  bool? hasVotePost,  bool? freeStyle,  bool? isPremium,  int? rewardDate,  int? transferedXP,  int? transferedInSo,  List<String>? likes,  List<String>? follows,  List<String>? views,  List<String>? userActions,  List<String>? galleries,  List<UserActionModel>? actions,  List<String>? favoriteTokens,  List<SocialMediaModel>? socials)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _UserModel() when $default != null:
-return $default(_that.id,_that.uid,_that.walletAddress,_that.avatar,_that.firstName,_that.lastName,_that.email,_that.password,_that.city,_that.country,_that.website,_that.desc,_that.discovery,_that.nickId,_that.lat,_that.lon,_that.ipAddress,_that.updateDate,_that.timestamp,_that.status,_that.hasVotePost,_that.freeStyle,_that.isPremium,_that.rewardDate,_that.transferedXP,_that.transferedInSo,_that.likes,_that.follows,_that.views,_that.userActions,_that.galleries,_that.actions,_that.favoriteTokens);case _:
+return $default(_that.id,_that.uid,_that.walletAddress,_that.avatar,_that.firstName,_that.lastName,_that.email,_that.password,_that.city,_that.country,_that.website,_that.desc,_that.discovery,_that.nickId,_that.lat,_that.lon,_that.biometricEnabled,_that.ipAddress,_that.updateDate,_that.timestamp,_that.status,_that.hasVotePost,_that.freeStyle,_that.isPremium,_that.rewardDate,_that.transferedXP,_that.transferedInSo,_that.likes,_that.follows,_that.views,_that.userActions,_that.galleries,_that.actions,_that.favoriteTokens,_that.socials);case _:
   return orElse();
 
 }
@@ -206,10 +208,10 @@ return $default(_that.id,_that.uid,_that.walletAddress,_that.avatar,_that.firstN
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? id,  String? uid,  String? walletAddress,  String? avatar,  String? firstName,  String? lastName,  String? email,  String? password,  String? city,  String? country,  String? website,  String? desc,  String? discovery,  String? nickId,  double? lat,  double? lon,  String? ipAddress,  DateTime? updateDate,  DateTime? timestamp,  String? status,  bool? hasVotePost,  bool? freeStyle,  bool? isPremium,  int? rewardDate,  int? transferedXP,  int? transferedInSo,  List<String>? likes,  List<String>? follows,  List<String>? views,  List<String>? userActions,  List<String>? galleries,  List<UserActionModel>? actions,  List<String>? favoriteTokens)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? id,  String? uid,  String? walletAddress,  String? avatar,  String? firstName,  String? lastName,  String? email,  String? password,  String? city,  String? country,  String? website,  String? desc,  String? discovery,  String? nickId,  double? lat,  double? lon,  bool? biometricEnabled,  String? ipAddress,  DateTime? updateDate,  DateTime? timestamp,  String? status,  bool? hasVotePost,  bool? freeStyle,  bool? isPremium,  int? rewardDate,  int? transferedXP,  int? transferedInSo,  List<String>? likes,  List<String>? follows,  List<String>? views,  List<String>? userActions,  List<String>? galleries,  List<UserActionModel>? actions,  List<String>? favoriteTokens,  List<SocialMediaModel>? socials)  $default,) {final _that = this;
 switch (_that) {
 case _UserModel():
-return $default(_that.id,_that.uid,_that.walletAddress,_that.avatar,_that.firstName,_that.lastName,_that.email,_that.password,_that.city,_that.country,_that.website,_that.desc,_that.discovery,_that.nickId,_that.lat,_that.lon,_that.ipAddress,_that.updateDate,_that.timestamp,_that.status,_that.hasVotePost,_that.freeStyle,_that.isPremium,_that.rewardDate,_that.transferedXP,_that.transferedInSo,_that.likes,_that.follows,_that.views,_that.userActions,_that.galleries,_that.actions,_that.favoriteTokens);case _:
+return $default(_that.id,_that.uid,_that.walletAddress,_that.avatar,_that.firstName,_that.lastName,_that.email,_that.password,_that.city,_that.country,_that.website,_that.desc,_that.discovery,_that.nickId,_that.lat,_that.lon,_that.biometricEnabled,_that.ipAddress,_that.updateDate,_that.timestamp,_that.status,_that.hasVotePost,_that.freeStyle,_that.isPremium,_that.rewardDate,_that.transferedXP,_that.transferedInSo,_that.likes,_that.follows,_that.views,_that.userActions,_that.galleries,_that.actions,_that.favoriteTokens,_that.socials);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -226,10 +228,10 @@ return $default(_that.id,_that.uid,_that.walletAddress,_that.avatar,_that.firstN
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? id,  String? uid,  String? walletAddress,  String? avatar,  String? firstName,  String? lastName,  String? email,  String? password,  String? city,  String? country,  String? website,  String? desc,  String? discovery,  String? nickId,  double? lat,  double? lon,  String? ipAddress,  DateTime? updateDate,  DateTime? timestamp,  String? status,  bool? hasVotePost,  bool? freeStyle,  bool? isPremium,  int? rewardDate,  int? transferedXP,  int? transferedInSo,  List<String>? likes,  List<String>? follows,  List<String>? views,  List<String>? userActions,  List<String>? galleries,  List<UserActionModel>? actions,  List<String>? favoriteTokens)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? id,  String? uid,  String? walletAddress,  String? avatar,  String? firstName,  String? lastName,  String? email,  String? password,  String? city,  String? country,  String? website,  String? desc,  String? discovery,  String? nickId,  double? lat,  double? lon,  bool? biometricEnabled,  String? ipAddress,  DateTime? updateDate,  DateTime? timestamp,  String? status,  bool? hasVotePost,  bool? freeStyle,  bool? isPremium,  int? rewardDate,  int? transferedXP,  int? transferedInSo,  List<String>? likes,  List<String>? follows,  List<String>? views,  List<String>? userActions,  List<String>? galleries,  List<UserActionModel>? actions,  List<String>? favoriteTokens,  List<SocialMediaModel>? socials)?  $default,) {final _that = this;
 switch (_that) {
 case _UserModel() when $default != null:
-return $default(_that.id,_that.uid,_that.walletAddress,_that.avatar,_that.firstName,_that.lastName,_that.email,_that.password,_that.city,_that.country,_that.website,_that.desc,_that.discovery,_that.nickId,_that.lat,_that.lon,_that.ipAddress,_that.updateDate,_that.timestamp,_that.status,_that.hasVotePost,_that.freeStyle,_that.isPremium,_that.rewardDate,_that.transferedXP,_that.transferedInSo,_that.likes,_that.follows,_that.views,_that.userActions,_that.galleries,_that.actions,_that.favoriteTokens);case _:
+return $default(_that.id,_that.uid,_that.walletAddress,_that.avatar,_that.firstName,_that.lastName,_that.email,_that.password,_that.city,_that.country,_that.website,_that.desc,_that.discovery,_that.nickId,_that.lat,_that.lon,_that.biometricEnabled,_that.ipAddress,_that.updateDate,_that.timestamp,_that.status,_that.hasVotePost,_that.freeStyle,_that.isPremium,_that.rewardDate,_that.transferedXP,_that.transferedInSo,_that.likes,_that.follows,_that.views,_that.userActions,_that.galleries,_that.actions,_that.favoriteTokens,_that.socials);case _:
   return null;
 
 }
@@ -241,7 +243,7 @@ return $default(_that.id,_that.uid,_that.walletAddress,_that.avatar,_that.firstN
 
 @JsonSerializable(fieldRename: FieldRename.snake)
 class _UserModel implements UserModel {
-   _UserModel({this.id, this.uid, this.walletAddress, this.avatar, this.firstName, this.lastName, this.email, this.password, this.city, this.country, this.website, this.desc, this.discovery, this.nickId, this.lat, this.lon, this.ipAddress, this.updateDate, this.timestamp, this.status, this.hasVotePost, this.freeStyle, this.isPremium, this.rewardDate, this.transferedXP, this.transferedInSo, final  List<String>? likes, final  List<String>? follows, final  List<String>? views, final  List<String>? userActions, final  List<String>? galleries, final  List<UserActionModel>? actions, final  List<String>? favoriteTokens}): _likes = likes,_follows = follows,_views = views,_userActions = userActions,_galleries = galleries,_actions = actions,_favoriteTokens = favoriteTokens;
+   _UserModel({this.id, this.uid, this.walletAddress, this.avatar, this.firstName, this.lastName, this.email, this.password, this.city, this.country, this.website, this.desc, this.discovery, this.nickId, this.lat, this.lon, this.biometricEnabled, this.ipAddress, this.updateDate, this.timestamp, this.status, this.hasVotePost, this.freeStyle, this.isPremium, this.rewardDate, this.transferedXP, this.transferedInSo, final  List<String>? likes, final  List<String>? follows, final  List<String>? views, final  List<String>? userActions, final  List<String>? galleries, final  List<UserActionModel>? actions, final  List<String>? favoriteTokens, final  List<SocialMediaModel>? socials}): _likes = likes,_follows = follows,_views = views,_userActions = userActions,_galleries = galleries,_actions = actions,_favoriteTokens = favoriteTokens,_socials = socials;
   factory _UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);
 
 @override final  String? id;
@@ -260,6 +262,7 @@ class _UserModel implements UserModel {
 @override final  String? nickId;
 @override final  double? lat;
 @override final  double? lon;
+@override final  bool? biometricEnabled;
 @override final  String? ipAddress;
 @override final  DateTime? updateDate;
 @override final  DateTime? timestamp;
@@ -333,6 +336,15 @@ class _UserModel implements UserModel {
   return EqualUnmodifiableListView(value);
 }
 
+ final  List<SocialMediaModel>? _socials;
+@override List<SocialMediaModel>? get socials {
+  final value = _socials;
+  if (value == null) return null;
+  if (_socials is EqualUnmodifiableListView) return _socials;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(value);
+}
+
 
 /// Create a copy of UserModel
 /// with the given fields replaced by the non-null parameter values.
@@ -347,16 +359,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserModel&&(identical(other.id, id) || other.id == id)&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.walletAddress, walletAddress) || other.walletAddress == walletAddress)&&(identical(other.avatar, avatar) || other.avatar == avatar)&&(identical(other.firstName, firstName) || other.firstName == firstName)&&(identical(other.lastName, lastName) || other.lastName == lastName)&&(identical(other.email, email) || other.email == email)&&(identical(other.password, password) || other.password == password)&&(identical(other.city, city) || other.city == city)&&(identical(other.country, country) || other.country == country)&&(identical(other.website, website) || other.website == website)&&(identical(other.desc, desc) || other.desc == desc)&&(identical(other.discovery, discovery) || other.discovery == discovery)&&(identical(other.nickId, nickId) || other.nickId == nickId)&&(identical(other.lat, lat) || other.lat == lat)&&(identical(other.lon, lon) || other.lon == lon)&&(identical(other.ipAddress, ipAddress) || other.ipAddress == ipAddress)&&(identical(other.updateDate, updateDate) || other.updateDate == updateDate)&&(identical(other.timestamp, timestamp) || other.timestamp == timestamp)&&(identical(other.status, status) || other.status == status)&&(identical(other.hasVotePost, hasVotePost) || other.hasVotePost == hasVotePost)&&(identical(other.freeStyle, freeStyle) || other.freeStyle == freeStyle)&&(identical(other.isPremium, isPremium) || other.isPremium == isPremium)&&(identical(other.rewardDate, rewardDate) || other.rewardDate == rewardDate)&&(identical(other.transferedXP, transferedXP) || other.transferedXP == transferedXP)&&(identical(other.transferedInSo, transferedInSo) || other.transferedInSo == transferedInSo)&&const DeepCollectionEquality().equals(other._likes, _likes)&&const DeepCollectionEquality().equals(other._follows, _follows)&&const DeepCollectionEquality().equals(other._views, _views)&&const DeepCollectionEquality().equals(other._userActions, _userActions)&&const DeepCollectionEquality().equals(other._galleries, _galleries)&&const DeepCollectionEquality().equals(other._actions, _actions)&&const DeepCollectionEquality().equals(other._favoriteTokens, _favoriteTokens));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _UserModel&&(identical(other.id, id) || other.id == id)&&(identical(other.uid, uid) || other.uid == uid)&&(identical(other.walletAddress, walletAddress) || other.walletAddress == walletAddress)&&(identical(other.avatar, avatar) || other.avatar == avatar)&&(identical(other.firstName, firstName) || other.firstName == firstName)&&(identical(other.lastName, lastName) || other.lastName == lastName)&&(identical(other.email, email) || other.email == email)&&(identical(other.password, password) || other.password == password)&&(identical(other.city, city) || other.city == city)&&(identical(other.country, country) || other.country == country)&&(identical(other.website, website) || other.website == website)&&(identical(other.desc, desc) || other.desc == desc)&&(identical(other.discovery, discovery) || other.discovery == discovery)&&(identical(other.nickId, nickId) || other.nickId == nickId)&&(identical(other.lat, lat) || other.lat == lat)&&(identical(other.lon, lon) || other.lon == lon)&&(identical(other.biometricEnabled, biometricEnabled) || other.biometricEnabled == biometricEnabled)&&(identical(other.ipAddress, ipAddress) || other.ipAddress == ipAddress)&&(identical(other.updateDate, updateDate) || other.updateDate == updateDate)&&(identical(other.timestamp, timestamp) || other.timestamp == timestamp)&&(identical(other.status, status) || other.status == status)&&(identical(other.hasVotePost, hasVotePost) || other.hasVotePost == hasVotePost)&&(identical(other.freeStyle, freeStyle) || other.freeStyle == freeStyle)&&(identical(other.isPremium, isPremium) || other.isPremium == isPremium)&&(identical(other.rewardDate, rewardDate) || other.rewardDate == rewardDate)&&(identical(other.transferedXP, transferedXP) || other.transferedXP == transferedXP)&&(identical(other.transferedInSo, transferedInSo) || other.transferedInSo == transferedInSo)&&const DeepCollectionEquality().equals(other._likes, _likes)&&const DeepCollectionEquality().equals(other._follows, _follows)&&const DeepCollectionEquality().equals(other._views, _views)&&const DeepCollectionEquality().equals(other._userActions, _userActions)&&const DeepCollectionEquality().equals(other._galleries, _galleries)&&const DeepCollectionEquality().equals(other._actions, _actions)&&const DeepCollectionEquality().equals(other._favoriteTokens, _favoriteTokens)&&const DeepCollectionEquality().equals(other._socials, _socials));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hashAll([runtimeType,id,uid,walletAddress,avatar,firstName,lastName,email,password,city,country,website,desc,discovery,nickId,lat,lon,ipAddress,updateDate,timestamp,status,hasVotePost,freeStyle,isPremium,rewardDate,transferedXP,transferedInSo,const DeepCollectionEquality().hash(_likes),const DeepCollectionEquality().hash(_follows),const DeepCollectionEquality().hash(_views),const DeepCollectionEquality().hash(_userActions),const DeepCollectionEquality().hash(_galleries),const DeepCollectionEquality().hash(_actions),const DeepCollectionEquality().hash(_favoriteTokens)]);
+int get hashCode => Object.hashAll([runtimeType,id,uid,walletAddress,avatar,firstName,lastName,email,password,city,country,website,desc,discovery,nickId,lat,lon,biometricEnabled,ipAddress,updateDate,timestamp,status,hasVotePost,freeStyle,isPremium,rewardDate,transferedXP,transferedInSo,const DeepCollectionEquality().hash(_likes),const DeepCollectionEquality().hash(_follows),const DeepCollectionEquality().hash(_views),const DeepCollectionEquality().hash(_userActions),const DeepCollectionEquality().hash(_galleries),const DeepCollectionEquality().hash(_actions),const DeepCollectionEquality().hash(_favoriteTokens),const DeepCollectionEquality().hash(_socials)]);
 
 @override
 String toString() {
-  return 'UserModel(id: $id, uid: $uid, walletAddress: $walletAddress, avatar: $avatar, firstName: $firstName, lastName: $lastName, email: $email, password: $password, city: $city, country: $country, website: $website, desc: $desc, discovery: $discovery, nickId: $nickId, lat: $lat, lon: $lon, ipAddress: $ipAddress, updateDate: $updateDate, timestamp: $timestamp, status: $status, hasVotePost: $hasVotePost, freeStyle: $freeStyle, isPremium: $isPremium, rewardDate: $rewardDate, transferedXP: $transferedXP, transferedInSo: $transferedInSo, likes: $likes, follows: $follows, views: $views, userActions: $userActions, galleries: $galleries, actions: $actions, favoriteTokens: $favoriteTokens)';
+  return 'UserModel(id: $id, uid: $uid, walletAddress: $walletAddress, avatar: $avatar, firstName: $firstName, lastName: $lastName, email: $email, password: $password, city: $city, country: $country, website: $website, desc: $desc, discovery: $discovery, nickId: $nickId, lat: $lat, lon: $lon, biometricEnabled: $biometricEnabled, ipAddress: $ipAddress, updateDate: $updateDate, timestamp: $timestamp, status: $status, hasVotePost: $hasVotePost, freeStyle: $freeStyle, isPremium: $isPremium, rewardDate: $rewardDate, transferedXP: $transferedXP, transferedInSo: $transferedInSo, likes: $likes, follows: $follows, views: $views, userActions: $userActions, galleries: $galleries, actions: $actions, favoriteTokens: $favoriteTokens, socials: $socials)';
 }
 
 
@@ -367,7 +379,7 @@ abstract mixin class _$UserModelCopyWith<$Res> implements $UserModelCopyWith<$Re
   factory _$UserModelCopyWith(_UserModel value, $Res Function(_UserModel) _then) = __$UserModelCopyWithImpl;
 @override @useResult
 $Res call({
- String? id, String? uid, String? walletAddress, String? avatar, String? firstName, String? lastName, String? email, String? password, String? city, String? country, String? website, String? desc, String? discovery, String? nickId, double? lat, double? lon, String? ipAddress, DateTime? updateDate, DateTime? timestamp, String? status, bool? hasVotePost, bool? freeStyle, bool? isPremium, int? rewardDate, int? transferedXP, int? transferedInSo, List<String>? likes, List<String>? follows, List<String>? views, List<String>? userActions, List<String>? galleries, List<UserActionModel>? actions, List<String>? favoriteTokens
+ String? id, String? uid, String? walletAddress, String? avatar, String? firstName, String? lastName, String? email, String? password, String? city, String? country, String? website, String? desc, String? discovery, String? nickId, double? lat, double? lon, bool? biometricEnabled, String? ipAddress, DateTime? updateDate, DateTime? timestamp, String? status, bool? hasVotePost, bool? freeStyle, bool? isPremium, int? rewardDate, int? transferedXP, int? transferedInSo, List<String>? likes, List<String>? follows, List<String>? views, List<String>? userActions, List<String>? galleries, List<UserActionModel>? actions, List<String>? favoriteTokens, List<SocialMediaModel>? socials
 });
 
 
@@ -384,7 +396,7 @@ class __$UserModelCopyWithImpl<$Res>
 
 /// Create a copy of UserModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? uid = freezed,Object? walletAddress = freezed,Object? avatar = freezed,Object? firstName = freezed,Object? lastName = freezed,Object? email = freezed,Object? password = freezed,Object? city = freezed,Object? country = freezed,Object? website = freezed,Object? desc = freezed,Object? discovery = freezed,Object? nickId = freezed,Object? lat = freezed,Object? lon = freezed,Object? ipAddress = freezed,Object? updateDate = freezed,Object? timestamp = freezed,Object? status = freezed,Object? hasVotePost = freezed,Object? freeStyle = freezed,Object? isPremium = freezed,Object? rewardDate = freezed,Object? transferedXP = freezed,Object? transferedInSo = freezed,Object? likes = freezed,Object? follows = freezed,Object? views = freezed,Object? userActions = freezed,Object? galleries = freezed,Object? actions = freezed,Object? favoriteTokens = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? uid = freezed,Object? walletAddress = freezed,Object? avatar = freezed,Object? firstName = freezed,Object? lastName = freezed,Object? email = freezed,Object? password = freezed,Object? city = freezed,Object? country = freezed,Object? website = freezed,Object? desc = freezed,Object? discovery = freezed,Object? nickId = freezed,Object? lat = freezed,Object? lon = freezed,Object? biometricEnabled = freezed,Object? ipAddress = freezed,Object? updateDate = freezed,Object? timestamp = freezed,Object? status = freezed,Object? hasVotePost = freezed,Object? freeStyle = freezed,Object? isPremium = freezed,Object? rewardDate = freezed,Object? transferedXP = freezed,Object? transferedInSo = freezed,Object? likes = freezed,Object? follows = freezed,Object? views = freezed,Object? userActions = freezed,Object? galleries = freezed,Object? actions = freezed,Object? favoriteTokens = freezed,Object? socials = freezed,}) {
   return _then(_UserModel(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String?,uid: freezed == uid ? _self.uid : uid // ignore: cast_nullable_to_non_nullable
@@ -402,7 +414,8 @@ as String?,discovery: freezed == discovery ? _self.discovery : discovery // igno
 as String?,nickId: freezed == nickId ? _self.nickId : nickId // ignore: cast_nullable_to_non_nullable
 as String?,lat: freezed == lat ? _self.lat : lat // ignore: cast_nullable_to_non_nullable
 as double?,lon: freezed == lon ? _self.lon : lon // ignore: cast_nullable_to_non_nullable
-as double?,ipAddress: freezed == ipAddress ? _self.ipAddress : ipAddress // ignore: cast_nullable_to_non_nullable
+as double?,biometricEnabled: freezed == biometricEnabled ? _self.biometricEnabled : biometricEnabled // ignore: cast_nullable_to_non_nullable
+as bool?,ipAddress: freezed == ipAddress ? _self.ipAddress : ipAddress // ignore: cast_nullable_to_non_nullable
 as String?,updateDate: freezed == updateDate ? _self.updateDate : updateDate // ignore: cast_nullable_to_non_nullable
 as DateTime?,timestamp: freezed == timestamp ? _self.timestamp : timestamp // ignore: cast_nullable_to_non_nullable
 as DateTime?,status: freezed == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
@@ -419,7 +432,8 @@ as List<String>?,userActions: freezed == userActions ? _self._userActions : user
 as List<String>?,galleries: freezed == galleries ? _self._galleries : galleries // ignore: cast_nullable_to_non_nullable
 as List<String>?,actions: freezed == actions ? _self._actions : actions // ignore: cast_nullable_to_non_nullable
 as List<UserActionModel>?,favoriteTokens: freezed == favoriteTokens ? _self._favoriteTokens : favoriteTokens // ignore: cast_nullable_to_non_nullable
-as List<String>?,
+as List<String>?,socials: freezed == socials ? _self._socials : socials // ignore: cast_nullable_to_non_nullable
+as List<SocialMediaModel>?,
   ));
 }
 
@@ -963,6 +977,272 @@ class __$UserCountryModelCopyWithImpl<$Res>
   return _then(_UserCountryModel(
 name: freezed == name ? _self.name : name // ignore: cast_nullable_to_non_nullable
 as String?,code: freezed == code ? _self.code : code // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
+mixin _$SocialMediaModel {
+
+ String? get media; String? get account;
+/// Create a copy of SocialMediaModel
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$SocialMediaModelCopyWith<SocialMediaModel> get copyWith => _$SocialMediaModelCopyWithImpl<SocialMediaModel>(this as SocialMediaModel, _$identity);
+
+  /// Serializes this SocialMediaModel to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is SocialMediaModel&&(identical(other.media, media) || other.media == media)&&(identical(other.account, account) || other.account == account));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,media,account);
+
+@override
+String toString() {
+  return 'SocialMediaModel(media: $media, account: $account)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $SocialMediaModelCopyWith<$Res>  {
+  factory $SocialMediaModelCopyWith(SocialMediaModel value, $Res Function(SocialMediaModel) _then) = _$SocialMediaModelCopyWithImpl;
+@useResult
+$Res call({
+ String? media, String? account
+});
+
+
+
+
+}
+/// @nodoc
+class _$SocialMediaModelCopyWithImpl<$Res>
+    implements $SocialMediaModelCopyWith<$Res> {
+  _$SocialMediaModelCopyWithImpl(this._self, this._then);
+
+  final SocialMediaModel _self;
+  final $Res Function(SocialMediaModel) _then;
+
+/// Create a copy of SocialMediaModel
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? media = freezed,Object? account = freezed,}) {
+  return _then(_self.copyWith(
+media: freezed == media ? _self.media : media // ignore: cast_nullable_to_non_nullable
+as String?,account: freezed == account ? _self.account : account // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [SocialMediaModel].
+extension SocialMediaModelPatterns on SocialMediaModel {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _SocialMediaModel value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _SocialMediaModel() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _SocialMediaModel value)  $default,){
+final _that = this;
+switch (_that) {
+case _SocialMediaModel():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _SocialMediaModel value)?  $default,){
+final _that = this;
+switch (_that) {
+case _SocialMediaModel() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? media,  String? account)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _SocialMediaModel() when $default != null:
+return $default(_that.media,_that.account);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? media,  String? account)  $default,) {final _that = this;
+switch (_that) {
+case _SocialMediaModel():
+return $default(_that.media,_that.account);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? media,  String? account)?  $default,) {final _that = this;
+switch (_that) {
+case _SocialMediaModel() when $default != null:
+return $default(_that.media,_that.account);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+
+@JsonSerializable(fieldRename: FieldRename.snake)
+class _SocialMediaModel implements SocialMediaModel {
+   _SocialMediaModel({this.media, this.account});
+  factory _SocialMediaModel.fromJson(Map<String, dynamic> json) => _$SocialMediaModelFromJson(json);
+
+@override final  String? media;
+@override final  String? account;
+
+/// Create a copy of SocialMediaModel
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$SocialMediaModelCopyWith<_SocialMediaModel> get copyWith => __$SocialMediaModelCopyWithImpl<_SocialMediaModel>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$SocialMediaModelToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SocialMediaModel&&(identical(other.media, media) || other.media == media)&&(identical(other.account, account) || other.account == account));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,media,account);
+
+@override
+String toString() {
+  return 'SocialMediaModel(media: $media, account: $account)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$SocialMediaModelCopyWith<$Res> implements $SocialMediaModelCopyWith<$Res> {
+  factory _$SocialMediaModelCopyWith(_SocialMediaModel value, $Res Function(_SocialMediaModel) _then) = __$SocialMediaModelCopyWithImpl;
+@override @useResult
+$Res call({
+ String? media, String? account
+});
+
+
+
+
+}
+/// @nodoc
+class __$SocialMediaModelCopyWithImpl<$Res>
+    implements _$SocialMediaModelCopyWith<$Res> {
+  __$SocialMediaModelCopyWithImpl(this._self, this._then);
+
+  final _SocialMediaModel _self;
+  final $Res Function(_SocialMediaModel) _then;
+
+/// Create a copy of SocialMediaModel
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? media = freezed,Object? account = freezed,}) {
+  return _then(_SocialMediaModel(
+media: freezed == media ? _self.media : media // ignore: cast_nullable_to_non_nullable
+as String?,account: freezed == account ? _self.account : account // ignore: cast_nullable_to_non_nullable
 as String?,
   ));
 }

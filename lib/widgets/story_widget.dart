@@ -105,7 +105,7 @@ class StoryListCell extends StatelessWidget {
                   Align(
                     alignment: Alignment.center,
                     child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 124.0),
+                      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0),
                       child: AIHelpers.htmlRender(
                         story.text,
                         fontSize: FontSize(32.0),
@@ -121,7 +121,7 @@ class StoryListCell extends StatelessWidget {
                       child: Container(
                         alignment: Alignment.bottomCenter,
                         
-                        padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 80.0),
+                        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 2.0),
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
                             begin: Alignment.topCenter,
@@ -140,7 +140,7 @@ class StoryListCell extends StatelessWidget {
                                   if(viewModel.showFaceDialog)
                                   Container(
                                     child: Padding(
-                                      padding: EdgeInsets.only(left: 00, bottom: 0),
+                                      padding: EdgeInsets.only(left: 0, bottom: 0),
                                       child: ZoMultiColorBorder(
                                         // the ring stays mounted; only its child swaps
                                         colors: const [Colors.orange, Colors.white, Colors.green, Colors.indigo, Colors.pink],
@@ -201,105 +201,135 @@ class StoryListCell extends StatelessWidget {
                                   if (viewModel.story.category == 'vote') const StoryYayNayWidget(),
                                   Container(
                                     margin: EdgeInsets.only(bottom: 0),
-                                    child: Row(
-                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                    child: Column(
                                       children: [
-                                        // Avatar (your existing widget)
-                                        SizedBox(
-                                          width: kStoryAvatarSize * 0.8,
-                                          height: kStoryAvatarSize * 0.8,
-                                          child: Stack(
-                                            children: [
-                                              InkWell(
-                                                onTap: viewModel.onTapUserAvatar,
-                                                child: AIAvatarImage(
-                                                  key: GlobalKey(debugLabel: 'story-${story.id}'),
-                                                  viewModel.owner?.avatar,
-                                                  width: kStoryAvatarSize * 0.8,
-                                                  height: kStoryAvatarSize * 0.8,
-                                                  fullname: viewModel.owner?.fullName ?? 'Test',
-                                                  textSize: 24,
-                                                  isBorder: true,
-                                                  borderWidth: 2,
-                                                  borderRadius: kStoryAvatarSize / 2,
-                                                ),
+                                        Row(
+                                          children: [
+                                            Container(
+                                              decoration: BoxDecoration(
+                                                borderRadius: BorderRadius.circular(12.0),
+                                                color: Colors.black.withAlpha(180),
                                               ),
-                                              // Align(
-                                              //   alignment: Alignment.bottomCenter,
-                                              //   child: Container(
-                                              //     width: 16,
-                                              //     height: 16,
-                                              //     decoration: BoxDecoration(
-                                              //       gradient: const LinearGradient(
-                                              //         begin: Alignment.topLeft,
-                                              //         end: Alignment.bottomRight,
-                                              //         colors: [Colors.white, Colors.grey],
-                                              //       ),
-                                              //       borderRadius: BorderRadius.circular(8.0),
-                                              //     ),
-                                              //     child: Icon(Icons.add, size: 12, color: AIColors.white),
-                                              //   ),
-                                              // ),
-                                            ],
-                                          ),
-                                        ),
-            
-                                        const SizedBox(width: 10),
-            
-                                        // Right side: name/timestamp + (optional) progress
-                                        Expanded(
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              // First row: Name + (optional "Following" pill) + time
-                                              Wrap(
-                                                crossAxisAlignment: WrapCrossAlignment.center,
-                                                alignment: WrapAlignment.start,
-                                                spacing: 8,
-                                                runSpacing: 4,
+                                              padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 1.0),
+                                              child: Row(
                                                 children: [
-                                                  Text(
-                                                    viewModel.owner?.fullName ?? '---',
-                                                    style: Theme.of(context).textTheme.headlineSmall,
+                                                  AIImage(
+                                                    'assets/images/img_level_0${viewModel.accountService.userLevel.level}.png',
+                                                    width: 24.0,
+                                                    height: 24.0,
                                                   ),
-            
-                                                  
+                                                  SizedBox(width: 6.0),
                                                   Text(
-                                                    '· ${viewModel.story.timestamp?.timeago}',
-                                                    style: Theme.of(context).textTheme.headlineSmall,
+                                                    "Rank: ${viewModel.accountService.userRankIndex}",
+                                                    style: Theme.of(context).textTheme.bodyMedium,
                                                   ),
                                                 ],
+                                              )
+                                            ),
+                                          ],
+                                        ),
+                                        SizedBox(height: 12.0),
+                                        Row(
+                                          crossAxisAlignment: CrossAxisAlignment.center,
+                                          children: [
+                                            // Avatar (your existing widget)
+                                            SizedBox(
+                                              width: kStoryAvatarSize * 0.8,
+                                              height: kStoryAvatarSize * 0.8,
+                                              child: Stack(
+                                                children: [
+                                                  InkWell(
+                                                    onTap: viewModel.onTapUserAvatar,
+                                                    child: AIAvatarImage(
+                                                      key: GlobalKey(debugLabel: 'story-${story.id}'),
+                                                      viewModel.owner?.avatar,
+                                                      width: kStoryAvatarSize * 0.8,
+                                                      height: kStoryAvatarSize * 0.8,
+                                                      fullname: viewModel.owner?.fullName ?? 'Test',
+                                                      textSize: 24,
+                                                      isBorder: true,
+                                                      borderWidth: 2,
+                                                      borderRadius: kStoryAvatarSize / 2,
+                                                    ),
+                                                  ),
+                                                  // Align(
+                                                  //   alignment: Alignment.bottomCenter,
+                                                  //   child: Container(
+                                                  //     width: 16,
+                                                  //     height: 16,
+                                                  //     decoration: BoxDecoration(
+                                                  //       gradient: const LinearGradient(
+                                                  //         begin: Alignment.topLeft,
+                                                  //         end: Alignment.bottomRight,
+                                                  //         colors: [Colors.white, Colors.grey],
+                                                  //       ),
+                                                  //       borderRadius: BorderRadius.circular(8.0),
+                                                  //     ),
+                                                  //     child: Icon(Icons.add, size: 12, color: AIColors.white),
+                                                  //   ),
+                                                  // ),
+                                                ],
                                               ),
-            
-                                              const SizedBox(height: 6),
-            
-                                              // Second line: Progress (with a small avatar dot like the screenshot)
-                                              if (viewModel.story.category == 'vote')
-                                                Row(
-                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                  children: [
-                                                    // tiny avatar beside progress line
-                                                    Expanded(
-                                                      child: Text(
-                                                        'Vybe VTO + progress (${viewModel.story.votes?.length ?? 0} / 5 Looks Today)',
-                                                        style: const TextStyle(fontSize: 10.0, fontWeight: FontWeight.bold),
-                                                        maxLines: 2,
-                                                        overflow: TextOverflow.ellipsis,
+                                            ),
+                                                    
+                                            const SizedBox(width: 10),
+                                                    
+                                            // Right side: name/timestamp + (optional) progress
+                                            Expanded(
+                                              child: Column(
+                                                crossAxisAlignment: CrossAxisAlignment.start,
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  // First row: Name + (optional "Following" pill) + time
+                                                  Wrap(
+                                                    crossAxisAlignment: WrapCrossAlignment.center,
+                                                    alignment: WrapAlignment.start,
+                                                    spacing: 8,
+                                                    runSpacing: 4,
+                                                    children: [
+                                                      Text(
+                                                        viewModel.owner?.fullName ?? '---',
+                                                        style: Theme.of(context).textTheme.headlineSmall,
                                                       ),
-                                                    ),
-                                                    const SizedBox(width: 8),
-                                                    Container(
-                                                      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
-                                                      decoration: BoxDecoration(
-                                                        color: Theme.of(context).colorScheme.secondary.withAlpha(16),
-                                                        borderRadius: BorderRadius.circular(16.0),
+                                                    
+                                                      
+                                                      Text(
+                                                        '· ${viewModel.story.timestamp?.timeago}',
+                                                        style: Theme.of(context).textTheme.headlineSmall,
                                                       ),
+                                                    ],
+                                                  ),
+                                                    
+                                                  const SizedBox(height: 6),
+                                        
+                                                  // Second line: Progress (with a small avatar dot like the screenshot)
+                                                  if (viewModel.story.category == 'vote')
+                                                    Row(
+                                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                                      children: [
+                                                        // tiny avatar beside progress line
+                                                        Expanded(
+                                                          child: Text(
+                                                            'Vybe VTO + progress (${viewModel.story.votes?.length ?? 0} / 5 Looks Today)',
+                                                            style: const TextStyle(fontSize: 10.0, fontWeight: FontWeight.bold),
+                                                            maxLines: 2,
+                                                            overflow: TextOverflow.ellipsis,
+                                                          ),
+                                                        ),
+                                                        const SizedBox(width: 8),
+                                                        Container(
+                                                          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
+                                                          decoration: BoxDecoration(
+                                                            color: Theme.of(context).colorScheme.secondary.withAlpha(16),
+                                                            borderRadius: BorderRadius.circular(16.0),
+                                                          ),
+                                                        ),
+                                                      ],
                                                     ),
-                                                  ],
-                                                ),
-                                            ],
-                                          ),
+                                                ],
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ],
                                     ),
@@ -320,7 +350,7 @@ class StoryListCell extends StatelessWidget {
                   child: Container(
                     margin: EdgeInsets.only(
                       right: 8.0,
-                      bottom: marginBottom != null ? marginBottom! + 5 : 5,
+                      bottom: 18.0,
                     ),
                     padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 0.0),
                     child: Column(
@@ -333,7 +363,7 @@ class StoryListCell extends StatelessWidget {
                             padding: const EdgeInsets.only(bottom: 6), // <-- gap between icon & count
                             child: AIImage(
                               AIImages.icBottomLook,
-                              color: Theme.of(context).colorScheme.secondary,
+                              color: Theme.of(context).colorScheme.onPrimary,
                               width: kStoryAvatarSize * 0.46,
                             ),
                           ),
@@ -342,61 +372,70 @@ class StoryListCell extends StatelessWidget {
                             await AIHelpers.goToDetailView(context, medias: mediaString);
                           }
                         ),
+                        SizedBox(height: 4.0),
                         StoryActionButton(
-                          src: Padding(
-                            padding: const EdgeInsets.only(bottom: 6), // <-- gap between icon & count
-                            child: AIImage(
-                              AIImages.icView,
-                              color: Theme.of(context).colorScheme.secondary,
-                              width: kStoryAvatarSize * 0.46,
+                          src: Icon(
+                            Icons.remove_red_eye_outlined,
+                            color: Theme.of(context).colorScheme.onPrimary,
+                            size: kStoryAvatarSize * 0.5,
                             ),
-                          ),
+                          spacing: 0.0,
                           label: '${(viewModel.story.views ?? []).length}',
                         ),
+                        SizedBox(height: 0),            
                         StoryActionButton(
                           src: AIImage(
-                            AIImages.icComment,
-                            color: Theme.of(context).colorScheme.secondary,
+                            AIImages.icComment3,
+                            color: Theme.of(context).colorScheme.onPrimary,
                             width: kStoryAvatarSize * 0.5,
                           ),
                           label: '${(viewModel.story.comments ?? []).length}',
+                          spacing: 3,
                           onTap: () => viewModel.showCommentDialog(),
                         ),
+                        SizedBox(height: 4.0),
                         StoryActionButton(
                           src: AIImage(
-                            AIImages.icShare,
-                            color: Theme.of(context).colorScheme.secondary,
-                            width: kStoryAvatarSize * 0.4,
+                            AIImages.icShareOutline,
+                            color: Theme.of(context).colorScheme.onPrimary,
+                            width: kStoryAvatarSize * 0.5,
                           ),
                           label: '',
-                          // onTap: () => AIHelpers.shareStoryToLookbook(context, story: story),
+                          spacing: 0.0,
                           onTap: () => viewModel.repost(),
                         ),
-                        SizedBox(height: 1.0),
+                        SizedBox(height: 4.0),
+                        
+                        if (AuthHelper.user?.id == viewModel.story.userId)
+                          StoryActionButton(
+                            src: AIImage(
+                              AIImages.icGallery,
+                              color: Theme.of(context).colorScheme.onPrimary,
+                              width: kStoryAvatarSize * 0.5,
+                            ),
+                            onTap: () => viewModel.showReactions(),
+                          ),
+                        if (AuthHelper.user?.id == viewModel.story.userId)
+                          SizedBox(height: 4.0),
                         StoryActionButton(
                           src: AIImage(
-                            AIImages.icGallery,
-                            color: Theme.of(context).colorScheme.secondary,
-                            width: kStoryAvatarSize * 0.5,
+                            AIImages.icVoteUp2,
+                            color: Theme.of(context).colorScheme.onPrimary,
+                            width: kStoryAvatarSize * 0.45,
+                            height: kStoryAvatarSize * 0.45,
                           ),
-                          onTap: () => viewModel.showReactions(),
-                        ),
-            
-                        StoryActionButton(
-                          src: AIImage(
-                            AIImages.icVoteUp,
-                            color: AIColors.orange,
-                            width: kStoryAvatarSize * 0.5,
-                          ),
+                          spacing: 3.0,
                           label: '${(viewModel.story.cntYay)}',
                         ),
-            
+                        SizedBox(height: 4.0),
                         StoryActionButton(
                           src: AIImage(
-                            AIImages.icVoteDown,
-                            color: Colors.blue,
-                            width: kStoryAvatarSize * 0.5,
+                            AIImages.icVoteDown2,
+                            color: Theme.of(context).colorScheme.onPrimary,
+                            width: kStoryAvatarSize * 0.45,
+                            height: kStoryAvatarSize * 0.45,
                           ),
+                          spacing: 3.0,
                           label: '${(viewModel.story.cntNay)}',
                         ),
                       ],
@@ -603,9 +642,6 @@ class StorySendCommentWidget extends StatelessWidget {
             ? MediaQuery.of(context).padding.bottom + marginBottom!
             : MediaQuery.of(context).padding.bottom,
       ),
-      decoration: BoxDecoration(
-        border: Border(top: BorderSide(color: AIColors.speraterColor, width: 0.33)),
-      ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -659,7 +695,7 @@ class StorySendCommentWidget extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 12.0),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(24.0),
-              border: Border.all(color: AIColors.grey),
+              border: Border.all(color: AIColors.grey, width: 2),
             ),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.end,
@@ -686,14 +722,14 @@ class StorySendCommentWidget extends StatelessWidget {
                           HorizontalSpacing.zero,
                           VerticalSpacing.zero,
                           VerticalSpacing.zero,
-                          null,
+                          null
                         ),
                         paragraph: DefaultTextBlockStyle(
                           const TextStyle(fontSize: 16),
                           HorizontalSpacing.zero,
                           VerticalSpacing.zero,
                           VerticalSpacing.zero,
-                          null,
+                          null
                         ),
                       ),
                     ),
@@ -843,8 +879,11 @@ class StoryYayNayWidget extends ViewModelWidget<StoryProvider> {
 class StoryActionButton extends StatelessWidget {
   final Widget src;
   final String? label;
+  double? spacing = 4.0;
   final void Function()? onTap;
-  const StoryActionButton({super.key, required this.src, this.label, this.onTap});
+  
+  StoryActionButton({super.key, required this.src, this.label, this.spacing, this.onTap});
+  
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -852,7 +891,17 @@ class StoryActionButton extends StatelessWidget {
       child: Column(
         children: [
           src,
-          if (label != null && label?.isEmpty == false) Text(label!, style: Theme.of(context).textTheme.bodySmall),
+          if(label != null && (label ?? "").toString().isNotEmpty) 
+          SizedBox(height: spacing),
+          if(label != null && (label ?? "").toString().isNotEmpty)
+          Text(
+            label!, 
+            style: TextStyle(
+              fontSize: 13.0,
+              color: Colors.white.withOpacity(0.7),
+              fontWeight: FontWeight.w700,
+            )
+          ),
         ],
       ),
     );
@@ -979,7 +1028,7 @@ class StoryDialogMediaView extends ViewModelWidget<StoryContentProvider> {
                     ),
                     child: Container(
                       decoration: BoxDecoration(
-                        border: Border.all(width: 0.33, color: AIColors.speraterColor),
+                        border: Border.all(width: 0.66, color: AIColors.speraterColor),
                         borderRadius: BorderRadius.circular(12.0),
                       ),
                       child: ClipRRect(

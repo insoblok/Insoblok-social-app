@@ -45,7 +45,7 @@ class StoryDetailPage extends StatelessWidget {
                 ),
                 decoration: BoxDecoration(
                   border: Border(
-                    top: BorderSide(color: AIColors.speraterColor, width: 0.33),
+                    top: BorderSide(color: AIColors.speraterColor, width: 0.66),
                   ),
                 ),
                 child: Column(
@@ -98,7 +98,7 @@ class StoryDetailPage extends StatelessWidget {
                       Container(
                         decoration: BoxDecoration(
                           border: Border.all(
-                            width: 0.33,
+                            width: 0.66,
                             color: AIColors.speraterColor,
                           ),
                           borderRadius: BorderRadius.circular(12.0),

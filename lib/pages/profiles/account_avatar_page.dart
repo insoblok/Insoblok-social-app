@@ -113,7 +113,7 @@ class AvatarPromptView extends ViewModelWidget<AvatarProvider> {
         Container(
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           decoration: BoxDecoration(
-            border: Border.all(color: AIColors.greyTextColor, width: 0.5),
+            border: Border.all(color: AIColors.greyTextColor, width: 0.6),
             borderRadius: BorderRadius.circular(16.0),
           ),
           child: TextFormField(
@@ -160,7 +160,7 @@ class AvatarOriginView extends ViewModelWidget<AvatarProvider> {
         ),
         Container(
           decoration: BoxDecoration(
-            border: Border.all(color: AIColors.greyTextColor, width: 0.5),
+            border: Border.all(color: AIColors.greyTextColor, width: 0.6),
             borderRadius: BorderRadius.circular(16.0),
           ),
           child: ClipRRect(

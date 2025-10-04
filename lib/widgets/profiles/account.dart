@@ -34,15 +34,12 @@ class AccountPresentHeaderView extends ViewModelWidget<AccountProvider> {
             child: SizedBox(
               width: kAccountAvatarSize,
               height: kAccountAvatarSize,
-              child: AIAvatarImage(
-                viewModel.accountUser?.avatar,
-                fullname: viewModel.accountUser?.fullName ?? 'Test',
-                width: kAccountAvatarSize,
-                height: kAccountAvatarSize,
-                textSize: 28.0,
-                borderWidth: 4,
-                borderRadius: kAccountAvatarSize / 2,
-                isBorder: true,
+              child: AuthHelper.user?.avatarStatusView(
+                width: kAvatarSize * 1.5,
+                height: kAvatarSize * 1.5,
+                borderWidth: 2.0,
+                textSize: kAvatarSize,
+                showStatus: false,
               ),
             ),
           ),
@@ -322,11 +319,19 @@ class AccountFloatingHeaderView extends ViewModelWidget<AccountProvider> {
   }
 }
 
+// ignore: must_be_immutable
 class AccountPublicInfoView extends ViewModelWidget<UpdateProfileProvider> {
-  const AccountPublicInfoView({super.key});
+  AccountPublicInfoView({super.key});
+
+  TextEditingController bioController = TextEditingController();
+  TextEditingController nameController = TextEditingController();
+  TextEditingController placeController = TextEditingController();
+  
 
   @override
   Widget build(BuildContext context, viewModel) {
+    final _displayFullName = viewModel.account.fullName;
+    
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
       child: Column(
@@ -339,25 +344,25 @@ class AccountPublicInfoView extends ViewModelWidget<UpdateProfileProvider> {
                 height: 90.0,
                 child: Stack(
                   children: [
-                    ClipOval(
-                      child: AIImage(
-                        viewModel.account.avatar,
-                        width: double.infinity,
-                        height: double.infinity,
-                      ),
-                    ),
+                    AuthHelper.user?.avatarStatusView(
+                      width: kAvatarSize * 1.5,
+                      height: kAvatarSize * 1.5,
+                      borderWidth: 2.0,
+                      textSize: kAvatarSize,
+                      showStatus: false,
+                    ) ?? Text(""),
                     Align(
-                      alignment: Alignment.bottomRight,
+                      alignment: Alignment.center,
                       child: InkWell(
                         onTap: viewModel.onUpdatedAvatar,
                         child: Container(
                           width: 32.0,
                           height: 32.0,
                           decoration: BoxDecoration(
-                            color: Theme.of(context).primaryColor,
+                            color: Colors.black54,
                             shape: BoxShape.circle,
                           ),
-                          child: Center(child: Icon(Icons.edit, size: 18.0)),
+                          child: Center(child: Icon(Icons.camera_alt, size: 20.0)),
                         ),
                       ),
                     ),
@@ -368,54 +373,49 @@ class AccountPublicInfoView extends ViewModelWidget<UpdateProfileProvider> {
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     Row(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        Text(viewModel.account.fullName),
-                        InkWell(
-                          onTap: viewModel.onUpdatedPublic,
-                          child: Container(
-                            width: 32.0,
-                            height: 32.0,
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).primaryColor,
-                              shape: BoxShape.circle,
-                            ),
-                            child: Center(child: Icon(Icons.edit, size: 18.0)),
-                          ),
+                        Text(
+                          _displayFullName,
+                          style: Theme.of(context).textTheme.titleMedium,
                         ),
                       ],
                     ),
                     Text(
                       '#${viewModel.account.nickId}',
-                      style: Theme.of(context).textTheme.labelMedium,
+                      style: Theme.of(context).textTheme.labelLarge,
                     ),
-                    SizedBox(
-                      height: 90.0,
-                      child:
-                          viewModel.account.desc != null
-                              ? AIHelpers.htmlRender(viewModel.account.desc)
-                              : Text(
-                                'User can input your profile description if you didn\'t set that yet!. That will be shown to other and will make more user experience of InSoBlokAI.',
-                                style: Theme.of(context).textTheme.labelMedium,
-                              ),
-                    ),
+                    
                   ],
                 ),
               ),
             ],
           ),
+          SizedBox(height: 12.0),
+          AITextArea(
+            hintText: "Enter your Bio here",
+            controller: bioController,
+            initialText: viewModel.account.desc ?? "",
+          ),
         ],
       ),
     );
   }
+
+
 }
 
 class AccountPrivateInfoView extends ViewModelWidget<UpdateProfileProvider> {
-  const AccountPrivateInfoView({super.key});
+  final void Function(String value)? updateFirstName;
+  final void Function(String value)? updateLastName;
+  final void Function(String value)? updateLocation;
+  final void Function(String value)? updateWebsite;
+  const AccountPrivateInfoView({ super.key, this.updateFirstName, this.updateLastName, this.updateLocation, this.updateWebsite });
 
   @override
   Widget build(BuildContext context, viewModel) {
@@ -427,45 +427,54 @@ class AccountPrivateInfoView extends ViewModelWidget<UpdateProfileProvider> {
           Row(
             children: [
               Expanded(child: Text('Private Information')),
-              InkWell(
-                onTap: viewModel.onUpdatedPrivate,
-                child: Container(
-                  width: 32.0,
-                  height: 32.0,
-                  decoration: BoxDecoration(
-                    color: Theme.of(context).primaryColor,
-                    shape: BoxShape.circle,
-                  ),
-                  child: Center(child: Icon(Icons.edit, size: 18.0)),
-                ),
-              ),
+              // InkWell(
+              //   onTap: viewModel.onUpdatedPrivate,
+              //   child: Container(
+              //     width: 32.0,
+              //     height: 32.0,
+              //     decoration: BoxDecoration(
+              //       color: Theme.of(context).primaryColor,
+              //       shape: BoxShape.circle,
+              //     ),
+              //     child: Center(child: Icon(Icons.edit, size: 18.0)),
+              //   ),
+              // ),
             ],
           ),
 
+          SizedBox(height: 12.0),
           AccountPrivateInfoCover(
-            leading: AIImages.icBottomMessage,
-            title: viewModel.account.fullName,
+            leading: Icons.account_box,
+            title: viewModel.account.firstName ?? "",
+            onChanged: updateFirstName,
+            hintText: "First Name",
           ),
+          SizedBox(height: 12.0),
           AccountPrivateInfoCover(
-            leading: AIImages.icLocation,
+            leading: Icons.account_box,
+            title: viewModel.account.lastName ?? "",
+            onChanged: updateLastName,
+            hintText: "Last Name",
+          ),
+          SizedBox(height: 12.0),
+          AccountPrivateInfoCover(
+            leading: Icons.location_pin,
             title: viewModel.account.city ?? 'Your City',
+            hintText: "Your City",
+            onChanged: updateLocation
           ),
+          SizedBox(height: 12.0),
           AccountPrivateInfoCover(
-            leading: AIImages.icLocation,
-            title: viewModel.account.country ?? 'Your Country',
-          ),
-          AccountPrivateInfoCover(
-            leading: AIImages.icLocation,
-            title: 'Connect to Wallet',
+            leading: Icons.web_asset,
+            title: viewModel.account.website ?? 'Https://insoblok.io',
+            hintText: "Your Website",
+            onChanged: updateWebsite
           ),
           Container(
             height: 180.0,
             margin: const EdgeInsets.only(top: 24.0),
             decoration: BoxDecoration(
-              border: Border.all(
-                width: 0.33,
-                color: Theme.of(context).primaryColor,
-              ),
+              color: Colors.grey.shade900,
               borderRadius: BorderRadius.circular(24.0),
             ),
             child:
@@ -502,38 +511,37 @@ class AccountPrivateInfoView extends ViewModelWidget<UpdateProfileProvider> {
 class AccountPrivateInfoCover extends StatelessWidget {
   final dynamic leading;
   final String title;
-  final void Function()? onEdit;
+  final String? hintText;
+  final void Function(String s)? onChanged;
 
   const AccountPrivateInfoCover({
     super.key,
     required this.leading,
     required this.title,
-    this.onEdit,
+    this.hintText = "",
+    this.onChanged,
   });
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.only(top: 24.0),
-      padding: const EdgeInsets.symmetric(horizontal: 22.0),
-      height: 48.0,
-      decoration: BoxDecoration(
-        border: Border.all(width: 0.33, color: Theme.of(context).primaryColor),
-        borderRadius: BorderRadius.circular(24.0),
-      ),
-      child: Row(
-        children: [
-          AIImage(
+      child: AITextField(
+        initialValue: title,
+        prefixIcon: SizedBox(
+          width: 18,
+          height: 18,
+          child: Icon(
             leading,
             color: Theme.of(context).primaryColor,
-            width: 18.0,
-            height: 18.0,
+            // width: 12.0,
+            // height: 12.0,
           ),
-          const SizedBox(width: 16.0),
-          Expanded(
-            child: Text(title, style: Theme.of(context).textTheme.labelLarge),
-          ),
-        ],
+        ),
+        fillColor: Colors.grey.shade900,
+        onChanged: (val) {
+          onChanged!(val);
+        },
+        hintText: hintText,
       ),
     );
   }

@@ -24,7 +24,7 @@ class AccountService with ListenableServiceMixin {
   }
 
   List<TastescoreModel> get scores =>
-      _scores..sort((b, a) => a.timestamp!.difference(b.timestamp!).inSeconds);
+      _scores..sort((b, a) => a.timestamp == null || b.timestamp == null ? 0 : a.timestamp!.difference(b.timestamp!).inSeconds);
   final UserService userService = UserService();
 
   int get totalScore {

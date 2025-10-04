@@ -237,6 +237,10 @@ class Routers {
     return _pushToRoute(context, kRouterQuillDescription, origin);
   }
 
+  static dynamic goToSearchPage(BuildContext context) {
+    return _pushToRoute(context, kRouterSearch, null);
+  }
+
   static dynamic goToSettingPage(BuildContext context) {
     return _pushToRoute(context, kRouterSetting, null);
   }

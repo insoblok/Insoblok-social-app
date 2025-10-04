@@ -371,10 +371,8 @@ class AccountProvider extends InSoBlokViewModel {
       _galleries.clear();
       var gs = await FirebaseHelper.service.fetchGalleries(accountUser!.id!);
       
-      logger.d("fetchGalleries");
       logger.d(gs);
 
-      logger.d(accountUser!.id!);
 
       _galleries.addAll(gs);
       notifyListeners();

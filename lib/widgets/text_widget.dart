@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:insoblok/utils/utils.dart';
-
+import 'package:insoblok/services/services.dart';
 class AITextField extends StatelessWidget {
   final String? initialValue;
   final String? hintText;
@@ -18,6 +18,8 @@ class AITextField extends StatelessWidget {
   final int? maxLines;
   final bool obscureText;
   final Color? borderColor;
+  final Color? focusedColor;
+  final Color? fillColor;
 
   const AITextField({
     super.key,
@@ -36,7 +38,9 @@ class AITextField extends StatelessWidget {
     this.onSaved,
     this.maxLines = 1,
     this.obscureText = false,
-    this.borderColor = Colors.grey
+    this.borderColor = Colors.transparent,
+    this.focusedColor = Colors.blueAccent,
+    this.fillColor = Colors.transparent,
   });
 
   @override
@@ -46,28 +50,32 @@ class AITextField extends StatelessWidget {
       child: TextFormField(
         initialValue: initialValue,
         controller: controller,
+        cursorColor: Colors.white,
         autofocus: autofocus,
         style: Theme.of(context).textTheme.bodyMedium,
         decoration: InputDecoration(
-          contentPadding: EdgeInsets.symmetric(horizontal: 16.0),
-          labelText: hintText,
+          contentPadding: EdgeInsets.symmetric(horizontal: 12.0),
+          // labelText: hintText,
+          hintText: hintText,
           labelStyle: Theme.of(context).textTheme.labelLarge,
           prefixIcon: prefixIcon,
           suffix: suffix,
           suffixIcon: suffixIcon,
+          filled: true,
+          fillColor: fillColor,
           border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(32.0),
-            borderSide: BorderSide(width: 0.33),
+            borderRadius: BorderRadius.circular(12.0),
+            borderSide: BorderSide(width: 0.66),
           ),
           enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(32.0),
-            borderSide: BorderSide(width: 0.33, color: borderColor!),
+            borderRadius: BorderRadius.circular(12.0),
+            borderSide: BorderSide(width: 0.66, color: borderColor!),
           ),
           focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(32.0),
+            borderRadius: BorderRadius.circular(12.0),
             borderSide: BorderSide(
-              width: 0.33,
-              color: Theme.of(context).primaryColor,
+              width: 1,
+              color: focusedColor!,
             ),
           ),
         ),
@@ -228,19 +236,19 @@ class _AIPasswordFieldState extends State<AIPasswordField> {
           ),
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(32.0),
-            borderSide: const BorderSide(width: 0.33),
+            borderSide: const BorderSide(width: 0.66),
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(32.0),
             borderSide: BorderSide(
-              width: 0.33,
+              width: 0.66,
               color: AIColors.borderColor,
             ),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(32.0),
             borderSide: BorderSide(
-              width: 0.33,
+              width: 0.66,
               color: Theme.of(context).primaryColor,
             ),
           ),
@@ -254,4 +262,80 @@ class _AIPasswordFieldState extends State<AIPasswordField> {
       ),
     );
   }
+}
+
+
+class AITextArea extends StatefulWidget {
+  final int? minLines;
+  final int? maxLines;
+  final double? borderRadius;
+  final Color? borderColor;
+  final double? borderWidth;
+  final double? focusedBorderRadius;
+  final Color? focusedBorderColor;
+  final double? focusedBorderWidth;
+  final String? hintText;
+  final String? initialText;
+  final Color? cursorColor;
+  final Color? fillColor;
+  final void Function(String)? onChanged;
+  final void Function()? onEditingComplete;
+  final TextEditingController controller;
+
+  AITextArea({
+    this.minLines = 3, 
+    this.maxLines = 5, 
+    this.borderRadius = 12.0, 
+    this.borderColor = Colors.transparent, 
+    this.borderWidth = 2.0, 
+    this.focusedBorderRadius = 12.0,
+    this.focusedBorderColor = Colors.blueAccent,
+    this.focusedBorderWidth = 2.0,
+    this.hintText = "",
+    this.initialText = "",
+    this.cursorColor = Colors.white,
+    this.fillColor = const Color(0x20F5F5F5),
+    this.onChanged,
+    this.onEditingComplete,
+    required this.controller,
+  });
+
+  @override
+  AITextAreaState createState() => AITextAreaState();
+}
+
+class AITextAreaState extends State<AITextArea> {
+
+  @override
+  void initState() {
+    super.initState();
+    widget.controller.text = widget.initialText ?? "";
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      maxLines: 5,
+      minLines: 3,
+      controller: widget.controller,
+      cursorColor: widget.cursorColor,
+      decoration: InputDecoration(
+        filled: true,
+        fillColor: widget.fillColor,
+        hintText: widget.hintText,
+        border: InputBorder.none,
+        enabledBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(widget.borderRadius!),
+          borderSide: BorderSide(color: widget.borderColor!, width: widget.borderWidth!)
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(widget.focusedBorderRadius!),
+          borderSide: BorderSide(color: widget.focusedBorderColor!, width: widget.focusedBorderWidth!),
+        ),
+      ),
+      onChanged: widget.onChanged,
+      onEditingComplete: widget.onEditingComplete,
+    );
+  }
+
 }

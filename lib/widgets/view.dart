@@ -80,6 +80,7 @@ class BottomBarBackgroundView extends StatelessWidget {
 
 class AIBottomBar extends StatelessWidget {
   final String icon;
+  final double? iconSize;
   final Color? color;
   final String? label;
   final void Function()? onTap;
@@ -89,6 +90,7 @@ class AIBottomBar extends StatelessWidget {
     required this.label,
     this.onTap,
     this.color,
+    this.iconSize = 18
   });
 
   @override
@@ -97,16 +99,13 @@ class AIBottomBar extends StatelessWidget {
       onTap: onTap,
       child: Column(
         spacing: 4.0,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
           AIImage(
             icon,
-            width: 18.0,
-            height: 18.0,
+            width: iconSize,
+            height: iconSize,
             color: color ?? AIColors.white,
-          ),
-          Text(
-            label ?? '',
-            style: TextStyle(fontSize: 12, color: color ?? AIColors.white),
           ),
         ],
       ),

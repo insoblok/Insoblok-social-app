@@ -26,15 +26,25 @@ class AIImages {
   static String icBottomLook = 'assets/icons/ic_effect_2.svg';
   static String icBottomSearchFill = 'assets/icons/ic_search_fill.svg';
   static String icBottomSearch = 'assets/icons/ic_search.svg';
+  static String icBottomSearch2 = 'assets/icons/ic_bottom_search.png';
   static String icBottomMarketFill = 'assets/icons/ic_chart_hoz_fill.svg';
   static String icBottomMarket = 'assets/icons/ic_chart_hoz.svg';
   static String icBottomNotiFill = 'assets/icons/ic_notifications_fill.svg';
   static String icBottomNoti = 'assets/icons/ic_notifications.svg';
   static String icBottomFavorite = 'assets/icons/ic_favorite.svg';
+  static String icBottomFavoriteFill = 'assets/icons/ic_favorite_fill.svg';
   static String icBottomMessageFill = 'assets/icons/ic_comment_fill.png';
   static String icBottomMessage = 'assets/icons/ic_comment.png';
+  static String icBottomMessage2 = 'assets/icons/ic_message2.svg';
   static String icBottomUserFill = 'assets/icons/ic_user_fill.svg';
   static String icBottomUser = 'assets/icons/ic_user.svg';
+  static String icBottomUser2 = 'assets/icons/ic_user2.svg';
+  static String icBottomUser3 = 'assets/icons/ic_user.png';
+
+  static String icBottomGear = 'assets/icons/ic_gear.svg';
+
+  static String icBottomPodium = 'assets/icons/ic_bottom_podium.png';
+
   static String icBottomWalletFill = 'assets/icons/ic_wallet_fill.svg';
   static String icBottomWallet = 'assets/icons/ic_wallet.svg';
   static String icDollar = 'assets/icons/ic_dollar.svg';
@@ -81,7 +91,11 @@ class AIImages {
   static String icLocation = 'assets/icons/ic_location.svg';
 
   static String icComment = 'assets/icons/ic_comment.png';
+  static String icComment2 = 'assets/icons/ic_comment2.png';
+  static String icComment3 = 'assets/icons/ic_comment3.png';
+  static String icComment4 = 'assets/icons/ic_comment4.png';
   static String icShare = 'assets/icons/ic_share.png';
+  static String icShareOutline = 'assets/icons/ic_share_outline.png';
   static String icFollow = 'assets/icons/ic_follow.png';
   static String icNot = 'assets/icons/ic_not.png';
   static String icHot = 'assets/icons/ic_hot.png';
@@ -95,9 +109,37 @@ class AIImages {
 
   static String icVoteUp = 'assets/icons/ic_up_arrow.png';
   static String icVoteDown = 'assets/icons/ic_down_arrow.png';
+  static String icVoteUp2 = 'assets/icons/ic_vote_up.png';
+  static String icVoteDown2 = 'assets/icons/ic_vote_down.png';
   
   static String icReactionVideo = 'assets/icons/ic_reaction_video.png';
   static String icReactionImage = 'assets/icons/ic_reaction_image.png';
+  
+  static String icInstagram = 'assets/icons/ic_social_instagram.png';
+  static String icInstagram2 = 'assets/icons/ic_social_instagram2.png';
+  static String icTelegram = 'assets/icons/ic_social_telegram.png';
+  static String icTelegram2 = 'assets/icons/ic_social_telegram2.png';
+  static String icWhatsapp = 'assets/icons/ic_social_whatsapp.png';
+  static String icWhatsapp2 = 'assets/icons/ic_social_whatsapp2.png';
+  static String icLinkedin = 'assets/icons/ic_social_linkedin.png';
+  static String icLinkedin2 = 'assets/icons/ic_social_linkedin2.png';
+  static String icTwitter = 'assets/icons/ic_social_twitter.png';
+  static String icTwitter2 = 'assets/icons/ic_social_twitter2.png';
+  static String icTiktok = 'assets/icons/ic_social_tiktok.png';
+  static String icTiktok2 = 'assets/icons/ic_social_tiktok2.png';
+  static String icSnapchat = 'assets/icons/ic_social_snapchat.png';
+  static String icSnapchat2 = 'assets/icons/ic_social_snapchat2.png';
+  static String icYoutube = 'assets/icons/ic_social_youtube.png';
+  static String icYoutube2 = 'assets/icons/ic_social_youtube2.png';
+  static String icReddit = 'assets/icons/ic_social_reddit.png';
+  static String icReddit2 = 'assets/icons/ic_social_reddit2.png';
+  static String icSpotify = 'assets/icons/ic_social_spotify.png';
+  static String icSpotify2 = 'assets/icons/ic_social_spotify2.png';
+  static String icSoundCloud = 'assets/icons/ic_social_soundcloud.png';
+  static String icSoundCloud2 = 'assets/icons/ic_social_soundcloud2.png';
+  static String icFacebook = 'assets/icons/ic_social_facebook.png';
+  static String icFacebook2 = 'assets/icons/ic_social_facebook2.png';
+
 
   static String imgLevel(int level) {
     return 'assets/images/img_level_0$level.png';

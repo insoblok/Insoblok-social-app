@@ -27,8 +27,7 @@ class AISliverAppbar extends SliverAppBar {
          centerTitle: true,
          flexibleSpace:
              extendWidget != null
-                 ? AppBackgroundView(
-                   child: FlexibleSpaceBar(
+                 ? FlexibleSpaceBar(
                      collapseMode: CollapseMode.none,
                      background: Container(
                        margin: EdgeInsets.only(
@@ -41,8 +40,7 @@ class AISliverAppbar extends SliverAppBar {
                        height: (extendHeight ?? kExtendAppbarHeight),
                        child: extendWidget,
                      ),
-                   ),
-                 )
+                   )
                  : AppBackgroundView(),
        );
 }

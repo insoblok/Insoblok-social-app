@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
+import 'package:flutter/services.dart';
+
 import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
 import 'package:insoblok/models/models.dart';
-import 'package:google_fonts/google_fonts.dart';
+import 'package:insoblok/locator.dart';
 
   
 class AccountWalletHomePage extends StatefulWidget {
@@ -18,8 +20,12 @@ class AccountWalletHomePage extends StatefulWidget {
 
 class AccountWalletHomePageState extends State<AccountWalletHomePage> {
 
-  
+  final CryptoService cryptoService = locator<CryptoService>();
   String? selectedTopItem;
+
+  _handleQRResult(String address) {
+    
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -119,8 +125,21 @@ class AccountWalletHomePageState extends State<AccountWalletHomePage> {
                                 child: AIImage(
                                   AIImages.icCamera,
                                   color: Colors.white,
+                                  width: 23,
+                                  height: 23,
                                 ),
-                                onTap: () {},
+                                onTap: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (ctx) => QRScanner(
+                                      onQRScanned: (result) {
+                                        logger.d('QR Code Scanned: $result');
+                                        _handleQRResult(result);
+                                      },
+                                    ),
+
+                                  );
+                                },
                               ),
                               SizedBox(width: 12.0),
                               AccountWalletIconCover(
@@ -128,7 +147,118 @@ class AccountWalletHomePageState extends State<AccountWalletHomePage> {
                                   AIImages.icMenuQrCode,
                                   color: Colors.white,
                                 ),
-                                onTap: () {},
+                                onTap: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return Dialog(
+                                          backgroundColor: AIColors.darkBackground,
+                                          // title: Center(
+                                          //   child: Text(
+                                          //     'My Wallet Address',
+                                          //     style: Theme.of(context).textTheme.bodyLarge
+                                          //   )
+                                          // ),
+                                          child: Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                Row(
+                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                                  children: [
+                                                    // This will push both text and button to create centered effect
+                                                    Expanded(
+                                                      child: Container(
+                                                        // This container helps with proper text alignment
+                                                        child: Stack(
+                                                          children: [
+                                                            // Centered Text
+                                                            Align(
+                                                              alignment: Alignment.center,
+                                                              child: Padding(
+                                                                padding: const EdgeInsets.symmetric(vertical: 10.0),
+                                                                child: Text(
+                                                                  "Scan this address", 
+                                                                  style: Theme.of(context).textTheme.bodyLarge
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            // Close button on right
+                                                            Align(
+                                                              alignment: Alignment.centerRight,
+                                                              child: IconButton(
+                                                                icon: Icon(Icons.close),
+                                                                onPressed: () {
+                                                                  Navigator.of(context).pop();
+                                                                }
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                                WalletQrDisplay(
+                                                  data: cryptoService.privateKey!.address.hex,
+                                                  title: "",
+                                                  subtitle: "",
+                                                  size: MediaQuery.of(context).size.width * 0.5,
+                                                  backgroundColor: Colors.white,
+                                                ),
+                                                SizedBox(height: 12.0),
+                                                Center(
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.symmetric(horizontal: 32.0),
+                                                    child: Text(
+                                                      "${cryptoService.privateKey!.address.hex}",
+                                                      style: TextStyle(
+                                                        color: Colors.white,
+                                                        fontWeight: FontWeight.bold,
+                                                        fontSize: 20,
+                                                      ),
+                                                      textAlign: TextAlign.center,
+                                                    ),
+                                                  ),
+                                                ),
+                                                SizedBox(height: 24.0),
+                                                Center(
+                                                  child: Row(
+                                                    mainAxisAlignment: MainAxisAlignment.center,
+                                                    children: [
+                                                      IconButton(
+                                                        icon: Icon(Icons.copy),
+                                                        onPressed: () {
+                                                          Clipboard.setData(ClipboardData(text: cryptoService.privateKey!.address.hex));
+                                                          AIHelpers.showToast(msg: "Copied address to Clipboard");
+                                                        }
+                                                      ),
+                                                      SizedBox(width: 12.0),
+                                                      Text(
+                                                        "Copy Address",
+                                                        style: TextStyle(
+                                                          fontSize: 18,
+                                                          color: Colors.blueAccent
+                                                        ),
+                                                      ),
+                                                    ]
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          // actionsAlignment: MainAxisAlignment.center,
+                                          // actions: [
+                                          //   TextButton(
+                                          //     onPressed: () => Navigator.of(context).pop(),
+                                          //     child: Text('OK'),
+                                          //   ),
+                                          // ],
+                                        );
+                                    },
+                                  );
+                                },
                               ),
                             ]
                           ),
@@ -136,6 +266,7 @@ class AccountWalletHomePageState extends State<AccountWalletHomePage> {
                       ),
                       SizedBox(height: 24.0),
                       SizedBox(
+                        height: 80,
                         width: double.infinity,
                         child: Container(
                           padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
@@ -147,29 +278,28 @@ class AccountWalletHomePageState extends State<AccountWalletHomePage> {
                             ),
                             borderRadius: BorderRadius.circular(18),
                           ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          child: Stack(
                             children: [
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Text(
-                                    "Your balance"
-                                  )
-                                ],
-                              ),
-                              Text(
-                                '\$${viewModel.totalBalance.toStringAsFixed(2)}',
-                                style: TextStyle(
-                                  fontSize: 32,
-                                  fontWeight: FontWeight.w900,
+                              Align(
+                                alignment: Alignment.topRight,
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  children: [
+                                    Text(
+                                      "Your balance"
+                                    )
+                                  ],
                                 ),
                               ),
-                              Opacity(
-                                opacity: 0,
-                                child: Text(""),
-                              )
+                              Center(
+                                child: Text(
+                                  '\$${viewModel.totalBalance.toStringAsFixed(2)}',
+                                  style: TextStyle(
+                                    fontSize: 32,
+                                    fontWeight: FontWeight.w900,
+                                  ),
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -314,75 +444,75 @@ class AccountWalletHomePageState extends State<AccountWalletHomePage> {
                             for (var token
                                 in viewModel.enabledNetworks) ...[
                               Container(
-                                padding: const EdgeInsets.all(10.0),
-                                margin: const EdgeInsets.only(
-                                  bottom: 8.0,
-                                ),
+                                padding: const EdgeInsets.symmetric(horizontal: 12.0),
                                 decoration: BoxDecoration(
-                                  color: Colors.grey.withAlpha(30),
-                                  borderRadius: BorderRadius.circular(12),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey.withAlpha(20), // shadow color with opacity
-                                      spreadRadius: 2, // how much the shadow spreads
-                                      blurRadius: 1,   // how soft the shadow looks
-                                      offset: Offset(5, 5), // changes the shadow position (x, y)
-                                    ),
-                                  ],
+                                  // color: Colors.grey.withAlpha(30),
+                                  borderRadius: BorderRadius.circular(18),
                                 ),
                                 child: GestureDetector(
                                   onTap: () {
                                     if (token["chain"] == 'xp') _showXpConvertSheet(context, viewModel);
                                   },
-                                  child: Row(
-                                  children: [
-                                    ClipOval(
-                                      child: Container(
-                                        color: Colors.blueAccent,
-                                        child: AIImage(
-                                          token["icon"],
-                                          width: 36.0,
-                                          height: 36.0,
-                                        ),
-                                      ),
-                                    ),
-                                    SizedBox(width: 12.0),
-                                    Expanded(
-                                      // This Expanded is a direct child of Row
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
+                                  child: Column(
+                                    children: [
+                                      Row(
                                         children: [
-                                          Text(
-                                            token["short_name"].toString(),
-                                            style: Theme.of(context).textTheme.labelLarge
+                                          ClipOval(
+                                            child: Container(
+                                              color: Colors.blueAccent,
+                                              child: AIImage(
+                                                token["icon"],
+                                                width: 42.0,
+                                                height: 42.0,
+                                              ),
+                                            ),
+                                          ),
+                                          SizedBox(width: 12.0),
+                                          Expanded(
+                                            // This Expanded is a direct child of Row
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  token["short_name"].toString(),
+                                                  style: Theme.of(context).textTheme.labelLarge!.copyWith(
+                                                    color: Colors.white)
+                                                ),
+                                                Text(
+                                                  '${AIHelpers.formatDouble(viewModel.allBalances?[token["chain"]] ?? 0, 10)} ${token["short_name"]}',
+                                                  style: Theme.of(context).textTheme.labelMedium!.copyWith(
+                                                    color: Colors.white
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
                                           ),
                                           Text(
-                                            '${AIHelpers.formatDouble(viewModel.allBalances?[token["chain"]] ?? 0, 10)} ${token["short_name"]}',
+                                            '\$${(viewModel.tokenValues[token["chain"]] ?? 0).toStringAsFixed(2)}',
                                             style:
-                                                Theme.of(
-                                                  context,
-                                                ).textTheme.labelMedium,
+                                                Theme.of(context).textTheme.labelLarge!.copyWith(
+                                                  color: Colors.white
+                                                ),
                                           ),
+                                          // IconButton(
+                                          //   onPressed: () {
+                                          //     viewModel.toggleFavorite(token["chain"]);
+                                          //   },
+                                          //   icon: Icon(viewModel.checkFavorite(token["chain"]) == true ? Icons.star : Icons.star_border),
+                                          //   color: Colors.amberAccent
+                                          // )
                                         ],
                                       ),
-                                    ),
-                                    Text(
-                                      '\$${(viewModel.tokenValues[token["chain"]] ?? 0).toStringAsFixed(2)}',
-                                      style:
-                                          Theme.of(
-                                            context,
-                                          ).textTheme.labelLarge,
-                                    ),
-                                    // IconButton(
-                                    //   onPressed: () {
-                                    //     viewModel.toggleFavorite(token["chain"]);
-                                    //   },
-                                    //   icon: Icon(viewModel.checkFavorite(token["chain"]) == true ? Icons.star : Icons.star_border),
-                                    //   color: Colors.amberAccent
-                                    // )
-                                  ],
-                                )
+                                      Padding(
+                                        padding: const EdgeInsets.symmetric(vertical: 3.0),
+                                        child: Divider(
+                                          color: Colors.grey.shade800,
+                                          thickness: 0.5,
+                                        ),
+                                      )
+                                    ],
+                                  )
                               ),
                               ),
                             ],

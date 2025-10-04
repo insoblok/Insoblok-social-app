@@ -261,17 +261,6 @@ class LoginPage extends StatelessWidget {
                         else if(viewModel.walletExists)
                           Column(
                             children: [
-                                  Container(
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(horizontal: 40.0),
-                                      child: GradientPillButton(
-                                        text: "Sign In", 
-                                        onPressed: () {
-                                          viewModel.handleClickSignIn(context);
-                                        }
-                                      ),
-                                    ),
-                                  ),
                                   // child: DropdownButton<String>(
                                   //   value: viewModel.loginMethod,
                                   //   isExpanded: true,
@@ -375,6 +364,7 @@ class LoginPage extends StatelessWidget {
                               //       ),
                               //     ),
                               // ),
+                              Text(viewModel.checkFaceStatus),
                               SizedBox(height: 8.0),
                               Center(
                                 child: GestureDetector(

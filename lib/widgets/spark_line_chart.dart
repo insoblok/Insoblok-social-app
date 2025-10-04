@@ -13,7 +13,7 @@ class SparkLineChart extends StatelessWidget {
     super.key,
     required this.data,
     required this.color,
-    this.showArea = true,
+    this.showArea = false,
     this.strokeWidth = 1.5,
     this.width = 300,
     this.height = 200,
@@ -53,7 +53,7 @@ class _SparklinePainter extends CustomPainter {
   _SparklinePainter({
     required this.data,
     required this.color,
-    this.showArea = true,
+    this.showArea = false,
     this.strokeWidth = 1.5,
     required this.textStyle,
     this.showYLabel = true,

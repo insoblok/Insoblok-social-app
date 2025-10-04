@@ -74,6 +74,7 @@ const kRouterPrivacy = '/privacy-police';
 const kRouterHelpCenter = '/help-center';
 const kRouterMediaDetail = '/media-detail';
 const kRouterSetting = '/setting';
+const kRouterSearch = '/search';
 
 const kRouterLeaderboard = '/leaderboard';
 const kRouterTastescore = '/tastescore';
@@ -286,6 +287,9 @@ class Navigation {
 
     // * SettingPage
     initRoute(kRouterSetting, (props) => SettingPage());
+
+    // * SearchPage
+    initRoute(kRouterSearch, (props) => SearchView());
 
     // * PrivacyPage
     initRoute(kRouterPrivacy, (props) => PrivacyPage());

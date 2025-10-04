@@ -13,6 +13,7 @@ class RegisterFirstProvider extends InSoBlokViewModel {
   }
 
   late UserModel _user;
+  bool get biometricEnabled => _user.biometricEnabled ?? true;
 
   Future<void> init(
     BuildContext context, {
@@ -34,5 +35,10 @@ class RegisterFirstProvider extends InSoBlokViewModel {
 
   Future<void> onClickNext() async {
     Routers.goToRegisterSecondPage(context, user: _user);
+  }
+
+  void updateBiometric(bool value) {
+    _user = _user.copyWith(biometricEnabled: value);
+    notifyListeners();
   }
 }

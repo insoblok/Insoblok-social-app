@@ -89,12 +89,12 @@ extension UserModelExt on UserModel {
             width: width ?? 60,
             height: height ?? 60,
             decoration: BoxDecoration(
-              border: GradientBoxBorder(
-                gradient: LinearGradient(
-                  colors: getGradientColors(fullName.length),
-                ),
-                width: borderWidth ?? 4,
-              ),
+              // border: GradientBoxBorder(
+              //   gradient: LinearGradient(
+              //     colors: getGradientColors(fullName.length),
+              //   ),
+              //   width: borderWidth ?? 4,
+              // ),
               borderRadius: BorderRadius.circular(width ?? 60 / 2),
             ),
             child: ClipOval(
@@ -106,17 +106,24 @@ extension UserModelExt on UserModel {
                         height: height ?? 60.0,
                       )
                       : Container(
-                        color:
-                            fullName.length > kAvatarColors.length
-                                ? kAvatarColors[fullName.length %
-                                    kAvatarColors.length]
-                                : kAvatarColors[fullName.length - 1],
+                        // color:
+                        //     fullName.length > kAvatarColors.length
+                        //         ? kAvatarColors[fullName.length %
+                        //             kAvatarColors.length]
+                        //         : kAvatarColors[fullName.length - 1],
+                        decoration: BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.topCenter,
+                            end: Alignment.bottomCenter,
+                            colors: AIHelpers.getGradientColors(fullName),
+                          ),
+                        ),
                         child: Align(
                           alignment: Alignment.center,
                           child: Text(
                             fullName[0],
                             style: TextStyle(
-                              fontSize: textSize ?? 14.0,
+                              fontSize: textSize ?? 20.0,
                               color: AIColors.white,
                             ),
                           ),
@@ -197,6 +204,7 @@ extension UserModelExt on UserModel {
       'nick_id': nickId,
       'lat': lat,
       'lon': lon,
+      'biometricEnabled':biometricEnabled,
       'ip_address': ipAddress,
       'status': status,
       'has_vote_post': hasVotePost,

@@ -55,7 +55,6 @@ class FirebaseService {
 
   Future<void> signInFirebase() async {
     var credential = await FirebaseAuth.instance.signInAnonymously();
-    logger.d("Credeintial is $credential");
     _userCredential = credential;
   }
 
@@ -99,6 +98,9 @@ class FirebaseService {
         throw Exception('No anonymous user to upgrade');
       }
 
+      if (email.isEmpty) {
+        return;
+      }
       final credential = EmailAuthProvider.credential(
         email: email,
         password: password,

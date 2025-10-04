@@ -15,17 +15,17 @@ List<BoxShadow> kContainerDarkShadow = [
   ),
 ];
 
-BoxDecoration kCardDecoration = BoxDecoration(
+BoxDecoration get kCardDecoration => BoxDecoration(
   borderRadius: BorderRadius.circular(16.0),
-  border: Border.all(width: 0.33, color: AIColors.pink),
+  border: Border.all(width: 0.66, color: AIColors.pink),
 );
 
-BoxDecoration kNoBorderDecoration = BoxDecoration(
-  border: Border.all(width: 0.33, color: AIColors.pink),
+BoxDecoration get kNoBorderDecoration => BoxDecoration(
+  border: Border.all(width: 0.75, color: AIColors.pink),
   borderRadius: BorderRadius.circular(24.0),
 );
 
-BoxDecoration kTextFieldDecoration = BoxDecoration(
-  border: Border.all(width: 0.33, color: AIColors.pink),
+BoxDecoration get kTextFieldDecoration => BoxDecoration(
+  border: Border.all(width: 0.66, color: AIColors.pink),
   borderRadius: BorderRadius.circular(24.0),
 );

@@ -31,12 +31,12 @@ class AIColors {
 
   static Color darkGreyBackground = Color.fromARGB(255, 40, 42, 44);
   static Color lightGreyBackground = Color(0xFFE7ECF0);
-
+  static Color inputBackground = Color(0x20F5F5F5);
   static Color speraterColor = Color(0xFFCED5DC);
 
   static Color white = Color(0xFFFFFFFF);
   static Color black = Color(0xFF141619);
-  static Color grey = Color(0xFF687684);
+  static Color grey = Color(0x20F5F5F5);
   static Color lightGrey = Color.fromARGB(255, 152, 164, 175);
   static Color blue = Color.fromARGB(255, 0, 0, 255);
   static Color lightBlue = Color(0xFF8EC5FC);

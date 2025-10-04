@@ -185,14 +185,12 @@ class AppLeadingView extends StatelessWidget {
     return Center(
       child: InkWell(
         onTap: () => Scaffold.of(context).openDrawer(),
-        child: AIAvatarImage(
-          AuthHelper.user?.avatar,
-          width: 32.0,
-          height: 32.0,
-          fullname: AuthHelper.user?.nickId ?? 'Test',
-          isBorder: true,
-          borderWidth: 1,
-          borderRadius: 16,
+        child: AuthHelper.user?.avatarStatusView(
+          width: 28,
+          height: 28,
+          borderWidth: 2.0,
+          textSize: 20.0,
+          showStatus: false,
         ),
       ),
     );
@@ -214,7 +212,7 @@ class UserRelatedView extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
           decoration: BoxDecoration(
             border: Border(
-              top: BorderSide(color: AIColors.speraterColor, width: 0.33),
+              top: BorderSide(color: AIColors.speraterColor, width: 0.66),
             ),
           ),
           child: InkWell(

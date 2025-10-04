@@ -133,9 +133,10 @@ class AccountWalletProvider extends InSoBlokViewModel {
   @override
   List<ListenableServiceMixin> get listenableServices => [_web3Service];
 
-  String? get address => cryptoService.privateKey!.address.hex;  
+  CryptoService cryptoService = locator<CryptoService>();
+  
+  String? get address => cryptoService.privateKey?.address.hex;  
 
-  // double get totalBalance => balanceInso / 500 + balanceUsdt;
 
   int get totalScore {
       var result = 0;

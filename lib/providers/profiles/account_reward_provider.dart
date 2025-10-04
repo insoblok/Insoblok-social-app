@@ -8,7 +8,7 @@ import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/locator.dart';
 
-class AccountRewardProvider extends InSoBlokViewModel {
+class AccountRewardProvider extends InSoBlokViewModel { 
   late BuildContext _context;
   BuildContext get context => _context;
   set context(BuildContext context) {
@@ -24,6 +24,8 @@ class AccountRewardProvider extends InSoBlokViewModel {
   }
 
   final Web3Service _web3service = locator<Web3Service>();
+
+  CryptoService cryptoService = locator<CryptoService>();
 
   void init(BuildContext context, UserModel? user) async {
     this.context = context;

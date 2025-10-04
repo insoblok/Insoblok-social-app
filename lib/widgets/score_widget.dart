@@ -13,7 +13,7 @@ class ScoreItemView extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
       decoration: BoxDecoration(
-        border: Border.all(color: Theme.of(context).primaryColor, width: 0.33),
+        border: Border.all(color: Theme.of(context).primaryColor, width: 0.66),
         borderRadius: BorderRadius.circular(16.0),
       ),
       child: Row(

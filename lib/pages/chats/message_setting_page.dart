@@ -51,7 +51,7 @@ class MessageSettingPage extends StatelessWidget {
                             : Border(
                               bottom: BorderSide(
                                 color: AIColors.speraterColor,
-                                width: 0.33,
+                                width: 0.66,
                               ),
                             ),
                   ),

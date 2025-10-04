@@ -70,8 +70,12 @@ class _CryptoSparklineState extends State<CryptoSparklineWidget> {
   }
 
   Color _getChartColor() {
-    if (widget.increased ?? false) return Colors.green;
-    else return Colors.red;
+    if (widget.increased ?? false) {
+      return Colors.green;
+    } else {
+      return Colors.red;
+    }
+    // return Colors.white70;
   }
 
   @override

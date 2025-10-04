@@ -273,16 +273,16 @@ class _ImportWalletDialogState extends State<ImportWalletDialog> {
             labelStyle: Theme.of(context).textTheme.labelLarge,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(32.0),
-              borderSide: BorderSide(width: 0.33),
+              borderSide: BorderSide(width: 0.66),
             ),
             enabledBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(32.0),
-              borderSide: BorderSide(width: 0.33, color: AIColors.borderColor),
+              borderSide: BorderSide(width: 0.66, color: AIColors.borderColor),
             ),
             focusedBorder: OutlineInputBorder(
               borderRadius: BorderRadius.circular(32.0),
               borderSide: BorderSide(
-                width: 0.33,
+                width: 0.66,
                 color: Theme.of(context).primaryColor,
               ),
             ),

@@ -26,7 +26,7 @@ class AccountStoryListCell extends StatelessWidget {
           padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
           decoration: BoxDecoration(
             border: Border(
-              top: BorderSide(color: AIColors.speraterColor, width: 0.33),
+              top: BorderSide(color: AIColors.speraterColor, width: 0.66),
             ),
           ),
           child: InkWell(
@@ -64,7 +64,7 @@ class AccountStoryListCell extends StatelessWidget {
                               width: 180,
                               decoration: BoxDecoration(
                                 border: Border.all(
-                                  width: 0.33,
+                                  width: 0.66,
                                   color: AIColors.speraterColor,
                                 ),
                                 borderRadius: BorderRadius.circular(12.0),

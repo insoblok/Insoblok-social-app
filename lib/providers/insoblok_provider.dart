@@ -19,6 +19,13 @@ class InSoBlokProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  bool _showSearch = false;
+  bool get showSearch => _showSearch;
+  set showSearch(bool f) {
+    _showSearch = f;
+    notifyListeners();
+  }
+
   var _dotIndex = 0;
   int get dotIndex => _dotIndex;
   set dotIndex(int i) {
@@ -84,5 +91,15 @@ class InSoBlokProvider extends InSoBlokViewModel {
       case 9:
         break;
     }
+  }
+
+  void toggleSearch() {
+    showSearch = !showSearch;
+    notifyListeners();
+  }
+
+  void exitSearch() {
+    showSearch = false;
+    notifyListeners();
   }
 }

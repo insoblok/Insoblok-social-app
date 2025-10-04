@@ -103,6 +103,7 @@ dependencies:
   flutter_toggle_button: ^0.0.4
   zo_animated_border: ^1.0.1
   qr_flutter: ^4.1.0
+  qr_code_scanner_plus: ^2.0.12
   bot_toast: ^4.1.0
   file_saver: ^0.3.1
   gal: ^2.3.2
@@ -116,7 +117,6 @@ dependencies:
   web_socket_channel: ^3.0.3
   dropdown_button2: ^2.3.9
   google_fonts: ^4.0.4
-  
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -180,3 +180,7 @@ flutter:
           weight: 800
         - asset: assets/fonts/Geist-Black.ttf
           weight: 900
+    - family: Helvetica
+      fonts:
+        - asset: assets/fonts/HelveticaNowMTMicro.ttf
+          weight: 400
