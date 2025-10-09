@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$StoryModel {
 
- String? get id; String? get userId; String? get title; String? get text; String? get status; String? get category; List<String>? get likes; List<String>? get follows; List<String>? get views; DateTime? get updateDate; DateTime? get timestamp; List<ConnectedStoryModel>? get connects; List<String>? get comments; List<String>? get allowUsers; List<String>? get reactions; List<StoryVoteModel>? get votes; List<MediaStoryModel>? get medias;
+ String? get id; String? get userId; String? get title; String? get text; String? get status; String? get category; List<String>? get likes; List<String>? get follows; List<String>? get views; String? get placeId; DateTime? get updateDate; DateTime? get timestamp; List<ConnectedStoryModel>? get connects; List<String>? get comments; List<String>? get allowUsers; List<String>? get reactions; List<StoryVoteModel>? get votes; List<MediaStoryModel>? get medias;
 /// Create a copy of StoryModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $StoryModelCopyWith<StoryModel> get copyWith => _$StoryModelCopyWithImpl<StoryMo
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is StoryModel&&(identical(other.id, id) || other.id == id)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.title, title) || other.title == title)&&(identical(other.text, text) || other.text == text)&&(identical(other.status, status) || other.status == status)&&(identical(other.category, category) || other.category == category)&&const DeepCollectionEquality().equals(other.likes, likes)&&const DeepCollectionEquality().equals(other.follows, follows)&&const DeepCollectionEquality().equals(other.views, views)&&(identical(other.updateDate, updateDate) || other.updateDate == updateDate)&&(identical(other.timestamp, timestamp) || other.timestamp == timestamp)&&const DeepCollectionEquality().equals(other.connects, connects)&&const DeepCollectionEquality().equals(other.comments, comments)&&const DeepCollectionEquality().equals(other.allowUsers, allowUsers)&&const DeepCollectionEquality().equals(other.reactions, reactions)&&const DeepCollectionEquality().equals(other.votes, votes)&&const DeepCollectionEquality().equals(other.medias, medias));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is StoryModel&&(identical(other.id, id) || other.id == id)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.title, title) || other.title == title)&&(identical(other.text, text) || other.text == text)&&(identical(other.status, status) || other.status == status)&&(identical(other.category, category) || other.category == category)&&const DeepCollectionEquality().equals(other.likes, likes)&&const DeepCollectionEquality().equals(other.follows, follows)&&const DeepCollectionEquality().equals(other.views, views)&&(identical(other.placeId, placeId) || other.placeId == placeId)&&(identical(other.updateDate, updateDate) || other.updateDate == updateDate)&&(identical(other.timestamp, timestamp) || other.timestamp == timestamp)&&const DeepCollectionEquality().equals(other.connects, connects)&&const DeepCollectionEquality().equals(other.comments, comments)&&const DeepCollectionEquality().equals(other.allowUsers, allowUsers)&&const DeepCollectionEquality().equals(other.reactions, reactions)&&const DeepCollectionEquality().equals(other.votes, votes)&&const DeepCollectionEquality().equals(other.medias, medias));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,userId,title,text,status,category,const DeepCollectionEquality().hash(likes),const DeepCollectionEquality().hash(follows),const DeepCollectionEquality().hash(views),updateDate,timestamp,const DeepCollectionEquality().hash(connects),const DeepCollectionEquality().hash(comments),const DeepCollectionEquality().hash(allowUsers),const DeepCollectionEquality().hash(reactions),const DeepCollectionEquality().hash(votes),const DeepCollectionEquality().hash(medias));
+int get hashCode => Object.hash(runtimeType,id,userId,title,text,status,category,const DeepCollectionEquality().hash(likes),const DeepCollectionEquality().hash(follows),const DeepCollectionEquality().hash(views),placeId,updateDate,timestamp,const DeepCollectionEquality().hash(connects),const DeepCollectionEquality().hash(comments),const DeepCollectionEquality().hash(allowUsers),const DeepCollectionEquality().hash(reactions),const DeepCollectionEquality().hash(votes),const DeepCollectionEquality().hash(medias));
 
 @override
 String toString() {
-  return 'StoryModel(id: $id, userId: $userId, title: $title, text: $text, status: $status, category: $category, likes: $likes, follows: $follows, views: $views, updateDate: $updateDate, timestamp: $timestamp, connects: $connects, comments: $comments, allowUsers: $allowUsers, reactions: $reactions, votes: $votes, medias: $medias)';
+  return 'StoryModel(id: $id, userId: $userId, title: $title, text: $text, status: $status, category: $category, likes: $likes, follows: $follows, views: $views, placeId: $placeId, updateDate: $updateDate, timestamp: $timestamp, connects: $connects, comments: $comments, allowUsers: $allowUsers, reactions: $reactions, votes: $votes, medias: $medias)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $StoryModelCopyWith<$Res>  {
   factory $StoryModelCopyWith(StoryModel value, $Res Function(StoryModel) _then) = _$StoryModelCopyWithImpl;
 @useResult
 $Res call({
- String? id, String? userId, String? title, String? text, String? status, String? category, List<String>? likes, List<String>? follows, List<String>? views, DateTime? updateDate, DateTime? timestamp, List<ConnectedStoryModel>? connects, List<String>? comments, List<String>? allowUsers, List<String>? reactions, List<StoryVoteModel>? votes, List<MediaStoryModel>? medias
+ String? id, String? userId, String? title, String? text, String? status, String? category, List<String>? likes, List<String>? follows, List<String>? views, String? placeId, DateTime? updateDate, DateTime? timestamp, List<ConnectedStoryModel>? connects, List<String>? comments, List<String>? allowUsers, List<String>? reactions, List<StoryVoteModel>? votes, List<MediaStoryModel>? medias
 });
 
 
@@ -65,7 +65,7 @@ class _$StoryModelCopyWithImpl<$Res>
 
 /// Create a copy of StoryModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? userId = freezed,Object? title = freezed,Object? text = freezed,Object? status = freezed,Object? category = freezed,Object? likes = freezed,Object? follows = freezed,Object? views = freezed,Object? updateDate = freezed,Object? timestamp = freezed,Object? connects = freezed,Object? comments = freezed,Object? allowUsers = freezed,Object? reactions = freezed,Object? votes = freezed,Object? medias = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? userId = freezed,Object? title = freezed,Object? text = freezed,Object? status = freezed,Object? category = freezed,Object? likes = freezed,Object? follows = freezed,Object? views = freezed,Object? placeId = freezed,Object? updateDate = freezed,Object? timestamp = freezed,Object? connects = freezed,Object? comments = freezed,Object? allowUsers = freezed,Object? reactions = freezed,Object? votes = freezed,Object? medias = freezed,}) {
   return _then(_self.copyWith(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String?,userId: freezed == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
@@ -76,7 +76,8 @@ as String?,category: freezed == category ? _self.category : category // ignore: 
 as String?,likes: freezed == likes ? _self.likes : likes // ignore: cast_nullable_to_non_nullable
 as List<String>?,follows: freezed == follows ? _self.follows : follows // ignore: cast_nullable_to_non_nullable
 as List<String>?,views: freezed == views ? _self.views : views // ignore: cast_nullable_to_non_nullable
-as List<String>?,updateDate: freezed == updateDate ? _self.updateDate : updateDate // ignore: cast_nullable_to_non_nullable
+as List<String>?,placeId: freezed == placeId ? _self.placeId : placeId // ignore: cast_nullable_to_non_nullable
+as String?,updateDate: freezed == updateDate ? _self.updateDate : updateDate // ignore: cast_nullable_to_non_nullable
 as DateTime?,timestamp: freezed == timestamp ? _self.timestamp : timestamp // ignore: cast_nullable_to_non_nullable
 as DateTime?,connects: freezed == connects ? _self.connects : connects // ignore: cast_nullable_to_non_nullable
 as List<ConnectedStoryModel>?,comments: freezed == comments ? _self.comments : comments // ignore: cast_nullable_to_non_nullable
@@ -169,10 +170,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? id,  String? userId,  String? title,  String? text,  String? status,  String? category,  List<String>? likes,  List<String>? follows,  List<String>? views,  DateTime? updateDate,  DateTime? timestamp,  List<ConnectedStoryModel>? connects,  List<String>? comments,  List<String>? allowUsers,  List<String>? reactions,  List<StoryVoteModel>? votes,  List<MediaStoryModel>? medias)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? id,  String? userId,  String? title,  String? text,  String? status,  String? category,  List<String>? likes,  List<String>? follows,  List<String>? views,  String? placeId,  DateTime? updateDate,  DateTime? timestamp,  List<ConnectedStoryModel>? connects,  List<String>? comments,  List<String>? allowUsers,  List<String>? reactions,  List<StoryVoteModel>? votes,  List<MediaStoryModel>? medias)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _StoryModel() when $default != null:
-return $default(_that.id,_that.userId,_that.title,_that.text,_that.status,_that.category,_that.likes,_that.follows,_that.views,_that.updateDate,_that.timestamp,_that.connects,_that.comments,_that.allowUsers,_that.reactions,_that.votes,_that.medias);case _:
+return $default(_that.id,_that.userId,_that.title,_that.text,_that.status,_that.category,_that.likes,_that.follows,_that.views,_that.placeId,_that.updateDate,_that.timestamp,_that.connects,_that.comments,_that.allowUsers,_that.reactions,_that.votes,_that.medias);case _:
   return orElse();
 
 }
@@ -190,10 +191,10 @@ return $default(_that.id,_that.userId,_that.title,_that.text,_that.status,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? id,  String? userId,  String? title,  String? text,  String? status,  String? category,  List<String>? likes,  List<String>? follows,  List<String>? views,  DateTime? updateDate,  DateTime? timestamp,  List<ConnectedStoryModel>? connects,  List<String>? comments,  List<String>? allowUsers,  List<String>? reactions,  List<StoryVoteModel>? votes,  List<MediaStoryModel>? medias)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? id,  String? userId,  String? title,  String? text,  String? status,  String? category,  List<String>? likes,  List<String>? follows,  List<String>? views,  String? placeId,  DateTime? updateDate,  DateTime? timestamp,  List<ConnectedStoryModel>? connects,  List<String>? comments,  List<String>? allowUsers,  List<String>? reactions,  List<StoryVoteModel>? votes,  List<MediaStoryModel>? medias)  $default,) {final _that = this;
 switch (_that) {
 case _StoryModel():
-return $default(_that.id,_that.userId,_that.title,_that.text,_that.status,_that.category,_that.likes,_that.follows,_that.views,_that.updateDate,_that.timestamp,_that.connects,_that.comments,_that.allowUsers,_that.reactions,_that.votes,_that.medias);case _:
+return $default(_that.id,_that.userId,_that.title,_that.text,_that.status,_that.category,_that.likes,_that.follows,_that.views,_that.placeId,_that.updateDate,_that.timestamp,_that.connects,_that.comments,_that.allowUsers,_that.reactions,_that.votes,_that.medias);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -210,10 +211,10 @@ return $default(_that.id,_that.userId,_that.title,_that.text,_that.status,_that.
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? id,  String? userId,  String? title,  String? text,  String? status,  String? category,  List<String>? likes,  List<String>? follows,  List<String>? views,  DateTime? updateDate,  DateTime? timestamp,  List<ConnectedStoryModel>? connects,  List<String>? comments,  List<String>? allowUsers,  List<String>? reactions,  List<StoryVoteModel>? votes,  List<MediaStoryModel>? medias)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? id,  String? userId,  String? title,  String? text,  String? status,  String? category,  List<String>? likes,  List<String>? follows,  List<String>? views,  String? placeId,  DateTime? updateDate,  DateTime? timestamp,  List<ConnectedStoryModel>? connects,  List<String>? comments,  List<String>? allowUsers,  List<String>? reactions,  List<StoryVoteModel>? votes,  List<MediaStoryModel>? medias)?  $default,) {final _that = this;
 switch (_that) {
 case _StoryModel() when $default != null:
-return $default(_that.id,_that.userId,_that.title,_that.text,_that.status,_that.category,_that.likes,_that.follows,_that.views,_that.updateDate,_that.timestamp,_that.connects,_that.comments,_that.allowUsers,_that.reactions,_that.votes,_that.medias);case _:
+return $default(_that.id,_that.userId,_that.title,_that.text,_that.status,_that.category,_that.likes,_that.follows,_that.views,_that.placeId,_that.updateDate,_that.timestamp,_that.connects,_that.comments,_that.allowUsers,_that.reactions,_that.votes,_that.medias);case _:
   return null;
 
 }
@@ -225,7 +226,7 @@ return $default(_that.id,_that.userId,_that.title,_that.text,_that.status,_that.
 
 @JsonSerializable(fieldRename: FieldRename.snake)
 class _StoryModel implements StoryModel {
-   _StoryModel({this.id, this.userId, this.title, this.text, this.status, this.category, final  List<String>? likes, final  List<String>? follows, final  List<String>? views, this.updateDate, this.timestamp, final  List<ConnectedStoryModel>? connects, final  List<String>? comments, final  List<String>? allowUsers, final  List<String>? reactions, final  List<StoryVoteModel>? votes, final  List<MediaStoryModel>? medias}): _likes = likes,_follows = follows,_views = views,_connects = connects,_comments = comments,_allowUsers = allowUsers,_reactions = reactions,_votes = votes,_medias = medias;
+   _StoryModel({this.id, this.userId, this.title, this.text, this.status, this.category, final  List<String>? likes, final  List<String>? follows, final  List<String>? views, this.placeId, this.updateDate, this.timestamp, final  List<ConnectedStoryModel>? connects, final  List<String>? comments, final  List<String>? allowUsers, final  List<String>? reactions, final  List<StoryVoteModel>? votes, final  List<MediaStoryModel>? medias}): _likes = likes,_follows = follows,_views = views,_connects = connects,_comments = comments,_allowUsers = allowUsers,_reactions = reactions,_votes = votes,_medias = medias;
   factory _StoryModel.fromJson(Map<String, dynamic> json) => _$StoryModelFromJson(json);
 
 @override final  String? id;
@@ -261,6 +262,7 @@ class _StoryModel implements StoryModel {
   return EqualUnmodifiableListView(value);
 }
 
+@override final  String? placeId;
 @override final  DateTime? updateDate;
 @override final  DateTime? timestamp;
  final  List<ConnectedStoryModel>? _connects;
@@ -331,16 +333,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _StoryModel&&(identical(other.id, id) || other.id == id)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.title, title) || other.title == title)&&(identical(other.text, text) || other.text == text)&&(identical(other.status, status) || other.status == status)&&(identical(other.category, category) || other.category == category)&&const DeepCollectionEquality().equals(other._likes, _likes)&&const DeepCollectionEquality().equals(other._follows, _follows)&&const DeepCollectionEquality().equals(other._views, _views)&&(identical(other.updateDate, updateDate) || other.updateDate == updateDate)&&(identical(other.timestamp, timestamp) || other.timestamp == timestamp)&&const DeepCollectionEquality().equals(other._connects, _connects)&&const DeepCollectionEquality().equals(other._comments, _comments)&&const DeepCollectionEquality().equals(other._allowUsers, _allowUsers)&&const DeepCollectionEquality().equals(other._reactions, _reactions)&&const DeepCollectionEquality().equals(other._votes, _votes)&&const DeepCollectionEquality().equals(other._medias, _medias));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _StoryModel&&(identical(other.id, id) || other.id == id)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.title, title) || other.title == title)&&(identical(other.text, text) || other.text == text)&&(identical(other.status, status) || other.status == status)&&(identical(other.category, category) || other.category == category)&&const DeepCollectionEquality().equals(other._likes, _likes)&&const DeepCollectionEquality().equals(other._follows, _follows)&&const DeepCollectionEquality().equals(other._views, _views)&&(identical(other.placeId, placeId) || other.placeId == placeId)&&(identical(other.updateDate, updateDate) || other.updateDate == updateDate)&&(identical(other.timestamp, timestamp) || other.timestamp == timestamp)&&const DeepCollectionEquality().equals(other._connects, _connects)&&const DeepCollectionEquality().equals(other._comments, _comments)&&const DeepCollectionEquality().equals(other._allowUsers, _allowUsers)&&const DeepCollectionEquality().equals(other._reactions, _reactions)&&const DeepCollectionEquality().equals(other._votes, _votes)&&const DeepCollectionEquality().equals(other._medias, _medias));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,userId,title,text,status,category,const DeepCollectionEquality().hash(_likes),const DeepCollectionEquality().hash(_follows),const DeepCollectionEquality().hash(_views),updateDate,timestamp,const DeepCollectionEquality().hash(_connects),const DeepCollectionEquality().hash(_comments),const DeepCollectionEquality().hash(_allowUsers),const DeepCollectionEquality().hash(_reactions),const DeepCollectionEquality().hash(_votes),const DeepCollectionEquality().hash(_medias));
+int get hashCode => Object.hash(runtimeType,id,userId,title,text,status,category,const DeepCollectionEquality().hash(_likes),const DeepCollectionEquality().hash(_follows),const DeepCollectionEquality().hash(_views),placeId,updateDate,timestamp,const DeepCollectionEquality().hash(_connects),const DeepCollectionEquality().hash(_comments),const DeepCollectionEquality().hash(_allowUsers),const DeepCollectionEquality().hash(_reactions),const DeepCollectionEquality().hash(_votes),const DeepCollectionEquality().hash(_medias));
 
 @override
 String toString() {
-  return 'StoryModel(id: $id, userId: $userId, title: $title, text: $text, status: $status, category: $category, likes: $likes, follows: $follows, views: $views, updateDate: $updateDate, timestamp: $timestamp, connects: $connects, comments: $comments, allowUsers: $allowUsers, reactions: $reactions, votes: $votes, medias: $medias)';
+  return 'StoryModel(id: $id, userId: $userId, title: $title, text: $text, status: $status, category: $category, likes: $likes, follows: $follows, views: $views, placeId: $placeId, updateDate: $updateDate, timestamp: $timestamp, connects: $connects, comments: $comments, allowUsers: $allowUsers, reactions: $reactions, votes: $votes, medias: $medias)';
 }
 
 
@@ -351,7 +353,7 @@ abstract mixin class _$StoryModelCopyWith<$Res> implements $StoryModelCopyWith<$
   factory _$StoryModelCopyWith(_StoryModel value, $Res Function(_StoryModel) _then) = __$StoryModelCopyWithImpl;
 @override @useResult
 $Res call({
- String? id, String? userId, String? title, String? text, String? status, String? category, List<String>? likes, List<String>? follows, List<String>? views, DateTime? updateDate, DateTime? timestamp, List<ConnectedStoryModel>? connects, List<String>? comments, List<String>? allowUsers, List<String>? reactions, List<StoryVoteModel>? votes, List<MediaStoryModel>? medias
+ String? id, String? userId, String? title, String? text, String? status, String? category, List<String>? likes, List<String>? follows, List<String>? views, String? placeId, DateTime? updateDate, DateTime? timestamp, List<ConnectedStoryModel>? connects, List<String>? comments, List<String>? allowUsers, List<String>? reactions, List<StoryVoteModel>? votes, List<MediaStoryModel>? medias
 });
 
 
@@ -368,7 +370,7 @@ class __$StoryModelCopyWithImpl<$Res>
 
 /// Create a copy of StoryModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? userId = freezed,Object? title = freezed,Object? text = freezed,Object? status = freezed,Object? category = freezed,Object? likes = freezed,Object? follows = freezed,Object? views = freezed,Object? updateDate = freezed,Object? timestamp = freezed,Object? connects = freezed,Object? comments = freezed,Object? allowUsers = freezed,Object? reactions = freezed,Object? votes = freezed,Object? medias = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? userId = freezed,Object? title = freezed,Object? text = freezed,Object? status = freezed,Object? category = freezed,Object? likes = freezed,Object? follows = freezed,Object? views = freezed,Object? placeId = freezed,Object? updateDate = freezed,Object? timestamp = freezed,Object? connects = freezed,Object? comments = freezed,Object? allowUsers = freezed,Object? reactions = freezed,Object? votes = freezed,Object? medias = freezed,}) {
   return _then(_StoryModel(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String?,userId: freezed == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
@@ -379,7 +381,8 @@ as String?,category: freezed == category ? _self.category : category // ignore: 
 as String?,likes: freezed == likes ? _self._likes : likes // ignore: cast_nullable_to_non_nullable
 as List<String>?,follows: freezed == follows ? _self._follows : follows // ignore: cast_nullable_to_non_nullable
 as List<String>?,views: freezed == views ? _self._views : views // ignore: cast_nullable_to_non_nullable
-as List<String>?,updateDate: freezed == updateDate ? _self.updateDate : updateDate // ignore: cast_nullable_to_non_nullable
+as List<String>?,placeId: freezed == placeId ? _self.placeId : placeId // ignore: cast_nullable_to_non_nullable
+as String?,updateDate: freezed == updateDate ? _self.updateDate : updateDate // ignore: cast_nullable_to_non_nullable
 as DateTime?,timestamp: freezed == timestamp ? _self.timestamp : timestamp // ignore: cast_nullable_to_non_nullable
 as DateTime?,connects: freezed == connects ? _self._connects : connects // ignore: cast_nullable_to_non_nullable
 as List<ConnectedStoryModel>?,comments: freezed == comments ? _self._comments : comments // ignore: cast_nullable_to_non_nullable

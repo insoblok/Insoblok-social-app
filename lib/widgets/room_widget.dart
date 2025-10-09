@@ -116,11 +116,7 @@ class RoomItemView extends StatelessWidget {
                                     Text(
                                       // room.content ?? '@${room.id}',
                                       room.content ?? 'New User',
-                                      style: TextStyle(
-                                        fontSize: 14.0,
-                                        color: AIColors.grey,
-                                        fontWeight: FontWeight.normal,
-                                      ),
+                                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.grey),
                                     ),
                                     Opacity(
                                         opacity: viewModel.unreadMsgCnt > 0 ? 1 : 0,

@@ -169,15 +169,21 @@ class PageableView extends StatelessWidget {
                                                 isScrollable: true, // Disable TabBar's built-in scrolling
                                                 tabAlignment: TabAlignment.center,
                                                 indicatorSize: TabBarIndicatorSize.label,
-                                                indicator: RoundedUnderlineTabIndicator(
-                                                  thickness: 6,
-                                                  radius: 6,
-                                                  insets: const EdgeInsets.symmetric(horizontal: 0, vertical: 3),
-                                                  gradient: _pinkPurple,
+                                                indicatorColor: Colors.transparent,
+                                                indicator: BoxDecoration(
+                                                  color: Colors.blue.withAlpha(100), // Bootstrap primary color
+                                                  borderRadius: BorderRadius.circular(8),
+                                                  
                                                 ),
+                                                // indicator: RoundedUnderlineTabIndicator(
+                                                //   thickness: 6,
+                                                //   radius: 6,
+                                                //   insets: const EdgeInsets.symmetric(horizontal: 0, vertical: 3),
+                                                //   // gradient: _pinkPurple,
+                                                // ),
                                                 dividerColor: Colors.transparent,
                                                 dividerHeight: 0,
-                                                labelPadding: const EdgeInsets.symmetric(horizontal: 8),
+                                                labelPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                                                 overlayColor: MaterialStateProperty.all(Colors.transparent),
                                                 labelColor: Colors.white,
                                                 unselectedLabelColor: Colors.white.withOpacity(0.7),
@@ -186,7 +192,10 @@ class PageableView extends StatelessWidget {
                                                       fontSize: 14,
                                                     ),
                                                 tabs: [
-                                                  for (final t in menuTitles) Tab(text: t),
+                                                  for (final t in menuTitles) Container(
+                                                    padding: EdgeInsets.all(8.0),
+                                                    child: Tab(text: t)
+                                                  ),
                                                 ],
                                               ),
                                             ),

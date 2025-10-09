@@ -66,6 +66,7 @@ extension StoryModelExt on StoryModel {
       'text': text,
       'status': status,
       'category': category,
+      'place_id': placeId,
       'likes': (likes),
       'follows': (follows),
       'views': (views),

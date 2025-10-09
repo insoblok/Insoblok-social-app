@@ -20,6 +20,7 @@ abstract class UserModel with _$UserModel {
     String? city,
     String? country,
     String? website,
+    String? placeId,
     String? desc,
     String? discovery,
     String? nickId,

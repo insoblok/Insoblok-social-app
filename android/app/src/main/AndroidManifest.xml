@@ -83,6 +83,9 @@
               android:name="android.app.foregroundServiceType"
               android:value="mediaProjection" />
               
+            <!-- <meta-data
+              android:name="com.google.android.geo.API_KEY"
+              android:value="AIzaSyAN4xG1SxbgazfmqjxG84yX4Il1DV01Jxc" /> -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>

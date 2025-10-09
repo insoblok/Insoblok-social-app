@@ -97,6 +97,7 @@ class AuthService with ListenableServiceMixin {
           nickId: newUser.fullName.trim().replaceAll(' ', '').toLowerCase(),
           biometricEnabled: newUser.biometricEnabled ?? true,
           rewardDate: 0,
+          placeId: newUser.placeId,
           timestamp: DateTime.now(),
           updateDate: DateTime.now(),
         ),

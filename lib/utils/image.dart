@@ -17,6 +17,7 @@ class AIImages {
   static String icNayOutline = 'assets/icons/ic_nay_outline.svg';
   static String icYayFill = 'assets/icons/ic_yay_fill.svg';
   static String icNayFill = 'assets/icons/ic_nay_fill.svg';
+  static String icThumbUp = 'assets/icons/ic_thumb_up.png';
 
   static String icEthereumGold = 'assets/images/ic_ethereum_gold.png';
 
@@ -48,6 +49,7 @@ class AIImages {
   static String icBottomWalletFill = 'assets/icons/ic_wallet_fill.svg';
   static String icBottomWallet = 'assets/icons/ic_wallet.svg';
   static String icDollar = 'assets/icons/ic_dollar.svg';
+  static String icDollar2 = 'assets/icons/ic_dollar.png';
   static String icBottomLeaderboardFill = 'assets/icons/ic_leaderboard_fill.png';
   static String icBottomLeaderboard = 'assets/icons/ic_leaderboard.png';
   static String icUsdt = 'assets/icons/ic_usdt.png';

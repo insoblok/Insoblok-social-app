@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'package:flutter_google_places_sdk/flutter_google_places_sdk.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
@@ -20,9 +20,16 @@ class UpdateProfileProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  final places = FlutterGooglePlacesSdk(GOOGLE_API_KEY);
+  final TextEditingController autoCompleteController = TextEditingController();
+  
   Future<void> init(BuildContext context) async {
     this.context = context;
     account = AuthHelper.user ?? UserModel();
+    final prediction = await places.fetchPlace(account.placeId ?? "", fields: [PlaceField.Id, PlaceField.Address, PlaceField.AddressComponents, PlaceField.Location]);
+    autoCompleteController.text = prediction.place?.address ?? "";
+    logger.d('${account.placeId} ${prediction.place?.address}');
+    notifyListeners();
   }
 
   Future<void> onUpdatedAvatar() async {

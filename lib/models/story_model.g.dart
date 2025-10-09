@@ -17,6 +17,7 @@ _StoryModel _$StoryModelFromJson(Map<String, dynamic> json) => _StoryModel(
   follows:
       (json['follows'] as List<dynamic>?)?.map((e) => e as String).toList(),
   views: (json['views'] as List<dynamic>?)?.map((e) => e as String).toList(),
+  placeId: json['place_id'] as String?,
   updateDate:
       json['update_date'] == null
           ? null
@@ -56,6 +57,7 @@ Map<String, dynamic> _$StoryModelToJson(_StoryModel instance) =>
       'likes': instance.likes,
       'follows': instance.follows,
       'views': instance.views,
+      'place_id': instance.placeId,
       'update_date': instance.updateDate?.toIso8601String(),
       'timestamp': instance.timestamp?.toIso8601String(),
       'connects': instance.connects,

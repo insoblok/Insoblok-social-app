@@ -2,10 +2,12 @@
 
 import 'dart:io';
 import 'dart:async';
+import 'dart:math';
 import 'dart:ui';
 import 'package:path_provider/path_provider.dart';
 
 import 'package:flutter/material.dart';
+import 'package:marquee/marquee.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -198,7 +200,7 @@ class StoryListCell extends StatelessWidget {
                                     ),
                                   ),
                 
-                                  if (viewModel.story.category == 'vote') const StoryYayNayWidget(),
+                                  // if (viewModel.story.category == 'vote') const StoryYayNayWidget(),
                                   Container(
                                     margin: EdgeInsets.only(bottom: 0),
                                     child: Column(
@@ -215,20 +217,22 @@ class StoryListCell extends StatelessWidget {
                                                 children: [
                                                   AIImage(
                                                     'assets/images/img_level_0${viewModel.accountService.userLevel.level}.png',
-                                                    width: 24.0,
-                                                    height: 24.0,
+                                                    width: 21.0,
+                                                    height: 21.0,
                                                   ),
                                                   SizedBox(width: 6.0),
                                                   Text(
                                                     "Rank: ${viewModel.accountService.userRankIndex}",
-                                                    style: Theme.of(context).textTheme.bodyMedium,
+                                                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                                      fontSize: 12,
+                                                    ),
                                                   ),
                                                 ],
                                               )
                                             ),
                                           ],
                                         ),
-                                        SizedBox(height: 12.0),
+                                        SizedBox(height: 6.0),
                                         Row(
                                           crossAxisAlignment: CrossAxisAlignment.center,
                                           children: [
@@ -247,8 +251,6 @@ class StoryListCell extends StatelessWidget {
                                                       height: kStoryAvatarSize * 0.8,
                                                       fullname: viewModel.owner?.fullName ?? 'Test',
                                                       textSize: 24,
-                                                      isBorder: true,
-                                                      borderWidth: 2,
                                                       borderRadius: kStoryAvatarSize / 2,
                                                     ),
                                                   ),
@@ -291,8 +293,6 @@ class StoryListCell extends StatelessWidget {
                                                         viewModel.owner?.fullName ?? '---',
                                                         style: Theme.of(context).textTheme.headlineSmall,
                                                       ),
-                                                    
-                                                      
                                                       Text(
                                                         '· ${viewModel.story.timestamp?.timeago}',
                                                         style: Theme.of(context).textTheme.headlineSmall,
@@ -301,31 +301,51 @@ class StoryListCell extends StatelessWidget {
                                                   ),
                                                     
                                                   const SizedBox(height: 6),
+                                                  viewModel.following ? Loader(size: 20, color: Colors.blueAccent) : Wrap(
+                                                    crossAxisAlignment: WrapCrossAlignment.center,
+                                                    alignment: WrapAlignment.start,
+                                                    spacing: 8,
+                                                    runSpacing: 4,
+                                                    children: [
+                                                      GestureDetector(
+                                                        onTap: () {
+                                                          if (viewModel.following) return;
+                                                          viewModel.handleClickFollow(viewModel.owner!);
+                                                        },
+                                                        child: Text(
+                                                          'Follow',
+                                                          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                                            // color: Colors.blueAccent.withAlpha(200)
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
                                         
                                                   // Second line: Progress (with a small avatar dot like the screenshot)
-                                                  if (viewModel.story.category == 'vote')
-                                                    Row(
-                                                      crossAxisAlignment: CrossAxisAlignment.center,
-                                                      children: [
-                                                        // tiny avatar beside progress line
-                                                        Expanded(
-                                                          child: Text(
-                                                            'Vybe VTO + progress (${viewModel.story.votes?.length ?? 0} / 5 Looks Today)',
-                                                            style: const TextStyle(fontSize: 10.0, fontWeight: FontWeight.bold),
-                                                            maxLines: 2,
-                                                            overflow: TextOverflow.ellipsis,
-                                                          ),
-                                                        ),
-                                                        const SizedBox(width: 8),
-                                                        Container(
-                                                          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
-                                                          decoration: BoxDecoration(
-                                                            color: Theme.of(context).colorScheme.secondary.withAlpha(16),
-                                                            borderRadius: BorderRadius.circular(16.0),
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
+                                                  // if (viewModel.story.category == 'vote')
+                                                  //   Row(
+                                                  //     crossAxisAlignment: CrossAxisAlignment.center,
+                                                  //     children: [
+                                                  //       // tiny avatar beside progress line
+                                                  //       Expanded(
+                                                  //         child: Text(
+                                                  //           'Vybe VTO + progress (${viewModel.story.votes?.length ?? 0} / 5 Looks Today)',
+                                                  //           style: const TextStyle(fontSize: 10.0, fontWeight: FontWeight.bold),
+                                                  //           maxLines: 2,
+                                                  //           overflow: TextOverflow.ellipsis,
+                                                  //         ),
+                                                  //       ),
+                                                  //       const SizedBox(width: 8),
+                                                  //       Container(
+                                                  //         padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
+                                                  //         decoration: BoxDecoration(
+                                                  //           color: Theme.of(context).colorScheme.secondary.withAlpha(16),
+                                                  //           borderRadius: BorderRadius.circular(16.0),
+                                                  //         ),
+                                                  //       ),
+                                                  //     ],
+                                                  //   ),
                                                 ],
                                               ),
                                             ),
@@ -343,11 +363,63 @@ class StoryListCell extends StatelessWidget {
                     ),
                   ],
                 ),
-            
+                if (viewModel.address != null && (viewModel.address ?? "").isNotEmpty)
+                SafeArea(
+                  child: Align(
+                    alignment: Alignment.topLeft,
+                    child: Container(
+                      margin: EdgeInsets.only(left: 8, top: 54),
+                      padding: EdgeInsets.all(5.0),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withAlpha(40),
+                        borderRadius: BorderRadius.circular(10.0)
+                      ),
+                      child: SizedBox(
+                        width: 120.0,
+                        height: 16.0,
+                        child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(
+                            Icons.place,
+                            size: 14,
+                            color: Colors.white,
+                          ),
+                          const SizedBox(width: 6),
+                            Expanded(
+                              child: Align(
+                                alignment: Alignment.center,
+                                child: Marquee(
+                                  text: '${viewModel.address}',
+                                  style: const TextStyle(
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.normal,
+                                    color: Colors.white,
+                                    height: 1.0, // 👈 helps with vertical centering
+                                  ),
+                                  scrollAxis: Axis.horizontal,
+                                  blankSpace: 10.0,
+                                  velocity: 30.0,
+                                  pauseAfterRound: const Duration(seconds: 0),
+                                  startPadding: 10.0,
+                                  accelerationDuration: const Duration(seconds: 1),
+                                  accelerationCurve: Curves.linear,
+                                  decelerationDuration: const Duration(milliseconds: 500),
+                                  decelerationCurve: Curves.easeOut,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      )
+                    )
+                  ),
+                ),
                 // ======== RIGHT ACTIONS ========
                 Align(
                   alignment: Alignment.bottomRight,
                   child: Container(
+                    height: min(MediaQuery.of(context).size.height * 0.3, 250),
                     margin: EdgeInsets.only(
                       right: 8.0,
                       bottom: 18.0,
@@ -355,34 +427,41 @@ class StoryListCell extends StatelessWidget {
                     padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 0.0),
                     child: Column(
                       mainAxisSize: MainAxisSize.min,
-                      spacing: 5.0,
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         if(viewModel.pageIndex > 0)
                         StoryActionButton(
-                          src: Padding(
-                            padding: const EdgeInsets.only(bottom: 6), // <-- gap between icon & count
-                            child: AIImage(
-                              AIImages.icBottomLook,
-                              color: Theme.of(context).colorScheme.onPrimary,
-                              width: kStoryAvatarSize * 0.46,
-                            ),
+                          src: AIImage(
+                            AIImages.icBottomLook,
+                            color: Theme.of(context).colorScheme.onPrimary,
+                            width: kStoryAvatarSize * 0.46,
                           ),
                           onTap: () async {
                             List<String> mediaString = (viewModel.story.medias ?? []).map((m) => m.link ?? "").toList();
                             await AIHelpers.goToDetailView(context, medias: mediaString);
                           }
                         ),
-                        SizedBox(height: 4.0),
                         StoryActionButton(
                           src: Icon(
                             Icons.remove_red_eye_outlined,
                             color: Theme.of(context).colorScheme.onPrimary,
                             size: kStoryAvatarSize * 0.5,
                             ),
-                          spacing: 0.0,
                           label: '${(viewModel.story.views ?? []).length}',
                         ),
-                        SizedBox(height: 0),            
+                        StoryActionButton(
+                          src: AIImage(
+                            AIImages.icThumbUp,
+                            color: Theme.of(context).colorScheme.onPrimary,
+                            width: kStoryAvatarSize * 0.5,
+                          ),
+                          label: "",
+                          onTap: () {
+                            if(viewModel.story.isVote() != true) {
+                              viewModel.updateVote(true);
+                            }
+                          }
+                        ),
                         StoryActionButton(
                           src: AIImage(
                             AIImages.icComment3,
@@ -390,10 +469,8 @@ class StoryListCell extends StatelessWidget {
                             width: kStoryAvatarSize * 0.5,
                           ),
                           label: '${(viewModel.story.comments ?? []).length}',
-                          spacing: 3,
                           onTap: () => viewModel.showCommentDialog(),
                         ),
-                        SizedBox(height: 4.0),
                         StoryActionButton(
                           src: AIImage(
                             AIImages.icShareOutline,
@@ -404,40 +481,36 @@ class StoryListCell extends StatelessWidget {
                           spacing: 0.0,
                           onTap: () => viewModel.repost(),
                         ),
-                        SizedBox(height: 4.0),
-                        
-                        if (AuthHelper.user?.id == viewModel.story.userId)
-                          StoryActionButton(
-                            src: AIImage(
-                              AIImages.icGallery,
-                              color: Theme.of(context).colorScheme.onPrimary,
-                              width: kStoryAvatarSize * 0.5,
-                            ),
-                            onTap: () => viewModel.showReactions(),
-                          ),
-                        if (AuthHelper.user?.id == viewModel.story.userId)
-                          SizedBox(height: 4.0),
-                        StoryActionButton(
-                          src: AIImage(
-                            AIImages.icVoteUp2,
-                            color: Theme.of(context).colorScheme.onPrimary,
-                            width: kStoryAvatarSize * 0.45,
-                            height: kStoryAvatarSize * 0.45,
-                          ),
-                          spacing: 3.0,
-                          label: '${(viewModel.story.cntYay)}',
-                        ),
-                        SizedBox(height: 4.0),
-                        StoryActionButton(
-                          src: AIImage(
-                            AIImages.icVoteDown2,
-                            color: Theme.of(context).colorScheme.onPrimary,
-                            width: kStoryAvatarSize * 0.45,
-                            height: kStoryAvatarSize * 0.45,
-                          ),
-                          spacing: 3.0,
-                          label: '${(viewModel.story.cntNay)}',
-                        ),
+                        // if (AuthHelper.user?.id == viewModel.story.userId)
+                        //   StoryActionButton(
+                        //     src: AIImage(
+                        //       AIImages.icGallery,
+                        //       color: Theme.of(context).colorScheme.onPrimary,
+                        //       width: kStoryAvatarSize * 0.5,
+                        //     ),
+                        //     onTap: () => viewModel.showReactions(),
+                        //   ),
+                        // if (AuthHelper.user?.id == viewModel.story.userId)
+                        // StoryActionButton(
+                        //   src: AIImage(
+                        //     AIImages.icVoteUp2,
+                        //     color: Theme.of(context).colorScheme.onPrimary,
+                        //     width: kStoryAvatarSize * 0.45,
+                        //     height: kStoryAvatarSize * 0.45,
+                        //   ),
+                        //   spacing: 3.0,
+                        //   label: '${(viewModel.story.cntYay)}',
+                        // ),
+                        // StoryActionButton(
+                        //   src: AIImage(
+                        //     AIImages.icVoteDown2,
+                        //     color: Theme.of(context).colorScheme.onPrimary,
+                        //     width: kStoryAvatarSize * 0.45,
+                        //     height: kStoryAvatarSize * 0.45,
+                        //   ),
+                        //   spacing: 3.0,
+                        //   label: '${(viewModel.story.cntNay)}',
+                        // ),
                       ],
                     ),
                   ),
@@ -879,10 +952,10 @@ class StoryYayNayWidget extends ViewModelWidget<StoryProvider> {
 class StoryActionButton extends StatelessWidget {
   final Widget src;
   final String? label;
-  double? spacing = 4.0;
+  double? spacing;
   final void Function()? onTap;
   
-  StoryActionButton({super.key, required this.src, this.label, this.spacing, this.onTap});
+  StoryActionButton({super.key, required this.src, this.label = "", this.spacing = 0, this.onTap});
   
   @override
   Widget build(BuildContext context) {
@@ -891,9 +964,7 @@ class StoryActionButton extends StatelessWidget {
       child: Column(
         children: [
           src,
-          if(label != null && (label ?? "").toString().isNotEmpty) 
           SizedBox(height: spacing),
-          if(label != null && (label ?? "").toString().isNotEmpty)
           Text(
             label!, 
             style: TextStyle(

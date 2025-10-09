@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:stacked/stacked.dart';
+import 'package:google_places_api_flutter/google_places_api_flutter.dart';
 
 import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/pages/pages.dart';
@@ -415,10 +416,14 @@ class AccountPrivateInfoView extends ViewModelWidget<UpdateProfileProvider> {
   final void Function(String value)? updateLastName;
   final void Function(String value)? updateLocation;
   final void Function(String value)? updateWebsite;
-  const AccountPrivateInfoView({ super.key, this.updateFirstName, this.updateLastName, this.updateLocation, this.updateWebsite });
+  AccountPrivateInfoView({ super.key, this.updateFirstName, this.updateLastName, this.updateLocation, this.updateWebsite });
+  
+  
+  
 
   @override
   Widget build(BuildContext context, viewModel) {
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
       child: Column(
@@ -457,11 +462,72 @@ class AccountPrivateInfoView extends ViewModelWidget<UpdateProfileProvider> {
             hintText: "Last Name",
           ),
           SizedBox(height: 12.0),
-          AccountPrivateInfoCover(
-            leading: Icons.location_pin,
-            title: viewModel.account.city ?? 'Your City',
-            hintText: "Your City",
-            onChanged: updateLocation
+          PlaceSearchField(
+            /// The line `// controller: autoCompleteController,` is a commented-out line of
+            /// code in the `PlaceSearchField` widget initialization.
+            controller: viewModel.autoCompleteController,
+            apiKey: GOOGLE_API_KEY,
+            isLatLongRequired: true,        // Fetch lat/long with place details
+            webCorsProxyUrl: "https://cors-anywhere.herokuapp.com",  // Optional for web
+            onPlaceSelected: (placeId, latLng) {
+              logger.d('Place ID: ${placeId.place_id}');
+              logger.d('Latitude and Longitude: $latLng');
+            },
+            decorationBuilder: (context, child) {
+              return Material(
+                type: MaterialType.card,
+                elevation: 4,
+                color: Colors.black87,
+                borderRadius: BorderRadius.circular(8),
+                child: child,
+              );
+            },
+            builder: (context, controller, focusNode) {
+              return TextField(
+                controller: viewModel.autoCompleteController,
+                focusNode: focusNode,
+                // autofocus: true,
+                style: Theme.of(context).textTheme.bodyMedium,
+                decoration: InputDecoration(
+                  contentPadding: EdgeInsets.symmetric(vertical: 0.0),
+                  filled: true,
+                  fillColor: Colors.grey.shade900,
+                  prefixIcon: Icon(
+                    size: 20.0,
+                    
+                    Icons.location_city, // 👈 any Material icon
+                    color: Theme.of(context).primaryColor,   // icon color
+                  ),
+                  enabledBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12), // corner radius
+                    borderSide: BorderSide(
+                      color: Colors.grey, // border color when not focused
+                      width: 1,         // border width
+                    ),
+                  ),
+                  focusedBorder: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(
+                      color: Colors.blueAccent, // border color when focused
+                      width: 1,
+                    ),
+                  ),
+                  )
+                );
+              },
+              itemBuilder: (context, prediction) => ListTile(
+                tileColor: Colors.black87,
+
+                selectedColor: Colors.black45,
+                textColor: Colors.black12,
+                leading: const Icon(Icons.location_on, color: Colors.white),
+                title: Text(
+                  prediction.description,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.white)
+                ),
+              ),
           ),
           SizedBox(height: 12.0),
           AccountPrivateInfoCover(
