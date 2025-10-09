@@ -3,7 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
 import 'package:stacked/stacked.dart';
-
+import 'package:flutter/scheduler.dart';
+import 'package:flutter_google_places_sdk/flutter_google_places_sdk.dart';
 
 import 'package:insoblok/utils/background_camera_capture.dart';
 import 'package:insoblok/utils/background_camera_video_capture.dart';
@@ -113,6 +114,15 @@ class StoryProvider extends InSoBlokViewModel {
   bool get vybeCamEnabled => globals.isVybeCamEnabled;
 
 
+  final places = FlutterGooglePlacesSdk(GOOGLE_API_KEY);
+  
+  bool _following = false;
+  bool get following => _following;
+  set following(bool f) {
+    _following = f;
+    notifyListeners();
+  }
+
   void init(BuildContext context, {required StoryModel model}) async {
     this.context = context;
     story = model;
@@ -132,6 +142,7 @@ class StoryProvider extends InSoBlokViewModel {
     _isVideoReaction = globals.isRRCVideoCapture;  
     // _isVideoReaction = false;
 
+    
     quillController = () {
         return QuillController.basic(
           config: QuillControllerConfig(
@@ -140,10 +151,12 @@ class StoryProvider extends InSoBlokViewModel {
         );
       }();
     fetchUser();
+    await getAddress();
   }
 
   Future<void> startRRC() async{
-    if(showFaceDialog || (story.reactions ?? []).isEmpty) {
+    // if(showFaceDialog || (story.reactions ?? []).isEmpty) {
+    if(showFaceDialog) {
       return;
     }
 
@@ -192,9 +205,7 @@ class StoryProvider extends InSoBlokViewModel {
     };
 
     await videoCapture.initialize();
-    logger.d("initialized video");
     await videoCapture.recordShortVideo(seconds: 2.0);
-    logger.d("recordedvideo");
     await videoCapture.stopAndDispose();
     return c.future;
   }
@@ -237,7 +248,6 @@ class StoryProvider extends InSoBlokViewModel {
     quillController?.dispose();
     quillScrollController.dispose();
     focusNode.dispose();
-
     camera.dispose();
     videoCapture.dispose();
     super.dispose();
@@ -351,6 +361,23 @@ class StoryProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  String? _address;
+  String? get address => _address;
+
+  Future<void> getAddress() async {
+    try {
+    final prediction = await places.fetchPlace(story.placeId ?? "", fields: [PlaceField.Id, PlaceField.Address, PlaceField.AddressComponents, PlaceField.Location]);
+    _address = prediction.place?.address ?? "";
+    } catch (e) {
+      logger.e("Failed to fetch address: $e");
+    }
+    notifyListeners();
+  } 
+  // set address(String addr) {
+  //   _address = addr;
+  //   notifyListeners();
+  // }
+
   Future<void> goToDetailPage() async {
     await updateView();
     var data = await Routers.goToStoryDetailPage(context, story);
@@ -435,9 +462,9 @@ class StoryProvider extends InSoBlokViewModel {
     } else {
       story = story.copyWith(votes: votes);
       if (story.isVote() != null && story.isVote() == true) {
-        AIHelpers.showToast(msg: 'Vote No.');
-      } else {
         AIHelpers.showToast(msg: 'Vote Yes.');
+      } else {
+        AIHelpers.showToast(msg: 'Vote No.');
       }
       notifyListeners();
     }
@@ -666,7 +693,7 @@ class StoryProvider extends InSoBlokViewModel {
   Future<void> handleClickRemix() async {
     
   }
-
+  
   Future<bool?> _showDescriptionDialog() => showDialog<bool>(
     context: context,
     builder: (context) {
@@ -751,4 +778,26 @@ class StoryProvider extends InSoBlokViewModel {
       );
     },
   );
+
+  Future<void> handleClickFollow(UserModel? followee) async {
+    if(AuthHelper.user?.id == followee?.id) {
+      AIHelpers.showToast(msg: "Can not follow yourself.");
+      return;
+    }
+    following = true;
+    UserModel? result = await userService.updateFollow(AuthHelper.user, followee);
+    if((followee?.follows ?? []).length == (result?.follows ?? []).length) {
+      AIHelpers.showToast(msg: "An error occurred while updating following ${followee!.nickId}. Try it again later.");
+    }
+
+    else if ((result?.follows ?? []).contains(AuthHelper.user!.id)) {
+      AIHelpers.showToast(msg: "Successfully followed ${followee!.nickId}");
+      
+    }
+    else {
+      AIHelpers.showToast(msg: "Cancelled following ${followee!.nickId}");
+    }
+    owner = result;
+    following = false;
+  }
 }

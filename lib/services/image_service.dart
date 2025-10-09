@@ -271,6 +271,7 @@ class AIAvatarDefaultView extends StatelessWidget {
   final double? borderWidth;
   final double? borderRadius;
   final bool? borderGradient;
+  final bool? isBorder;
 
   const AIAvatarDefaultView({
     super.key,
@@ -281,6 +282,7 @@ class AIAvatarDefaultView extends StatelessWidget {
     this.borderWidth,
     this.borderRadius,
     this.borderGradient,
+    this.isBorder,
   });
 
   @override
@@ -288,13 +290,13 @@ class AIAvatarDefaultView extends StatelessWidget {
     return Container(
       width: width ?? 60,
       height: height ?? 60,
-      decoration: BoxDecoration(
+      decoration: (isBorder ?? false) ? BoxDecoration(
         border: borderGradient != null && borderGradient == true ?GradientBoxBorder(
           gradient: LinearGradient(colors: getGradientColors(fullname.length)),
           width: borderWidth ?? 2,
         ) : null,
         borderRadius: BorderRadius.circular(borderRadius ?? 30.0),
-      ),
+      ) : BoxDecoration(),
 
       child: ClipOval(
         child: Container(
@@ -405,7 +407,8 @@ class AIAvatarImage extends StatelessWidget {
           height: height,
           borderWidth: borderWidth,
           borderRadius: borderRadius,
-          borderGradient: borderGradient
+          borderGradient: borderGradient,
+          isBorder: isBorder,
         );
   }
 }

@@ -136,11 +136,15 @@ extension UserModelExt on UserModel {
                 alignment: Alignment.bottomRight,
                 child: Container(
                   decoration: BoxDecoration(
-                    border: GradientBoxBorder(
-                      gradient: LinearGradient(
-                        colors: getGradientColors(fullName.length),
-                      ),
-                      width: 1,
+                    border: BoxBorder.all(
+                      // gradient: LinearGradient(
+                      //   colors: getGradientColors(fullName.length),
+                      // ),
+                      color:
+                        status == 'Online'
+                            ? AIColors.green
+                            : AIColors.lightGrey,
+                      // width: 1,
                     ),
                     borderRadius: BorderRadius.circular(
                       statusSize != null ? statusSize / 2 : 7,
@@ -201,6 +205,7 @@ extension UserModelExt on UserModel {
       'website': website,
       'desc': desc,
       'discovery': discovery,
+      'place_id': placeId,
       'nick_id': nickId,
       'lat': lat,
       'lon': lon,

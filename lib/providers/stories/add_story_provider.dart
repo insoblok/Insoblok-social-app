@@ -68,6 +68,9 @@ class AddStoryProvider extends InSoBlokViewModel {
   List<UserModel> _selectedUserList = [];
   List<UserModel> get selectedUserList => _selectedUserList;
 
+  String placeId = "";
+
+
   Future<void> init(BuildContext context) async {
     this.context = context;
   }
@@ -205,6 +208,7 @@ class AddStoryProvider extends InSoBlokViewModel {
           title: title,
           text: quillDescription,
           category: isVoteImage ? 'vote' : 'regular',
+          placeId: placeId,
           updateDate: DateTime.now(),
           timestamp: DateTime.now(),
           status: isPrivate ? 'private' : 'public',

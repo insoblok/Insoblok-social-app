@@ -11,6 +11,7 @@ class UserService {
   Future<UserModel?> createUser(UserModel user) async {
     try {
       var doc = await _userCollection.add(user.toMap());
+      logger.d("This is createUser ${user.toJson()}");
       return user.copyWith(id: doc.id);
     } on FirebaseException catch (e) {
       logger.e(e.message);
@@ -88,6 +89,24 @@ class UserService {
 
   Stream<DocumentSnapshot<Map<String, dynamic>>> getUserStream(String id) {
     return _userCollection.doc(id).snapshots();
+  }
+
+  Future<UserModel?> updateFollow(UserModel? follower, UserModel? followee) async {
+    UserModel? newUser;
+    var follows = List<String>.from(followee?.follows ?? []);
+    if (follows.contains(follower?.id)) {
+      follows.remove(follower?.id);
+    } else {
+      follows.add(follower!.id!);
+    }
+    try {
+      newUser = followee!.copyWith(follows: follows);
+      await updateUser(newUser);
+    } catch (e) {
+      logger.d("Failed to update follow: $e");
+      return followee;
+    }
+    return newUser;
   }
 
   Future<List<UserModel?>> findUsersByKey(String key) async {

@@ -17,7 +17,7 @@ List<BoxShadow> kContainerDarkShadow = [
 
 BoxDecoration get kCardDecoration => BoxDecoration(
   borderRadius: BorderRadius.circular(16.0),
-  border: Border.all(width: 0.66, color: AIColors.pink),
+  border: Border.all(width: 0.66, color: Colors.white),
 );
 
 BoxDecoration get kNoBorderDecoration => BoxDecoration(

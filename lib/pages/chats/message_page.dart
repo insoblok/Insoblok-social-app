@@ -136,49 +136,176 @@ class MessagePage extends StatelessWidget {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
+                    
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            margin: EdgeInsets.only(
+                              left: 12.0,
+                              right: 12.0,
+                              bottom: MediaQuery.of(context).viewPadding.bottom,
+                            ),
+                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            alignment: Alignment.center,
+                            decoration: BoxDecoration(
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.secondary.withAlpha(16),
+                              borderRadius: BorderRadius.circular(24.0),
+                            ),
+                            child: Row(
+                              children: [
+                                Container(
+                                  width: 36.0,
+                                  height: 36.0,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    color: Theme.of(context).primaryColor,
+                                  ),
+                                  child: InkWell(
+                                    onTap: () {
+                                      viewModel.isAddPop = !viewModel.isAddPop;
+                                    },
+                                    child: Icon(
+                                      viewModel.isAddPop
+                                          ? Icons.close
+                                          : Icons.add_outlined,
+                                      color: Theme.of(context).colorScheme.onPrimary,
+                                    ),
+                                  ),
+                                ),
+                                Expanded(
+                                  child: Container(
+                                    padding: const EdgeInsets.only(
+                                      left: 12.0,
+                                      right: 12.0,
+                                    ),
+                                    constraints: BoxConstraints(maxHeight: 100.0),
+                                    child: TextFormField(
+                                      focusNode: viewModel.focusNode,
+                                      decoration: InputDecoration(
+                                        hintText: 'Type something',
+                                        hintStyle:
+                                            Theme.of(context).textTheme.labelMedium,
+                                        border: InputBorder.none,
+                                      ),
+                                      keyboardType: TextInputType.text,
+                                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.normal),
+                                      maxLines: null,
+                                      controller: viewModel.textController,
+                                      onChanged: (value) => viewModel.content = value,
+                                      onFieldSubmitted: (value) {
+                                        if (viewModel.isShowButton) {
+                                          viewModel.sendMessage();
+                                        }
+                                      },
+                                      onSaved: (value) {
+                                        logger.d('onSaved');
+                                      },
+                                      onEditingComplete: () {
+                                        logger.d('onEditingComplete');
+                                      },
+                                    ),
+                                  ),
+                                ),
+                                InkWell(
+                                  onTap: () {
+                                    viewModel.handleClickDollarIcon(context);
+                                  },
+                                  child:  AIImage(AIImages.icDollar2, width: 32.0, height: 32.0, backgroundColor: Colors.transparent, color: Colors.grey),
+                                ),
+                                SizedBox(width: 2.0),
+                                
+                                const SizedBox(width: 8.0),
+                              ],
+                            ),
+                          ),
+                        ),
+                        Container(
+                          width: 42.0,
+                          height: 42.0,
+                          margin: EdgeInsets.only(
+                            right: 12.0,
+                            bottom: MediaQuery.of(context).viewPadding.bottom,
+                          ),
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Theme.of(context).colorScheme.secondary,
+                          ),
+                          alignment: Alignment.center,
+                          child: InkWell(
+                            onTap: () {
+                              if (viewModel.isShowButton) {
+                                viewModel.sendMessage();
+                              }
+                            },
+                            child: Icon(
+                              Icons.send,
+                              color:
+                                  viewModel.isShowButton
+                                      ? Theme.of(context).colorScheme.onPrimary
+                                      : Theme.of(context).colorScheme.onPrimary,
+                              size: 24.0,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                     if (viewModel.isAddPop) ...{
                       Padding(
-                        padding: const EdgeInsets.only(left: 12),
-                        child: MessageActionButton(
-                          onPressed: viewModel.onPickerImage,
-                          child: AIImage(
-                            AIImages.icImage,
-                            color: Theme.of(context).colorScheme.secondary,
-                            width: 20,
-                            height: 20,
-                          ),
-                        ),
-                      ),
+                        padding: EdgeInsets.only(bottom: 24.0),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.max,
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(left: 12),
+                              child: MessageActionButton(
+                                onPressed: viewModel.onPickerImage,
+                                child: AIImage(
+                                  AIImages.icImage,
+                                  color: Theme.of(context).colorScheme.onPrimary,
+                                  width: 20,
+                                  height: 20,
+                                ),
+                              ),
+                            ),
 
-                      Padding(
-                        padding: const EdgeInsets.only(
-                          left: kRadiuMessagePicker * 0.33 + 12,
-                        ),
-                        child: MessageActionButton(
-                          onPressed: viewModel.onPickerVideo,
-                          child: AIImage(
-                            AIImages.icCamera,
-                            color: Theme.of(context).colorScheme.secondary,
-                            width: 20.0,
-                            height: 20.0,
-                          ),
-                        ),
-                      ),
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                // left: kRadiuMessagePicker * 0.33 + 12,
+                              ),
+                              child: MessageActionButton(
+                                onPressed: viewModel.onPickerVideo,
+                                child: AIImage(
+                                  AIImages.icCamera,
+                                  color: Theme.of(context).colorScheme.onPrimary,
+                                  width: 20.0,
+                                  height: 20.0,
+                                ),
+                              ),
+                            ),
 
-                      Padding(
-                        padding: const EdgeInsets.only(
-                          left: kRadiuMessagePicker * 0.66 + 12,
+                            Padding(
+                              padding: const EdgeInsets.only(
+                                // left: kRadiuMessagePicker * 0.66 + 12,
+                              ),
+                              child: MessageActionButton(
+                                onPressed: viewModel.onPickGif,
+                                child: AIImage(
+                                  AIImages.icGif,
+                                  color: Theme.of(context).colorScheme.onPrimary,
+                                  width: 20.0,
+                                  height: 20.0,
+                                ),
+                              ),
+                            ),
+                            
+                          ],
                         ),
-                        child: MessageActionButton(
-                          onPressed: viewModel.onPickGif,
-                          child: AIImage(
-                            AIImages.icGif,
-                            color: Theme.of(context).colorScheme.secondary,
-                            width: 20.0,
-                            height: 20.0,
-                          ),
-                        ),
-                      ),
+                      )
                       /*
                       Padding(
                         padding: const EdgeInsets.only(
@@ -195,100 +322,6 @@ class MessagePage extends StatelessWidget {
                       ),
                       */
                     },
-                    Container(
-                      margin: EdgeInsets.only(
-                        left: 12.0,
-                        right: 12.0,
-                        bottom: MediaQuery.of(context).viewPadding.bottom,
-                      ),
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      alignment: Alignment.center,
-                      decoration: BoxDecoration(
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.secondary.withAlpha(16),
-                        borderRadius: BorderRadius.circular(24.0),
-                      ),
-                      child: Row(
-                        children: [
-                          Container(
-                            width: 36.0,
-                            height: 36.0,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              color: Theme.of(context).primaryColor,
-                            ),
-                            child: InkWell(
-                              onTap: () {
-                                viewModel.isAddPop = !viewModel.isAddPop;
-                              },
-                              child: Icon(
-                                viewModel.isAddPop
-                                    ? Icons.close
-                                    : Icons.add_outlined,
-                                color: Theme.of(context).colorScheme.secondary,
-                              ),
-                            ),
-                          ),
-                          Expanded(
-                            child: Container(
-                              padding: const EdgeInsets.only(
-                                left: 12.0,
-                                right: 12.0,
-                              ),
-                              constraints: BoxConstraints(maxHeight: 100.0),
-                              child: TextFormField(
-                                focusNode: viewModel.focusNode,
-                                decoration: InputDecoration(
-                                  hintText: 'Type something',
-                                  hintStyle:
-                                      Theme.of(context).textTheme.labelMedium,
-                                  border: InputBorder.none,
-                                ),
-                                keyboardType: TextInputType.text,
-                                style: Theme.of(context).textTheme.bodySmall,
-                                maxLines: null,
-                                controller: viewModel.textController,
-                                onChanged: (value) => viewModel.content = value,
-                                onFieldSubmitted: (value) {
-                                  if (viewModel.isShowButton) {
-                                    viewModel.sendMessage();
-                                  }
-                                },
-                                onSaved: (value) {
-                                  logger.d('onSaved');
-                                },
-                                onEditingComplete: () {
-                                  logger.d('onEditingComplete');
-                                },
-                              ),
-                            ),
-                          ),
-                          InkWell(
-                            onTap: () {
-                              viewModel.handleClickDollarIcon(context);
-                            },
-                            child:  AIImage(AIImages.icDollar, width: 36.0, height: 36.0),
-                          ),
-                          InkWell(
-                            onTap: () {
-                              if (viewModel.isShowButton) {
-                                viewModel.sendMessage();
-                              }
-                            },
-                            child: Icon(
-                              Icons.send,
-                              color:
-                                  viewModel.isShowButton
-                                      ? Theme.of(context).colorScheme.onPrimary
-                                      : Theme.of(context).colorScheme.secondary,
-                              size: 20.0,
-                            ),
-                          ),
-                          const SizedBox(width: 8.0),
-                        ],
-                      ),
-                    ),
                   ],
                 ),
               ],

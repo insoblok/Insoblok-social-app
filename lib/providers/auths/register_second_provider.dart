@@ -24,8 +24,9 @@ class RegisterSecondProvider extends InSoBlokViewModel {
     _user = userModel;
   }
 
-  void updateCity(String s) {
-    _user = _user.copyWith(city: s);
+  void updatePlace(String s) {
+    _user = _user.copyWith(placeId: s);
+    logger.d("This is updatePlace $s");
     notifyListeners();
   }
 
@@ -33,6 +34,8 @@ class RegisterSecondProvider extends InSoBlokViewModel {
     _user = _user.copyWith(country: s);
     notifyListeners();
   }
+
+
 
   Future<void> onClickRegister() async {
     await FirebaseHelper.signInFirebase();
