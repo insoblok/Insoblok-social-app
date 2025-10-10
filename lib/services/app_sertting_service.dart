@@ -111,11 +111,6 @@ class AppSettingService with ListenableServiceMixin {
         color: AIColors.lightTextColor,
         fontWeight: FontWeight.w700,
       ),
-      bodyLarge500: TextStyle(
-        fontSize: 17.0,
-        color: AIColors.lightTextColor,
-        fontWeight: FontWeight.w500,
-      ),
       bodyMedium: TextStyle(
         fontSize: 14.0,
         color: AIColors.lightTextColor,

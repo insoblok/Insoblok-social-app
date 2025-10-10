@@ -43,3 +43,4 @@ export 'pincode_input_widget.dart';
 export 'multiple_input_widget.dart';
 export 'social_media_input_view.dart';
 export 'social_media_individual_input.dart';
+export 'rank_label_widget.dart';

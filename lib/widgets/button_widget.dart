@@ -468,4 +468,69 @@ class GradientPillButton extends StatelessWidget {
       ),
     );
   }
+
+}
+
+class AIBlueGradientButton extends StatelessWidget {
+  final bool? showBoxShadow;
+  final String text;
+  final IconData? icon;
+  final bool? showIcon;
+  final VoidCallback onPressed;
+  const AIBlueGradientButton({super.key, this.showBoxShadow = true, required this.text, this.icon, this.showIcon = true, required this.onPressed });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          colors: [
+            Color(0xFF1E3CFF), // Deep blue
+            Color(0xFF00FFA3), // Greenish gradient
+          ],
+          begin: Alignment.centerLeft,
+          end: Alignment.centerRight,
+        ),
+        borderRadius: BorderRadius.circular(40),
+        boxShadow: [
+          showBoxShadow! ? BoxShadow(
+            color: const Color(0xFF00FFA3).withOpacity(0.5),
+            blurRadius: 20,
+            spreadRadius: 1,
+            offset: const Offset(0, 0),
+          ) : BoxShadow()
+        ],
+      ),
+      child: ElevatedButton(
+        onPressed: () {
+          onPressed();
+        },
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.transparent,
+          shadowColor: Colors.transparent,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(40),
+          ),
+          padding:
+              const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
+        ),
+        child: Row(
+          children: [
+            Text(
+              text,
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                letterSpacing: 1,
+                color: Colors.white,
+              ),
+            ),
+            if (showIcon ?? false) ... {
+              SizedBox(width: 3.0),
+              Icon(Icons.navigate_next, color: Colors.white),
+            }
+          ],
+        ),
+      ),
+    );
+  }
 }

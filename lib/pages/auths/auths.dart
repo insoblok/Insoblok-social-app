@@ -6,3 +6,6 @@ export 'import_wallet_dialog.dart';
 export 'seed_phrase_confirmation_dialog.dart';
 export 'pincode_page.dart';
 export 'pincode_register_page.dart';
+export 'email_page.dart';
+export 'access_code_user_id_page.dart';
+export 'access_code_confirm_page.dart';
