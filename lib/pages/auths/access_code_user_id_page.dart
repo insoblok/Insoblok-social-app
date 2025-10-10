@@ -92,7 +92,7 @@ class AccessCodeUserIdPageState extends State<AccessCodeUserIdPage> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
                 child: DatePickerWidget(
-                  helperText: 'Date of Birth',
+                  hintText: 'Date of Birth',
                   onChanged: (value) {
                     logger.d('Selected date: $value');
                     birthday = DateFormat("dd/MM/yyyy").parse(value);
@@ -113,7 +113,8 @@ class AccessCodeUserIdPageState extends State<AccessCodeUserIdPage> {
                     Icons.person,
                     color: Colors.white,
                   ),
-                  fillColor: Colors.grey.shade900
+                  fillColor: Colors.grey.shade900,
+                  hintText: "Enter your user id"
                           
                 ),
               ),

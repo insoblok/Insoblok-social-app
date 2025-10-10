@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
@@ -13,6 +14,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:insoblok/locator.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
+import 'package:insoblok/models/models.dart';
 
 import 'package:path/path.dart' as p;
 
@@ -601,9 +603,8 @@ class FirebaseHelper {
   ) {
     Map<String, dynamic> newJson = {};
     for (var key in firebaseJson.keys) {
-      if (key == 'update_date' || key == 'timestamp') {
+      if (key == 'update_date' || key == 'timestamp' || key == 'created_at' || key == 'birthday') {
         var value = firebaseJson[key];
-
         if (value != null) {
           DateTime utcDateTime;
           if (value is String) {
@@ -624,4 +625,6 @@ class FirebaseHelper {
     }
     return newJson;
   }
+
+  
 }

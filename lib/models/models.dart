@@ -13,3 +13,4 @@ export 'transfer_model.dart';
 export 'wallet_model.dart';
 export 'transaction_model.dart';
 export 'user_score_model.dart';
+export 'access_code_model.dart';

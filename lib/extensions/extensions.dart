@@ -9,3 +9,4 @@ export 'product_extension.dart';
 export 'tastescore_extension.dart';
 export 'vto_extension.dart';
 export 'transfer_extension.dart';
+export 'access_code_extension.dart';

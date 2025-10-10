@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:insoblok/widgets/widgets.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
-
+import 'package:insoblok/models/models.dart';
+import 'package:insoblok/routers/routers.dart';
 
 class AccessCodeConfirmPage extends StatefulWidget {
 
@@ -15,10 +16,38 @@ class AccessCodeConfirmPage extends StatefulWidget {
 
 class AccessCodeConfirmPageState extends State<AccessCodeConfirmPage> {
 
+  final AccessCodeService accessCodeService = AccessCodeService();
   TextEditingController accessCodeController = TextEditingController();
   
-  void handleClickFinish(BuildContext ctx) {
+  @override
+  void initState() {
+    super.initState();
+    AccessCodeModel accessCodeModel = AccessCodeModel(
+      userId: widget.props["userId"].toString(),
+      email: widget.props["email"].toString(),
+      birthday: widget.props["birthday"],
+      createdAt: DateTime.now()
+    );
+    accessCodeService.createAccessCode(accessCodeModel);
+  }
 
+  Future<void> handleClickFinish(BuildContext ctx) async {
+    final String enteredCode = accessCodeController.text.trim();
+    final String email = widget.props["email"].toString();
+    AccessCodeModel? accessCode = await accessCodeService.getAccessCodeByEmail(email);
+    logger.d(accessCode);
+    if (accessCode == null) {
+      AIHelpers.showToast(msg: "Something went wrong. Please try again later.");
+      return;
+    }
+    if(accessCode.accessCode == enteredCode) {
+      AIHelpers.showToast(msg: "Access Code verified. Redirecting to signin page...");
+      await accessCodeService.updateChecked(email);
+      Routers.goToLoginPage(ctx);
+    }
+    else {
+      AIHelpers.showToast(msg: "Invalid Access Code.");
+    }
   }
   
   @override

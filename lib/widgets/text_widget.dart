@@ -464,7 +464,7 @@ class DatePickerWidgetState extends State<DatePickerWidget> {
         
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
-          labelText: widget.hintText ?? '',
+          hintText: widget.hintText ?? '',
           labelStyle: Theme.of(context).textTheme.labelLarge,
           prefixIcon: widget.prefixIcon ?? Icon(Icons.calendar_today, color: Colors.white),
           filled: true,

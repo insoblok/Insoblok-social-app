@@ -13,6 +13,21 @@ class EmailPage extends StatefulWidget {
 }
 
 class EmailPageState extends State<EmailPage> {
+  final AccessCodeService accessCodeService = AccessCodeService();
+  Future<void> handleClickNext(BuildContext ctx) async {
+    final email = emailController.text.trim();
+    if(!AIHelpers.isValidEmail(email)) {
+      AIHelpers.showToast(msg: "Please enter valid email address.");
+      return;
+    }
+    if (await accessCodeService.checkAccessCodeByEmail(email)) {
+      Routers.goToLoginPage(ctx);
+    }
+    else {
+      Routers.goToAccessCodeUserIdPage(ctx, email);
+    }
+  }
+
   TextEditingController emailController = TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -40,7 +55,7 @@ class EmailPageState extends State<EmailPage> {
                 children: [
                   SizedBox(height: 24.0),
                   Text(
-                    "Access Code Step 2 of 3",
+                    "Access Code Step 1 of 3",
                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                       fontSize: 24
                     )
@@ -78,14 +93,7 @@ class EmailPageState extends State<EmailPage> {
                     child: AIBlueGradientButton(
                       text: "NEXT",
                       icon: Icons.navigate_next_sharp,
-                      onPressed: () {
-                        final email = emailController.text.trim();
-                        if(!AIHelpers.isValidEmail(email)) {
-                          AIHelpers.showToast(msg: "Please enter valid email address.");
-                          return;
-                        }
-                        Routers.goToAccessCodeUserIdPage(context, email);
-                      },
+                      onPressed: () => handleClickNext(context),
                       showBoxShadow: false,
                     )
                   ),
