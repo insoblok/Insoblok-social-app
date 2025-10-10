@@ -1,6 +1,5 @@
-import 'dart:io';
+import 'dart:io' as io;
 import 'package:flutter/material.dart';
-import 'package:googleapis/containeranalysis/v1.dart';
 
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/pages/pages.dart';
@@ -46,8 +45,20 @@ class Routers {
     _pushToRoute(context, kRouterLoginPincode, null);
   }
 
+  static dynamic goToEmailPage(BuildContext context) {
+    _pushToRoute(context, kRouterEmail, null);
+  }
+
   static dynamic goToMainPage(BuildContext context) {
     _pushReplacement(context, kRouterMain, null);
+  }
+
+  static dynamic goToAccessCodeUserIdPage(BuildContext context, String email) {
+    _pushToRoute(context, kRouterAccessCodeUserId, email);
+  }
+
+  static dynamic goToAccessCodeConfirmPage(BuildContext context, Map<String, dynamic> props) {
+    _pushToRoute(context, kRouterAccessCodeConfirm, props);
   }
 
   static dynamic goToAccountPage(BuildContext context, {UserModel? user}) {
@@ -272,7 +283,7 @@ class Routers {
     return _pushToRoute(context, kRouterMarketPlace, null);
   }
 
-  static dynamic goToFaceDetailPage(BuildContext context, String storyID, String url, File face, List<AIFaceAnnotation> annotations, bool editable) {
+  static dynamic goToFaceDetailPage(BuildContext context, String storyID, String url, io.File face, List<AIFaceAnnotation> annotations, bool editable) {
 
     return _pushToRoute(context, kRouterFaceDetail, {
       'storyID': storyID,

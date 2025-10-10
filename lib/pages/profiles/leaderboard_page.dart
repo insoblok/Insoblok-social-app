@@ -167,6 +167,10 @@ class LeaderboardPage extends StatelessWidget {
             backgroundColor: AIColors.leaderBoardBackground,
             appBar: AppBar(
               title: Text('Leaderboard'),
+              leading: IconButton(
+                icon: const Icon(Icons.arrow_back),
+                onPressed: () => Navigator.pushNamed(context, '/main', arguments: null),
+              ),
               centerTitle: true,
               flexibleSpace: AppBackgroundView(),
               bottom: TabBar(

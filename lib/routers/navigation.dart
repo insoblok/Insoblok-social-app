@@ -20,8 +20,12 @@ const kRouterRegister = '/register';
 const kRouterRegisterFirst = '/register-first';
 const kRouterRegisterSecond = '/register-second';
 const kRouterLoginPincode = "/login-pincode";
+const kRouterEmail = '/email';
+const kRouterAccessCodeUserId = '/access-code-user-id';
+const kRouterAccessCodeConfirm = '/access-code-confirm';
 
 const kRouterMain = '/main';
+
 
 const kRouterAccount = '/account';
 const kRouterAccountUpdate = '/account-update';
@@ -138,6 +142,14 @@ class Navigation {
 
     // * Pincode Signin Page
     initRoute(kRouterLoginPincode, (props) => PinCodePage());
+
+    // * Email page for access code
+    initRoute(kRouterEmail, (props) => EmailPage());
+
+    // * Access code user id input page
+    initRoute<String>(kRouterAccessCodeUserId, (props) => AccessCodeUserIdPage(email: props.toString()));
+
+    initRoute<Map<String, dynamic>>(kRouterAccessCodeConfirm, (props) => AccessCodeConfirmPage(props: props!));
 
     // * MainPage
     initRoute(kRouterMain, (props) => InSoBlokPage());

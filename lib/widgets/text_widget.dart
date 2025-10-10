@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/services/services.dart';
+import 'package:intl/intl.dart';
+
 class AITextField extends StatelessWidget {
   final String? initialValue;
   final String? hintText;
@@ -337,5 +339,156 @@ class AITextAreaState extends State<AITextArea> {
       onEditingComplete: widget.onEditingComplete,
     );
   }
+}
 
+class DatePickerWidget extends StatefulWidget {
+  final DateTime? initialValue;
+  final TextEditingController? controller;
+  final String? hintText;
+  final String? helperText;
+  final Widget? prefixIcon;
+  final double? height;
+  final bool? autofocus;
+  final Color? fillColor;
+  final FormFieldValidator<String>? validator;
+  final ValueChanged<String>? onChanged;
+  final VoidCallback? onEditingComplete;
+  final ValueChanged<String>? onFieldSubmitted;
+  final FormFieldSetter<String>? onSaved;
+  final VoidCallback? onTapOutside;
+
+  const DatePickerWidget({
+    super.key,
+    this.initialValue,
+    this.controller,
+    this.helperText,
+    this.hintText,
+    this.prefixIcon,
+    this.height = 44.0,
+    this.autofocus = false,
+    this.fillColor,
+    this.validator,
+    this.onChanged,
+    this.onEditingComplete,
+    this.onFieldSubmitted,
+    this.onSaved,
+    this.onTapOutside,
+  });
+
+  @override
+  State<DatePickerWidget> createState() => DatePickerWidgetState();
+}
+
+class DatePickerWidgetState extends State<DatePickerWidget> {
+  DateTime? _selectedDate;
+  late TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _controller = widget.controller ?? TextEditingController();
+
+    // If an initial date value exists, set it and format it
+    if (widget.initialValue != null) {
+      _selectedDate = widget.initialValue;
+      _controller.text = _formatDate(widget.initialValue!);
+    }
+  }
+
+  Future<void> _selectDate(BuildContext ctx) async {
+    final DateTime? picked = await showDatePicker(
+      context: ctx,
+      initialDate: _selectedDate ??
+          DateTime.now(), // default 18 years ago
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now().add(const Duration(days: 365 * 100)), // must be ≥ 13 years old
+      builder: (ctx, child) {
+        return Theme(
+          data: Theme.of(ctx).copyWith(
+            colorScheme: const ColorScheme.dark(
+              primary: Colors.blue,
+              onPrimary: Colors.white,
+              onSurface: Colors.grey,
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(foregroundColor: Colors.blue),
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (picked != null && picked != _selectedDate) {
+      setState(() {
+        _selectedDate = picked;
+        _controller.text = _formatDate(picked);
+      });
+
+      if (widget.onChanged != null) {
+        widget.onChanged!(_controller.text);
+      }
+    }
+  }
+
+  String _formatDate(DateTime date) {
+    return DateFormat('dd/MM/yyyy').format(date);
+  }
+
+  String? _validateDate(String? value) {
+    if (value == null || value.isEmpty) return 'Please select your birthday';
+    try {
+      final date = DateFormat('dd/MM/yyyy').parseStrict(value);
+      final today = DateTime.now();
+      final minAgeDate = DateTime(today.year - 13, today.month, today.day);
+
+      if (date.isAfter(minAgeDate)) {
+        return 'You must be at least 13 years old';
+      }
+    } catch (_) {
+      return 'Invalid date format';
+    }
+    return null;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: widget.height,
+      child: TextFormField(
+        controller: _controller,
+        readOnly: true, // prevent manual typing
+        autofocus: widget.autofocus ?? false,
+        style: Theme.of(context).textTheme.bodyMedium,
+        
+        decoration: InputDecoration(
+          contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
+          labelText: widget.hintText ?? '',
+          labelStyle: Theme.of(context).textTheme.labelLarge,
+          prefixIcon: widget.prefixIcon ?? Icon(Icons.calendar_today, color: Colors.white),
+          filled: true,
+          fillColor: widget.fillColor ?? Colors.grey.shade900,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12.0),
+            borderSide: const BorderSide(width: 0.66),
+          ),
+          enabledBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12.0),
+            borderSide: const BorderSide(width: 0.66, color: Colors.transparent),
+          ),
+          focusedBorder: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(12.0),
+            borderSide: BorderSide(width: 0.9, color: Theme.of(context).primaryColor),
+          ),
+        ),
+        validator: widget.validator ?? _validateDate,
+        onEditingComplete: widget.onEditingComplete,
+        onFieldSubmitted: widget.onFieldSubmitted,
+        onSaved: widget.onSaved,
+        onTapOutside: (_) => widget.onTapOutside?.call(),
+        onTap: () => _selectDate(context),
+      ),
+    );
+  }
 }

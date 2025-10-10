@@ -18,7 +18,7 @@ class PageableView extends StatelessWidget {
   );
 
   static const double _kTopRowHeight = 40.0;
-  static const double _kTabsHeight   = 40.0;
+  static const double _kTabsHeight   = 26.0;
   static const double _kGap          = 5.0;
   @override
   Widget build(BuildContext context) {
@@ -171,8 +171,8 @@ class PageableView extends StatelessWidget {
                                                 indicatorSize: TabBarIndicatorSize.label,
                                                 indicatorColor: Colors.transparent,
                                                 indicator: BoxDecoration(
-                                                  color: Colors.blue.withAlpha(100), // Bootstrap primary color
-                                                  borderRadius: BorderRadius.circular(8),
+                                                  color: Colors.black.withAlpha(180), // Bootstrap primary color
+                                                  borderRadius: BorderRadius.circular(12),
                                                   
                                                 ),
                                                 // indicator: RoundedUnderlineTabIndicator(
@@ -183,7 +183,7 @@ class PageableView extends StatelessWidget {
                                                 // ),
                                                 dividerColor: Colors.transparent,
                                                 dividerHeight: 0,
-                                                labelPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                                                labelPadding: const EdgeInsets.symmetric(horizontal: 4, vertical: 0),
                                                 overlayColor: MaterialStateProperty.all(Colors.transparent),
                                                 labelColor: Colors.white,
                                                 unselectedLabelColor: Colors.white.withOpacity(0.7),
@@ -193,7 +193,10 @@ class PageableView extends StatelessWidget {
                                                     ),
                                                 tabs: [
                                                   for (final t in menuTitles) Container(
-                                                    padding: EdgeInsets.all(8.0),
+                                                    decoration: BoxDecoration(
+                                                      borderRadius: BorderRadius.circular(12.0),
+                                                    ),
+                                                    padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 1.0),
                                                     child: Tab(text: t)
                                                   ),
                                                 ],

@@ -20,7 +20,7 @@ class AccountService with ListenableServiceMixin {
   AccountService() {
     getUserScore(owner?.id ?? "");
     getTransfers(owner?.id ?? "");
-    getUsersScoreList();
+    // getUsersScoreList();
   }
 
   List<TastescoreModel> get scores =>

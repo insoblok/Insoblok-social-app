@@ -33,8 +33,11 @@ class LeaderboardUserView extends StatelessWidget {
           (viewModel) => viewModel.init(context, id: user.id, score: score),
       builder: (context, viewModel, _) {
         var userData = viewModel.owner;
-        return Padding(
+        return Container(
           padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.all(Radius.circular(12))
+          ),
           child: InkWell(
             onTap: viewModel.goToTastescorePage,
             child: Container(
@@ -72,11 +75,11 @@ class LeaderboardUserView extends StatelessWidget {
                     Text(
                       (cellIndex + 1).toString(),
                       style: TextStyle(
-                        fontSize: 32,
+                        fontSize: 24,
                         color: viewModel.getRankColor(cellIndex),
                       )
                     ),
-                    SizedBox(width: 24),
+                    SizedBox(width: 13),
                     userData == null
                         ? ShimmerContainer(
                           child: Container(
@@ -152,14 +155,14 @@ class LeaderboardUserView extends StatelessWidget {
                         Text(
                           score.toString(),
                           style: TextStyle(
-                            fontSize: 20.0,
+                            fontSize: 12.0,
                             fontWeight: FontWeight.bold,
                             color: viewModel.getRankColor(cellIndex)
                           ),
                         ),
                         Text(
                           ' XP',
-                          style: TextStyle(fontSize: 14.0, color: viewModel.getRankColor(cellIndex)),
+                          style: TextStyle(fontSize: 12.0, color: viewModel.getRankColor(cellIndex)),
                           
                         ),
                       ],

@@ -106,6 +106,7 @@ class MarketProvider extends InSoBlokViewModel {
 
       _filterProducts.clear();
       _filterProducts.addAll(dataList);
+      logger.d(dataList[0]);
       notifyListeners();
     }());
 

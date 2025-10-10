@@ -207,29 +207,7 @@ class StoryListCell extends StatelessWidget {
                                       children: [
                                         Row(
                                           children: [
-                                            Container(
-                                              decoration: BoxDecoration(
-                                                borderRadius: BorderRadius.circular(12.0),
-                                                color: Colors.black.withAlpha(180),
-                                              ),
-                                              padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 1.0),
-                                              child: Row(
-                                                children: [
-                                                  AIImage(
-                                                    'assets/images/img_level_0${viewModel.accountService.userLevel.level}.png',
-                                                    width: 21.0,
-                                                    height: 21.0,
-                                                  ),
-                                                  SizedBox(width: 6.0),
-                                                  Text(
-                                                    "Rank: ${viewModel.accountService.userRankIndex}",
-                                                    style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                                                      fontSize: 12,
-                                                    ),
-                                                  ),
-                                                ],
-                                              )
-                                            ),
+                                            RankLabelWidget(userId: viewModel.story.userId ?? "")
                                           ],
                                         ),
                                         SizedBox(height: 6.0),
@@ -312,10 +290,18 @@ class StoryListCell extends StatelessWidget {
                                                           if (viewModel.following) return;
                                                           viewModel.handleClickFollow(viewModel.owner!);
                                                         },
-                                                        child: Text(
-                                                          'Follow',
-                                                          style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                                                            // color: Colors.blueAccent.withAlpha(200)
+                                                        child: Container(
+                                                          padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
+                                                          decoration: BoxDecoration(
+                                                            color: Colors.black,
+                                                            borderRadius: BorderRadius.all(Radius.circular(12.0))
+                                                            
+                                                          ),
+                                                          child: Text(
+                                                            (viewModel.owner?.follows ?? []).contains(AuthHelper.user?.id) ? "Following" : 'Follow',
+                                                            style: Theme.of(context).textTheme.bodySmall!.copyWith(
+                                                              // color: Colors.blueAccent.withAlpha(200)
+                                                            ),
                                                           ),
                                                         ),
                                                       ),
@@ -419,7 +405,7 @@ class StoryListCell extends StatelessWidget {
                 Align(
                   alignment: Alignment.bottomRight,
                   child: Container(
-                    height: min(MediaQuery.of(context).size.height * 0.3, 250),
+                    height: min(MediaQuery.of(context).size.height * 0.3, viewModel.pageIndex > 0 ? 262 : 210),
                     margin: EdgeInsets.only(
                       right: 8.0,
                       bottom: 18.0,
@@ -442,25 +428,25 @@ class StoryListCell extends StatelessWidget {
                           }
                         ),
                         StoryActionButton(
+                          src: AIImage(
+                            AIImages.icFireHot,
+                            // color: Theme.of(context).colorScheme.onPrimary,
+                            width: kStoryAvatarSize * 0.4,
+                          ),
+                          label: '${viewModel.story.cntYay}',
+                          onTap: () {
+                            if(viewModel.story.isVote() != true) {
+                              viewModel.updateVote(true);
+                            }
+                          }
+                        ),
+                        StoryActionButton(
                           src: Icon(
                             Icons.remove_red_eye_outlined,
                             color: Theme.of(context).colorScheme.onPrimary,
                             size: kStoryAvatarSize * 0.5,
                             ),
                           label: '${(viewModel.story.views ?? []).length}',
-                        ),
-                        StoryActionButton(
-                          src: AIImage(
-                            AIImages.icThumbUp,
-                            color: Theme.of(context).colorScheme.onPrimary,
-                            width: kStoryAvatarSize * 0.5,
-                          ),
-                          label: "",
-                          onTap: () {
-                            if(viewModel.story.isVote() != true) {
-                              viewModel.updateVote(true);
-                            }
-                          }
                         ),
                         StoryActionButton(
                           src: AIImage(
@@ -953,9 +939,10 @@ class StoryActionButton extends StatelessWidget {
   final Widget src;
   final String? label;
   double? spacing;
+  bool? numberSpacing;
   final void Function()? onTap;
   
-  StoryActionButton({super.key, required this.src, this.label = "", this.spacing = 0, this.onTap});
+  StoryActionButton({super.key, required this.src, this.label = "", this.spacing = 0, this.numberSpacing = true, this.onTap});
   
   @override
   Widget build(BuildContext context) {
@@ -964,6 +951,7 @@ class StoryActionButton extends StatelessWidget {
       child: Column(
         children: [
           src,
+          if(numberSpacing ?? false)
           SizedBox(height: spacing),
           Text(
             label!, 

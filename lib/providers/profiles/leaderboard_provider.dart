@@ -21,13 +21,34 @@ class LeaderboardProvider extends InSoBlokViewModel {
   List<UserScoreModel> get dailyLeaderboard =>
       _leaderboard.sorted((b, a) => a.xpDay - b.xpDay).toList();
   List<UserScoreModel> get weeklyLeaderboard =>
-      _leaderboard.sorted((b, a) => a.xpWeek - b.xpWeek).toList();
+      _leaderboard
+      .sorted((b, a) => a.xpWeek - b.xpWeek)
+      .toList()
+      .asMap()
+      .entries
+      .where((entry) => entry.key < LEADER_BOARD_DISPLAY_LENGTH) // Get first 50 items
+      .map((entry) => entry.value) // Extract just the values
+      .toList();
 
   List<UserScoreModel> get monthlyLeaderboard =>
-      _leaderboard.sorted((b, a) => a.xpMonth - b.xpMonth).toList();
+      _leaderboard
+      .sorted((b, a) => a.xpMonth - b.xpMonth)
+      .toList()
+      .asMap()
+      .entries
+      .where((entry) => entry.key < LEADER_BOARD_DISPLAY_LENGTH) // Get first 50 items
+      .map((entry) => entry.value) // Extract just the values
+      .toList();
 
   List<UserScoreModel> get totalLeaderboard =>
-      _leaderboard.sorted((b, a) => a.xpTotal - b.xpTotal).toList();
+      _leaderboard
+      .sorted((b, a) => a.xpTotal - b.xpTotal)
+      .toList()
+      .asMap()
+      .entries
+      .where((entry) => entry.key < LEADER_BOARD_DISPLAY_LENGTH) // Get first 50 items
+      .map((entry) => entry.value) // Extract just the values
+      .toList();
 
 
   int _tabIndex = 0;

@@ -108,6 +108,7 @@ class AIImages {
   static String icFireHot = 'assets/icons/ic_fire_hot.png';
   static String icFireNot = 'assets/icons/ic_fire_not.png';
 
+  static String icCheck = 'assets/icons/ic_check.png';
 
   static String icVoteUp = 'assets/icons/ic_up_arrow.png';
   static String icVoteDown = 'assets/icons/ic_down_arrow.png';

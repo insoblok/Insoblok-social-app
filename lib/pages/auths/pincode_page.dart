@@ -105,7 +105,9 @@ class _PinCodePageState extends State<PinCodePage> with SingleTickerProviderStat
           );
         } else {
           AuthHelper.updateStatus('Online');
-          Routers.goToMainPage(context);
+          // Routers.goToMainPage(context);
+            Routers.goToEmailPage(context);
+
         }
       }
       return;

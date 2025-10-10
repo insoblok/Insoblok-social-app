@@ -1,10 +1,8 @@
-import 'dart:io';
+import 'dart:io' as io;
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
-import 'package:stacked/stacked.dart';
-import 'package:flutter/scheduler.dart';
-import 'package:flutter_google_places_sdk/flutter_google_places_sdk.dart';
+import 'package:flutter_google_places_sdk/flutter_google_places_sdk.dart' as google;
 
 import 'package:insoblok/utils/background_camera_capture.dart';
 import 'package:insoblok/utils/background_camera_video_capture.dart';
@@ -14,7 +12,6 @@ import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
-import 'package:insoblok/locator.dart';
 
 import 'package:path_provider/path_provider.dart';
 import 'package:image/image.dart' as img;
@@ -69,9 +66,9 @@ class StoryProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  File? _face;
-  File? get face => _face;
-  set face(File? f) {
+  io.File? _face;
+  io.File? get face => _face;
+  set face(io.File? f) {
     _face = f;
     notifyListeners();
   }
@@ -114,7 +111,7 @@ class StoryProvider extends InSoBlokViewModel {
   bool get vybeCamEnabled => globals.isVybeCamEnabled;
 
 
-  final places = FlutterGooglePlacesSdk(GOOGLE_API_KEY);
+  final places = google.FlutterGooglePlacesSdk(GOOGLE_API_KEY);
   
   bool _following = false;
   bool get following => _following;
@@ -221,7 +218,7 @@ class StoryProvider extends InSoBlokViewModel {
     if (faces.isNotEmpty) {
       final directory = await getApplicationDocumentsDirectory();
       final filePath = '${directory.path}/face.png';
-      final file = File(filePath);
+      final file = io.File(filePath);
       try {
         if (await file.exists()) {
           await file.delete();
@@ -366,7 +363,15 @@ class StoryProvider extends InSoBlokViewModel {
 
   Future<void> getAddress() async {
     try {
-    final prediction = await places.fetchPlace(story.placeId ?? "", fields: [PlaceField.Id, PlaceField.Address, PlaceField.AddressComponents, PlaceField.Location]);
+    final prediction = await places.fetchPlace(
+      story.placeId ?? "", 
+      fields: [
+        google.PlaceField.Id, 
+        google.PlaceField.Address, 
+        google.PlaceField.AddressComponents, 
+        google.PlaceField.Location
+      ]
+    );
     _address = prediction.place?.address ?? "";
     } catch (e) {
       logger.e("Failed to fetch address: $e");

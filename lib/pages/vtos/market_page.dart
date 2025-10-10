@@ -56,6 +56,7 @@ class MarketPlacePage extends StatelessWidget {
                                   onTap: () {
                                     viewModel.updateTagSelect(i);
                                     viewModel.filterData();
+                                    logger.d("seleced is ${viewModel.selectedTags}");
                                   },
                                 ),
                               },
