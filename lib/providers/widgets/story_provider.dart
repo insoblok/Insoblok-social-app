@@ -136,8 +136,8 @@ class StoryProvider extends InSoBlokViewModel {
 
     showFaceDialog = false;
 
-    _isVideoReaction = globals.isRRCVideoCapture;  
-    // _isVideoReaction = false;
+    // _isVideoReaction = globals.isRRCVideoCapture;  
+    _isVideoReaction = false;
 
     
     quillController = () {
@@ -212,7 +212,7 @@ class StoryProvider extends InSoBlokViewModel {
   Future<void> detectFace(String link) async {
 
     // link = '/data/data/insoblok.social.app/cache/SnapImage.jpg';
-
+    logger.d("This is detect face function");
     var faces = await GoogleVisionHelper.getFacesFromImage(link: link);
     var _annotations = await GoogleVisionHelper.analyzeLocalImage(link: link);
     if (faces.isNotEmpty) {
@@ -319,6 +319,7 @@ class StoryProvider extends InSoBlokViewModel {
   }
 
   Future<void> onPostReactionVideoPressed() async {
+    logger.d("face path is ${face?.path ?? ''}");
     Routers.goToReactionVideoDetailPage(
         context,
         story.id!,
@@ -445,7 +446,7 @@ class StoryProvider extends InSoBlokViewModel {
           }
         }
         await storyService.updateVoteStory(
-          story: story.copyWith(votes: votes, updateDate: DateTime.now()),
+          story: story.copyWith(votes: votes, updatedAt: DateTime.now()),
           user: owner,
           isVote: isVote,
         );
@@ -501,7 +502,7 @@ class StoryProvider extends InSoBlokViewModel {
           likes.add(user!.id!);
         }
         await storyService.updateLikeStory(
-          story: story.copyWith(likes: likes, updateDate: DateTime.now()),
+          story: story.copyWith(likes: likes, updatedAt: DateTime.now()),
           user: owner,
         );
       } catch (e) {
@@ -568,7 +569,7 @@ class StoryProvider extends InSoBlokViewModel {
           follows.add(user!.id!);
         }
         await storyService.updateFollowStory(
-          story: story.copyWith(follows: follows, updateDate: DateTime.now()),
+          story: story.copyWith(follows: follows, updatedAt: DateTime.now()),
           user: owner,
         );
       } catch (e) {
@@ -627,8 +628,8 @@ class StoryProvider extends InSoBlokViewModel {
                     ),
                   ]
                 : story.medias,
-            updateDate: DateTime.now(),
-            timestamp: DateTime.now(),
+            updatedAt: DateTime.now(),
+            createdAt: DateTime.now(),
             connects: [
               ...(story.connects ?? []),
               if (!containedConnect())

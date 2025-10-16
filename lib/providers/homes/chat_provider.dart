@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:insoblok/extensions/extensions.dart';
 
 import 'package:insoblok/models/models.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -17,8 +16,21 @@ class ChatProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  final RoomService roomService = RoomService(AuthHelper.user?.id ?? "");
+  
   final List<RoomModel> _rooms = [];
   List<RoomModel> get rooms => _rooms;
+
+  List<ChatRoomWithSettings> archivedRooms = [];
+  List<ChatRoomWithSettings> _activeRooms = [];
+  List<ChatRoomWithSettings> get activeRooms => _activeRooms;
+  set activeRooms(List<ChatRoomWithSettings> rooms) {
+    _activeRooms = rooms;
+    notifyListeners();
+  }
+
+  List<ChatRoomWithSettings> mutedRooms = [];
+  List<ChatRoomWithSettings> deletedRooms = [];
 
   // Suggested users (no existing room with current user)
   final List<UserModel> _suggestedUsers = [];
@@ -46,16 +58,23 @@ class ChatProvider extends InSoBlokViewModel {
 
   final Web3Service _web3Service = locator<Web3Service>();
 
-  // Avoid per-getter allocations; sort once when data changes
+  final Set<String> _selectedRoomIds = {};
+  Set<String> get selectedRoomIds => _selectedRoomIds;
+  bool get isSelectionMode => _selectedRoomIds.isNotEmpty;
+
   List<RoomModel> get sortedRooms => _rooms;
   // StreamSubscription? _roomsSubscription;
-  
+  bool _isOptimisticUpdate = false;
+
   Future<void> init(BuildContext context) async {
     this.context = context;
 
     await runBusyFuture(() async {
       await fetchData();
     }());
+    logger.d("init called");
+    setupStreams();
+    
 
     // roomService.getRoomsStream().listen((queryRooms) {
     //   for (var doc in queryRooms.docs) {
@@ -72,7 +91,9 @@ class ChatProvider extends InSoBlokViewModel {
     //     }
     //   }
     //   fetchData();
+    
     // });
+
   }
 
   Future<void> fetchData() async {
@@ -86,13 +107,13 @@ class ChatProvider extends InSoBlokViewModel {
   }
 
   Future<void> _loadMoreRoomsFromServer() async {
+    logger.d("This is loadmorefromserver");
     if (!_hasMoreRooms) return;
     try {
       final snap = await roomService.getRoomsPage(
         limit: _roomsPageSize,
         startAfter: _lastRoomDoc,
       );
-
       if (snap.docs.isEmpty) {
         _hasMoreRooms = false;
         return;
@@ -112,12 +133,12 @@ class ChatProvider extends InSoBlokViewModel {
       _lastRoomDoc = snap.docs.last;
 
       // sort once after page append by updateDate desc
-      _rooms.sort((a, b) {
-        if (a.updateDate == null && b.updateDate == null) return 0;
-        if (a.updateDate == null) return 1;
-        if (b.updateDate == null) return -1;
-        return (b.updateDate!.compareTo(a.updateDate!));
-      });
+      // _rooms.sort((a, b) {
+      //   if (a.updatedAt == null && b.updatedAt == null) return 0;
+      //   if (a.updatedAt == null) return 1;
+      //   if (b.updatedAt == null) return -1;
+      //   return (b.updatedAt!.compareTo(a.updatedAt!));
+      // });
 
       // update visible count window
       _roomsVisibleCount = _rooms.length;
@@ -127,17 +148,14 @@ class ChatProvider extends InSoBlokViewModel {
   }
 
   Future<void> geChatList() async {
-    logger.d('This is geChatList');
 
     try {
       var keyUsers = await userService.getAllUsers();
 
-      // Use Set for O(1) lookup of userIds already in rooms
       final Set<String?> userIds = {};
       for (final room in _rooms) {
         userIds.addAll(room.userIds ?? []);
       }
-      logger.d(keyUsers.length);
 
       for (final user in keyUsers) {
         if (user == null) continue;
@@ -179,112 +197,162 @@ class ChatProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  Future<void> gotoNewChat(UserModel? chatUser) async {
+  Future<void> gotoNewChat(BuildContext ctx, UserModel? chatUser) async {
     if (isBusy || chatUser == null) return;
     clearErrors();
-    RoomModel? existedRoom;
-    
-    // Gradient previously used in a confirmation dialog; kept here for reference
-    
-    await runBusyFuture(() async {
-      try {
-        existedRoom = await roomService.getRoomByChatUesr(id: chatUser.id!);
-        if (existedRoom == null) {
-          /*
-          var dialog = await showDialog<bool>(
-            context: context,
-            builder: (context) {
-              return Scaffold(
-                backgroundColor: AIColors.transparent,
-                body: Center(
-                  child: Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 32.0),
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 24.0,
-                      vertical: 24.0,
-                    ),
-                    decoration: BoxDecoration(
-                      // color: AIColors.pink,
-                      gradient: gradient,
-                      borderRadius: BorderRadius.circular(16.0),
-                    ),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            Text(
-                              "Create Room",
-                              style: TextStyle(
-                                fontSize: 18.0,
-                                color: AIColors.white,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                            const Spacer(),
-                            IconButton(
-                              onPressed: () => Navigator.of(context).pop(),
-                              icon: Icon(Icons.close, color: AIColors.white),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 24.0),
-                        Text(
-                          "Are you sure want to chat with the selected user?",
-                          style: TextStyle(
-                            fontSize: 16.0,
-                            color: AIColors.white,
-                          ),
-                        ),
-                        const SizedBox(height: 24.0),
-                        TextFillButton(
-                          onTap: () => Navigator.of(context).pop(true),
-                          text: 'Create',
-                          color: AIColors.pink,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              );
-            },
-          );
 
-          if (dialog != true) return;
-          */
-          var room = RoomModel(
-            userId: user?.id,
-            userIds: [user?.id, chatUser.id],
-            content: '${user?.fullName} have created a room',
-            updateDate: DateTime.now(),
-            timestamp: DateTime.now(),
-          );
-          await roomService.createRoom(room);
-          existedRoom = await roomService.getRoomByChatUesr(id: chatUser.id!);
-          messageService.setInitialTypeStatus(existedRoom!.id!, chatUser.id!);
-        }
-      } catch (e) {
-        logger.e(e);
-        setError(e);
-      } finally {
-        notifyListeners();
-      }
-    }());
+    var room = RoomModel(
+      userId: user?.id,
+      userIds: [user?.id, chatUser.id],
+      updatedAt: DateTime.now(),
+      timestamp: DateTime.now(),
+    );
+    String roomId = await roomService.createRoom(room);
+    room = room.copyWith(id: roomId);
+    Routers.goToMessagePage(ctx, MessagePageData(room: room, chatUser: chatUser));
+    // messageService.setInitialTypeStatus(roomId, chatUser.id!);
+  }
 
-    if (hasError) {
-      AIHelpers.showToast(msg: modelError.toString());
+
+
+  void toggleRoomSelection(RoomModel room) {
+    if (_selectedRoomIds.contains(room.id)) {
+      _selectedRoomIds.remove(room.id);
     } else {
-      if (existedRoom != null) {
-        _web3Service.chatRoom = existedRoom ?? RoomModel();
-        _web3Service.chatUser = chatUser;
-        await Routers.goToMessagePage(
-          context,
-          MessagePageData(room: existedRoom!, chatUser: chatUser),
+      _selectedRoomIds.add(room.id!);
+    }
+    notifyListeners();
+  }
+
+  void clearSelection() {
+    _selectedRoomIds.clear();
+    notifyListeners();
+  }
+
+  bool get isFirstSelectedRoomMuted {
+    if (_selectedRoomIds.isEmpty) return false;
+    final firstSelectedId = _selectedRoomIds.first;
+    
+    // Check in active rooms
+    final activeRoom = _activeRooms.firstWhere(
+      (room) => room.chatroom.id == firstSelectedId,
+      orElse: () => ChatRoomWithSettings(
+        chatroom: RoomModel(),
+        userSettings: UserChatRoomModel(),
+      ),
+    );
+    if (activeRoom.chatroom.id != null) {
+      return activeRoom.userSettings.isMuted ?? false;
+    }
+    
+    // Check in archived rooms
+    final archivedRoom = archivedRooms.firstWhere(
+      (room) => room.chatroom.id == firstSelectedId,
+      orElse: () => ChatRoomWithSettings(
+        chatroom: RoomModel(),
+        userSettings: UserChatRoomModel(),
+      ),
+    );
+    if (archivedRoom.chatroom.id != null) {
+      return archivedRoom.userSettings.isMuted ?? false;
+    }
+    return false;
+  }
+
+  void deleteSelectedRooms() async {
+    await roomService.deleteRooms(AuthHelper.user?.id ?? '', _selectedRoomIds);
+    AIHelpers.showToast(msg: 'Deleted ${_selectedRoomIds.length} Chats');
+    clearSelection();
+  }
+
+  void muteSelectedRooms() async {
+    // Update local state optimistically
+    _isOptimisticUpdate = true;
+    _updateLocalMuteStatus(_selectedRoomIds, true);
+    notifyListeners();
+    await roomService.muteRooms(AuthHelper.user?.id ?? '', _selectedRoomIds);
+    _isOptimisticUpdate = false;
+    AIHelpers.showToast(msg: '${_selectedRoomIds.length} Chats muted');
+    clearSelection();
+  }
+
+  void unMuteSelectedRooms() async {
+    // Update local state optimistically
+    _isOptimisticUpdate = true;
+    _updateLocalMuteStatus(_selectedRoomIds, false);
+    notifyListeners();
+    for (int i = 0; i < _activeRooms.length; i++) {
+      logger.d("active rooms mute state is : ${_activeRooms[i].userSettings.isMuted}");
+    }
+    await roomService.unMuteRooms(AuthHelper.user?.id ?? '', _selectedRoomIds);
+    _isOptimisticUpdate = false;
+    AIHelpers.showToast(msg: 'UnMuted ${_selectedRoomIds.length} Chats');
+    clearSelection();
+  }
+
+  void _updateLocalMuteStatus(Set<String> roomIds, bool isMuted) {
+    // Update active rooms
+    for (int i = 0; i < _activeRooms.length; i++) {
+      if (roomIds.contains(_activeRooms[i].chatroom.id)) {
+        _activeRooms[i] = ChatRoomWithSettings(
+          chatroom: _activeRooms[i].chatroom,
+          userSettings: _activeRooms[i].userSettings.copyWith(isMuted: isMuted),
         );
       }
-
-      fetchData();
     }
+    
+    // Update archived rooms
+    for (int i = 0; i < archivedRooms.length; i++) {
+      if (roomIds.contains(archivedRooms[i].chatroom.id)) {
+        archivedRooms[i] = ChatRoomWithSettings(
+          chatroom: archivedRooms[i].chatroom,
+          userSettings: archivedRooms[i].userSettings.copyWith(isMuted: isMuted),
+        );
+      }
+    }
+  }
+
+  void archiveSelectedRooms() async {
+    await roomService.archive(AuthHelper.user?.id ?? '', _selectedRoomIds);
+    AIHelpers.showToast(msg: 'Archived ${_selectedRoomIds.length} Chats');
+    clearSelection();
+  }
+
+  void unarchiveSelectedRooms() async {
+    await roomService.unArchive(AuthHelper.user?.id ?? '', _selectedRoomIds);
+    AIHelpers.showToast(msg: 'Unarchived ${_selectedRoomIds.length} Chats');
+    clearSelection();
+  }
+
+  void setupStreams() {
+    roomService.getActiveChatrooms().listen((chatrooms) {
+      if (_isOptimisticUpdate) return;
+      for (var room in chatrooms) {
+        // logger.d("active chats: ${room.id}");
+      }
+      _activeRooms = chatrooms;
+      notifyListeners();
+    });
+
+    // Archived chatrooms
+    roomService.getArchivedChatrooms().listen((chatrooms) {
+      for (var room in chatrooms) {
+        // logger.d("archived chats: ${room.id}");
+      }
+      archivedRooms = chatrooms;
+      notifyListeners();
+    });
+
+    // Muted chatrooms
+    roomService.getMutedChatrooms().listen((chatrooms) {
+      mutedRooms = chatrooms;
+      notifyListeners();
+    });
+
+    // Deleted chatrooms
+    roomService.getDeletedChatrooms().listen((chatrooms) {
+      deletedRooms = chatrooms;
+      notifyListeners();
+    });
   }
 }

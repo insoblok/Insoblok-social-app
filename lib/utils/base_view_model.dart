@@ -37,7 +37,7 @@ abstract class InSoBlokViewModel extends ReactiveViewModel {
   final _messageService = MessageService();
   MessageService get messageService => _messageService;
 
-  final RoomService _roomService = RoomService();
+  final RoomService _roomService = RoomService("");
   RoomService get roomService => _roomService;
 
   final TransferService _transferService = TransferService();

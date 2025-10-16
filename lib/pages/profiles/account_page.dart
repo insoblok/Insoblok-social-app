@@ -59,14 +59,20 @@ class AccountPage extends StatelessWidget {
                                 context,
                                 label: "Stories",
                                 isSelected: viewModel.pageIndex == 0,
-                                onTap: () => viewModel.setPageIndex(0),
+                                onTap: () {
+                                  viewModel.setPageIndex(0);
+                                  viewModel.resetSelection();
+                                }
                               ),
                               const SizedBox(width: 16),
                               _buildTabButton(
                                 context,
                                 label: "Galleries",
                                 isSelected: viewModel.pageIndex == 3,
-                                onTap: () => viewModel.setPageIndex(3),
+                                onTap: () { 
+                                  viewModel.setPageIndex(3);
+                                  viewModel.resetSelection();
+                                }
                               ),
                             ],
                           ),
@@ -113,6 +119,7 @@ class AccountPage extends StatelessWidget {
                                       )
                                     else
                                       _StoryTile(
+                                        vm: viewModel,
                                         story: story,
                                         onTap: () {
                                           viewModel.goToDetailPage(
@@ -120,7 +127,7 @@ class AccountPage extends StatelessWidget {
                                           );
                                         },
                                         buildMediaThumb: (url, {bool isVideo = false}) =>
-                                            _buildMediaThumbnail(context, url, isVideo: isVideo),
+                                            _buildMediaThumbnail(context, viewModel, url, isVideo: isVideo),
                                       ),
                                   },
                                 ],
@@ -151,18 +158,19 @@ class AccountPage extends StatelessWidget {
                                       mainAxisSpacing: 1.0,
                                       crossAxisSpacing: 1.0,
                                       childAspectRatio: 0.75,
-                                      padding: const EdgeInsets.symmetric(vertical: 4.0),
+                                      padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 4.0),
                                       children: [
                                         for (final gallery in viewModel.galleries) ...{
                                           InkWell(
                                             onTap: () => AIHelpers.goToDetailView(
                                               context,
-                                              medias: viewModel.galleries,
+                                              medias: viewModel.galleries.map((gal) => gal.media ?? "").toList(),
+                                              // medias: [],
                                               index: viewModel.galleries.indexOf(gallery),
                                               storyID:'',
                                               storyUser:'',
                                             ),
-                                            child: _buildMediaThumbnail(context, gallery),
+                                            child: _buildMediaThumbnail(context, viewModel, gallery.media ?? ""),
                                           ),
                                         },
                                       ],
@@ -208,9 +216,9 @@ class AccountPage extends StatelessWidget {
     }
   }
   
-  Widget _buildMediaThumbnail(BuildContext context, String url, {bool isVideo = false}) {
+  Widget _buildMediaThumbnail(BuildContext context, AccountProvider vm, String url, {bool isVideo = false}) {
     final detectVideo = isVideo || _looksLikeVideoUrl(url);
-
+    logger.d("Url is $url");
     if (detectVideo) {
       return FutureBuilder<Uint8List?>(
         future: _getVideoThumbnail(url),
@@ -235,6 +243,7 @@ class AccountPage extends StatelessWidget {
                     color: Colors.white70,
                   ),
                 ),
+                
               ],
             );
           }
@@ -242,7 +251,82 @@ class AccountPage extends StatelessWidget {
         },
       );
     } else {
-      return AIImage(url, fit: BoxFit.cover);
+      return Container(
+        decoration: BoxDecoration(
+        ),
+        child: InkWell(
+          onLongPress: () {
+            vm.handleLongPress(url);            
+          },
+          onTap: () {
+            vm.handleClickGallery(url);
+          },
+          child: Stack(
+            children: [ 
+              AIImage(
+                url, 
+                fit: BoxFit.cover,
+                color: Colors.blue.shade900
+              ),
+              if(vm.isSelectMode && vm.selectedItems.contains(url)) ...{
+                Container(
+                  color: Colors.blue.withAlpha(50),
+                  child: InkWell(
+                    onTap: () => vm.handleClickGallery(url),
+                    child: Center(
+                      child: Icon(
+                        Icons.check_circle,
+                        color: Colors.blue,
+                        size: 40,
+                      ),
+                    ),
+                  ) 
+                ),
+                Align(
+                  alignment: Alignment.topRight,
+                  child: IconButton(
+                      icon: Icon(Icons.delete, color: Colors.grey),
+                      onPressed: () async {
+                        bool? result = await showDialog<bool>(
+                          context: context,
+                          barrierDismissible: false, // User must tap button to close
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              backgroundColor: Colors.black87,
+                              title: const Text('Confirm Delete'),
+                              content: const Text(
+                                'Are you sure you want to delete selected items?',
+                              ),
+                              actions: <Widget>[
+                                TextButton(
+                                  child: const Text('Cancel'),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                                TextButton(
+                                  child: Text(
+                                    'Delete',
+                                    style: TextStyle(color: Colors.red),
+                                  ),
+                                  onPressed: () {
+                                    // Perform delete action
+                                    vm.handleClickDeleteGallery();
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      }
+                    )
+                ),
+              }
+            ]
+          ),
+        ),
+      );
     }
   }
 
@@ -294,12 +378,13 @@ class AccountPage extends StatelessWidget {
 class _StoryTile extends StatelessWidget {
   final StoryModel story;
   final VoidCallback onTap;
-
+  final AccountProvider vm;
   final Widget Function(String url, {bool isVideo}) buildMediaThumb;
 
   const _StoryTile({
     required this.story,
     required this.onTap,
+    required this.vm,
     required this.buildMediaThumb,
   });
 
@@ -317,16 +402,98 @@ class _StoryTile extends StatelessWidget {
         children: [
           isVideo
               ? buildMediaThumb(link, isVideo: true)
-              : AIImage(link, width: double.infinity, height: double.infinity, fit: BoxFit.cover),
+              // : AIImage(link, width: double.infinity, height: double.infinity, fit: BoxFit.cover),
+              : SelectableWidget(context: context, media: link, id: story.id ?? "", onTap: vm.handleClickGallery, onLongPress: vm.handleLongPress, onDelete: vm.handleClickDeleteStories, selectMode: vm.isSelectMode, selected: vm.selectedItems),
 
           if ((story.medias ?? []).length > 1)
             const Positioned(
               top: 6.0,
-              right: 6.0,
+              left: 6.0,
               child: Icon(Icons.filter_none_outlined, color: Colors.white),
             ),
         ],
       ),
     );
   }
+
+  Widget SelectableWidget({
+    required BuildContext context,
+    required String media,
+    required String id,
+    required void Function(String m) onTap,
+    required void Function(String m) onLongPress,
+    required void Function() onDelete,
+    required bool selectMode,
+    required List<String> selected
+  }) =>
+      InkWell(
+        onTap: () => onTap(id),
+        onLongPress: () => onLongPress(id),
+        child: Stack(
+          fit: StackFit.expand,
+          children: [
+              AIImage(
+                media, 
+                fit: BoxFit.cover,
+                color: Colors.blue.shade900
+              ),
+              if(selectMode && selected.contains(id)) ...{
+                Container(
+                  color: Colors.blue.withAlpha(50),
+                  child: InkWell(
+                    onTap: () => onTap(id),
+                    child: Center(
+                      child: Icon(
+                        Icons.check_circle,
+                        color: Colors.blue,
+                        size: 40,
+                      ),
+                    ),
+                  ) 
+                ),
+                Align(
+                  alignment: Alignment.topRight,
+                  child: IconButton(
+                      icon: Icon(Icons.delete, color: Colors.grey),
+                      onPressed: () async {
+                        bool? result = await showDialog<bool>(
+                          context: context,
+                          barrierDismissible: false, // User must tap button to close
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              backgroundColor: Colors.black87,
+                              title: const Text('Confirm Delete'),
+                              content: const Text(
+                                'Are you sure you want to delete selected items?',
+                              ),
+                              actions: <Widget>[
+                                TextButton(
+                                  child: const Text('Cancel'),
+                                  onPressed: () {
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                                TextButton(
+                                  child: Text(
+                                    'Delete',
+                                    style: TextStyle(color: Colors.red),
+                                  ),
+                                  onPressed: () {
+                                    // Perform delete action
+                                    onDelete();
+                                    Navigator.of(context).pop();
+                                  },
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      }
+                    )
+                ),
+              }
+            ]
+        ),
+      );
+
 }

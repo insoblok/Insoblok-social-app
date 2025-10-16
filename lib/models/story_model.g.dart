@@ -18,14 +18,18 @@ _StoryModel _$StoryModelFromJson(Map<String, dynamic> json) => _StoryModel(
       (json['follows'] as List<dynamic>?)?.map((e) => e as String).toList(),
   views: (json['views'] as List<dynamic>?)?.map((e) => e as String).toList(),
   placeId: json['place_id'] as String?,
-  updateDate:
-      json['update_date'] == null
+  createdAt:
+      json['created_at'] == null
           ? null
-          : DateTime.parse(json['update_date'] as String),
-  timestamp:
-      json['timestamp'] == null
+          : DateTime.parse(json['created_at'] as String),
+  updatedAt:
+      json['updated_at'] == null
           ? null
-          : DateTime.parse(json['timestamp'] as String),
+          : DateTime.parse(json['updated_at'] as String),
+  deletedAt:
+      json['deleted_at'] == null
+          ? null
+          : DateTime.parse(json['deleted_at'] as String),
   connects:
       (json['connects'] as List<dynamic>?)
           ?.map((e) => ConnectedStoryModel.fromJson(e as Map<String, dynamic>))
@@ -58,8 +62,9 @@ Map<String, dynamic> _$StoryModelToJson(_StoryModel instance) =>
       'follows': instance.follows,
       'views': instance.views,
       'place_id': instance.placeId,
-      'update_date': instance.updateDate?.toIso8601String(),
-      'timestamp': instance.timestamp?.toIso8601String(),
+      'created_at': instance.createdAt?.toIso8601String(),
+      'updated_at': instance.updatedAt?.toIso8601String(),
+      'deleted_at': instance.deletedAt?.toIso8601String(),
       'connects': instance.connects,
       'comments': instance.comments,
       'allow_users': instance.allowUsers,

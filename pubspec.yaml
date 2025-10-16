@@ -121,6 +121,8 @@ dependencies:
   google_places_api_flutter: ^1.0.0
   flutter_google_places_sdk: ^0.4.2+1
   marquee: ^2.3.0
+  encrypt: ^5.0.3
+
 
 dev_dependencies:
   flutter_test:
@@ -143,6 +145,7 @@ flutter:
 
   assets:
     - assets/images/
+    - assets/images/avatars/
     - assets/icons/
     - assets/fonts/
     - assets/data/

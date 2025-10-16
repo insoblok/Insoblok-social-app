@@ -180,8 +180,8 @@ class AvatarProvider extends InSoBlokViewModel {
           MediaStoryModel(link: originUrl!, type: 'image'),
           MediaStoryModel(link: resultFirebaseUrl, type: 'image'),
         ],
-        updateDate: DateTime.now(),
-        timestamp: DateTime.now(),
+        updatedAt: DateTime.now(),
+        createdAt: DateTime.now(),
       );
       await storyService.postStory(story: story);
       AIHelpers.showToast(msg: 'Successfully posted Avatar to LOOKBOOK!');

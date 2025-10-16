@@ -105,7 +105,7 @@ class StoryDetailProvider extends InSoBlokViewModel {
           likes.add(user!.id!);
         }
         await storyService.updateLikeStory(
-          story: story.copyWith(likes: likes, updateDate: DateTime.now()),
+          story: story.copyWith(likes: likes, updatedAt: DateTime.now()),
           user: owner,
         );
       } catch (e) {
@@ -155,7 +155,7 @@ class StoryDetailProvider extends InSoBlokViewModel {
           follows.add(user!.id!);
         }
         await storyService.updateFollowStory(
-          story: story.copyWith(follows: follows, updateDate: DateTime.now()),
+          story: story.copyWith(follows: follows, updatedAt: DateTime.now()),
           user: owner,
         );
       } catch (e) {

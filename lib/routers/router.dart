@@ -157,6 +157,10 @@ class Routers {
     return _pushToRoute(context, kRouterChatView, null);
   }
 
+  static dynamic goToArchivedChatViewPage(BuildContext context) {
+    return _pushToRoute(context, kRouterArchivedChatView, null);
+  }
+
   static dynamic goToChatPaymentPage(BuildContext context, String s, String r) {
     Map<String, String> args = {};
     args["sender"] = s;
@@ -284,7 +288,6 @@ class Routers {
   }
 
   static dynamic goToFaceDetailPage(BuildContext context, String storyID, String url, io.File face, List<AIFaceAnnotation> annotations, bool editable) {
-
     return _pushToRoute(context, kRouterFaceDetail, {
       'storyID': storyID,
       'url': url,
@@ -317,4 +320,13 @@ class Routers {
   static dynamic goToTokenDetailPage(BuildContext context, Map<String, dynamic> args) {
     return _pushToRoute(context, kRouterTokenDetail, args);
   }
+
+  static dynamic goToRRCAvatarGenerationPage(BuildContext context, io.File? face, String url) {
+    Map<String, dynamic> args = {};
+    args["face"] = face!;
+    args["url"] = url;
+    logger.d("This is inside gotorrcavatar $args");
+    return _pushToRoute(context, kRouterRRCAvatarGeneration, args);
+  }
+
 }

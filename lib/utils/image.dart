@@ -109,6 +109,7 @@ class AIImages {
   static String icFireNot = 'assets/icons/ic_fire_not.png';
 
   static String icCheck = 'assets/icons/ic_check.png';
+  static String icCheck2 = 'assets/icons/ic_check2.png';
 
   static String icVoteUp = 'assets/icons/ic_up_arrow.png';
   static String icVoteDown = 'assets/icons/ic_down_arrow.png';
@@ -171,4 +172,18 @@ class AIImages {
   static String icArrowLeft = 'assets/icons/ic_arrow_left.svg';
 
   static String imgVybe = 'assets/images/img_vybe.png';
+
+  // static String avatarAnimeEyes = 'assets/images/avatars/AnimeEyes-L0.png';
+  static String avatarAnimeEyes = 'assets/images/AnimeEyes-L0.png';
+  static String avatarLiquidChromeFace = 'assets/images/Liquid Chome Face - L0.png';
+  static String avatarPixelStorm = 'assets/images/Pixel Storm -M0.png';
+  static String avatarCyberPunk = 'assets/images/CyberPunk - M0.png';
+  static String avatarNeonGlow = 'assets/images/Neon Glow - M0.png';
+  static String avatarTasteScore = 'assets/images/TasteScore Face - C0.png';
+  static String avatarEGirlBoy = 'assets/images/E-Girl - E-Boy - M0.png';
+  static String avatarExtraAF = 'assets/images/Extra AF - M0.png';
+  static String avatarGlowUp = 'assets/images/Glow Up - M0.png';
+  static String avatarGrungeWave = 'assets/images/Grungewave - M0.png';
+
+
 }

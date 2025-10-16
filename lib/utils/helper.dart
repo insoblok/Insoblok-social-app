@@ -5,6 +5,7 @@ import 'dart:math';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
 
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -183,7 +184,7 @@ class AIHelpers {
 
   static Future<void> shareStoryToInSoBlok({required StoryModel story}) async {
 
-    final usersRef = FirebaseFirestore.instance.collection("user");
+    final usersRef = FirebaseFirestore.instance.collection("users2");
       await usersRef.doc(AuthHelper.user?.id).update({
         "status": "public",
       });
@@ -427,11 +428,58 @@ class AIHelpers {
   }
 
   static bool isValidEmail(String email) {
-  final regex = RegExp(
-    r'^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+',
-  );
-  return regex.hasMatch(email);
-}
-
+    final regex = RegExp(
+      r'^[a-zA-Z0-9.]+@[a-zA-Z0-9]+\.[a-zA-Z]+',
+    );
+    return regex.hasMatch(email);
+  }
+  
+  static Future<bool?> confirmRequest(BuildContext ctx, VoidCallback onConfirm, { String? title = "Are you sure?", String? content = "", String? confirmText="OK", String? cancelText = "Cancel"}) async {
+    return await showDialog<bool>(
+      context: ctx,
+      barrierDismissible: false, // User must tap button to close
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.black87,
+          title: Text(title!),
+          content: Text(
+            content!,
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text(cancelText!),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text(
+                confirmText!,
+                style: TextStyle(color: Colors.red),
+              ),
+              onPressed: () {
+                // Perform delete action
+                onConfirm();
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+  
+  static Future<String> image2Base64(String imagePath) async {
+    final bytes = await File(imagePath).readAsBytes();
+    return base64Encode(bytes);
+  }
+  
+  static Future<File> base642Image(String base64Str, String fileName) async {
+    final bytes = base64Decode(base64Str);
+    final dir = await getTemporaryDirectory(); // or getApplicationDocumentsDirectory()
+    final file = File('${dir.path}/$fileName');
+    await file.writeAsBytes(bytes);
+    return file;
+  }
 
 }

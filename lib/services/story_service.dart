@@ -31,7 +31,7 @@ class StoryService with ListenableServiceMixin {
   Future<List<StoryModel>> getStories() async {
     List<StoryModel> result = [];
     var storiesSnapshot =
-        await storyCollection.orderBy('timestamp', descending: true).get();
+        await storyCollection.orderBy('created_at', descending: true).get();
     for (var doc in storiesSnapshot.docs) {
       try {
         var json = doc.data();
@@ -62,7 +62,7 @@ class StoryService with ListenableServiceMixin {
   Future<List<StoryModel>> getFollowingStories() async {
     List<StoryModel> result = [];
     var storiesSnapshot =
-        await storyCollection.orderBy('timestamp', descending: true).get();
+        await storyCollection.orderBy('created_at', descending: true).get();
     var userIds = await userService.getFollowingUserIds();
     for (var doc in storiesSnapshot.docs) {
       try {
@@ -83,7 +83,7 @@ class StoryService with ListenableServiceMixin {
   Future<List<StoryModel>> getLookBookStories() async {
     List<StoryModel> result = [];
     var storiesSnapshot =
-        await storyCollection.orderBy('timestamp', descending: true).get();
+        await storyCollection.orderBy('created_at', descending: true).get();
 
     for (var doc in storiesSnapshot.docs) {
       try {
@@ -110,7 +110,8 @@ class StoryService with ListenableServiceMixin {
     var storiesSnapshot =
         await storyCollection
             .where('user_id', isEqualTo: id)
-            .orderBy('timestamp', descending: false)
+            .where('status', isNotEqualTo: 'deleted')
+            .orderBy('created_at', descending: false)
             .get();
     for (var doc in storiesSnapshot.docs) {
       try {
@@ -125,7 +126,7 @@ class StoryService with ListenableServiceMixin {
       }
     }
     return result
-      ..sort((b, a) => a.timestamp!.difference(b.timestamp!).inSeconds);
+      ..sort((b, a) => (b.updatedAt ?? b.createdAt ?? DateTime.now()).difference(a.updatedAt ?? a.createdAt ?? DateTime.now()).inMilliseconds);
   }
 
   // Get stories by like
@@ -134,7 +135,7 @@ class StoryService with ListenableServiceMixin {
     var storiesSnapshot =
         await storyCollection
             .where('likes', arrayContains: id)
-            .orderBy('timestamp', descending: false)
+            .orderBy('created_at', descending: false)
             .get();
     for (var doc in storiesSnapshot.docs) {
       try {
@@ -157,7 +158,7 @@ class StoryService with ListenableServiceMixin {
     var storiesSnapshot =
         await storyCollection
             .where('follows', arrayContains: id)
-            .orderBy('timestamp', descending: false)
+            .orderBy('created_at', descending: false)
             .get();
     for (var doc in storiesSnapshot.docs) {
       try {
@@ -203,7 +204,7 @@ class StoryService with ListenableServiceMixin {
     });
 
     await storyCollection.doc('updated').set({
-      'timestamp': DateTime.now().toUtc().toIso8601String(),
+      'created_at': DateTime.now().toUtc().toIso8601String(),
     });
 
     // check for win_creator xp

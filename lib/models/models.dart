@@ -14,3 +14,4 @@ export 'wallet_model.dart';
 export 'transaction_model.dart';
 export 'user_score_model.dart';
 export 'access_code_model.dart';
+export 'user_chat_room_model.dart';

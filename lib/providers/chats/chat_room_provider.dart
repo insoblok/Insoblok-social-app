@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
-import 'package:insoblok/widgets/widgets.dart';
 
 class CreateRoomProvider extends InSoBlokViewModel {
   late BuildContext _context;
@@ -93,7 +92,7 @@ class CreateRoomProvider extends InSoBlokViewModel {
     isCreatingRoom = true;
     await runBusyFuture(() async {
       try {
-        var existedRoom = await roomService.getRoomByChatUesr(
+        var existedRoom = await roomService.getRoomByChatUser(
           id: user.id ?? '',
         );
         if (existedRoom != null) {
@@ -103,7 +102,7 @@ class CreateRoomProvider extends InSoBlokViewModel {
             userId: AuthHelper.user?.id,
             userIds: [AuthHelper.user?.id, user.id],
             content: '${AuthHelper.user?.firstName} have created a room',
-            updateDate: DateTime.now(),
+            updatedAt: DateTime.now(),
             timestamp: DateTime.now(),
           );
           await roomService.createRoom(room);

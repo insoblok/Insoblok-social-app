@@ -272,7 +272,7 @@ class StoryListCell extends StatelessWidget {
                                                         style: Theme.of(context).textTheme.headlineSmall,
                                                       ),
                                                       Text(
-                                                        '· ${viewModel.story.timestamp?.timeago}',
+                                                        '· ${(viewModel.story.createdAt)?.timeago}',
                                                         style: Theme.of(context).textTheme.headlineSmall,
                                                       ),
                                                     ],
@@ -1183,14 +1183,15 @@ class CommentFaceModalView extends ViewModelWidget<StoryProvider> {
         child: InkWell(
           customBorder: const CircleBorder(),
           onTap: onTap ??
-              () => Routers.goToFaceDetailPage(
-                    context,
-                    viewModel.story.id!,
-                    (viewModel.story.medias ?? [])[viewModel.pageIndex].link!,
-                    face,
-                    viewModel.annotations,
-                    true,
-                  ),
+              // () => Routers.goToFaceDetailPage(
+              //       context,
+              //       viewModel.story.id!,
+              //       (viewModel.story.medias ?? [])[viewModel.pageIndex].link!,
+              //       face,
+              //       viewModel.annotations,
+              //       true,
+              //     ),
+              () => Routers.goToRRCAvatarGenerationPage(context, face, (viewModel.story.medias ?? [])[viewModel.pageIndex].link!,),
           child: chip,
         ),
       );
@@ -1402,6 +1403,7 @@ class _VideoPreviewWidgetState extends State<_VideoPreviewWidget> {
 
   @override
 Widget build(BuildContext context) {
+  logger.d("This is VideoPreviewWidget");
   return SizedBox(
     width: 35,
     height: 45,

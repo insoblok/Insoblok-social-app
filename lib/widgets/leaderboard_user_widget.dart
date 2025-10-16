@@ -10,7 +10,6 @@ import 'package:insoblok/widgets/widgets.dart';
 import 'package:insoblok/models/models.dart';
 
 
-const kUserAvatarSize = 56.0;
 
 class LeaderboardUserView extends StatelessWidget {
   final UserScoreModel user;

@@ -151,8 +151,8 @@ class ReactionsProvider extends InSoBlokViewModel {
                 ),
               ]
               : story.medias,
-        updateDate: DateTime.now(),
-        timestamp: DateTime.now(),
+        updatedAt: DateTime.now(),
+        createdAt: DateTime.now(),
         connects: [
           ...(story.connects ?? []),
         ],

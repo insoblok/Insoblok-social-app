@@ -5,7 +5,7 @@ import 'dart:typed_data';
 import 'package:http/http.dart' as http;
 import 'package:web_socket_channel/web_socket_channel.dart';
 import 'package:web_socket_channel/io.dart';
-import 'package:insoblok/utils/utils.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:reown_appkit/solana/solana_web3/solana_web3.dart';
 import 'package:web3dart/credentials.dart';
 import 'package:web3dart/web3dart.dart' as web3;
@@ -13,9 +13,11 @@ import 'package:web3dart/crypto.dart';
 import 'package:observable_ish/observable_ish.dart';
 import 'package:stacked/stacked.dart';
 import 'package:solana/solana.dart';
-import 'package:insoblok/services/services.dart';
 import 'package:convert/convert.dart';
 import 'package:decimal/decimal.dart';
+
+import 'package:insoblok/utils/utils.dart';
+import 'package:insoblok/services/services.dart';
 import 'package:insoblok/models/models.dart';
 
 
@@ -70,15 +72,17 @@ class Web3Service with ListenableServiceMixin {
 
   RoomModel chatRoom = RoomModel();
   UserModel chatUser = UserModel();
-  /// constructor: setup client depending on network
-  
+  /// Constructor: Initialize Web3Service with reactive value listeners and WebSocket connection
+  /// Sets up listeners for balance, price, and transaction updates
   WebSocketChannel? channel;
   
   Web3Service() {
     listenToReactiveValues([_allBalances, _allPrices, _allChanges, _transactions, _paymentTransactionHash, _transactionFee]);
-    _initializeWebSocket();
+    // _initializeWebSocket();
   }
 
+  /// Initialize WebSocket connection to Binance streams for real-time price and market data
+  /// Connects to multiple token streams for price updates and 24h change percentages
   void _initializeWebSocket() {
     try {
       String path = kWalletTokenList.map((tk)=> tk["binance_id"].toString().isEmpty ? "" : "/${tk['binance_id'].toString()}@ticker/${tk['binance_id'].toString()}@markPrice" ).toList().join("");
@@ -116,6 +120,8 @@ class Web3Service with ListenableServiceMixin {
     }
   }
 
+  /// Configure the appropriate blockchain client based on the specified chain
+  /// Supports Ethereum, Sepolia, BSC, and Solana networks with their respective RPC endpoints
   void setNetwork({required String chain}) {
     switch (chain) {
       case "ethereum":
@@ -175,7 +181,8 @@ class Web3Service with ListenableServiceMixin {
   /// -------------------------------
 
 
-  /// 
+  /// Fetch current token prices in USD from the configured price API endpoint
+  /// Returns a dynamic response containing price data for supported tokens
   Future<dynamic> getPricesInUSD() async {
     try {
       final url = Uri.parse(TOKEN_PRICES_URL);
@@ -194,6 +201,8 @@ class Web3Service with ListenableServiceMixin {
   }
 
 
+  /// Retrieve token balances for a given wallet address across all supported chains
+  /// Updates the internal _allBalances state with the fetched balance data
   Future<void> getBalances(String address) async {
     try {
       final body = {
@@ -216,6 +225,8 @@ class Web3Service with ListenableServiceMixin {
     }
   }
 
+  /// Fetch and process current token prices and 24h price changes
+  /// Updates _allPrices and _allChanges reactive values with market data
   Future<void> getPrices() async {
     try {
       final prices = await getPricesInUSD();
@@ -243,6 +254,9 @@ class Web3Service with ListenableServiceMixin {
     notifyListeners();
   }
 
+  /// Send EVM-compatible tokens (native ETH or ERC-20 tokens) to a specified address
+  /// Handles both native token transfers and ERC-20 token contract interactions
+  /// Returns transaction details including hash and status
   Future<Map<String, dynamic>> sendEvmToken(
     String to, 
     double amount, 
@@ -364,6 +378,8 @@ class Web3Service with ListenableServiceMixin {
     }
 }
 
+  /// Get SOL balance for a Solana wallet address
+  /// Converts lamports to SOL and returns the balance as a double
   Future<double> getSolBalance(String publicKeyBase58, String chain) async {
     setNetwork(chain: chain);
     final balanceResult = await _solanaClient.rpcClient.getBalance(publicKeyBase58);
@@ -393,6 +409,8 @@ class Web3Service with ListenableServiceMixin {
   }
   */
 
+  /// Fetch transaction history for a given wallet address
+  /// Enriches transaction data with network information and display properties
   Future<void> getTransactions(String address) async {
     try {
       final dynamic response = await api.getRequest("/common/transactions/$address");
@@ -430,6 +448,8 @@ class Web3Service with ListenableServiceMixin {
     }
   }
 
+  /// Add a new transaction to the local transaction list
+  /// Enriches transaction with network metadata and maintains chronological order
   void addTransaction(Map<String, dynamic> tx) {
     final current = _transactions.value ?? [];
     final network = kWalletTokenList.firstWhere((tk) => tk["chain"] == tx["chain"]);
@@ -443,6 +463,8 @@ class Web3Service with ListenableServiceMixin {
     notifyListeners();
   }
 
+  /// Monitor transaction status using periodic polling until confirmation
+  /// Updates transaction status in local state and refreshes balances when confirmed
   Future<void> getTransactionStatus(String hash, String chain, String address) async {
     try {
       logger.d("Start timer.");
@@ -473,6 +495,8 @@ class Web3Service with ListenableServiceMixin {
     }
   }      
 
+  /// Fetch transaction quote including gas estimates and fees
+  /// Used for ERC-20 token transfers to get accurate gas parameters
   Future<Map<String, dynamic>> fetchQuote({
     required String from,
     required String to,
@@ -488,6 +512,8 @@ class Web3Service with ListenableServiceMixin {
       return response;
   }
 
+  /// Encode ERC-20 transfer function call data for smart contract interaction
+  /// Creates the proper ABI-encoded data for transfer(address,uint256) function
   Uint8List _encodeERC20Transfer(EthereumAddress toAddress, BigInt amountWei) {
     // ERC-20 transfer function signature: transfer(address,uint256)
     final transferFunctionSignature = 'transfer(address,uint256)';
@@ -505,7 +531,8 @@ class Web3Service with ListenableServiceMixin {
     ]);
   }
 
-  // Encode Ethereum address (32 bytes padded)
+  /// Encode Ethereum address to 32-byte padded format for ABI compliance
+  /// Adds 12 bytes of zero padding before the 20-byte address
   Uint8List _encodeAddress(EthereumAddress address) {
     final addressBytes = address.addressBytes;
     return Uint8List.fromList([
@@ -514,7 +541,8 @@ class Web3Service with ListenableServiceMixin {
     ]);
   }
 
-// Encode uint256 (32 bytes)
+  /// Encode BigInt value to 32-byte uint256 format for ABI compliance
+  /// Pads the value with leading zeros to reach 32 bytes
   Uint8List _encodeUint256(BigInt value) {
     final bytes = _bigIntToBytes(value);
     return Uint8List.fromList([
@@ -523,7 +551,8 @@ class Web3Service with ListenableServiceMixin {
     ]);
   }
 
-  // Convert BigInt to bytes
+  /// Convert BigInt to byte array representation
+  /// Ensures even-length hex string and converts to bytes
   Uint8List _bigIntToBytes(BigInt number) {
     var hex = number.toRadixString(16);
     if (hex.length % 2 != 0) {
@@ -532,6 +561,8 @@ class Web3Service with ListenableServiceMixin {
     return hexToBytes(hex);
   }
 
+  /// Estimate transaction fee for an EVM transaction
+  /// Calculates gas cost and converts to ETH equivalent for fee display
   Future<double> getTransactionFee(Credentials creds, String chain, EthereumAddress to, double amount) async {
     double gasEstimate = 0;
     try {
@@ -555,6 +586,8 @@ class Web3Service with ListenableServiceMixin {
     
   }
 
+  /// Execute a simple token transfer via API endpoint
+  /// Returns the transaction hash of the submitted transfer
   Future<String> transfer(String chain, EthereumAddress to, double amount) async {
     try {
       final response = await api.postRequest("/evm/transaction/transfer", {
@@ -569,6 +602,8 @@ class Web3Service with ListenableServiceMixin {
     return "";
   }
 
+  /// Convert XP (experience points) to INSO tokens through swap API
+  /// Handles the exchange rate calculation and transaction preparation
   Future<Map<String, dynamic>> getINSOByXP(double xpAmount, double insoAmount, String toAddress) async {
     try {
       final response = await api.postRequest('/swap/get-inso-from-xp', {
@@ -585,6 +620,8 @@ class Web3Service with ListenableServiceMixin {
     return {};
   }
 
+  /// Fetch detailed token information from CoinGecko API
+  /// Returns comprehensive token data including price, market cap, and metadata
   Future<Map<String, dynamic>> getTokenDetails(String coingecko_id) async {
   if (coingecko_id.isEmpty) {
     logger.w("Empty coingecko_id provided");
@@ -611,6 +648,8 @@ class Web3Service with ListenableServiceMixin {
   }
 }
 
+  /// Get list of available token IDs that are supported on configured networks
+  /// Filters CoinGecko token list to only include tokens on supported platforms
   Future<List<String>> getAvailableTokenIds() async {
     try {
       final listResponse = await api.getRequestWithFullUrl(TOKEN_LIST_COINGECKO_URL);
@@ -628,6 +667,8 @@ class Web3Service with ListenableServiceMixin {
     return [];
   }
 
+  /// Search for tokens by symbol/name within the available token list
+  /// Returns filtered results that match the query and are available on supported networks
   Future<List<Map<String, dynamic>>> searchTokensBySymbol(String query, List<String> availableIds) async {
     try {
       final listResponse = await api.getRequestWithFullUrl("$TOKEN_SEARCH_COINGECKO_URL$query");
@@ -640,6 +681,8 @@ class Web3Service with ListenableServiceMixin {
     return [];
   }
 
+  /// Fetch market data for user's favorite tokens by their CoinGecko IDs
+  /// Returns current market information including prices and market metrics
   Future<List<Map<String, dynamic>>> getFavoriteTokensByIds(List<String> ids) async {
     try {
       logger.d("Favorite tokens are $ids");
@@ -652,7 +695,22 @@ class Web3Service with ListenableServiceMixin {
     }
     return [];
   }
-
   
+  /// Remove tokens from user's favorites list in Firestore database
+  /// Updates the user document by removing specified token IDs from favorite_tokens array
+  Future<bool> removeFavoriteTokens(String userId, List<String> tokenIds) async {
+    final _fireStore = FirebaseFirestore.instance;
+    try {
+      final userCollectionRef = _fireStore.collection("users2");
+      final userDoc = await userCollectionRef.doc(userId);
+      await userDoc.update({
+        "favorite_tokens": FieldValue.arrayRemove(tokenIds)
+      });
+      return true;
+    } catch (e) {
+      logger.d("Exception raised while removing favorite tokens. $e");
+      return false;
+    }
+  } 
 
 }

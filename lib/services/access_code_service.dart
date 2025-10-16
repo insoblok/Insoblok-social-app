@@ -41,6 +41,7 @@ class AccessCodeService {
   Future<bool> checkAccessCodeByEmail(String email) async {
     var snapShot = await _accessCodeCollection.where('email', isEqualTo: email).get();
     if (snapShot.docs.isNotEmpty) {
+      logger.d("is not empty");
       Map<String, dynamic> data = snapShot.docs.first.data();
       return data['checked'] ?? false;
     }

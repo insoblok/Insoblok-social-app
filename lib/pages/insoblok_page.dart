@@ -104,7 +104,6 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
       backgroundColor: Colors.transparent,
       onTap: (index) {
         if (index == 0 || index == 2 || index == 4 || index == 5) {
-          logger.d("selected page index is $index");
           viewModel.pageIndex = index;
         }
       },

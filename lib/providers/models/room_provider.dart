@@ -19,9 +19,9 @@ class RoomProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  late RoomModel _room;
-  RoomModel get room => _room;
-  set room(RoomModel model) {
+  late ChatRoomWithSettings _room;
+  ChatRoomWithSettings get room => _room;
+  set room(ChatRoomWithSettings model) {
     _room = model;
     notifyListeners();
   }
@@ -40,7 +40,14 @@ class RoomProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  Future<void> init(BuildContext context, {required RoomModel model}) async {
+  bool _archived = false;
+  bool get archived => _archived;
+  set archived(bool a) {
+    archived = a;
+    notifyListeners();
+  } 
+
+  Future<void> init(BuildContext context, {required ChatRoomWithSettings model}) async {
     this.context = context;
     room = model;
 
@@ -48,10 +55,10 @@ class RoomProvider extends InSoBlokViewModel {
 
     if (room.id != null) {
       getUnreadMessageCount();
-      messageService.getTypingStatus(room.id!).listen((data) {
-        var chatUserId = room.userId;
-        if (room.userId == user?.id) {
-          chatUserId = (room.userIds ?? [])[1];
+      messageService.getTypingStatus(room.chatroom.id!).listen((data) {
+        var chatUserId = room.chatroom.userId;
+        if (room.chatroom.userId == user?.id) {
+          chatUserId = (room.chatroom.userIds ?? [])[1];
         }
         isTyping = data[chatUserId] ?? false;
       });
@@ -64,9 +71,9 @@ class RoomProvider extends InSoBlokViewModel {
 
     await runBusyFuture(() async {
       try {
-        var chatUserId = room.userId;
-        if (room.userId == user?.id) {
-          chatUserId = (room.userIds ?? [])[1];
+        var chatUserId = room.chatroom.userId;
+        if (room.chatroom.userId == user?.id) {
+          chatUserId = (room.chatroom.userIds ?? [])[1];
         }
         chatUser = await userService.getUser(chatUserId!);
         if (chatUser == null) {
@@ -100,6 +107,45 @@ class RoomProvider extends InSoBlokViewModel {
       logger.e(e);
     } finally {
       notifyListeners();
+    }
+  }
+
+  Future<void> archiveChat() async {
+    if (isBusy) return;
+    clearErrors();
+
+    await runBusyFuture(() async {
+      try {
+        logger.d("This is rooms set: ${<String>{room.chatroom.id ?? ""}}");
+        await roomService.archive(AuthHelper.user?.id ?? '', <String>{room.chatroom.id ?? ""});
+        AIHelpers.showToast(msg: 'Chat archived ${room.chatroom.id}');
+      } catch (e) {
+        setError(e);
+        logger.e(e);
+      }
+    }());
+
+    if (hasError) {
+      AIHelpers.showToast(msg: modelError.toString());
+    }
+  }
+
+  Future<void> unArchiveChat() async {
+    if (isBusy) return;
+    clearErrors();
+
+    await runBusyFuture(() async {
+      try {
+        await roomService.unArchive(AuthHelper.user?.id ?? '', <String>{room.chatroom.id ?? ""});
+        AIHelpers.showToast(msg: 'Chat unarchived ${room.chatroom.id}');
+      } catch (e) {
+        setError(e);
+        logger.e(e);
+      }
+    }());
+
+    if (hasError) {
+      AIHelpers.showToast(msg: modelError.toString());
     }
   }
 }

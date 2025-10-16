@@ -158,7 +158,7 @@ class ReactionVideoDetailProvider extends InSoBlokViewModel {
         link = model.link!;
       }
 
-      final usersRef = FirebaseFirestore.instance.collection("user");
+      final usersRef = FirebaseFirestore.instance.collection("users2");
       await usersRef.doc(AuthHelper.user?.id).update({
         "galleries": FieldValue.arrayUnion([link]),
       });
@@ -246,8 +246,8 @@ class ReactionVideoDetailProvider extends InSoBlokViewModel {
           status: 'private',
           category: 'vote',
           medias: media != null ? [media] : [],
-          updateDate: DateTime.now(),
-          timestamp: DateTime.now(),
+          updatedAt: DateTime.now(),
+          createdAt: DateTime.now(),
         );
 
         await storyService.postStory(story: newStory);

@@ -6,8 +6,6 @@ import 'package:insoblok/models/models.dart';
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/widgets/widgets.dart';
 
-const kUserAvatarSize = 56.0;
-
 class TastescorePage extends StatelessWidget {
   final UserModel? user;
   const TastescorePage({super.key, this.user});

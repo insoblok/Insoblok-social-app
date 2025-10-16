@@ -161,7 +161,7 @@ class StoryContentProvider extends InSoBlokViewModel {
           likes.add(user!.id!);
         }
         await storyService.updateLikeStory(
-          story: story.copyWith(likes: likes, updateDate: DateTime.now()),
+          story: story.copyWith(likes: likes, updatedAt: DateTime.now()),
           user: owner,
         );
       } catch (e) {
@@ -225,7 +225,7 @@ class StoryContentProvider extends InSoBlokViewModel {
           follows.add(user!.id!);
         }
         await storyService.updateFollowStory(
-          story: story.copyWith(follows: follows, updateDate: DateTime.now()),
+          story: story.copyWith(follows: follows, updatedAt: DateTime.now()),
           user: owner,
         );
       } catch (e) {
@@ -281,7 +281,7 @@ class StoryContentProvider extends InSoBlokViewModel {
           }
         }
         await storyService.updateVoteStory(
-          story: story.copyWith(votes: votes, updateDate: DateTime.now()),
+          story: story.copyWith(votes: votes, updatedAt: DateTime.now()),
           user: owner,
           isVote: isVote,
         );
@@ -351,7 +351,7 @@ class StoryContentProvider extends InSoBlokViewModel {
             comments.add(commentid);
             story = story.copyWith(
               comments: comments,
-              updateDate: DateTime.now(),
+              updatedAt: DateTime.now(),
             );
             await storyService.addComment(story: story);
             await tastScoreService.commentScore();
@@ -405,8 +405,8 @@ class StoryContentProvider extends InSoBlokViewModel {
           text: description,
           category: 'vote',
           medias: story.medias,
-          updateDate: DateTime.now(),
-          timestamp: DateTime.now(),
+          updatedAt: DateTime.now(),
+          createdAt: DateTime.now(),
           connects: [
             ...(story.connects ?? []),
             if (!containedConnect())
@@ -442,7 +442,7 @@ class StoryContentProvider extends InSoBlokViewModel {
 
     await runBusyFuture(() async {
       try {
-        story = story.copyWith(status: 'public', updateDate: DateTime.now());
+        story = story.copyWith(status: 'public', updatedAt: DateTime.now());
         await storyService.updateStory(story: story);
       } catch (e) {
         setError(e);
