@@ -6,6 +6,7 @@ import 'package:stacked/stacked.dart';
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/widgets/widgets.dart';
+import 'package:insoblok/routers/routers.dart';
 
 class PageableView extends StatelessWidget {
   const PageableView({super.key});
@@ -208,7 +209,32 @@ class PageableView extends StatelessWidget {
                                     ),
                                 ),
                               ),
-                              const SizedBox(width: 2),
+                              const SizedBox(width: 8),
+
+                              // Live button
+                              InkWell(
+                                onTap: () => Routers.goToLivePage(context),
+                                borderRadius: BorderRadius.circular(16),
+                                child: Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                                  decoration: BoxDecoration(
+                                    gradient: const LinearGradient(
+                                      colors: [Color(0xFFF30C6C), Color(0xFFC739EB)],
+                                    ),
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: const [
+                                      Icon(Icons.videocam_rounded, size: 16, color: Colors.white),
+                                      SizedBox(width: 6),
+                                      Text('Live', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700)),
+                                    ],
+                                  ),
+                                ),
+                              ),
+
+                              const SizedBox(width: 8),
 
                               InkWell(
                                 onTap: () {},

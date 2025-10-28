@@ -88,6 +88,9 @@ const kRouterReactionVideoDetail = '/reaction-video-detail';
 const kRouterUserList = '/user-list';
 const kRouterFavorites = '/wallet-favorites';
 const kRouterTokenDetail = '/token-detail';
+// Live streaming
+const kRouterLiveStream = '/live-stream';
+const kRouterLive = '/live';
 class Navigation {
   final router = fluro.FluroRouter();
 
@@ -387,5 +390,9 @@ class Navigation {
     initRoute(kRouterFavorites, (props) => WalletFavoritesPage());
 
     initRoute<Map<String, dynamic>>(kRouterTokenDetail, (props) => TokenDetailPage(network: props!));
+
+    // * Live pages
+    initRoute(kRouterLiveStream, (props) => LiveStreamPage());
+    initRoute(kRouterLive, (props) => LivePage());
   }
 }

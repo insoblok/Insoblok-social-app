@@ -317,4 +317,17 @@ class Routers {
   static dynamic goToTokenDetailPage(BuildContext context, Map<String, dynamic> args) {
     return _pushToRoute(context, kRouterTokenDetail, args);
   }
+
+  static dynamic goToLivePage(BuildContext context) {
+    return Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => const LivePage()),
+    );
+  }
+
+  static dynamic goToLiveStreamPage(BuildContext context) {
+    // Use direct route push to avoid issues when router definitions aren't rebuilt after hot reload
+    return Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => const LiveStreamPage()),
+    );
+  }
 }
