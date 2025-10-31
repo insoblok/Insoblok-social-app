@@ -5,6 +5,8 @@ import 'package:camera/camera.dart';
 import 'package:insoblok/providers/lives/live_stream_provider.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/extensions/extensions.dart';
+import 'package:stream_video_flutter/stream_video_flutter.dart';
+import 'package:insoblok/services/stream_video_service.dart';
 
 class LiveStreamPage extends StatelessWidget {
   const LiveStreamPage({super.key});
@@ -25,10 +27,22 @@ class LiveStreamPage extends StatelessWidget {
             child: Stack(
             fit: StackFit.expand,
             children: [
-              if (vm.isInitialized && vm.cameraController != null)
-                CameraPreview(vm.cameraController!)
-              else
-                const Center(child: CircularProgressIndicator()),
+              Builder(
+                builder: (_) {
+                  final activeCall = StreamVideoService().activeCall;
+                  if (activeCall != null) {
+                    return Container(
+                      color: Colors.black,
+                      alignment: Alignment.center,
+                      child: const Text('Live is ON', style: TextStyle(color: Colors.white)),
+                    );
+                  }
+                  if (vm.isInitialized && vm.cameraController != null) {
+                    return CameraPreview(vm.cameraController!);
+                  }
+                  return const Center(child: CircularProgressIndicator());
+                },
+              ),
 
               SafeArea(
                 child: Padding(

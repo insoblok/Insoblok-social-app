@@ -1,0 +1,26 @@
+{
+  "root": true,
+  "env": {
+    "es2021": true,
+    "node": true
+  },
+  "extends": [
+    "eslint:recommended",
+    "google"
+  ],
+  "parserOptions": {
+    "ecmaVersion": "latest",
+    "sourceType": "script"
+  },
+  "rules": {
+    "max-len": "off",
+    "require-jsdoc": "off",
+    "indent": "off",
+    "object-curly-spacing": "off",
+    "linebreak-style": "off",
+    "no-console": "off",
+    "quotes": ["error", "double", {"avoidEscape": true}]
+  }
+}
+
+

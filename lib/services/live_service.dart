@@ -1,4 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
+import 'package:uuid/uuid.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class LiveService {
   final _firestore = FirebaseFirestore.instance;
@@ -18,6 +21,29 @@ class LiveService {
     required String? userAvatar,
     String? title,
   }) async {
+    // Generate a Stream Video callId and create the call on the backend.
+    // We keep using Firestore for listing "Live now" items but store callId for viewers to join.
+    final callId = const Uuid().v4();
+    try {
+      // Ensure Firebase Auth is present so callable has context.auth
+      final auth = FirebaseAuth.instance;
+      if (auth.currentUser == null) {
+        await auth.signInAnonymously();
+      }
+
+      final callable = FirebaseFunctions.instanceFor(region: 'us-central1')
+          .httpsCallable('createLivestreamCallV2');
+      await callable.call({
+        'callId': callId,
+        if (title != null) 'title': title,
+      });
+    } catch (e) {
+      // If the backend isn't deployed yet, we still create a local record so UI doesn't break.
+      // Log the error for debugging.
+      // ignore: avoid_print
+      print('createLivestreamCallV2 failed: $e');
+    }
+
     final doc = await _liveCol.add({
       'userId': userId,
       'userName': userName,
@@ -25,12 +51,19 @@ class LiveService {
       'title': title ?? 'Live',
       'status': 'live',
       'startedAt': FieldValue.serverTimestamp(),
+      'callId': callId,
     });
     return doc.id;
   }
 
   Future<void> endLiveSession(String sessionId) async {
     await _liveCol.doc(sessionId).update({'status': 'ended', 'endedAt': FieldValue.serverTimestamp()});
+  }
+
+  Future<String?> getCallId(String sessionId) async {
+    final doc = await _liveCol.doc(sessionId).get();
+    final data = doc.data();
+    return data != null ? data['callId'] as String? : null;
   }
 
   Stream<List<Map<String, dynamic>>> messagesStream(String sessionId) {

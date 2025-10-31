@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:video_player/video_player.dart';
 
 import 'package:insoblok/models/live_session_model.dart';
+import 'package:stream_video_flutter/stream_video_flutter.dart';
+import 'package:insoblok/services/stream_video_service.dart';
+import 'package:cloud_functions/cloud_functions.dart';
+import 'package:insoblok/utils/utils.dart';
 
 class LiveViewerPage extends StatefulWidget {
   final LiveSessionModel session;
@@ -14,27 +18,33 @@ class LiveViewerPage extends StatefulWidget {
 class _LiveViewerPageState extends State<LiveViewerPage> {
   late final VideoPlayerController _controller;
   bool _ready = false;
+  Call? _call;
 
   bool get isDemo => widget.session.id.startsWith('demo');
 
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.networkUrl(
-      Uri.parse('https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4'),
-    )
-      ..setLooping(true)
-      ..initialize().then((_) {
-        if (mounted) {
-          setState(() => _ready = true);
-          _controller.play();
-        }
-      });
+    if (!isDemo && (widget.session.callId != null)) {
+      _joinStreamAsViewer(widget.session.callId!);
+    } else {
+      _controller = VideoPlayerController.networkUrl(
+        Uri.parse('https://flutter.github.io/assets-for-api-docs/assets/videos/bee.mp4'),
+      )
+        ..setLooping(true)
+        ..initialize().then((_) {
+          if (mounted) {
+            setState(() => _ready = true);
+            _controller.play();
+          }
+        });
+    }
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    try { _controller.dispose(); } catch (_) {}
+    try { StreamVideoService().leave(); } catch (_) {}
     super.dispose();
   }
 
@@ -45,7 +55,13 @@ class _LiveViewerPageState extends State<LiveViewerPage> {
       body: Stack(
         fit: StackFit.expand,
         children: [
-          if (_ready)
+          if (_call != null)
+            Container(
+              color: Colors.black,
+              alignment: Alignment.center,
+              child: const Text('Connected to live', style: TextStyle(color: Colors.white)),
+            )
+          else if (_ready)
             FittedBox(
               fit: BoxFit.cover,
               child: SizedBox(
@@ -111,6 +127,22 @@ class _LiveViewerPageState extends State<LiveViewerPage> {
       ),
     );
   }
+  Future<void> _joinStreamAsViewer(String callId) async {
+    try {
+      final res = await FirebaseFunctions.instance.httpsCallable('videoTokenV2').call();
+      final data = (res.data as Map).cast<String, dynamic>();
+      final apiKey = data['apiKey'] as String?;
+      final userToken = data['token'] as String?;
+      final userId = data['userId'] as String?;
+      final userName = 'Viewer';
+      if (apiKey != null && userToken != null && userId != null) {
+        final stream = StreamVideoService();
+        await stream.connect(apiKey: apiKey, userId: userId, userName: userName, userToken: userToken);
+        final c = await stream.joinLivestream(callId: callId, asHost: false);
+        if (mounted) setState(() => _call = c);
+      }
+    } catch (e) {
+      if (mounted) setState(() => _ready = false);
+    }
+  }
 }
-
-

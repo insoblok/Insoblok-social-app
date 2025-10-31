@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
@@ -46,7 +47,7 @@ class FirebaseService {
     );
     FirebaseAuth.instanceFor(app: _app);
     await FirebaseAppCheck.instance.activate(
-      androidProvider: AndroidProvider.playIntegrity,
+      androidProvider: kDebugMode ? AndroidProvider.debug : AndroidProvider.playIntegrity,
       appleProvider: AppleProvider.appAttest,
       webProvider: ReCaptchaV3Provider('recaptcha-v3-site-key'),
     );

@@ -5,6 +5,7 @@ class LiveSessionModel {
   final String? userAvatar;
   final String title;
   final String status;
+  final String? callId; // Stream Video callId for joining the livestream
 
   LiveSessionModel({
     required this.id,
@@ -13,6 +14,7 @@ class LiveSessionModel {
     required this.userAvatar,
     required this.title,
     required this.status,
+    this.callId,
   });
 
   factory LiveSessionModel.fromMap(Map<String, dynamic> map) {
@@ -23,6 +25,7 @@ class LiveSessionModel {
       userAvatar: map['userAvatar'] as String?,
       title: map['title'] as String? ?? 'Live',
       status: map['status'] as String? ?? 'live',
+      callId: map['callId'] as String?,
     );
   }
 }

@@ -68,6 +68,9 @@ dependencies:
   firebase_auth: any
   firebase_app_check: any
   collection: any
+  cloud_functions: any
+  uuid: any
+  stream_video_flutter: any
 
   dio: any
   path_provider: any
