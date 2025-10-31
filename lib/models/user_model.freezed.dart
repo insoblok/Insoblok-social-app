@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$UserModel {
 
- String? get id; String? get uid; String? get walletAddress; String? get avatar; String? get firstName; String? get lastName; String? get email; String? get password; String? get city; String? get country; String? get website; String? get placeId; String? get desc; String? get discovery; String? get nickId; double? get lat; double? get lon; bool? get biometricEnabled; String? get ipAddress; DateTime? get updateDate; DateTime? get timestamp; String? get status; bool? get hasVotePost; bool? get freeStyle; bool? get isPremium; int? get rewardDate; int? get transferedXP; int? get transferedInSo; List<String>? get likes; List<String>? get follows; List<String>? get views; List<String>? get userActions; List<String>? get galleries; List<UserActionModel>? get actions; List<String>? get favoriteTokens; List<SocialMediaModel>? get socials;
+ String? get id; String? get uid; String? get walletAddress; String? get avatar; String? get firstName; String? get lastName; String? get email; String? get password; String? get city; String? get country; String? get website; String? get placeId; String? get desc; String? get discovery; String? get nickId; double? get lat; double? get lon; bool? get biometricEnabled; String? get ipAddress; DateTime? get updateDate; DateTime? get timestamp; String? get status; bool? get hasVotePost; bool? get freeStyle; bool? get isPremium; int? get rewardDate; int? get transferedXP; int? get transferedInSo; List<String>? get likes; List<String>? get follows; List<String>? get views; List<String>? get userActions; List<GalleryModel>? get galleries; List<UserActionModel>? get actions; List<String>? get favoriteTokens; List<SocialMediaModel>? get socials;
 /// Create a copy of UserModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -48,7 +48,7 @@ abstract mixin class $UserModelCopyWith<$Res>  {
   factory $UserModelCopyWith(UserModel value, $Res Function(UserModel) _then) = _$UserModelCopyWithImpl;
 @useResult
 $Res call({
- String? id, String? uid, String? walletAddress, String? avatar, String? firstName, String? lastName, String? email, String? password, String? city, String? country, String? website, String? placeId, String? desc, String? discovery, String? nickId, double? lat, double? lon, bool? biometricEnabled, String? ipAddress, DateTime? updateDate, DateTime? timestamp, String? status, bool? hasVotePost, bool? freeStyle, bool? isPremium, int? rewardDate, int? transferedXP, int? transferedInSo, List<String>? likes, List<String>? follows, List<String>? views, List<String>? userActions, List<String>? galleries, List<UserActionModel>? actions, List<String>? favoriteTokens, List<SocialMediaModel>? socials
+ String? id, String? uid, String? walletAddress, String? avatar, String? firstName, String? lastName, String? email, String? password, String? city, String? country, String? website, String? placeId, String? desc, String? discovery, String? nickId, double? lat, double? lon, bool? biometricEnabled, String? ipAddress, DateTime? updateDate, DateTime? timestamp, String? status, bool? hasVotePost, bool? freeStyle, bool? isPremium, int? rewardDate, int? transferedXP, int? transferedInSo, List<String>? likes, List<String>? follows, List<String>? views, List<String>? userActions, List<GalleryModel>? galleries, List<UserActionModel>? actions, List<String>? favoriteTokens, List<SocialMediaModel>? socials
 });
 
 
@@ -100,7 +100,7 @@ as List<String>?,follows: freezed == follows ? _self.follows : follows // ignore
 as List<String>?,views: freezed == views ? _self.views : views // ignore: cast_nullable_to_non_nullable
 as List<String>?,userActions: freezed == userActions ? _self.userActions : userActions // ignore: cast_nullable_to_non_nullable
 as List<String>?,galleries: freezed == galleries ? _self.galleries : galleries // ignore: cast_nullable_to_non_nullable
-as List<String>?,actions: freezed == actions ? _self.actions : actions // ignore: cast_nullable_to_non_nullable
+as List<GalleryModel>?,actions: freezed == actions ? _self.actions : actions // ignore: cast_nullable_to_non_nullable
 as List<UserActionModel>?,favoriteTokens: freezed == favoriteTokens ? _self.favoriteTokens : favoriteTokens // ignore: cast_nullable_to_non_nullable
 as List<String>?,socials: freezed == socials ? _self.socials : socials // ignore: cast_nullable_to_non_nullable
 as List<SocialMediaModel>?,
@@ -188,7 +188,7 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? id,  String? uid,  String? walletAddress,  String? avatar,  String? firstName,  String? lastName,  String? email,  String? password,  String? city,  String? country,  String? website,  String? placeId,  String? desc,  String? discovery,  String? nickId,  double? lat,  double? lon,  bool? biometricEnabled,  String? ipAddress,  DateTime? updateDate,  DateTime? timestamp,  String? status,  bool? hasVotePost,  bool? freeStyle,  bool? isPremium,  int? rewardDate,  int? transferedXP,  int? transferedInSo,  List<String>? likes,  List<String>? follows,  List<String>? views,  List<String>? userActions,  List<String>? galleries,  List<UserActionModel>? actions,  List<String>? favoriteTokens,  List<SocialMediaModel>? socials)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? id,  String? uid,  String? walletAddress,  String? avatar,  String? firstName,  String? lastName,  String? email,  String? password,  String? city,  String? country,  String? website,  String? placeId,  String? desc,  String? discovery,  String? nickId,  double? lat,  double? lon,  bool? biometricEnabled,  String? ipAddress,  DateTime? updateDate,  DateTime? timestamp,  String? status,  bool? hasVotePost,  bool? freeStyle,  bool? isPremium,  int? rewardDate,  int? transferedXP,  int? transferedInSo,  List<String>? likes,  List<String>? follows,  List<String>? views,  List<String>? userActions,  List<GalleryModel>? galleries,  List<UserActionModel>? actions,  List<String>? favoriteTokens,  List<SocialMediaModel>? socials)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _UserModel() when $default != null:
 return $default(_that.id,_that.uid,_that.walletAddress,_that.avatar,_that.firstName,_that.lastName,_that.email,_that.password,_that.city,_that.country,_that.website,_that.placeId,_that.desc,_that.discovery,_that.nickId,_that.lat,_that.lon,_that.biometricEnabled,_that.ipAddress,_that.updateDate,_that.timestamp,_that.status,_that.hasVotePost,_that.freeStyle,_that.isPremium,_that.rewardDate,_that.transferedXP,_that.transferedInSo,_that.likes,_that.follows,_that.views,_that.userActions,_that.galleries,_that.actions,_that.favoriteTokens,_that.socials);case _:
@@ -209,7 +209,7 @@ return $default(_that.id,_that.uid,_that.walletAddress,_that.avatar,_that.firstN
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? id,  String? uid,  String? walletAddress,  String? avatar,  String? firstName,  String? lastName,  String? email,  String? password,  String? city,  String? country,  String? website,  String? placeId,  String? desc,  String? discovery,  String? nickId,  double? lat,  double? lon,  bool? biometricEnabled,  String? ipAddress,  DateTime? updateDate,  DateTime? timestamp,  String? status,  bool? hasVotePost,  bool? freeStyle,  bool? isPremium,  int? rewardDate,  int? transferedXP,  int? transferedInSo,  List<String>? likes,  List<String>? follows,  List<String>? views,  List<String>? userActions,  List<String>? galleries,  List<UserActionModel>? actions,  List<String>? favoriteTokens,  List<SocialMediaModel>? socials)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? id,  String? uid,  String? walletAddress,  String? avatar,  String? firstName,  String? lastName,  String? email,  String? password,  String? city,  String? country,  String? website,  String? placeId,  String? desc,  String? discovery,  String? nickId,  double? lat,  double? lon,  bool? biometricEnabled,  String? ipAddress,  DateTime? updateDate,  DateTime? timestamp,  String? status,  bool? hasVotePost,  bool? freeStyle,  bool? isPremium,  int? rewardDate,  int? transferedXP,  int? transferedInSo,  List<String>? likes,  List<String>? follows,  List<String>? views,  List<String>? userActions,  List<GalleryModel>? galleries,  List<UserActionModel>? actions,  List<String>? favoriteTokens,  List<SocialMediaModel>? socials)  $default,) {final _that = this;
 switch (_that) {
 case _UserModel():
 return $default(_that.id,_that.uid,_that.walletAddress,_that.avatar,_that.firstName,_that.lastName,_that.email,_that.password,_that.city,_that.country,_that.website,_that.placeId,_that.desc,_that.discovery,_that.nickId,_that.lat,_that.lon,_that.biometricEnabled,_that.ipAddress,_that.updateDate,_that.timestamp,_that.status,_that.hasVotePost,_that.freeStyle,_that.isPremium,_that.rewardDate,_that.transferedXP,_that.transferedInSo,_that.likes,_that.follows,_that.views,_that.userActions,_that.galleries,_that.actions,_that.favoriteTokens,_that.socials);case _:
@@ -229,7 +229,7 @@ return $default(_that.id,_that.uid,_that.walletAddress,_that.avatar,_that.firstN
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? id,  String? uid,  String? walletAddress,  String? avatar,  String? firstName,  String? lastName,  String? email,  String? password,  String? city,  String? country,  String? website,  String? placeId,  String? desc,  String? discovery,  String? nickId,  double? lat,  double? lon,  bool? biometricEnabled,  String? ipAddress,  DateTime? updateDate,  DateTime? timestamp,  String? status,  bool? hasVotePost,  bool? freeStyle,  bool? isPremium,  int? rewardDate,  int? transferedXP,  int? transferedInSo,  List<String>? likes,  List<String>? follows,  List<String>? views,  List<String>? userActions,  List<String>? galleries,  List<UserActionModel>? actions,  List<String>? favoriteTokens,  List<SocialMediaModel>? socials)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? id,  String? uid,  String? walletAddress,  String? avatar,  String? firstName,  String? lastName,  String? email,  String? password,  String? city,  String? country,  String? website,  String? placeId,  String? desc,  String? discovery,  String? nickId,  double? lat,  double? lon,  bool? biometricEnabled,  String? ipAddress,  DateTime? updateDate,  DateTime? timestamp,  String? status,  bool? hasVotePost,  bool? freeStyle,  bool? isPremium,  int? rewardDate,  int? transferedXP,  int? transferedInSo,  List<String>? likes,  List<String>? follows,  List<String>? views,  List<String>? userActions,  List<GalleryModel>? galleries,  List<UserActionModel>? actions,  List<String>? favoriteTokens,  List<SocialMediaModel>? socials)?  $default,) {final _that = this;
 switch (_that) {
 case _UserModel() when $default != null:
 return $default(_that.id,_that.uid,_that.walletAddress,_that.avatar,_that.firstName,_that.lastName,_that.email,_that.password,_that.city,_that.country,_that.website,_that.placeId,_that.desc,_that.discovery,_that.nickId,_that.lat,_that.lon,_that.biometricEnabled,_that.ipAddress,_that.updateDate,_that.timestamp,_that.status,_that.hasVotePost,_that.freeStyle,_that.isPremium,_that.rewardDate,_that.transferedXP,_that.transferedInSo,_that.likes,_that.follows,_that.views,_that.userActions,_that.galleries,_that.actions,_that.favoriteTokens,_that.socials);case _:
@@ -244,7 +244,7 @@ return $default(_that.id,_that.uid,_that.walletAddress,_that.avatar,_that.firstN
 
 @JsonSerializable(fieldRename: FieldRename.snake)
 class _UserModel implements UserModel {
-   _UserModel({this.id, this.uid, this.walletAddress, this.avatar, this.firstName, this.lastName, this.email, this.password, this.city, this.country, this.website, this.placeId, this.desc, this.discovery, this.nickId, this.lat, this.lon, this.biometricEnabled, this.ipAddress, this.updateDate, this.timestamp, this.status, this.hasVotePost, this.freeStyle, this.isPremium, this.rewardDate, this.transferedXP, this.transferedInSo, final  List<String>? likes, final  List<String>? follows, final  List<String>? views, final  List<String>? userActions, final  List<String>? galleries, final  List<UserActionModel>? actions, final  List<String>? favoriteTokens, final  List<SocialMediaModel>? socials}): _likes = likes,_follows = follows,_views = views,_userActions = userActions,_galleries = galleries,_actions = actions,_favoriteTokens = favoriteTokens,_socials = socials;
+   _UserModel({this.id, this.uid, this.walletAddress, this.avatar, this.firstName, this.lastName, this.email, this.password, this.city, this.country, this.website, this.placeId, this.desc, this.discovery, this.nickId, this.lat, this.lon, this.biometricEnabled, this.ipAddress, this.updateDate, this.timestamp, this.status, this.hasVotePost, this.freeStyle, this.isPremium, this.rewardDate, this.transferedXP, this.transferedInSo, final  List<String>? likes, final  List<String>? follows, final  List<String>? views, final  List<String>? userActions, final  List<GalleryModel>? galleries, final  List<UserActionModel>? actions, final  List<String>? favoriteTokens, final  List<SocialMediaModel>? socials}): _likes = likes,_follows = follows,_views = views,_userActions = userActions,_galleries = galleries,_actions = actions,_favoriteTokens = favoriteTokens,_socials = socials;
   factory _UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);
 
 @override final  String? id;
@@ -311,8 +311,8 @@ class _UserModel implements UserModel {
   return EqualUnmodifiableListView(value);
 }
 
- final  List<String>? _galleries;
-@override List<String>? get galleries {
+ final  List<GalleryModel>? _galleries;
+@override List<GalleryModel>? get galleries {
   final value = _galleries;
   if (value == null) return null;
   if (_galleries is EqualUnmodifiableListView) return _galleries;
@@ -381,7 +381,7 @@ abstract mixin class _$UserModelCopyWith<$Res> implements $UserModelCopyWith<$Re
   factory _$UserModelCopyWith(_UserModel value, $Res Function(_UserModel) _then) = __$UserModelCopyWithImpl;
 @override @useResult
 $Res call({
- String? id, String? uid, String? walletAddress, String? avatar, String? firstName, String? lastName, String? email, String? password, String? city, String? country, String? website, String? placeId, String? desc, String? discovery, String? nickId, double? lat, double? lon, bool? biometricEnabled, String? ipAddress, DateTime? updateDate, DateTime? timestamp, String? status, bool? hasVotePost, bool? freeStyle, bool? isPremium, int? rewardDate, int? transferedXP, int? transferedInSo, List<String>? likes, List<String>? follows, List<String>? views, List<String>? userActions, List<String>? galleries, List<UserActionModel>? actions, List<String>? favoriteTokens, List<SocialMediaModel>? socials
+ String? id, String? uid, String? walletAddress, String? avatar, String? firstName, String? lastName, String? email, String? password, String? city, String? country, String? website, String? placeId, String? desc, String? discovery, String? nickId, double? lat, double? lon, bool? biometricEnabled, String? ipAddress, DateTime? updateDate, DateTime? timestamp, String? status, bool? hasVotePost, bool? freeStyle, bool? isPremium, int? rewardDate, int? transferedXP, int? transferedInSo, List<String>? likes, List<String>? follows, List<String>? views, List<String>? userActions, List<GalleryModel>? galleries, List<UserActionModel>? actions, List<String>? favoriteTokens, List<SocialMediaModel>? socials
 });
 
 
@@ -433,10 +433,288 @@ as List<String>?,follows: freezed == follows ? _self._follows : follows // ignor
 as List<String>?,views: freezed == views ? _self._views : views // ignore: cast_nullable_to_non_nullable
 as List<String>?,userActions: freezed == userActions ? _self._userActions : userActions // ignore: cast_nullable_to_non_nullable
 as List<String>?,galleries: freezed == galleries ? _self._galleries : galleries // ignore: cast_nullable_to_non_nullable
-as List<String>?,actions: freezed == actions ? _self._actions : actions // ignore: cast_nullable_to_non_nullable
+as List<GalleryModel>?,actions: freezed == actions ? _self._actions : actions // ignore: cast_nullable_to_non_nullable
 as List<UserActionModel>?,favoriteTokens: freezed == favoriteTokens ? _self._favoriteTokens : favoriteTokens // ignore: cast_nullable_to_non_nullable
 as List<String>?,socials: freezed == socials ? _self._socials : socials // ignore: cast_nullable_to_non_nullable
 as List<SocialMediaModel>?,
+  ));
+}
+
+
+}
+
+
+/// @nodoc
+mixin _$GalleryModel {
+
+ String? get media; String? get description; DateTime? get createdAt; DateTime? get updatedAt; DateTime? get deletedAt; String? get status;
+/// Create a copy of GalleryModel
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$GalleryModelCopyWith<GalleryModel> get copyWith => _$GalleryModelCopyWithImpl<GalleryModel>(this as GalleryModel, _$identity);
+
+  /// Serializes this GalleryModel to a JSON map.
+  Map<String, dynamic> toJson();
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is GalleryModel&&(identical(other.media, media) || other.media == media)&&(identical(other.description, description) || other.description == description)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.deletedAt, deletedAt) || other.deletedAt == deletedAt)&&(identical(other.status, status) || other.status == status));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,media,description,createdAt,updatedAt,deletedAt,status);
+
+@override
+String toString() {
+  return 'GalleryModel(media: $media, description: $description, createdAt: $createdAt, updatedAt: $updatedAt, deletedAt: $deletedAt, status: $status)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class $GalleryModelCopyWith<$Res>  {
+  factory $GalleryModelCopyWith(GalleryModel value, $Res Function(GalleryModel) _then) = _$GalleryModelCopyWithImpl;
+@useResult
+$Res call({
+ String? media, String? description, DateTime? createdAt, DateTime? updatedAt, DateTime? deletedAt, String? status
+});
+
+
+
+
+}
+/// @nodoc
+class _$GalleryModelCopyWithImpl<$Res>
+    implements $GalleryModelCopyWith<$Res> {
+  _$GalleryModelCopyWithImpl(this._self, this._then);
+
+  final GalleryModel _self;
+  final $Res Function(GalleryModel) _then;
+
+/// Create a copy of GalleryModel
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? media = freezed,Object? description = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,Object? deletedAt = freezed,Object? status = freezed,}) {
+  return _then(_self.copyWith(
+media: freezed == media ? _self.media : media // ignore: cast_nullable_to_non_nullable
+as String?,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
+as String?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,deletedAt: freezed == deletedAt ? _self.deletedAt : deletedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,status: freezed == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
+as String?,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [GalleryModel].
+extension GalleryModelPatterns on GalleryModel {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>(TResult Function( _GalleryModel value)?  $default,{required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _GalleryModel() when $default != null:
+return $default(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>(TResult Function( _GalleryModel value)  $default,){
+final _that = this;
+switch (_that) {
+case _GalleryModel():
+return $default(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>(TResult? Function( _GalleryModel value)?  $default,){
+final _that = this;
+switch (_that) {
+case _GalleryModel() when $default != null:
+return $default(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? media,  String? description,  DateTime? createdAt,  DateTime? updatedAt,  DateTime? deletedAt,  String? status)?  $default,{required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _GalleryModel() when $default != null:
+return $default(_that.media,_that.description,_that.createdAt,_that.updatedAt,_that.deletedAt,_that.status);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? media,  String? description,  DateTime? createdAt,  DateTime? updatedAt,  DateTime? deletedAt,  String? status)  $default,) {final _that = this;
+switch (_that) {
+case _GalleryModel():
+return $default(_that.media,_that.description,_that.createdAt,_that.updatedAt,_that.deletedAt,_that.status);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? media,  String? description,  DateTime? createdAt,  DateTime? updatedAt,  DateTime? deletedAt,  String? status)?  $default,) {final _that = this;
+switch (_that) {
+case _GalleryModel() when $default != null:
+return $default(_that.media,_that.description,_that.createdAt,_that.updatedAt,_that.deletedAt,_that.status);case _:
+  return null;
+
+}
+}
+
+}
+
+/// @nodoc
+
+@JsonSerializable(fieldRename: FieldRename.snake)
+class _GalleryModel implements GalleryModel {
+   _GalleryModel({this.media, this.description, this.createdAt, this.updatedAt, this.deletedAt, this.status});
+  factory _GalleryModel.fromJson(Map<String, dynamic> json) => _$GalleryModelFromJson(json);
+
+@override final  String? media;
+@override final  String? description;
+@override final  DateTime? createdAt;
+@override final  DateTime? updatedAt;
+@override final  DateTime? deletedAt;
+@override final  String? status;
+
+/// Create a copy of GalleryModel
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$GalleryModelCopyWith<_GalleryModel> get copyWith => __$GalleryModelCopyWithImpl<_GalleryModel>(this, _$identity);
+
+@override
+Map<String, dynamic> toJson() {
+  return _$GalleryModelToJson(this, );
+}
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GalleryModel&&(identical(other.media, media) || other.media == media)&&(identical(other.description, description) || other.description == description)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.deletedAt, deletedAt) || other.deletedAt == deletedAt)&&(identical(other.status, status) || other.status == status));
+}
+
+@JsonKey(includeFromJson: false, includeToJson: false)
+@override
+int get hashCode => Object.hash(runtimeType,media,description,createdAt,updatedAt,deletedAt,status);
+
+@override
+String toString() {
+  return 'GalleryModel(media: $media, description: $description, createdAt: $createdAt, updatedAt: $updatedAt, deletedAt: $deletedAt, status: $status)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$GalleryModelCopyWith<$Res> implements $GalleryModelCopyWith<$Res> {
+  factory _$GalleryModelCopyWith(_GalleryModel value, $Res Function(_GalleryModel) _then) = __$GalleryModelCopyWithImpl;
+@override @useResult
+$Res call({
+ String? media, String? description, DateTime? createdAt, DateTime? updatedAt, DateTime? deletedAt, String? status
+});
+
+
+
+
+}
+/// @nodoc
+class __$GalleryModelCopyWithImpl<$Res>
+    implements _$GalleryModelCopyWith<$Res> {
+  __$GalleryModelCopyWithImpl(this._self, this._then);
+
+  final _GalleryModel _self;
+  final $Res Function(_GalleryModel) _then;
+
+/// Create a copy of GalleryModel
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? media = freezed,Object? description = freezed,Object? createdAt = freezed,Object? updatedAt = freezed,Object? deletedAt = freezed,Object? status = freezed,}) {
+  return _then(_GalleryModel(
+media: freezed == media ? _self.media : media // ignore: cast_nullable_to_non_nullable
+as String?,description: freezed == description ? _self.description : description // ignore: cast_nullable_to_non_nullable
+as String?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,deletedAt: freezed == deletedAt ? _self.deletedAt : deletedAt // ignore: cast_nullable_to_non_nullable
+as DateTime?,status: freezed == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 

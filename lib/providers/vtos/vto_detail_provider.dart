@@ -135,8 +135,8 @@ class VTODetailProvider extends InSoBlokViewModel {
                 type: 'image',
               ),
             ],
-            updateDate: DateTime.now(),
-            timestamp: DateTime.now(),
+            updatedAt: DateTime.now(),
+            createdAt: DateTime.now(),
           );
           await storyService.postStory(story: story);
           AIHelpers.showToast(msg: 'Successfully posted VTO to LOOKBOOK!');
@@ -194,8 +194,8 @@ class VTODetailProvider extends InSoBlokViewModel {
                 type: 'image',
               ),
             ],
-            updateDate: DateTime.now(),
-            timestamp: DateTime.now(),
+            updatedAt: DateTime.now(),
+            createdAt: DateTime.now(),
           );
           await storyService.postStory(story: story);
         }

@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
+import 'dart:math';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/services.dart';
@@ -13,6 +14,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:insoblok/locator.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
+import 'package:insoblok/models/models.dart';
 
 import 'package:path/path.dart' as p;
 
@@ -180,7 +182,7 @@ class FirebaseService {
 
       if (postCategory == "gallery") {
         // Add image URL to user galleries
-        final usersRef = FirebaseFirestore.instance.collection("user");
+        final usersRef = FirebaseFirestore.instance.collection("users2");
         await usersRef.doc(id ?? AuthHelper.user?.id).update({
           "galleries": FieldValue.arrayUnion([downloadUrl]),
         });
@@ -274,7 +276,7 @@ class FirebaseService {
 
       if (postCategory == "gallery") {
         // Add video URL to user galleries
-        final usersRef = FirebaseFirestore.instance.collection("user");
+        final usersRef = FirebaseFirestore.instance.collection("users2");
         await usersRef.doc(id ?? AuthHelper.user?.id).update({
           "galleries": FieldValue.arrayUnion([downloadUrl]),
         });
@@ -366,7 +368,7 @@ class FirebaseService {
     }
   }
 
-  Future<List<String>> fetchGalleries(String id) async {
+  Future<List<GalleryModel>> fetchGalleries(String id) async {
     
     // AuthHelper.user?.id
     final currentUserId = FirebaseAuth.instance.currentUser?.uid;
@@ -378,22 +380,28 @@ class FirebaseService {
     if (targetId == null) {
       throw Exception('No user ID available.');
     }
-
+    List<GalleryModel> galleries = [];
     try {
       final docSnapshot = await FirebaseFirestore.instance
-          .collection("user")
+          .collection("users2")
           .doc(id)
           .get();
 
       if (docSnapshot.exists) {
         final data = docSnapshot.data();
         if (data != null && data['galleries'] != null) {
-          // Ensure it's a List<String>
-          return List<String>.from(data['galleries']);
+          logger.d("gallery json is ${data['galleries']}");
+          List<Map<String, dynamic>> lists = (data["galleries"] as List).cast<Map<String, dynamic>>();
+          for (var l in lists) {
+            if(l["status"] == "active") {
+              galleries.add(GalleryModel.fromJson(l));
+            }
+          }
+          
         }
       }
 
-      return []; // If no galleries or doc doesn't exist
+      return galleries; // If no galleries or doc doesn't exist
     } catch (e) {
       logger.e("Error fetching galleries: $e");
       return [];
@@ -500,7 +508,7 @@ class FirebaseHelper {
     
     logger.d("delete imageUrl: $imageUrl");
 
-    final usersRef = FirebaseFirestore.instance.collection("user");
+    final usersRef = FirebaseFirestore.instance.collection("users2");
     await usersRef.doc(AuthHelper.user?.id).update({
       "galleries": FieldValue.arrayRemove([imageUrl]), // removes all exact matches
     });
@@ -562,7 +570,7 @@ class FirebaseHelper {
     bool alsoDeleteStoryDoc = false,
   }) async {
     final db = FirebaseFirestore.instance;
-    final userRef  = db.collection('user').doc(userId);
+    final userRef  = db.collection('users2').doc(userId);
     final storyRef = db.collection('story').doc(storyId);
 
     await db.runTransaction((tx) async {
@@ -601,9 +609,8 @@ class FirebaseHelper {
   ) {
     Map<String, dynamic> newJson = {};
     for (var key in firebaseJson.keys) {
-      if (key == 'update_date' || key == 'timestamp') {
+      if (key == 'update_date' || key == 'timestamp' || key == 'created_at' || key == "updated_at" || key == 'birthday' || key == "archived_at" || key == "muted_at" || key == "deleted_at") {
         var value = firebaseJson[key];
-
         if (value != null) {
           DateTime utcDateTime;
           if (value is String) {
@@ -624,4 +631,6 @@ class FirebaseHelper {
     }
     return newJson;
   }
+
+  
 }

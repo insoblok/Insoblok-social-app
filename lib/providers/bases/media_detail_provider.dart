@@ -378,8 +378,8 @@ class MediaDetailProvider extends InSoBlokViewModel {
           status: 'private',
           category: 'vote',
           medias: media != null ? [media] : [],
-          updateDate: DateTime.now(),
-          timestamp: DateTime.now(),
+          updatedAt: DateTime.now(),
+          createdAt: DateTime.now(),
         );
 
         await storyService.postStory(story: newStory);
@@ -609,8 +609,8 @@ class MediaDetailProvider extends InSoBlokViewModel {
               height: decodedImage?.height.toDouble(),
             ),
           ],
-          updateDate: DateTime.now(),
-          timestamp: DateTime.now(),
+          updatedAt: DateTime.now(),
+          createdAt: DateTime.now(),
         );
         await storyService.postStory(story: story);
 

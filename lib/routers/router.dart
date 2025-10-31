@@ -81,8 +81,11 @@ class Routers {
     return _pushToRoute(context, kRouterAccountUpdate, null);
   }
 
-  static dynamic goToAccountAvatarPage(BuildContext context) {
-    return _pushToRoute(context, kRouterAccountAvatar, null);
+  static dynamic goToAccountAvatarPage(BuildContext context, String? src, String? dst) {
+    Map<String, String?> args = {};
+    args["src"] = src;
+    args["dst"] = dst;
+    return _pushToRoute(context, kRouterAccountAvatar, args);
   }
 
   static dynamic goToAccountPublicPage(BuildContext context) {
@@ -155,6 +158,10 @@ class Routers {
 
   static dynamic goToChatViewPage(BuildContext context) {
     return _pushToRoute(context, kRouterChatView, null);
+  }
+
+  static dynamic goToArchivedChatViewPage(BuildContext context) {
+    return _pushToRoute(context, kRouterArchivedChatView, null);
   }
 
   static dynamic goToChatPaymentPage(BuildContext context, String s, String r) {
@@ -284,7 +291,6 @@ class Routers {
   }
 
   static dynamic goToFaceDetailPage(BuildContext context, String storyID, String url, io.File face, List<AIFaceAnnotation> annotations, bool editable) {
-
     return _pushToRoute(context, kRouterFaceDetail, {
       'storyID': storyID,
       'url': url,
@@ -317,4 +323,15 @@ class Routers {
   static dynamic goToTokenDetailPage(BuildContext context, Map<String, dynamic> args) {
     return _pushToRoute(context, kRouterTokenDetail, args);
   }
+
+  static dynamic goToRRCAvatarGenerationPage(BuildContext context, io.File? face, String url, String origin, String storyID) {
+    Map<String, dynamic> args = {};
+    args["face"] = face!;
+    args["url"] = url;
+    args["origin"] = origin;
+    args["storyID"] = storyID;
+    logger.d("This is inside gotorrcavatar $args");
+    return _pushToRoute(context, kRouterRRCAvatarGeneration, args);
+  }
+
 }

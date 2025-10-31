@@ -79,6 +79,7 @@ class AIImage extends StatelessWidget {
           fit: fit ?? BoxFit.contain,
           color: color,
           errorBuilder: (context, error, stackTrace) {
+            logger.e(error);
             return AIDefaultImage(
               width: width,
               height: height,

@@ -1,11 +1,16 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
+import 'package:mime/mime.dart';
 import 'package:image_cropper/image_cropper.dart';
+
+import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
+
 import 'package:insoblok/services/cloudinary_cdn_service.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
+import 'package:insoblok/models/models.dart';
+
 
 final kAvatarAspectRatio = [
   {
@@ -82,8 +87,15 @@ class AvatarService {
   }
 
   Future<String?> uploadOriginAvatar(File file) async {
-    final model = await CloudinaryCDNService.uploadImageToCDN(XFile(file.path));
-    return model.link;
+    final type = lookupMimeType(file.path);
+    MediaStoryModel? model;
+    if ((type ?? "").startsWith("image/")) {
+      model = await CloudinaryCDNService.uploadImageToCDN(XFile(file.path));
+    }
+    else if ((type ?? "").startsWith("video/")) {
+      model = await CloudinaryCDNService.uploadVideoToCDN(XFile(file.path));
+    }
+    return model?.link;
   }
 
   Future<String?> createTask({

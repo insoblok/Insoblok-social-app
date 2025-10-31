@@ -58,39 +58,33 @@
     "xp_inso": [
         {
             "min": 0,
-            "max": 100,
-            "inso": 1,
-            "rate": 1
-        },
-        {
-            "min": 100,
             "max": 500,
-            "inso": 6,
-            "rate": 20
+            "rate": 50
         },
         {
             "min": 500,
             "max": 1000,
-            "inso": 15,
-            "rate": 50
+            "rate": 40
         },
         {
             "min": 1000,
             "max": 2500,
-            "inso": 50,
-            "rate": 100
+            "rate": 35
         },
         {
             "min": 2500,
             "max": 5000,
-            "inso": 120,
-            "rate": 140
+            "rate": 30
         },
         {
             "min": 5000,
             "max": 10000,
-            "inso": 300,
-            "rate": 200
+            "rate": 25
+        },
+        {
+            "min": 10000,
+            "max": 50000,
+            "rate": 25
         }
     ],
     "user_level": [

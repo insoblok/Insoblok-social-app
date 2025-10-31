@@ -35,7 +35,7 @@ class UpdateProfilePage extends StatelessWidget {
                   padding: EdgeInsets.all(2),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Theme.of(context).primaryColor.withAlpha(128),
+                    color: AppSettingHelper.transparentBackground,
                   ),
                   child: IconButton(
                     onPressed: () async {
@@ -111,15 +111,15 @@ class UpdateProfilePage extends StatelessWidget {
                     account: viewModel.account,
                   ),
                 ),
-                // Padding(
-                //   padding: const EdgeInsets.all(24.0),
-                //   child: TextFillButton(
-                //     onTap: viewModel.onClickUpdated,
-                //     isBusy: viewModel.isBusy,
-                //     text: 'Update Profile',
-                //     color: Theme.of(context).primaryColor,
-                //   ),
-                // ),
+                Padding(
+                  padding: const EdgeInsets.all(24.0),
+                  child: TextFillButton(
+                    onTap: viewModel.onClickUpdated,
+                    isBusy: viewModel.isBusy,
+                    text: 'Update Profile',
+                    color: Theme.of(context).primaryColor,
+                  ),
+                ),
               ],
             ),
         );

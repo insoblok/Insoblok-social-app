@@ -55,7 +55,6 @@ class AuthService with ListenableServiceMixin {
   }
 
   Future<void> updateStatus(String status) async {
-    logger.d(status);
     await userService.updateUser(user!.copyWith(status: status));
   }
 

@@ -38,7 +38,9 @@ class UpdateProfileProvider extends InSoBlokViewModel {
 
     await runBusyFuture(() async {
       try {
-        var result = await Routers.goToAccountAvatarPage(context);
+        var result = await Routers.goToAccountAvatarPage(context, null, null);
+        // var result = await Routers.goToAccountAvatarPage(context, "data/user/0/insoblok.social.app/cache/avatar.jpg", "data/user/0/insoblok.social.app/cache/video_1.mp4");
+        
         if (result != null) {
           account = account.copyWith(avatar: result);
         }

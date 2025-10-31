@@ -27,6 +27,10 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
     }
   }
 
+  void handleTapAddPost() {
+
+  }
+
   Widget _buildSearchBar(BuildContext context, InSoBlokProvider viewModel) {
     return Container(
       key: ValueKey('search_nav'), // Important for AnimatedSwitcher
@@ -104,7 +108,6 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
       backgroundColor: Colors.transparent,
       onTap: (index) {
         if (index == 0 || index == 2 || index == 4 || index == 5) {
-          logger.d("selected page index is $index");
           viewModel.pageIndex = index;
         }
       },
@@ -143,7 +146,66 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
         ),
         BottomNavigationBarItem(
           icon: InkWell(
-            onTap: viewModel.goToAddPost,
+            onTap: () {
+              showModalBottomSheet<int>(
+                backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+                context: context,
+                builder: (context) {
+                  return StatefulBuilder(
+                    builder: (BuildContext modalContext, StateSetter setModalState) {
+                      return SafeArea(
+                        child: Container(
+                          padding: const EdgeInsets.all(8.0),
+                          height: 120,
+                          decoration: BoxDecoration(
+                            // color: Theme.of(context).scaffoldBackgroundColor,
+                            borderRadius: const BorderRadius.vertical(
+                              top: Radius.circular(20.0),
+                            ),
+                          ),
+                          child: Column(
+                            children: [
+                              // Drag handle
+                              Center(
+                                child: Container(
+                                  width: 40,
+                                  height: 4,
+                                  margin: const EdgeInsets.only(bottom: 6),
+                                  decoration: BoxDecoration(
+                                    color: Colors.grey.shade400,
+                                    borderRadius: BorderRadius.circular(2),
+                                  ),
+                                ),
+                              ),
+                              InkWell(
+                                onTap: viewModel.handleTapCreateVTOPost,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    "Create VTO Post",
+                                    style: Theme.of(context).textTheme.bodyLarge
+                                  ),
+                                ),
+                              ),
+                              InkWell(
+                                onTap: viewModel.goToAddPost,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    "Create Post",
+                                    style: Theme.of(context).textTheme.bodyLarge
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      );
+                    },
+                  );
+                },
+              );
+            },
             child: Container(
               width: 48,
               height: 48,

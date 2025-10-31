@@ -36,7 +36,10 @@ class CryptoService {
   // Secure storage keys (you can version these)
   static const String _vaultKey = 'wallet_vault_v1';
   static const String _pincodeKey = "wallet_pincode";
-  final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
+  
+  static final FlutterSecureStorage _secureStorage = const FlutterSecureStorage(aOptions: const AndroidOptions(
+    encryptedSharedPreferences: true,
+  ));
   final Random _rng = Random.secure();
 
   List<Map<String, dynamic>> transactions = [];
@@ -217,8 +220,17 @@ class CryptoService {
     logger.d("entered password is $password, $encryptedVault");
     await _secureStorage.write(key: _vaultKey, value: encryptedVault);
     await _secureStorage.write(key: _pincodeKey, value: password);
+    // Verify the writes were successful
+    final verifyVault = await _secureStorage.read(key: _vaultKey);
+    final verifyPincode = await _secureStorage.read(key: _pincodeKey);
+    
+    if (verifyVault == null || verifyPincode == null) {
+      throw Exception('Secure storage write verification failed');
+    }
     final vault = await _secureStorage.read(key: _vaultKey);
-    logger.d("Stored vault is $vault");
+    final values = await _secureStorage.readAll();
+
+    logger.d("Stored vault is $vault, $values");
     final creds = EthPrivateKey.fromHex(privHex);
     final address = await creds.extractAddress();
     _mnemonic = mnemonic;
@@ -378,6 +390,8 @@ class CryptoService {
 
   Future<bool> doesWalletExist() async {
     final vault = await _secureStorage.read(key: _vaultKey);
+    final pincode = await _secureStorage.read(key: _pincodeKey);
+    final values = await _secureStorage.readAll();
     return vault != null;
   }
 }

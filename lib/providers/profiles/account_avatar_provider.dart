@@ -7,6 +7,7 @@ import 'package:fluttertoast/fluttertoast.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
+import 'package:insoblok/routers/router.dart';
 
 class AvatarProvider extends InSoBlokViewModel {
   late BuildContext _context;
@@ -16,9 +17,14 @@ class AvatarProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  Future<void> init(BuildContext context) async {
+  String result = "";
+
+  bool isSaving = false;
+
+  Future<void> init(BuildContext context, String? src, String?dst) async {
     this.context = context;
     ratioIndex = 0;
+    if (src != null) result = src;
   }
 
   int? _ratioIndex;
@@ -98,53 +104,64 @@ class AvatarProvider extends InSoBlokViewModel {
 
   bool get hasResult => resultFirebaseUrl?.isNotEmpty ?? false;
 
-  Future<void> onConvert() async {
+  void onConvert() {
     if (originPath == null) {
       Fluttertoast.showToast(msg: 'Please choose an origin image first');
       return;
     }
-
-    if (isBusy) return;
+    Routers.goToRRCAvatarGenerationPage(context, originFile, "", "profile", "");
+  }
+  Future<void> handleTapSave() async {
+    if (isSaving) return;
+    if (result.isEmpty) {
+      AIHelpers.showToast(msg: "Please select target avatar media.");
+      return;
+    }
     clearErrors();
 
-    pageStatus = 'Generating...';
+    isSaving = true;
+    runBusyFuture(() async {
+      try {
+        originUrl = await _avatarService.uploadOriginAvatar(File(result));
+        logger.d("Result is $originUrl, $result");
+        if (originUrl == null) throw ('Server error!');
 
-    try {
-      originUrl = await _avatarService.uploadOriginAvatar(originFile!);
-      if (originUrl == null) throw ('Server error!');
+        /*
+        // pageStatus = 'Sending an origin image to ai service';
+        var taskId = await _avatarService.createTask(
+          fileUrl: originUrl!,
+          prompt: prompt,
+          size: kAvatarAspectRatio[ratioIndex!]['size'] as String,
+        );
+        if (taskId == null) throw ('AI service error!');
+        var aiResult = await _avatarService.setOnProgressListener(
+          taskId,
+          onProgressListener: (progress) {
+            // pageStatus =
+            //     'Generating... ${(double.parse(progress) * 100).toInt()}%...';
+          },
+        );
+        if (aiResult['status'] != 'SUCCESS') throw (aiResult['status']);
 
-      // pageStatus = 'Sending an origin image to ai service';
-      var taskId = await _avatarService.createTask(
-        fileUrl: originUrl!,
-        prompt: prompt,
-        size: kAvatarAspectRatio[ratioIndex!]['size'] as String,
-      );
-      if (taskId == null) throw ('AI service error!');
-      var aiResult = await _avatarService.setOnProgressListener(
-        taskId,
-        onProgressListener: (progress) {
-          // pageStatus =
-          //     'Generating... ${(double.parse(progress) * 100).toInt()}%...';
-        },
-      );
-      if (aiResult['status'] != 'SUCCESS') throw (aiResult['status']);
+        // pageStatus = 'Downloading a result image from ai service';
+        String aiUrl = (aiResult['response']['resultUrls'] as List).first;
+        var resultUrl = await _avatarService.downloadAvatar(taskId, url: aiUrl);
+        if (resultUrl == null) throw ('AI service error!');
 
-      // pageStatus = 'Downloading a result image from ai service';
-      String aiUrl = (aiResult['response']['resultUrls'] as List).first;
-      var resultUrl = await _avatarService.downloadAvatar(taskId, url: aiUrl);
-      if (resultUrl == null) throw ('AI service error!');
-
-      // pageStatus = 'Almost done!';
-      resultFirebaseUrl = await _avatarService.uploadResultAvatar(resultUrl);
-
-      await AuthHelper.updateUser(user!.copyWith(avatar: resultFirebaseUrl));
-    } catch (e, s) {
-      setError(e);
-      logger.e(e);
-      logger.e(s);
-    } finally {
-      pageStatus = null;
-    }
+        // pageStatus = 'Almost done!';
+        resultFirebaseUrl = await _avatarService.uploadResultAvatar(resultUrl);
+        */
+        await AuthHelper.updateUser(user!.copyWith(avatar: originUrl));
+      } catch (e, s) {
+        setError(e);
+        logger.e(e);
+        logger.e(s);
+      } finally {
+        pageStatus = null;
+        isSaving = false;
+      }
+    }());
+    
 
     if (hasError) {
       Fluttertoast.showToast(msg: modelError.toString());
@@ -180,8 +197,8 @@ class AvatarProvider extends InSoBlokViewModel {
           MediaStoryModel(link: originUrl!, type: 'image'),
           MediaStoryModel(link: resultFirebaseUrl, type: 'image'),
         ],
-        updateDate: DateTime.now(),
-        timestamp: DateTime.now(),
+        updatedAt: DateTime.now(),
+        createdAt: DateTime.now(),
       );
       await storyService.postStory(story: story);
       AIHelpers.showToast(msg: 'Successfully posted Avatar to LOOKBOOK!');
@@ -277,4 +294,9 @@ class AvatarProvider extends InSoBlokViewModel {
       );
     },
   );
+
+  void handleTapAvatars(String? path) {
+    result = path!;
+    notifyListeners();
+  }
 }

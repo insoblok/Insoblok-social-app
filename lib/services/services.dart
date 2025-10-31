@@ -30,3 +30,4 @@ export 'api_service.dart';
 export 'global_store.dart';
 export 'account_service.dart';
 export 'local_auth_service.dart';
+export 'access_code_service.dart';

@@ -5,3 +5,4 @@ export 'search_provider.dart';
 export 'notification_provider.dart';
 export 'lookbook_provider.dart';
 export 'market_provider.dart';
+export 'rrc_avatar_generation_provider.dart';

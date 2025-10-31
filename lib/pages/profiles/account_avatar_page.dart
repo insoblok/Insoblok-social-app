@@ -1,4 +1,7 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:mime/mime.dart';
 
 import 'package:stacked/stacked.dart';
 
@@ -8,43 +11,159 @@ import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
 
 class AccountAvatarPage extends StatelessWidget {
-  const AccountAvatarPage({super.key});
+  final String? src;
+  final String? dst;
+  const AccountAvatarPage({super.key, this.src, this.dst});
 
   @override
   Widget build(BuildContext context) {
+    logger.d("src is $src, dst is $dst");
     return Scaffold(
       appBar: AppBar(title: Text('Update Avatar'), centerTitle: true),
       body: ViewModelBuilder<AvatarProvider>.reactive(
         viewModelBuilder: () => AvatarProvider(),
-        onViewModelReady: (viewModel) => viewModel.init(context),
+        onViewModelReady: (viewModel) => viewModel.init(context, src, dst),
         builder: (context, viewModel, _) {
           return Stack(
             children: [
               ListView(
                 padding: const EdgeInsets.symmetric(
-                  horizontal: 20.0,
+                  horizontal: 10.0,
                   vertical: 24.0,
                 ),
                 children: [
-                  AvatarPromptView(),
-                  const SizedBox(height: 16.0),
+                  // AvatarPromptView(),
+                  // const SizedBox(height: 16.0),
                   AvatarOriginView(),
                   if (viewModel.hasResult) ...{
                     const SizedBox(height: 40.0),
                     AvatarResultView(),
                   },
-                  const SizedBox(height: 24.0),
-                  TextFillButton(
-                    onTap:
-                        (viewModel.resultFirebaseUrl?.isNotEmpty ?? false)
-                            ? viewModel.postLookbook
-                            : viewModel.onConvert,
-                    isBusy: viewModel.pageStatus?.isNotEmpty ?? false,
-                    color: Theme.of(context).primaryColor,
-                    text:
-                        viewModel.hasResult
-                            ? 'Save to LOOKBOOK'
-                            : 'Convert to AI Image',
+                  if (src != null && dst != null) ... {
+                    SizedBox(height: 24.0),
+                    Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 10.0),
+                      child: Text(
+                        "AI Avatar Generation Results",
+                        style: Theme.of(context).textTheme.headlineMedium
+                      ), 
+                    ),
+                    SizedBox(height: 12.0),
+                    Container(
+                      padding: const EdgeInsets.all(0.0),
+                      child: Flexible(
+                        // height: MediaQuery.of(context).size.height * 0.3,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                              InkWell(
+                                onTap: () =>viewModel.handleTapAvatars(src),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: Colors.white.withAlpha(100), // border color
+                                      width: 1,           // border width
+                                    ),
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(16),
+                                    child: Stack(
+                                      alignment: Alignment.center,
+                                      children: [
+                                        Opacity(
+                                          opacity: viewModel.result == src ? 0.5 : 1.0,
+                                          child: Image.file(
+                                            File(src!),
+                                            width: MediaQuery.of(context).size.width * 0.5 - 20,
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                        if (viewModel.result == src)
+                                          Icon(
+                                            Icons.check,
+                                            size: MediaQuery.of(context).size.width * 0.2,
+                                          )
+                                      ]
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              InkWell(
+                                onTap: () => viewModel.handleTapAvatars(dst),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: Colors.white.withAlpha(100), // border color
+                                      width: 1,           // border width
+                                    ),
+                                    borderRadius: BorderRadius.circular(16),
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(16),
+                                    child: Stack(
+                                      alignment: Alignment.center,
+                                      children: [
+                                        Opacity(
+                                          opacity: viewModel.result == dst ? 0.5 : 1.0,
+                                          child: (lookupMimeType(dst!) ?? "").startsWith("image/") ? Image.file(
+                                            File(dst!),
+                                            width: MediaQuery.of(context).size.width * 0.5 - 20,
+                                            fit: BoxFit.cover,
+                                          ) : 
+                                          VideoPlayerWidget(
+                                            border: Colors.white.withAlpha(100),
+                                            path: dst!,
+                                            width: MediaQuery.of(context).size.width * 0.5 - 20,
+                                          ),
+                                        ),
+                                        if (viewModel.result == dst)
+                                          Icon(
+                                            Icons.check,
+                                            size: MediaQuery.of(context).size.width * 0.2,
+                                          )
+                                      ]
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ]
+                        ),
+                      ),
+                    ),
+                  },
+                  SizedBox(height: 24.0),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.9,
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: GradientPillButton(
+                            onPressed:
+                                (viewModel.resultFirebaseUrl?.isNotEmpty ?? false)
+                                    ? viewModel.postLookbook
+                                    : viewModel.onConvert,
+                            loading: viewModel.pageStatus?.isNotEmpty ?? false,
+                            loadingText: viewModel.hasResult
+                              ? 'Saving ...'
+                              : 'Converting ...', 
+                            text:
+                                viewModel.hasResult
+                                    ? 'Save to LOOKBOOK'
+                                    : 'Convert to AI Image',
+                          ),
+                        ),
+                        SizedBox(width: 12.0),
+                        Expanded(
+                          child: GradientPillButton(
+                            text: "Save",
+                            loading: viewModel.isSaving,
+                            loadingText: "Saving...",
+                            onPressed: viewModel.handleTapSave,
+                          )
+                        ),
+                      ],
+                    ),
                   ),
                   SizedBox(height: MediaQuery.of(context).viewPadding.bottom),
                 ],
@@ -146,7 +265,7 @@ class AvatarOriginView extends ViewModelWidget<AvatarProvider> {
           children: [
             Expanded(
               child: Text(
-                '2. Choose origin image.',
+                '1. Choose origin image.',
                 style: Theme.of(context).textTheme.headlineMedium,
               ),
             ),

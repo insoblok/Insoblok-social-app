@@ -12,6 +12,8 @@ import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
+import 'package:insoblok/locator.dart';
+
 
 import 'package:path_provider/path_provider.dart';
 import 'package:image/image.dart' as img;
@@ -24,7 +26,7 @@ class StoryProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-
+  final CryptoService cryptoService = locator<CryptoService>();
   late StoryModel _story;
   StoryModel get story => _story;
   set story(StoryModel model) {
@@ -136,8 +138,8 @@ class StoryProvider extends InSoBlokViewModel {
 
     showFaceDialog = false;
 
-    _isVideoReaction = globals.isRRCVideoCapture;  
-    // _isVideoReaction = false;
+    // _isVideoReaction = globals.isRRCVideoCapture;  
+    _isVideoReaction = false;
 
     
     quillController = () {
@@ -195,7 +197,7 @@ class StoryProvider extends InSoBlokViewModel {
       scheduleMicrotask(() {
         videoPath = path;
         logger.d("VideoPath is $path");
-        // videoPath = '/data/data/insoblok.social.app/cache/SnapVideo.MOV';
+        // videoPath = '/data/data/insoblok.social.app/cache/video_1.mp4';
         notifyListeners();  
         if (!c.isCompleted) c.complete(path);
       });
@@ -212,9 +214,11 @@ class StoryProvider extends InSoBlokViewModel {
   Future<void> detectFace(String link) async {
 
     // link = '/data/data/insoblok.social.app/cache/SnapImage.jpg';
-
+    logger.d("This is detect face function");
     var faces = await GoogleVisionHelper.getFacesFromImage(link: link);
+    logger.d("These are faces $faces");
     var _annotations = await GoogleVisionHelper.analyzeLocalImage(link: link);
+    logger.d("This is after google vision function");
     if (faces.isNotEmpty) {
       final directory = await getApplicationDocumentsDirectory();
       final filePath = '${directory.path}/face.png';
@@ -286,6 +290,8 @@ class StoryProvider extends InSoBlokViewModel {
   }
 
   Future<void> showCommentDialog() async {
+    final result = await cryptoService.doesWalletExist();
+    logger.d("Wallet is exist: $result");
     if (openCommentDialog) return;
 
     openCommentDialog = true;
@@ -319,6 +325,7 @@ class StoryProvider extends InSoBlokViewModel {
   }
 
   Future<void> onPostReactionVideoPressed() async {
+    logger.d("face path is ${face?.path ?? ''}");
     Routers.goToReactionVideoDetailPage(
         context,
         story.id!,
@@ -445,7 +452,7 @@ class StoryProvider extends InSoBlokViewModel {
           }
         }
         await storyService.updateVoteStory(
-          story: story.copyWith(votes: votes, updateDate: DateTime.now()),
+          story: story.copyWith(votes: votes, updatedAt: DateTime.now()),
           user: owner,
           isVote: isVote,
         );
@@ -501,7 +508,7 @@ class StoryProvider extends InSoBlokViewModel {
           likes.add(user!.id!);
         }
         await storyService.updateLikeStory(
-          story: story.copyWith(likes: likes, updateDate: DateTime.now()),
+          story: story.copyWith(likes: likes, updatedAt: DateTime.now()),
           user: owner,
         );
       } catch (e) {
@@ -568,7 +575,7 @@ class StoryProvider extends InSoBlokViewModel {
           follows.add(user!.id!);
         }
         await storyService.updateFollowStory(
-          story: story.copyWith(follows: follows, updateDate: DateTime.now()),
+          story: story.copyWith(follows: follows, updatedAt: DateTime.now()),
           user: owner,
         );
       } catch (e) {
@@ -627,8 +634,8 @@ class StoryProvider extends InSoBlokViewModel {
                     ),
                   ]
                 : story.medias,
-            updateDate: DateTime.now(),
-            timestamp: DateTime.now(),
+            updatedAt: DateTime.now(),
+            createdAt: DateTime.now(),
             connects: [
               ...(story.connects ?? []),
               if (!containedConnect())

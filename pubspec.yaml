@@ -111,7 +111,6 @@ dependencies:
   mime: ^2.0.0
   local_auth: ^2.3.0
   local_auth_darwin: ^1.5.0
-
   crypto: ^3.0.6
   ed25519_hd_key: ^2.3.0
   web_socket_channel: ^3.0.3
@@ -121,7 +120,12 @@ dependencies:
   google_places_api_flutter: ^1.0.0
   flutter_google_places_sdk: ^0.4.2+1
   marquee: ^2.3.0
+  encrypt: ^5.0.3
+  animated_flip_counter: ^0.3.4
+  loading_animation_widget: ^1.3.0
 
+  flutter_dotenv: ^5.1.0
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -140,29 +144,32 @@ dependency_overrides:
   
 flutter:
   uses-material-design: true
-
+  
   assets:
     - assets/images/
+    - assets/videos/d0.mp4
+    - assets/videos/d3.mp4
+    - assets/videos/d18.mp4
     - assets/icons/
     - assets/fonts/
     - assets/data/
-    - assets/effects/filters/fire_effect/Fire_Effect.deepar
-    - assets/effects/filters/vendetta_mask/Vendetta_Mask.deepar
-    - assets/effects/filters/flower_face/flower_face.deepar
+    # - assets/effects/filters/fire_effect/Fire_Effect.deepar
+    # - assets/effects/filters/vendetta_mask/Vendetta_Mask.deepar
+    # - assets/effects/filters/flower_face/flower_face.deepar
 
-    - assets/effects/filters/devil_neon_horns/Neon_Devil_Horns.deepar
-    - assets/effects/filters/elephant_trunk/Elephant_Trunk.deepar
-    - assets/effects/filters/emotion_meter/Emotion_Meter.deepar
-    - assets/effects/filters/emotions_exaggerator/Emotions_Exaggerator.deepar
-    - assets/effects/filters/heart/8bitHearts.deepar
-    - assets/effects/filters/hope/Hope.deepar
-    - assets/effects/filters/humanoid/Humanoid.deepar
-    - assets/effects/filters/ping_pong/Ping_Pong.deepar
-    - assets/effects/filters/simple/MakeupLook.deepar
-    - assets/effects/filters/slipt/Split_View_Look.deepar
-    - assets/effects/filters/snail/Snail.deepar
-    - assets/effects/filters/stallone/Stallone.deepar
-    - assets/effects/filters/viking_helmet/viking_helmet.deepar
+    # - assets/effects/filters/devil_neon_horns/Neon_Devil_Horns.deepar
+    # - assets/effects/filters/elephant_trunk/Elephant_Trunk.deepar
+    # - assets/effects/filters/emotion_meter/Emotion_Meter.deepar
+    # - assets/effects/filters/emotions_exaggerator/Emotions_Exaggerator.deepar
+    # - assets/effects/filters/heart/8bitHearts.deepar
+    # - assets/effects/filters/hope/Hope.deepar
+    # - assets/effects/filters/humanoid/Humanoid.deepar
+    # - assets/effects/filters/ping_pong/Ping_Pong.deepar
+    # - assets/effects/filters/simple/MakeupLook.deepar
+    # - assets/effects/filters/slipt/Split_View_Look.deepar
+    # - assets/effects/filters/snail/Snail.deepar
+    # - assets/effects/filters/stallone/Stallone.deepar
+    # - assets/effects/filters/viking_helmet/viking_helmet.deepar
 
   fonts:
     - family: Geist
@@ -185,7 +192,3 @@ flutter:
           weight: 800
         - asset: assets/fonts/Geist-Black.ttf
           weight: 900
-    - family: Helvetica
-      fonts:
-        - asset: assets/fonts/HelveticaNowMTMicro.ttf
-          weight: 400

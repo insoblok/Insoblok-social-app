@@ -508,7 +508,7 @@ class AccountPrivateInfoView extends ViewModelWidget<UpdateProfileProvider> {
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide(
-                      color: Colors.blueAccent, // border color when focused
+                      color: Theme.of(context).primaryColor, // border color when focused
                       width: 1,
                     ),
                   ),
@@ -549,7 +549,11 @@ class AccountPrivateInfoView extends ViewModelWidget<UpdateProfileProvider> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          AIImage(AIImages.icImage, height: 32.0),
+                          AIImage(
+                            AIImages.icImage, 
+                            height: 32.0,
+                            color: Theme.of(context).primaryColor
+                          ),
                           const SizedBox(height: 12.0),
                           Text(
                             'Discovery image',

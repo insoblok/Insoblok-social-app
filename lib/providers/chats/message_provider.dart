@@ -87,6 +87,8 @@ class MessageProvider extends InSoBlokViewModel {
     BuildContext context, {
     required MessagePageData data,
   }) async {
+
+    logger.d("This is init of message provider");
     this.context = context;
     room = data.room;
     chatUser = data.chatUser;
@@ -112,8 +114,15 @@ class MessageProvider extends InSoBlokViewModel {
     });
 
     messageService.getMessages(room.id!).listen((messages) {
+      logger.d("Here are messages $messages");
       this.messages = messages;
-    });
+    }, onError: (error) {
+        logger.e("Error in messages stream: $error");
+      },
+      onDone: () {
+        logger.d("Messages stream completed");
+      }
+    );
 
     messageService.getUsersStream().listen((queryRooms) {
       var userList = [];
@@ -131,7 +140,6 @@ class MessageProvider extends InSoBlokViewModel {
     });
 
     messageService.getTypingStatus(room.id!).listen((data) {
-      logger.d(data);
       isTyping = data[chatUser.id] ?? false;
     });
 

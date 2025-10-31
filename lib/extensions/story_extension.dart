@@ -1,3 +1,4 @@
+import 'package:http/http.dart';
 import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
@@ -49,13 +50,13 @@ extension StoryModelExt on StoryModel {
 
   String get shownDate {
     return kDateMDYFormatter.format(
-      timestamp != null ? timestamp! : DateTime.now(),
+      createdAt != null ? createdAt! : DateTime.now(),
     );
   }
 
   String get shownHMDate {
     return kDateHMMDYFormatter.format(
-      timestamp != null ? timestamp! : DateTime.now(),
+      createdAt != null ? createdAt! : DateTime.now(),
     );
   }
 
@@ -70,8 +71,9 @@ extension StoryModelExt on StoryModel {
       'likes': (likes),
       'follows': (follows),
       'views': (views),
-      'update_date': updateDate?.toUtc().toIso8601String(),
-      'timestamp': timestamp?.toUtc().toIso8601String(),
+      'update_at': updatedAt?.toUtc().toIso8601String(),
+      'created_at': createdAt?.toUtc().toIso8601String(),
+      'deleted_at': deletedAt?.toUtc().toIso8601String(),
       'connects': ((connects ?? []).map((e) => e.toMap()).toList()),
       'comments': (comments),
       'allow_users': (allowUsers),

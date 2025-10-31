@@ -180,7 +180,7 @@ class AppSettingService with ListenableServiceMixin {
     fontFamily: 'Geist',
     colorScheme: ColorScheme.fromSeed(
       seedColor: AIColors.white,
-      primary: Colors.blueAccent,
+      primary: Colors.pink,
       onPrimary: AIColors.white,
       secondary: AIColors.grey,
       onSecondary: AIColors.grey,

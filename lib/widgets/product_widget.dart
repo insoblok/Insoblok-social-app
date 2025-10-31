@@ -101,26 +101,26 @@ class ProductItemWidget extends StatelessWidget {
                       medias.isNotEmpty ? medias.last.link : product.modelImage,
                     ),
                 width: double.infinity,
-              ),
-              Positioned.fill(
-                child: Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 8.0,
-                      horizontal: 4.0,
-                    ),
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.onSecondary.withAlpha(160),
-                    child: Text(
-                      product.name ?? '',
-                      style: Theme.of(context).textTheme.headlineMedium,
-                    ),
-                  ),
-                ),
-              ),
+              )
+              // Positioned.fill(
+              //   child: Align(
+              //     alignment: Alignment.bottomCenter,
+              //     child: Container(
+              //       width: double.infinity,
+              //       padding: const EdgeInsets.symmetric(
+              //         vertical: 8.0,
+              //         horizontal: 4.0,
+              //       ),
+              //       color: Theme.of(
+              //         context,
+              //       ).colorScheme.onSecondary.withAlpha(160),
+              //       child: Text(
+              //         product.name ?? '',
+              //         style: Theme.of(context).textTheme.headlineMedium,
+              //       ),
+              //     ),
+              //   ),
+              // ),
             ],
           ),
         ),

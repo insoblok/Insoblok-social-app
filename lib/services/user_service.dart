@@ -6,7 +6,7 @@ import 'package:insoblok/services/services.dart';
 
 class UserService {
   final CollectionReference<Map<String, dynamic>> _userCollection =
-      FirebaseFirestore.instance.collection('user');
+      FirebaseFirestore.instance.collection('users2');
 
   Future<UserModel?> createUser(UserModel user) async {
     try {
