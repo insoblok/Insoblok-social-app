@@ -52,7 +52,7 @@ class VTOImagePage extends StatelessWidget {
                         VTOInformationView(),
                         const SizedBox(height: 24.0),
                         TextFillButton(
-                          text: 'Take Model',
+                          text: 'Apply Model',
                           isBusy: viewModel.isConverting,
                           onTap: viewModel.onClickConvert,
                           color: Theme.of(context).primaryColor,

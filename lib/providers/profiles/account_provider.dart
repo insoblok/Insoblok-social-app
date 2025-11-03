@@ -21,7 +21,6 @@ class AccountProvider extends InSoBlokViewModel {
 
   final controller = ScrollController();
 
-  
   @override
   void dispose() {
     super.dispose();
@@ -58,7 +57,6 @@ class AccountProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-
   // Optional helper if you want a toggle
   void toggleRRCImage() => setRRCImage(!_isRRCImage);
 
@@ -76,13 +74,16 @@ class AccountProvider extends InSoBlokViewModel {
       (accountUser?.views ?? []).contains(AuthHelper.user?.id);
 
   final Web3Service _web3Service = locator<Web3Service>();
-  
+
   List<String> selectedItems = [];
   bool isSelectMode = false;
 
   void init(BuildContext context, {UserModel? model}) async {
     this.context = context;
     accountUser = model ?? AuthHelper.user;
+
+    logger.d("this is the account user");
+    logger.d(accountUser?.toJson());
 
     _isRRCImage = !enabled;
 
@@ -94,49 +95,52 @@ class AccountProvider extends InSoBlokViewModel {
     // logger.d("This is before migrations");
     // await migrateUsersCollection();
   }
-  Future<void> migrateUsersCollection() async {
-  final collectionRef = FirebaseFirestore.instance.collection('story');
-  
-  // Get all documents
-  final querySnapshot = await collectionRef.get();
-  
-  final batch = FirebaseFirestore.instance.batch();
-  int processedCount = 0;
-  int batchCount = 0;
 
-  for (final doc in querySnapshot.docs) {
-    final data = doc.data();
-    
-    // Only process documents that have the 'timestamp' field
-    if (data.containsKey('timestamp') && !data.containsKey('created_at')) {
-      batch.update(doc.reference, {
-        'created_at': data['timestamp'],
-        'updated_at': data['update_date'],
-        'timestamp': FieldValue.delete(),
-      });
-      logger.d("This is updating data $data");
-      processedCount++;
+  Future<void> migrateUsersCollection() async {
+    final collectionRef = FirebaseFirestore.instance.collection('story');
+
+    // Get all documents
+    final querySnapshot = await collectionRef.get();
+
+    final batch = FirebaseFirestore.instance.batch();
+    int processedCount = 0;
+    int batchCount = 0;
+
+    for (final doc in querySnapshot.docs) {
+      final data = doc.data();
+
+      // Only process documents that have the 'timestamp' field
+      if (data.containsKey('timestamp') && !data.containsKey('created_at')) {
+        batch.update(doc.reference, {
+          'created_at': data['timestamp'],
+          'updated_at': data['update_date'],
+          'timestamp': FieldValue.delete(),
+        });
+        logger.d("This is updating data $data");
+        processedCount++;
+      }
+
+      // Firestore batches are limited to 500 operations
+      if (processedCount % 500 == 0 && processedCount > 0) {
+        await batch.commit();
+        batchCount++;
+        print(
+          'Committed batch $batchCount, processed $processedCount documents',
+        );
+      }
     }
 
-    // Firestore batches are limited to 500 operations
-    if (processedCount % 500 == 0 && processedCount > 0) {
+    // Commit any remaining operations
+    if (processedCount % 500 != 0) {
       await batch.commit();
       batchCount++;
-      print('Committed batch $batchCount, processed $processedCount documents');
     }
   }
 
-  // Commit any remaining operations
-  if (processedCount % 500 != 0) {
-    await batch.commit();
-    batchCount++;
-  }
-}
-
   final List<StoryModel> stories = [];
-  
+
   int get userRank => accountService.userRankIndex;
-  
+
   void setPageIndex(int index) {
     pageIndex = index;
     notifyListeners();
@@ -158,10 +162,9 @@ class AccountProvider extends InSoBlokViewModel {
       try {
         logger.d(accountUser?.id);
         logger.d(AuthHelper.user?.id ?? "");
-        var s = await storyService.getStoriesById(AuthHelper.user?.id ?? "");
+        var s = await storyService.getStoriesById(accountUser?.id ?? "");
         for (var story in s) {
           logger.d("This is fetched stories ${story.id}, ${story.medias}");
-
         }
         if (s.isNotEmpty) {
           stories.clear();
@@ -238,7 +241,6 @@ class AccountProvider extends InSoBlokViewModel {
   }
 
   Future<void> gotoNewChat() async {
-
     const gradient = LinearGradient(
       begin: Alignment.centerLeft,
       end: Alignment.centerRight,
@@ -247,7 +249,7 @@ class AccountProvider extends InSoBlokViewModel {
         Color(0xFFC739EB), // purple
       ],
     );
-    
+
     RoomModel? existedRoom;
     try {
       existedRoom = await roomService.getRoomByChatUser(id: accountUser!.id!);
@@ -334,7 +336,7 @@ class AccountProvider extends InSoBlokViewModel {
     } else {
       if (existedRoom != null) {
         _web3Service.chatRoom = existedRoom;
-        _web3Service.chatUser = accountUser ?? UserModel();        
+        _web3Service.chatUser = accountUser ?? UserModel();
         await Routers.goToMessagePage(
           context,
           MessagePageData(room: existedRoom, chatUser: accountUser!),
@@ -420,9 +422,8 @@ class AccountProvider extends InSoBlokViewModel {
     try {
       _galleries.clear();
       var gs = await FirebaseHelper.service.fetchGalleries(accountUser!.id!);
-      
-      logger.d("fetched galleries are $gs");
 
+      logger.d("fetched galleries are $gs");
 
       _galleries.addAll(gs);
       notifyListeners();
@@ -433,7 +434,7 @@ class AccountProvider extends InSoBlokViewModel {
       isFetchingGallery = false;
     }
   }
-  
+
   bool _isCreatingRoom = false;
   bool get isCreatingRoom => _isCreatingRoom;
   set isCreatingRoom(bool flag) {
@@ -473,7 +474,7 @@ class AccountProvider extends InSoBlokViewModel {
             );
           }
           _web3Service.chatRoom = existedRoom ?? RoomModel();
-          _web3Service.chatUser = accountUser ?? UserModel();   
+          _web3Service.chatUser = accountUser ?? UserModel();
           Routers.goToMessagePage(
             context,
             MessagePageData(room: existedRoom!, chatUser: accountUser!),
@@ -497,15 +498,17 @@ class AccountProvider extends InSoBlokViewModel {
   }
 
   Future<void> handleClickDeleteGallery() async {
-    bool result = await accountService.removeGalleries(selectedItems, AuthHelper.user!);
-    if(result) {
+    bool result = await accountService.removeGalleries(
+      selectedItems,
+      AuthHelper.user!,
+    );
+    if (result) {
       galleries.removeWhere((element) => selectedItems.contains(element.media));
       selectedItems.clear();
       isSelectMode = false;
       notifyListeners();
       AIHelpers.showToast(msg: 'Galleries deleted successfully');
-    }
-    else {
+    } else {
       AIHelpers.showToast(msg: "Failed to delete galleries");
     }
   }
@@ -517,32 +520,33 @@ class AccountProvider extends InSoBlokViewModel {
   }
 
   void handleClickGallery(String url) {
-    if(isSelectMode) {
-      if(selectedItems.contains(url)) {
+    if (isSelectMode) {
+      if (selectedItems.contains(url)) {
         selectedItems.remove(url);
-        if(selectedItems.isEmpty) {
+        if (selectedItems.isEmpty) {
           isSelectMode = false;
         }
-      }
-      else {
+      } else {
         selectedItems.add(url);
       }
       notifyListeners();
-    } 
-    else {
+    } else {
       AIHelpers.goToDetailView(
         context,
         medias: [url],
         index: 0,
-        storyID:'',
-        storyUser:'',
+        storyID: '',
+        storyUser: '',
       );
     }
   }
 
   Future<void> handleClickDeleteStories() async {
-    bool result = await accountService.removeStories(selectedItems, AuthHelper.user!);
-    if(result) {
+    bool result = await accountService.removeStories(
+      selectedItems,
+      AuthHelper.user!,
+    );
+    if (result) {
       stories.removeWhere((element) => selectedItems.contains(element.id));
       selectedItems.clear();
       isSelectMode = false;

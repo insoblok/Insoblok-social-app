@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 
-import 'package:gradient_borders/box_borders/gradient_box_border.dart';
-
 import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
@@ -72,6 +70,30 @@ extension UserModelExt on UserModel {
           ? null
           : '${walletAddress!.substring(0, 5)}***${walletAddress!.substring(walletAddress!.length - 4)}';
 
+  // Avatar templates list
+  static List<String> get avatarTemplates => [
+    AIImages.avatarAnimeEyes,
+    AIImages.avatarLiquidChromeFace,
+    AIImages.avatarPixelStorm,
+    AIImages.avatarCyberPunk,
+    AIImages.avatarNeonGlow,
+    AIImages.avatarTasteScore,
+    AIImages.avatarEGirlBoy,
+    AIImages.avatarExtraAF,
+    AIImages.avatarGlowUp,
+    AIImages.avatarGrungeWave,
+    AIImages.avatarAnime,
+  ];
+
+  // Get a deterministic avatar template based on user identifier
+  String get defaultAvatarTemplate {
+    // Use wallet address or ID to deterministically select a template
+    String identifier = walletAddress ?? id ?? fullName;
+    // Create a hash-like index from the identifier
+    int index = identifier.hashCode.abs() % avatarTemplates.length;
+    return avatarTemplates[index];
+  }
+
   Widget avatarStatusView({
     double? width,
     double? height,
@@ -105,29 +127,10 @@ extension UserModelExt on UserModel {
                         width: width ?? 60.0,
                         height: height ?? 60.0,
                       )
-                      : Container(
-                        // color:
-                        //     fullName.length > kAvatarColors.length
-                        //         ? kAvatarColors[fullName.length %
-                        //             kAvatarColors.length]
-                        //         : kAvatarColors[fullName.length - 1],
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: AIHelpers.getGradientColors(fullName),
-                          ),
-                        ),
-                        child: Align(
-                          alignment: Alignment.center,
-                          child: Text(
-                            fullName[0],
-                            style: TextStyle(
-                              fontSize: textSize ?? 20.0,
-                              color: AIColors.white,
-                            ),
-                          ),
-                        ),
+                      : AIImage(
+                        defaultAvatarTemplate,
+                        width: width ?? 60.0,
+                        height: height ?? 60.0,
                       ),
             ),
           ),
@@ -141,9 +144,9 @@ extension UserModelExt on UserModel {
                       //   colors: getGradientColors(fullName.length),
                       // ),
                       color:
-                        status == 'Online'
-                            ? AIColors.green
-                            : AIColors.lightGrey,
+                          status == 'Online'
+                              ? AIColors.green
+                              : AIColors.lightGrey,
                       // width: 1,
                     ),
                     borderRadius: BorderRadius.circular(
@@ -189,8 +192,6 @@ extension UserModelExt on UserModel {
       {'type': 'wallet', 'title': 'My Wallet', 'icon': Icons.wallet},
   ];
 
-
-
   Map<String, dynamic> toMap() {
     Map<String, dynamic> result = {
       'uid': uid,
@@ -209,7 +210,7 @@ extension UserModelExt on UserModel {
       'nick_id': nickId,
       'lat': lat,
       'lon': lon,
-      'biometricEnabled':biometricEnabled,
+      'biometricEnabled': biometricEnabled,
       'ip_address': ipAddress,
       'status': status,
       'has_vote_post': hasVotePost,

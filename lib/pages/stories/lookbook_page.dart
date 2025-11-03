@@ -49,8 +49,7 @@ class LookbookPage extends StatelessWidget {
                       itemBuilder: (_, index) {
                         return StoryListCell(
                           key: GlobalKey(
-                            debugLabel:
-                                'story-${viewModel.stories[index].id}',
+                            debugLabel: 'story-${viewModel.stories[index].id}',
                           ),
                           story: viewModel.stories[index],
                           enableDetail: true,

@@ -7,7 +7,6 @@ import 'package:insoblok/models/models.dart';
 import 'package:insoblok/routers/routers.dart';
 
 class AccessCodeConfirmPage extends StatefulWidget {
-
   final Map<String, dynamic> props;
   const AccessCodeConfirmPage({super.key, required this.props});
   @override
@@ -15,11 +14,9 @@ class AccessCodeConfirmPage extends StatefulWidget {
 }
 
 class AccessCodeConfirmPageState extends State<AccessCodeConfirmPage> {
-
   final AccessCodeService accessCodeService = AccessCodeService();
   TextEditingController accessCodeController = TextEditingController();
   AccessCodeModel? created;
-
 
   @override
   void initState() {
@@ -39,28 +36,28 @@ class AccessCodeConfirmPageState extends State<AccessCodeConfirmPage> {
       created = result;
       logger.d("created code is $created");
     });
-    
-  } 
+  }
 
   Future<void> handleClickFinish(BuildContext ctx) async {
     final String enteredCode = accessCodeController.text.trim();
     final String email = widget.props["email"].toString();
-    AccessCodeModel? accessCode = await accessCodeService.getAccessCodeByEmail(email);
+    AccessCodeModel? accessCode = await accessCodeService.getAccessCodeByEmail(
+      email,
+    );
     logger.d(accessCode);
     if (accessCode == null) {
       AIHelpers.showToast(msg: "Something went wrong. Please try again later.");
       return;
     }
-    if(accessCode.accessCode == enteredCode) {
+    if (accessCode.accessCode == enteredCode) {
       // AIHelpers.showToast(msg: "Access Code verified. Redirecting to signin page...");
       await accessCodeService.updateChecked(email);
       Routers.goToLoginPage(ctx);
-    }
-    else {
+    } else {
       AIHelpers.showToast(msg: "Invalid Access Code.");
     }
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,30 +66,27 @@ class AccessCodeConfirmPageState extends State<AccessCodeConfirmPage> {
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).pop()
-        )
+          onPressed: () => Navigator.of(context).pop(),
+        ),
       ),
       body: SafeArea(
         child: Column(
           children: [
             SizedBox(height: MediaQuery.of(context).size.height * 0.08),
-            Center(
-              child: AIImage(
-                AIImages.icCheck,
-                width: 50.0,
-                height: 50.0
-              ),
-            ),
+            Center(child: AIImage(AIImages.icCheck, width: 50.0, height: 50.0)),
             SizedBox(height: MediaQuery.of(context).size.height * 0.08),
             Text(
               "You're on the waitlist",
-              style: Theme.of(context).textTheme.bodyLarge!.copyWith(
-                fontSize: 28
-              )
-            ), 
+              style: Theme.of(
+                context,
+              ).textTheme.bodyLarge!.copyWith(fontSize: 28),
+            ),
             SizedBox(height: 12.0),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 24.0,
+                vertical: 8.0,
+              ),
               child: RichText(
                 textAlign: TextAlign.center,
                 text: TextSpan(
@@ -101,41 +95,44 @@ class AccessCodeConfirmPageState extends State<AccessCodeConfirmPage> {
                       text: "Your Own username ",
                       style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                         fontSize: 15.0,
-                        fontWeight: FontWeight.w700
-                      ), 
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                     TextSpan(
                       text: ' @${widget.props["userId"] ?? ""} ',
-                      style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                        color: Colors.blue,
-              
-                      )
+                      style: Theme.of(
+                        context,
+                      ).textTheme.bodyMedium!.copyWith(color: Colors.blue),
                     ),
                     TextSpan(
                       text: " has been reserved. ",
                       style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                         fontSize: 15.0,
-                        fontWeight: FontWeight.w700
-                      ), 
+                        fontWeight: FontWeight.w700,
+                      ),
                     ),
                     TextSpan(
-                      text: " The app is launching in just a few weeks. We'll notify you when you can enter!",
+                      text:
+                          " The app is launching in just a few weeks. We'll notify you when you can enter!",
                       style: Theme.of(context).textTheme.bodyMedium,
-                    )
-                  ]
-                )
+                    ),
+                  ],
+                ),
               ),
             ),
             SizedBox(height: 16.0),
-            if ((created?.accessCode ?? "").isNotEmpty) ... {
+            if ((created?.accessCode ?? "").isNotEmpty) ...{
               Text(
                 "Your access code is ${created?.accessCode}",
-                style: Theme.of(context).textTheme.bodyMedium
+                style: Theme.of(context).textTheme.bodyMedium,
               ),
               SizedBox(height: 12.0),
             },
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
+              padding: const EdgeInsets.symmetric(
+                horizontal: 24.0,
+                vertical: 8.0,
+              ),
               child: AITextField(
                 controller: accessCodeController,
                 fillColor: Colors.grey.shade900,
@@ -145,10 +142,11 @@ class AccessCodeConfirmPageState extends State<AccessCodeConfirmPage> {
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
-              child: Text(
-                "Did you receive an access code through email?"
-              )
+              padding: const EdgeInsets.symmetric(
+                horizontal: 24.0,
+                vertical: 8.0,
+              ),
+              child: Text("Did you receive an access code through email?"),
             ),
             SizedBox(height: 16.0),
             Padding(
@@ -157,10 +155,10 @@ class AccessCodeConfirmPageState extends State<AccessCodeConfirmPage> {
                 text: "OK",
                 onPressed: () => handleClickFinish(context),
               ),
-            )
-          ]
-        )
-      )
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

@@ -27,9 +27,7 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
     }
   }
 
-  void handleTapAddPost() {
-
-  }
+  void handleTapAddPost() {}
 
   Widget _buildSearchBar(BuildContext context, InSoBlokProvider viewModel) {
     return Container(
@@ -49,11 +47,7 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
             onPressed: () {
               viewModel.exitSearch();
             },
-            icon: Icon(
-              Icons.arrow_back,
-              color: Colors.white,
-              size: 24.0,
-            ),
+            icon: Icon(Icons.arrow_back, color: Colors.white, size: 24.0),
           ),
           SizedBox(width: 8.0),
           // Search Input Field
@@ -72,8 +66,14 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
                   hintText: 'Enter Search Text ...',
                   hintStyle: TextStyle(color: Colors.white.withOpacity(0.7)),
                   border: InputBorder.none,
-                  contentPadding: EdgeInsets.symmetric(horizontal: 0.0, vertical: 6.0),
-                  prefixIcon: Icon(Icons.search, color: Colors.white.withOpacity(0.7)),
+                  contentPadding: EdgeInsets.symmetric(
+                    horizontal: 0.0,
+                    vertical: 6.0,
+                  ),
+                  prefixIcon: Icon(
+                    Icons.search,
+                    color: Colors.white.withOpacity(0.7),
+                  ),
                   isDense: true,
                 ),
                 onSubmitted: (query) {
@@ -90,18 +90,17 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
               // You can get the search query from a controller or trigger search
               _triggerSearch();
             },
-            icon: Icon(
-              Icons.send,
-              color: Colors.white,
-              size: 24.0,
-            ),
+            icon: Icon(Icons.send, color: Colors.white, size: 24.0),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildNormalNavigationBar(BuildContext context, InSoBlokProvider viewModel) {
+  Widget _buildNormalNavigationBar(
+    BuildContext context,
+    InSoBlokProvider viewModel,
+  ) {
     return BottomNavigationBar(
       key: ValueKey('normal_nav'), // Important for AnimatedSwitcher
       currentIndex: viewModel.pageIndex,
@@ -114,12 +113,14 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
       items: [
         BottomNavigationBarItem(
           icon: AIImage(
-            viewModel.pageIndex == 0 ? AIImages.icBottomHomeFill : AIImages.icBottomHome,
+            viewModel.pageIndex == 0
+                ? AIImages.icBottomHomeFill
+                : AIImages.icBottomHome,
             width: 21.0,
             height: 21.0,
-            color: Colors.white
+            color: Colors.white,
           ),
-          label: ""
+          label: "",
         ),
         BottomNavigationBarItem(
           icon: GestureDetector(
@@ -127,22 +128,24 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
               Routers.goToAccountWalletPage(context);
             },
             child: AIImage(
-              viewModel.pageIndex == 1 ? AIImages.icBottomWalletFill : AIImages.icBottomWallet,
+              viewModel.pageIndex == 1
+                  ? AIImages.icBottomWalletFill
+                  : AIImages.icBottomWallet,
               width: 24.0,
               height: 24.0,
-              color: Colors.white
+              color: Colors.white,
             ),
           ),
-          label: ""
+          label: "",
         ),
         BottomNavigationBarItem(
           icon: AIImage(
-              AIImages.icComment4,
-              width: 27.0,
-              height: 27.0,
-              color: Colors.white
-            ),
-          label: ""
+            AIImages.icComment4,
+            width: 27.0,
+            height: 27.0,
+            color: Colors.white,
+          ),
+          label: "",
         ),
         BottomNavigationBarItem(
           icon: InkWell(
@@ -152,11 +155,14 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
                 context: context,
                 builder: (context) {
                   return StatefulBuilder(
-                    builder: (BuildContext modalContext, StateSetter setModalState) {
+                    builder: (
+                      BuildContext modalContext,
+                      StateSetter setModalState,
+                    ) {
                       return SafeArea(
                         child: Container(
                           padding: const EdgeInsets.all(8.0),
-                          height: 120,
+                          height: 160,
                           decoration: BoxDecoration(
                             // color: Theme.of(context).scaffoldBackgroundColor,
                             borderRadius: const BorderRadius.vertical(
@@ -183,7 +189,8 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
                                   padding: const EdgeInsets.all(8.0),
                                   child: Text(
                                     "Create VTO Post",
-                                    style: Theme.of(context).textTheme.bodyLarge
+                                    style:
+                                        Theme.of(context).textTheme.bodyLarge,
                                   ),
                                 ),
                               ),
@@ -193,7 +200,22 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
                                   padding: const EdgeInsets.all(8.0),
                                   child: Text(
                                     "Create Post",
-                                    style: Theme.of(context).textTheme.bodyLarge
+                                    style:
+                                        Theme.of(context).textTheme.bodyLarge,
+                                  ),
+                                ),
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  Navigator.of(context).pop();
+                                  Routers.goToCreateRoomPage(context);
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    "Create Chat Room",
+                                    style:
+                                        Theme.of(context).textTheme.bodyLarge,
                                   ),
                                 ),
                               ),
@@ -236,18 +258,18 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
             AIImages.icBottomPodium,
             width: 21.0,
             height: 21.0,
-            color: Colors.white
+            color: Colors.white,
           ),
-          label: ""
+          label: "",
         ),
         BottomNavigationBarItem(
           icon: AIImage(
             AIImages.icBottomSearch2,
             width: 19.0,
             height: 19.0,
-            color: Colors.white
+            color: Colors.white,
           ),
-          label: ""
+          label: "",
         ),
         BottomNavigationBarItem(
           icon: GestureDetector(
@@ -258,12 +280,11 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
               AIImages.icBottomUser3,
               width: 21.0,
               height: 21.0,
-              color: Colors.white
+              color: Colors.white,
             ),
           ),
-          label: ""
+          label: "",
         ),
-        
       ],
     );
   }
@@ -328,7 +349,6 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
                 children: [
                   SizedBox(height: MediaQuery.of(context).padding.top),
                   Container(
-                    
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -468,7 +488,7 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
               ),
             ),
             body: pages[viewModel.pageIndex],
-                /*
+            /*
                 Align(
                   alignment: Alignment.bottomCenter,
                   child: Padding(
@@ -638,9 +658,10 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
                     child: child,
                   );
                 },
-                child: viewModel.showSearch 
-                    ? _buildSearchBar(context, viewModel) 
-                    : _buildNormalNavigationBar(context, viewModel),
+                child:
+                    viewModel.showSearch
+                        ? _buildSearchBar(context, viewModel)
+                        : _buildNormalNavigationBar(context, viewModel),
               ),
             ),
           ),
@@ -658,5 +679,4 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
       AuthHelper.updateStatus('Offline');
     }
   }
-
 }

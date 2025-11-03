@@ -21,7 +21,7 @@ class AvatarProvider extends InSoBlokViewModel {
 
   bool isSaving = false;
 
-  Future<void> init(BuildContext context, String? src, String?dst) async {
+  Future<void> init(BuildContext context, String? src, String? dst) async {
     this.context = context;
     ratioIndex = 0;
     if (src != null) result = src;
@@ -111,18 +111,30 @@ class AvatarProvider extends InSoBlokViewModel {
     }
     Routers.goToRRCAvatarGenerationPage(context, originFile, "", "profile", "");
   }
+
   Future<void> handleTapSave() async {
     if (isSaving) return;
+
+    File? fileToUpload;
+
+    // If result is empty, use originFile (must be not empty)
     if (result.isEmpty) {
-      AIHelpers.showToast(msg: "Please select target avatar media.");
-      return;
+      if (originFile == null || originPath == null || originPath!.isEmpty) {
+        AIHelpers.showToast(msg: "Please select target avatar media.");
+        return;
+      }
+      fileToUpload = originFile;
+      result = originPath!; // Set result to originPath for consistency
+    } else {
+      fileToUpload = File(result);
     }
+
     clearErrors();
 
     isSaving = true;
     runBusyFuture(() async {
       try {
-        originUrl = await _avatarService.uploadOriginAvatar(File(result));
+        originUrl = await _avatarService.uploadOriginAvatar(fileToUpload!);
         logger.d("Result is $originUrl, $result");
         if (originUrl == null) throw ('Server error!');
 
@@ -152,6 +164,7 @@ class AvatarProvider extends InSoBlokViewModel {
         resultFirebaseUrl = await _avatarService.uploadResultAvatar(resultUrl);
         */
         await AuthHelper.updateUser(user!.copyWith(avatar: originUrl));
+        Fluttertoast.showToast(msg: 'Successfully updated avatar!');
       } catch (e, s) {
         setError(e);
         logger.e(e);
@@ -161,7 +174,6 @@ class AvatarProvider extends InSoBlokViewModel {
         isSaving = false;
       }
     }());
-    
 
     if (hasError) {
       Fluttertoast.showToast(msg: modelError.toString());
@@ -259,7 +271,7 @@ class AvatarProvider extends InSoBlokViewModel {
                           style: Theme.of(
                             context,
                           ).textTheme.bodyMedium?.copyWith(
-                            color: Theme.of(context).colorScheme.onSecondary,
+                            color: Colors.white,
                           ),
                         ),
                       ),

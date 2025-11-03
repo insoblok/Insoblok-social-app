@@ -22,6 +22,15 @@ class CreateRoomProvider extends InSoBlokViewModel {
   final List<UserModel> _users = [];
   List<UserModel> get users => _users;
 
+  void updateSearchKey(String searchKey) {
+    key = searchKey;
+    if (searchKey.isEmpty) {
+      getUsers();
+    } else {
+      searchUsers();
+    }
+  }
+
   Future<void> searchUsers() async {
     if (isBusy) return;
     clearErrors();
@@ -80,14 +89,6 @@ class CreateRoomProvider extends InSoBlokViewModel {
   Future<void> onCreateRoom(UserModel user) async {
     if (isBusy) return;
     clearErrors();
-    const gradient = LinearGradient(
-      begin: Alignment.centerLeft,
-      end: Alignment.centerRight,
-      colors: [
-        Color(0xFFF30C6C), // pink
-        Color(0xFFC739EB), // purple
-      ],
-    );
 
     isCreatingRoom = true;
     await runBusyFuture(() async {

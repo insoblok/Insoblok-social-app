@@ -315,7 +315,7 @@ class ReactionVideoDetailProvider extends InSoBlokViewModel {
                                   .textTheme
                                   .bodyMedium
                                   ?.copyWith(
-                                    color: Theme.of(context).colorScheme.onSecondary,
+                                    color: Colors.white,
                                   ),
                             ),
                           ),

@@ -11,7 +11,6 @@ class MediaRemixWidget extends ViewModelWidget<MediaDetailProvider> {
 
   @override
   Widget build(BuildContext context, viewModel) {
-
     const gradient = LinearGradient(
       begin: Alignment.centerLeft,
       end: Alignment.centerRight,
@@ -86,8 +85,7 @@ class MediaRemixWidget extends ViewModelWidget<MediaDetailProvider> {
                                 style: TextStyle(
                                   fontSize: 15.0,
                                   fontWeight: FontWeight.w800,
-                                  color:
-                                      AIColors.white,
+                                  color: AIColors.white,
                                 ),
                               ),
                               Spacer(flex: 2),
@@ -96,8 +94,7 @@ class MediaRemixWidget extends ViewModelWidget<MediaDetailProvider> {
                                 style: TextStyle(
                                   fontSize: 15.0,
                                   fontWeight: FontWeight.w800,
-                                  color:
-                                      AIColors.white,
+                                  color: AIColors.white,
                                 ),
                               ),
                               Spacer(),
@@ -122,8 +119,9 @@ class RemixActionView extends ViewModelWidget<MediaDetailProvider> {
 
   @override
   Widget build(BuildContext context, viewModel) {
-
-    final bool isOwner = (AuthHelper.user?.id == viewModel.storyUser && viewModel.storyUser != '');
+    final bool isOwner =
+        (AuthHelper.user?.id == viewModel.storyUser &&
+            viewModel.storyUser != '');
 
     return Column(
       spacing: 12.0,
@@ -259,11 +257,11 @@ class RemixActionView extends ViewModelWidget<MediaDetailProvider> {
                         alignment: Alignment.center,
                         decoration: BoxDecoration(
                           gradient: LinearGradient(
-                          begin: Alignment.centerLeft,
-                          end: Alignment.centerRight,
-                          colors: [Color(0xFFF30C6C), Color(0xFFC739EB)],
-                        ),
-                        borderRadius: BorderRadius.all(Radius.circular(12)),
+                            begin: Alignment.centerLeft,
+                            end: Alignment.centerRight,
+                            colors: [Color(0xFFF30C6C), Color(0xFFC739EB)],
+                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(12)),
                         ),
                         child: Text(
                           'Set'.toUpperCase(),

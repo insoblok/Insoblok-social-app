@@ -2,7 +2,8 @@ import 'dart:io' as io;
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_quill/flutter_quill.dart';
-import 'package:flutter_google_places_sdk/flutter_google_places_sdk.dart' as google;
+import 'package:flutter_google_places_sdk/flutter_google_places_sdk.dart'
+    as google;
 
 import 'package:insoblok/utils/background_camera_capture.dart';
 import 'package:insoblok/utils/background_camera_video_capture.dart';
@@ -13,8 +14,7 @@ import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
 import 'package:insoblok/locator.dart';
-
-
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:image/image.dart' as img;
 
@@ -33,6 +33,7 @@ class StoryProvider extends InSoBlokViewModel {
     _story = model;
     notifyListeners();
   }
+
   bool _isComment = false;
   bool get isComment => _isComment;
   set isComment(bool f) {
@@ -100,10 +101,7 @@ class StoryProvider extends InSoBlokViewModel {
   var quillScrollController = ScrollController();
   var focusNode = FocusNode();
 
-  final camera = BackgroundCameraCapture(
-    maxCaptures: 1,             
-    stopStreamOnMax: true, 
-  );
+  final camera = BackgroundCameraCapture(maxCaptures: 1, stopStreamOnMax: true);
   final videoCapture = BackgroundCameraVideoCapture();
   late int refreshCount = 0;
 
@@ -112,9 +110,8 @@ class StoryProvider extends InSoBlokViewModel {
   final globals = GlobalStore();
   bool get vybeCamEnabled => globals.isVybeCamEnabled;
 
-
   final places = google.FlutterGooglePlacesSdk(GOOGLE_API_KEY);
-  
+
   bool _following = false;
   bool get following => _following;
   set following(bool f) {
@@ -129,6 +126,8 @@ class StoryProvider extends InSoBlokViewModel {
     refreshCount = 0;
     _videoPath = null;
 
+    logger.d("this is the story");
+
     final mediaPath = story.medias?[0].link;
     if (mediaPath!.contains('.mov') || mediaPath.contains('.mp4')) {
       _videoStoryPath = story.medias?[0].link;
@@ -138,36 +137,45 @@ class StoryProvider extends InSoBlokViewModel {
 
     showFaceDialog = false;
 
-    // _isVideoReaction = globals.isRRCVideoCapture;  
+    // _isVideoReaction = globals.isRRCVideoCapture;
     _isVideoReaction = false;
 
-    
+    // Fetch the owner (user) for this story
+    if (story.userId != null) {
+      await fetchUser();
+    }
+
     quillController = () {
-        return QuillController.basic(
-          config: QuillControllerConfig(
-            clipboardConfig: QuillClipboardConfig(enableExternalRichPaste: true),
-          ),
-        );
-      }();
-    fetchUser();
+      return QuillController.basic(
+        config: QuillControllerConfig(
+          clipboardConfig: QuillClipboardConfig(enableExternalRichPaste: true),
+        ),
+      );
+    }();
     await getAddress();
   }
 
-  Future<void> startRRC() async{
+  Future<void> startRRC() async {
     // if(showFaceDialog || (story.reactions ?? []).isEmpty) {
-    if(showFaceDialog) {
+
+    if (showFaceDialog) {
       return;
     }
+    logger.d("this is the showFaceDialog after if");
 
     final auth = AuthHelper.user?.id;
+    logger.d(vybeCamEnabled);
+    logger.d(auth);
 
-    if(vybeCamEnabled && (auth != story.userId)){
+    if (vybeCamEnabled && (auth != story.userId)) {
       showFaceDialog = true;
+      logger.d("this is true");
+    } else {
+      Fluttertoast.showToast(msg: 'You can not react to your own story.');
     }
   }
 
   Future<void> captureReactionImage() async {
-
     showFaceDialog = true;
     isCapturingTimer = true;
     camera.onFrame = (String? path) {
@@ -183,7 +191,7 @@ class StoryProvider extends InSoBlokViewModel {
 
   Future<void> completeTimer() async {
     isCapturingTimer = true;
-    notifyListeners();     
+    notifyListeners();
   }
 
   /// Switch to VIDEO capture mode
@@ -198,7 +206,7 @@ class StoryProvider extends InSoBlokViewModel {
         videoPath = path;
         logger.d("VideoPath is $path");
         // videoPath = '/data/data/insoblok.social.app/cache/video_1.mp4';
-        notifyListeners();  
+        notifyListeners();
         if (!c.isCompleted) c.complete(path);
       });
     };
@@ -212,12 +220,12 @@ class StoryProvider extends InSoBlokViewModel {
   List<AIFaceAnnotation> annotations = [];
 
   Future<void> detectFace(String link) async {
+    // link = '/data/data/insoblok.social.app/cache/me.png';
 
-    // link = '/data/data/insoblok.social.app/cache/SnapImage.jpg';
     logger.d("This is detect face function");
     var faces = await GoogleVisionHelper.getFacesFromImage(link: link);
     logger.d("These are faces $faces");
-    var _annotations = await GoogleVisionHelper.analyzeLocalImage(link: link);
+    // var _annotations = await GoogleVisionHelper.analyzeLocalImage(link: link);
     logger.d("This is after google vision function");
     if (faces.isNotEmpty) {
       final directory = await getApplicationDocumentsDirectory();
@@ -231,7 +239,7 @@ class StoryProvider extends InSoBlokViewModel {
         _face = await file.writeAsBytes(encoded, flush: true);
         await FileImage(_face!).evict();
         annotations.clear();
-        annotations.addAll(_annotations);
+        // annotations.addAll(_annotations);
         logger.d('✅ face.png replaced at $filePath');
       } catch (e) {
         logger.e('❌ Failed to write new face.png: $e');
@@ -305,9 +313,10 @@ class StoryProvider extends InSoBlokViewModel {
         maxHeight: MediaQuery.of(context).size.height * 0.7,
         minHeight: MediaQuery.of(context).size.height * 0.2,
       ),
-      builder: (context) => StatefulBuilder(
-        builder: (context, setState) => StoryCommentDialog(story: story),
-      ),
+      builder:
+          (context) => StatefulBuilder(
+            builder: (context, setState) => StoryCommentDialog(story: story),
+          ),
     );
 
     openCommentDialog = false;
@@ -316,44 +325,80 @@ class StoryProvider extends InSoBlokViewModel {
 
   Future<void> onPostReactionPressed() async {
     Routers.goToFaceDetailPage(
-        context,
-        story.id!,
-        (story.medias ?? [])[pageIndex].link!,
-        face!,
-        annotations,
-        false);
+      context,
+      story.id!,
+      (story.medias ?? [])[pageIndex].link!,
+      face!,
+      annotations,
+      false,
+    );
   }
 
   Future<void> onPostReactionVideoPressed() async {
     logger.d("face path is ${face?.path ?? ''}");
     Routers.goToReactionVideoDetailPage(
-        context,
-        story.id!,
-        (story.medias ?? [])[pageIndex].link!,
-        videoPath!,
-        false);
+      context,
+      story.id!,
+      (story.medias ?? [])[pageIndex].link!,
+      videoPath!,
+      false,
+    );
   }
 
   Future<void> onEditReactionVideoPressed() async {
     Routers.goToReactionVideoDetailPage(
-        context,
-        story.id!,
-        (story.medias ?? [])[pageIndex].link!,
-        videoPath!,
-        false);
+      context,
+      story.id!,
+      (story.medias ?? [])[pageIndex].link!,
+      videoPath!,
+      false,
+    );
   }
 
   Future<void> onPostDeclinePressed() async {
     showFaceDialog = false;
   }
 
+  bool _isFetchingUser = false;
+  bool get isFetchingUser => _isFetchingUser;
+
   Future<void> fetchUser() async {
+    if (_isFetchingUser || story.userId == null || story.userId!.isEmpty) {
+      return;
+    }
+
+    _isFetchingUser = true;
+    notifyListeners();
+
     try {
-      owner = await userService.getUser(story.userId!);
-    } catch (e) {
+      var user = await userService.getUser(story.userId!);
+      if (user != null) {
+        owner = user;
+        logger.d("Fetched owner for story ${story.id}: ${owner?.fullName}");
+      } else {
+        logger.w(
+          'Failed to fetch user for story ${story.id}, userId: ${story.userId}',
+        );
+        // Retry once after a short delay if user is null
+        await Future.delayed(const Duration(milliseconds: 500));
+        user = await userService.getUser(story.userId!);
+        if (user != null) {
+          owner = user;
+          logger.d(
+            "Fetched owner after retry for story ${story.id}: ${owner?.fullName}",
+          );
+        } else {
+          logger.e(
+            'User not found after retry for story ${story.id}, userId: ${story.userId}',
+          );
+        }
+      }
+    } catch (e, stackTrace) {
+      logger.e('Error fetching user for story ${story.id}: $e');
+      logger.e(stackTrace);
       setError(e);
-      logger.e(e);
     } finally {
+      _isFetchingUser = false;
       notifyListeners();
     }
   }
@@ -370,21 +415,21 @@ class StoryProvider extends InSoBlokViewModel {
 
   Future<void> getAddress() async {
     try {
-    final prediction = await places.fetchPlace(
-      story.placeId ?? "", 
-      fields: [
-        google.PlaceField.Id, 
-        google.PlaceField.Address, 
-        google.PlaceField.AddressComponents, 
-        google.PlaceField.Location
-      ]
-    );
-    _address = prediction.place?.address ?? "";
+      final prediction = await places.fetchPlace(
+        story.placeId ?? "",
+        fields: [
+          google.PlaceField.Id,
+          google.PlaceField.Address,
+          google.PlaceField.AddressComponents,
+          google.PlaceField.Location,
+        ],
+      );
+      _address = prediction.place?.address ?? "";
     } catch (e) {
       logger.e("Failed to fetch address: $e");
     }
     notifyListeners();
-  } 
+  }
   // set address(String addr) {
   //   _address = addr;
   //   notifyListeners();
@@ -624,16 +669,17 @@ class StoryProvider extends InSoBlokViewModel {
             text: description,
             status: 'private',
             category: 'vote',
-            medias: ((resultFaceUrl?.isNotEmpty ?? false) && showFaceDialog)
-                ? [
-                    MediaStoryModel(
-                      link: resultFaceUrl,
-                      type: 'image',
-                      width: (story.medias ?? [])[pageIndex].width,
-                      height: (story.medias ?? [])[pageIndex].height,
-                    ),
-                  ]
-                : story.medias,
+            medias:
+                ((resultFaceUrl?.isNotEmpty ?? false) && showFaceDialog)
+                    ? [
+                      MediaStoryModel(
+                        link: resultFaceUrl,
+                        type: 'image',
+                        width: (story.medias ?? [])[pageIndex].width,
+                        height: (story.medias ?? [])[pageIndex].height,
+                      ),
+                    ]
+                    : story.medias,
             updatedAt: DateTime.now(),
             createdAt: DateTime.now(),
             connects: [
@@ -664,7 +710,6 @@ class StoryProvider extends InSoBlokViewModel {
   Future<void> onProcessFace(Map<String, String> content) async {
     if (isBusy) return;
     clearErrors();
-
 
     faceStatus = 'Generating...';
 
@@ -702,18 +747,15 @@ class StoryProvider extends InSoBlokViewModel {
     return false;
   }
 
-  Future<void> handleClickRemix() async {
-    
-  }
-  
+  Future<void> handleClickRemix() async {}
+
   Future<bool?> _showDescriptionDialog() => showDialog<bool>(
     context: context,
     builder: (context) {
       return Center(
         child: Container(
           margin: const EdgeInsets.all(40.0),
-          padding:
-              const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.onSecondary,
             borderRadius: BorderRadius.circular(20.0),
@@ -746,14 +788,9 @@ class StoryProvider extends InSoBlokViewModel {
                         alignment: Alignment.center,
                         child: Text(
                           'Add',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium
-                              ?.copyWith(
-                                color: Theme.of(context)
-                                    .colorScheme
-                                    .onSecondary,
-                              ),
+                          style: Theme.of(
+                            context,
+                          ).textTheme.bodyMedium?.copyWith(color: Colors.white),
                         ),
                       ),
                     ),
@@ -773,11 +810,8 @@ class StoryProvider extends InSoBlokViewModel {
                         alignment: Alignment.center,
                         child: Text(
                           'Skip',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium
-                              ?.copyWith(
-                                  color: Theme.of(context).primaryColor),
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(color: Theme.of(context).primaryColor),
                         ),
                       ),
                     ),
@@ -792,24 +826,51 @@ class StoryProvider extends InSoBlokViewModel {
   );
 
   Future<void> handleClickFollow(UserModel? followee) async {
-    if(AuthHelper.user?.id == followee?.id) {
+    if (followee == null) {
+      logger.w('Cannot follow: owner is null');
+      // Try to fetch owner one more time
+      await fetchUser();
+      if (owner == null) {
+        AIHelpers.showToast(
+          msg: "Unable to load user information. Please try again.",
+        );
+        return;
+      }
+      followee = owner;
+    }
+
+    if (AuthHelper.user?.id == followee?.id) {
       AIHelpers.showToast(msg: "Can not follow yourself.");
       return;
     }
     following = true;
-    UserModel? result = await userService.updateFollow(AuthHelper.user, followee);
-    if((followee?.follows ?? []).length == (result?.follows ?? []).length) {
-      AIHelpers.showToast(msg: "An error occurred while updating following ${followee!.nickId}. Try it again later.");
-    }
+    UserModel? result = await userService.updateFollow(
+      AuthHelper.user,
+      followee,
+    );
 
-    else if ((result?.follows ?? []).contains(AuthHelper.user!.id)) {
-      AIHelpers.showToast(msg: "Successfully followed ${followee!.nickId}");
-      
+    logger.d("this is the result");
+    logger.d(result?.toJson());
+
+    if (followee != null && result != null) {
+      if ((followee.follows ?? []).length == (result.follows ?? []).length) {
+        AIHelpers.showToast(
+          msg:
+              "An error occurred while updating following ${followee.nickId ?? 'user'}. Try it again later.",
+        );
+      } else if ((result.follows ?? []).contains(AuthHelper.user?.id)) {
+        AIHelpers.showToast(
+          msg: "Successfully followed ${followee.nickId ?? 'user'}",
+        );
+      } else {
+        AIHelpers.showToast(
+          msg: "Cancelled following ${followee.nickId ?? 'user'}",
+        );
+      }
+      owner = result;
+    } else {
+      AIHelpers.showToast(msg: "An error occurred. Please try again.");
     }
-    else {
-      AIHelpers.showToast(msg: "Cancelled following ${followee!.nickId}");
-    }
-    owner = result;
     following = false;
   }
 }

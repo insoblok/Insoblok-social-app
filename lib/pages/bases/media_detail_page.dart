@@ -105,7 +105,9 @@ class MediaDetailPage extends StatelessWidget {
                 alignment: Alignment.bottomCenter,
                 child: RemixActionView(),
               ),
-              if (viewModel.isRemixing || viewModel.isPostingLookbook || viewModel.isFeedDeleting)
+              if (viewModel.isRemixing ||
+                  viewModel.isPostingLookbook ||
+                  viewModel.isFeedDeleting)
                 Align(
                   alignment: Alignment.center,
                   child: Center(child: Loader(size: 40.0)),
@@ -117,7 +119,7 @@ class MediaDetailPage extends StatelessWidget {
     );
   }
 
-    Widget _buildMediaWidget(String mediaUrl) {
+  Widget _buildMediaWidget(String mediaUrl) {
     final lowerUrl = mediaUrl.toLowerCase();
     if (lowerUrl.contains('.mp4') || lowerUrl.contains('.mov')) {
       // Video file: show video player
@@ -131,7 +133,7 @@ class MediaDetailPage extends StatelessWidget {
 
 class _CircularVideoPlayer extends StatefulWidget {
   final String videoPath;
-  
+
   const _CircularVideoPlayer({required this.videoPath});
 
   @override
@@ -145,22 +147,26 @@ class _CircularVideoPlayerState extends State<_CircularVideoPlayer> {
   @override
   void initState() {
     super.initState();
-    if (widget.videoPath.startsWith('http') || widget.videoPath.startsWith('https')) {
+    if (widget.videoPath.startsWith('http') ||
+        widget.videoPath.startsWith('https')) {
       _controller = VideoPlayerController.network(widget.videoPath);
     } else {
       _controller = VideoPlayerController.file(File(widget.videoPath));
     }
 
-    _controller.initialize().then((_) {
-      setState(() {
-        _initialized = true;
-        _controller.setLooping(true);
-        _controller.play();
-      });
-    }).catchError((error) {
-      // Handle errors if needed, e.g. show error UI
-      print("Video initialization error: $error");
-    });
+    _controller
+        .initialize()
+        .then((_) {
+          setState(() {
+            _initialized = true;
+            _controller.setLooping(true);
+            _controller.play();
+          });
+        })
+        .catchError((error) {
+          // Handle errors if needed, e.g. show error UI
+          print("Video initialization error: $error");
+        });
   }
 
   @override
@@ -183,11 +189,13 @@ class _CircularVideoPlayerState extends State<_CircularVideoPlayer> {
             width: 2,
           ),
         ),
-        child: _initialized
-            ? VideoPlayer(_controller)
-            : const Center(child: CircularProgressIndicator(strokeWidth: 2)),
+        child:
+            _initialized
+                ? VideoPlayer(_controller)
+                : const Center(
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
       ),
     );
   }
-
 }

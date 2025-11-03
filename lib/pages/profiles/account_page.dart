@@ -37,10 +37,12 @@ class AccountPage extends StatelessWidget {
                         pinned: true,
                         floating: true,
                         delegate: AIPersistentHeader(
-                          minSize: kProfileDiscoverHeight +
+                          minSize:
+                              kProfileDiscoverHeight +
                               MediaQuery.of(context).padding.top +
                               kAccountAvatarSize / 2.0,
-                          maxSize: kProfileDiscoverHeight +
+                          maxSize:
+                              kProfileDiscoverHeight +
                               MediaQuery.of(context).padding.top +
                               kAccountAvatarSize / 2.0,
                           child: const AccountPresentHeaderView(),
@@ -62,17 +64,17 @@ class AccountPage extends StatelessWidget {
                                 onTap: () {
                                   viewModel.setPageIndex(0);
                                   viewModel.resetSelection();
-                                }
+                                },
                               ),
                               const SizedBox(width: 16),
                               _buildTabButton(
                                 context,
                                 label: "Galleries",
                                 isSelected: viewModel.pageIndex == 3,
-                                onTap: () { 
+                                onTap: () {
                                   viewModel.setPageIndex(3);
                                   viewModel.resetSelection();
-                                }
+                                },
                               ),
                             ],
                           ),
@@ -91,8 +93,9 @@ class AccountPage extends StatelessWidget {
                                 mainAxisSpacing: 1.0,
                                 crossAxisSpacing: 1.0,
                                 childAspectRatio: 0.75,
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 4.0),
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 4.0,
+                                ),
                                 children: [
                                   for (final story in viewModel.stories) ...{
                                     if ((story.medias ?? []).isEmpty)
@@ -126,8 +129,14 @@ class AccountPage extends StatelessWidget {
                                             viewModel.stories.indexOf(story),
                                           );
                                         },
-                                        buildMediaThumb: (url, {bool isVideo = false}) =>
-                                            _buildMediaThumbnail(context, viewModel, url, isVideo: isVideo),
+                                        buildMediaThumb:
+                                            (url, {bool isVideo = false}) =>
+                                                _buildMediaThumbnail(
+                                                  context,
+                                                  viewModel,
+                                                  url,
+                                                  isVideo: isVideo,
+                                                ),
                                       ),
                                   },
                                 ],
@@ -152,39 +161,57 @@ class AccountPage extends StatelessWidget {
                             } else ...{
                               viewModel.galleries.isNotEmpty
                                   ? GridView.count(
-                                      shrinkWrap: true,
-                                      physics: const NeverScrollableScrollPhysics(),
-                                      crossAxisCount: 3,
-                                      mainAxisSpacing: 1.0,
-                                      crossAxisSpacing: 1.0,
-                                      childAspectRatio: 0.75,
-                                      padding: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 4.0),
-                                      children: [
-                                        for (final gallery in viewModel.galleries) ...{
-                                          InkWell(
-                                            onTap: () => AIHelpers.goToDetailView(
-                                              context,
-                                              medias: viewModel.galleries.map((gal) => gal.media ?? "").toList(),
-                                              // medias: [],
-                                              index: viewModel.galleries.indexOf(gallery),
-                                              storyID:'',
-                                              storyUser:'',
-                                            ),
-                                            child: _buildMediaThumbnail(context, viewModel, gallery.media ?? ""),
-                                          ),
-                                        },
-                                      ],
-                                    )
-                                  : const SafeArea(
-                                      child: InSoBlokEmptyView(
-                                        desc: 'There is no any Galleries.',
-                                      ),
+                                    shrinkWrap: true,
+                                    physics:
+                                        const NeverScrollableScrollPhysics(),
+                                    crossAxisCount: 3,
+                                    mainAxisSpacing: 1.0,
+                                    crossAxisSpacing: 1.0,
+                                    childAspectRatio: 0.75,
+                                    padding: const EdgeInsets.symmetric(
+                                      vertical: 4.0,
+                                      horizontal: 4.0,
                                     ),
+                                    children: [
+                                      for (final gallery
+                                          in viewModel.galleries) ...{
+                                        InkWell(
+                                          onTap:
+                                              () => AIHelpers.goToDetailView(
+                                                context,
+                                                medias:
+                                                    viewModel.galleries
+                                                        .map(
+                                                          (gal) =>
+                                                              gal.media ?? "",
+                                                        )
+                                                        .toList(),
+                                                // medias: [],
+                                                index: viewModel.galleries
+                                                    .indexOf(gallery),
+                                                storyID: '',
+                                                storyUser: '',
+                                              ),
+                                          child: _buildMediaThumbnail(
+                                            context,
+                                            viewModel,
+                                            gallery.media ?? "",
+                                          ),
+                                        ),
+                                      },
+                                    ],
+                                  )
+                                  : const SafeArea(
+                                    child: InSoBlokEmptyView(
+                                      desc: 'There is no any Galleries.',
+                                    ),
+                                  ),
                             },
                           },
 
                           SizedBox(
-                            height: MediaQuery.of(context).padding.bottom + 40.0,
+                            height:
+                                MediaQuery.of(context).padding.bottom + 40.0,
                           ),
                         ]),
                       ),
@@ -215,8 +242,13 @@ class AccountPage extends StatelessWidget {
       return null;
     }
   }
-  
-  Widget _buildMediaThumbnail(BuildContext context, AccountProvider vm, String url, {bool isVideo = false}) {
+
+  Widget _buildMediaThumbnail(
+    BuildContext context,
+    AccountProvider vm,
+    String url, {
+    bool isVideo = false,
+  }) {
     final detectVideo = isVideo || _looksLikeVideoUrl(url);
     logger.d("Url is $url");
     if (detectVideo) {
@@ -243,7 +275,6 @@ class AccountPage extends StatelessWidget {
                     color: Colors.white70,
                   ),
                 ),
-                
               ],
             );
           }
@@ -252,23 +283,18 @@ class AccountPage extends StatelessWidget {
       );
     } else {
       return Container(
-        decoration: BoxDecoration(
-        ),
+        decoration: BoxDecoration(),
         child: InkWell(
           onLongPress: () {
-            vm.handleLongPress(url);            
+            vm.handleLongPress(url);
           },
           onTap: () {
             vm.handleClickGallery(url);
           },
           child: Stack(
-            children: [ 
-              AIImage(
-                url, 
-                fit: BoxFit.cover,
-                color: Colors.blue.shade900
-              ),
-              if(vm.isSelectMode && vm.selectedItems.contains(url)) ...{
+            children: [
+              AIImage(url, fit: BoxFit.cover, color: Colors.blue.shade900),
+              if (vm.isSelectMode && vm.selectedItems.contains(url)) ...{
                 Container(
                   color: Colors.blue.withAlpha(50),
                   child: InkWell(
@@ -280,56 +306,56 @@ class AccountPage extends StatelessWidget {
                         size: 40,
                       ),
                     ),
-                  ) 
+                  ),
                 ),
                 Align(
                   alignment: Alignment.topRight,
                   child: IconButton(
-                      icon: Icon(Icons.delete, color: Colors.grey),
-                      onPressed: () async {
-                        bool? result = await showDialog<bool>(
-                          context: context,
-                          barrierDismissible: false, // User must tap button to close
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              backgroundColor: Colors.black87,
-                              title: const Text('Confirm Delete'),
-                              content: const Text(
-                                'Are you sure you want to delete selected items?',
+                    icon: Icon(Icons.delete, color: Colors.grey),
+                    onPressed: () async {
+                      await showDialog<bool>(
+                        context: context,
+                        barrierDismissible:
+                            false, // User must tap button to close
+                        builder: (BuildContext context) {
+                          return AlertDialog(
+                            backgroundColor: Colors.black87,
+                            title: const Text('Confirm Delete'),
+                            content: const Text(
+                              'Are you sure you want to delete selected items?',
+                            ),
+                            actions: <Widget>[
+                              TextButton(
+                                child: const Text('Cancel'),
+                                onPressed: () {
+                                  Navigator.of(context).pop();
+                                },
                               ),
-                              actions: <Widget>[
-                                TextButton(
-                                  child: const Text('Cancel'),
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
+                              TextButton(
+                                child: Text(
+                                  'Delete',
+                                  style: TextStyle(color: Colors.red),
                                 ),
-                                TextButton(
-                                  child: Text(
-                                    'Delete',
-                                    style: TextStyle(color: Colors.red),
-                                  ),
-                                  onPressed: () {
-                                    // Perform delete action
-                                    vm.handleClickDeleteGallery();
-                                    Navigator.of(context).pop();
-                                  },
-                                ),
-                              ],
-                            );
-                          },
-                        );
-                      }
-                    )
+                                onPressed: () {
+                                  // Perform delete action
+                                  vm.handleClickDeleteGallery();
+                                  Navigator.of(context).pop();
+                                },
+                              ),
+                            ],
+                          );
+                        },
+                      );
+                    },
+                  ),
                 ),
-              }
-            ]
+              },
+            ],
           ),
         ),
       );
     }
   }
-
 
   bool _looksLikeVideoUrl(String url) {
     final u = url.toLowerCase();
@@ -395,6 +421,23 @@ class _StoryTile extends StatelessWidget {
     final String? type = media.type;
     final bool isVideo = (type?.toLowerCase() == 'video');
 
+    // Log story image path
+    logger.d('=== Story Image Path (Profile Page) ===');
+    logger.d('Story ID: ${story.id}');
+    logger.d('Story Image Link/Path: $link');
+    logger.d('Media Type: $type');
+    logger.d('Is Video: $isVideo');
+    logger.d('Total Medias in Story: ${story.medias?.length ?? 0}');
+    if ((story.medias ?? []).length > 1) {
+      logger.d('All Media Links in this Story:');
+      for (int i = 0; i < story.medias!.length; i++) {
+        logger.d(
+          '  Media[$i]: ${story.medias![i].link} (type: ${story.medias![i].type})',
+        );
+      }
+    }
+    logger.d('========================================');
+
     return InkWell(
       onTap: onTap,
       child: Stack(
@@ -403,7 +446,36 @@ class _StoryTile extends StatelessWidget {
           isVideo
               ? buildMediaThumb(link, isVideo: true)
               // : AIImage(link, width: double.infinity, height: double.infinity, fit: BoxFit.cover),
-              : SelectableWidget(context: context, media: link, id: story.id ?? "", onTap: vm.handleClickGallery, onLongPress: vm.handleLongPress, onDelete: vm.handleClickDeleteStories, selectMode: vm.isSelectMode, selected: vm.selectedItems),
+              : SelectableWidget(
+                context: context,
+                media: link,
+                id: story.id ?? "",
+                onTap:
+                    vm.isSelectMode
+                        ? vm.handleClickGallery
+                        : (url) {
+                          // When not in select mode, navigate directly with all story media URLs
+                          final allMediaUrls =
+                              story.medias
+                                  ?.map((m) => m.link ?? "")
+                                  .where((url) => url.isNotEmpty)
+                                  .toList() ??
+                              [];
+                          if (allMediaUrls.isNotEmpty) {
+                            AIHelpers.goToDetailView(
+                              context,
+                              medias: allMediaUrls,
+                              index: 0,
+                              storyID: story.id ?? "",
+                              storyUser: story.userId ?? "",
+                            );
+                          }
+                        },
+                onLongPress: vm.handleLongPress,
+                onDelete: vm.handleClickDeleteStories,
+                selectMode: vm.isSelectMode,
+                selected: vm.selectedItems,
+              ),
 
           if ((story.medias ?? []).length > 1)
             const Positioned(
@@ -424,76 +496,66 @@ class _StoryTile extends StatelessWidget {
     required void Function(String m) onLongPress,
     required void Function() onDelete,
     required bool selectMode,
-    required List<String> selected
-  }) =>
-      InkWell(
-        onTap: () => onTap(id),
-        onLongPress: () => onLongPress(id),
-        child: Stack(
-          fit: StackFit.expand,
-          children: [
-              AIImage(
-                media, 
-                fit: BoxFit.cover,
-                color: Colors.blue.shade900
+    required List<String> selected,
+  }) => InkWell(
+    onTap: () => onTap(id),
+    onLongPress: () => onLongPress(id),
+    child: Stack(
+      fit: StackFit.expand,
+      children: [
+        AIImage(media, fit: BoxFit.cover, color: Colors.blue.shade900),
+        if (selectMode && selected.contains(id)) ...{
+          Container(
+            color: Colors.blue.withAlpha(50),
+            child: InkWell(
+              onTap: () => onTap(id),
+              child: Center(
+                child: Icon(Icons.check_circle, color: Colors.blue, size: 40),
               ),
-              if(selectMode && selected.contains(id)) ...{
-                Container(
-                  color: Colors.blue.withAlpha(50),
-                  child: InkWell(
-                    onTap: () => onTap(id),
-                    child: Center(
-                      child: Icon(
-                        Icons.check_circle,
-                        color: Colors.blue,
-                        size: 40,
+            ),
+          ),
+          Align(
+            alignment: Alignment.topRight,
+            child: IconButton(
+              icon: Icon(Icons.delete, color: Colors.grey),
+              onPressed: () async {
+                await showDialog<bool>(
+                  context: context,
+                  barrierDismissible: false, // User must tap button to close
+                  builder: (BuildContext context) {
+                    return AlertDialog(
+                      backgroundColor: Colors.black87,
+                      title: const Text('Confirm Delete'),
+                      content: const Text(
+                        'Are you sure you want to delete selected items?',
                       ),
-                    ),
-                  ) 
-                ),
-                Align(
-                  alignment: Alignment.topRight,
-                  child: IconButton(
-                      icon: Icon(Icons.delete, color: Colors.grey),
-                      onPressed: () async {
-                        bool? result = await showDialog<bool>(
-                          context: context,
-                          barrierDismissible: false, // User must tap button to close
-                          builder: (BuildContext context) {
-                            return AlertDialog(
-                              backgroundColor: Colors.black87,
-                              title: const Text('Confirm Delete'),
-                              content: const Text(
-                                'Are you sure you want to delete selected items?',
-                              ),
-                              actions: <Widget>[
-                                TextButton(
-                                  child: const Text('Cancel'),
-                                  onPressed: () {
-                                    Navigator.of(context).pop();
-                                  },
-                                ),
-                                TextButton(
-                                  child: Text(
-                                    'Delete',
-                                    style: TextStyle(color: Colors.red),
-                                  ),
-                                  onPressed: () {
-                                    // Perform delete action
-                                    onDelete();
-                                    Navigator.of(context).pop();
-                                  },
-                                ),
-                              ],
-                            );
+                      actions: <Widget>[
+                        TextButton(
+                          child: const Text('Cancel'),
+                          onPressed: () {
+                            Navigator.of(context).pop();
                           },
-                        );
-                      }
-                    )
-                ),
-              }
-            ]
-        ),
-      );
-
+                        ),
+                        TextButton(
+                          child: Text(
+                            'Delete',
+                            style: TextStyle(color: Colors.red),
+                          ),
+                          onPressed: () {
+                            // Perform delete action
+                            onDelete();
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+            ),
+          ),
+        },
+      ],
+    ),
+  );
 }

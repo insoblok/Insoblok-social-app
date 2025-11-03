@@ -134,26 +134,22 @@ class VTOImageProvider extends InSoBlokViewModel {
   }
 
   Future<void> onClickConvert() async {
-
     logger.d("product : $product");
 
     if (product.category == ProductCategory.CLOTHING) {
-      if(product.categoryName == "Hat/Cap"){
+      if (product.categoryName == "Hat/Cap") {
         await _productToModelConvert();
-      }else{
+      } else {
         await _clothingConvert();
       }
-      
     } else if (product.category == ProductCategory.SHOES) {
       await _productToModelConvert();
     } else if (product.category == ProductCategory.JEWELRY) {
-
-      if(product.categoryName == "Sunglasses"){
+      if (product.categoryName == "Sunglasses") {
         await _productToModelConvert();
-      }else{
+      } else {
         await _jewelryConvert();
       }
-      
     } else {
       AIHelpers.showToast(msg: 'No support this feature yet!');
     }
@@ -188,7 +184,9 @@ class VTOImageProvider extends InSoBlokViewModel {
       try {
         isConverting = true;
         if (originUrl?.isEmpty ?? true) {
-          MediaStoryModel model = await CloudinaryCDNService.uploadImageToCDN(XFile(selectedFile!.path));
+          MediaStoryModel model = await CloudinaryCDNService.uploadImageToCDN(
+            XFile(selectedFile!.path),
+          );
           originUrl = model.link;
         }
 
@@ -214,7 +212,10 @@ class VTOImageProvider extends InSoBlokViewModel {
           throw ('Failed result file downloaded!');
         }
 
-        final MediaStoryModel resultModel = await CloudinaryCDNService.uploadImageToCDN(XFile(_resultFile!.path));
+        final MediaStoryModel resultModel =
+            await CloudinaryCDNService.uploadImageToCDN(
+              XFile(_resultFile!.path),
+            );
 
         if (resultModel.link != null) {
           serverUrl = resultModel.link;
@@ -282,7 +283,10 @@ class VTOImageProvider extends InSoBlokViewModel {
       try {
         isConverting = true;
         if (originUrl?.isEmpty ?? true) {
-          final MediaStoryModel selectedModel = await CloudinaryCDNService.uploadImageToCDN(XFile(selectedFile!.path));
+          final MediaStoryModel selectedModel =
+              await CloudinaryCDNService.uploadImageToCDN(
+                XFile(selectedFile!.path),
+              );
           originUrl = selectedModel.link;
         }
 
@@ -310,7 +314,10 @@ class VTOImageProvider extends InSoBlokViewModel {
           throw ('Failed result file downloaded!');
         }
 
-        final MediaStoryModel model = await CloudinaryCDNService.uploadImageToCDN(XFile(_resultFile!.path));
+        final MediaStoryModel model =
+            await CloudinaryCDNService.uploadImageToCDN(
+              XFile(_resultFile!.path),
+            );
 
         if (model.link != null) {
           serverUrl = model.link;
@@ -381,7 +388,7 @@ class VTOImageProvider extends InSoBlokViewModel {
         );
 
         logger.d("resultUrl : $resultUrl");
-        
+
         if (resultUrl == null) {
           throw ('Failed AI Convertor!');
         }
@@ -395,7 +402,10 @@ class VTOImageProvider extends InSoBlokViewModel {
           throw ('Failed result file downloaded!');
         }
 
-        final MediaStoryModel model = await CloudinaryCDNService.uploadImageToCDN(XFile(_resultFile!.path));
+        final MediaStoryModel model =
+            await CloudinaryCDNService.uploadImageToCDN(
+              XFile(_resultFile!.path),
+            );
 
         if (model.link != null) {
           serverUrl = model.link;
@@ -444,7 +454,9 @@ class VTOImageProvider extends InSoBlokViewModel {
       try {
         isConverting = true;
         if (originUrl?.isEmpty ?? true) {
-          MediaStoryModel model = await CloudinaryCDNService.uploadImageToCDN(XFile(selectedFile!.path));
+          MediaStoryModel model = await CloudinaryCDNService.uploadImageToCDN(
+            XFile(selectedFile!.path),
+          );
           originUrl = model.link;
         }
 
@@ -472,7 +484,10 @@ class VTOImageProvider extends InSoBlokViewModel {
           throw ('Failed result file downloaded!');
         }
 
-        final MediaStoryModel resultModel = await CloudinaryCDNService.uploadImageToCDN(XFile(_resultFile!.path));
+        final MediaStoryModel resultModel =
+            await CloudinaryCDNService.uploadImageToCDN(
+              XFile(_resultFile!.path),
+            );
 
         if (resultModel.link != null) {
           serverUrl = resultModel.link;
@@ -492,12 +507,15 @@ class VTOImageProvider extends InSoBlokViewModel {
               product: product,
             );
 
+            logger.d(medias.length);
             var originImgbytes = await File(_selectedFile!.path).readAsBytes();
             var originDecodedImage = img.decodeImage(originImgbytes);
 
+            logger.d("resultDecodedImage");
             var resultImgbytes = await File(_resultFile!.path).readAsBytes();
             var resultDecodedImage = img.decodeImage(resultImgbytes);
 
+            logger.d("goToVTODetailPage");
             await Routers.goToVTODetailPage(
               context,
               VTODetailPageModel(
