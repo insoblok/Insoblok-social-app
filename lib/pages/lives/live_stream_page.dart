@@ -31,11 +31,7 @@ class LiveStreamPage extends StatelessWidget {
                 builder: (_) {
                   final activeCall = StreamVideoService().activeCall;
                   if (activeCall != null) {
-                    return Container(
-                      color: Colors.black,
-                      alignment: Alignment.center,
-                      child: const Text('Live is ON', style: TextStyle(color: Colors.white)),
-                    );
+                    return LivestreamPlayer(call: activeCall);
                   }
                   if (vm.isInitialized && vm.cameraController != null) {
                     return CameraPreview(vm.cameraController!);

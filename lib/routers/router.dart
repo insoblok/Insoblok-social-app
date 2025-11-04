@@ -330,4 +330,8 @@ class Routers {
       MaterialPageRoute(builder: (_) => const LiveStreamPage()),
     );
   }
+
+  static dynamic goToCreatePostPage(BuildContext context) {
+    return _pushToRoute(context, kRouterCreatePost, null);
+  }
 }

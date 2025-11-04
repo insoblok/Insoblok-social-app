@@ -5,7 +5,10 @@ import 'package:insoblok/models/live_session_model.dart';
 import 'package:stream_video_flutter/stream_video_flutter.dart';
 import 'package:insoblok/services/stream_video_service.dart';
 import 'package:cloud_functions/cloud_functions.dart';
-import 'package:insoblok/utils/utils.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
+import 'package:insoblok/services/services.dart';
 
 class LiveViewerPage extends StatefulWidget {
   final LiveSessionModel session;
@@ -56,11 +59,7 @@ class _LiveViewerPageState extends State<LiveViewerPage> {
         fit: StackFit.expand,
         children: [
           if (_call != null)
-            Container(
-              color: Colors.black,
-              alignment: Alignment.center,
-              child: const Text('Connected to live', style: TextStyle(color: Colors.white)),
-            )
+            LivestreamPlayer(call: _call!)
           else if (_ready)
             FittedBox(
               fit: BoxFit.cover,
@@ -129,7 +128,14 @@ class _LiveViewerPageState extends State<LiveViewerPage> {
   }
   Future<void> _joinStreamAsViewer(String callId) async {
     try {
-      final res = await FirebaseFunctions.instance.httpsCallable('videoTokenV2').call();
+      logger.d('Firebase UID (viewer): ${FirebaseAuth.instance.currentUser?.uid}');
+      try {
+        final t = await FirebaseAppCheck.instance.getToken(true);
+        logger.d('AppCheck token (host trimmed): ${t?.substring(0, 12)}...');
+      } catch (e) {
+        logger.w('AppCheck token fetch failed: $e');
+      }
+      final res = await FirebaseFunctions.instanceFor(app: Firebase.app(), region: 'us-central1').httpsCallable('videoTokenV2').call();
       final data = (res.data as Map).cast<String, dynamic>();
       final apiKey = data['apiKey'] as String?;
       final userToken = data['token'] as String?;

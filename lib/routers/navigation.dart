@@ -91,6 +91,7 @@ const kRouterTokenDetail = '/token-detail';
 // Live streaming
 const kRouterLiveStream = '/live-stream';
 const kRouterLive = '/live';
+const kRouterCreatePost = '/create-post';
 class Navigation {
   final router = fluro.FluroRouter();
 
@@ -305,6 +306,9 @@ class Navigation {
 
     // * SearchPage
     initRoute(kRouterSearch, (props) => SearchView());
+
+    // * Create Post (DeepAR capture)
+    initRoute(kRouterCreatePost, (props) => const CreatePostPage());
 
     // * PrivacyPage
     initRoute(kRouterPrivacy, (props) => PrivacyPage());

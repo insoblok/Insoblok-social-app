@@ -54,7 +54,36 @@ class InSoBlokProvider extends InSoBlokViewModel {
   }
 
   Future<void> goToAddPost() async {
-    Routers.goToAddStoryPage(context);
+    await showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.black87,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (ctx) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.only(bottom: 8),
+            child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              ListTile(
+                leading: const Icon(Icons.videocam_outlined, color: Colors.white),
+                title: const Text(
+                  'Create Post',
+                  style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
+                ),
+                onTap: () {
+                  Navigator.pop(ctx);
+                  Routers.goToCreatePostPage(context);
+                },
+              ),
+            ],
+          ),
+        ),
+        );
+      },
+    );
   }
 
   Future<void> onClickMenuItem(int index) async {

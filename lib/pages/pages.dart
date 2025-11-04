@@ -9,3 +9,4 @@ export 'news/news.dart';
 export 'vtos/vtos.dart';
 export 'stories/lookbook_detail_page.dart';
 export 'lives/lives.dart';
+export 'posts/create_post_page.dart';

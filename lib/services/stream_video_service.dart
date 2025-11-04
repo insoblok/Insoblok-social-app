@@ -33,10 +33,22 @@ class StreamVideoService {
       throw StateError('StreamVideo client is not connected');
     }
     final call = _client!.makeCall(
-      callType: StreamCallType.defaultType(),
+      callType: StreamCallType.liveStream(),
       id: callId,
     );
-    await call.join();
+    // Ensure the call exists (idempotent if already created server-side)
+    await call.getOrCreate();
+
+    final connectOptions = asHost
+        ? CallConnectOptions(
+            camera: TrackOption.enabled(),
+            microphone: TrackOption.enabled(),
+          )
+        : CallConnectOptions(
+            camera: TrackOption.disabled(),
+            microphone: TrackOption.disabled(),
+          );
+    await call.join(connectOptions: connectOptions);
     if (asHost) {
       try {
         await call.goLive();

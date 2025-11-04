@@ -5,7 +5,9 @@ import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/extensions/extensions.dart';
 import 'package:cloud_functions/cloud_functions.dart';
-import 'package:stream_video_flutter/stream_video_flutter.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:insoblok/services/stream_video_service.dart';
 
 class LiveStreamProvider extends InSoBlokViewModel {
@@ -80,15 +82,24 @@ class LiveStreamProvider extends InSoBlokViewModel {
 
   Future<void> _startLive() async {
     try {
+
       final uid = AuthHelper.user?.id ?? '';
       final uname = AuthHelper.user?.fullName ?? 'User';
       final avatar = AuthHelper.user?.avatar;
+      // Log Firebase UID (host)
+      logger.d('Firebase UID (host): ${FirebaseAuth.instance.currentUser?.uid}');
       final liveService = LiveService();
       _sessionId = await liveService.createLiveSession(userId: uid, userName: uname, userAvatar: avatar);
 
       // Fetch Stream Video user token from backend for later SDK initialization
       try {
-        final res = await FirebaseFunctions.instance.httpsCallable('videoTokenV2').call();
+        try {
+          final t = await FirebaseAppCheck.instance.getToken(true);
+          logger.d('AppCheck token (viewer trimmed): ${t?.substring(0, 12)}...');
+        } catch (e) {
+          logger.w('AppCheck token fetch failed: $e');
+        }
+        final res = await FirebaseFunctions.instanceFor(app: Firebase.app(), region: 'us-central1').httpsCallable('videoTokenV2').call();
         final data = (res.data as Map).cast<String, dynamic>();
         _streamApiKey = data['apiKey'] as String?;
         _streamUserToken = data['token'] as String?;

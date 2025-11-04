@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:uuid/uuid.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_app_check/firebase_app_check.dart';
 
 class LiveService {
   final _firestore = FirebaseFirestore.instance;
@@ -25,13 +27,24 @@ class LiveService {
     // We keep using Firestore for listing "Live now" items but store callId for viewers to join.
     final callId = const Uuid().v4();
     try {
-      // Ensure Firebase Auth is present so callable has context.auth
-      final auth = FirebaseAuth.instance;
-      if (auth.currentUser == null) {
-        await auth.signInAnonymously();
+      // Ensure we use the same initialized app & a fresh ID token
+      final user = FirebaseAuth.instance.currentUser;
+      // Debug UID to verify auth context
+      // ignore: avoid_print
+      print('createLivestreamCallV2 using Firebase UID: ${user?.uid}');
+      await user?.getIdToken(true);
+
+      // Debug: obtain current App Check token (should be non-null)
+      try {
+        final appCheckToken = await FirebaseAppCheck.instance.getToken(true);
+        // ignore: avoid_print
+        print('AppCheck token (trimmed): ${appCheckToken?.substring(0, 12)}...');
+      } catch (e) {
+        // ignore: avoid_print
+        print('Failed to get AppCheck token: $e');
       }
 
-      final callable = FirebaseFunctions.instanceFor(region: 'us-central1')
+      final callable = FirebaseFunctions.instanceFor(app: Firebase.app(), region: 'us-central1')
           .httpsCallable('createLivestreamCallV2');
       await callable.call({
         'callId': callId,
