@@ -41,7 +41,7 @@ abstract class UserModel with _$UserModel {
     List<String>? follows,
     List<String>? views,
     List<String>? userActions,
-    List<String>? galleries,
+    List<GalleryModel>? galleries,
     List<UserActionModel>? actions,
     List<String>? favoriteTokens,
     List<SocialMediaModel>? socials,
@@ -50,6 +50,22 @@ abstract class UserModel with _$UserModel {
 
   factory UserModel.fromJson(Map<String, dynamic> json) =>
       _$UserModelFromJson(FirebaseHelper.fromConvertJson(json));
+}
+
+@freezed
+abstract class GalleryModel with _$GalleryModel {
+  @JsonSerializable(fieldRename: FieldRename.snake)
+  factory GalleryModel({
+    String? media,
+    String? description,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    DateTime? deletedAt,
+    String? status,
+  }) = _GalleryModel;
+
+  factory GalleryModel.fromJson(Map<String, dynamic> json) =>
+      _$GalleryModelFromJson(FirebaseHelper.fromConvertJson(json));
 }
 
 @freezed

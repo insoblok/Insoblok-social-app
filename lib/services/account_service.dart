@@ -1,15 +1,11 @@
-import 'dart:io';
-
 import 'package:collection/collection.dart';
 import 'package:stacked/stacked.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_image_compress/flutter_image_compress.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
-import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
-import 'package:insoblok/locator.dart';
 
 class AccountService with ListenableServiceMixin {
   
@@ -164,4 +160,64 @@ class AccountService with ListenableServiceMixin {
     }
   }
   
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  Future<bool> removeGalleries(List<String> images, UserModel user) async {
+    try {
+      final userDoc = await _firestore.collection('users2').doc(user.id).get();
+      
+      if (!userDoc.exists) {
+        throw Exception('User not found');
+      }
+
+      final userData = userDoc.data();
+      final galleries = List<Map<String, dynamic>>.from(userData?['galleries'] ?? []);
+      logger.d("db galleries are $galleries");
+      // Find all galleries that match the media strings
+      final updatedGalleries = galleries
+        .map((gallery) {
+          if (images.contains(gallery["media"])) {
+            gallery["deleted_at"] = DateTime.now();
+            gallery["status"] = "deleted";
+          }
+          return gallery;
+        })
+        .toList();
+
+      if (updatedGalleries.isEmpty) {
+        throw Exception('No matching galleries found');
+      }
+
+      // Remove all matching galleries in one operation
+      await _firestore.collection('users2').doc(user.id).update({
+        'galleries': updatedGalleries
+      });
+
+      return true;
+    } catch (e) {
+      logger.e("An error occurred while removing user galleries $e");
+      return false;
+    } finally {
+      notifyListeners();
+    }
+  }
+  Future<bool> removeStories(List<String> docIds, UserModel user) async {
+    logger.d("Doc ids are $docIds");
+    if(docIds.isEmpty) return false;
+    try {
+      final batch = _firestore.batch();
+      for (final docId in docIds) {
+        final docRef = _firestore.collection('stories').doc(docId);
+        final currentTime = DateTime.now();
+        batch.update(docRef, {'deleted_at': currentTime, 'updated_at': currentTime, 'status': 'deleted'});
+      }
+      await batch.commit();
+      return true;
+    } catch (e) {
+      logger.e("An error occurred while removing user stories $e");
+      return false;
+    } finally {
+      notifyListeners();
+    }
+  }
+
 }

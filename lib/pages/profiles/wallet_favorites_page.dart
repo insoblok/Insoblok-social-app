@@ -158,16 +158,30 @@ class WalletFavoritesPage extends StatelessWidget {
                       opacity: 0,
                       child: Icon(Icons.search)
                     ),
-                    Text(
-                      "My Favorite Tokens",
-                      style: Theme.of(context).textTheme.bodyLarge
-                    ),
-                    IconButton(
-                      icon: Icon(Icons.search),
-                      onPressed: () {
-                        _showSearchDialog(context, viewModel);
-                      } 
-                    )                    
+                    if (viewModel.isSelectMode) ... {
+                      Text(
+                        "${viewModel.selectedTokens.length} tokens selected",
+                        style: Theme.of(context).textTheme.bodyLarge
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.delete),
+                        onPressed: () {
+                          viewModel.handleTapRemoveFavoriteTokens(context);
+                        } 
+                      )
+                    }
+                    else ... {
+                      Text(
+                        "My Favorite Tokens",
+                        style: Theme.of(context).textTheme.bodyLarge
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.search),
+                        onPressed: () {
+                          _showSearchDialog(context, viewModel);
+                        } 
+                      )
+                    }
                   ],
             
                 ),
@@ -205,209 +219,238 @@ class WalletFavoritesPage extends StatelessWidget {
                             }
 
                             final tokens = snapshot.data!;
-                            return SingleChildScrollView(
-                              child: Column(
+                            return Column(
                                 mainAxisSize: MainAxisSize.min,
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 spacing: 4.0,
                                 children: [
                                   for (var token in tokens) ... [
-                                    Column(
-                                      children: [
-                                        Row(
-                                          spacing: 8.0,
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Expanded(
-                                              flex: 35,
-                                              child: GestureDetector(
-                                                onTap: () {
-                                                  // viewModel.handleClickFavoriteToken(context, token);
-                                                },
-                                                child: Row(
+
+                                   
+                                    
+                                    Container(
+                                      padding: EdgeInsets.symmetric(vertical: 4.0),
+                                      
+                                      decoration: BoxDecoration(
+                                        color: viewModel.isSelectMode && viewModel.selectedTokens.contains(token["id"]) ? Colors.blue.shade900 : Colors.transparent,
+                                        border: Border(
+                                          bottom: BorderSide(
+                                            color: Theme.of(context).colorScheme.secondary.withAlpha(32),
+                                            width: 1.0
+                                          )
+                                        )
+                                      ),
+                                      child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.center,
+                                        children: [
+                                          InkWell(
+                                            onTap: () => viewModel.handleTapFavoriteToken(token["id"]),
+                                            onLongPress: () => viewModel.handleLongPressFavoriteToken(token["id"]),
+                                            child: Stack(
+                                              fit: StackFit.loose,
+                                              children: [
+                                                Row(
+                                                  spacing: 8.0,
+                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                  crossAxisAlignment: CrossAxisAlignment.center,
                                                   children: [
-                                                    ClipOval(
-                                                      child: Container(
-                                                        color: Colors.transparent,
-                                                        child: Image.network(
-                                                          token["image"],
-                                                          width: 36.0,
-                                                          height: 36.0,
-                                                        ),
-                                                      ),
-                                                    ),
-                                                    SizedBox(width: 12),
                                                     Expanded(
-                                                      child: Align(
-                                                        alignment: Alignment.centerLeft,
-                                                        child: FittedBox(
-                                                          fit: BoxFit.scaleDown,
-                                                          child: Text(
-                                                            token['symbol'].toString().toUpperCase(),
-                                                            textAlign: TextAlign.left,
-                                                            // style: Theme.of(context).textTheme.bodyLarge,
+                                                      flex: 35,
+                                                      child: Row(
+                                                          children: [
+                                                            ClipOval(
+                                                              child: Container(
+                                                                color: Colors.transparent,
+                                                                child: Image.network(
+                                                                  token["image"],
+                                                                  width: 36.0,
+                                                                  height: 36.0,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                            SizedBox(width: 12),
+                                                            Expanded(
+                                                              child: Align(
+                                                                alignment: Alignment.centerLeft,
+                                                                child: FittedBox(
+                                                                  fit: BoxFit.scaleDown,
+                                                                  child: Text(
+                                                                    token['symbol'].toString().toUpperCase(),
+                                                                    textAlign: TextAlign.left,
+                                                                    // style: Theme.of(context).textTheme.bodyLarge,
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                    ),
+                                                    Expanded(
+                                                      flex: 30,
+                                                      child: GestureDetector(
+                                                        onTap: () {
+                                                          // viewModel.handleClickFavoriteToken(context, token);
+                                                        },
+                                                        child: Builder(
+                                                          builder: (context) {
+                                                            final List<double> prices = (token["sparkline_in_7d"]["price"] as List)
+                                                              .map((e) => (e as num).toDouble())
+                                                              .toList();
+                                                        
+                                                            final List<double> last24 = prices.length > 24
+                                                              ? prices.sublist(prices.length - 24)
+                                                              : prices;
+                                                            
+                                                            return CryptoSparklineWidget(
+                                                              symbol: token["symbol"].toString().toUpperCase(),
+                                                              width: MediaQuery.of(context).size.width * 0.2,
+                                                              height: 30.0,
+                                                              showYLabel: false,
+                                                              data: last24,
+                                                              increased: token["price_change_24h"] > 0
+                                                            );
+                                                          }
+                                                        ),
+                                                      )
+                                                    ),
+                                                    Expanded(
+                                                      flex: 25,
+                                                      child: ElevatedButton(
+                                                        onPressed: () {
+                                                          showModalBottomSheet<int>(
+                                                            context: context,
+                                                            builder: (context) {
+                                                              return StatefulBuilder(
+                                                                builder: (BuildContext modalContext, StateSetter setModalState) {
+                                                                  return Container(
+                                                                    padding: const EdgeInsets.all(8.0),
+                                                                    height: MediaQuery.of(context).size.height * 0.25,
+                                                                    decoration: BoxDecoration(
+                                                                      color: Theme.of(context).scaffoldBackgroundColor,
+                                                                      borderRadius: const BorderRadius.vertical(
+                                                                        top: Radius.circular(20.0),
+                                                                      ),
+                                                                    ),
+                                                                    child: Column(
+                                                                      children: [
+                                                                        // Drag handle
+                                                                        Center(
+                                                                          child: Container(
+                                                                            width: 40,
+                                                                            height: 4,
+                                                                            margin: const EdgeInsets.only(bottom: 16),
+                                                                            decoration: BoxDecoration(
+                                                                              color: Colors.grey.shade400,
+                                                                              borderRadius: BorderRadius.circular(2),
+                                                                            ),
+                                                                          ),
+                                                                        ),
+                                                                        Text(
+                                                                          'Display Data',
+                                                                          style: Theme.of(context).textTheme.headlineLarge,
+                                                                        ),
+                                                                        const SizedBox(height: 16),
+                                                                        // Option 1
+                                                                        ListTile(
+                                                                          contentPadding: EdgeInsets.zero,
+                                                                          title: Text(
+                                                                            'Last Price',
+                                                                            style: Theme.of(context).textTheme.bodyMedium
+                                                                          ),
+                                                                          trailing: Radio<int>(
+                                                                            value: 1,
+                                                                            groupValue: viewModel.viewType, // Read from parent ViewModel
+                                                                            onChanged: (int? value) {
+                                                                              if (value != null) {
+                                                                                viewModel.viewType = value; // Update parent ViewModel
+                                                                                setModalState(() {}); // Update bottom sheet UI
+                                                                              }
+                                                                            },
+                                                                          ),
+                                                                          onTap: () {
+                                                                            viewModel.viewType = 1;
+                                                                            setModalState(() {});
+                                                                          },
+                                                                        ),
+                                                                        // Option 2
+                                                                        ListTile(
+                                                                          contentPadding: EdgeInsets.zero,
+                                                                          title: Text(
+                                                                            'Percent Change',
+                                                                            style: Theme.of(context).textTheme.bodyMedium
+                                                                          ),
+                                                                          trailing: Radio<int>(
+                                                                            value: 2,
+                                                                            groupValue: viewModel.viewType,
+                                                                            onChanged: (int? value) {
+                                                                              if (value != null) {
+                                                                                viewModel.viewType = value;
+                                                                                setModalState(() {});
+                                                                              }
+                                                                            },
+                                                                          ),
+                                                                          onTap: () {
+                                                                            viewModel.viewType = 2;
+                                                                            setModalState(() {});
+                                                                          },
+                                                                        ),
+                                                                      ],
+                                                                    ),
+                                                                  );
+                                                                },
+                                                              );
+                                                            },
+                                                          );
+                                                        },
+                                                        style: ElevatedButton.styleFrom(
+                                                          backgroundColor: token["price_change_percentage_24h"] >= 0 ? Colors.green : Colors.red, // The background color
+                                                          foregroundColor: Colors.white,
+                                                          padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 0),
+                                                          shape: RoundedRectangleBorder(
+                                                            borderRadius: BorderRadius.circular(6.0), // Adjust the value as needed
                                                           ),
                                                         ),
+                                                        child: 
+                                                          viewModel.viewType == 2 ? FittedBox(
+                                                            fit: BoxFit.scaleDown,
+                                                            child: Text(
+                                                              '${token["price_change_percentage_24h"] > 0 ? "+" : ""}${AIHelpers.formatDouble(token["price_change_percentage_24h"].toDouble(), 3)}%',
+                                                              style: Theme.of(context).textTheme.bodyMedium
+                                                            ),
+                                                          ) : FittedBox(
+                                                            fit: BoxFit.scaleDown,
+                                                            child: Text(
+                                                              '\$${AIHelpers.formatDouble(token["current_price"].toDouble(), 10)}',
+                                                            style: Theme.of(context).textTheme.bodyMedium,
+                                                          ),
+                                                        )
                                                       ),
                                                     ),
                                                   ],
                                                 ),
-                                              ),
-                                            ),
-                                            
-                                            Expanded(
-                                              flex: 30,
-                                              child: GestureDetector(
-                                                onTap: () {
-                                                  // viewModel.handleClickFavoriteToken(context, token);
-                                                },
-                                                child: Builder(
-                                                  builder: (context) {
-                                                    final List<double> prices = (token["sparkline_in_7d"]["price"] as List)
-                                                      .map((e) => (e as num).toDouble())
-                                                      .toList();
-                                                
-                                                    final List<double> last24 = prices.length > 24
-                                                      ? prices.sublist(prices.length - 24)
-                                                      : prices;
-                                                    
-                                                    return CryptoSparklineWidget(
-                                                      symbol: token["symbol"].toString().toUpperCase(),
-                                                      width: MediaQuery.of(context).size.width * 0.2,
-                                                      height: 30.0,
-                                                      showYLabel: false,
-                                                      data: last24,
-                                                      increased: token["price_change_24h"] > 0
-                                                    );
-                                                  }
-                                                ),
-                                              )
-                                            ),
-                                            Expanded(
-                                              flex: 25,
-                                              child: ElevatedButton(
-                                                onPressed: () {
-                                                  showModalBottomSheet<int>(
-                                                    context: context,
-                                                    builder: (context) {
-                                                      return StatefulBuilder(
-                                                        builder: (BuildContext modalContext, StateSetter setModalState) {
-                                                          return Container(
-                                                            padding: const EdgeInsets.all(8.0),
-                                                            height: MediaQuery.of(context).size.height * 0.25,
-                                                            decoration: BoxDecoration(
-                                                              color: Theme.of(context).scaffoldBackgroundColor,
-                                                              borderRadius: const BorderRadius.vertical(
-                                                                top: Radius.circular(20.0),
-                                                              ),
-                                                            ),
-                                                            child: Column(
-                                                              children: [
-                                                                // Drag handle
-                                                                Center(
-                                                                  child: Container(
-                                                                    width: 40,
-                                                                    height: 4,
-                                                                    margin: const EdgeInsets.only(bottom: 16),
-                                                                    decoration: BoxDecoration(
-                                                                      color: Colors.grey.shade400,
-                                                                      borderRadius: BorderRadius.circular(2),
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                                Text(
-                                                                  'Display Data',
-                                                                  style: Theme.of(context).textTheme.headlineLarge,
-                                                                ),
-                                                                const SizedBox(height: 16),
-                                                                // Option 1
-                                                                ListTile(
-                                                                  contentPadding: EdgeInsets.zero,
-                                                                  title: Text(
-                                                                    'Last Price',
-                                                                    style: Theme.of(context).textTheme.bodyMedium
-                                                                  ),
-                                                                  trailing: Radio<int>(
-                                                                    value: 1,
-                                                                    groupValue: viewModel.viewType, // Read from parent ViewModel
-                                                                    onChanged: (int? value) {
-                                                                      if (value != null) {
-                                                                        viewModel.viewType = value; // Update parent ViewModel
-                                                                        setModalState(() {}); // Update bottom sheet UI
-                                                                      }
-                                                                    },
-                                                                  ),
-                                                                  onTap: () {
-                                                                    viewModel.viewType = 1;
-                                                                    setModalState(() {});
-                                                                  },
-                                                                ),
-                                                                // Option 2
-                                                                ListTile(
-                                                                  contentPadding: EdgeInsets.zero,
-                                                                  title: Text(
-                                                                    'Percent Change',
-                                                                    style: Theme.of(context).textTheme.bodyMedium
-                                                                  ),
-                                                                  trailing: Radio<int>(
-                                                                    value: 2,
-                                                                    groupValue: viewModel.viewType,
-                                                                    onChanged: (int? value) {
-                                                                      if (value != null) {
-                                                                        viewModel.viewType = value;
-                                                                        setModalState(() {});
-                                                                      }
-                                                                    },
-                                                                  ),
-                                                                  onTap: () {
-                                                                    viewModel.viewType = 2;
-                                                                    setModalState(() {});
-                                                                  },
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          );
-                                                        },
-                                                      );
-                                                    },
-                                                  );
-                                                },
-                                                style: ElevatedButton.styleFrom(
-                                                  backgroundColor: token["price_change_percentage_24h"] >= 0 ? Colors.green : Colors.red, // The background color
-                                                  foregroundColor: Colors.white,
-                                                  padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 0),
-                                                  shape: RoundedRectangleBorder(
-                                                    borderRadius: BorderRadius.circular(6.0), // Adjust the value as needed
+                                                if (viewModel.selectedTokens.contains(token["id"]))
+                                                  Container(
+                                                    color: Colors.blue.withAlpha(50),
+                                                    child: InkWell(
+                                                      onTap: () => viewModel.handleTapFavoriteToken(token["id"]),
+                                                      child: Center(
+                                                        child: Icon(
+                                                          Icons.check_circle,
+                                                          color: Colors.blue,
+                                                          size: 40,
+                                                        ),
+                                                      ),
+                                                    ) 
                                                   ),
-                                                ),
-                                                child: 
-                                                  viewModel.viewType == 2 ? FittedBox(
-                                                    fit: BoxFit.scaleDown,
-                                                    child: Text(
-                                                      '${token["price_change_percentage_24h"] > 0 ? "+" : ""}${AIHelpers.formatDouble(token["price_change_percentage_24h"].toDouble(), 3)}%',
-                                                      style: Theme.of(context).textTheme.bodyMedium
-                                                    ),
-                                                  ) : FittedBox(
-                                                    fit: BoxFit.scaleDown,
-                                                    child: Text(
-                                                      '\$${AIHelpers.formatDouble(token["current_price"].toDouble(), 10)}',
-                                                      style: Theme.of(context).textTheme.bodyMedium,
-                                                    ),
-                                                  )
-                                              ),
+                                              ],
                                             ),
-                                          ],
-                                        ),
-                                        Divider(
-                                          color: Colors.grey.shade800,
-                                          thickness: 0.5,
-                                        )
-                                      ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ],
                                 ],
-                              ),
-                            );
+                              );
                           }
                         )
                       ),

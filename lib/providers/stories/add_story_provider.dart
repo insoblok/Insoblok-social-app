@@ -209,8 +209,8 @@ class AddStoryProvider extends InSoBlokViewModel {
           text: quillDescription,
           category: isVoteImage ? 'vote' : 'regular',
           placeId: placeId,
-          updateDate: DateTime.now(),
-          timestamp: DateTime.now(),
+          updatedAt: DateTime.now(),
+          createdAt: DateTime.now(),
           status: isPrivate ? 'private' : 'public',
           allowUsers: allowUsers,
         ).copyWith(medias: validMedias);

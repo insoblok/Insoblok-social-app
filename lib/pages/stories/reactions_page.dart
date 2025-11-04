@@ -10,6 +10,8 @@ import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/widgets/widgets.dart';
 import 'package:video_player/video_player.dart';
 import 'package:video_thumbnail/video_thumbnail.dart';
+import 'package:insoblok/services/services.dart';
+
 
 class ReactionsPage extends StatelessWidget {
   final StoryModel story;
@@ -228,11 +230,11 @@ class _GridVideoPlayerState extends State<GridVideoPlayer>
   Future<void> _init() async {
     try {
       final src = await _resolvePlayableUri(widget.url.trim());
+      logger.d("This is reactions page ${src.toFilePath()}");
 
       _vc = src.scheme.startsWith('http')
           ? VideoPlayerController.networkUrl(src)
           : VideoPlayerController.file(File(src.toFilePath()));
-
       await _vc!.initialize();
       await _vc!.setLooping(widget.loop);
       await _vc!.setVolume(0.0); // muted for grid tiles

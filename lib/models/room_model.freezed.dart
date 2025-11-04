@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$RoomModel {
 
- String? get id; String? get userId; List<String?>? get userIds; DateTime? get updateDate; DateTime? get timestamp; String? get content; String? get statusSender; String? get statusReceiver; bool? get isGroup;
+ String? get id; String? get userId; String? get type; List<String?>? get userIds; DateTime? get updatedAt; DateTime? get timestamp; String? get status; List<String>? get archivedBy; List<String>? get deletedBy; String? get content; String? get statusSender; String? get statusReceiver; bool? get isGroup; String? get lastMessage;
 /// Create a copy of RoomModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $RoomModelCopyWith<RoomModel> get copyWith => _$RoomModelCopyWithImpl<RoomModel>
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is RoomModel&&(identical(other.id, id) || other.id == id)&&(identical(other.userId, userId) || other.userId == userId)&&const DeepCollectionEquality().equals(other.userIds, userIds)&&(identical(other.updateDate, updateDate) || other.updateDate == updateDate)&&(identical(other.timestamp, timestamp) || other.timestamp == timestamp)&&(identical(other.content, content) || other.content == content)&&(identical(other.statusSender, statusSender) || other.statusSender == statusSender)&&(identical(other.statusReceiver, statusReceiver) || other.statusReceiver == statusReceiver)&&(identical(other.isGroup, isGroup) || other.isGroup == isGroup));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is RoomModel&&(identical(other.id, id) || other.id == id)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.type, type) || other.type == type)&&const DeepCollectionEquality().equals(other.userIds, userIds)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.timestamp, timestamp) || other.timestamp == timestamp)&&(identical(other.status, status) || other.status == status)&&const DeepCollectionEquality().equals(other.archivedBy, archivedBy)&&const DeepCollectionEquality().equals(other.deletedBy, deletedBy)&&(identical(other.content, content) || other.content == content)&&(identical(other.statusSender, statusSender) || other.statusSender == statusSender)&&(identical(other.statusReceiver, statusReceiver) || other.statusReceiver == statusReceiver)&&(identical(other.isGroup, isGroup) || other.isGroup == isGroup)&&(identical(other.lastMessage, lastMessage) || other.lastMessage == lastMessage));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,userId,const DeepCollectionEquality().hash(userIds),updateDate,timestamp,content,statusSender,statusReceiver,isGroup);
+int get hashCode => Object.hash(runtimeType,id,userId,type,const DeepCollectionEquality().hash(userIds),updatedAt,timestamp,status,const DeepCollectionEquality().hash(archivedBy),const DeepCollectionEquality().hash(deletedBy),content,statusSender,statusReceiver,isGroup,lastMessage);
 
 @override
 String toString() {
-  return 'RoomModel(id: $id, userId: $userId, userIds: $userIds, updateDate: $updateDate, timestamp: $timestamp, content: $content, statusSender: $statusSender, statusReceiver: $statusReceiver, isGroup: $isGroup)';
+  return 'RoomModel(id: $id, userId: $userId, type: $type, userIds: $userIds, updatedAt: $updatedAt, timestamp: $timestamp, status: $status, archivedBy: $archivedBy, deletedBy: $deletedBy, content: $content, statusSender: $statusSender, statusReceiver: $statusReceiver, isGroup: $isGroup, lastMessage: $lastMessage)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $RoomModelCopyWith<$Res>  {
   factory $RoomModelCopyWith(RoomModel value, $Res Function(RoomModel) _then) = _$RoomModelCopyWithImpl;
 @useResult
 $Res call({
- String? id, String? userId, List<String?>? userIds, DateTime? updateDate, DateTime? timestamp, String? content, String? statusSender, String? statusReceiver, bool? isGroup
+ String? id, String? userId, String? type, List<String?>? userIds, DateTime? updatedAt, DateTime? timestamp, String? status, List<String>? archivedBy, List<String>? deletedBy, String? content, String? statusSender, String? statusReceiver, bool? isGroup, String? lastMessage
 });
 
 
@@ -65,18 +65,23 @@ class _$RoomModelCopyWithImpl<$Res>
 
 /// Create a copy of RoomModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? userId = freezed,Object? userIds = freezed,Object? updateDate = freezed,Object? timestamp = freezed,Object? content = freezed,Object? statusSender = freezed,Object? statusReceiver = freezed,Object? isGroup = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? userId = freezed,Object? type = freezed,Object? userIds = freezed,Object? updatedAt = freezed,Object? timestamp = freezed,Object? status = freezed,Object? archivedBy = freezed,Object? deletedBy = freezed,Object? content = freezed,Object? statusSender = freezed,Object? statusReceiver = freezed,Object? isGroup = freezed,Object? lastMessage = freezed,}) {
   return _then(_self.copyWith(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String?,userId: freezed == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
+as String?,type: freezed == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as String?,userIds: freezed == userIds ? _self.userIds : userIds // ignore: cast_nullable_to_non_nullable
-as List<String?>?,updateDate: freezed == updateDate ? _self.updateDate : updateDate // ignore: cast_nullable_to_non_nullable
+as List<String?>?,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,timestamp: freezed == timestamp ? _self.timestamp : timestamp // ignore: cast_nullable_to_non_nullable
-as DateTime?,content: freezed == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
+as DateTime?,status: freezed == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
+as String?,archivedBy: freezed == archivedBy ? _self.archivedBy : archivedBy // ignore: cast_nullable_to_non_nullable
+as List<String>?,deletedBy: freezed == deletedBy ? _self.deletedBy : deletedBy // ignore: cast_nullable_to_non_nullable
+as List<String>?,content: freezed == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
 as String?,statusSender: freezed == statusSender ? _self.statusSender : statusSender // ignore: cast_nullable_to_non_nullable
 as String?,statusReceiver: freezed == statusReceiver ? _self.statusReceiver : statusReceiver // ignore: cast_nullable_to_non_nullable
 as String?,isGroup: freezed == isGroup ? _self.isGroup : isGroup // ignore: cast_nullable_to_non_nullable
-as bool?,
+as bool?,lastMessage: freezed == lastMessage ? _self.lastMessage : lastMessage // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 
@@ -161,10 +166,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? id,  String? userId,  List<String?>? userIds,  DateTime? updateDate,  DateTime? timestamp,  String? content,  String? statusSender,  String? statusReceiver,  bool? isGroup)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? id,  String? userId,  String? type,  List<String?>? userIds,  DateTime? updatedAt,  DateTime? timestamp,  String? status,  List<String>? archivedBy,  List<String>? deletedBy,  String? content,  String? statusSender,  String? statusReceiver,  bool? isGroup,  String? lastMessage)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _RoomModel() when $default != null:
-return $default(_that.id,_that.userId,_that.userIds,_that.updateDate,_that.timestamp,_that.content,_that.statusSender,_that.statusReceiver,_that.isGroup);case _:
+return $default(_that.id,_that.userId,_that.type,_that.userIds,_that.updatedAt,_that.timestamp,_that.status,_that.archivedBy,_that.deletedBy,_that.content,_that.statusSender,_that.statusReceiver,_that.isGroup,_that.lastMessage);case _:
   return orElse();
 
 }
@@ -182,10 +187,10 @@ return $default(_that.id,_that.userId,_that.userIds,_that.updateDate,_that.times
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? id,  String? userId,  List<String?>? userIds,  DateTime? updateDate,  DateTime? timestamp,  String? content,  String? statusSender,  String? statusReceiver,  bool? isGroup)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? id,  String? userId,  String? type,  List<String?>? userIds,  DateTime? updatedAt,  DateTime? timestamp,  String? status,  List<String>? archivedBy,  List<String>? deletedBy,  String? content,  String? statusSender,  String? statusReceiver,  bool? isGroup,  String? lastMessage)  $default,) {final _that = this;
 switch (_that) {
 case _RoomModel():
-return $default(_that.id,_that.userId,_that.userIds,_that.updateDate,_that.timestamp,_that.content,_that.statusSender,_that.statusReceiver,_that.isGroup);case _:
+return $default(_that.id,_that.userId,_that.type,_that.userIds,_that.updatedAt,_that.timestamp,_that.status,_that.archivedBy,_that.deletedBy,_that.content,_that.statusSender,_that.statusReceiver,_that.isGroup,_that.lastMessage);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -202,10 +207,10 @@ return $default(_that.id,_that.userId,_that.userIds,_that.updateDate,_that.times
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? id,  String? userId,  List<String?>? userIds,  DateTime? updateDate,  DateTime? timestamp,  String? content,  String? statusSender,  String? statusReceiver,  bool? isGroup)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? id,  String? userId,  String? type,  List<String?>? userIds,  DateTime? updatedAt,  DateTime? timestamp,  String? status,  List<String>? archivedBy,  List<String>? deletedBy,  String? content,  String? statusSender,  String? statusReceiver,  bool? isGroup,  String? lastMessage)?  $default,) {final _that = this;
 switch (_that) {
 case _RoomModel() when $default != null:
-return $default(_that.id,_that.userId,_that.userIds,_that.updateDate,_that.timestamp,_that.content,_that.statusSender,_that.statusReceiver,_that.isGroup);case _:
+return $default(_that.id,_that.userId,_that.type,_that.userIds,_that.updatedAt,_that.timestamp,_that.status,_that.archivedBy,_that.deletedBy,_that.content,_that.statusSender,_that.statusReceiver,_that.isGroup,_that.lastMessage);case _:
   return null;
 
 }
@@ -215,13 +220,14 @@ return $default(_that.id,_that.userId,_that.userIds,_that.updateDate,_that.times
 
 /// @nodoc
 
-@JsonSerializable(fieldRename: FieldRename.snake)
+@JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
 class _RoomModel implements RoomModel {
-   _RoomModel({this.id, this.userId, final  List<String?>? userIds, this.updateDate, this.timestamp, this.content, this.statusSender, this.statusReceiver, this.isGroup}): _userIds = userIds;
+   _RoomModel({this.id, this.userId, this.type, final  List<String?>? userIds, this.updatedAt, this.timestamp, this.status, final  List<String>? archivedBy, final  List<String>? deletedBy, this.content, this.statusSender, this.statusReceiver, this.isGroup, this.lastMessage}): _userIds = userIds,_archivedBy = archivedBy,_deletedBy = deletedBy;
   factory _RoomModel.fromJson(Map<String, dynamic> json) => _$RoomModelFromJson(json);
 
 @override final  String? id;
 @override final  String? userId;
+@override final  String? type;
  final  List<String?>? _userIds;
 @override List<String?>? get userIds {
   final value = _userIds;
@@ -231,12 +237,32 @@ class _RoomModel implements RoomModel {
   return EqualUnmodifiableListView(value);
 }
 
-@override final  DateTime? updateDate;
+@override final  DateTime? updatedAt;
 @override final  DateTime? timestamp;
+@override final  String? status;
+ final  List<String>? _archivedBy;
+@override List<String>? get archivedBy {
+  final value = _archivedBy;
+  if (value == null) return null;
+  if (_archivedBy is EqualUnmodifiableListView) return _archivedBy;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(value);
+}
+
+ final  List<String>? _deletedBy;
+@override List<String>? get deletedBy {
+  final value = _deletedBy;
+  if (value == null) return null;
+  if (_deletedBy is EqualUnmodifiableListView) return _deletedBy;
+  // ignore: implicit_dynamic_type
+  return EqualUnmodifiableListView(value);
+}
+
 @override final  String? content;
 @override final  String? statusSender;
 @override final  String? statusReceiver;
 @override final  bool? isGroup;
+@override final  String? lastMessage;
 
 /// Create a copy of RoomModel
 /// with the given fields replaced by the non-null parameter values.
@@ -251,16 +277,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RoomModel&&(identical(other.id, id) || other.id == id)&&(identical(other.userId, userId) || other.userId == userId)&&const DeepCollectionEquality().equals(other._userIds, _userIds)&&(identical(other.updateDate, updateDate) || other.updateDate == updateDate)&&(identical(other.timestamp, timestamp) || other.timestamp == timestamp)&&(identical(other.content, content) || other.content == content)&&(identical(other.statusSender, statusSender) || other.statusSender == statusSender)&&(identical(other.statusReceiver, statusReceiver) || other.statusReceiver == statusReceiver)&&(identical(other.isGroup, isGroup) || other.isGroup == isGroup));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RoomModel&&(identical(other.id, id) || other.id == id)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.type, type) || other.type == type)&&const DeepCollectionEquality().equals(other._userIds, _userIds)&&(identical(other.updatedAt, updatedAt) || other.updatedAt == updatedAt)&&(identical(other.timestamp, timestamp) || other.timestamp == timestamp)&&(identical(other.status, status) || other.status == status)&&const DeepCollectionEquality().equals(other._archivedBy, _archivedBy)&&const DeepCollectionEquality().equals(other._deletedBy, _deletedBy)&&(identical(other.content, content) || other.content == content)&&(identical(other.statusSender, statusSender) || other.statusSender == statusSender)&&(identical(other.statusReceiver, statusReceiver) || other.statusReceiver == statusReceiver)&&(identical(other.isGroup, isGroup) || other.isGroup == isGroup)&&(identical(other.lastMessage, lastMessage) || other.lastMessage == lastMessage));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,id,userId,const DeepCollectionEquality().hash(_userIds),updateDate,timestamp,content,statusSender,statusReceiver,isGroup);
+int get hashCode => Object.hash(runtimeType,id,userId,type,const DeepCollectionEquality().hash(_userIds),updatedAt,timestamp,status,const DeepCollectionEquality().hash(_archivedBy),const DeepCollectionEquality().hash(_deletedBy),content,statusSender,statusReceiver,isGroup,lastMessage);
 
 @override
 String toString() {
-  return 'RoomModel(id: $id, userId: $userId, userIds: $userIds, updateDate: $updateDate, timestamp: $timestamp, content: $content, statusSender: $statusSender, statusReceiver: $statusReceiver, isGroup: $isGroup)';
+  return 'RoomModel(id: $id, userId: $userId, type: $type, userIds: $userIds, updatedAt: $updatedAt, timestamp: $timestamp, status: $status, archivedBy: $archivedBy, deletedBy: $deletedBy, content: $content, statusSender: $statusSender, statusReceiver: $statusReceiver, isGroup: $isGroup, lastMessage: $lastMessage)';
 }
 
 
@@ -271,7 +297,7 @@ abstract mixin class _$RoomModelCopyWith<$Res> implements $RoomModelCopyWith<$Re
   factory _$RoomModelCopyWith(_RoomModel value, $Res Function(_RoomModel) _then) = __$RoomModelCopyWithImpl;
 @override @useResult
 $Res call({
- String? id, String? userId, List<String?>? userIds, DateTime? updateDate, DateTime? timestamp, String? content, String? statusSender, String? statusReceiver, bool? isGroup
+ String? id, String? userId, String? type, List<String?>? userIds, DateTime? updatedAt, DateTime? timestamp, String? status, List<String>? archivedBy, List<String>? deletedBy, String? content, String? statusSender, String? statusReceiver, bool? isGroup, String? lastMessage
 });
 
 
@@ -288,18 +314,23 @@ class __$RoomModelCopyWithImpl<$Res>
 
 /// Create a copy of RoomModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? userId = freezed,Object? userIds = freezed,Object? updateDate = freezed,Object? timestamp = freezed,Object? content = freezed,Object? statusSender = freezed,Object? statusReceiver = freezed,Object? isGroup = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? userId = freezed,Object? type = freezed,Object? userIds = freezed,Object? updatedAt = freezed,Object? timestamp = freezed,Object? status = freezed,Object? archivedBy = freezed,Object? deletedBy = freezed,Object? content = freezed,Object? statusSender = freezed,Object? statusReceiver = freezed,Object? isGroup = freezed,Object? lastMessage = freezed,}) {
   return _then(_RoomModel(
 id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
 as String?,userId: freezed == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
+as String?,type: freezed == type ? _self.type : type // ignore: cast_nullable_to_non_nullable
 as String?,userIds: freezed == userIds ? _self._userIds : userIds // ignore: cast_nullable_to_non_nullable
-as List<String?>?,updateDate: freezed == updateDate ? _self.updateDate : updateDate // ignore: cast_nullable_to_non_nullable
+as List<String?>?,updatedAt: freezed == updatedAt ? _self.updatedAt : updatedAt // ignore: cast_nullable_to_non_nullable
 as DateTime?,timestamp: freezed == timestamp ? _self.timestamp : timestamp // ignore: cast_nullable_to_non_nullable
-as DateTime?,content: freezed == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
+as DateTime?,status: freezed == status ? _self.status : status // ignore: cast_nullable_to_non_nullable
+as String?,archivedBy: freezed == archivedBy ? _self._archivedBy : archivedBy // ignore: cast_nullable_to_non_nullable
+as List<String>?,deletedBy: freezed == deletedBy ? _self._deletedBy : deletedBy // ignore: cast_nullable_to_non_nullable
+as List<String>?,content: freezed == content ? _self.content : content // ignore: cast_nullable_to_non_nullable
 as String?,statusSender: freezed == statusSender ? _self.statusSender : statusSender // ignore: cast_nullable_to_non_nullable
 as String?,statusReceiver: freezed == statusReceiver ? _self.statusReceiver : statusReceiver // ignore: cast_nullable_to_non_nullable
 as String?,isGroup: freezed == isGroup ? _self.isGroup : isGroup // ignore: cast_nullable_to_non_nullable
-as bool?,
+as bool?,lastMessage: freezed == lastMessage ? _self.lastMessage : lastMessage // ignore: cast_nullable_to_non_nullable
+as String?,
   ));
 }
 

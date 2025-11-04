@@ -6,7 +6,7 @@ import 'package:insoblok/routers/router.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/routers/routers.dart';
-
+import 'package:insoblok/locator.dart';
 
 class DashboardProvider extends InSoBlokViewModel {
   late BuildContext _context;
@@ -48,6 +48,8 @@ class DashboardProvider extends InSoBlokViewModel {
   PageController get pageController => _pageController;
   int _currentPage = 0;
 
+  final MediaPickerService mediaPickerService = locator<MediaPickerService>(); 
+
   void init(BuildContext context) async {
     this.context = context;
     _pageController.addListener(() {
@@ -68,6 +70,10 @@ class DashboardProvider extends InSoBlokViewModel {
       _stories.value = sList;
       isUpdated = true;
     });
+  }
+
+  void handleChangeStory(index) {
+    mediaPickerService.currentStory = stories[index];
   }
 
   final List<NewsModel> _allNewses = [];

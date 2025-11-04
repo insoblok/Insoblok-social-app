@@ -19,6 +19,8 @@ import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/services/deep_ar_plus_service.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
+import 'package:insoblok/services/services.dart';
+
 
 final kDeeparEffectData = [
   {'title': 'Fire',                'assets': 'assets/effects/filters/fire_effect/Fire_Effect.deepar'},
@@ -70,11 +72,14 @@ class _ReactionVideoDetailPageState extends State<ReactionVideoDetailPage> {
   static const _iosKey     = DEEPAR_IOS_KEY;
 
   String get _currentVideoPath => _editedVideo?.path ?? widget.videoPath;
+  // final String _currentVideoPath = '/data/data/insoblok.social.app/cache/video_1.mp4';
 
   @override
   void initState() {
     super.initState();
     _initDeepAr();
+
+    logger.d("This is reaction video detail page. ${widget.videoPath}");
   }
 
   Future<void> _initDeepAr() async {

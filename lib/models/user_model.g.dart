@@ -50,7 +50,9 @@ _UserModel _$UserModelFromJson(Map<String, dynamic> json) => _UserModel(
           ?.map((e) => e as String)
           .toList(),
   galleries:
-      (json['galleries'] as List<dynamic>?)?.map((e) => e as String).toList(),
+      (json['galleries'] as List<dynamic>?)
+          ?.map((e) => GalleryModel.fromJson(e as Map<String, dynamic>))
+          .toList(),
   actions:
       (json['actions'] as List<dynamic>?)
           ?.map((e) => UserActionModel.fromJson(e as Map<String, dynamic>))
@@ -106,6 +108,35 @@ Map<String, dynamic> _$UserModelToJson(_UserModel instance) =>
       'actions': instance.actions,
       'favorite_tokens': instance.favoriteTokens,
       'socials': instance.socials,
+    };
+
+_GalleryModel _$GalleryModelFromJson(Map<String, dynamic> json) =>
+    _GalleryModel(
+      media: json['media'] as String?,
+      description: json['description'] as String?,
+      createdAt:
+          json['created_at'] == null
+              ? null
+              : DateTime.parse(json['created_at'] as String),
+      updatedAt:
+          json['updated_at'] == null
+              ? null
+              : DateTime.parse(json['updated_at'] as String),
+      deletedAt:
+          json['deleted_at'] == null
+              ? null
+              : DateTime.parse(json['deleted_at'] as String),
+      status: json['status'] as String?,
+    );
+
+Map<String, dynamic> _$GalleryModelToJson(_GalleryModel instance) =>
+    <String, dynamic>{
+      'media': instance.media,
+      'description': instance.description,
+      'created_at': instance.createdAt?.toIso8601String(),
+      'updated_at': instance.updatedAt?.toIso8601String(),
+      'deleted_at': instance.deletedAt?.toIso8601String(),
+      'status': instance.status,
     };
 
 _UserActionModel _$UserActionModelFromJson(Map<String, dynamic> json) =>

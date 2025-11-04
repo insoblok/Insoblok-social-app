@@ -10,25 +10,30 @@ import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
+import 'package:insoblok/enums/enums.dart';
 
 extension MessageModelExt on MessageModel {
   Widget item(BuildContext context, {required UserModel chatUser}) {
     final isMe = senderId == AuthHelper.user?.id;
     Widget result = Container();
-    var type = MessageModelTypeExt.fromString(this.type ?? 'text');
+    // var type = MessageModelTypeExt.fromString(this.type ?? 'text');
     switch (type) {
-      case MessageModelType.text:
+      case MessageType.text:
         result = _textContent(context);
-      case MessageModelType.image:
+      case MessageType.image:
         result = _imageContent();
-      case MessageModelType.video:
-        result = VideoContent(videoUrl: url ?? 'https://');
-      case MessageModelType.gif:
+      case MessageType.video:
+        result = VideoContent(videoUrl: medias?.first ?? 'https://');
+      case MessageType.gif:
         result = _gifContent();
-      case MessageModelType.audio:
+      case MessageType.audio:
         result = Container();
-      case MessageModelType.paid:
+      case MessageType.paid:
         result = _paidContent();
+      case MessageType.file:
+        break;
+      default:
+        break;
     }
 
     return Align(
@@ -91,8 +96,8 @@ extension MessageModelExt on MessageModel {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    (type == MessageModelType.text ||
-                            type == MessageModelType.paid)
+                    (type == MessageType.text ||
+                            type == MessageType.paid)
                         ? Container(
                           constraints: BoxConstraints(
                             maxWidth: MediaQuery.of(context).size.width - 120.0,
@@ -201,7 +206,7 @@ extension MessageModelExt on MessageModel {
   Widget _imageContent() {
     return ClipRRect(
       borderRadius: BorderRadius.circular(16.0),
-      child: AIImage(url, width: 180.0, height: 240.0),
+      child: AIImage(medias?.first, width: 180.0, height: 240.0),
     );
   }
 
@@ -250,7 +255,7 @@ extension MessageModelExt on MessageModel {
   Widget _gifContent() {
     return ClipRRect(
       borderRadius: BorderRadius.circular(8.0),
-      child: GifView.network(url ?? 'https://', width: 180.0),
+      child: GifView.network(medias?.first ?? 'https://', width: 180.0),
     );
   }
 
@@ -266,25 +271,24 @@ extension MessageModelExt on MessageModel {
   }
 }
 
-enum MessageModelType { text, image, video, gif, audio, paid }
 
-extension MessageModelTypeExt on MessageModelType {
-  static MessageModelType fromString(String data) {
+extension MessageModelTypeExt on MessageType {
+  static MessageType fromString(String data) {
     switch (data) {
       case 'text':
-        return MessageModelType.text;
+        return MessageType.text;
       case 'image':
-        return MessageModelType.image;
+        return MessageType.image;
       case 'video':
-        return MessageModelType.video;
+        return MessageType.video;
       case 'audio':
-        return MessageModelType.audio;
+        return MessageType.audio;
       case 'paid':
-        return MessageModelType.paid;
+        return MessageType.paid;
       case 'gif':
-        return MessageModelType.gif;
+        return MessageType.gif;
     }
-    return MessageModelType.text;
+    return MessageType.text;
   }
 }
 
@@ -394,7 +398,7 @@ extension RoomModelExt on RoomModel {
       'status_sender': statusSender,
       'status_receiver': statusReceiver,
       'is_group': isGroup,
-      'update_date': updateDate?.toUtc().toIso8601String(),
+      'updated_at': updatedAt?.toUtc().toIso8601String(),
       'timestamp': timestamp?.toUtc().toIso8601String(),
     };
     result.removeWhere((k, v) => v == null);

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:insoblok/extensions/extensions.dart';
-import 'package:flutter_google_places_sdk/flutter_google_places_sdk.dart';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/pages/pages.dart';
@@ -20,7 +21,6 @@ class AccountProvider extends InSoBlokViewModel {
 
   final controller = ScrollController();
 
-  
   @override
   void dispose() {
     super.dispose();
@@ -57,7 +57,6 @@ class AccountProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-
   // Optional helper if you want a toggle
   void toggleRRCImage() => setRRCImage(!_isRRCImage);
 
@@ -75,10 +74,16 @@ class AccountProvider extends InSoBlokViewModel {
       (accountUser?.views ?? []).contains(AuthHelper.user?.id);
 
   final Web3Service _web3Service = locator<Web3Service>();
-  
+
+  List<String> selectedItems = [];
+  bool isSelectMode = false;
+
   void init(BuildContext context, {UserModel? model}) async {
     this.context = context;
     accountUser = model ?? AuthHelper.user;
+
+    logger.d("this is the account user");
+    logger.d(accountUser?.toJson());
 
     _isRRCImage = !enabled;
 
@@ -87,12 +92,55 @@ class AccountProvider extends InSoBlokViewModel {
     await fetchFollowings();
     await getGalleries();
     if (!isMe) await updateViews();
+    // logger.d("This is before migrations");
+    // await migrateUsersCollection();
+  }
+
+  Future<void> migrateUsersCollection() async {
+    final collectionRef = FirebaseFirestore.instance.collection('story');
+
+    // Get all documents
+    final querySnapshot = await collectionRef.get();
+
+    final batch = FirebaseFirestore.instance.batch();
+    int processedCount = 0;
+    int batchCount = 0;
+
+    for (final doc in querySnapshot.docs) {
+      final data = doc.data();
+
+      // Only process documents that have the 'timestamp' field
+      if (data.containsKey('timestamp') && !data.containsKey('created_at')) {
+        batch.update(doc.reference, {
+          'created_at': data['timestamp'],
+          'updated_at': data['update_date'],
+          'timestamp': FieldValue.delete(),
+        });
+        logger.d("This is updating data $data");
+        processedCount++;
+      }
+
+      // Firestore batches are limited to 500 operations
+      if (processedCount % 500 == 0 && processedCount > 0) {
+        await batch.commit();
+        batchCount++;
+        print(
+          'Committed batch $batchCount, processed $processedCount documents',
+        );
+      }
+    }
+
+    // Commit any remaining operations
+    if (processedCount % 500 != 0) {
+      await batch.commit();
+      batchCount++;
+    }
   }
 
   final List<StoryModel> stories = [];
-  
+
   int get userRank => accountService.userRankIndex;
-  
+
   void setPageIndex(int index) {
     pageIndex = index;
     notifyListeners();
@@ -113,8 +161,11 @@ class AccountProvider extends InSoBlokViewModel {
     await runBusyFuture(() async {
       try {
         logger.d(accountUser?.id);
-        var s = await storyService.getStoriesById(accountUser!.id!);
-
+        logger.d(AuthHelper.user?.id ?? "");
+        var s = await storyService.getStoriesById(accountUser?.id ?? "");
+        for (var story in s) {
+          logger.d("This is fetched stories ${story.id}, ${story.medias}");
+        }
         if (s.isNotEmpty) {
           stories.clear();
           stories.addAll(s);
@@ -190,7 +241,6 @@ class AccountProvider extends InSoBlokViewModel {
   }
 
   Future<void> gotoNewChat() async {
-
     const gradient = LinearGradient(
       begin: Alignment.centerLeft,
       end: Alignment.centerRight,
@@ -199,10 +249,10 @@ class AccountProvider extends InSoBlokViewModel {
         Color(0xFFC739EB), // purple
       ],
     );
-    
+
     RoomModel? existedRoom;
     try {
-      existedRoom = await roomService.getRoomByChatUesr(id: accountUser!.id!);
+      existedRoom = await roomService.getRoomByChatUser(id: accountUser!.id!);
       if (existedRoom == null) {
         var dialog = await showDialog<bool>(
           context: context,
@@ -267,11 +317,11 @@ class AccountProvider extends InSoBlokViewModel {
           userId: user?.id,
           userIds: [user?.id, accountUser!.id!],
           content: '${user?.fullName} have created a room',
-          updateDate: DateTime.now(),
+          updatedAt: DateTime.now(),
           timestamp: DateTime.now(),
         );
         await roomService.createRoom(room);
-        existedRoom = await roomService.getRoomByChatUesr(id: accountUser!.id!);
+        existedRoom = await roomService.getRoomByChatUser(id: accountUser!.id!);
         messageService.setInitialTypeStatus(existedRoom!.id!, accountUser!.id!);
       }
     } catch (e) {
@@ -286,7 +336,7 @@ class AccountProvider extends InSoBlokViewModel {
     } else {
       if (existedRoom != null) {
         _web3Service.chatRoom = existedRoom;
-        _web3Service.chatUser = accountUser ?? UserModel();        
+        _web3Service.chatUser = accountUser ?? UserModel();
         await Routers.goToMessagePage(
           context,
           MessagePageData(room: existedRoom, chatUser: accountUser!),
@@ -354,8 +404,8 @@ class AccountProvider extends InSoBlokViewModel {
     }
   }
 
-  final List<String> _galleries = [];
-  List<String> get galleries => _galleries;
+  final List<GalleryModel> _galleries = [];
+  List<GalleryModel> get galleries => _galleries;
 
   bool _isFetchingGallery = false;
   bool get isFetchingGallery => _isFetchingGallery;
@@ -372,9 +422,8 @@ class AccountProvider extends InSoBlokViewModel {
     try {
       _galleries.clear();
       var gs = await FirebaseHelper.service.fetchGalleries(accountUser!.id!);
-      
-      logger.d(gs);
 
+      logger.d("fetched galleries are $gs");
 
       _galleries.addAll(gs);
       notifyListeners();
@@ -385,7 +434,7 @@ class AccountProvider extends InSoBlokViewModel {
       isFetchingGallery = false;
     }
   }
-  
+
   bool _isCreatingRoom = false;
   bool get isCreatingRoom => _isCreatingRoom;
   set isCreatingRoom(bool flag) {
@@ -407,7 +456,7 @@ class AccountProvider extends InSoBlokViewModel {
       isCreatingRoom = true;
       await runBusyFuture(() async {
         try {
-          var existedRoom = await roomService.getRoomByChatUesr(
+          var existedRoom = await roomService.getRoomByChatUser(
             id: accountUser!.id!,
           );
           if (existedRoom == null) {
@@ -415,17 +464,17 @@ class AccountProvider extends InSoBlokViewModel {
               userId: user?.id,
               userIds: [user?.id, accountUser?.id],
               content: '${user?.firstName} have created a room',
-              updateDate: DateTime.now(),
+              updatedAt: DateTime.now(),
               timestamp: DateTime.now(),
             );
             logger.d(room.toJson());
             await roomService.createRoom(room);
-            existedRoom = await roomService.getRoomByChatUesr(
+            existedRoom = await roomService.getRoomByChatUser(
               id: accountUser!.id!,
             );
           }
           _web3Service.chatRoom = existedRoom ?? RoomModel();
-          _web3Service.chatUser = accountUser ?? UserModel();   
+          _web3Service.chatUser = accountUser ?? UserModel();
           Routers.goToMessagePage(
             context,
             MessagePageData(room: existedRoom!, chatUser: accountUser!),
@@ -448,4 +497,67 @@ class AccountProvider extends InSoBlokViewModel {
     Routers.goToAccountWalletPage(context);
   }
 
+  Future<void> handleClickDeleteGallery() async {
+    bool result = await accountService.removeGalleries(
+      selectedItems,
+      AuthHelper.user!,
+    );
+    if (result) {
+      galleries.removeWhere((element) => selectedItems.contains(element.media));
+      selectedItems.clear();
+      isSelectMode = false;
+      notifyListeners();
+      AIHelpers.showToast(msg: 'Galleries deleted successfully');
+    } else {
+      AIHelpers.showToast(msg: "Failed to delete galleries");
+    }
+  }
+
+  void handleLongPress(String url) {
+    isSelectMode = true;
+    selectedItems.add(url);
+    notifyListeners();
+  }
+
+  void handleClickGallery(String url) {
+    if (isSelectMode) {
+      if (selectedItems.contains(url)) {
+        selectedItems.remove(url);
+        if (selectedItems.isEmpty) {
+          isSelectMode = false;
+        }
+      } else {
+        selectedItems.add(url);
+      }
+      notifyListeners();
+    } else {
+      AIHelpers.goToDetailView(
+        context,
+        medias: [url],
+        index: 0,
+        storyID: '',
+        storyUser: '',
+      );
+    }
+  }
+
+  Future<void> handleClickDeleteStories() async {
+    bool result = await accountService.removeStories(
+      selectedItems,
+      AuthHelper.user!,
+    );
+    if (result) {
+      stories.removeWhere((element) => selectedItems.contains(element.id));
+      selectedItems.clear();
+      isSelectMode = false;
+      notifyListeners();
+      AIHelpers.showToast(msg: 'Stories deleted successfully');
+    }
+  }
+
+  void resetSelection() {
+    isSelectMode = false;
+    selectedItems.clear();
+    notifyListeners();
+  }
 }

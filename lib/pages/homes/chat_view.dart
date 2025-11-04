@@ -8,41 +8,69 @@ import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
+import 'package:insoblok/pages/pages.dart';
 
 class ChatView extends StatelessWidget {
   const ChatView({super.key});
 
   @override
   Widget build(BuildContext context) {
+    logger.d("This is build of chat view");
     return ViewModelBuilder<ChatProvider>.reactive(
       viewModelBuilder: () => ChatProvider(),
       onViewModelReady: (viewModel) => viewModel.init(context),
       builder: (context, viewModel, _) {
         return Scaffold(
           appBar: AppBar(
-            leading: AppLeadingView(),
-            title: AITextField(
-              prefixIcon: Icon(Icons.search),
-              hintText: "Search people, rooms, etc ...",
-              focusedColor: Colors.grey,
-            ),
-            actions: [
-              IconButton(
-                onPressed: () => Routers.goToMessageSettingPage(context),
-                icon: AIImage(
-                  AIImages.icSetting,
-                  width: 24.0,
-                  height: 24.0,
-                  color: Colors.white,
+            leading: viewModel.isSelectionMode 
+              ? IconButton(
+                  icon: Icon(Icons.close),
+                  onPressed: () => viewModel.clearSelection(),
+                )
+              : AppLeadingView(),
+            title: viewModel.isSelectionMode
+              ? Text('${viewModel.selectedRoomIds.length} selected')
+              : AITextField(
+                  prefixIcon: Icon(Icons.search),
+                  hintText: "Search people, rooms, etc ...",
+                  focusedColor: Colors.grey,
                 ),
-              ),
-            ],
+            actions: viewModel.isSelectionMode
+              ? [
+                viewModel.isFirstSelectedRoomMuted ? IconButton(
+                  icon: Icon(Icons.volume_up),
+                  onPressed: () => viewModel.unMuteSelectedRooms()
+                ) :
+                  IconButton(
+                    icon: Icon(Icons.volume_off),
+                    onPressed: () => viewModel.muteSelectedRooms(),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.delete),
+                    onPressed: () => viewModel.deleteSelectedRooms(),
+                  ),
+                  IconButton(
+                    icon: Icon(Icons.archive),
+                    onPressed: () => viewModel.archiveSelectedRooms(),
+                  ),
+                ]
+              : [
+                  IconButton(
+                    onPressed: () => Routers.goToMessageSettingPage(context),
+                    icon: AIImage(
+                      AIImages.icSetting,
+                      width: 24.0,
+                      height: 24.0,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
           ),
           body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 0.0),
             child: viewModel.isBusy
                 ? Center(child: Loader(size: 60))
-                : (viewModel.sortedRooms.isEmpty && viewModel.suggestedUsers.isEmpty)
+                : (viewModel.activeRooms.isEmpty && viewModel.suggestedUsers.isEmpty)
                     ? Center(
                         child: Column(
                           mainAxisSize: MainAxisSize.min,
@@ -73,27 +101,40 @@ class ChatView extends StatelessWidget {
                           ],
                         ),
                       )
-                    : NotificationListener<ScrollNotification>(
-                        onNotification: (ScrollNotification n) {
-                          if (n is ScrollUpdateNotification) {
-                            final position = n.metrics;
-                            if (position.pixels > position.maxScrollExtent - 200) {
-                              viewModel.loadMoreRooms();
-                              viewModel.loadMoreSuggestedUsers();
-                            }
-                          }
-                          return false;
-                        },
-                        child: ListView.builder(
-                          padding: const EdgeInsets.symmetric(vertical: 12.0),
-                          // Prebuild ~1.5 screen heights for smoother scrolling
-                          cacheExtent: MediaQuery.of(context).size.height * 1.5,
-                          itemCount: _totalItems(viewModel),
-                          itemBuilder: (context, index) {
-                            return _buildSectionedItem(context, viewModel, index);
-                          },
+                    : Column(
+                      children: [
+                        // Text(
+                        //   viewModel.activeRooms.map((room) => room.chatroom.id ?? "").toList().toString()
+                        // ),
+                        // Text(
+                        //   viewModel.activeRooms.map((room) => room.userSettings.isMuted ?? "").toList().toString()
+                        // ),
+                        if (viewModel.archivedRooms.isNotEmpty)
+                          _ArchivedChatsHeader(archivedRooms: viewModel.archivedRooms),
+                        Expanded(
+                          child: NotificationListener<ScrollNotification>(
+                              onNotification: (ScrollNotification n) {
+                                if (n is ScrollUpdateNotification) {
+                                  final position = n.metrics;
+                                  if (position.pixels > position.maxScrollExtent - 200) {
+                                    viewModel.loadMoreRooms();
+                                    viewModel.loadMoreSuggestedUsers();
+                                  }
+                                }
+                                return false;
+                              },
+                              child: ListView.builder(
+                                // Prebuild ~1.5 screen heights for smoother scrolling
+                                cacheExtent: MediaQuery.of(context).size.height * 1.5,
+                                itemCount: _totalItems(viewModel),
+                                itemBuilder: (context, index) {
+                                  return _buildSectionedItem(context, viewModel, index);
+                                },
+                              ),
+                            ),
                         ),
-                      ),
+                      ],
+                    ),
           ),
         );
       },
@@ -102,8 +143,7 @@ class ChatView extends StatelessWidget {
 }
 
 int _totalItems(ChatProvider vm) {
-  // 2 section headers if both non-empty; else 1 if one is non-empty; 0 if none
-  final roomsCount = vm.roomsVisibleCount;
+  final roomsCount = vm.activeRooms.length;
   final usersCount = vm.usersVisibleCount;
   final hasRooms = roomsCount > 0;
   final hasUsers = usersCount > 0;
@@ -112,34 +152,35 @@ int _totalItems(ChatProvider vm) {
 }
 
 Widget _buildSectionedItem(BuildContext context, ChatProvider vm, int index) {
-  final hasRooms = vm.roomsVisibleCount > 0;
+  final hasRooms = vm.activeRooms.isNotEmpty;
   final hasUsers = vm.usersVisibleCount > 0;
 
   int cursor = 0;
 
-  // Rooms header
   if (hasRooms) {
-    // if (index == cursor) {
-    //   return _SectionHeader(title: 'Rooms');
-    // }
     cursor += 1;
     final roomsStart = cursor;
-    final roomsEnd = roomsStart + vm.roomsVisibleCount; // exclusive
+    final roomsEnd = roomsStart + vm.activeRooms.length;
     if (index >= roomsStart && index < roomsEnd) {
-      final room = vm.sortedRooms[index - roomsStart];
+      final room = vm.activeRooms[index - roomsStart];
       return RoomItemView(
         room: room,
-        onTap: vm.gotoNewChat,
+        onTap: (BuildContext ctx, UserModel u) {
+          Routers.goToMessagePage(
+            ctx,
+            MessagePageData(room: room.chatroom, chatUser: u),
+          );
+        },
+        isSelected: vm.selectedRoomIds.contains(room.id),
+        isSelectionMode: vm.isSelectionMode,
+        onLongPress: vm.toggleRoomSelection,
+        onSelectionTap: vm.toggleRoomSelection,
       );
     }
     cursor = roomsEnd;
   }
 
-  // Suggested users header
   if (hasUsers) {
-    // if (index == cursor) {
-    //   return _SectionHeader(title: 'Suggested');
-    // }
     cursor += 1;
     final usersStart = cursor;
     final usersEnd = usersStart + vm.usersVisibleCount;
@@ -167,14 +208,61 @@ class _SectionHeader extends StatelessWidget {
   }
 }
 
+class _ArchivedChatsHeader extends StatelessWidget {
+  final List<ChatRoomWithSettings> archivedRooms;
+  const _ArchivedChatsHeader({required this.archivedRooms});
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: () => Routers.goToArchivedChatViewPage(context),
+      child: Container(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          children: [
+            Container(
+              width: 60,
+              height: 60,
+              decoration: BoxDecoration(
+                color: Colors.blue.withAlpha(100),
+                borderRadius: BorderRadius.circular( 60 / 2),
+              ),
+              child: ClipOval(
+                child: Icon(Icons.archive, color: Colors.white),
+              ),
+            ),
+            const SizedBox(width: 12.0),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    'Archived Chats',
+                    style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w500),
+                  ),
+                  Text(
+                    '${archivedRooms.length} chat${archivedRooms.length > 1 ? 's' : ''}',
+                    style: TextStyle(fontSize: 14.0, color: Colors.grey),
+                  ),
+                ],
+              ),
+            ),
+            Icon(Icons.chevron_right, color: Colors.grey),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
 class _SuggestedUserTile extends StatelessWidget {
   final UserModel user;
-  final Function(UserModel chatUser)? onTap;
+  final Function(BuildContext ctx, UserModel chatUser)? onTap;
   const _SuggestedUserTile({required this.user, this.onTap});
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => onTap?.call(user),
+      onTap: () => onTap?.call(context, user),
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 8.0),
         child: Row(

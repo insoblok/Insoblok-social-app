@@ -106,7 +106,6 @@ class VTODetailProvider extends InSoBlokViewModel {
     if (isBusy) return;
     clearErrors();
 
-    strLoading = 'Saving to LOOKBOOK...';
     await runBusyFuture(() async {
       try {
         var hasDescription = await AIHelpers.showDescriptionDialog(context);
@@ -114,6 +113,8 @@ class VTODetailProvider extends InSoBlokViewModel {
         if (hasDescription == true) {
           description = await AIHelpers.goToDescriptionView(context);
         }
+
+        strLoading = 'Saving to LOOKBOOK...';
 
         if (_saveModel == null) {
           var story = StoryModel(
@@ -135,8 +136,8 @@ class VTODetailProvider extends InSoBlokViewModel {
                 type: 'image',
               ),
             ],
-            updateDate: DateTime.now(),
-            timestamp: DateTime.now(),
+            updatedAt: DateTime.now(),
+            createdAt: DateTime.now(),
           );
           await storyService.postStory(story: story);
           AIHelpers.showToast(msg: 'Successfully posted VTO to LOOKBOOK!');
@@ -162,8 +163,6 @@ class VTODetailProvider extends InSoBlokViewModel {
     if (isBusy) return;
     clearErrors();
 
-    strLoading = 'Creating Yay/Nay Poll...';
-
     await runBusyFuture(() async {
       try {
         var hasDescription = await AIHelpers.showDescriptionDialog(context);
@@ -171,6 +170,9 @@ class VTODetailProvider extends InSoBlokViewModel {
         if (hasDescription == true) {
           description = await AIHelpers.goToDescriptionView(context);
         }
+
+        strLoading = 'Creating Yay/Nay Poll...';
+
         if (_saveModel != null) {
           _saveModel = _saveModel!.copyWith(status: 'public');
           await storyService.updateStory(story: _saveModel!);
@@ -194,8 +196,8 @@ class VTODetailProvider extends InSoBlokViewModel {
                 type: 'image',
               ),
             ],
-            updateDate: DateTime.now(),
-            timestamp: DateTime.now(),
+            updatedAt: DateTime.now(),
+            createdAt: DateTime.now(),
           );
           await storyService.postStory(story: story);
         }

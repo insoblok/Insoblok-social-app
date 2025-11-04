@@ -15,7 +15,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$AccessCodeModel {
 
- String? get userId; String? get accessCode; bool? get expiry; bool? get checked; DateTime? get createdAt;
+ String? get id; String? get email; String? get userId; DateTime? get birthday; String? get accessCode; bool? get expiry; bool? get checked; DateTime? get createdAt;
 /// Create a copy of AccessCodeModel
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -28,16 +28,16 @@ $AccessCodeModelCopyWith<AccessCodeModel> get copyWith => _$AccessCodeModelCopyW
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AccessCodeModel&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.accessCode, accessCode) || other.accessCode == accessCode)&&(identical(other.expiry, expiry) || other.expiry == expiry)&&(identical(other.checked, checked) || other.checked == checked)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AccessCodeModel&&(identical(other.id, id) || other.id == id)&&(identical(other.email, email) || other.email == email)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.birthday, birthday) || other.birthday == birthday)&&(identical(other.accessCode, accessCode) || other.accessCode == accessCode)&&(identical(other.expiry, expiry) || other.expiry == expiry)&&(identical(other.checked, checked) || other.checked == checked)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,userId,accessCode,expiry,checked,createdAt);
+int get hashCode => Object.hash(runtimeType,id,email,userId,birthday,accessCode,expiry,checked,createdAt);
 
 @override
 String toString() {
-  return 'AccessCodeModel(userId: $userId, accessCode: $accessCode, expiry: $expiry, checked: $checked, createdAt: $createdAt)';
+  return 'AccessCodeModel(id: $id, email: $email, userId: $userId, birthday: $birthday, accessCode: $accessCode, expiry: $expiry, checked: $checked, createdAt: $createdAt)';
 }
 
 
@@ -48,7 +48,7 @@ abstract mixin class $AccessCodeModelCopyWith<$Res>  {
   factory $AccessCodeModelCopyWith(AccessCodeModel value, $Res Function(AccessCodeModel) _then) = _$AccessCodeModelCopyWithImpl;
 @useResult
 $Res call({
- String? userId, String? accessCode, bool? expiry, bool? checked, DateTime? createdAt
+ String? id, String? email, String? userId, DateTime? birthday, String? accessCode, bool? expiry, bool? checked, DateTime? createdAt
 });
 
 
@@ -65,10 +65,13 @@ class _$AccessCodeModelCopyWithImpl<$Res>
 
 /// Create a copy of AccessCodeModel
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? userId = freezed,Object? accessCode = freezed,Object? expiry = freezed,Object? checked = freezed,Object? createdAt = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? id = freezed,Object? email = freezed,Object? userId = freezed,Object? birthday = freezed,Object? accessCode = freezed,Object? expiry = freezed,Object? checked = freezed,Object? createdAt = freezed,}) {
   return _then(_self.copyWith(
-userId: freezed == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
-as String?,accessCode: freezed == accessCode ? _self.accessCode : accessCode // ignore: cast_nullable_to_non_nullable
+id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String?,email: freezed == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
+as String?,userId: freezed == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
+as String?,birthday: freezed == birthday ? _self.birthday : birthday // ignore: cast_nullable_to_non_nullable
+as DateTime?,accessCode: freezed == accessCode ? _self.accessCode : accessCode // ignore: cast_nullable_to_non_nullable
 as String?,expiry: freezed == expiry ? _self.expiry : expiry // ignore: cast_nullable_to_non_nullable
 as bool?,checked: freezed == checked ? _self.checked : checked // ignore: cast_nullable_to_non_nullable
 as bool?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable
@@ -157,10 +160,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? userId,  String? accessCode,  bool? expiry,  bool? checked,  DateTime? createdAt)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( String? id,  String? email,  String? userId,  DateTime? birthday,  String? accessCode,  bool? expiry,  bool? checked,  DateTime? createdAt)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _AccessCodeModel() when $default != null:
-return $default(_that.userId,_that.accessCode,_that.expiry,_that.checked,_that.createdAt);case _:
+return $default(_that.id,_that.email,_that.userId,_that.birthday,_that.accessCode,_that.expiry,_that.checked,_that.createdAt);case _:
   return orElse();
 
 }
@@ -178,10 +181,10 @@ return $default(_that.userId,_that.accessCode,_that.expiry,_that.checked,_that.c
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? userId,  String? accessCode,  bool? expiry,  bool? checked,  DateTime? createdAt)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( String? id,  String? email,  String? userId,  DateTime? birthday,  String? accessCode,  bool? expiry,  bool? checked,  DateTime? createdAt)  $default,) {final _that = this;
 switch (_that) {
 case _AccessCodeModel():
-return $default(_that.userId,_that.accessCode,_that.expiry,_that.checked,_that.createdAt);case _:
+return $default(_that.id,_that.email,_that.userId,_that.birthday,_that.accessCode,_that.expiry,_that.checked,_that.createdAt);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -198,10 +201,10 @@ return $default(_that.userId,_that.accessCode,_that.expiry,_that.checked,_that.c
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? userId,  String? accessCode,  bool? expiry,  bool? checked,  DateTime? createdAt)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( String? id,  String? email,  String? userId,  DateTime? birthday,  String? accessCode,  bool? expiry,  bool? checked,  DateTime? createdAt)?  $default,) {final _that = this;
 switch (_that) {
 case _AccessCodeModel() when $default != null:
-return $default(_that.userId,_that.accessCode,_that.expiry,_that.checked,_that.createdAt);case _:
+return $default(_that.id,_that.email,_that.userId,_that.birthday,_that.accessCode,_that.expiry,_that.checked,_that.createdAt);case _:
   return null;
 
 }
@@ -210,13 +213,16 @@ return $default(_that.userId,_that.accessCode,_that.expiry,_that.checked,_that.c
 }
 
 /// @nodoc
-@JsonSerializable()
 
+@JsonSerializable(fieldRename: FieldRename.snake)
 class _AccessCodeModel implements AccessCodeModel {
-   _AccessCodeModel({this.userId, this.accessCode, this.expiry, this.checked, this.createdAt});
+   _AccessCodeModel({this.id, this.email, this.userId, this.birthday, this.accessCode, this.expiry, this.checked, this.createdAt});
   factory _AccessCodeModel.fromJson(Map<String, dynamic> json) => _$AccessCodeModelFromJson(json);
 
+@override final  String? id;
+@override final  String? email;
 @override final  String? userId;
+@override final  DateTime? birthday;
 @override final  String? accessCode;
 @override final  bool? expiry;
 @override final  bool? checked;
@@ -235,16 +241,16 @@ Map<String, dynamic> toJson() {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AccessCodeModel&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.accessCode, accessCode) || other.accessCode == accessCode)&&(identical(other.expiry, expiry) || other.expiry == expiry)&&(identical(other.checked, checked) || other.checked == checked)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _AccessCodeModel&&(identical(other.id, id) || other.id == id)&&(identical(other.email, email) || other.email == email)&&(identical(other.userId, userId) || other.userId == userId)&&(identical(other.birthday, birthday) || other.birthday == birthday)&&(identical(other.accessCode, accessCode) || other.accessCode == accessCode)&&(identical(other.expiry, expiry) || other.expiry == expiry)&&(identical(other.checked, checked) || other.checked == checked)&&(identical(other.createdAt, createdAt) || other.createdAt == createdAt));
 }
 
 @JsonKey(includeFromJson: false, includeToJson: false)
 @override
-int get hashCode => Object.hash(runtimeType,userId,accessCode,expiry,checked,createdAt);
+int get hashCode => Object.hash(runtimeType,id,email,userId,birthday,accessCode,expiry,checked,createdAt);
 
 @override
 String toString() {
-  return 'AccessCodeModel(userId: $userId, accessCode: $accessCode, expiry: $expiry, checked: $checked, createdAt: $createdAt)';
+  return 'AccessCodeModel(id: $id, email: $email, userId: $userId, birthday: $birthday, accessCode: $accessCode, expiry: $expiry, checked: $checked, createdAt: $createdAt)';
 }
 
 
@@ -255,7 +261,7 @@ abstract mixin class _$AccessCodeModelCopyWith<$Res> implements $AccessCodeModel
   factory _$AccessCodeModelCopyWith(_AccessCodeModel value, $Res Function(_AccessCodeModel) _then) = __$AccessCodeModelCopyWithImpl;
 @override @useResult
 $Res call({
- String? userId, String? accessCode, bool? expiry, bool? checked, DateTime? createdAt
+ String? id, String? email, String? userId, DateTime? birthday, String? accessCode, bool? expiry, bool? checked, DateTime? createdAt
 });
 
 
@@ -272,10 +278,13 @@ class __$AccessCodeModelCopyWithImpl<$Res>
 
 /// Create a copy of AccessCodeModel
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? userId = freezed,Object? accessCode = freezed,Object? expiry = freezed,Object? checked = freezed,Object? createdAt = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? id = freezed,Object? email = freezed,Object? userId = freezed,Object? birthday = freezed,Object? accessCode = freezed,Object? expiry = freezed,Object? checked = freezed,Object? createdAt = freezed,}) {
   return _then(_AccessCodeModel(
-userId: freezed == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
-as String?,accessCode: freezed == accessCode ? _self.accessCode : accessCode // ignore: cast_nullable_to_non_nullable
+id: freezed == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String?,email: freezed == email ? _self.email : email // ignore: cast_nullable_to_non_nullable
+as String?,userId: freezed == userId ? _self.userId : userId // ignore: cast_nullable_to_non_nullable
+as String?,birthday: freezed == birthday ? _self.birthday : birthday // ignore: cast_nullable_to_non_nullable
+as DateTime?,accessCode: freezed == accessCode ? _self.accessCode : accessCode // ignore: cast_nullable_to_non_nullable
 as String?,expiry: freezed == expiry ? _self.expiry : expiry // ignore: cast_nullable_to_non_nullable
 as bool?,checked: freezed == checked ? _self.checked : checked // ignore: cast_nullable_to_non_nullable
 as bool?,createdAt: freezed == createdAt ? _self.createdAt : createdAt // ignore: cast_nullable_to_non_nullable

@@ -5,6 +5,7 @@ import 'package:observable_ish/observable_ish.dart';
 import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
+import 'package:insoblok/enums/enums.dart';
 
 class MessageService {
   final RxValue<UserModel?> _userRx = RxValue<UserModel?>(null);
@@ -14,10 +15,10 @@ class MessageService {
 
   // Get messages stream
   Stream<List<MessageModel>> getMessages(String chatRoomId) {
+    logger.d("This is getMessages $chatRoomId");
     return _firestore
-        .collection('chatRooms')
-        .doc(chatRoomId)
         .collection('messages')
+        .where("chat_id", isEqualTo: chatRoomId)
         .orderBy('timestamp', descending: false)
         .snapshots()
         .map(
@@ -32,7 +33,7 @@ class MessageService {
 
   // Get user status
   Stream<QuerySnapshot<Map<String, dynamic>>> getUsersStream() {
-    return _firestore.collection('user').snapshots();
+    return _firestore.collection('users2').snapshots();
   }
 
   // Send a text message
@@ -40,19 +41,19 @@ class MessageService {
     required String chatRoomId,
     required String text,
   }) async {
-    await _firestore
-        .collection('chatRooms')
-        .doc(chatRoomId)
-        .collection('messages')
-        .add({
-          'content': text,
-          'sender_id': AuthHelper.user?.id,
-          'sender_name': AuthHelper.user?.fullName ?? 'Anonymous',
-          'timestamp': DateTime.now().toUtc().toIso8601String(),
-          'type': 'text',
-          'is_read': false,
-        });
-    setLastMessage(chatRoomId, text);
+    DocumentReference docRef = await _firestore
+      .collection('messages')
+      .add({
+        'chat_id': chatRoomId,
+        'content': text,
+        'sender_id': AuthHelper.user?.id,
+        'sender_name': AuthHelper.user?.fullName ?? 'Anonymous',
+        'timestamp': DateTime.now().toUtc().toIso8601String(),
+        'type': MessageType.text.name,
+        'is_read': false,
+      });
+    logger.d("inserted id is ${docRef.id}");
+    setLastMessage(chatRoomId, docRef.id);
   }
 
   // Send an image message
@@ -60,20 +61,19 @@ class MessageService {
     required String chatRoomId,
     required String imageUrl,
   }) async {
-    await _firestore
-        .collection('chatRooms')
-        .doc(chatRoomId)
+    DocumentReference docRef = await _firestore
         .collection('messages')
         .add({
+          'chat_id': chatRoomId,
           'content': '[Image]',
           'sender_id': AuthHelper.user?.id,
           'sender_name': AuthHelper.user?.fullName ?? 'Anonymous',
           'timestamp': DateTime.now().toUtc().toIso8601String(),
-          'url': imageUrl,
-          'type': 'image',
+          'medias': [imageUrl],
+          'type': MessageType.image,
           'is_read': false,
         });
-    setLastMessage(chatRoomId, 'Image');
+    setLastMessage(chatRoomId, docRef.id);
   }
 
   // Send a video message
@@ -81,20 +81,19 @@ class MessageService {
     required String chatRoomId,
     required String videoUrl,
   }) async {
-    await _firestore
-        .collection('chatRooms')
-        .doc(chatRoomId)
+    DocumentReference docRef = await _firestore
         .collection('messages')
         .add({
+          'chat_id': chatRoomId,
           'content': '[Video]',
           'sender_id': AuthHelper.user?.id,
           'sender_name': AuthHelper.user?.fullName ?? 'Anonymous',
           'timestamp': DateTime.now().toUtc().toIso8601String(),
-          'url': videoUrl,
-          'type': 'video',
+          'medias': [videoUrl],
+          'type': MessageType.video,
           'is_read': false,
         });
-    setLastMessage(chatRoomId, 'Video');
+    setLastMessage(chatRoomId, docRef.id);
   }
 
   // Send an audio message
@@ -102,20 +101,19 @@ class MessageService {
     required String chatRoomId,
     required String audioUrl,
   }) async {
-    await _firestore
-        .collection('chatRooms')
-        .doc(chatRoomId)
+    DocumentReference docRef = await _firestore
         .collection('messages')
         .add({
+          'chat_id': chatRoomId,
           'content': '[Audio]',
           'sender_id': AuthHelper.user?.id,
           'sender_name': AuthHelper.user?.fullName ?? 'Anonymous',
           'timestamp': DateTime.now().toUtc().toIso8601String(),
-          'url': audioUrl,
-          'type': 'audio',
+          'medias': [audioUrl],
+          'type': MessageType.audio,
           'is_read': false,
         });
-    setLastMessage(chatRoomId, 'Audio');
+    setLastMessage(chatRoomId, docRef.id);
   }
 
   // Send a gif message
@@ -123,20 +121,21 @@ class MessageService {
     required String chatRoomId,
     required String gifUrl,
   }) async {
-    await _firestore
+    DocumentReference docRef = await _firestore
         .collection('chatRooms')
         .doc(chatRoomId)
         .collection('messages')
         .add({
+          'chat_id': chatRoomId,
           'content': '[Gif]',
           'sender_id': AuthHelper.user?.id,
           'sender_name': AuthHelper.user?.fullName ?? 'Anonymous',
           'timestamp': DateTime.now().toUtc().toIso8601String(),
-          'url': gifUrl,
-          'type': 'gif',
+          'medias': [gifUrl],
+          'type': MessageType.gif,
           'is_read': false,
         });
-    setLastMessage(chatRoomId, 'Gif');
+    setLastMessage(chatRoomId, docRef.id);
   }
 
   // Send a paid message
@@ -144,24 +143,23 @@ class MessageService {
     required String chatRoomId,
     required CoinModel coin,
   }) async {
-    await _firestore
-        .collection('chatRooms')
-        .doc(chatRoomId)
+    DocumentReference docRef = await _firestore
         .collection('messages')
         .add({
+          'chat_id': chatRoomId,
           'content': (coin.toJson()),
           'sender_id': AuthHelper.user?.id,
           'sender_name': AuthHelper.user?.fullName ?? 'Anonymous',
           'timestamp': DateTime.now().toUtc().toIso8601String(),
-          'type': 'paid',
+          'type': MessageType.paid,
           'is_read': false,
         });
-    setLastMessage(chatRoomId, 'Paid');
+    setLastMessage(chatRoomId, docRef.id);
   }
 
   Future<void> setLastMessage(String chatRoomId, String msg) async {
-    await _firestore.collection('room').doc(chatRoomId).update({
-      'content': msg,
+    await _firestore.collection('chatRooms').doc(chatRoomId).update({
+      'last_message': msg,
       'update_date': DateTime.now().toUtc().toIso8601String(),
     });
   }
@@ -197,12 +195,12 @@ class MessageService {
     });
   }
 
-  Stream<Map<String, bool>> getTypingStatus(String chatRoomId) {
+  Stream<Map<String, dynamic>> getTypingStatus(String chatRoomId) {
     return _firestore
         .collection('chatRooms')
         .doc(chatRoomId)
         .snapshots()
-        .map((doc) => Map<String, bool>.from(doc.data() ?? {}));
+        .map((doc) => Map<String, dynamic>.from(doc.data() ?? {}));
   }
 
   Future<int> getUnreadMessageCount(String chatRoomId) async {

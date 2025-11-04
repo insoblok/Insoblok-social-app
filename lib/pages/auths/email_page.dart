@@ -4,6 +4,7 @@ import 'package:insoblok/widgets/widgets.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
+import 'package:insoblok/widgets/widgets.dart';
 
 class EmailPage extends StatefulWidget {
   const EmailPage({super.key});
@@ -13,6 +14,21 @@ class EmailPage extends StatefulWidget {
 }
 
 class EmailPageState extends State<EmailPage> {
+  final AccessCodeService accessCodeService = AccessCodeService();
+  Future<void> handleClickNext(BuildContext ctx) async {
+    final email = emailController.text.trim();
+    if(!AIHelpers.isValidEmail(email)) {
+      AIHelpers.showToast(msg: "Please enter valid email address.");
+      return;
+    }
+    if (await accessCodeService.checkAccessCodeByEmail(email)) {
+      Routers.goToLoginPage(ctx);
+    }
+    else {
+      Routers.goToAccessCodeUserIdPage(ctx, email);
+    }
+  }
+
   TextEditingController emailController = TextEditingController();
   @override
   Widget build(BuildContext context) {
@@ -40,7 +56,7 @@ class EmailPageState extends State<EmailPage> {
                 children: [
                   SizedBox(height: 24.0),
                   Text(
-                    "Access Code Step 2 of 3",
+                    "Access Code Step 1 of 3",
                     style: Theme.of(context).textTheme.bodyLarge!.copyWith(
                       fontSize: 24
                     )
@@ -55,6 +71,8 @@ class EmailPageState extends State<EmailPage> {
                     padding: const EdgeInsets.all(8.0),
                     child: AITextField(
                       controller: emailController,
+                      borderColor: Colors.grey,
+                      focusedColor: Theme.of(context).primaryColor,
                       prefixIcon: SizedBox(
                         width: 18,
                         height: 18,
@@ -74,21 +92,13 @@ class EmailPageState extends State<EmailPage> {
                   SizedBox(
                     height: MediaQuery.of(context).size.height * 0.04
                   ),
-                  IntrinsicWidth(
-                    child: AIBlueGradientButton(
-                      text: "NEXT",
-                      icon: Icons.navigate_next_sharp,
-                      onPressed: () {
-                        final email = emailController.text.trim();
-                        if(!AIHelpers.isValidEmail(email)) {
-                          AIHelpers.showToast(msg: "Please enter valid email address.");
-                          return;
-                        }
-                        Routers.goToAccessCodeUserIdPage(context, email);
-                      },
-                      showBoxShadow: false,
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: GradientPillButton(
+                        text: "NEXT",
+                        onPressed: () => handleClickNext(context),
+                      ),
                     )
-                  ),
                 ]
               ),
             ),

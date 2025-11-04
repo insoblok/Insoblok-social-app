@@ -261,7 +261,7 @@ class BackgroundCameraCapture {
         final pngBytes = await _convertToPng(image);
         final tempDir = await getTemporaryDirectory();
         final file = File('${tempDir.path}/captured_face.png');
-
+      
         if (file.existsSync()) await file.delete();
         await file.create();
         await file.writeAsBytes(pngBytes);
@@ -269,6 +269,7 @@ class BackgroundCameraCapture {
         completer.complete(file);
       } catch (e) {
         print("Error capturing PNG from stream: $e");
+        
         completer.complete(null);
       }
     });

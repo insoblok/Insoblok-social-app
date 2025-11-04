@@ -50,14 +50,15 @@ class AIImages {
   static String icBottomWallet = 'assets/icons/ic_wallet.svg';
   static String icDollar = 'assets/icons/ic_dollar.svg';
   static String icDollar2 = 'assets/icons/ic_dollar.png';
-  static String icBottomLeaderboardFill = 'assets/icons/ic_leaderboard_fill.png';
+  static String icBottomLeaderboardFill =
+      'assets/icons/ic_leaderboard_fill.png';
   static String icBottomLeaderboard = 'assets/icons/ic_leaderboard.png';
   static String icUsdt = 'assets/icons/ic_usdt.png';
   static String icXrp = 'assets/icons/ic_xrp2.svg';
   static String icPostLookbook = 'assets/icons/ic_post_lookbook.png';
   static String icPostReaction = 'assets/icons/ic_post_reaction.png';
   static String icLookBook = 'assets/icons/ic_lookbook.png';
-  
+
   static String icTopEffect = 'assets/icons/ic_effect_2.svg';
   static String icFavoriteFill = 'assets/icons/ic_favourite_fill.svg';
   static String icFavoriteStroke = 'assets/icons/ic_favourite_stroke.svg';
@@ -78,7 +79,7 @@ class AIImages {
   static String icFire = 'assets/icons/ic_fire.png';
   static String icDelete = 'assets/icons/ic_delete.png';
   static String icRefresh = 'assets/icons/ic_refresh.svg';
-  
+
   static String icMenuProfile = 'assets/icons/ic_user.svg';
   static String icMenuLists = 'assets/icons/ic_list.svg';
   static String icMenuTopics = 'assets/icons/ic_retweet.svg';
@@ -102,6 +103,7 @@ class AIImages {
   static String icNot = 'assets/icons/ic_not.png';
   static String icHot = 'assets/icons/ic_hot.png';
   static String icRepost = 'assets/icons/ic_repost.png';
+  static String icPost = 'assets/icons/ic_post.png';
   static String icView = 'assets/icons/ic_view.png';
   static String icGallery = 'assets/icons/ic_photo_gallery.png';
   static String icFireFlame = 'assets/icons/ic_fire_flame.png';
@@ -109,15 +111,16 @@ class AIImages {
   static String icFireNot = 'assets/icons/ic_fire_not.png';
 
   static String icCheck = 'assets/icons/ic_check.png';
+  static String icCheck2 = 'assets/icons/ic_check2.png';
 
   static String icVoteUp = 'assets/icons/ic_up_arrow.png';
   static String icVoteDown = 'assets/icons/ic_down_arrow.png';
   static String icVoteUp2 = 'assets/icons/ic_vote_up.png';
   static String icVoteDown2 = 'assets/icons/ic_vote_down.png';
-  
+
   static String icReactionVideo = 'assets/icons/ic_reaction_video.png';
   static String icReactionImage = 'assets/icons/ic_reaction_image.png';
-  
+
   static String icInstagram = 'assets/icons/ic_social_instagram.png';
   static String icInstagram2 = 'assets/icons/ic_social_instagram2.png';
   static String icTelegram = 'assets/icons/ic_social_telegram.png';
@@ -142,7 +145,6 @@ class AIImages {
   static String icSoundCloud2 = 'assets/icons/ic_social_soundcloud2.png';
   static String icFacebook = 'assets/icons/ic_social_facebook.png';
   static String icFacebook2 = 'assets/icons/ic_social_facebook2.png';
-
 
   static String imgLevel(int level) {
     return 'assets/images/img_level_0$level.png';
@@ -170,5 +172,24 @@ class AIImages {
   static String icArrowRight = 'assets/icons/ic_arrow_right.svg';
   static String icArrowLeft = 'assets/icons/ic_arrow_left.svg';
 
+  static String icCancel = 'assets/icons/ic_cancel.png';
+  static String icBookMark = 'assets/icons/ic_bookmark.png';
+  static String icShare2 = 'assets/icons/ic_share2.png';
+  static String icEmotions = 'assets/icons/ic_emotions.png';
+
   static String imgVybe = 'assets/images/img_vybe.png';
+
+  // static String avatarAnimeEyes = 'assets/images/avatars/AnimeEyes-L0.png';
+  static String avatarAnimeEyes = 'assets/images/AnimeEyes-L0.png';
+  static String avatarLiquidChromeFace =
+      'assets/images/Liquid Chome Face - L0.png';
+  static String avatarPixelStorm = 'assets/images/Pixel Storm -M0.png';
+  static String avatarCyberPunk = 'assets/images/CyberPunk - M0.png';
+  static String avatarNeonGlow = 'assets/images/Neon Glow - M0.png';
+  static String avatarTasteScore = 'assets/images/TasteScore Face - C0.png';
+  static String avatarEGirlBoy = 'assets/images/E-Girl - E-Boy - M0.png';
+  static String avatarExtraAF = 'assets/images/Extra AF - M0.png';
+  static String avatarGlowUp = 'assets/images/Glow Up - M0.png';
+  static String avatarGrungeWave = 'assets/images/Grungewave - M0.png';
+  static String avatarAnime = 'assets/images/anime-getimg.ai.jpeg';
 }

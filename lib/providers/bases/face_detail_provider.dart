@@ -433,7 +433,7 @@ Future<Uint8List?> composeHypeImage({
 
       // 2qgkVmXyECgjlhr933nX
       logger.d("face detail user id");
-      final usersRef = FirebaseFirestore.instance.collection("user");
+      final usersRef = FirebaseFirestore.instance.collection("users2");
       await usersRef.doc(AuthHelper.user?.id).update({
         "galleries": FieldValue.arrayUnion([link]),
       });
@@ -520,8 +520,8 @@ Future<Uint8List?> composeHypeImage({
           status: 'private',
           category: 'vote',
           medias: media != null ? [media] : [],
-          updateDate: DateTime.now(),
-          timestamp: DateTime.now(),
+          updatedAt: DateTime.now(),
+          createdAt: DateTime.now(),
         );
 
         await storyService.postStory(story: newStory);
@@ -588,7 +588,7 @@ Future<Uint8List?> composeHypeImage({
                               .textTheme
                               .bodyMedium
                               ?.copyWith(
-                                color: Theme.of(context).colorScheme.onSecondary,
+                                color: Colors.white,
                               ),
                         ),
                       ),

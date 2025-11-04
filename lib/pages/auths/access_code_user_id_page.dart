@@ -18,7 +18,6 @@ class AccessCodeUserIdPage extends StatefulWidget {
 class AccessCodeUserIdPageState extends State<AccessCodeUserIdPage> {
 
   TextEditingController birthdayController = TextEditingController();
-  TextEditingController userIdController = TextEditingController();
   DateTime? birthday;
   bool confirmChecked = false;
   bool termsChecked = false;
@@ -26,24 +25,20 @@ class AccessCodeUserIdPageState extends State<AccessCodeUserIdPage> {
 
   @override initState() {
     super.initState();
-    logger.d("Email is ${widget.email}");
   }
 
   void handleClickNext(BuildContext ctx) {
-    logger.d(birthday);
-    final userId = userIdController.text.trim();
     if(!confirmChecked || !termsChecked) {
       AIHelpers.showToast(msg: "You need to confirm and accept Terms of service");
       return;
     }
-    if (birthday == null || userId.isEmpty) {
+    if (birthday == null) {
       AIHelpers.showToast(msg: "Please enter valid inputs.");
       return;
     }
     Map<String, dynamic> props = {};
     props["email"] = widget.email;
     props["birthday"] = birthday;
-    props["userId"] = userId;
     Routers.goToAccessCodeConfirmPage(ctx, props);
   }
 
@@ -92,7 +87,7 @@ class AccessCodeUserIdPageState extends State<AccessCodeUserIdPage> {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
                 child: DatePickerWidget(
-                  helperText: 'Date of Birth',
+                  hintText: 'Date of Birth',
                   onChanged: (value) {
                     logger.d('Selected date: $value');
                     birthday = DateFormat("dd/MM/yyyy").parse(value);
@@ -101,23 +96,11 @@ class AccessCodeUserIdPageState extends State<AccessCodeUserIdPage> {
                     if (value == null || value.isEmpty) return 'Please pick a date';
                     return null;
                   },
+                  iconColor: Theme.of(context).primaryColor
                 )
 
               ),
               SizedBox(height: 12.0),
-              Padding(
-                padding: EdgeInsets.symmetric(horizontal: 24.0, vertical: 8.0),
-                child: AITextField(
-                  controller: userIdController,
-                  prefixIcon: Icon(
-                    Icons.person,
-                    color: Colors.white,
-                  ),
-                  fillColor: Colors.grey.shade900
-                          
-                ),
-              ),
-              SizedBox(height: 18.0),
               Padding(
                 padding: EdgeInsets.symmetric(horizontal: 12.0, vertical: 0.0),
                 child: CheckboxListTile(
@@ -135,7 +118,7 @@ class AccessCodeUserIdPageState extends State<AccessCodeUserIdPage> {
                     color: Colors.white, // Color when unchecked
                     width: 1.5,
                   ),
-                  activeColor: Colors.blue, // color when checked
+                  activeColor: Theme.of(context).primaryColor, // color when checked
                   checkColor: Colors.white, // checkmark color
                   tileColor: Colors.white,
                   controlAffinity: ListTileControlAffinity.leading, 
@@ -162,7 +145,7 @@ class AccessCodeUserIdPageState extends State<AccessCodeUserIdPage> {
                     color: Colors.white, // Color when unchecked
                     width: 1.5,
                   ),
-                  activeColor: Colors.blue, // color when checked
+                  activeColor: Theme.of(context).primaryColor, // color when checked
                   checkColor: Colors.white, // checkmark color
                   tileColor: Colors.white,
                   controlAffinity: ListTileControlAffinity.leading, // checkbox before text
@@ -173,14 +156,13 @@ class AccessCodeUserIdPageState extends State<AccessCodeUserIdPage> {
                 ),
               ),
               SizedBox(height: 32.0),
-              IntrinsicWidth(
-                child: AIBlueGradientButton(
-                  text: "NEXT",
-                  icon: Icons.navigate_next_sharp,
-                  onPressed: () => handleClickNext(context),
-                  showBoxShadow: false,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 40.0),
+                  child: GradientPillButton(
+                    text: "NEXT",
+                    onPressed: () => handleClickNext(context),
+                  ),
                 )
-              ),
             ],
       ),
         )

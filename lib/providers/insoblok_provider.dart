@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:googleapis/artifactregistry/v1.dart';
 
 import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
+import 'package:insoblok/locator.dart';
+
 
 class InSoBlokProvider extends InSoBlokViewModel {
   late BuildContext _context;
@@ -32,6 +35,8 @@ class InSoBlokProvider extends InSoBlokViewModel {
     _dotIndex = i;
     notifyListeners();
   }
+
+  final MediaPickerService mediaPickerService = locator<MediaPickerService>();
 
   // late AppProvider _appProvider;
   Future<void> init(BuildContext context) async {
@@ -120,6 +125,11 @@ class InSoBlokProvider extends InSoBlokViewModel {
       case 9:
         break;
     }
+  }
+
+  Future<void> handleTapCreateVTOPost() async {
+    List<String> mediaString = (mediaPickerService.currentStory?.medias ?? []).map((m) => m.link ?? "").toList();
+    await AIHelpers.goToDetailView(context, medias: mediaString);
   }
 
   void toggleSearch() {

@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:insoblok/pages/profiles/profiles.dart';
+import 'package:insoblok/widgets/TokenListProviderWrapper.dart';
+import 'package:insoblok/widgets/token_list_widget.dart';
 import 'package:stacked/stacked.dart';
 import 'package:insoblok/locator.dart';
 import 'package:insoblok/models/models.dart';
@@ -40,9 +42,11 @@ class AccountWalletProvider extends InSoBlokViewModel {
 
   final List<Widget> pages = const [
     Center(child: AccountWalletHomePage()),
-    Center(child: WalletFavoritesPage()),
+    TokenListProviderWrapper(),
+    // Center(child: WalletFavoritesPage()),
     Center(child: WalletActivitiesPage()),
     Center(child: WalletNotificationsPage()),
+    
   ];
 
   

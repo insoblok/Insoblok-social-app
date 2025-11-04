@@ -79,6 +79,7 @@ class AIImage extends StatelessWidget {
           fit: fit ?? BoxFit.contain,
           color: color,
           errorBuilder: (context, error, stackTrace) {
+            logger.e(error);
             return AIDefaultImage(
               width: width,
               height: height,
@@ -290,13 +291,21 @@ class AIAvatarDefaultView extends StatelessWidget {
     return Container(
       width: width ?? 60,
       height: height ?? 60,
-      decoration: (isBorder ?? false) ? BoxDecoration(
-        border: borderGradient != null && borderGradient == true ?GradientBoxBorder(
-          gradient: LinearGradient(colors: getGradientColors(fullname.length)),
-          width: borderWidth ?? 2,
-        ) : null,
-        borderRadius: BorderRadius.circular(borderRadius ?? 30.0),
-      ) : BoxDecoration(),
+      decoration:
+          (isBorder ?? false)
+              ? BoxDecoration(
+                border:
+                    borderGradient != null && borderGradient == true
+                        ? GradientBoxBorder(
+                          gradient: LinearGradient(
+                            colors: getGradientColors(fullname.length),
+                          ),
+                          width: borderWidth ?? 2,
+                        )
+                        : null,
+                borderRadius: BorderRadius.circular(borderRadius ?? 30.0),
+              )
+              : BoxDecoration(),
 
       child: ClipOval(
         child: Container(

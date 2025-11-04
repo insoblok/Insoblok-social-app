@@ -1,17 +1,13 @@
-import 'package:flutter/material.dart';
+import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:fluro/fluro.dart' as fluro;
 
 import 'package:insoblok/models/models.dart';
-import 'package:insoblok/pages/bases/reaction_video_detail_page.dart';
 import 'package:insoblok/pages/pages.dart';
-import 'package:insoblok/pages/profiles/tastescore_page.dart';
-import 'package:insoblok/pages/profiles/wallet_favorites_page.dart';
-import 'package:insoblok/pages/profiles/wallet_receive_confirm_page.dart';
-import 'package:insoblok/pages/profiles/wallet_swap_page.dart';
-import 'package:insoblok/pages/profiles/wallet_send_page.dart';
-import 'package:insoblok/pages/stories/video_edit_page.dart';
 import 'package:insoblok/providers/providers.dart';
+import 'package:insoblok/services/services.dart';
+
 
 const kRouterBase = '/';
 const kRouterLogin = '/login';
@@ -49,6 +45,7 @@ const kRouterCreateRoom = '/create-room';
 const kRouterMessage = '/message';
 const kRouterMessageSetting = '/message-setting';
 const kRouterChatView = '/chat-view';
+const kRouterArchivedChatView = '/archived-chat-view';
 
 const kRouterChatPayment = '/message-payment';
 const kRouterPaymentAmount = '/payment-amount';
@@ -92,6 +89,9 @@ const kRouterTokenDetail = '/token-detail';
 const kRouterLiveStream = '/live-stream';
 const kRouterLive = '/live';
 const kRouterCreatePost = '/create-post';
+
+const kRouterRRCAvatarGeneration = '/rrc-avatar-generation';
+
 class Navigation {
   final router = fluro.FluroRouter();
 
@@ -165,7 +165,7 @@ class Navigation {
     initRoute(kRouterAccountUpdate, (props) => UpdateProfilePage());
 
     // * AccountAvatarPage
-    initRoute(kRouterAccountAvatar, (props) => AccountAvatarPage());
+    initRoute<Map<String, String?>>(kRouterAccountAvatar, (props) => AccountAvatarPage(src: props?["src"], dst: props?["dst"]));
 
     // * AccountPublicPage
     initRoute(kRouterAccountPublic, (props) => AccountPublicPage());
@@ -220,8 +220,11 @@ class Navigation {
     // * MessageSettingPage
     initRoute(kRouterMessageSetting, (props) => MessageSettingPage());
 
-    //* ChatViewPage
+    // * ChatViewPage
     initRoute(kRouterChatView, (props) => ChatView());
+
+    // * ArchivedChatViewPage
+    initRoute(kRouterArchivedChatView, (props) => ArchivedChatViewPage()); 
 
     // * MessagePaymentFirstPage
     initRoute<Map<String, String>>(kRouterChatPayment, (props) => ChatPaymentPage(args: props!));
@@ -398,5 +401,13 @@ class Navigation {
     // * Live pages
     initRoute(kRouterLiveStream, (props) => LiveStreamPage());
     initRoute(kRouterLive, (props) => LivePage());
+    
+//     initRoute<Map<String, dynamic>>(kRouterRRCAvatarGeneration, (props) {
+//       if (props == null) {
+//         throw ArgumentError('Route parameters are null');
+//       }
+//       return RRCAvatarGenerationView(url: props["url"], face: props["face"], origin: props["origin"], storyID: props["storyID"]);
+//     });
+
   }
 }
