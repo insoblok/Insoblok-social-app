@@ -330,10 +330,10 @@ class Routers {
     );
   }
 
-  static dynamic goToLiveStreamPage(BuildContext context) {
+  static dynamic goToLiveStreamPage(BuildContext context, [String? title]) {
     // Use direct route push to avoid issues when router definitions aren't rebuilt after hot reload
     return Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => const LiveStreamPage()),
+      MaterialPageRoute(builder: (_) => LiveStreamPage(initialTitle: title)),
     );
   }
 
@@ -341,14 +341,14 @@ class Routers {
     return _pushToRoute(context, kRouterCreatePost, null);
   }
   
-//   static dynamic goToRRCAvatarGenerationPage(BuildContext context, io.File? face, String url, String origin, String storyID) {
-//     Map<String, dynamic> args = {};
-//     args["face"] = face!;
-//     args["url"] = url;
-//     args["origin"] = origin;
-//     args["storyID"] = storyID;
-//     logger.d("This is inside gotorrcavatar $args");
-//     return _pushToRoute(context, kRouterRRCAvatarGeneration, args);
-//   }
+  static dynamic goToRRCAvatarGenerationPage(BuildContext context, io.File? face, String url, String origin, String storyID) {
+    Map<String, dynamic> args = {};
+    args["face"] = face!;
+    args["url"] = url;
+    args["origin"] = origin;
+    args["storyID"] = storyID;
+    logger.d("This is inside gotorrcavatar $args");
+    return _pushToRoute(context, kRouterRRCAvatarGeneration, args);
+  }
 
 }

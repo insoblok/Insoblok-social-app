@@ -212,30 +212,7 @@ class PageableView extends StatelessWidget {
                               ),
                               const SizedBox(width: 8),
 
-                              // Live button
-                              InkWell(
-                                onTap: () => Routers.goToLivePage(context),
-                                borderRadius: BorderRadius.circular(16),
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
-                                  decoration: BoxDecoration(
-                                    gradient: const LinearGradient(
-                                      colors: [Color(0xFFF30C6C), Color(0xFFC739EB)],
-                                    ),
-                                    borderRadius: BorderRadius.circular(16),
-                                  ),
-                                  child: Row(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: const [
-                                      Icon(Icons.videocam_rounded, size: 16, color: Colors.white),
-                                      SizedBox(width: 6),
-                                      Text('Live', style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700)),
-                                    ],
-                                  ),
-                                ),
-                              ),
-
-                              const SizedBox(width: 8),
+                              // Live button removed per request
 
                               InkWell(
                                 onTap: () {},

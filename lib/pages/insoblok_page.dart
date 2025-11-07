@@ -162,7 +162,7 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
                       return SafeArea(
                         child: Container(
                           padding: const EdgeInsets.all(8.0),
-                          height: 160,
+                          height: 200,
                           decoration: BoxDecoration(
                             // color: Theme.of(context).scaffoldBackgroundColor,
                             borderRadius: const BorderRadius.vertical(
@@ -214,6 +214,20 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
                                   padding: const EdgeInsets.all(8.0),
                                   child: Text(
                                     "Create Chat Room",
+                                    style:
+                                        Theme.of(context).textTheme.bodyLarge,
+                                  ),
+                                ),
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  Navigator.of(context).pop();
+                                  Routers.goToLivePage(context);
+                                },
+                                child: Padding(
+                                  padding: const EdgeInsets.all(8.0),
+                                  child: Text(
+                                    "Create Live Stream",
                                     style:
                                         Theme.of(context).textTheme.bodyLarge,
                                   ),

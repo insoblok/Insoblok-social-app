@@ -31,4 +31,6 @@ export 'global_store.dart';
 export 'account_service.dart';
 export 'local_auth_service.dart';
 export 'live_service.dart';
+export 'notification_service.dart';
+export 'push_service.dart';
 // export 'access_code_service.dart';

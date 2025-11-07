@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/services/services.dart';
+import 'package:insoblok/models/models.dart';
 import 'package:insoblok/extensions/extensions.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_app_check/firebase_app_check.dart';
 import 'package:insoblok/services/stream_video_service.dart';
+import 'package:insoblok/services/notification_service.dart';
 
 class LiveStreamProvider extends InSoBlokViewModel {
   late BuildContext _context;
@@ -20,6 +22,7 @@ class LiveStreamProvider extends InSoBlokViewModel {
 
   CameraController? _cameraController;
   CameraController? get cameraController => _cameraController;
+  String? _thumbPath;
 
   bool _isInitialized = false;
   bool get isInitialized => _isInitialized;
@@ -33,6 +36,13 @@ class LiveStreamProvider extends InSoBlokViewModel {
 
   String? _sessionId;
   String? get sessionId => _sessionId;
+
+  String _liveTitle = '';
+  String get liveTitle => _liveTitle;
+  set liveTitle(String v) {
+    _liveTitle = v;
+    notifyListeners();
+  }
 
   // Prepared fields for Stream Video client hookup
   String? _streamApiKey;
@@ -89,7 +99,21 @@ class LiveStreamProvider extends InSoBlokViewModel {
       // Log Firebase UID (host)
       logger.d('Firebase UID (host): ${FirebaseAuth.instance.currentUser?.uid}');
       final liveService = LiveService();
-      _sessionId = await liveService.createLiveSession(userId: uid, userName: uname, userAvatar: avatar);
+      _sessionId = await liveService.createLiveSession(
+        userId: uid,
+        userName: uname,
+        userAvatar: avatar,
+        title: _liveTitle.isNotEmpty ? _liveTitle : null,
+      );
+      // Notify followers that live has started
+      if (_sessionId != null) {
+        await NotificationService().sendLiveStartNotification(
+          fromUserId: uid,
+          fromUserName: uname,
+          sessionId: _sessionId!,
+          title: _liveTitle.isNotEmpty ? _liveTitle : 'Live',
+        );
+      }
 
       // Fetch Stream Video user token from backend for later SDK initialization
       try {
@@ -113,6 +137,13 @@ class LiveStreamProvider extends InSoBlokViewModel {
       try {
         final callId = _sessionId != null ? await liveService.getCallId(_sessionId!) : null;
         if (_streamApiKey != null && _streamUserToken != null && _streamUserId != null && callId != null) {
+          // Capture a quick thumbnail frame before handing off camera to Stream SDK
+          try {
+            if (_cameraController != null && _cameraController!.value.isInitialized) {
+              final shot = await _cameraController!.takePicture();
+              _thumbPath = shot.path;
+            }
+          } catch (_) {}
           // Release local CameraController before Stream takes ownership of camera
           await _cameraController?.dispose();
           _cameraController = null;
@@ -139,6 +170,26 @@ class LiveStreamProvider extends InSoBlokViewModel {
         final liveService = LiveService();
         await liveService.endLiveSession(id);
       }
+      // Post a simple Story entry about the livestream
+      try {
+        MediaStoryModel? media;
+        if (_thumbPath != null) {
+          final uploaded = await CloudinaryCDNService.uploadImageToCDN(XFile(_thumbPath!));
+          if ((uploaded.link ?? '').isNotEmpty) {
+            media = uploaded;
+          }
+        }
+        final story = StoryModel(
+          title: _liveTitle.isNotEmpty ? _liveTitle : 'Live',
+          text: _liveTitle.isNotEmpty ? 'Live recording: $_liveTitle' : 'Live recording',
+          status: 'public',
+          category: 'live',
+          medias: media != null ? [media] : null,
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+        );
+        await storyService.postStory(story: story);
+      } catch (_) {}
       try {
         await StreamVideoService().leave();
       } catch (_) {}
@@ -147,6 +198,8 @@ class LiveStreamProvider extends InSoBlokViewModel {
     } finally {
       isLive = false;
       _sessionId = null;
+      _liveTitle = '';
+      _thumbPath = null;
     }
   }
 

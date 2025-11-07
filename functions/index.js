@@ -5,6 +5,7 @@ const admin = require("firebase-admin");
 const {onInit} = require("firebase-functions/v2/core");
 const {onCall, onRequest} = require("firebase-functions/v2/https");
 // const {onSchedule} = require("firebase-functions/v2/scheduler");
+const {onDocumentCreated} = require("firebase-functions/v2/firestore");
 
 // Defer initialization to onInit to avoid deployment discovery timeouts
 onInit(async () => {
@@ -27,20 +28,24 @@ onInit(async () => {
 const crypto = require("crypto");
 // Use CJS require first (preferred if available), then dynamic import fallback for ESM
 
-// Read from functions.config() if available, else env (supports dotenv migration)
-let STREAM_API_KEY = process.env.STREAM_KEY;
-let STREAM_API_SECRET = process.env.STREAM_SECRET;
+// Resolve Stream credentials: prefer functions config stream.key/stream.secret, then env fallbacks.
+let STREAM_API_KEY = null;
+let STREAM_API_SECRET = null;
 try {
-  // functions.config() only exists in Firebase environments
   const functionsV1 = require("firebase-functions");
   const cfg = functionsV1.config && functionsV1.config();
   if (cfg && cfg.stream) {
-    STREAM_API_KEY = STREAM_API_KEY || cfg.stream.key;
-    STREAM_API_SECRET = STREAM_API_SECRET || cfg.stream.secret;
+    // Primary keys we want to use
+    STREAM_API_KEY = cfg.stream.key || null;
+    STREAM_API_SECRET = cfg.stream.secret || null;
+    // Explicitly ignore legacy fields (api_key/api_secret) to avoid mismatched apps
   }
 } catch (_) {
   // ignore local require failure
 }
+// Fallback to env if not found in functions config
+STREAM_API_KEY = STREAM_API_KEY || process.env.STREAM_KEY || process.env.STREAM_API_KEY || null;
+STREAM_API_SECRET = STREAM_API_SECRET || process.env.STREAM_SECRET || process.env.STREAM_API_SECRET || null;
 
 let streamVideoClient = null;
 async function getStreamVideoClient() {
@@ -49,37 +54,25 @@ async function getStreamVideoClient() {
   }
   if (!streamVideoClient) {
     let sdk;
-    let Ctor;
+    let StreamCtor;
     try {
-      // Try commonjs build path (package may publish CJS alongside ESM)
-      sdk = require("@stream-io/node-sdk/dist/index.cjs");
-      Ctor = sdk.StreamVideoServerClient || sdk.StreamVideoClient || sdk.StreamClient || sdk.default;
+      sdk = require("@stream-io/node-sdk");
+      StreamCtor = sdk.StreamClient || (sdk.default && sdk.default.StreamClient);
     } catch (_) {
-      // Fallback to ESM
-      sdk = await import("@stream-io/node-sdk");
-      Ctor = sdk.StreamVideoServerClient || sdk.StreamVideoClient || sdk.StreamClient || (sdk.default && (sdk.default.StreamVideoServerClient || sdk.default.StreamVideoClient || sdk.default.StreamClient)) || sdk.default;
+      const esm = await import("@stream-io/node-sdk");
+      sdk = esm;
+      StreamCtor = esm.StreamClient || (esm.default && esm.default.StreamClient);
     }
-    if (!Ctor) {
+    if (!StreamCtor) {
       const keys = Object.keys(sdk || {});
-      throw new Error("StreamVideoServerClient ctor not found from @stream-io/node-sdk import. Export keys: " + keys.join(","));
+      throw new Error("StreamClient not found from @stream-io/node-sdk import. Export keys: " + keys.join(","));
     }
-    // Allow overriding base URL via multiple commonly used env var names; otherwise use the public default
-    const baseUrl = process.env.STREAM_VIDEO_BASE_URL || process.env.STREAM_BASE_URL || process.env.STREAM_URL || process.env.STREAM_API_BASE_URL || process.env.STREAM_IO_API_BASE_URL || "https://video.stream-io-api.com";
-    // Use object form first to ensure options like baseUrl/timeoutMs are applied across SDK variants
-    const timeoutMs = Number(process.env.STREAM_TIMEOUT_MS || 15000);
-    try {
-      streamVideoClient = new Ctor({ apiKey: STREAM_API_KEY, apiSecret: STREAM_API_SECRET, secret: STREAM_API_SECRET, baseUrl, timeoutMs });
-    } catch (_) {
-      try {
-        // Fallback: some versions accept (apiKey, apiSecret, options)
-        streamVideoClient = new Ctor(STREAM_API_KEY, STREAM_API_SECRET, { baseUrl, timeoutMs });
-      } catch (e2) {
-        throw new Error("Failed to instantiate Stream video client: " + (e2?.message || e2));
-      }
-    }
+    const basePath = process.env.STREAM_VIDEO_BASE_URL || process.env.STREAM_BASE_URL || process.env.STREAM_URL || process.env.STREAM_API_BASE_URL || process.env.STREAM_IO_API_BASE_URL || "https://video.stream-io-api.com";
+    const timeout = Number(process.env.STREAM_TIMEOUT_MS || process.env.STREAM_TIMEOUT || 15000);
+    streamVideoClient = new StreamCtor(STREAM_API_KEY, STREAM_API_SECRET, { timeout, basePath });
     try {
       const masked = (STREAM_API_KEY || "").slice(-4);
-      logger.log("Stream client initialized", { baseUrl, timeoutMs, apiKeySuffix: masked });
+      logger.log("Stream client initialized", { basePath, timeout, apiKeySuffix: masked });
     } catch (e) {
       logger.warn("Stream client init log failed", e);
     }
@@ -101,8 +94,7 @@ exports.videoTokenV2 = onCall({ enforceAppCheck: true }, async (request) => {
   try {
     const client = await getStreamVideoClient();
     logger.log("Issuing Stream token", { userId, expirationSeconds });
-    // createToken(userId, expSeconds)
-    const token = client.createToken(userId, expirationSeconds);
+    const token = client.generateUserToken({ user_id: userId, validity_in_seconds: expirationSeconds });
     return {token, apiKey: STREAM_API_KEY, userId};
   } catch (e) {
     logger.error("videoTokenV2 error", e);
@@ -126,15 +118,15 @@ exports.createLivestreamCallV2 = onCall({ enforceAppCheck: true }, async (reques
   try {
     logger.log("createLivestreamCallV2 begin", { callId, userId: context.auth.uid });
     const client = await getStreamVideoClient();
-    // Support both client.video.call(...) and client.call(...) with bound context
-    const boundCallFactory = (client.video && typeof client.video.call === "function") ? client.video.call.bind(client.video) : (typeof client.call === "function" ? client.call.bind(client) : null);
-    if (!boundCallFactory) {
-      throw new Error("Stream video client does not expose a call factory (video.call or call)");
-    }
-    const call = boundCallFactory("livestream", callId);
+    const call = client.video.call("livestream", callId);
     await call.getOrCreate({
       create: {
-        custom: {createdBy: context.auth.uid, title: request.data && request.data.title ? request.data.title : ""},
+        data: {
+          created_by_id: context.auth.uid,
+          custom: {
+            title: request.data && request.data.title ? request.data.title : "",
+          },
+        },
       },
     });
     logger.log("createLivestreamCallV2 success", { callId });
@@ -190,5 +182,65 @@ exports.streamWebhookV2 = onRequest(async (req, res) => {
   } catch (err) {
     logger.error("Webhook handling error", err);
     return res.status(500).send("error");
+  }
+});
+
+// Fan-out FCM push when an in-app notification document is created
+exports.pushOnNotificationCreated = onDocumentCreated("notifications/{id}", async (event) => {
+  try {
+    const snap = event.data;
+    if (!snap) return;
+    const payload = snap.data();
+    if (!payload) return;
+    const toUserId = payload.toUserId;
+    if (!toUserId) return;
+
+    // Resolve device tokens from user doc
+    const userDoc = await admin.firestore().collection("users2").doc(toUserId).get();
+    const user = userDoc.data() || {};
+    const tryArrays = [
+      user.fcmTokens,
+      user.deviceTokens,
+      user.pushTokens,
+      user.tokens,
+    ];
+    const tokens = Array.from(
+      new Set(
+        (tryArrays.flat().filter((t) => typeof t === "string") || []),
+      ),
+    );
+    if (!tokens.length) {
+      logger.log("No device tokens for user", {toUserId});
+      return;
+    }
+
+    const title =
+      (payload.type === "live_start") ?
+        `${payload.fromUserName || "Someone"} is live` :
+        (payload.title || "Notification");
+    const body =
+      (payload.type === "live_start") ?
+        (payload.title ? `${payload.title}` : "Tap to join the stream") :
+        (payload.body || "");
+
+    const message = {
+      notification: {title, body},
+      data: {
+        type: String(payload.type || ""),
+        sessionId: String(payload.sessionId || ""),
+        fromUserId: String(payload.fromUserId || ""),
+      },
+      android: {priority: "high"},
+      apns: {payload: {aps: {sound: "default"}}},
+      tokens,
+    };
+
+    const res = await admin.messaging().sendEachForMulticast(message);
+    logger.log("pushOnNotificationCreated result", {
+      success: res.successCount,
+      failure: res.failureCount,
+    });
+  } catch (e) {
+    logger.error("pushOnNotificationCreated error", e);
   }
 });

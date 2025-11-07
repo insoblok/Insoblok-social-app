@@ -7,6 +7,9 @@ class StreamVideoService {
 
   StreamVideo? _client;
   Call? _activeCall;
+  String? _connectedUserId;
+  String? _connectedApiKey;
+  String? _connectedToken;
 
   Call? get activeCall => _activeCall;
 
@@ -16,13 +19,29 @@ class StreamVideoService {
     required String userName,
     required String userToken,
   }) async {
-    // If already connected with same user, skip
+    // If already connected with same creds, skip; if creds differ, reset
+    final credsChanged = _client != null && (
+      _connectedUserId != userId || _connectedApiKey != apiKey || _connectedToken != userToken
+    );
+    if (credsChanged) {
+      try {
+        await _activeCall?.leave();
+      } catch (_) {}
+      _activeCall = null;
+      _client = null;
+      _connectedUserId = null;
+      _connectedApiKey = null;
+      _connectedToken = null;
+    }
     if (_client != null) return;
     _client = StreamVideo(
       apiKey,
       user: User.regular(userId: userId, name: userName),
       userToken: userToken,
     );
+    _connectedUserId = userId;
+    _connectedApiKey = apiKey;
+    _connectedToken = userToken;
   }
 
   Future<Call> joinLivestream({
@@ -64,6 +83,17 @@ class StreamVideoService {
     } finally {
       _activeCall = null;
     }
+  }
+
+  Future<void> disconnect() async {
+    try {
+      await _activeCall?.leave();
+    } catch (_) {}
+    _activeCall = null;
+    _client = null;
+    _connectedUserId = null;
+    _connectedApiKey = null;
+    _connectedToken = null;
   }
 }
 

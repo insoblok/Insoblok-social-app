@@ -71,6 +71,7 @@ dependencies:
   cloud_functions: any
   uuid: any
   stream_video_flutter: any
+  firebase_messaging: 16.0.3
 
   dio: any
   path_provider: any

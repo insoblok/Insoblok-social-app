@@ -9,13 +9,24 @@ import 'package:stream_video_flutter/stream_video_flutter.dart';
 import 'package:insoblok/services/stream_video_service.dart';
 
 class LiveStreamPage extends StatelessWidget {
-  const LiveStreamPage({super.key});
+  final String? initialTitle;
+  const LiveStreamPage({super.key, this.initialTitle});
 
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<LiveStreamProvider>.reactive(
       viewModelBuilder: () => LiveStreamProvider(),
-      onViewModelReady: (vm) => vm.init(context),
+      onViewModelReady: (vm) {
+        vm.init(context);
+        final argTitle = ModalRoute.of(context)?.settings.arguments as String?;
+        final fromCtor = initialTitle;
+        final t = (fromCtor != null && fromCtor.isNotEmpty)
+            ? fromCtor
+            : (argTitle ?? '');
+        if (t.isNotEmpty) {
+          vm.liveTitle = t.trim();
+        }
+      },
       builder: (context, vm, _) {
         return Scaffold(
           backgroundColor: Colors.black,
@@ -41,11 +52,12 @@ class LiveStreamPage extends StatelessWidget {
               ),
 
               SafeArea(
-                child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                  child: Row(
-                    children: [
-                      IconButton(
+                child: Stack(
+                  children: [
+                    Positioned(
+                      top: 4,
+                      left: 4,
+                      child: IconButton(
                         onPressed: () async {
                           await vm.endLiveIfActive();
                           // ignore: use_build_context_synchronously
@@ -53,8 +65,11 @@ class LiveStreamPage extends StatelessWidget {
                         },
                         icon: const Icon(Icons.close, color: Colors.white),
                       ),
-                      const Spacer(),
-                      Container(
+                    ),
+                    Positioned(
+                      top: 8,
+                      right: 8,
+                      child: Container(
                         padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                         decoration: BoxDecoration(
                           color: Colors.redAccent.withOpacity(0.85),
@@ -65,9 +80,8 @@ class LiveStreamPage extends StatelessWidget {
                           style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700),
                         ),
                       ),
-                      const SizedBox(width: 8),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
 
@@ -79,6 +93,9 @@ class LiveStreamPage extends StatelessWidget {
                   child: GestureDetector(
                     onTap: () async {
                       final wasLive = vm.isLive;
+                      // Enforce title length: 10..60 to allow starting
+                      final validTitle = vm.liveTitle.trim().length >= 10 && vm.liveTitle.trim().length <= 60;
+                      if (!wasLive && !validTitle) return;
                       await vm.toggleLive();
                       if (wasLive) {
                         // Ending live: leave screen
@@ -89,8 +106,15 @@ class LiveStreamPage extends StatelessWidget {
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 26, vertical: 14),
                       decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [Color(0xFFF30C6C), Color(0xFFC739EB)],
+                        gradient: LinearGradient(
+                          colors: [
+                            (!vm.isLive && (vm.liveTitle.trim().length < 10 || vm.liveTitle.trim().length > 60))
+                                ? Colors.grey
+                                : const Color(0xFFF30C6C),
+                            (!vm.isLive && (vm.liveTitle.trim().length < 10 || vm.liveTitle.trim().length > 60))
+                                ? Colors.grey
+                                : const Color(0xFFC739EB),
+                          ],
                         ),
                         borderRadius: BorderRadius.circular(32),
                       ),

@@ -2,6 +2,7 @@ import 'package:stacked/stacked.dart';
 
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
+import 'package:insoblok/services/access_code_service.dart';
 
 abstract class InSoBlokViewModel extends ReactiveViewModel {
   final authService = AuthHelper.service;

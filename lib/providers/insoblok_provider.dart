@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:googleapis/artifactregistry/v1.dart';
+
 
 import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
@@ -42,6 +42,8 @@ class InSoBlokProvider extends InSoBlokViewModel {
   Future<void> init(BuildContext context) async {
     this.context = context;
     // _appProvider = context.read<AppProvider>();
+    // Ensure device push token is registered for follower notifications
+    await PushService().registerDeviceToken();
   }
 
   Future<void> onClickMenuAvatar() async {
