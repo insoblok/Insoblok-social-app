@@ -14,7 +14,7 @@ class RegisterSecondPage extends StatelessWidget {
 
   RegisterSecondPage({super.key, required this.user});
   
-  TextEditingController autoCompleteController = TextEditingController();
+  final TextEditingController autoCompleteController = TextEditingController();
 
 
   @override
@@ -33,15 +33,15 @@ class RegisterSecondPage extends StatelessWidget {
                 spacing: 24.0,
                 children: [
                   const SizedBox(height: 16),
-                  ClipOval(
-                    child: AIImage(AIImages.logo, width: 120.0, height: 120.0),
-                  ),
                   Padding(
                     padding: const EdgeInsets.all(20.0),
-                    child: Text(
-                      'Enter 75XP points by providing your country and city name',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 21),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                        'Enter 75XP points by providing your country and city name',
+                        textAlign: TextAlign.left,
+                        style: TextStyle(fontSize: 12),
+                      ),
                     ),
                   ),
                   const SizedBox(height: 8.0),
@@ -109,11 +109,10 @@ class RegisterSecondPage extends StatelessWidget {
                       ),
                   ),
                   const Spacer(),
-                  TextFillButton(
+                  GradientPillButton(
                     text: "Register",
-                    color: AIColors.pink,
-                    isBusy: viewModel.isBusy,
-                    onTap: viewModel.onClickRegister,
+                    onPressed: viewModel.onClickRegister,
+                    loading: viewModel.isBusy,
                   ),
                   SizedBox(height: MediaQuery.of(context).viewPadding.bottom),
                 ],

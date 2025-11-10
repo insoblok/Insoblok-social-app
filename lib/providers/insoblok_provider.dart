@@ -130,8 +130,27 @@ class InSoBlokProvider extends InSoBlokViewModel {
   }
 
   Future<void> handleTapCreateVTOPost() async {
-    List<String> mediaString = (mediaPickerService.currentStory?.medias ?? []).map((m) => m.link ?? "").toList();
-    await AIHelpers.goToDetailView(context, medias: mediaString);
+    // Close any open bottom sheets first
+    Navigator.of(context).maybePop();
+    try {
+      // Fetch latest products and pick the first supported one
+      final products = await productService.getProducts();
+      if (products.isNotEmpty) {
+        final supported = products.where((p) {
+          final c = p.category ?? '';
+          return p.avatarImage != null &&
+              (c == 'Clothing' || c == 'Shoes' || c == 'Jewelry');
+        }).toList();
+        final product = (supported.isNotEmpty) ? supported.first : products.first;
+        Routers.goToVTOImagePage(context, product);
+      } else {
+        // Fallback to marketplace if no product available
+        Routers.goToMarketPlacePage(context);
+      }
+    } catch (e) {
+      // On any error, fallback
+      Routers.goToMarketPlacePage(context);
+    }
   }
 
   void toggleSearch() {
