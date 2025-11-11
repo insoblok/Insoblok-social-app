@@ -8,7 +8,8 @@ import 'package:insoblok/pages/pages.dart';
 import 'package:insoblok/locator.dart';
 
 class PinCodeRegistrationPage extends StatefulWidget {
-  const PinCodeRegistrationPage({Key? key, required this.mnemonic}) : super(key: key);
+  const PinCodeRegistrationPage({Key? key, required this.mnemonic})
+    : super(key: key);
   final String mnemonic;
 
   @override
@@ -22,7 +23,7 @@ class _PinRegistrationPageState extends State<PinCodeRegistrationPage> {
   String _status = "Create a new PIN";
   final int pinLength = 6;
   final CryptoService cryptoService = locator<CryptoService>();
-  
+
   void _onKeyPressed(String value) {
     setState(() {
       if (!_isConfirmStep) {
@@ -87,82 +88,93 @@ class _PinRegistrationPageState extends State<PinCodeRegistrationPage> {
     try {
       String mnemonic = "";
       String address = "";
+      NewWalletResult? walletResult;
+
       if (widget.mnemonic.isEmpty) {
-        final newWalletResult =  await cryptoService.createAndStoreWallet(pin);
-        mnemonic = newWalletResult.mnemonic ?? "";
-        address = newWalletResult.address;
+        walletResult = await cryptoService.createAndStoreWallet(pin);
+        mnemonic = walletResult.mnemonic ?? "";
+        address = walletResult.address;
       } else {
-        final unlockWalletResult = await cryptoService.importFromMnemonic(widget.mnemonic, pin);
+        walletResult = await cryptoService.importFromMnemonic(
+          widget.mnemonic,
+          pin,
+        );
         mnemonic = widget.mnemonic;
-        address = unlockWalletResult.address;
+        address = walletResult.address;
       }
 
       logger.d("Wallet creation result is $address, $mnemonic");
-      
+
+      // Log all created addresses
+      logger.d("ETH address: ${walletResult.address}");
+      logger.d("USDT address: ${walletResult.addresses['usdt']}");
+      logger.d("XRP public key: ${walletResult.addresses['xrp']}");
+      logger.d("All addresses: ${walletResult.addresses}");
+
       if (widget.mnemonic.isEmpty) {
         await showDialog(
           context: context,
           barrierDismissible: false,
-          builder: (context) => SeedPhraseConfirmationWidget(
-            seedWords: mnemonic.split(" ").toList(), 
-            onConfirmed: () {
-              showDialog(
-                context: context,
-                barrierDismissible: false,
-                builder: (context) => SeedPhraseConfirmationDialog(
-                  originalSeedPhrase: mnemonic.trim(),
-                  onConfirm: () async {
-                    var authUser = await AuthHelper.signIn(
-                      address,
-                      true,
-                    );
+          builder:
+              (context) => SeedPhraseConfirmationWidget(
+                seedWords: mnemonic.split(" ").toList(),
+                onConfirmed: () {
+                  showDialog(
+                    context: context,
+                    barrierDismissible: false,
+                    builder:
+                        (context) => SeedPhraseConfirmationDialog(
+                          originalSeedPhrase: mnemonic.trim(),
+                          onConfirm: () async {
+                            var authUser = await AuthHelper.signIn(
+                              address,
+                              true,
+                            );
 
-                    if (authUser?.walletAddress?.isEmpty ?? true) {
-                      Routers.goToRegisterFirstPage(
-                        bContext,
-                        user: UserModel(walletAddress: address),
-                      );
-                    } else {
-                      AuthHelper.updateStatus('Online');
-                      Routers.goToMainPage(bContext);
-                    }
-                  },
-                  onCancel: () {
-                    Navigator.pop(context); // Close confirmation dialog
-                  },
-                  showSeedPhrase: false,
-                ),
-              );
-            } 
-          )
+                            if (authUser?.walletAddress?.isEmpty ?? true) {
+                              Routers.goToRegisterFirstPage(
+                                bContext,
+                                user: UserModel(walletAddress: address),
+                              );
+                            } else {
+                              AuthHelper.updateStatus('Online');
+                              Routers.goToMainPage(bContext);
+                            }
+                          },
+                          onCancel: () {
+                            Navigator.pop(context); // Close confirmation dialog
+                          },
+                          showSeedPhrase: false,
+                        ),
+                  );
+                },
+              ),
         );
       } else {
         await showDialog(
           context: context,
           barrierDismissible: false,
-          builder: (context) => SeedPhraseConfirmationDialog(
-            originalSeedPhrase: mnemonic.trim(),
-            onConfirm: () async {
-              var authUser = await AuthHelper.signIn(
-                address,
-                true,
-              );
+          builder:
+              (context) => SeedPhraseConfirmationDialog(
+                originalSeedPhrase: mnemonic.trim(),
+                onConfirm: () async {
+                  var authUser = await AuthHelper.signIn(address, true);
 
-              if (authUser?.walletAddress?.isEmpty ?? true) {
-                Routers.goToRegisterFirstPage(
-                  bContext,
-                  user: UserModel(walletAddress: address),
-                );
-              } else {
-                AuthHelper.updateStatus('Online');
-                Routers.goToMainPage(bContext);
-              }
-            },
-            onCancel: () {
-              Navigator.pop(context); // Close confirmation dialog
-            },
-            showSeedPhrase: false,
-          ),
+                  if (authUser?.walletAddress?.isEmpty ?? true) {
+                    Routers.goToRegisterFirstPage(
+                      bContext,
+                      user: UserModel(walletAddress: address),
+                    );
+                  } else {
+                    AuthHelper.updateStatus('Online');
+                    Routers.goToMainPage(bContext);
+                  }
+                },
+                onCancel: () {
+                  Navigator.pop(context); // Close confirmation dialog
+                },
+                showSeedPhrase: false,
+              ),
         );
       }
     } catch (e) {
@@ -196,7 +208,7 @@ class _PinRegistrationPageState extends State<PinCodeRegistrationPage> {
               Column(
                 children: [
                   const SizedBox(height: 40),
-                  
+
                   // Using the reusable PinInputWidget
                   PinCodeInputWidget(
                     enteredPin: currentPin,
@@ -216,15 +228,21 @@ class _PinRegistrationPageState extends State<PinCodeRegistrationPage> {
                 ],
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 20),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 32,
+                  vertical: 20,
+                ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     GestureDetector(
-                      onTap:() {
+                      onTap: () {
                         Navigator.pushReplacementNamed(context, '/login');
                       },
-                      child: const Text("Cancel", style: TextStyle(color: Colors.white70, fontSize: 16)),
+                      child: const Text(
+                        "Cancel",
+                        style: TextStyle(color: Colors.white70, fontSize: 16),
+                      ),
                     ),
                   ],
                 ),

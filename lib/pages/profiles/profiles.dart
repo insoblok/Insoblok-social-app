@@ -19,6 +19,8 @@ export 'wallet_favorites_page.dart';
 export 'token_detail_page.dart';
 export 'wallet_send_one_page.dart';
 export 'wallet_send_page.dart';
+export 'wallet_search_page.dart';
+export 'wallet_import_confirm_page.dart';
 export 'wallet_swap_page.dart';
 export 'wallet_activities_page.dart';
 export 'wallet_notifications_page.dart';

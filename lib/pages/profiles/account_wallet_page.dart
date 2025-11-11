@@ -3,8 +3,6 @@ import 'package:stacked/stacked.dart';
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
-import 'package:insoblok/routers/routers.dart';
-import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/locator.dart';
 
@@ -15,7 +13,18 @@ class AccountWalletPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<AccountWalletProvider>.reactive(
-      viewModelBuilder: () => AccountWalletProvider(),
+      viewModelBuilder: () {
+        // Use singleton instance if available and not disposed, otherwise create new one
+        final existingInstance = AccountWalletProvider.instance;
+        if (existingInstance != null) {
+          return existingInstance;
+        }
+        return AccountWalletProvider();
+      },
+      onViewModelReady: (viewModel) {
+        // Refresh imported tokens when the page is ready
+        viewModel.refreshImportedTokens();
+      },
       builder: (context, viewModel, _) {
         return Scaffold(
           appBar: AppBar(
@@ -31,9 +40,9 @@ class AccountWalletPage extends StatelessWidget {
           ),
           body: Container(
             color: Colors.black,
-            child: viewModel.pages[viewModel.pageIndex]
+            child: viewModel.pages[viewModel.pageIndex],
           ),
-              /*
+          /*
               Align(
                   alignment: Alignment.bottomCenter,
                   child: Padding(
@@ -166,42 +175,50 @@ class AccountWalletPage extends StatelessWidget {
               items: [
                 BottomNavigationBarItem(
                   icon: AIImage(
-                      viewModel.pageIndex == 0 ? AIImages.icBottomWalletFill : AIImages.icBottomWallet,
-                      width: 21.0,
-                      height: 21.0,
-                      color: Colors.white
-                    ),
-                  label: ""
+                    viewModel.pageIndex == 0
+                        ? AIImages.icBottomWalletFill
+                        : AIImages.icBottomWallet,
+                    width: 21.0,
+                    height: 21.0,
+                    color: Colors.white,
+                  ),
+                  label: "",
                 ),
                 BottomNavigationBarItem(
                   icon: AIImage(
-                      viewModel.pageIndex == 1 ? AIImages.icBottomFavoriteFill : AIImages.icBottomFavorite,
-                      width: 21.0,
-                      height: 21.0,
-                      color: Colors.white
-                    ),
-                  label: ""
+                    viewModel.pageIndex == 1
+                        ? AIImages.icBottomFavoriteFill
+                        : AIImages.icBottomFavorite,
+                    width: 21.0,
+                    height: 21.0,
+                    color: Colors.white,
+                  ),
+                  label: "",
                 ),
                 BottomNavigationBarItem(
                   icon: AIImage(
-                      viewModel.pageIndex == 2 ? AIImages.icHistoryFill : AIImages.icHistoryStroke,
-                      width: 21.0,
-                      height: 21.0,
-                      color: Colors.white
-                    ),
-                  label: ""
+                    viewModel.pageIndex == 2
+                        ? AIImages.icHistoryFill
+                        : AIImages.icHistoryStroke,
+                    width: 21.0,
+                    height: 21.0,
+                    color: Colors.white,
+                  ),
+                  label: "",
                 ),
                 BottomNavigationBarItem(
                   icon: AIImage(
-                      viewModel.pageIndex == 3 ? AIImages.icBottomNotiFill : AIImages.icBottomNoti,
-                      width: 21.0,
-                      height: 21.0,
-                      color: Colors.white
-                    ),
-                  label: ""
+                    viewModel.pageIndex == 3
+                        ? AIImages.icBottomNotiFill
+                        : AIImages.icBottomNoti,
+                    width: 21.0,
+                    height: 21.0,
+                    color: Colors.white,
+                  ),
+                  label: "",
                 ),
-
-            ])
+              ],
+            ),
           ),
         );
       },

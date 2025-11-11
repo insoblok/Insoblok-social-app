@@ -414,9 +414,17 @@ class StoryProvider extends InSoBlokViewModel {
   String? get address => _address;
 
   Future<void> getAddress() async {
+    // Check if placeId is valid before making API call
+    final placeId = story.placeId;
+    if (placeId == null || placeId.isEmpty) {
+      _address = "";
+      notifyListeners();
+      return;
+    }
+
     try {
       final prediction = await places.fetchPlace(
-        story.placeId ?? "",
+        placeId,
         fields: [
           google.PlaceField.Id,
           google.PlaceField.Address,
@@ -427,6 +435,7 @@ class StoryProvider extends InSoBlokViewModel {
       _address = prediction.place?.address ?? "";
     } catch (e) {
       logger.e("Failed to fetch address: $e");
+      _address = "";
     }
     notifyListeners();
   }

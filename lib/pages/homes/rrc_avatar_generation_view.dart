@@ -58,7 +58,11 @@ class _RRCAvatarGenerationViewState extends State<RRCAvatarGenerationView> {
       builder:
           (context, viewModel, child) => Scaffold(
             appBar: AppBar(
-              title: const Text('AI Avatar Generation'),
+              title: Text(
+                widget.origin == "profile"
+                    ? 'AI Avatar Generation'
+                    : 'AI Reaction Generation',
+              ),
               centerTitle: true,
               actions: [
                 // Only show save button when called from account_avatar_provider (origin == "profile")

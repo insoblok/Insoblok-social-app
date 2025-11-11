@@ -6,6 +6,7 @@ import 'package:insoblok/pages/pages.dart';
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
+
 class Routers {
   static dynamic _pushToRoute(BuildContext context, String route, props) {
     return Navigator.pushNamed(context, route, arguments: props);
@@ -19,7 +20,10 @@ class Routers {
     _pushReplacement(context, kRouterLogin, null);
   }
 
-  static dynamic goToPincodeRegisterPage(BuildContext context, String mnemonic) {
+  static dynamic goToPincodeRegisterPage(
+    BuildContext context,
+    String mnemonic,
+  ) {
     _pushReplacement(context, kRouterPincodeRegister, mnemonic);
   }
 
@@ -57,7 +61,10 @@ class Routers {
     _pushToRoute(context, kRouterAccessCodeUserId, email);
   }
 
-  static dynamic goToAccessCodeConfirmPage(BuildContext context, Map<String, dynamic> props) {
+  static dynamic goToAccessCodeConfirmPage(
+    BuildContext context,
+    Map<String, dynamic> props,
+  ) {
     _pushToRoute(context, kRouterAccessCodeConfirm, props);
   }
 
@@ -76,12 +83,16 @@ class Routers {
   static dynamic goToLookbookDetailPage(BuildContext context, StoryModel data) {
     return _pushToRoute(context, kRouterLookbookDetail, data);
   }
-  
+
   static dynamic goToAccountUpdatePage(BuildContext context) {
     return _pushToRoute(context, kRouterAccountUpdate, null);
   }
 
-  static dynamic goToAccountAvatarPage(BuildContext context, String? src, String? dst) {
+  static dynamic goToAccountAvatarPage(
+    BuildContext context,
+    String? src,
+    String? dst,
+  ) {
     Map<String, String?> args = {};
     args["src"] = src;
     args["dst"] = dst;
@@ -132,6 +143,10 @@ class Routers {
     return _pushToRoute(context, kRouterWalletSend, null);
   }
 
+  static dynamic goToWalletSearchPage(BuildContext context) {
+    return _pushToRoute(context, kRouterWalletSearch, null);
+  }
+
   static dynamic goToWalletSendOnePage(BuildContext context) {
     return _pushToRoute(context, kRouterWalletSendOne, null);
   }
@@ -171,7 +186,13 @@ class Routers {
     return _pushToRoute(context, kRouterChatPayment, args);
   }
 
-  static dynamic goToPaymentAmountPage(BuildContext context, String s, String r, String n, double amount) {
+  static dynamic goToPaymentAmountPage(
+    BuildContext context,
+    String s,
+    String r,
+    String n,
+    double amount,
+  ) {
     Map<String, dynamic> args = {};
     args["sender"] = s;
     args["receiver"] = r;
@@ -180,7 +201,13 @@ class Routers {
     return _pushToRoute(context, kRouterPaymentAmount, args);
   }
 
-  static dynamic goToPaymentConfirmPage(BuildContext context, String s, String r, String n, double amt) {
+  static dynamic goToPaymentConfirmPage(
+    BuildContext context,
+    String s,
+    String r,
+    String n,
+    double amt,
+  ) {
     Map<String, dynamic> args = {};
     args["sender"] = s;
     args["receiver"] = r;
@@ -192,6 +219,7 @@ class Routers {
   static dynamic goToPaymentResultPage(BuildContext context) {
     return _pushToRoute(context, kRouterPaymentResult, null);
   }
+
   static dynamic goToLookbookPage(BuildContext context) {
     return _pushToRoute(context, kRouterLookbook, null);
   }
@@ -234,8 +262,6 @@ class Routers {
   static dynamic goToVTOAddProduct(BuildContext context) {
     return _pushToRoute(context, kRouterVTOAddProduct, null);
   }
-
-  
 
   static dynamic goToNewsDetailPage(BuildContext context, NewsModel data) {
     return _pushToRoute(context, kRouterNewsDetail, data);
@@ -290,22 +316,35 @@ class Routers {
     return _pushToRoute(context, kRouterMarketPlace, null);
   }
 
-  static dynamic goToFaceDetailPage(BuildContext context, String storyID, String url, io.File face, List<AIFaceAnnotation> annotations, bool editable) {
+  static dynamic goToFaceDetailPage(
+    BuildContext context,
+    String storyID,
+    String url,
+    io.File face,
+    List<AIFaceAnnotation> annotations,
+    bool editable,
+  ) {
     return _pushToRoute(context, kRouterFaceDetail, {
       'storyID': storyID,
       'url': url,
       'face': face,
-      'annotations' : annotations,
-      'editable' : editable
+      'annotations': annotations,
+      'editable': editable,
     });
   }
 
-  static dynamic goToReactionVideoDetailPage(BuildContext context, String storyID, String url, String videoPath, bool editable) {
+  static dynamic goToReactionVideoDetailPage(
+    BuildContext context,
+    String storyID,
+    String url,
+    String videoPath,
+    bool editable,
+  ) {
     return _pushToRoute(context, kRouterReactionVideoDetail, {
       'storyID': storyID,
       'url': url,
       'videoPath': videoPath,
-      'editable' : editable,
+      'editable': editable,
     });
   }
 
@@ -320,11 +359,20 @@ class Routers {
     return _pushToRoute(context, kRouterFavorites, null);
   }
 
-  static dynamic goToTokenDetailPage(BuildContext context, Map<String, dynamic> args) {
+  static dynamic goToTokenDetailPage(
+    BuildContext context,
+    Map<String, dynamic> args,
+  ) {
     return _pushToRoute(context, kRouterTokenDetail, args);
   }
 
-  static dynamic goToRRCAvatarGenerationPage(BuildContext context, io.File? face, String url, String origin, String storyID) {
+  static dynamic goToRRCAvatarGenerationPage(
+    BuildContext context,
+    io.File? face,
+    String url,
+    String origin,
+    String storyID,
+  ) {
     Map<String, dynamic> args = {};
     args["face"] = face!;
     args["url"] = url;
@@ -333,5 +381,4 @@ class Routers {
     logger.d("This is inside gotorrcavatar $args");
     return _pushToRoute(context, kRouterRRCAvatarGeneration, args);
   }
-
 }
