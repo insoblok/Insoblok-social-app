@@ -8,3 +8,6 @@ export 'bases/bases.dart';
 export 'news/news.dart';
 export 'vtos/vtos.dart';
 export 'stories/lookbook_detail_page.dart';
+export 'lives/lives.dart';
+export 'posts/create_post_page.dart';
+export 'rrc/rrc_avatar_generation_view.dart';

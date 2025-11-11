@@ -161,8 +161,7 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
                     ) {
                       return SafeArea(
                         child: Container(
-                          padding: const EdgeInsets.all(8.0),
-                          height: 160,
+                          padding: EdgeInsets.fromLTRB(8.0, 8.0, 8.0, 58.0),
                           decoration: BoxDecoration(
                             // color: Theme.of(context).scaffoldBackgroundColor,
                             borderRadius: const BorderRadius.vertical(
@@ -170,6 +169,8 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
                             ),
                           ),
                           child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               // Drag handle
                               Center(
@@ -187,10 +188,16 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
                                 onTap: viewModel.handleTapCreateVTOPost,
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    "Create VTO Post",
-                                    style:
-                                        Theme.of(context).textTheme.bodyLarge,
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: [
+                                      const Icon(Icons.checkroom, color: Colors.white, size: 18),
+                                      const SizedBox(width: 12),
+                                      const Text(
+                                        "Create VTO Post",
+                                        style: TextStyle(fontSize: 12, color: Colors.white),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
@@ -198,24 +205,36 @@ class InSoBlokPage extends StatelessWidget with WidgetsBindingObserver {
                                 onTap: viewModel.goToAddPost,
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    "Create Post",
-                                    style:
-                                        Theme.of(context).textTheme.bodyLarge,
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: [
+                                      const Icon(Icons.post_add, color: Colors.white, size: 18),
+                                      const SizedBox(width: 12),
+                                      const Text(
+                                        "Create Post",
+                                        style: TextStyle(fontSize: 12, color: Colors.white),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
                               InkWell(
                                 onTap: () {
                                   Navigator.of(context).pop();
-                                  Routers.goToCreateRoomPage(context);
+                                  Routers.goToLivePage(context);
                                 },
                                 child: Padding(
                                   padding: const EdgeInsets.all(8.0),
-                                  child: Text(
-                                    "Create Chat Room",
-                                    style:
-                                        Theme.of(context).textTheme.bodyLarge,
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: [
+                                      const Icon(Icons.live_tv, color: Colors.red, size: 18),
+                                      const SizedBox(width: 12),
+                                      const Text(
+                                        "Create Live Stream",
+                                        style: TextStyle(fontSize: 12, color: Colors.white),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),

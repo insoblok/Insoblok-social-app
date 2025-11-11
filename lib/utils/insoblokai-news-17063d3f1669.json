@@ -1,0 +1,13 @@
+{
+  "type": "service_account",
+  "project_id": "insoblokai-news",
+  "private_key_id": "17063d3f1669279e99c809fc9e25e245e5fb8a64",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQDCSkbsAm2FzH5t\n3mIEByKMnIEM9tvbVvdf8y6TBIyahyQetpwNeIk/WuRxqOMJtZuyxQ5GzUEndeXi\nc96XI4n3ssjGhAz+KLkx2lcdE2bkFOf2NAkQObWS7UpuF4D5aO3ftqw4HIpgIc33\ncHMug3nxdAhJRbDypvDvgb9m6XUDKp+GJix9wW+x+ctUQs9uqkOVSVNyv6bcXnJA\n25mJ9337Q90VmJ9YdNe218pbHwjL1PU3gXx4zyY5qC+T/6pVOqpHYqTopXS/6nFT\nndXXwPerYrWwvWGboDgnOkxC8dD8GHEOS9yFkpIIMx1EWHPFul/Pgm/useVpoZLA\ngqm0JDZxAgMBAAECggEAAsrqhg3q4Rd1YcLmicRIfNjrCfKqalavq5NlQfu4wafb\nnw1k5NSstFpsGi4hRUx09nbao63jl9ub+EtOEcITA5pwRFo1jZmsP8kxo1taCUE7\nrFBHKRKLR5ddkIOJ+QvHD4Yip5PRcVxLB5l4Llz5bb0LOXJk/rfjkq28wI/ufKMj\nxW9b7KG3ASMBCQ9HGV8zlzpHcYtzFFpoyT44fmcerfK4jrgV8MPw1Og4YiHh2elC\niTyO5pI4D4yrhf2xh0kqyk1rtX2QDtuS2R3QTZRX0KUW0zcPC3P2WWaQdarqNVJc\nmW9HkHQM8+rn+4ImyIw4lAR8MRe8misi/+eqyBqJgQKBgQDxXWa7Rk0runsHKvWk\ncW0voSc6LCTuegawokdo1gOob0P/lnfj7fpS6/d+Lp3HGIbRk/q4CD/TRRf6Xrs/\nZv3PnvGyf9C7bI6+iDGxsw6ah0Hx4Xx8cK1YbjHM9K1pnBkjz/y9KBW/aMEeehIw\nYSBG2WqqaF9exUjqQ0KDgv2uKQKBgQDOEif5GaiK7+IvN+Q5fOKXXrMJj7zK6ugG\nMq/7RKKODhCTur2ho5S3p0LeST1SD/Ipe41AmZA9Rvr9lsVdE41Ga4JWK5xR8RST\noE3ckCOU2wzMbF0WfUpvYuh3oiPTeNgwfe8w1J/FCxn4st3Tx8tAkuHn4admDmeP\nNDyzkhU/CQKBgQDlBCK9/26p1z91BaYeaiGX1+lIoSpJvS8r2k63gpnl7+0tTrBj\nbSLgG1WyPLkoeHUz1p1GkU0+QYkG32v8NNUPc1kSbYS40cB/uOquGZ/5r+06fSGJ\nUcCo76YBOwhv9NVFzcuaD7bS76qOKHWpwf7GOvWiy3Xyjm8pGLi74EakQQKBgDH3\nfw/Mo+yEfBC8+a7i1EKl6L2xx7JgQUB3e+puWwgc6vIXPrH56y6Y9QLXOXIzgaGD\nXt3CHpJtKqDgtRx7iC8CFIl2a6IG1dlx7k9D+Ay5DKJoyC2S1cCqd/nCK/O0Ap/H\neX8an1708Sg3nsgiUutmcjZ6pc9+QKgdn3ZfPp2ZAoGAKnli7bri6ZwbJYVUCJ/v\nURf+gF9wyYnTPhLTOjl8BNvzxNrCj0fc//Y4y5+IRdthjRl/QEwyfd/IipkWDRFo\nug1qGejuQh+jcbMPz7M2iAZTfuVzSlO+ysGi4Kpt/r8zEMhsn58YERccOmeE50qo\neukw3cqahY4DdAeluwtxSzY=\n-----END PRIVATE KEY-----\n",
+  "client_email": "insoblokvision-351@insoblokai-news.iam.gserviceaccount.com",
+  "client_id": "113407110914195271384",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/insoblokvision-351%40insoblokai-news.iam.gserviceaccount.com",
+  "universe_domain": "googleapis.com"
+}

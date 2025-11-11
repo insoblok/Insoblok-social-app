@@ -115,51 +115,32 @@ class RewardTransferView extends ViewModelWidget<AccountRewardProvider> {
             style: Theme.of(context).textTheme.bodySmall,
           ),
           const SizedBox(height: 8),
-          Wrap(
-            spacing: 4,
-            runSpacing: 4.0,
-            alignment: WrapAlignment.center,
-            runAlignment: WrapAlignment.center,
+          // Slider to pick XP amount instead of fixed-size buttons
+          Column(
             children: [
-              for (XpInSoModel inSoModel
-                  in (AppSettingHelper.appSettingModel?.xpInso ?? [])) ...{
-                InkWell(
-                  onTap: () {
-                    viewModel.selectInSo(inSoModel);
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16.0,
-                      vertical: 4.0,
-                    ),
-                    decoration: BoxDecoration(
-                      color:
-                          viewModel.selectXpInSo == inSoModel
-                              ? AIColors.pink
-                              : Theme.of(
-                                context,
-                              ).colorScheme.secondary.withAlpha(16),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    child: Text.rich(
-                      TextSpan(children: [
-                        TextSpan(text: '${inSoModel.max}\n'),
-                        TextSpan(
-                          text: '(${inSoModel.max! * inSoModel.rate! / 100})',
-                          style: const TextStyle(fontSize: 12), // smaller second line
-                        ),
-                      ]),
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                        color: viewModel.selectXpInSo == inSoModel
-                            ? AIColors.white
-                            : Theme.of(context).colorScheme.onPrimary,
-                      ),
-                    ),
-
-                  ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text('0 XP'),
+                  Text('${viewModel.availableXP} XP'),
+                ],
+              ),
+              SliderTheme(
+                data: SliderTheme.of(context).copyWith(
+                  trackHeight: 4,
+                  thumbShape: const RoundSliderThumbShape(enabledThumbRadius: 8),
                 ),
-              },
+                child: Slider(
+                  min: 0,
+                  max: (viewModel.availableXP).toDouble(),
+                  divisions: viewModel.availableXP > 0 ? viewModel.availableXP : 1,
+                  value: (double.tryParse(viewModel.xpValue ?? '0') ?? 0)
+                      .clamp(0, (viewModel.availableXP).toDouble()),
+                  onChanged: (v) {
+                    viewModel.setXpValue(v.round().toString());
+                  },
+                ),
+              ),
             ],
           ),
           Column(

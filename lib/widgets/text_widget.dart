@@ -1,8 +1,7 @@
 import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:insoblok/utils/utils.dart';
-import 'package:insoblok/services/services.dart';
-import 'package:insoblok/widgets/widgets.dart';
+
 
 
 
@@ -25,6 +24,8 @@ class AITextField extends StatelessWidget {
   final Color? borderColor;
   final Color? focusedColor;
   final Color? fillColor;
+  final double? borderWidth;
+  final double? focusedBorderWidth;
 
   const AITextField({
     super.key,
@@ -46,6 +47,8 @@ class AITextField extends StatelessWidget {
     this.borderColor = Colors.transparent,
     this.focusedColor = Colors.pink,
     this.fillColor = Colors.transparent,
+    this.borderWidth = 0.66,
+    this.focusedBorderWidth = 1.0,
   });
 
   @override
@@ -70,16 +73,16 @@ class AITextField extends StatelessWidget {
           fillColor: fillColor,
           border: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12.0),
-            borderSide: BorderSide(width: 0.66),
+            borderSide: BorderSide(width: borderWidth!),
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12.0),
-            borderSide: BorderSide(width: 0.66, color: borderColor!),
+            borderSide: BorderSide(width: borderWidth!, color: borderColor!),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12.0),
             borderSide: BorderSide(
-              width: 1,
+              width: focusedBorderWidth!,
               color: focusedColor!,
             ),
           ),

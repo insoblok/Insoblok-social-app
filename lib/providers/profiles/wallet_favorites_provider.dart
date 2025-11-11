@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 import 'package:observable_ish/observable_ish.dart';
 
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
+import 'package:insoblok/services/price_socket_service.dart';
 import 'package:insoblok/utils/utils.dart';
-import 'package:insoblok/locator.dart';
-
+// import 'package:insoblok/locator.dart';
 
 class WalletFavoritesProvider extends InSoBlokViewModel {
   late BuildContext _context;
@@ -21,7 +22,15 @@ class WalletFavoritesProvider extends InSoBlokViewModel {
     _viewType.value = v;
     notifyListeners();
   } 
-
+  
+  // ------- live price streaming -------
+  final Map<String, double> livePrices = {};
+  // -1: down, 0: no change/unknown, 1: up
+  final Map<String, int> priceDirections = {};
+  // Increments whenever a symbol's price changes; used to restart UI animations.
+  final Map<String, int> priceChangeTick = {};
+  final PriceSocketService _priceSocket = PriceSocketService();
+  StreamSubscription? _priceSub;
 
   List<String> _tokens = [];
   List<String> get tokens => _tokens;
@@ -49,6 +58,8 @@ class WalletFavoritesProvider extends InSoBlokViewModel {
     this.context = context;
     tokens = await web3service.getAvailableTokenIds();
     logger.d("initial tokens are $tokens");
+    _priceSocket.enableLogs = true;
+    await _startFavoritesPriceStream();
   }
   final Web3Service web3service = Web3Service();
 
@@ -79,7 +90,7 @@ class WalletFavoritesProvider extends InSoBlokViewModel {
       logger.d("Exception raised while toggle favorites ${e.toString()}");
     }
     AIHelpers.showToast(msg: message);
-    // notifyListeners();
+    await _startFavoritesPriceStream(); // rewire stream for new favorites
   }
 
   bool checkFavorite(String network) {
@@ -132,4 +143,49 @@ class WalletFavoritesProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  // ------- socket helpers -------
+  Future<void> _startFavoritesPriceStream() async {
+    final favs = await favoriteTokens;
+    final symbols = <String>[];
+    for (final t in favs) {
+      final sym = t['symbol'];
+      if (sym is String && sym.isNotEmpty) {
+        symbols.add(sym.toUpperCase());
+      }
+    }
+    logger.d('[Favorites] Starting price stream for: ${symbols.join(", ")}');
+    await _priceSub?.cancel();
+    _priceSub = _priceSocket.updates.listen((e) {
+      if (_priceSocket.enableLogs) {
+        logger.d('[Favorites] tick ${e.symbol} ${e.price}');
+      }
+      final String sym = e.symbol.toUpperCase();
+      final double newPrice = e.price;
+      final double? previous = livePrices[sym];
+      // Compute direction
+      int direction = 0;
+      if (previous != null) {
+        if (newPrice > previous) {
+          direction = 1;
+        } else if (newPrice < previous) {
+          direction = -1;
+        }
+      }
+      priceDirections[sym] = direction;
+      // Increment tick only when price actually changes (avoid restarting animation on equal price)
+      if (direction != 0) {
+        priceChangeTick[sym] = (priceChangeTick[sym] ?? 0) + 1;
+      }
+      livePrices[sym] = newPrice;
+      notifyListeners();
+    });
+    await _priceSocket.connect(symbols, fiat: 'USD');
+  }
+
+  @override
+  void dispose() {
+    _priceSub?.cancel();
+    _priceSocket.dispose();
+    super.dispose();
+  }
 }

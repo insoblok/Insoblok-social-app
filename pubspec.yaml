@@ -68,6 +68,10 @@ dependencies:
   firebase_auth: any
   firebase_app_check: any
   collection: any
+  cloud_functions: any
+  uuid: any
+  stream_video_flutter: any
+  firebase_messaging: 16.0.3
 
   dio: any
   path_provider: any
@@ -147,6 +151,7 @@ flutter:
   
   assets:
     - assets/images/
+    - assets/images/rrc/
     - assets/videos/d0.mp4
     - assets/videos/d3.mp4
     - assets/videos/d18.mp4

@@ -23,96 +23,82 @@ class VTOImagePage extends StatelessWidget {
       builder: (context, viewModel, _) {
         return Scaffold(
           appBar: AppBar(title: Text(product.name ?? 'VTO'), centerTitle: true),
-          body: ListView(
-            physics: BouncingScrollPhysics(),
-            padding: const EdgeInsets.symmetric(
-              horizontal: 20.0,
-              vertical: 24.0,
-            ),
-            children: [
-              Row(
-                spacing: 24.0,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  SizedBox(
-                    width: 200.0,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+          body: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 16.0),
+            child: Column(
+              children: [
+                // Row 1: Dress (product image) - fills available width
+                Expanded(
+                  child: ClipRRect(
+                    borderRadius: BorderRadiusGeometry.circular(12.0),
+                    child: AIImage(
+                      viewModel.product.modelImage,
+                      width: double.infinity,
+                      fit: BoxFit.contain,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 12.0),
+                // Row 2: Model (Add Photo area) - fills available width
+                Expanded(
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        width: 0.66,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                      borderRadius: BorderRadius.circular(16.0),
+                    ),
+                    child: Stack(
                       children: [
                         ClipRRect(
-                          borderRadius: BorderRadiusGeometry.circular(12.0),
-                          child: AIImage(
-                            viewModel.product.modelImage,
-                            width: double.infinity,
-                            fit: BoxFit.contain,
+                          borderRadius: BorderRadius.circular(16.0),
+                          child: SizedBox.expand(
+                            child: viewModel.selectedFile != null
+                                ? AIImage(
+                                    File(viewModel.selectedFile!.path),
+                                    width: double.infinity,
+                                    fit: BoxFit.cover,
+                                  )
+                                : Center(
+                                    child: InkWell(
+                                      onTap: viewModel.onClickAddPhoto,
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          AIImage(Icons.add_a_photo),
+                                          const SizedBox(height: 12.0),
+                                          Text('Add Photo'),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
                           ),
                         ),
-                        const SizedBox(height: 12.0),
-                        Text('Information'),
-                        VTOInformationView(),
-                        const SizedBox(height: 24.0),
-                        TextFillButton(
-                          text: 'Apply Model',
-                          isBusy: viewModel.isConverting,
-                          onTap: viewModel.onClickConvert,
-                          color: Theme.of(context).primaryColor,
-                        ),
+                        if ((viewModel.selectedFile != null) &&
+                            (viewModel.serverUrl == null))
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: CircleImageButton(
+                              src: Icons.close,
+                              onTap: viewModel.onClickCloseButton,
+                            ),
+                          ),
                       ],
                     ),
                   ),
-                  Expanded(
-                    child: Container(
-                      decoration: BoxDecoration(
-                        border: Border.all(
-                          width: 0.66,
-                          color: Theme.of(context).primaryColor,
-                        ),
-                        borderRadius: BorderRadius.circular(16.0),
-                      ),
-                      child: Stack(
-                        children: [
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(16.0),
-                            child: AspectRatio(
-                              aspectRatio: 0.7,
-                              child:
-                                  viewModel.selectedFile != null
-                                      ? AIImage(
-                                        File(viewModel.selectedFile!.path),
-                                        width: double.infinity,
-                                        fit: BoxFit.cover,
-                                      )
-                                      : Center(
-                                        child: InkWell(
-                                          onTap: viewModel.onClickAddPhoto,
-                                          child: Column(
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              AIImage(Icons.add_a_photo),
-                                              const SizedBox(height: 12.0),
-                                              Text('Add Photo'),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                            ),
-                          ),
-                          if ((viewModel.selectedFile != null) &&
-                              (viewModel.serverUrl == null))
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: CircleImageButton(
-                                src: Icons.close,
-                                onTap: viewModel.onClickCloseButton,
-                              ),
-                            ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
+                ),
+                const SizedBox(height: 12.0),
+                // Row 3: Button
+                TextFillButton(
+                  text: 'Apply Model',
+                  isBusy: viewModel.isConverting,
+                  onTap: viewModel.onClickConvert,
+                  color: Theme.of(context).primaryColor,
+                ),
+                SizedBox(height: MediaQuery.of(context).padding.bottom),
+              ],
+            ),
           ),
         );
       },

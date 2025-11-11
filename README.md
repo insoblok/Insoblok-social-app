@@ -62,6 +62,7 @@ firebase login
 firebase logout
 npx eslint index.js --fix
 firebase deploy --only functions
+firebase deploy --only functions --debug
 
 ## Flutter Special Build
 taskkill /f /im java.exe

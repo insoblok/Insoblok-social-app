@@ -477,6 +477,70 @@ class _StoryTile extends StatelessWidget {
                 selected: vm.selectedItems,
               ),
 
+          if (vm.isMe && (story.category == 'live'))
+            Positioned(
+              top: 4,
+              right: 4,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Edit title button
+                  _SmallCircleButton(
+                    icon: Icons.edit,
+                    onPressed: () async {
+                      final controller = TextEditingController(text: story.title ?? '');
+                      final newTitle = await showDialog<String>(
+                        context: context,
+                        builder: (ctx) => AlertDialog(
+                          backgroundColor: Colors.black87,
+                          title: const Text('Edit title', style: TextStyle(color: Colors.white)),
+                          content: TextField(
+                            controller: controller,
+                            style: const TextStyle(color: Colors.white),
+                            decoration: const InputDecoration(
+                              hintText: 'Enter a title',
+                              hintStyle: TextStyle(color: Colors.white54),
+                            ),
+                          ),
+                          actions: [
+                            TextButton(onPressed: () => Navigator.of(ctx).pop(null), child: const Text('Cancel')),
+                            TextButton(onPressed: () => Navigator.of(ctx).pop(controller.text.trim()), child: const Text('Save')),
+                          ],
+                        ),
+                      );
+                      if (newTitle != null && newTitle.isNotEmpty && (story.id?.isNotEmpty ?? false)) {
+                        await vm.storyService.updateStoryById(id: story.id!, data: {'title': newTitle});
+                        await vm.fetchStories();
+                      }
+                    },
+                  ),
+                  const SizedBox(width: 6),
+                  // Delete recording
+                  _SmallCircleButton(
+                    icon: Icons.delete_outline,
+                    onPressed: () async {
+                      final ok = await showDialog<bool>(
+                        context: context,
+                        builder: (ctx) => AlertDialog(
+                          backgroundColor: Colors.black87,
+                          title: const Text('Delete recording', style: TextStyle(color: Colors.white)),
+                          content: const Text('Are you sure you want to delete this recording?'),
+                          actions: [
+                            TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: const Text('Cancel')),
+                            TextButton(onPressed: () => Navigator.of(ctx).pop(true), child: const Text('Delete')),
+                          ],
+                        ),
+                      );
+                      if (ok == true && (story.id?.isNotEmpty ?? false)) {
+                        await FirebaseHelper.deleteStory(story.id!);
+                        await vm.fetchStories();
+                      }
+                    },
+                  ),
+                ],
+              ),
+            ),
+
           if ((story.medias ?? []).length > 1)
             const Positioned(
               top: 6.0,
@@ -558,4 +622,26 @@ class _StoryTile extends StatelessWidget {
       ],
     ),
   );
+}
+
+class _SmallCircleButton extends StatelessWidget {
+  final IconData icon;
+  final VoidCallback onPressed;
+  const _SmallCircleButton({required this.icon, required this.onPressed});
+
+  @override
+  Widget build(BuildContext context) {
+    return Material(
+      color: Colors.black54,
+      shape: const CircleBorder(),
+      child: InkWell(
+        customBorder: const CircleBorder(),
+        onTap: onPressed,
+        child: Padding(
+          padding: const EdgeInsets.all(6),
+          child: Icon(icon, size: 16, color: Colors.white),
+        ),
+      ),
+    );
+  }
 }

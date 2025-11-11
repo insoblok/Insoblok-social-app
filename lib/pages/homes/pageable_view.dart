@@ -6,6 +6,7 @@ import 'package:stacked/stacked.dart';
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/widgets/widgets.dart';
+import 'package:insoblok/routers/routers.dart';
 
 class PageableView extends StatelessWidget {
   const PageableView({super.key});
@@ -209,7 +210,9 @@ class PageableView extends StatelessWidget {
                                     ),
                                 ),
                               ),
-                              const SizedBox(width: 2),
+                              const SizedBox(width: 8),
+
+                              // Live button removed per request
 
                               InkWell(
                                 onTap: () {},

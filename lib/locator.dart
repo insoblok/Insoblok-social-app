@@ -15,6 +15,8 @@ void setupLocator() {
   locator.registerSingleton(MediaPickerService());
   locator.registerSingleton(ReownService());
   locator.registerSingleton(GoogleVisionService());
+  locator.registerSingleton(AvatarService());
+  locator.registerSingleton(RunwareService());
   locator.registerFactory(() => UploadMediaProvider());
   locator.registerFactory(() => MessageProvider());
 }
