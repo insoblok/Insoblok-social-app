@@ -6,4 +6,3 @@ export 'search_view.dart';
 export 'notification_view.dart';
 export 'lookbook_view.dart';
 export 'pageable_view.dart';
-export 'rrc_avatar_generation_view.dart';

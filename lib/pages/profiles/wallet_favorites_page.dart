@@ -14,8 +14,7 @@ class WalletFavoritesPage extends StatelessWidget {
 
   Future<void> _showSearchDialog(BuildContext ctx, WalletFavoritesProvider viewModel) async {
     Timer? _debounce;
-    // The most recent options received from the API.
-    late Iterable<String> _lastOptions = <String>[];
+    // The most recent options received from the API. (not used for now)
 
     final result = await showGeneralDialog<UserModel?>(
       context: ctx,
@@ -413,16 +412,68 @@ class WalletFavoritesPage extends StatelessWidget {
                                                         child: 
                                                           viewModel.viewType == 2 ? FittedBox(
                                                             fit: BoxFit.scaleDown,
-                                                            child: Text(
-                                                              '${token["price_change_percentage_24h"] > 0 ? "+" : ""}${AIHelpers.formatDouble(token["price_change_percentage_24h"].toDouble(), 3)}%',
-                                                              style: Theme.of(context).textTheme.bodyMedium
+                                                            child: Builder(
+                                                              builder: (context) {
+                                                                final sym = token["symbol"].toString().toUpperCase();
+                                                                final int dir = viewModel.priceDirections[sym] ?? 0;
+                                                                final int tick = viewModel.priceChangeTick[sym] ?? 0;
+                                                                final baseStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                                                  color: Colors.white,
+                                                                  fontWeight: FontWeight.w600
+                                                                );
+                                                                final Color startColor = dir > 0
+                                                                  ? Colors.greenAccent
+                                                                  : (dir < 0 ? Colors.redAccent : (baseStyle?.color ?? Colors.white));
+                                                                return KeyedSubtree(
+                                                                  key: ValueKey<String>('${sym}_pct_$tick'),
+                                                                  child: TweenAnimationBuilder<Color?>(
+                                                                    tween: ColorTween(
+                                                                      begin: startColor,
+                                                                      end: baseStyle?.color,
+                                                                    ),
+                                                                    duration: const Duration(milliseconds: 900),
+                                                                    builder: (context, color, _) {
+                                                                      return Text(
+                                                                        '${token["price_change_percentage_24h"] > 0 ? "+" : ""}${AIHelpers.formatDouble(token["price_change_percentage_24h"].toDouble(), 3)}%',
+                                                                        style: baseStyle?.copyWith(color: color),
+                                                                      );
+                                                                    },
+                                                                  ),
+                                                                );
+                                                              }
                                                             ),
                                                           ) : FittedBox(
                                                             fit: BoxFit.scaleDown,
-                                                            child: Text(
-                                                              '\$${AIHelpers.formatDouble(token["current_price"].toDouble(), 10)}',
-                                                            style: Theme.of(context).textTheme.bodyMedium,
-                                                          ),
+                                                            child: Builder(
+                                                              builder: (context) {
+                                                                final sym = token["symbol"].toString().toUpperCase();
+                                                                final live = viewModel.livePrices[sym];
+                                                                final base = (token["current_price"] as num?)?.toDouble();
+                                                                final value = live ?? base ?? 0.0;
+                                                                final direction = viewModel.priceDirections[sym] ?? 0;
+                                                                final tick = viewModel.priceChangeTick[sym] ?? 0;
+                                                                final baseStyle = Theme.of(context).textTheme.bodyMedium;
+                                                                final Color? startColor = direction > 0
+                                                                  ? Colors.greenAccent
+                                                                  : (direction < 0 ? Colors.redAccent : baseStyle?.color);
+                                                                return KeyedSubtree(
+                                                                  key: ValueKey<String>('${sym}_$tick'),
+                                                                  child: TweenAnimationBuilder<Color?>(
+                                                                    tween: ColorTween(
+                                                                      begin: startColor,
+                                                                      end: baseStyle?.color,
+                                                                    ),
+                                                                    duration: const Duration(milliseconds: 900),
+                                                                    builder: (context, color, _) {
+                                                                      return Text(
+                                                                        '\$${AIHelpers.formatWithGroupingKeepDecimals(value)}',
+                                                                        style: baseStyle?.copyWith(color: color),
+                                                                      );
+                                                                    },
+                                                                  ),
+                                                                );
+                                                              }
+                                                            ),
                                                         )
                                                       ),
                                                     ),

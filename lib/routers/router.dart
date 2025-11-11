@@ -341,6 +341,13 @@ class Routers {
     return _pushToRoute(context, kRouterCreatePost, null);
   }
   
+  static dynamic goToRRCAvatarGeneration(BuildContext context) {
+    // Use direct route push to avoid issues when router definitions aren't rebuilt after hot reload
+    return Navigator.of(context).push(
+      MaterialPageRoute(builder: (_) => const RRCAvatarGenerationView()),
+    );
+  }
+
   static dynamic goToRRCAvatarGenerationPage(BuildContext context, io.File? face, String url, String origin, String storyID) {
     Map<String, dynamic> args = {};
     args["face"] = face!;

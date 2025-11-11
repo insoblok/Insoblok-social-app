@@ -87,7 +87,7 @@ class Web3Service with ListenableServiceMixin {
     try {
       String path = kWalletTokenList.map((tk)=> tk["binance_id"].toString().isEmpty ? "" : "/${tk['binance_id'].toString()}@ticker/${tk['binance_id'].toString()}@markPrice" ).toList().join("");
       logger.d("started to connect ws");
-      channel = IOWebSocketChannel.connect('wss://fstream.binance.com/stream?streams=$path');
+      channel = IOWebSocketChannel.connect('wss://fstream.binance.us/stream?streams=$path');
       channel?.stream.listen(
         (data) {
           try {

@@ -151,6 +151,7 @@ flutter:
   
   assets:
     - assets/images/
+    - assets/images/rrc/
     - assets/videos/d0.mp4
     - assets/videos/d3.mp4
     - assets/videos/d18.mp4

@@ -1,12 +1,10 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:flutter/services.dart' show rootBundle;
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_html/flutter_html.dart';
@@ -16,11 +14,10 @@ import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import 'package:insoblok/enums/enums.dart';
-import 'package:insoblok/services/services.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/routers/routers.dart';
-import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
+import 'package:insoblok/services/services.dart';
 import 'package:vsc_quill_delta_to_html/vsc_quill_delta_to_html.dart';
 import 'package:get_ip_address/get_ip_address.dart';
 
@@ -360,6 +357,22 @@ class AIHelpers {
 
   static String formatNumbers(double value) {
     return NumberFormat.decimalPattern('en_US').format(value);
+  }
+
+  // Format with thousand separators but preserve all decimals present in the input.
+  // Example: 105724.290000 -> 105,724.290000
+  static String formatWithGroupingKeepDecimals(num value) {
+    final String s = value.toString();
+    if (s == 'NaN' || s == 'Infinity' || s == '-Infinity') return s;
+    final parts = s.split('.');
+    final String intPart = parts[0];
+    final String decPart = parts.length > 1 ? parts[1] : '';
+    // Handle negative values
+    final bool negative = intPart.startsWith('-');
+    final String absInt = negative ? intPart.substring(1) : intPart;
+    final String grouped = NumberFormat.decimalPattern('en_US').format(int.parse(absInt));
+    final String withSign = negative ? '-$grouped' : grouped;
+    return decPart.isNotEmpty ? '$withSign.$decPart' : withSign;
   }
 
 

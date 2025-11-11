@@ -1,33 +1,40 @@
 import 'package:flutter/foundation.dart';
 import 'dart:async';
-import '../services/tatum_service.dart';
-import '../models/token_model.dart';
+import '../services/price_socket_service.dart';
+import '../models/token_model.dart' as tm;
 
 class TokenProvider with ChangeNotifier {
-  TokenProvider({TatumService? tatumService})
-      : _tatumService = tatumService ?? TatumService();
+  TokenProvider({PriceSocketService? socketService})
+      : _socketService = socketService ?? PriceSocketService();
 
-  final TatumService _tatumService;
-  final int _pollSeconds = 60;
+  final PriceSocketService _socketService;
 
   bool _initialized = false;
-  List<Token> _tokens = [];
+  List<tm.Token> _tokens = [];
+  // price-change meta tracked per symbol for UI animations
+  final Map<String, int> _directions = {}; // -1, 0, 1
+  final Map<String, int> _changeTicks = {};
+  final Map<String, double> _previousPrices = {};
+  final Map<String, double> _diffs = {};
   bool _isLoading = false;
-  bool _isFetching = false;
   String _error = '';
-  Timer? _pollingTimer;
   String _dataSource = 'Initializing…';
-  bool _usingTatumApi = false;
+  bool _usingTatumApi = false; // repurposed: true when live socket active
+  StreamSubscription<PriceUpdate>? _socketSub;
 
-  List<Token> get tokens => _tokens;
+  List<tm.Token> get tokens => _tokens;
   bool get isLoading => _isLoading;
   String get error => _error;
   String get dataSource => _dataSource;
   bool get usingTatumApi => _usingTatumApi;
+  Map<String, int> get directions => _directions;
+  Map<String, int> get changeTicks => _changeTicks;
+  Map<String, double> get diffs => _diffs;
 
   @override
   void dispose() {
-    _pollingTimer?.cancel();
+    _socketSub?.cancel();
+    _socketService.dispose();
     super.dispose();
   }
 
@@ -36,24 +43,63 @@ class TokenProvider with ChangeNotifier {
      if (_initialized) return;
     _initialized = true;
     
+    _socketService.enableLogs = true;
     _isLoading = true;
     _error = '';
     notifyListeners();
 
     try {
       _tokens = [
-        Token(symbol: 'BTC', name: 'Bitcoin',      price: 0.0, lastUpdated: DateTime.now(), image :'https://assets.coingecko.com/coins/images/1/small/bitcoin.png'),
-        Token(symbol: 'ETH', name: 'Ethereum',     price: 0.0, lastUpdated: DateTime.now(), image :'https://assets.coingecko.com/coins/images/279/small/ethereum.png'),
-        Token(symbol: 'SOL', name: 'Solana',       price: 0.0, lastUpdated: DateTime.now(), image :'https://assets.coingecko.com/coins/images/4128/small/solana.png'),
-        Token(symbol: 'BNB', name: 'Binance Coin', price: 0.0, lastUpdated: DateTime.now(), image :'https://assets.coingecko.com/coins/images/825/small/bnb-icon2_2x.png'),
-        Token(symbol: 'XRP', name: 'Ripple',      price: 0.0, lastUpdated: DateTime.now(), image :'https://assets.coingecko.com/coins/images/44/small/xrp-symbol-white-128.png'),
-        Token(symbol: 'DOGE', name: 'Dogecoin',      price: 0.0, lastUpdated: DateTime.now(), image :'https://assets.coingecko.com/coins/images/5/small/dogecoin.png'),
+        tm.Token(symbol: 'BTC', name: 'Bitcoin',      price: 0.0, lastUpdated: DateTime.now(), image :'https://assets.coingecko.com/coins/images/1/small/bitcoin.png'),
+        tm.Token(symbol: 'ETH', name: 'Ethereum',     price: 0.0, lastUpdated: DateTime.now(), image :'https://assets.coingecko.com/coins/images/279/small/ethereum.png'),
+        tm.Token(symbol: 'SOL', name: 'Solana',       price: 0.0, lastUpdated: DateTime.now(), image :'https://assets.coingecko.com/coins/images/4128/small/solana.png'),
+        tm.Token(symbol: 'BNB', name: 'Binance Coin', price: 0.0, lastUpdated: DateTime.now(), image :'https://assets.coingecko.com/coins/images/825/small/bnb-icon2_2x.png'),
+        tm.Token(symbol: 'XRP', name: 'Ripple',      price: 0.0, lastUpdated: DateTime.now(), image :'https://assets.coingecko.com/coins/images/44/small/xrp-symbol-white-128.png'),
+        tm.Token(symbol: 'DOGE', name: 'Dogecoin',      price: 0.0, lastUpdated: DateTime.now(), image :'https://assets.coingecko.com/coins/images/5/small/dogecoin.png'),
       ];
 
-      await _refreshDataSourceFlag();
-      await fetchPrices();
-
-      _startPolling();
+      // start live socket (Binance → fallback to CoinCap internally)
+      _usingTatumApi = true;
+      _dataSource = 'My Favorite Tokens';
+      final syms = _tokens.map((t) => t.symbol).toList();
+      _socketSub?.cancel();
+      _socketSub = _socketService.updates.listen((tick) {
+        if (_socketService.enableLogs) {
+          // ignore: avoid_print
+          print('[TokenProvider] tick ${tick.symbol} ${tick.price}');
+        }
+        final idx = _tokens.indexWhere((t) => t.symbol.toUpperCase() == tick.symbol.toUpperCase());
+        if (idx != -1) {
+          final token = _tokens[idx];
+          final double prev = token.price;
+          final double next = tick.price;
+          int dir = 0;
+          if (prev != 0.0) {
+            if (next > prev) {
+              dir = 1;
+            } else if (next < prev) {
+              dir = -1;
+            }
+          }
+          token
+            ..price = next
+            ..lastUpdated = DateTime.now();
+          final sym = token.symbol.toUpperCase();
+          // diff ticker
+          if (_previousPrices.containsKey(sym)) {
+            _diffs[sym] = next - (_previousPrices[sym] ?? next);
+          }
+          _previousPrices[sym] = next;
+          _directions[sym] = dir;
+          if (dir != 0) {
+            _changeTicks[sym] = (_changeTicks[sym] ?? 0) + 1;
+          }
+          notifyListeners();
+        }
+      });
+      // ignore: avoid_print
+      print('[TokenProvider] connect symbols=$syms fiat=USD');
+      await _socketService.connect(syms, fiat: 'USD');
     } catch (e) {
       _error = 'Initialization failed: $e';
       _initializeWithMockData();
@@ -63,79 +109,21 @@ class TokenProvider with ChangeNotifier {
     }
   }
 
-  Future<void> fetchPrices() async {
-    if (_isFetching) return; // avoid overlapping polls
-    _isFetching = true;
-    try {
-      await _refreshDataSourceFlag();
-
-      _tokens = [
-        Token(symbol: 'BTC', name: 'Bitcoin',      price: 0.0, lastUpdated: DateTime.now(), image :'https://assets.coingecko.com/coins/images/1/small/bitcoin.png'),
-        Token(symbol: 'ETH', name: 'Ethereum',     price: 0.0, lastUpdated: DateTime.now(), image :'https://assets.coingecko.com/coins/images/279/small/ethereum.png'),
-        Token(symbol: 'SOL', name: 'Solana',       price: 0.0, lastUpdated: DateTime.now(), image :'https://assets.coingecko.com/coins/images/4128/small/solana.png'),
-        Token(symbol: 'BNB', name: 'Binance Coin', price: 0.0, lastUpdated: DateTime.now(), image :'https://assets.coingecko.com/coins/images/825/small/bnb-icon2_2x.png'),
-        Token(symbol: 'XRP', name: 'Ripple',      price: 0.0, lastUpdated: DateTime.now(), image :'https://assets.coingecko.com/coins/images/44/small/xrp-symbol-white-128.png'),
-        Token(symbol: 'DOGE', name: 'Dogecoin',      price: 0.0, lastUpdated: DateTime.now(), image :'https://assets.coingecko.com/coins/images/5/small/dogecoin.png'),
-      ];
-
-      final symbols = _tokens.map((t) => t.symbol).toList();
-      final prices = await _tatumService.getTokenPrices(symbols);
-
-      if (prices.isEmpty) {
-        _setRealisticMockPrices();
-        _dataSource = 'Demo Data (API Unavailable)';
-        _error = 'No live prices available.';
-      } else {
-        for (var token in _tokens) {
-          final v = prices[token.symbol];
-          if (v != null) {
-            token
-              ..price = v
-              ..lastUpdated = DateTime.now();
-          }
-        }
-        _error = '';
-      }
-
-      notifyListeners();
-    } catch (e) {
-      _error = 'Failed to update prices: $e';
-      _setRealisticMockPrices();
-      _dataSource = 'Demo Data (API Unavailable)';
-      notifyListeners();
-    } finally {
-      _isFetching = false;
-    }
-  }
-
   void manualRefresh() {
-    _error = '';
-    fetchPrices();
+    // no-op: socket pushes in real-time; reconnect to refresh
+    _socketService.connect(_tokens.map((t) => t.symbol).toList(), fiat: 'USD');
   }
 
   // --------------- helpers ---------------
 
-  void _startPolling() {
-    _pollingTimer?.cancel();
-    _pollingTimer = Timer.periodic(Duration(seconds: _pollSeconds), (_) {
-      fetchPrices();
-    });
-  }
-
-  Future<void> _refreshDataSourceFlag() async {
-    final ok = await _tatumService.testTatumApiKey();
-    _usingTatumApi = ok;
-    _dataSource = 'My Favorite Tokens';
-  }
-
   void _initializeWithMockData() {
     _tokens = [
-        Token(symbol: 'BTC', name: 'Bitcoin',      price: 0.0, lastUpdated: DateTime.now(), image :'https://assets.coingecko.com/coins/images/1/small/bitcoin.png'),
-        Token(symbol: 'ETH', name: 'Ethereum',     price: 0.0, lastUpdated: DateTime.now(), image :'https://assets.coingecko.com/coins/images/279/small/ethereum.png'),
-        Token(symbol: 'SOL', name: 'Solana',       price: 0.0, lastUpdated: DateTime.now(), image :'https://assets.coingecko.com/coins/images/4128/small/solana.png'),
-        Token(symbol: 'BNB', name: 'Binance Coin', price: 0.0, lastUpdated: DateTime.now(), image :'https://assets.coingecko.com/coins/images/825/small/bnb-icon2_2x.png'),
-        Token(symbol: 'XRP', name: 'Ripple',      price: 0.0, lastUpdated: DateTime.now(), image :'https://assets.coingecko.com/coins/images/44/small/xrp-symbol-white-128.png'),
-        Token(symbol: 'DOGE', name: 'Dogecoin',      price: 0.0, lastUpdated: DateTime.now(), image :'https://assets.coingecko.com/coins/images/5/small/dogecoin.png'),
+        tm.Token(symbol: 'BTC', name: 'Bitcoin',      price: 0.0, lastUpdated: DateTime.now(), image :'https://assets.coingecko.com/coins/images/1/small/bitcoin.png'),
+        tm.Token(symbol: 'ETH', name: 'Ethereum',     price: 0.0, lastUpdated: DateTime.now(), image :'https://assets.coingecko.com/coins/images/279/small/ethereum.png'),
+        tm.Token(symbol: 'SOL', name: 'Solana',       price: 0.0, lastUpdated: DateTime.now(), image :'https://assets.coingecko.com/coins/images/4128/small/solana.png'),
+        tm.Token(symbol: 'BNB', name: 'Binance Coin', price: 0.0, lastUpdated: DateTime.now(), image :'https://assets.coingecko.com/coins/images/825/small/bnb-icon2_2x.png'),
+        tm.Token(symbol: 'XRP', name: 'Ripple',      price: 0.0, lastUpdated: DateTime.now(), image :'https://assets.coingecko.com/coins/images/44/small/xrp-symbol-white-128.png'),
+        tm.Token(symbol: 'DOGE', name: 'Dogecoin',      price: 0.0, lastUpdated: DateTime.now(), image :'https://assets.coingecko.com/coins/images/5/small/dogecoin.png'),
       ];
     _dataSource = 'Demo Data (Offline)';
     _usingTatumApi = false;

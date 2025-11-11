@@ -1,12 +1,9 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:fluro/fluro.dart' as fluro;
 
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/pages/pages.dart';
 import 'package:insoblok/providers/providers.dart';
-import 'package:insoblok/services/services.dart';
 
 
 const kRouterBase = '/';
@@ -402,12 +399,7 @@ class Navigation {
     initRoute(kRouterLiveStream, (props) => LiveStreamPage());
     initRoute(kRouterLive, (props) => LivePage());
     
-//     initRoute<Map<String, dynamic>>(kRouterRRCAvatarGeneration, (props) {
-//       if (props == null) {
-//         throw ArgumentError('Route parameters are null');
-//       }
-//       return RRCAvatarGenerationView(url: props["url"], face: props["face"], origin: props["origin"], storyID: props["storyID"]);
-//     });
+    initRoute(kRouterRRCAvatarGeneration, (props) => const RRCAvatarGenerationView());
 
   }
 }

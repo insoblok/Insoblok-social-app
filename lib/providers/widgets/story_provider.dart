@@ -156,23 +156,8 @@ class StoryProvider extends InSoBlokViewModel {
   }
 
   Future<void> startRRC() async {
-    // if(showFaceDialog || (story.reactions ?? []).isEmpty) {
-
-    if (showFaceDialog) {
-      return;
-    }
-    logger.d("this is the showFaceDialog after if");
-
-    final auth = AuthHelper.user?.id;
-    logger.d(vybeCamEnabled);
-    logger.d(auth);
-
-    if (vybeCamEnabled && (auth != story.userId)) {
-      showFaceDialog = true;
-      logger.d("this is true");
-    } else {
-      Fluttertoast.showToast(msg: 'You can not react to your own story.');
-    }
+    // Open the new RRC (Vybe Loop) screen when stage is tapped
+    Routers.goToRRCAvatarGeneration(context);
   }
 
   Future<void> captureReactionImage() async {

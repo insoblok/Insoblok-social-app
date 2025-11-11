@@ -18,3 +18,4 @@ export 'profiles/wallet_favorites_provider.dart';
 
 export 'lives/lives.dart';
 //export 'token_provider.dart';
+export 'rrc/rrc_avatar_provider.dart';
