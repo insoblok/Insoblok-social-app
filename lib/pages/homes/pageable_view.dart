@@ -48,6 +48,7 @@ class PageableView extends StatelessWidget {
                       padEnds: false,
                       itemCount: viewModel.stories.length,
                       itemBuilder: (_, index) {
+                        viewModel.handleChangeStory(index);
                         return StoryListCell(
                           story: viewModel.stories[index],
                           enableDetail: true,

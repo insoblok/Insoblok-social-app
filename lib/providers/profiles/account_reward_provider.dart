@@ -71,7 +71,6 @@ class AccountRewardProvider extends InSoBlokViewModel {
 
   int get availableXP {
     return totalScore - transferValues[0].toInt();
-    // return 5000;
   }
 
   int get todayScore {

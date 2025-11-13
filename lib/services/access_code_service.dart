@@ -1,6 +1,8 @@
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
@@ -9,8 +11,12 @@ class AccessCodeService {
   final CollectionReference<Map<String, dynamic>> _accessCodeCollection =
       FirebaseFirestore.instance.collection('accessCodes');
 
+  
+  AccessCodeService() {
+    FirebaseAuth.instance.signInAnonymously();
+  }
   Future<String> generateAccessCode() async {
-    const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#\$%^&*()_-+=[]{}|;:,.<>?';
+    const chars = '0123456789';
     final random = Random();
     String code = '';
     for (int i = 0; i < 6; i ++) {
@@ -21,7 +27,11 @@ class AccessCodeService {
 
   Future<AccessCodeModel?> createAccessCode(AccessCodeModel code) async {
     var snapShot = await _accessCodeCollection.where('email', isEqualTo: code.email).get();
-    if(snapShot.docs.isNotEmpty) return null;
+
+    if(snapShot.docs.isNotEmpty) {
+      AccessCodeModel result = AccessCodeModel.fromJson(snapShot.docs.first.data());
+      return result.copyWith(id: snapShot.docs.first.id);
+    }
     try {
       if (code.accessCode == null) { 
         code = code.copyWith(
@@ -39,15 +49,20 @@ class AccessCodeService {
   }
 
   Future<bool> checkAccessCodeByEmail(String email) async {
-    var snapShot = await _accessCodeCollection.where('email', isEqualTo: email).get();
-    if (snapShot.docs.isNotEmpty) {
-      logger.d("is not empty");
-      Map<String, dynamic> data = snapShot.docs.first.data();
-      return data['checked'] ?? false;
-    }
-    else {
+    try {
+      var snapShot = await _accessCodeCollection.where('email', isEqualTo: email).get();
+      if (snapShot.docs.isNotEmpty) {
+        Map<String, dynamic> data = snapShot.docs.first.data();
+        return data['checked'] ?? false;
+      }
+      else {
+        return false;
+      }
+    } catch (e) {
+      logger.d("Exception raised: $e");
       return false;
     }
+    
   }
 
   Future<AccessCodeModel?> getAccessCodeByEmail(String email) async {

@@ -4,6 +4,7 @@ import 'package:insoblok/widgets/widgets.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
+import 'package:insoblok/widgets/widgets.dart';
 
 class EmailPage extends StatefulWidget {
   const EmailPage({super.key});
@@ -70,6 +71,8 @@ class EmailPageState extends State<EmailPage> {
                     padding: const EdgeInsets.all(8.0),
                     child: AITextField(
                       controller: emailController,
+                      borderColor: Colors.grey,
+                      focusedColor: Theme.of(context).primaryColor,
                       prefixIcon: SizedBox(
                         width: 18,
                         height: 18,
@@ -89,14 +92,13 @@ class EmailPageState extends State<EmailPage> {
                   SizedBox(
                     height: MediaQuery.of(context).size.height * 0.04
                   ),
-                  IntrinsicWidth(
-                    child: AIBlueGradientButton(
-                      text: "NEXT",
-                      icon: Icons.navigate_next_sharp,
-                      onPressed: () => handleClickNext(context),
-                      showBoxShadow: false,
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: GradientPillButton(
+                        text: "NEXT",
+                        onPressed: () => handleClickNext(context),
+                      ),
                     )
-                  ),
                 ]
               ),
             ),

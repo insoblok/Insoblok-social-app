@@ -7,6 +7,8 @@ import 'package:stacked/stacked.dart';
 import 'package:insoblok/pages/vtos/deep_ar_plus_page.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
+import 'package:insoblok/models/models.dart';
+
 
 enum PickerAction { gallery, camera, deepAr }
 
@@ -22,6 +24,8 @@ class MediaPickerService with ListenableServiceMixin {
     _editedImagePath = s;
     notifyListeners();
   }
+
+  StoryModel? currentStory;
 
   /// Pick 1..N story medias. Opens a source sheet (Photos / Camera / DeepAR).
   Future<List<XFile>> onPickerStoryMedia(

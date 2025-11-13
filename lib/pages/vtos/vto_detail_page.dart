@@ -131,7 +131,7 @@ class VTODetailPage extends StatelessWidget {
               FloatingActionButton(
                 shape: const CircleBorder(),
                 heroTag: null,
-                child: const Icon(Icons.favorite_border),
+                child: const Icon(Icons.book_rounded),
                 onPressed: () => viewModel.onTapActionButton(0),
               ),
               FloatingActionButton(
@@ -143,7 +143,7 @@ class VTODetailPage extends StatelessWidget {
               FloatingActionButton(
                 shape: const CircleBorder(),
                 heroTag: null,
-                child: const Icon(Icons.save),
+                child: const Icon(Icons.post_add),
                 onPressed: () => viewModel.onTapActionButton(2),
               ),
             ],

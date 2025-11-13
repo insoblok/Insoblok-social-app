@@ -22,6 +22,13 @@ android {
     kotlinOptions {
         jvmTarget = 17
     }
+    
+    // Disable incremental compilation to avoid path issues
+    tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile).configureEach {
+        kotlinOptions {
+            incremental = false
+        }
+    }
 
     defaultConfig {
         applicationId = "insoblok.social.app"

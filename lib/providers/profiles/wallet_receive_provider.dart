@@ -4,6 +4,7 @@ import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/locator.dart';
+
 class WalletReceiveProvider extends InSoBlokViewModel {
   late BuildContext _context;
   BuildContext get context => _context;
@@ -12,13 +13,24 @@ class WalletReceiveProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-
   Future<void> init(BuildContext context) async {
     this.context = context;
   }
+
   final Web3Service _web3service = locator<Web3Service>();
+  final ReceivingService _receivingService = ReceivingService();
 
   final List<TransferModel> _transfers = [];
+
+  // Incoming transactions
+  List<TransactionModel> _incomingTransactions = [];
+  List<TransactionModel> get incomingTransactions => _incomingTransactions;
+
+  bool _isLoadingIncoming = false;
+  bool get isLoadingIncoming => _isLoadingIncoming;
+
+  String? _lastError;
+  String? get lastError => _lastError;
 
   List<double> get transferXpToInsoValues =>
       transferService.getXpToInsoBalance(_transfers);
@@ -100,5 +112,113 @@ class WalletReceiveProvider extends InSoBlokViewModel {
     // }
   }
 
-  
+  /// Add an address to monitor for incoming transactions
+  Future<void> addMonitoredAddress({
+    required String address,
+    String? chain,
+  }) async {
+    try {
+      _lastError = null;
+      await _receivingService.addMonitoredAddress(
+        address: address,
+        chain: chain,
+      );
+      notifyListeners();
+    } catch (e) {
+      _lastError = e.toString();
+      logger.e('Error adding monitored address: $e');
+      notifyListeners();
+      rethrow;
+    }
+  }
+
+  /// Get list of monitored addresses
+  Future<List<String>> getMonitoredAddresses() async {
+    try {
+      _lastError = null;
+      final response = await _receivingService.getMonitoredAddresses();
+      final addresses = response['monitored_addresses'] as List<dynamic>? ?? [];
+      return addresses.map((addr) => addr.toString()).toList();
+    } catch (e) {
+      _lastError = e.toString();
+      logger.e('Error getting monitored addresses: $e');
+      rethrow;
+    }
+  }
+
+  /// Check an address for incoming transactions
+  Future<List<TransactionModel>> checkIncomingTransactions({
+    required String address,
+    required String chain,
+    int? fromBlock,
+  }) async {
+    try {
+      _isLoadingIncoming = true;
+      _lastError = null;
+      notifyListeners();
+
+      final response = await _receivingService.checkIncomingTransactions(
+        address: address,
+        chain: chain,
+        fromBlock: fromBlock,
+      );
+
+      final transactions = response['transactions'] as List<dynamic>? ?? [];
+      final txList =
+          transactions.map((tx) {
+            final txMap = Map<String, dynamic>.from(tx as Map);
+            if (txMap.containsKey('created_at') &&
+                txMap['created_at'] != null) {
+              txMap['timestamp'] = txMap['created_at'];
+            }
+            return TransactionModel.fromJson(txMap);
+          }).toList();
+
+      _isLoadingIncoming = false;
+      notifyListeners();
+      return txList;
+    } catch (e) {
+      _isLoadingIncoming = false;
+      _lastError = e.toString();
+      logger.e('Error checking incoming transactions: $e');
+      notifyListeners();
+      rethrow;
+    }
+  }
+
+  /// Get all incoming transactions for an address
+  Future<void> loadIncomingTransactions({
+    required String address,
+    String? chain,
+  }) async {
+    try {
+      _isLoadingIncoming = true;
+      _lastError = null;
+      notifyListeners();
+
+      _incomingTransactions = await _receivingService
+          .getIncomingTransactionsAsModels(address: address, chain: chain);
+
+      _isLoadingIncoming = false;
+      notifyListeners();
+    } catch (e) {
+      _isLoadingIncoming = false;
+      _lastError = e.toString();
+      logger.e('Error loading incoming transactions: $e');
+      notifyListeners();
+    }
+  }
+
+  /// Refresh incoming transactions for the current wallet address
+  Future<void> refreshIncomingTransactions(String? chain) async {
+    try {
+      final cryptoService = locator<CryptoService>();
+      final address = cryptoService.privateKey?.address.hex;
+      if (address != null) {
+        await loadIncomingTransactions(address: address, chain: chain);
+      }
+    } catch (e) {
+      logger.e('Error refreshing incoming transactions: $e');
+    }
+  }
 }

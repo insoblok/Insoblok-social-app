@@ -14,7 +14,6 @@ import 'package:insoblok/models/models.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 
-
 final kReactionPostIconData = [
   {'title': 'Post to\nLookbook', 'icon': AIImages.icPostLookbook},
   {'title': 'Post to\nReaction', 'icon': AIImages.icPostReaction},
@@ -50,7 +49,12 @@ class MediaDetailModel {
   final String storyID;
   final String storyUser;
 
-  MediaDetailModel({required this.medias, required this.index, required this.storyID, required this.storyUser});
+  MediaDetailModel({
+    required this.medias,
+    required this.index,
+    required this.storyID,
+    required this.storyUser,
+  });
 }
 
 class MediaDetailProvider extends InSoBlokViewModel {
@@ -154,9 +158,11 @@ class MediaDetailProvider extends InSoBlokViewModel {
   }) async {
     this.context = context;
 
+    logger.d("model.medias: ${model.storyID}");
+    logger.d("model info: $model");
+
     _medias.addAll(model.medias);
     _storyID = model.storyID;
-
 
     _storyUser = model.storyUser;
     index = model.index;
@@ -164,7 +170,7 @@ class MediaDetailProvider extends InSoBlokViewModel {
     Future.delayed(const Duration(milliseconds: 300), () {
       controller.jumpToPage(index);
     });
-    
+
     fetchData();
   }
 
@@ -177,16 +183,16 @@ class MediaDetailProvider extends InSoBlokViewModel {
         var ps = await productService.getProducts();
 
         if (ps.isNotEmpty) {
-          final clothingOnly = ps.where((p) {
-            final c = (p.category ?? '').toLowerCase().trim();
-            return c == 'clothing';
-          }).toList();
+          final clothingOnly =
+              ps.where((p) {
+                final c = (p.category ?? '').toLowerCase().trim();
+                return c == 'clothing';
+              }).toList();
 
           _products
             ..clear()
             ..addAll(clothingOnly);
         }
-        
       } catch (e) {
         setError(e);
       } finally {
@@ -220,9 +226,7 @@ class MediaDetailProvider extends InSoBlokViewModel {
     }
   }
 
-
   Future<void> onEventRemix() async {
-
     if (remixKey.isEmpty && selectedProduct == null) return;
 
     if (isBusy) return;
@@ -237,17 +241,18 @@ class MediaDetailProvider extends InSoBlokViewModel {
     await runBusyFuture(() async {
       try {
         if (selectedProduct != null) {
-          if(selectedProduct!.category == "Shoes"){
-              resultVTO = await vtoService.convertVTOShoes(
+          if (selectedProduct!.category == "Shoes") {
+            resultVTO = await vtoService.convertVTOShoes(
               model: _medias[index],
-              shoesModel:  selectedProduct!.modelImage!);
-          }else{
-              resultVTO = await vtoService.convertVTOClothing(
+              shoesModel: selectedProduct!.modelImage!,
+            );
+          } else {
+            resultVTO = await vtoService.convertVTOClothing(
               modelUrl: _medias[index],
               photoUrl: selectedProduct!.modelImage!,
-              type: selectedProduct!.type ?? 'tops');
+              type: selectedProduct!.type ?? 'tops',
+            );
           }
-          
         }
         if (remixKey.isNotEmpty) {
           resultColor = await NetworkUtil.getVTOEditImage(
@@ -279,9 +284,8 @@ class MediaDetailProvider extends InSoBlokViewModel {
   Future<void> onEventBoost() async {
     AIHelpers.showToast(msg: 'This feature will come soon!');
   }
-  
-  
-  Future<void> onDeleteFeed() async{
+
+  Future<void> onDeleteFeed() async {
     if (isBusy) return;
     clearErrors();
 
@@ -292,27 +296,24 @@ class MediaDetailProvider extends InSoBlokViewModel {
         var enableDelete = await _showDeleteDialog();
         if (enableDelete != true) return;
 
-        if(storyID != ''){
-
+        if (storyID != '') {
           if (index < 0 || index >= _medias.length) return;
 
           int length = await FirebaseHelper.deleteMedias(storyID, index);
 
-          if(length == 0){
+          if (length == 0) {
             await FirebaseHelper.deleteStory(storyID);
             _isFeedDeleting = false;
           }
 
           Routers.goToMainPage(context);
-
-        }else{
+        } else {
           await FirebaseHelper.deleteGalleryImage(_medias[index]);
 
           if (index >= 0 && index < _medias.length) {
             _medias.removeAt(index);
           }
         }
-
       } catch (e) {
         setError(e);
         logger.e(e);
@@ -324,7 +325,6 @@ class MediaDetailProvider extends InSoBlokViewModel {
   }
 
   Future<void> onEventLookBook() async {
-
     if (imgRemix.isEmpty) {
       AIHelpers.showToast(msg: 'You have not remix data yet!');
       return;
@@ -347,7 +347,6 @@ class MediaDetailProvider extends InSoBlokViewModel {
 
         var path = await _makeRemixImage();
 
-
         // resultRemixImageUrl = await storyService.uploadResult(
         //   path!,
         //   folderName: 'remix',
@@ -355,9 +354,10 @@ class MediaDetailProvider extends InSoBlokViewModel {
         //   storyID: null,
         // );
 
-        MediaStoryModel model = await CloudinaryCDNService.uploadImageToCDN(XFile(path!));
+        MediaStoryModel model = await CloudinaryCDNService.uploadImageToCDN(
+          XFile(path!),
+        );
         resultRemixImageUrl = model.link;
-
 
         MediaStoryModel? media;
         if (resultRemixImageUrl != null) {
@@ -407,8 +407,7 @@ class MediaDetailProvider extends InSoBlokViewModel {
       return Center(
         child: Container(
           margin: const EdgeInsets.all(40.0),
-          padding:
-              const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.onSecondary,
             borderRadius: BorderRadius.circular(20.0),
@@ -440,12 +439,11 @@ class MediaDetailProvider extends InSoBlokViewModel {
                         alignment: Alignment.center,
                         child: Text(
                           'Add',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium
-                              ?.copyWith(
-                                color: Theme.of(context).colorScheme.onSecondary,
-                              ),
+                          style: Theme.of(
+                            context,
+                          ).textTheme.bodyMedium?.copyWith(
+                            color: Colors.white,
+                          ),
                         ),
                       ),
                     ),
@@ -466,12 +464,8 @@ class MediaDetailProvider extends InSoBlokViewModel {
                         alignment: Alignment.center,
                         child: Text(
                           'Cancel',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium
-                              ?.copyWith(
-                                color: Theme.of(context).primaryColor,
-                              ),
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(color: Theme.of(context).primaryColor),
                         ),
                       ),
                     ),
@@ -491,8 +485,7 @@ class MediaDetailProvider extends InSoBlokViewModel {
       return Center(
         child: Container(
           margin: const EdgeInsets.all(40.0),
-          padding:
-              const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.onSecondary,
             borderRadius: BorderRadius.circular(20.0),
@@ -524,12 +517,11 @@ class MediaDetailProvider extends InSoBlokViewModel {
                         alignment: Alignment.center,
                         child: Text(
                           'Yes',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium
-                              ?.copyWith(
-                                color: Theme.of(context).colorScheme.onSecondary,
-                              ),
+                          style: Theme.of(
+                            context,
+                          ).textTheme.bodyMedium?.copyWith(
+                            color: Theme.of(context).colorScheme.onSecondary,
+                          ),
                         ),
                       ),
                     ),
@@ -550,12 +542,8 @@ class MediaDetailProvider extends InSoBlokViewModel {
                         alignment: Alignment.center,
                         child: Text(
                           'No',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium
-                              ?.copyWith(
-                                color: Theme.of(context).primaryColor,
-                              ),
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(color: Theme.of(context).primaryColor),
                         ),
                       ),
                     ),
@@ -591,7 +579,8 @@ class MediaDetailProvider extends InSoBlokViewModel {
 
         if (path == null) throw ('Something went wrong!');
 
-        final MediaStoryModel model = await CloudinaryCDNService.uploadImageToCDN(XFile(path));
+        final MediaStoryModel model =
+            await CloudinaryCDNService.uploadImageToCDN(XFile(path));
 
         var bytes = await File(path).readAsBytes();
         var decodedImage = img.decodeImage(bytes);
@@ -638,7 +627,7 @@ class MediaDetailProvider extends InSoBlokViewModel {
   Future<void> goToLookbookPage() async {
     await Routers.goToLookbookPage(context);
   }
-   
+
   Future<String?> _makeRemixImage() async {
     var boundary =
         globalkey.currentContext?.findRenderObject() as RenderRepaintBoundary?;

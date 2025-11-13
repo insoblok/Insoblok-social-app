@@ -40,7 +40,6 @@ class StoryListCell extends StatelessWidget {
     this.enableDetail,
     this.enableReaction,
     this.marginBottom,
-
   });
 
   final PageController _pageController = PageController();
@@ -62,7 +61,7 @@ class StoryListCell extends StatelessWidget {
 
     return null;
   }
- 
+
   int _currentPage = 0;
 
   @override
@@ -71,83 +70,108 @@ class StoryListCell extends StatelessWidget {
       viewModelBuilder: () => StoryProvider(),
       onViewModelReady: (viewModel) => viewModel.init(context, model: story),
       builder: (context, viewModel, _) {
-        return 
-          InkWell(
-            onTap: () => {viewModel.startRRC()},
-            child: Stack(
-              children: [
-                // ======== MEDIA ========
-                if ((story.medias ?? []).isNotEmpty)
-                  PageView.builder(
-                      controller: _pageController,
-                      onPageChanged: (page) {
-                        viewModel.pageIndex = page;
-                        _currentPage = page;
-                      },
-                      itemCount: (viewModel.story.medias ?? []).length,
-                      itemBuilder: (context, index) {
-                        if (viewModel.videoStoryPath == null) {
-                          return StoryMediaView(
-                            media: ((viewModel.resultFaceUrl?.isNotEmpty ?? false) &&
+        return InkWell(
+          onTap: () => {viewModel.startRRC()},
+          child: Stack(
+            children: [
+              // ======== MEDIA ========
+              if ((story.medias ?? []).isNotEmpty)
+                PageView.builder(
+                  controller: _pageController,
+                  onPageChanged: (page) {
+                    viewModel.pageIndex = page;
+                    _currentPage = page;
+                  },
+                  itemCount: (viewModel.story.medias ?? []).length,
+                  itemBuilder: (context, index) {
+                    if (viewModel.videoStoryPath == null) {
+                      return StoryMediaView(
+                        media:
+                            ((viewModel.resultFaceUrl?.isNotEmpty ?? false) &&
                                     viewModel.showFaceDialog)
                                 ? MediaStoryModel(
-                                    link: viewModel.resultFaceUrl,
-                                    type: 'image',
-                                    width: (story.medias ?? [])[viewModel.pageIndex].width,
-                                    height: (story.medias ?? [])[viewModel.pageIndex].height,
-                                  )
+                                  link: viewModel.resultFaceUrl,
+                                  type: 'image',
+                                  width:
+                                      (story.medias ?? [])[viewModel.pageIndex]
+                                          .width,
+                                  height:
+                                      (story.medias ?? [])[viewModel.pageIndex]
+                                          .height,
+                                )
                                 : (story.medias ?? [])[index],
-                          );
-                        } else {
-                          return _CircularVideoPlayer(videoPath: viewModel.videoStoryPath!);
-                        }
-                      },
-                    )
-                else
-                  Align(
-                    alignment: Alignment.center,
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 24.0),
-                      child: AIHelpers.htmlRender(
-                        story.text,
-                        fontSize: FontSize(32.0),
-                        textAlign: TextAlign.center,
-                      ),
+                      );
+                    } else {
+                      return _CircularVideoPlayer(
+                        videoPath: viewModel.videoStoryPath!,
+                      );
+                    }
+                  },
+                )
+              else
+                Align(
+                  alignment: Alignment.center,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 24.0,
+                      vertical: 24.0,
+                    ),
+                    child: AIHelpers.htmlRender(
+                      story.text,
+                      fontSize: FontSize(32.0),
+                      textAlign: TextAlign.center,
                     ),
                   ),
-                // ======== BOTTOM GRADIENT OVERLAY (text/info only) ========
-                Column(
-                  children: [
-                    // const Spacer(flex: 2),
-                    Expanded(
-                      child: Container(
-                        alignment: Alignment.bottomCenter,
-                        
-                        padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 2.0),
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [Color(0x00000000), Color(0xCF000000)],
-                          ),
+                ),
+              // ======== BOTTOM GRADIENT OVERLAY (text/info only) ========
+              Column(
+                children: [
+                  // const Spacer(flex: 2),
+                  Expanded(
+                    child: Container(
+                      alignment: Alignment.bottomCenter,
+
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 12.0,
+                        vertical: 2.0,
+                      ),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [Color(0x00000000), Color(0xCF000000)],
                         ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: [
-                            Container(
-                              margin: const EdgeInsets.only(left: 0.0, bottom: 20.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  if(viewModel.showFaceDialog)
+                      ),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.only(
+                              left: 0.0,
+                              bottom: 20.0,
+                            ),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                if (viewModel.showFaceDialog)
                                   Container(
                                     child: Padding(
-                                      padding: EdgeInsets.only(left: 0, bottom: 0),
+                                      padding: EdgeInsets.only(
+                                        left: 0,
+                                        bottom: 0,
+                                      ),
                                       child: ZoMultiColorBorder(
                                         // the ring stays mounted; only its child swaps
-                                        colors: const [Colors.orange, Colors.white, Colors.green, Colors.indigo, Colors.pink],
+                                        colors: const [
+                                          Colors.orange,
+                                          Colors.white,
+                                          Colors.green,
+                                          Colors.indigo,
+                                          Colors.pink,
+                                        ],
                                         strokeWidth: 3,
-                                        borderRadius: 75, // if your widget expects a double radius
+                                        borderRadius:
+                                            75, // if your widget expects a double radius
                                         child: Padding(
                                           // 0.1 px is okay but effectively invisible; keep or set to 1.0
                                           padding: const EdgeInsets.all(0.1),
@@ -161,195 +185,310 @@ class StoryListCell extends StatelessWidget {
                                             ),
                                             // Only the inside content animates
                                             child: AnimatedSwitcher(
-                                              duration: const Duration(milliseconds: 250),
+                                              duration: const Duration(
+                                                milliseconds: 250,
+                                              ),
                                               switchInCurve: Curves.easeOut,
                                               switchOutCurve: Curves.easeIn,
-                                              layoutBuilder: (currentChild, previousChildren) {
+                                              layoutBuilder: (
+                                                currentChild,
+                                                previousChildren,
+                                              ) {
                                                 // keeps size stable while animating
                                                 return Stack(
                                                   alignment: Alignment.center,
                                                   children: <Widget>[
                                                     ...previousChildren,
-                                                    if (currentChild != null) currentChild,
+                                                    if (currentChild != null)
+                                                      currentChild,
                                                   ],
                                                 );
                                               },
-                                              child: viewModel.isCapturingTimer
-                                                  ? _ReadyPreview(
-                                                      key: const ValueKey('state-ready'),
-                                                      isVideo: viewModel.isVideoReaction,
-                                                      videoPath: viewModel.videoPath,
-                                                      hasFace: viewModel.face != null,
-                                                    )
-                                                  : _Counting(
-                                                      key: const ValueKey('state-count'),
-                                                      isVideo: viewModel.isVideoReaction,
-                                                      onStartVideo: viewModel.captureReactionVideo,
-                                                      onStartImage: viewModel.captureReactionImage,
-                                                      onComplete: () {
-                                                        // Flip provider flag AFTER this frame; avoids "notify during build"
-                                                        WidgetsBinding.instance.addPostFrameCallback((_) {
-                                                          viewModel.completeTimer(); // sets isCapturingTimer = true + notifyListeners()
-                                                        });
-                                                      },
-                                                    ),
+                                              child:
+                                                  viewModel.isCapturingTimer
+                                                      ? _ReadyPreview(
+                                                        key: const ValueKey(
+                                                          'state-ready',
+                                                        ),
+                                                        isVideo:
+                                                            viewModel
+                                                                .isVideoReaction,
+                                                        videoPath:
+                                                            viewModel.videoPath,
+                                                        hasFace:
+                                                            viewModel.face !=
+                                                            null,
+                                                      )
+                                                      : _Counting(
+                                                        key: const ValueKey(
+                                                          'state-count',
+                                                        ),
+                                                        isVideo:
+                                                            viewModel
+                                                                .isVideoReaction,
+                                                        onStartVideo:
+                                                            viewModel
+                                                                .captureReactionVideo,
+                                                        onStartImage:
+                                                            viewModel
+                                                                .captureReactionImage,
+                                                        onComplete: () {
+                                                          // Flip provider flag AFTER this frame; avoids "notify during build"
+                                                          WidgetsBinding
+                                                              .instance
+                                                              .addPostFrameCallback((
+                                                                _,
+                                                              ) {
+                                                                viewModel
+                                                                    .completeTimer(); // sets isCapturingTimer = true + notifyListeners()
+                                                              });
+                                                        },
+                                                      ),
                                             ),
                                           ),
                                         ),
                                       ),
                                     ),
                                   ),
-                
-                                  // if (viewModel.story.category == 'vote') const StoryYayNayWidget(),
-                                  Container(
-                                    margin: EdgeInsets.only(bottom: 0),
-                                    child: Column(
-                                      children: [
-                                        Row(
-                                          children: [
-                                            RankLabelWidget(userId: viewModel.story.userId ?? "")
-                                          ],
-                                        ),
-                                        SizedBox(height: 6.0),
-                                        Row(
-                                          crossAxisAlignment: CrossAxisAlignment.center,
-                                          children: [
-                                            // Avatar (your existing widget)
-                                            SizedBox(
-                                              width: kStoryAvatarSize * 0.8,
-                                              height: kStoryAvatarSize * 0.8,
-                                              child: Stack(
-                                                children: [
-                                                  InkWell(
-                                                    onTap: viewModel.onTapUserAvatar,
-                                                    child: AIAvatarImage(
-                                                      key: GlobalKey(debugLabel: 'story-${story.id}'),
-                                                      viewModel.owner?.avatar,
-                                                      width: kStoryAvatarSize * 0.8,
-                                                      height: kStoryAvatarSize * 0.8,
-                                                      fullname: viewModel.owner?.fullName ?? 'Test',
-                                                      textSize: 24,
-                                                      borderRadius: kStoryAvatarSize / 2,
+
+                                // if (viewModel.story.category == 'vote') const StoryYayNayWidget(),
+                                Container(
+                                  margin: EdgeInsets.only(bottom: 0),
+                                  child: Column(
+                                    children: [
+                                      Row(
+                                        children: [
+                                          RankLabelWidget(
+                                            userId:
+                                                viewModel.story.userId ?? "",
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(height: 6.0),
+                                      Row(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.center,
+                                        children: [
+                                          // Avatar (your existing widget)
+                                          SizedBox(
+                                            width: kStoryAvatarSize * 0.8,
+                                            height: kStoryAvatarSize * 0.8,
+                                            child: Stack(
+                                              children: [
+                                                InkWell(
+                                                  onTap:
+                                                      viewModel.onTapUserAvatar,
+                                                  child: AIAvatarImage(
+                                                    key: GlobalKey(
+                                                      debugLabel:
+                                                          'story-${story.id}',
                                                     ),
+                                                    viewModel.owner?.avatar,
+                                                    width:
+                                                        kStoryAvatarSize * 0.8,
+                                                    height:
+                                                        kStoryAvatarSize * 0.8,
+                                                    fullname:
+                                                        viewModel
+                                                            .owner
+                                                            ?.fullName ??
+                                                        'Test',
+                                                    textSize: 24,
+                                                    borderRadius:
+                                                        kStoryAvatarSize / 2,
                                                   ),
-                                                  // Align(
-                                                  //   alignment: Alignment.bottomCenter,
-                                                  //   child: Container(
-                                                  //     width: 16,
-                                                  //     height: 16,
-                                                  //     decoration: BoxDecoration(
-                                                  //       gradient: const LinearGradient(
-                                                  //         begin: Alignment.topLeft,
-                                                  //         end: Alignment.bottomRight,
-                                                  //         colors: [Colors.white, Colors.grey],
-                                                  //       ),
-                                                  //       borderRadius: BorderRadius.circular(8.0),
-                                                  //     ),
-                                                  //     child: Icon(Icons.add, size: 12, color: AIColors.white),
-                                                  //   ),
-                                                  // ),
-                                                ],
-                                              ),
+                                                ),
+                                                // Align(
+                                                //   alignment: Alignment.bottomCenter,
+                                                //   child: Container(
+                                                //     width: 16,
+                                                //     height: 16,
+                                                //     decoration: BoxDecoration(
+                                                //       gradient: const LinearGradient(
+                                                //         begin: Alignment.topLeft,
+                                                //         end: Alignment.bottomRight,
+                                                //         colors: [Colors.white, Colors.grey],
+                                                //       ),
+                                                //       borderRadius: BorderRadius.circular(8.0),
+                                                //     ),
+                                                //     child: Icon(Icons.add, size: 12, color: AIColors.white),
+                                                //   ),
+                                                // ),
+                                              ],
                                             ),
-                                                    
-                                            const SizedBox(width: 10),
-                                                    
-                                            // Right side: name/timestamp + (optional) progress
-                                            Expanded(
-                                              child: Column(
-                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  // First row: Name + (optional "Following" pill) + time
-                                                  Wrap(
-                                                    crossAxisAlignment: WrapCrossAlignment.center,
-                                                    alignment: WrapAlignment.start,
-                                                    spacing: 8,
-                                                    runSpacing: 4,
-                                                    children: [
-                                                      Text(
-                                                        viewModel.owner?.fullName ?? '---',
-                                                        style: Theme.of(context).textTheme.headlineSmall,
-                                                      ),
-                                                      Text(
-                                                        '· ${(viewModel.story.createdAt)?.timeago}',
-                                                        style: Theme.of(context).textTheme.headlineSmall,
-                                                      ),
-                                                    ],
-                                                  ),
-                                                    
-                                                  const SizedBox(height: 6),
-                                                  viewModel.following ? Loader(size: 20, color: Colors.blueAccent) : Wrap(
-                                                    crossAxisAlignment: WrapCrossAlignment.center,
-                                                    alignment: WrapAlignment.start,
-                                                    spacing: 8,
-                                                    runSpacing: 4,
-                                                    children: [
-                                                      GestureDetector(
-                                                        onTap: () {
-                                                          if (viewModel.following) return;
-                                                          viewModel.handleClickFollow(viewModel.owner!);
-                                                        },
-                                                        child: Container(
-                                                          padding: EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
-                                                          decoration: BoxDecoration(
-                                                            color: Colors.black,
-                                                            borderRadius: BorderRadius.all(Radius.circular(12.0))
-                                                            
-                                                          ),
-                                                          child: Text(
-                                                            (viewModel.owner?.follows ?? []).contains(AuthHelper.user?.id) ? "Following" : 'Follow',
-                                                            style: Theme.of(context).textTheme.bodySmall!.copyWith(
-                                                              // color: Colors.blueAccent.withAlpha(200)
+                                          ),
+
+                                          const SizedBox(width: 10),
+
+                                          // Right side: name/timestamp + (optional) progress
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                // First row: Name + (optional "Following" pill) + time
+                                                Wrap(
+                                                  crossAxisAlignment:
+                                                      WrapCrossAlignment.center,
+                                                  alignment:
+                                                      WrapAlignment.start,
+                                                  spacing: 8,
+                                                  runSpacing: 4,
+                                                  children: [
+                                                    Text(
+                                                      viewModel
+                                                              .owner
+                                                              ?.fullName ??
+                                                          '---',
+                                                      style:
+                                                          Theme.of(context)
+                                                              .textTheme
+                                                              .headlineSmall,
+                                                    ),
+                                                    Text(
+                                                      '· ${(viewModel.story.createdAt)?.timeago}',
+                                                      style:
+                                                          Theme.of(context)
+                                                              .textTheme
+                                                              .headlineSmall,
+                                                    ),
+                                                  ],
+                                                ),
+
+                                                const SizedBox(height: 6),
+                                                viewModel.following
+                                                    ? Loader(
+                                                      size: 20,
+                                                      color: Colors.blueAccent,
+                                                    )
+                                                    : Wrap(
+                                                      crossAxisAlignment:
+                                                          WrapCrossAlignment
+                                                              .center,
+                                                      alignment:
+                                                          WrapAlignment.start,
+                                                      spacing: 8,
+                                                      runSpacing: 4,
+                                                      children: [
+                                                        if (viewModel.owner !=
+                                                            null)
+                                                          GestureDetector(
+                                                            onTap: () async {
+                                                              if (viewModel
+                                                                  .following)
+                                                                return;
+                                                              if (viewModel
+                                                                      .owner ==
+                                                                  null) {
+                                                                // Try to fetch owner if still null
+                                                                await viewModel
+                                                                    .fetchUser();
+                                                                if (viewModel
+                                                                        .owner ==
+                                                                    null)
+                                                                  return;
+                                                              }
+                                                              viewModel
+                                                                  .handleClickFollow(
+                                                                    viewModel
+                                                                        .owner,
+                                                                  );
+                                                            },
+                                                            child: Container(
+                                                              padding:
+                                                                  EdgeInsets.symmetric(
+                                                                    horizontal:
+                                                                        8.0,
+                                                                    vertical:
+                                                                        2.0,
+                                                                  ),
+                                                              decoration: BoxDecoration(
+                                                                color:
+                                                                    Colors
+                                                                        .black,
+                                                                borderRadius:
+                                                                    BorderRadius.all(
+                                                                      Radius.circular(
+                                                                        12.0,
+                                                                      ),
+                                                                    ),
+                                                              ),
+                                                              child: Text(
+                                                                (viewModel.owner?.follows ??
+                                                                            [])
+                                                                        .contains(
+                                                                          AuthHelper
+                                                                              .user
+                                                                              ?.id,
+                                                                        )
+                                                                    ? "Following"
+                                                                    : 'Follow',
+                                                                style: Theme.of(
+                                                                      context,
+                                                                    )
+                                                                    .textTheme
+                                                                    .bodySmall!
+                                                                    .copyWith(
+                                                                      // color: Colors.blueAccent.withAlpha(200)
+                                                                    ),
+                                                              ),
                                                             ),
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                        
-                                                  // Second line: Progress (with a small avatar dot like the screenshot)
-                                                  // if (viewModel.story.category == 'vote')
-                                                  //   Row(
-                                                  //     crossAxisAlignment: CrossAxisAlignment.center,
-                                                  //     children: [
-                                                  //       // tiny avatar beside progress line
-                                                  //       Expanded(
-                                                  //         child: Text(
-                                                  //           'Vybe VTO + progress (${viewModel.story.votes?.length ?? 0} / 5 Looks Today)',
-                                                  //           style: const TextStyle(fontSize: 10.0, fontWeight: FontWeight.bold),
-                                                  //           maxLines: 2,
-                                                  //           overflow: TextOverflow.ellipsis,
-                                                  //         ),
-                                                  //       ),
-                                                  //       const SizedBox(width: 8),
-                                                  //       Container(
-                                                  //         padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
-                                                  //         decoration: BoxDecoration(
-                                                  //           color: Theme.of(context).colorScheme.secondary.withAlpha(16),
-                                                  //           borderRadius: BorderRadius.circular(16.0),
-                                                  //         ),
-                                                  //       ),
-                                                  //     ],
-                                                  //   ),
-                                                ],
-                                              ),
+                                                          )
+                                                        else if (viewModel
+                                                            .isFetchingUser)
+                                                          Loader(
+                                                            size: 16,
+                                                            color: Colors.grey,
+                                                          )
+                                                        else
+                                                          SizedBox.shrink(),
+                                                      ],
+                                                    ),
+
+                                                // Second line: Progress (with a small avatar dot like the screenshot)
+                                                // if (viewModel.story.category == 'vote')
+                                                //   Row(
+                                                //     crossAxisAlignment: CrossAxisAlignment.center,
+                                                //     children: [
+                                                //       // tiny avatar beside progress line
+                                                //       Expanded(
+                                                //         child: Text(
+                                                //           'Vybe VTO + progress (${viewModel.story.votes?.length ?? 0} / 5 Looks Today)',
+                                                //           style: const TextStyle(fontSize: 10.0, fontWeight: FontWeight.bold),
+                                                //           maxLines: 2,
+                                                //           overflow: TextOverflow.ellipsis,
+                                                //         ),
+                                                //       ),
+                                                //       const SizedBox(width: 8),
+                                                //       Container(
+                                                //         padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
+                                                //         decoration: BoxDecoration(
+                                                //           color: Theme.of(context).colorScheme.secondary.withAlpha(16),
+                                                //           borderRadius: BorderRadius.circular(16.0),
+                                                //         ),
+                                                //       ),
+                                                //     ],
+                                                //   ),
+                                              ],
                                             ),
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
                             ),
-                          ],
-                        ),
+                          ),
+                        ],
                       ),
                     ),
-                  ],
-                ),
-                if (viewModel.address != null && (viewModel.address ?? "").isNotEmpty)
+                  ),
+                ],
+              ),
+              if (viewModel.address != null &&
+                  (viewModel.address ?? "").isNotEmpty)
                 SafeArea(
                   child: Align(
                     alignment: Alignment.topLeft,
@@ -358,20 +497,20 @@ class StoryListCell extends StatelessWidget {
                       padding: EdgeInsets.all(5.0),
                       decoration: BoxDecoration(
                         color: Colors.black.withAlpha(40),
-                        borderRadius: BorderRadius.circular(10.0)
+                        borderRadius: BorderRadius.circular(10.0),
                       ),
                       child: SizedBox(
                         width: 120.0,
                         height: 16.0,
                         child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          const Icon(
-                            Icons.place,
-                            size: 14,
-                            color: Colors.white,
-                          ),
-                          const SizedBox(width: 6),
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(
+                              Icons.place,
+                              size: 14,
+                              color: Colors.white,
+                            ),
+                            const SizedBox(width: 6),
                             Expanded(
                               child: Align(
                                 alignment: Alignment.center,
@@ -381,41 +520,49 @@ class StoryListCell extends StatelessWidget {
                                     fontSize: 11,
                                     fontWeight: FontWeight.normal,
                                     color: Colors.white,
-                                    height: 1.0, // 👈 helps with vertical centering
+                                    height:
+                                        1.0, // 👈 helps with vertical centering
                                   ),
                                   scrollAxis: Axis.horizontal,
                                   blankSpace: 10.0,
                                   velocity: 30.0,
                                   pauseAfterRound: const Duration(seconds: 0),
                                   startPadding: 10.0,
-                                  accelerationDuration: const Duration(seconds: 1),
+                                  accelerationDuration: const Duration(
+                                    seconds: 1,
+                                  ),
                                   accelerationCurve: Curves.linear,
-                                  decelerationDuration: const Duration(milliseconds: 500),
+                                  decelerationDuration: const Duration(
+                                    milliseconds: 500,
+                                  ),
                                   decelerationCurve: Curves.easeOut,
                                 ),
                               ),
                             ),
                           ],
                         ),
-                      )
-                    )
+                      ),
+                    ),
                   ),
                 ),
-                // ======== RIGHT ACTIONS ========
-                Align(
-                  alignment: Alignment.bottomRight,
-                  child: Container(
-                    height: min(MediaQuery.of(context).size.height * 0.3, viewModel.pageIndex > 0 ? 262 : 210),
-                    margin: EdgeInsets.only(
-                      right: 8.0,
-                      bottom: 18.0,
-                    ),
-                    padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 0.0),
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        if(viewModel.pageIndex > 0)
+              // ======== RIGHT ACTIONS ========
+              Align(
+                alignment: Alignment.bottomRight,
+                child: Container(
+                  height: min(
+                    MediaQuery.of(context).size.height * 0.3,
+                    viewModel.pageIndex > 0 ? 262 : 210,
+                  ),
+                  margin: EdgeInsets.only(right: 8.0, bottom: 18.0),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 4.0,
+                    vertical: 0.0,
+                  ),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      if (viewModel.pageIndex > 0)
                         StoryActionButton(
                           src: AIImage(
                             AIImages.icBottomLook,
@@ -423,135 +570,140 @@ class StoryListCell extends StatelessWidget {
                             width: kStoryAvatarSize * 0.46,
                           ),
                           onTap: () async {
-                            List<String> mediaString = (viewModel.story.medias ?? []).map((m) => m.link ?? "").toList();
-                            await AIHelpers.goToDetailView(context, medias: mediaString);
+                            List<String> mediaString =
+                                (viewModel.story.medias ?? [])
+                                    .map((m) => m.link ?? "")
+                                    .toList();
+                            await AIHelpers.goToDetailView(
+                              context,
+                              medias: mediaString,
+                            );
+                          },
+                        ),
+                      StoryActionButton(
+                        src: AIImage(
+                          AIImages.icFireHot,
+                          // color: Theme.of(context).colorScheme.onPrimary,
+                          width: kStoryAvatarSize * 0.4,
+                        ),
+                        label: '${viewModel.story.cntYay}',
+                        onTap: () {
+                          if (viewModel.story.isVote() != true) {
+                            viewModel.updateVote(true);
                           }
+                        },
+                      ),
+                      StoryActionButton(
+                        src: Icon(
+                          Icons.remove_red_eye_outlined,
+                          color: Theme.of(context).colorScheme.onPrimary,
+                          size: kStoryAvatarSize * 0.5,
                         ),
-                        StoryActionButton(
-                          src: AIImage(
-                            AIImages.icFireHot,
-                            // color: Theme.of(context).colorScheme.onPrimary,
-                            width: kStoryAvatarSize * 0.4,
-                          ),
-                          label: '${viewModel.story.cntYay}',
-                          onTap: () {
-                            if(viewModel.story.isVote() != true) {
-                              viewModel.updateVote(true);
-                            }
-                          }
+                        label: '${(viewModel.story.views ?? []).length}',
+                      ),
+                      StoryActionButton(
+                        src: AIImage(
+                          AIImages.icComment3,
+                          color: Theme.of(context).colorScheme.onPrimary,
+                          width: kStoryAvatarSize * 0.5,
                         ),
-                        StoryActionButton(
-                          src: Icon(
-                            Icons.remove_red_eye_outlined,
-                            color: Theme.of(context).colorScheme.onPrimary,
-                            size: kStoryAvatarSize * 0.5,
-                            ),
-                          label: '${(viewModel.story.views ?? []).length}',
+                        label: '${(viewModel.story.comments ?? []).length}',
+                        onTap: () => viewModel.showCommentDialog(),
+                      ),
+                      StoryActionButton(
+                        src: AIImage(
+                          AIImages.icShareOutline,
+                          color: Theme.of(context).colorScheme.onPrimary,
+                          width: kStoryAvatarSize * 0.5,
                         ),
-                        StoryActionButton(
-                          src: AIImage(
-                            AIImages.icComment3,
-                            color: Theme.of(context).colorScheme.onPrimary,
-                            width: kStoryAvatarSize * 0.5,
-                          ),
-                          label: '${(viewModel.story.comments ?? []).length}',
-                          onTap: () => viewModel.showCommentDialog(),
-                        ),
-                        StoryActionButton(
-                          src: AIImage(
-                            AIImages.icShareOutline,
-                            color: Theme.of(context).colorScheme.onPrimary,
-                            width: kStoryAvatarSize * 0.5,
-                          ),
-                          label: '',
-                          spacing: 0.0,
-                          onTap: () => viewModel.repost(),
-                        ),
-                        // if (AuthHelper.user?.id == viewModel.story.userId)
-                        //   StoryActionButton(
-                        //     src: AIImage(
-                        //       AIImages.icGallery,
-                        //       color: Theme.of(context).colorScheme.onPrimary,
-                        //       width: kStoryAvatarSize * 0.5,
-                        //     ),
-                        //     onTap: () => viewModel.showReactions(),
-                        //   ),
-                        // if (AuthHelper.user?.id == viewModel.story.userId)
-                        // StoryActionButton(
-                        //   src: AIImage(
-                        //     AIImages.icVoteUp2,
-                        //     color: Theme.of(context).colorScheme.onPrimary,
-                        //     width: kStoryAvatarSize * 0.45,
-                        //     height: kStoryAvatarSize * 0.45,
-                        //   ),
-                        //   spacing: 3.0,
-                        //   label: '${(viewModel.story.cntYay)}',
-                        // ),
-                        // StoryActionButton(
-                        //   src: AIImage(
-                        //     AIImages.icVoteDown2,
-                        //     color: Theme.of(context).colorScheme.onPrimary,
-                        //     width: kStoryAvatarSize * 0.45,
-                        //     height: kStoryAvatarSize * 0.45,
-                        //   ),
-                        //   spacing: 3.0,
-                        //   label: '${(viewModel.story.cntNay)}',
-                        // ),
-                      ],
-                    ),
+                        label: '',
+                        spacing: 0.0,
+                        onTap: () => viewModel.repost(),
+                      ),
+                      // if (AuthHelper.user?.id == viewModel.story.userId)
+                      //   StoryActionButton(
+                      //     src: AIImage(
+                      //       AIImages.icGallery,
+                      //       color: Theme.of(context).colorScheme.onPrimary,
+                      //       width: kStoryAvatarSize * 0.5,
+                      //     ),
+                      //     onTap: () => viewModel.showReactions(),
+                      //   ),
+                      // if (AuthHelper.user?.id == viewModel.story.userId)
+                      // StoryActionButton(
+                      //   src: AIImage(
+                      //     AIImages.icVoteUp2,
+                      //     color: Theme.of(context).colorScheme.onPrimary,
+                      //     width: kStoryAvatarSize * 0.45,
+                      //     height: kStoryAvatarSize * 0.45,
+                      //   ),
+                      //   spacing: 3.0,
+                      //   label: '${(viewModel.story.cntYay)}',
+                      // ),
+                      // StoryActionButton(
+                      //   src: AIImage(
+                      //     AIImages.icVoteDown2,
+                      //     color: Theme.of(context).colorScheme.onPrimary,
+                      //     width: kStoryAvatarSize * 0.45,
+                      //     height: kStoryAvatarSize * 0.45,
+                      //   ),
+                      //   spacing: 3.0,
+                      //   label: '${(viewModel.story.cntNay)}',
+                      // ),
+                    ],
                   ),
                 ),
-                if ((story.medias ?? []).length > 1)
+              ),
+              if ((story.medias ?? []).length > 1)
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: InkWell(
-                      onTap:
-                          () {
-                            if (_pageController.hasClients) {
-                              final prevPage = _pageController.page!.toInt() - 1;
-                              if (prevPage > -1) {
-                                _pageController.animateToPage(
-                                  prevPage,
-                                  duration: Duration(milliseconds: 300),
-                                  curve: Curves.easeInOut,
-                                );
-                              }
-                            }
-                          },
+                      onTap: () {
+                        if (_pageController.hasClients) {
+                          final prevPage = _pageController.page!.toInt() - 1;
+                          if (prevPage > -1) {
+                            _pageController.animateToPage(
+                              prevPage,
+                              duration: Duration(milliseconds: 300),
+                              curve: Curves.easeInOut,
+                            );
+                          }
+                        }
+                      },
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           AIImage(
                             AIImages.icArrowLeft,
                             height: 36.0,
-                            color: Colors.grey
+                            color: Colors.grey,
                           ),
                         ],
                       ),
                     ),
                   ),
                 ),
-                if ((story.medias ?? []).length > 1)
+              if ((story.medias ?? []).length > 1)
                 Align(
                   alignment: Alignment.centerRight,
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: InkWell(
-                      onTap:
-                          () {
-                            if (_pageController.hasClients) {
-                              final nextPage = _pageController.page!.toInt() + 1;
-                              if (nextPage < (viewModel.story.medias ?? []).length) {
-                                _pageController.animateToPage(
-                                  nextPage,
-                                  duration: Duration(milliseconds: 300),
-                                  curve: Curves.easeInOut,
-                                );
-                              }
-                            }
-                          },
+                      onTap: () {
+                        if (_pageController.hasClients) {
+                          final nextPage = _pageController.page!.toInt() + 1;
+                          if (nextPage <
+                              (viewModel.story.medias ?? []).length) {
+                            _pageController.animateToPage(
+                              nextPage,
+                              duration: Duration(milliseconds: 300),
+                              curve: Curves.easeInOut,
+                            );
+                          }
+                        }
+                      },
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
@@ -565,30 +717,35 @@ class StoryListCell extends StatelessWidget {
                     ),
                   ),
                 ),
-                // ======== BOTTOM-LEFT: SLIDER ========
-            
-                // ======== PAGE INDICATOR ========
-                if ((viewModel.story.medias ?? []).length > 1)
-                  Positioned(
-                    left: 20.0,
-                    top: MediaQuery.of(context).padding.top + 90.0,
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
-                      decoration: BoxDecoration(
-                        color: Theme.of(context).colorScheme.onSecondary.withAlpha(64),
-                        borderRadius: BorderRadius.circular(24.0),
-                      ),
-                      child: Text(
-                        '${viewModel.pageIndex + 1} / ${(viewModel.story.medias ?? []).length}',
-                        style: Theme.of(context).textTheme.titleSmall,
-                      ),
+              // ======== BOTTOM-LEFT: SLIDER ========
+
+              // ======== PAGE INDICATOR ========
+              if ((viewModel.story.medias ?? []).length > 1)
+                Positioned(
+                  left: 20.0,
+                  top: MediaQuery.of(context).padding.top + 90.0,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12.0,
+                      vertical: 4.0,
+                    ),
+                    decoration: BoxDecoration(
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.onSecondary.withAlpha(64),
+                      borderRadius: BorderRadius.circular(24.0),
+                    ),
+                    child: Text(
+                      '${viewModel.pageIndex + 1} / ${(viewModel.story.medias ?? []).length}',
+                      style: Theme.of(context).textTheme.titleSmall,
                     ),
                   ),
-            
-                if (viewModel.isBusy) const Center(child: Loader(size: 60.0)),
-              ],
-            )
-          );
+                ),
+
+              if (viewModel.isBusy) const Center(child: Loader(size: 60.0)),
+            ],
+          ),
+        );
       },
     );
   }
@@ -615,7 +772,7 @@ class _SliderSpotPreview extends StatelessWidget {
           color: Colors.transparent,
           elevation: 6,
           shape: const CircleBorder(),
-          child: child, 
+          child: child,
         ),
       ),
     );
@@ -629,14 +786,15 @@ class StoryFaceModalView extends ViewModelWidget<StoryProvider> {
   @override
   Widget build(BuildContext context, viewModel) {
     return InkWell(
-      onTap: () => Routers.goToFaceDetailPage(
-        context,
-        viewModel.story.id!,
-        (viewModel.story.medias ?? [])[viewModel.pageIndex].link!,
-        viewModel.face!,
-        viewModel.annotations,
-        false,
-      ),
+      onTap:
+          () => Routers.goToFaceDetailPage(
+            context,
+            viewModel.story.id!,
+            (viewModel.story.medias ?? [])[viewModel.pageIndex].link!,
+            viewModel.face!,
+            viewModel.annotations,
+            false,
+          ),
       child: Container(
         margin: EdgeInsets.only(bottom: marginBottom ?? 0),
         padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),
@@ -697,9 +855,10 @@ class StorySendCommentWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.only(
-        bottom: marginBottom != null
-            ? MediaQuery.of(context).padding.bottom + marginBottom!
-            : MediaQuery.of(context).padding.bottom,
+        bottom:
+            marginBottom != null
+                ? MediaQuery.of(context).padding.bottom + marginBottom!
+                : MediaQuery.of(context).padding.bottom,
       ),
       child: Column(
         mainAxisSize: MainAxisSize.min,
@@ -708,11 +867,19 @@ class StorySendCommentWidget extends StatelessWidget {
             children: [
               IconButton(
                 onPressed: () {},
-                icon: AIImage(AIImages.icImage, color: Theme.of(context).colorScheme.secondary, width: 20),
+                icon: AIImage(
+                  AIImages.icImage,
+                  color: Theme.of(context).colorScheme.secondary,
+                  width: 20,
+                ),
               ),
               IconButton(
                 onPressed: () {},
-                icon: AIImage(AIImages.icCamera, color: Theme.of(context).colorScheme.secondary, width: 20),
+                icon: AIImage(
+                  AIImages.icCamera,
+                  color: Theme.of(context).colorScheme.secondary,
+                  width: 20,
+                ),
               ),
               Expanded(
                 child: QuillSimpleToolbar(
@@ -781,14 +948,14 @@ class StorySendCommentWidget extends StatelessWidget {
                           HorizontalSpacing.zero,
                           VerticalSpacing.zero,
                           VerticalSpacing.zero,
-                          null
+                          null,
                         ),
                         paragraph: DefaultTextBlockStyle(
                           const TextStyle(fontSize: 16),
                           HorizontalSpacing.zero,
                           VerticalSpacing.zero,
                           VerticalSpacing.zero,
-                          null
+                          null,
                         ),
                       ),
                     ),
@@ -800,7 +967,10 @@ class StorySendCommentWidget extends StatelessWidget {
                     width: 30.0,
                     height: 30.0,
                     alignment: Alignment.center,
-                    decoration: BoxDecoration(color: AIColors.pink, borderRadius: BorderRadius.circular(15.0)),
+                    decoration: BoxDecoration(
+                      color: AIColors.pink,
+                      borderRadius: BorderRadius.circular(15.0),
+                    ),
                     child: IconButton(
                       onPressed: onSend,
                       icon: const Icon(Icons.arrow_upward_outlined, size: 15.0),
@@ -831,7 +1001,10 @@ class _StoryMediaViewState extends State<StoryMediaView> {
         widget.media.link,
         width: double.infinity,
         height: double.infinity,
-        fit: ((widget.media.height ?? 1) / (widget.media.width ?? 1) > 1.2) ? BoxFit.cover : BoxFit.fitWidth,
+        fit:
+            ((widget.media.height ?? 1) / (widget.media.width ?? 1) > 1.2)
+                ? BoxFit.cover
+                : BoxFit.fitWidth,
       );
     }
     return CloudinaryVideoPlayerWidget(videoUrl: widget.media.link!);
@@ -842,7 +1015,6 @@ class StoryYayNayWidget extends ViewModelWidget<StoryProvider> {
   const StoryYayNayWidget({super.key});
   @override
   Widget build(BuildContext context, viewModel) {
-
     final radius = 24.0;
     return Container(
       child: Column(
@@ -854,29 +1026,38 @@ class StoryYayNayWidget extends ViewModelWidget<StoryProvider> {
                 decoration: BoxDecoration(
                   gradient: const LinearGradient(
                     begin: Alignment.centerLeft,
-                    end: Alignment.centerRight,           
+                    end: Alignment.centerRight,
                     colors: [Colors.orange, Colors.deepOrangeAccent],
                   ),
                   borderRadius: BorderRadius.circular(radius),
-                  boxShadow: 
-                  viewModel.story.isVote() == true
-                  ? [
-                    BoxShadow(
-                      color: const Color.fromARGB(255, 180, 109, 3).withOpacity(0.5),
-                      blurRadius: 10,                        
-                      spreadRadius: 5,                       
-                      offset: const Offset(0, 3),            
-                    ),
-                  ] : [],
+                  boxShadow:
+                      viewModel.story.isVote() == true
+                          ? [
+                            BoxShadow(
+                              color: const Color.fromARGB(
+                                255,
+                                180,
+                                109,
+                                3,
+                              ).withOpacity(0.5),
+                              blurRadius: 10,
+                              spreadRadius: 5,
+                              offset: const Offset(0, 3),
+                            ),
+                          ]
+                          : [],
                 ),
                 child: InkWell(
                   borderRadius: BorderRadius.circular(radius),
                   // onTap: () => viewModel.updateVote(false),
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 2,
+                      vertical: 2,
+                    ),
                     child: VoteFloatingButton(
                       onTap: () {
-                        if(viewModel.story.isVote() != true) {
+                        if (viewModel.story.isVote() != true) {
                           viewModel.updateVote(true);
                         }
                       },
@@ -884,35 +1065,43 @@ class StoryYayNayWidget extends ViewModelWidget<StoryProvider> {
                       textColor: AIColors.white,
                       src: AIImages.icFireHot,
                       imgSize: 24,
-                      backgroundColor: viewModel.story.isVote() == true ? Colors.orange : Colors.transparent,
-                      borderColor: AIColors.orange
+                      backgroundColor:
+                          viewModel.story.isVote() == true
+                              ? Colors.orange
+                              : Colors.transparent,
+                      borderColor: AIColors.orange,
                     ),
                   ),
                 ),
               ),
-      
+
               const SizedBox(width: 30),
               Ink(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(radius),
-                  boxShadow: viewModel.story.isVote() == false 
-                  ? [
-                    BoxShadow(
-                      color: Colors.blue, 
-                      blurRadius: 10,                       
-                      spreadRadius: 5,                      
-                      offset: const Offset(0, 3),           
-                    ),
-                  ] : [],
+                  boxShadow:
+                      viewModel.story.isVote() == false
+                          ? [
+                            BoxShadow(
+                              color: Colors.blue,
+                              blurRadius: 10,
+                              spreadRadius: 5,
+                              offset: const Offset(0, 3),
+                            ),
+                          ]
+                          : [],
                 ),
                 child: InkWell(
                   borderRadius: BorderRadius.circular(radius),
                   // onTap: () => viewModel.updateVote(true),
                   child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 2,
+                      vertical: 2,
+                    ),
                     child: VoteFloatingButton(
                       onTap: () {
-                        if(viewModel.story.isVote() != false) {
+                        if (viewModel.story.isVote() != false) {
                           viewModel.updateVote(false);
                         }
                       },
@@ -920,8 +1109,11 @@ class StoryYayNayWidget extends ViewModelWidget<StoryProvider> {
                       textColor: AIColors.white,
                       src: AIImages.icFireNot,
                       imgSize: 24,
-                      backgroundColor: viewModel.story.isVote() == false ? AIColors.lightBlue : Colors.transparent,
-                      borderColor: AIColors.lightBlue
+                      backgroundColor:
+                          viewModel.story.isVote() == false
+                              ? AIColors.lightBlue
+                              : Colors.transparent,
+                      borderColor: AIColors.lightBlue,
                     ),
                   ),
                 ),
@@ -941,9 +1133,16 @@ class StoryActionButton extends StatelessWidget {
   double? spacing;
   bool? numberSpacing;
   final void Function()? onTap;
-  
-  StoryActionButton({super.key, required this.src, this.label = "", this.spacing = 0, this.numberSpacing = true, this.onTap});
-  
+
+  StoryActionButton({
+    super.key,
+    required this.src,
+    this.label = "",
+    this.spacing = 0,
+    this.numberSpacing = true,
+    this.onTap,
+  });
+
   @override
   Widget build(BuildContext context) {
     return InkWell(
@@ -951,15 +1150,14 @@ class StoryActionButton extends StatelessWidget {
       child: Column(
         children: [
           src,
-          if(numberSpacing ?? false)
-          SizedBox(height: spacing),
+          if (numberSpacing ?? false) SizedBox(height: spacing),
           Text(
-            label!, 
+            label!,
             style: TextStyle(
               fontSize: 13.0,
               color: Colors.white.withOpacity(0.7),
               fontWeight: FontWeight.w700,
-            )
+            ),
           ),
         ],
       ),
@@ -974,7 +1172,8 @@ class StoryCommentDialog extends StatefulWidget {
   State<StoryCommentDialog> createState() => _StoryCommentDialogState();
 }
 
-class _StoryCommentDialogState extends State<StoryCommentDialog> with AutomaticKeepAliveClientMixin {
+class _StoryCommentDialogState extends State<StoryCommentDialog>
+    with AutomaticKeepAliveClientMixin {
   @override
   bool get wantKeepAlive => true;
 
@@ -983,12 +1182,16 @@ class _StoryCommentDialogState extends State<StoryCommentDialog> with AutomaticK
     super.build(context);
     return ViewModelBuilder<StoryContentProvider>.reactive(
       viewModelBuilder: () => StoryContentProvider(),
-      onViewModelReady: (viewModel) => viewModel.init(context, model: widget.story),
+      onViewModelReady:
+          (viewModel) => viewModel.init(context, model: widget.story),
       builder: (context, viewModel, _) {
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
           decoration: BoxDecoration(
-            borderRadius: const BorderRadius.only(topLeft: Radius.circular(12.0), topRight: Radius.circular(12.0)),
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(12.0),
+              topRight: Radius.circular(12.0),
+            ),
             gradient: LinearGradient(
               colors: [
                 AIColors.lightPurple.withAlpha(32),
@@ -1011,9 +1214,14 @@ class _StoryCommentDialogState extends State<StoryCommentDialog> with AutomaticK
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Container(),
-                    Text(' ${viewModel.story.comments?.length ?? 0} comments',
-                        style: Theme.of(context).textTheme.bodyMedium),
-                    InkWell(onTap: viewModel.popupDialog, child: const Icon(Icons.close, size: 26)),
+                    Text(
+                      ' ${viewModel.story.comments?.length ?? 0} comments',
+                      style: Theme.of(context).textTheme.bodyMedium,
+                    ),
+                    InkWell(
+                      onTap: viewModel.popupDialog,
+                      child: const Icon(Icons.close, size: 26),
+                    ),
                   ],
                 ),
                 const SizedBox(height: 16),
@@ -1024,9 +1232,15 @@ class _StoryCommentDialogState extends State<StoryCommentDialog> with AutomaticK
                       children: [
                         for (var comment in viewModel.comments)
                           Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 4.0, vertical: 4.0),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 4.0,
+                              vertical: 4.0,
+                            ),
                             child: StoryDetailCommentCell(
-                              key: GlobalKey(debugLabel: '${comment.id} - ${comment.storyId}'),
+                              key: GlobalKey(
+                                debugLabel:
+                                    '${comment.id} - ${comment.storyId}',
+                              ),
                               comment: comment,
                               selected: viewModel.replyCommentId == comment.id,
                               onTap: () {
@@ -1046,10 +1260,11 @@ class _StoryCommentDialogState extends State<StoryCommentDialog> with AutomaticK
                   controller: viewModel.quillController,
                   focusNode: viewModel.focusNode,
                   scrollController: viewModel.quillScrollController,
-                  onSend: () => viewModel.sendComment(
-                    viewModel.story.id ?? '',
-                    commentId: viewModel.replyCommentId,
-                  ),
+                  onSend:
+                      () => viewModel.sendComment(
+                        viewModel.story.id ?? '',
+                        commentId: viewModel.replyCommentId,
+                      ),
                 ),
               ],
             ),
@@ -1078,24 +1293,36 @@ class StoryDialogMediaView extends ViewModelWidget<StoryContentProvider> {
                 AspectRatio(
                   aspectRatio: 0.6,
                   child: InkWell(
-                    onTap: () => AIHelpers.goToDetailView(
-                      context,
-                      medias: (viewModel.story.medias ?? []).map((m) => m.link!).toList(),
-                      index: i,
-                      storyID: viewModel.story.id!,
-                      storyUser: viewModel.story.userId!,
-                    ),
+                    onTap:
+                        () => AIHelpers.goToDetailView(
+                          context,
+                          medias:
+                              (viewModel.story.medias ?? [])
+                                  .map((m) => m.link!)
+                                  .toList(),
+                          index: i,
+                          storyID: viewModel.story.id!,
+                          storyUser: viewModel.story.userId!,
+                        ),
                     child: Container(
                       decoration: BoxDecoration(
-                        border: Border.all(width: 0.66, color: AIColors.speraterColor),
+                        border: Border.all(
+                          width: 0.66,
+                          color: AIColors.speraterColor,
+                        ),
                         borderRadius: BorderRadius.circular(12.0),
                       ),
                       child: ClipRRect(
                         borderRadius: BorderRadius.circular(12.0),
                         child: Container(
                           width: double.infinity,
-                          decoration: BoxDecoration(color: AIColors.grey, borderRadius: BorderRadius.circular(6)),
-                          child: MediaCarouselCell(media: viewModel.story.medias![i]),
+                          decoration: BoxDecoration(
+                            color: AIColors.grey,
+                            borderRadius: BorderRadius.circular(6),
+                          ),
+                          child: MediaCarouselCell(
+                            media: viewModel.story.medias![i],
+                          ),
                         ),
                       ),
                     ),
@@ -1114,7 +1341,12 @@ class StoryListEmptyView extends StatelessWidget {
   const StoryListEmptyView({super.key, required this.description});
   @override
   Widget build(BuildContext context) {
-    return Container(width: double.infinity, height: 200.0, alignment: Alignment.center, child: Text(description));
+    return Container(
+      width: double.infinity,
+      height: 200.0,
+      alignment: Alignment.center,
+      child: Text(description),
+    );
   }
 }
 
@@ -1140,7 +1372,7 @@ class CommentFaceModalView extends ViewModelWidget<StoryProvider> {
   const CommentFaceModalView({
     super.key,
     this.marginBottom,
-    this.tapEnabled = true,        // <— default: tappable
+    this.tapEnabled = true, // <— default: tappable
     this.onTap,
     this.period = const Duration(milliseconds: 8000),
     this.curve = Curves.easeInOut,
@@ -1178,23 +1410,30 @@ class CommentFaceModalView extends ViewModelWidget<StoryProvider> {
     );
 
     // Wrap with InkWell only when tap is enabled
-      chip = Material(
-        color: Colors.transparent,
-        child: InkWell(
-          customBorder: const CircleBorder(),
-          onTap: onTap ??
-              // () => Routers.goToFaceDetailPage(
-              //       context,
-              //       viewModel.story.id!,
-              //       (viewModel.story.medias ?? [])[viewModel.pageIndex].link!,
-              //       face,
-              //       viewModel.annotations,
-              //       true,
-              //     ),
-              () => Routers.goToRRCAvatarGenerationPage(context, face, (viewModel.story.medias ?? [])[viewModel.pageIndex].link!,),
-          child: chip,
-        ),
-      );
+    chip = Material(
+      color: Colors.transparent,
+      child: InkWell(
+        customBorder: const CircleBorder(),
+        onTap:
+            onTap ??
+            // () => Routers.goToFaceDetailPage(
+            //       context,
+            //       viewModel.story.id!,
+            //       (viewModel.story.medias ?? [])[viewModel.pageIndex].link!,
+            //       face,
+            //       viewModel.annotations,
+            //       true,
+            //     ),
+            () => Routers.goToRRCAvatarGenerationPage(
+              context,
+              face,
+              (viewModel.story.medias ?? [])[viewModel.pageIndex].link!,
+              "dashboard",
+              viewModel.story.id!,
+            ),
+        child: chip,
+      ),
+    );
 
     return _LoopingFade(
       period: period,
@@ -1234,7 +1473,8 @@ class _LoopingFade extends StatefulWidget {
   State<_LoopingFade> createState() => _LoopingFadeState();
 }
 
-class _LoopingFadeState extends State<_LoopingFade> with SingleTickerProviderStateMixin {
+class _LoopingFadeState extends State<_LoopingFade>
+    with SingleTickerProviderStateMixin {
   late AnimationController _ctrl;
   late Animation<double> _alpha;
   Animation<double>? _scale;
@@ -1242,7 +1482,8 @@ class _LoopingFadeState extends State<_LoopingFade> with SingleTickerProviderSta
   @override
   void initState() {
     super.initState();
-    _ctrl = AnimationController(vsync: this, duration: widget.period)..repeat(reverse: true);
+    _ctrl = AnimationController(vsync: this, duration: widget.period)
+      ..repeat(reverse: true);
     _rebuildTweens();
   }
 
@@ -1266,9 +1507,15 @@ class _LoopingFadeState extends State<_LoopingFade> with SingleTickerProviderSta
 
   void _rebuildTweens() {
     final curved = CurvedAnimation(parent: _ctrl, curve: widget.curve);
-    _alpha = Tween<double>(begin: widget.minOpacity, end: widget.maxOpacity).animate(curved);
+    _alpha = Tween<double>(
+      begin: widget.minOpacity,
+      end: widget.maxOpacity,
+    ).animate(curved);
     if (widget.alsoPulseScale) {
-      _scale = Tween<double>(begin: widget.minScale, end: widget.maxScale).animate(curved);
+      _scale = Tween<double>(
+        begin: widget.minScale,
+        end: widget.maxScale,
+      ).animate(curved);
     } else {
       _scale = null;
     }
@@ -1304,7 +1551,9 @@ class CommentFaceVideoModalView extends ViewModelWidget<StoryProvider> {
         mainAxisSize: MainAxisSize.min,
         children: [
           _VideoPreviewWidget(
-            key: ValueKey('${path}_${viewModel.refreshCount}'), // force rebuild on change
+            key: ValueKey(
+              '${path}_${viewModel.refreshCount}',
+            ), // force rebuild on change
             videoPath: path,
             onRecapture: viewModel.captureReactionVideo,
             onEditVideo: viewModel.onPostReactionVideoPressed,
@@ -1359,9 +1608,10 @@ class _VideoPreviewWidgetState extends State<_VideoPreviewWidget> {
   Future<void> _initWith(String path) async {
     try {
       final isNetwork = path.startsWith('http');
-      final controller = isNetwork
-          ? VideoPlayerController.networkUrl(Uri.parse(path))
-          : VideoPlayerController.file(File(path));
+      final controller =
+          isNetwork
+              ? VideoPlayerController.networkUrl(Uri.parse(path))
+              : VideoPlayerController.file(File(path));
 
       await controller.initialize();
       await controller.setLooping(true);
@@ -1402,22 +1652,24 @@ class _VideoPreviewWidgetState extends State<_VideoPreviewWidget> {
   }
 
   @override
-Widget build(BuildContext context) {
-  logger.d("This is VideoPreviewWidget");
-  return SizedBox(
-    width: 35,
-    height: 45,
-    child: GestureDetector(
-      onTap: widget.onEditVideo,
-      child: ClipOval(
-        child: _initialized && _controller != null
-            ? VideoPlayer(_controller!)
-            : const Center(child: CircularProgressIndicator(strokeWidth: 2)),
+  Widget build(BuildContext context) {
+    logger.d("This is VideoPreviewWidget");
+    return SizedBox(
+      width: 35,
+      height: 45,
+      child: GestureDetector(
+        onTap: widget.onEditVideo,
+        child: ClipOval(
+          child:
+              _initialized && _controller != null
+                  ? VideoPlayer(_controller!)
+                  : const Center(
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  ),
+        ),
       ),
-    ),
-  );
-}
-
+    );
+  }
 }
 
 class _CircularVideoPlayer extends StatefulWidget {
@@ -1431,24 +1683,25 @@ class _CircularVideoPlayerState extends State<_CircularVideoPlayer> {
   late VideoPlayerController _controller;
   bool _initialized = false;
 
-  
   @override
   void initState() {
     super.initState();
-
 
     if (widget.videoPath.startsWith('http')) {
       _controller = VideoPlayerController.network(widget.videoPath);
     } else {
       _controller = VideoPlayerController.file(File(widget.videoPath));
     }
-    _controller.initialize().then((_) {
-      setState(() {
-        _initialized = true;
-        _controller.setLooping(true);
-        _controller.play();
-      });
-    }).catchError((e) => debugPrint("Video init error: $e"));
+    _controller
+        .initialize()
+        .then((_) {
+          setState(() {
+            _initialized = true;
+            _controller.setLooping(true);
+            _controller.play();
+          });
+        })
+        .catchError((e) => debugPrint("Video init error: $e"));
   }
 
   @override
@@ -1466,11 +1719,17 @@ class _CircularVideoPlayerState extends State<_CircularVideoPlayer> {
         width: size,
         height: size,
         decoration: BoxDecoration(
-          border: Border.all(color: Theme.of(context).colorScheme.secondary, width: 2),
+          border: Border.all(
+            color: Theme.of(context).colorScheme.secondary,
+            width: 2,
+          ),
         ),
-        child: _initialized
-            ? VideoPlayer(_controller)
-            : const Center(child: CircularProgressIndicator(strokeWidth: 2)),
+        child:
+            _initialized
+                ? VideoPlayer(_controller)
+                : const Center(
+                  child: CircularProgressIndicator(strokeWidth: 2),
+                ),
       ),
     );
   }
@@ -1520,6 +1779,7 @@ class FaceReactionSlider extends StatefulWidget {
     /// Optional custom knob content for stages:
     /// - shown when _stage == stillReady
     this.stillReadyKnobChild,
+
     /// - shown when _stage == videoReady
     this.videoReadyKnobChild,
   });
@@ -1554,7 +1814,6 @@ class FaceReactionSlider extends StatefulWidget {
 }
 
 class _FaceReactionSliderState extends State<FaceReactionSlider> {
-
   final GlobalKey _sliderKey = GlobalKey();
   int _sliderNonce = 0;
 
@@ -1610,7 +1869,8 @@ class _FaceReactionSliderState extends State<FaceReactionSlider> {
 
     setState(() => _stage = _ReactionStage.countingStill);
     await _runCountdown(
-      onTickEndSetStage: () => setState(() => _stage = _ReactionStage.stillLoading),
+      onTickEndSetStage:
+          () => setState(() => _stage = _ReactionStage.stillLoading),
       afterCountdownWork: () async {
         await widget.onStillCountdownFinished?.call(); // capture still here
         if (!mounted) return;
@@ -1620,10 +1880,10 @@ class _FaceReactionSliderState extends State<FaceReactionSlider> {
   }
 
   Future<void> _startSecondCountdownAndRecord() async {
-    
     setState(() => _stage = _ReactionStage.countingVideo);
     await _runCountdown(
-      onTickEndSetStage: () => setState(() => _stage = _ReactionStage.recording),
+      onTickEndSetStage:
+          () => setState(() => _stage = _ReactionStage.recording),
       afterCountdownWork: () async {
         await widget.onVideoCountdownFinished?.call(); // do recording
         if (!mounted) return;
@@ -1653,7 +1913,10 @@ class _FaceReactionSliderState extends State<FaceReactionSlider> {
           Container(
             width: size,
             height: size,
-            decoration: const BoxDecoration(shape: BoxShape.circle, color: Colors.black54),
+            decoration: const BoxDecoration(
+              shape: BoxShape.circle,
+              color: Colors.black54,
+            ),
           ),
           Row(
             mainAxisSize: MainAxisSize.min,
@@ -1662,19 +1925,24 @@ class _FaceReactionSliderState extends State<FaceReactionSlider> {
                 duration: const Duration(milliseconds: 600),
                 tween: Tween(begin: 0.3, end: 1.0),
                 curve: Curves.easeInOut,
-                builder: (_, value, __) => Container(
-                  width: 10,
-                  height: 10,
-                  decoration: BoxDecoration(
-                    color: Colors.white.withOpacity(value),
-                    shape: BoxShape.circle,
-                  ),
-                ),
+                builder:
+                    (_, value, __) => Container(
+                      width: 10,
+                      height: 10,
+                      decoration: BoxDecoration(
+                        color: Colors.white.withOpacity(value),
+                        shape: BoxShape.circle,
+                      ),
+                    ),
               ),
               const SizedBox(width: 6),
               const Text(
                 'REC',
-                style: TextStyle(color: Colors.white, fontWeight: FontWeight.w700, fontSize: 10),
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 10,
+                ),
               ),
             ],
           ),
@@ -1684,8 +1952,6 @@ class _FaceReactionSliderState extends State<FaceReactionSlider> {
   }
 
   Widget _buildKnob() {
-
-
     final knobSize = widget.height - 4.0;
 
     Widget content;
@@ -1701,7 +1967,11 @@ class _FaceReactionSliderState extends State<FaceReactionSlider> {
             child: const Center(
               child: Text(
                 'Start',
-                style: TextStyle(color: Colors.green, fontWeight: FontWeight.w700, fontSize: 10),
+                style: TextStyle(
+                  color: Colors.green,
+                  fontWeight: FontWeight.w700,
+                  fontSize: 10,
+                ),
               ),
             ),
           ),
@@ -1713,11 +1983,18 @@ class _FaceReactionSliderState extends State<FaceReactionSlider> {
         content = Container(
           width: knobSize,
           height: knobSize,
-          decoration: const BoxDecoration(shape: BoxShape.circle, color: Colors.orange),
+          decoration: const BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.orange,
+          ),
           alignment: Alignment.center,
           child: Text(
             '$_count',
-            style: const TextStyle(fontSize: 15, fontWeight: FontWeight.w800, color: Colors.white),
+            style: const TextStyle(
+              fontSize: 15,
+              fontWeight: FontWeight.w800,
+              color: Colors.white,
+            ),
           ),
         );
         break;
@@ -1726,18 +2003,25 @@ class _FaceReactionSliderState extends State<FaceReactionSlider> {
         content = Container(
           width: knobSize,
           height: knobSize,
-          decoration: const BoxDecoration(shape: BoxShape.circle, color: Colors.orange),
+          decoration: const BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.orange,
+          ),
           alignment: Alignment.center,
           child: const SizedBox(
             width: 20,
             height: 20,
-            child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+            child: CircularProgressIndicator(
+              strokeWidth: 2,
+              color: Colors.white,
+            ),
           ),
         );
         break;
 
       case _ReactionStage.stillReady:
-        content = widget.stillReadyKnobChild ??
+        content =
+            widget.stillReadyKnobChild ??
             const Icon(Icons.tag_faces, size: 22, color: Colors.white);
         break;
 
@@ -1746,12 +2030,14 @@ class _FaceReactionSliderState extends State<FaceReactionSlider> {
         break;
 
       case _ReactionStage.videoReady:
-        content = widget.videoReadyKnobChild ??
+        content =
+            widget.videoReadyKnobChild ??
             const Icon(Icons.play_circle_fill, size: 22, color: Colors.white);
         break;
     }
 
-    return KeyedSubtree( // let AnimatedSwitcher see stage changes
+    return KeyedSubtree(
+      // let AnimatedSwitcher see stage changes
       key: ValueKey(_stage),
       child: ClipOval(
         child: SizedBox(
@@ -1793,12 +2079,12 @@ class _FaceReactionSliderState extends State<FaceReactionSlider> {
       children: [
         // Hide the package's green "check" icon by making default icon color transparent
         Theme(
-          data: Theme.of(context).copyWith(
-            iconTheme: const IconThemeData(color: Colors.transparent),
-          ),
+          data: Theme.of(
+            context,
+          ).copyWith(iconTheme: const IconThemeData(color: Colors.transparent)),
           child: KeyedSubtree(
             key: ValueKey(_sliderNonce),
-            
+
             child: _GradientSlideToAct(
               key: _sliderKey,
               width: widget.width,
@@ -1809,9 +2095,10 @@ class _FaceReactionSliderState extends State<FaceReactionSlider> {
               draggable: AnimatedSwitcher(
                 duration: const Duration(milliseconds: 200),
                 // keep the knob upright when we rotate the whole slider to vertical
-                child: widget.axis == Axis.vertical
-                    ? RotatedBox(quarterTurns: 1, child: _buildKnob())
-                    : _buildKnob(),
+                child:
+                    widget.axis == Axis.vertical
+                        ? RotatedBox(quarterTurns: 1, child: _buildKnob())
+                        : _buildKnob(),
               ),
             ),
           ),
@@ -1904,7 +2191,6 @@ class _GradientSlideToAct extends StatelessWidget {
   }
 }
 
-
 class _KnobVideoPreview extends ViewModelWidget<StoryProvider> {
   final double size;
   const _KnobVideoPreview({super.key, required this.size});
@@ -1914,8 +2200,11 @@ class _KnobVideoPreview extends ViewModelWidget<StoryProvider> {
     final path = vm.videoPath;
     if (path == null || path.isEmpty) {
       return const Center(
-        child: SizedBox(width: 18, height: 18,
-          child: CircularProgressIndicator(strokeWidth: 2)),
+        child: SizedBox(
+          width: 18,
+          height: 18,
+          child: CircularProgressIndicator(strokeWidth: 2),
+        ),
       );
     }
     return _TinyVideo(path: path, size: size, refresh: vm.refreshCount);
@@ -1926,7 +2215,12 @@ class _TinyVideo extends StatefulWidget {
   final String path;
   final double size;
   final int refresh;
-  const _TinyVideo({super.key, required this.path, required this.size, required this.refresh});
+  const _TinyVideo({
+    super.key,
+    required this.path,
+    required this.size,
+    required this.refresh,
+  });
 
   @override
   State<_TinyVideo> createState() => _TinyVideoState();
@@ -1936,51 +2230,67 @@ class _TinyVideoState extends State<_TinyVideo> {
   VideoPlayerController? _c;
 
   @override
-  void initState() { super.initState(); _init(); }
+  void initState() {
+    super.initState();
+    _init();
+  }
 
   @override
   void didUpdateWidget(covariant _TinyVideo old) {
     super.didUpdateWidget(old);
     if (old.path != widget.path || old.refresh != widget.refresh) {
-      _disposeC(); _init();
+      _disposeC();
+      _init();
     }
   }
 
   Future<void> _init() async {
     final isNet = widget.path.startsWith('http');
-    final c = isNet
-        ? VideoPlayerController.networkUrl(Uri.parse(widget.path))
-        : VideoPlayerController.file(File(widget.path));
+    final c =
+        isNet
+            ? VideoPlayerController.networkUrl(Uri.parse(widget.path))
+            : VideoPlayerController.file(File(widget.path));
     await c.initialize();
     await c.setLooping(true);
     await c.play();
-    if (!mounted) { await c.dispose(); return; }
+    if (!mounted) {
+      await c.dispose();
+      return;
+    }
     setState(() => _c = c);
   }
 
-  void _disposeC() { try { _c?.dispose(); } catch (_) {} _c = null; }
+  void _disposeC() {
+    try {
+      _c?.dispose();
+    } catch (_) {}
+    _c = null;
+  }
 
   @override
-  void dispose() { _disposeC(); super.dispose(); }
+  void dispose() {
+    _disposeC();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     return SizedBox(
       width: widget.size,
       height: widget.size,
-      child: _c == null
-          ? const Center(child: CircularProgressIndicator(strokeWidth: 2))
-          : VideoPlayer(_c!),
+      child:
+          _c == null
+              ? const Center(child: CircularProgressIndicator(strokeWidth: 2))
+              : VideoPlayer(_c!),
     );
   }
 }
 
-
 class MiniCountdownTimer extends StatefulWidget {
   const MiniCountdownTimer({
     super.key,
-    this.size = 64,                // <- small size
-    this.duration = 3,             // <- 3,2,1
+    this.size = 64, // <- small size
+    this.duration = 3, // <- 3,2,1
     this.autoStart = true,
     this.onStart,
     this.onChange,
@@ -2020,7 +2330,7 @@ class _MiniCountdownTimerState extends State<MiniCountdownTimer> {
         ringGradient: null,
         fillColor: Colors.pink,
         fillGradient: null,
-        backgroundColor: Colors.transparent,   // <- transparent behind the ring
+        backgroundColor: Colors.transparent, // <- transparent behind the ring
         backgroundGradient: null,
         strokeWidth: 4,
         strokeCap: StrokeCap.round,
@@ -2041,7 +2351,6 @@ class _MiniCountdownTimerState extends State<MiniCountdownTimer> {
 
         // Optional: hide "0" at the very end (shows blank instead of 0)
         timeFormatterFunction: (defaultFormatterFunction, duration) {
-        
           return Function.apply(defaultFormatterFunction, [duration]);
         },
 
@@ -2060,8 +2369,8 @@ class _Counting extends StatefulWidget {
     required this.onStartVideo,
     required this.onStartImage,
     required this.onComplete,
-    this.size = 40,      // optional: visual size of the circle
-    this.startFrom = 3,  // optional: start number (defaults to 3)
+    this.size = 40, // optional: visual size of the circle
+    this.startFrom = 3, // optional: start number (defaults to 3)
   });
 
   final bool isVideo;
@@ -2077,7 +2386,7 @@ class _Counting extends StatefulWidget {
 }
 
 class _CountingState extends State<_Counting> {
-  late int _left;              // 3 -> 2 -> 1
+  late int _left; // 3 -> 2 -> 1
   Timer? _timer;
 
   @override
@@ -2169,7 +2478,6 @@ class _ReadyPreview extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    logger.d("isVideo is $isVideo, $videoPath");
     if (isVideo) {
       return SizedBox(
         width: 35,
@@ -2178,9 +2486,10 @@ class _ReadyPreview extends StatelessWidget {
           key: const ValueKey('preview-video'),
           width: 35,
           height: 45,
-          child: (videoPath != null)
-              ? const CommentFaceVideoModalView(marginBottom: 0)
-              : const Center(child: Loader(size: 40.0)),
+          child:
+              (videoPath != null)
+                  ? const CommentFaceVideoModalView(marginBottom: 0)
+                  : const Center(child: Loader(size: 40.0)),
         ),
       );
     }
@@ -2192,9 +2501,10 @@ class _ReadyPreview extends StatelessWidget {
         key: const ValueKey('preview-face'),
         width: 35,
         height: 45,
-        child: hasFace
-            ? const CommentFaceModalView(marginBottom: 0)
-            : const Center(child: Loader(size: 40.0)),
+        child:
+            hasFace
+                ? const CommentFaceModalView(marginBottom: 0)
+                : const Center(child: Loader(size: 40.0)),
       ),
     );
   }

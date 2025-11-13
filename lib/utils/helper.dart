@@ -1,18 +1,21 @@
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
+import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
-
+import 'package:flutter/services.dart' show rootBundle;
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:flutter_html/flutter_html.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:insoblok/providers/providers.dart';
 import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
+
+import 'package:insoblok/enums/enums.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/routers/routers.dart';
@@ -305,7 +308,7 @@ class AIHelpers {
                           style: Theme.of(
                             context,
                           ).textTheme.bodyMedium?.copyWith(
-                            color: Theme.of(context).colorScheme.onSecondary,
+                            color: Colors.white,
                           ),
                         ),
                       ),
@@ -469,17 +472,26 @@ class AIHelpers {
     );
   }
   
-  static Future<String> image2Base64(String imagePath) async {
-    final bytes = await File(imagePath).readAsBytes();
-    return base64Encode(bytes);
+  static Future<String> image2Base64(String path, SourceType type) async {
+    if (type == SourceType.file) {
+      final bytes = await File(path).readAsBytes();
+      return base64Encode(bytes);
+    }
+    else if (type == SourceType.assets) {
+      final byteData = await rootBundle.load(path);
+      final bytes = byteData.buffer.asUint8List();
+      return base64Encode(bytes);
+    }
+    return "";
   }
   
-  static Future<File> base642Image(String base64Str, String fileName) async {
+  static Future<Uint8List> base642Image(String base64Str) async {
     final bytes = base64Decode(base64Str);
-    final dir = await getTemporaryDirectory(); // or getApplicationDocumentsDirectory()
-    final file = File('${dir.path}/$fileName');
-    await file.writeAsBytes(bytes);
-    return file;
+    // final dir = await getTemporaryDirectory(); // or getApplicationDocumentsDirectory()
+    // final file = File('${dir.path}/$fileName');
+    // await file.writeAsBytes(bytes);
+    // return file;
+    return bytes;
   }
 
 }

@@ -588,7 +588,7 @@ Future<Uint8List?> composeHypeImage({
                               .textTheme
                               .bodyMedium
                               ?.copyWith(
-                                color: Theme.of(context).colorScheme.onSecondary,
+                                color: Colors.white,
                               ),
                         ),
                       ),

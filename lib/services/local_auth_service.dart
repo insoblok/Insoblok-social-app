@@ -123,10 +123,4 @@ class LocalAuthService {
     return result;
   }
   
-  /// Reset wallet (delete all data)
-  Future<void> resetWallet() async {
-    await _secureStorage.delete(key: _pincodeKey);
-  }
-  
-
 }

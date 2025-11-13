@@ -8,7 +8,6 @@ import 'package:insoblok/pages/pages.dart';
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/services/services.dart';
 
-
 const kRouterBase = '/';
 const kRouterLogin = '/login';
 const kRouterPincodeRegister = '/register-pincode';
@@ -21,7 +20,6 @@ const kRouterAccessCodeUserId = '/access-code-user-id';
 const kRouterAccessCodeConfirm = '/access-code-confirm';
 
 const kRouterMain = '/main';
-
 
 const kRouterAccount = '/account';
 const kRouterAccountUpdate = '/account-update';
@@ -37,6 +35,7 @@ const kRouterAccountReward = '/account-reward';
 const kRouterRewardDetail = '/reward-detail';
 const kRouterWalletSwap = '/wallet-swap';
 const kRouterWalletSend = '/wallet-send';
+const kRouterWalletSearch = '/wallet-search';
 const kRouterWalletSendOne = 'wallet-send-one';
 const kRouterWalletReceive = '/wallet-receive';
 const kRouterWalletReceiveConfirm = '/wallet-receive-confirm';
@@ -101,7 +100,6 @@ class Navigation {
       Function(T? props) init, {
       fluro.TransitionType? transitionType,
     }) {
-      logger.d("This is inside initRoute ");
       router.define(
         route,
         handler: fluro.Handler(
@@ -121,7 +119,10 @@ class Navigation {
     initRoute(kRouterLogin, (props) => LoginPage());
 
     // * PincodeRegisterPage
-    initRoute<String>(kRouterPincodeRegister, (props) => PinCodeRegistrationPage(mnemonic: props!));
+    initRoute<String>(
+      kRouterPincodeRegister,
+      (props) => PinCodeRegistrationPage(mnemonic: props!),
+    );
 
     // * RegisterPage
     initRoute<UserModel>(
@@ -148,9 +149,15 @@ class Navigation {
     initRoute(kRouterEmail, (props) => EmailPage());
 
     // * Access code user id input page
-    initRoute<String>(kRouterAccessCodeUserId, (props) => AccessCodeUserIdPage(email: props.toString()));
+    initRoute<String>(
+      kRouterAccessCodeUserId,
+      (props) => AccessCodeUserIdPage(email: props.toString()),
+    );
 
-    initRoute<Map<String, dynamic>>(kRouterAccessCodeConfirm, (props) => AccessCodeConfirmPage(props: props!));
+    initRoute<Map<String, dynamic>>(
+      kRouterAccessCodeConfirm,
+      (props) => AccessCodeConfirmPage(props: props!),
+    );
 
     // * MainPage
     initRoute(kRouterMain, (props) => InSoBlokPage());
@@ -162,7 +169,10 @@ class Navigation {
     initRoute(kRouterAccountUpdate, (props) => UpdateProfilePage());
 
     // * AccountAvatarPage
-    initRoute(kRouterAccountAvatar, (props) => AccountAvatarPage());
+    initRoute<Map<String, String?>>(
+      kRouterAccountAvatar,
+      (props) => AccountAvatarPage(src: props?["src"], dst: props?["dst"]),
+    );
 
     // * AccountPublicPage
     initRoute(kRouterAccountPublic, (props) => AccountPublicPage());
@@ -196,14 +206,18 @@ class Navigation {
 
     // * WalletSendPage
     initRoute(kRouterWalletSend, (props) => WalletSendPage());
-    
+
     initRoute(kRouterWalletSendOne, (props) => WalletSendOnePage());
+
+    initRoute(kRouterWalletSearch, (props) => WalletSearchPage());
 
     // * WalletReceivePage
     initRoute(kRouterWalletReceive, (props) => WalletReceivePage());
 
-    initRoute(kRouterWalletReceiveConfirm, (props) => WalletReceiveConfirmPage());
-
+    initRoute(
+      kRouterWalletReceiveConfirm,
+      (props) => WalletReceiveConfirmPage(),
+    );
 
     // * CreateRoomPage
     initRoute(kRouterCreateRoom, (props) => CreateRoomPage());
@@ -221,16 +235,25 @@ class Navigation {
     initRoute(kRouterChatView, (props) => ChatView());
 
     // * ArchivedChatViewPage
-    initRoute(kRouterArchivedChatView, (props) => ArchivedChatViewPage()); 
+    initRoute(kRouterArchivedChatView, (props) => ArchivedChatViewPage());
 
     // * MessagePaymentFirstPage
-    initRoute<Map<String, String>>(kRouterChatPayment, (props) => ChatPaymentPage(args: props!));
-    
+    initRoute<Map<String, String>>(
+      kRouterChatPayment,
+      (props) => ChatPaymentPage(args: props!),
+    );
+
     // * PaymentAmountPage
-    initRoute<Map<String, dynamic>>(kRouterPaymentAmount, (props) => PaymentAmountPage(args: props!));
+    initRoute<Map<String, dynamic>>(
+      kRouterPaymentAmount,
+      (props) => PaymentAmountPage(args: props!),
+    );
 
     // * PaymentConfirmPage
-    initRoute<Map<String, dynamic>>(kRouterPaymentConfirm, (props) => PaymentConfirmPage(args: props!));
+    initRoute<Map<String, dynamic>>(
+      kRouterPaymentConfirm,
+      (props) => PaymentConfirmPage(args: props!),
+    );
 
     // * PaymentResultPage
     initRoute(kRouterPaymentResult, (props) => PaymentResultPage());
@@ -280,8 +303,6 @@ class Navigation {
       kRouterReaction,
       (props) => ReactionsPage(story: props!),
     );
-
-
 
     // * NewsDetailPage
     initRoute<NewsModel>(
@@ -341,42 +362,42 @@ class Navigation {
     //   ),
     // );
 
-    initRoute<Map<String, dynamic>>(
-      kRouterFaceDetail,
-      (props) {
-        if (props == null) {
-          throw ArgumentError('Route parameters are null');
-        }
-        if (!props.containsKey('storyID') || !props.containsKey('url') || !props.containsKey('face') || !props.containsKey('annotations') || !props.containsKey('editable')) {
-          throw ArgumentError('Missing required route parameters');
-        }
-        return FaceDetailPage(
-          storyID: props['storyID'],
-          url: props['url'],
-          face: props['face'],
-          annotations: props['annotations'],
-          editable: props['editable'],
-        );
-      },
-    );
+    initRoute<Map<String, dynamic>>(kRouterFaceDetail, (props) {
+      if (props == null) {
+        throw ArgumentError('Route parameters are null');
+      }
+      if (!props.containsKey('storyID') ||
+          !props.containsKey('url') ||
+          !props.containsKey('face') ||
+          !props.containsKey('annotations') ||
+          !props.containsKey('editable')) {
+        throw ArgumentError('Missing required route parameters');
+      }
+      return FaceDetailPage(
+        storyID: props['storyID'],
+        url: props['url'],
+        face: props['face'],
+        annotations: props['annotations'],
+        editable: props['editable'],
+      );
+    });
 
-    initRoute<Map<String, dynamic>>(
-      kRouterReactionVideoDetail,
-      (props) {
-        if (props == null) {
-          throw ArgumentError('Route parameters are null');
-        }
-        if (!props.containsKey('storyID') || !props.containsKey('url') || !props.containsKey('videoPath')) {
-          throw ArgumentError('Missing required route parameters');
-        }
-        return ReactionVideoDetailPage(
-          storyID: props['storyID'],
-          url: props['url'],
-          videoPath: props['videoPath'],
-          editable: props['editable'],
-        );
-      },
-    );
+    initRoute<Map<String, dynamic>>(kRouterReactionVideoDetail, (props) {
+      if (props == null) {
+        throw ArgumentError('Route parameters are null');
+      }
+      if (!props.containsKey('storyID') ||
+          !props.containsKey('url') ||
+          !props.containsKey('videoPath')) {
+        throw ArgumentError('Missing required route parameters');
+      }
+      return ReactionVideoDetailPage(
+        storyID: props['storyID'],
+        url: props['url'],
+        videoPath: props['videoPath'],
+        editable: props['editable'],
+      );
+    });
 
     // * UserListPage
     initRoute<List<UserModel>>(
@@ -384,21 +405,33 @@ class Navigation {
       (props) => UserListPage(users: props ?? []),
     );
 
-    initRoute(kRouterVideoEditor, (props) => VideoEditorPage(path: props.toString()));
+    initRoute(
+      kRouterVideoEditor,
+      (props) => VideoEditorPage(path: props.toString()),
+    );
 
-    initRoute(kRouterImageEditor, (props) => ImageEditorPage(path: props.toString()));
+    initRoute(
+      kRouterImageEditor,
+      (props) => ImageEditorPage(path: props.toString()),
+    );
 
     initRoute(kRouterFavorites, (props) => WalletFavoritesPage());
 
-    initRoute<Map<String, dynamic>>(kRouterTokenDetail, (props) => TokenDetailPage(network: props!));
+    initRoute<Map<String, dynamic>>(
+      kRouterTokenDetail,
+      (props) => TokenDetailPage(network: props!),
+    );
 
     initRoute<Map<String, dynamic>>(kRouterRRCAvatarGeneration, (props) {
       if (props == null) {
         throw ArgumentError('Route parameters are null');
       }
-      logger.d("This is face and url ${props["face"]}, ${props["url"]} ");
-      return RRCAvatarGenerationView(url: props["url"], face: props["face"]);
+      return RRCAvatarGenerationView(
+        url: props["url"],
+        face: props["face"],
+        origin: props["origin"],
+        storyID: props["storyID"],
+      );
     });
-
   }
 }

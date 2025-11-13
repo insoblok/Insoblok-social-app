@@ -17,7 +17,7 @@ class StoryService with ListenableServiceMixin {
   set stories(List<StoryModel> s) {
     _stories.value = s;
     notifyListeners();
-  } 
+  }
 
   StoryService() {
     listenToReactiveValues([_stories]);
@@ -94,7 +94,6 @@ class StoryService with ListenableServiceMixin {
         if (story.userId != null &&
             AuthHelper.user!.userActions != null &&
             AuthHelper.user!.userActions!.contains(story.id)) {
-
           result.add(story);
         }
       } on FirebaseException catch (e) {
@@ -125,8 +124,12 @@ class StoryService with ListenableServiceMixin {
         logger.e(e.message);
       }
     }
-    return result
-      ..sort((b, a) => (b.updatedAt ?? b.createdAt ?? DateTime.now()).difference(a.updatedAt ?? a.createdAt ?? DateTime.now()).inMilliseconds);
+    return result..sort(
+      (b, a) =>
+          (b.updatedAt ?? b.createdAt ?? DateTime.now())
+              .difference(a.updatedAt ?? a.createdAt ?? DateTime.now())
+              .inMilliseconds,
+    );
   }
 
   // Get stories by like
@@ -184,20 +187,44 @@ class StoryService with ListenableServiceMixin {
   }
 
   Stream<List<StoryModel>> getStoriesStream() {
-  return storyCollection.snapshots().map((snapshot) {
-    return snapshot.docs.map((doc) {
-      var data = doc.data();
-      data['id'] = doc.id; // attach the doc id
-      return StoryModel.fromJson(data);
-    }).toList();
-  });
-}
+    return storyCollection
+        .orderBy('created_at', descending: true)
+        .snapshots()
+        .map((snapshot) {
+          List<StoryModel> result = [];
+          for (var doc in snapshot.docs) {
+            try {
+              var json = doc.data();
+              json['id'] = doc.id;
+              var story = StoryModel.fromJson(json);
+
+              // Apply same filtering logic as getStories()
+              if (story.status == null || story.status == 'public') {
+                if (story.userId != null) {
+                  result.add(story);
+                }
+              } else {
+                if (AuthHelper.user?.id != null &&
+                    (story.allowUsers ?? []).contains(AuthHelper.user!.id)) {
+                  if (story.userId != null) {
+                    result.add(story);
+                  }
+                }
+              }
+            } on FirebaseException catch (e) {
+              logger.e(e.message);
+            } catch (e) {
+              logger.e('Error processing story in stream: $e');
+            }
+          }
+          return result;
+        });
+  }
 
   final tastescoreService = TastescoreService();
 
   // Post a story
   Future<String> postStory({required StoryModel story}) async {
-
     var ref = await storyCollection.add({
       ...story.toMap(),
       'user_id': AuthHelper.user?.id,
@@ -213,20 +240,19 @@ class StoryService with ListenableServiceMixin {
       await tastescoreService.winCreatorScore();
       await AuthHelper.updateUser(AuthHelper.user!.copyWith(hasVotePost: true));
     }
-    
+
     var staus = story.status;
 
-    // ignore: unnecessary_null_comparison
-    if (staus != null && staus == 'private' && ref.id != null) {
-      addUserAction(ref.id);
-      return ref.id;
-    }else{
-      return ref.id;
+    // Always add userAction for vote category stories so they appear in lookbook
+    // Also add for private stories
+    if (ref.id != null) {
+      if (story.category == 'vote' || (staus != null && staus == 'private')) {
+        await addUserAction(ref.id);
+      }
     }
-    
+    return ref.id;
   }
 
-  
   // Update a story
   Future<void> updateStory({required StoryModel story}) async {
     await storyCollection.doc(story.id).update(story.toMap());
@@ -235,6 +261,10 @@ class StoryService with ListenableServiceMixin {
         (story.category == 'vote')) {
       await tastescoreService.winCreatorScore();
       await AuthHelper.updateUser(AuthHelper.user!.copyWith(hasVotePost: true));
+    }
+    // Ensure vote category stories are in userActions for lookbook visibility
+    if (story.category == 'vote' && story.id != null) {
+      await addUserAction(story.id!);
     }
   }
 
@@ -355,12 +385,22 @@ class StoryService with ListenableServiceMixin {
     await AuthHelper.updateUser(owner);
   }
 
-  Future<String?> uploadResult(String url, {String? folderName, String? postCategory, String? storyID}) async {
+  Future<String?> uploadResult(
+    String url, {
+    String? folderName,
+    String? postCategory,
+    String? storyID,
+  }) async {
     MediaStoryModel model = await CloudinaryCDNService.uploadImageFromUrl(url);
     return model.link;
   }
 
-  Future<String?> uploadVideoFile(String url, {String? folderName, String? postCategory, String? storyID}) async {
+  Future<String?> uploadVideoFile(
+    String url, {
+    String? folderName,
+    String? postCategory,
+    String? storyID,
+  }) async {
     return FirebaseHelper.uploadVideoFile(
       videoUrl: url,
       id: AuthHelper.user!.id!,
@@ -369,6 +409,4 @@ class StoryService with ListenableServiceMixin {
       storyID: storyID,
     );
   }
-
-  
 }

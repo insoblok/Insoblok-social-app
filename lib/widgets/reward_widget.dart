@@ -142,21 +142,25 @@ class RewardTransferView extends ViewModelWidget<AccountRewardProvider> {
                       borderRadius: BorderRadius.circular(8.0),
                     ),
                     child: Text.rich(
-                      TextSpan(children: [
-                        TextSpan(text: '${inSoModel.max}\n'),
-                        TextSpan(
-                          text: '(${inSoModel.max! * inSoModel.rate! / 100})',
-                          style: const TextStyle(fontSize: 12), // smaller second line
-                        ),
-                      ]),
+                      TextSpan(
+                        children: [
+                          TextSpan(text: '${inSoModel.max}\n'),
+                          TextSpan(
+                            text: '(${inSoModel.max! * inSoModel.rate! / 100})',
+                            style: const TextStyle(
+                              fontSize: 12,
+                            ), // smaller second line
+                          ),
+                        ],
+                      ),
                       textAlign: TextAlign.center,
                       style: TextStyle(
-                        color: viewModel.selectXpInSo == inSoModel
-                            ? AIColors.white
-                            : Theme.of(context).colorScheme.onPrimary,
+                        color:
+                            viewModel.selectXpInSo == inSoModel
+                                ? AIColors.white
+                                : Theme.of(context).colorScheme.onPrimary,
                       ),
                     ),
-
                   ),
                 ),
               },

@@ -5,10 +5,7 @@ import 'package:insoblok/services/services.dart';
 class NetworkSelectionModal extends StatefulWidget {
   final List<Map<String, dynamic>> initialSelected;
 
-  const NetworkSelectionModal({
-    super.key,
-    required this.initialSelected,
-  });
+  const NetworkSelectionModal({super.key, required this.initialSelected});
 
   @override
   State<NetworkSelectionModal> createState() => _NetworkSelectionModalState();
@@ -19,8 +16,8 @@ class _NetworkSelectionModalState extends State<NetworkSelectionModal>
   late TabController _tabController;
   late List<bool> _defaultSelected;
   late List<bool> _customSelected;
-  final List<bool> _selectAll = [false, false];
-  
+  bool _isAllPopularNetworksSelected = false;
+
   final List<String> networks = [
     'Ethereum Mainnet',
     'Linea',
@@ -28,24 +25,32 @@ class _NetworkSelectionModalState extends State<NetworkSelectionModal>
     'BNB Smart Chain',
   ];
 
-  final List<Map<String, dynamic>> defaultNetworks = kWalletTokenList.where((token) => token["test"] == false).toList();
-  final List<Map<String, dynamic>> customNetworks = kWalletTokenList.where((token) => token["test"] == true).toList();
+  // Show only Ethereum Mainnet and Sepolia
+  final List<Map<String, dynamic>> defaultNetworks =
+      kAvailableNetworks.where((token) => token["test"] == false).toList();
+  final List<Map<String, dynamic>> customNetworks =
+      kAvailableNetworks.where((token) => token["test"] == true).toList();
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-    
+
     // Initialize state based on the values passed from HomePage
-    
+
     // Convert the list of selected network names to checkbox states
     _defaultSelected = List.generate(defaultNetworks.length, (index) {
       return widget.initialSelected.contains(defaultNetworks[index]);
     });
-    
+
     _customSelected = List.generate(customNetworks.length, (index) {
       return widget.initialSelected.contains(customNetworks[index]);
     });
+
+    // Check if all popular networks are selected initially
+    _isAllPopularNetworksSelected = _defaultSelected.every(
+      (element) => element,
+    );
   }
 
   @override
@@ -60,25 +65,22 @@ class _NetworkSelectionModalState extends State<NetworkSelectionModal>
       padding: const EdgeInsets.all(16),
       height: MediaQuery.of(context).size.height * 0.7,
       decoration: BoxDecoration(
-        color: Theme.of(context).scaffoldBackgroundColor
+        color: Theme.of(context).scaffoldBackgroundColor,
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'Select Networks',
+            'Networks',
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 16),
           TabBar(
             controller: _tabController,
-            tabs: const [
-              Tab(text: 'Default'),
-              Tab(text: 'Custom'),
-            ],
+            tabs: const [Tab(text: 'Popular'), Tab(text: 'Custom')],
           ),
           const SizedBox(height: 16),
-          
+
           Expanded(
             child: TabBarView(
               controller: _tabController,
@@ -101,23 +103,30 @@ class _NetworkSelectionModalState extends State<NetworkSelectionModal>
               Expanded(
                 child: ElevatedButton(
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.pink,  // background color
+                    backgroundColor: Colors.pink, // background color
                     foregroundColor: Colors.white, // text (and icon) color
                   ),
                   onPressed: () {
                     // Prepare the data to return to HomePage
                     final selectedNetworks = <Map<String, dynamic>>[];
-                    for (int i = 0; i < defaultNetworks.length; i++) {
-                      if (_defaultSelected[i]) {
-                        selectedNetworks.add(defaultNetworks[i]);
+
+                    // If "All popular networks" is selected, add all defaultNetworks
+                    if (_isAllPopularNetworksSelected) {
+                      selectedNetworks.addAll(defaultNetworks);
+                    } else {
+                      for (int i = 0; i < defaultNetworks.length; i++) {
+                        if (_defaultSelected[i]) {
+                          selectedNetworks.add(defaultNetworks[i]);
+                        }
                       }
                     }
+
                     for (int i = 0; i < customNetworks.length; i++) {
                       if (_customSelected[i]) {
                         selectedNetworks.add(customNetworks[i]);
                       }
                     }
-                    
+
                     // Return the state to HomePage
                     Navigator.pop(bContext, {
                       'enabledNetworks': selectedNetworks,
@@ -133,63 +142,95 @@ class _NetworkSelectionModalState extends State<NetworkSelectionModal>
     );
   }
 
-  Widget _buildNetworkList(List<bool> selectionList, List<Map<String, dynamic>> networks, int idx) {
+  Widget _buildNetworkList(
+    List<bool> selectionList,
+    List<Map<String, dynamic>> networks,
+    int idx,
+  ) {
     return Column(
       children: [
-        Row(
-          children: [
-            Checkbox(
-              value: _selectAll[idx],
-              onChanged: (value) {
-                setState(() {
-                  _selectAll[idx] = value!;
-                  if(_tabController.index == 0) {
-                    for (int i = 0; i < networks.length; i++) {
-                      _defaultSelected[i] = value;
-
-                    }
-                  }
-                  else if (_tabController.index == 1) {
-                    for (int i = 0; i < networks.length; i++) {
-                      _customSelected[i] = value;
-                    }
-                  }
-                });
-              },
-            ),
-            const Text('Select all'),
-          ],
-        ),
-        const SizedBox(height: 16),
         Expanded(
           child: ListView.builder(
-            itemCount: networks.length,
+            itemCount: idx == 0 ? networks.length + 1 : networks.length,
             itemBuilder: (bContext, index) {
+              // Add "All popular networks" option at the top of Popular tab
+              if (idx == 0 && index == 0) {
+                return CheckboxListTile(
+                  title: Row(
+                    children: [
+                      Icon(
+                        Icons.language,
+                        size: 24.0,
+                        color: Theme.of(context).iconTheme.color,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        child: Text(
+                          'All popular networks',
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(fontWeight: FontWeight.w600),
+                        ),
+                      ),
+                    ],
+                  ),
+                  value: _isAllPopularNetworksSelected,
+                  onChanged: (value) {
+                    setState(() {
+                      _isAllPopularNetworksSelected = value!;
+                      // When "All popular networks" is selected, select all individual networks
+                      if (value) {
+                        for (int i = 0; i < _defaultSelected.length; i++) {
+                          _defaultSelected[i] = true;
+                        }
+                      } else {
+                        // When deselected, unselect all
+                        for (int i = 0; i < _defaultSelected.length; i++) {
+                          _defaultSelected[i] = false;
+                        }
+                      }
+                    });
+                  },
+                  controlAffinity: ListTileControlAffinity.leading,
+                );
+              }
+
+              // Adjust index for network items (skip the "All popular networks" item)
+              final networkIndex = idx == 0 ? index - 1 : index;
+
               return CheckboxListTile(
                 title: Row(
                   children: [
-                    AIImage(networks[index]["icon"], width: 24.0, height: 24.0),
+                    AIImage(
+                      networks[networkIndex]["icon"],
+                      width: 24.0,
+                      height: 24.0,
+                    ),
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Text(networks[index]["displayName"].toString(), style: Theme.of(context).textTheme.bodyMedium),
+                      child: Text(
+                        networks[networkIndex]["displayName"].toString(),
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
                     ),
                   ],
                 ),
-                value: selectionList[index],
+                value: selectionList[networkIndex],
                 onChanged: (value) {
                   setState(() {
                     if (_tabController.index == 0) {
-                      _defaultSelected[index] = value!;
-                      
-                      // Update select all checkbox if needed
+                      _defaultSelected[networkIndex] = value!;
+
+                      // If any individual network is deselected, unselect "All popular networks"
                       if (!value) {
-                        _selectAll[idx] = false;
+                        _isAllPopularNetworksSelected = false;
                       } else {
-                        // Check if all are selected
-                        _selectAll[idx] = _defaultSelected.every((element) => element);
+                        // Check if all are selected, then auto-select "All popular networks"
+                        _isAllPopularNetworksSelected = _defaultSelected.every(
+                          (element) => element,
+                        );
                       }
                     } else {
-                      _customSelected[index] = value!;
+                      _customSelected[networkIndex] = value!;
                     }
                   });
                 },

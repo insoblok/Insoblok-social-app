@@ -11,6 +11,7 @@ import 'package:image/image.dart' as img;
 import 'package:insoblok/locator.dart';
 import 'package:insoblok/utils/utils.dart';
 
+
 import 'services.dart';
 
 class AIFaceAnnotation {
@@ -72,7 +73,7 @@ class GoogleVisionService {
 
     var image = File(link);
 
-     logger.d('Faces image link in analyzeImageFile: ${image}');
+     logger.d('Faces image link in analyzeImageFile: $image');
 
     // if (!image.existsSync()){
       return await analyzeImageCore(image);
@@ -82,7 +83,7 @@ class GoogleVisionService {
 
   Future<List<AIFaceAnnotation>> analyzeImageCore(File? image) async {
 
-    logger.d('Face image in analyzeImageCore function: ${image}');
+    logger.d('Face image in analyzeImageCore function: $image');
 
     if (image == null) return [];
     List<AIFaceAnnotation> result = [];
@@ -104,6 +105,7 @@ class GoogleVisionService {
 
     // Send request
     final response = await visionApi.images.annotate(request);
+    logger.d('Face image in analysis result: ${result}');
 
     // Process results
     for (AnnotateImageResponse result in response.responses ?? []) {

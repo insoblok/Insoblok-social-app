@@ -98,11 +98,11 @@ class AccountFloatingView extends ViewModelWidget<AccountProvider> {
                 '${viewModel.accountUser?.fullName ?? viewModel.accountUser?.nickId}',
                 style: Theme.of(context).textTheme.titleSmall,
               ),
+
               // Text(
               //   '@${viewModel.accountUser?.nickId}',
               //   style: Theme.of(context).textTheme.labelMedium,
               // ),
-
               Wrap(
                 spacing: 12.0,
                 runSpacing: 8.0,
@@ -177,19 +177,17 @@ class AccountFloatingView extends ViewModelWidget<AccountProvider> {
                     ),
                   ),
                   Container(
-                    width: 1,              // thickness
-                    height: 42,            // height of the separator
-                    color: Colors.grey,    // color
+                    width: 1, // thickness
+                    height: 42, // height of the separator
+                    color: Colors.grey, // color
                   ),
 
-
-                  
                   SizedBox(
                     width: 80.0,
                     child: Column(
                       children: [
                         Text(
-                          '${viewModel.followingList.length}',
+                          '${viewModel.accountUser?.follows?.length ?? 0}',
                           style: Theme.of(context).textTheme.titleSmall,
                         ),
                         Text(
@@ -200,16 +198,16 @@ class AccountFloatingView extends ViewModelWidget<AccountProvider> {
                     ),
                   ),
                   Container(
-                    width: 1,              // thickness
-                    height: 42,            // height of the separator
-                    color: Colors.grey,    // color
+                    width: 1, // thickness
+                    height: 42, // height of the separator
+                    color: Colors.grey, // color
                   ),
                   SizedBox(
                     width: 80.0,
                     child: Column(
                       children: [
                         Text(
-                          '${viewModel.accountUser?.follows?.length ?? 0}',
+                          '${viewModel.followingList.length}',
                           style: Theme.of(context).textTheme.titleSmall,
                         ),
                         Text(
@@ -220,9 +218,9 @@ class AccountFloatingView extends ViewModelWidget<AccountProvider> {
                     ),
                   ),
                   Container(
-                    width: 1,              // thickness
-                    height: 42,            // height of the separator
-                    color: Colors.grey,    // color
+                    width: 1, // thickness
+                    height: 42, // height of the separator
+                    color: Colors.grey, // color
                   ),
                   SizedBox(
                     width: 60.0,
@@ -260,10 +258,16 @@ class AccountFloatingView extends ViewModelWidget<AccountProvider> {
                             height: 36,
                             width: 124,
                             isBusy: viewModel.isBusy,
-                            color: viewModel.isFollowing
-                                ? Colors.transparent
-                                : Theme.of(context).colorScheme.secondary.withAlpha(64),
-                            text: viewModel.isFollowing ? 'Follow back' : 'Follow',
+                            color:
+                                viewModel.isFollowing
+                                    ? Colors.transparent
+                                    : Theme.of(
+                                      context,
+                                    ).colorScheme.secondary.withAlpha(64),
+                            text:
+                                viewModel.isFollowing
+                                    ? 'Follow back'
+                                    : 'Follow',
                             fontWeight: FontWeight.normal,
                             fontSize: 14.0,
                           ),
@@ -327,12 +331,11 @@ class AccountPublicInfoView extends ViewModelWidget<UpdateProfileProvider> {
   TextEditingController bioController = TextEditingController();
   TextEditingController nameController = TextEditingController();
   TextEditingController placeController = TextEditingController();
-  
 
   @override
   Widget build(BuildContext context, viewModel) {
     final _displayFullName = viewModel.account.fullName;
-    
+
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
       child: Column(
@@ -346,12 +349,13 @@ class AccountPublicInfoView extends ViewModelWidget<UpdateProfileProvider> {
                 child: Stack(
                   children: [
                     AuthHelper.user?.avatarStatusView(
-                      width: kAvatarSize * 1.5,
-                      height: kAvatarSize * 1.5,
-                      borderWidth: 2.0,
-                      textSize: kAvatarSize,
-                      showStatus: false,
-                    ) ?? Text(""),
+                          width: kAvatarSize * 1.5,
+                          height: kAvatarSize * 1.5,
+                          borderWidth: 2.0,
+                          textSize: kAvatarSize,
+                          showStatus: false,
+                        ) ??
+                        Text(""),
                     Align(
                       alignment: Alignment.center,
                       child: InkWell(
@@ -363,7 +367,9 @@ class AccountPublicInfoView extends ViewModelWidget<UpdateProfileProvider> {
                             color: Colors.black54,
                             shape: BoxShape.circle,
                           ),
-                          child: Center(child: Icon(Icons.camera_alt, size: 20.0)),
+                          child: Center(
+                            child: Icon(Icons.camera_alt, size: 20.0),
+                          ),
                         ),
                       ),
                     ),
@@ -391,7 +397,6 @@ class AccountPublicInfoView extends ViewModelWidget<UpdateProfileProvider> {
                       '#${viewModel.account.nickId}',
                       style: Theme.of(context).textTheme.labelLarge,
                     ),
-                    
                   ],
                 ),
               ),
@@ -407,8 +412,6 @@ class AccountPublicInfoView extends ViewModelWidget<UpdateProfileProvider> {
       ),
     );
   }
-
-
 }
 
 class AccountPrivateInfoView extends ViewModelWidget<UpdateProfileProvider> {
@@ -416,14 +419,16 @@ class AccountPrivateInfoView extends ViewModelWidget<UpdateProfileProvider> {
   final void Function(String value)? updateLastName;
   final void Function(String value)? updateLocation;
   final void Function(String value)? updateWebsite;
-  AccountPrivateInfoView({ super.key, this.updateFirstName, this.updateLastName, this.updateLocation, this.updateWebsite });
-  
-  
-  
+  AccountPrivateInfoView({
+    super.key,
+    this.updateFirstName,
+    this.updateLastName,
+    this.updateLocation,
+    this.updateWebsite,
+  });
 
   @override
   Widget build(BuildContext context, viewModel) {
-
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
       child: Column(
@@ -467,8 +472,9 @@ class AccountPrivateInfoView extends ViewModelWidget<UpdateProfileProvider> {
             /// code in the `PlaceSearchField` widget initialization.
             controller: viewModel.autoCompleteController,
             apiKey: GOOGLE_API_KEY,
-            isLatLongRequired: true,        // Fetch lat/long with place details
-            webCorsProxyUrl: "https://cors-anywhere.herokuapp.com",  // Optional for web
+            isLatLongRequired: true, // Fetch lat/long with place details
+            webCorsProxyUrl:
+                "https://cors-anywhere.herokuapp.com", // Optional for web
             onPlaceSelected: (placeId, latLng) {
               logger.d('Place ID: ${placeId.place_id}');
               logger.d('Latitude and Longitude: $latLng');
@@ -494,47 +500,53 @@ class AccountPrivateInfoView extends ViewModelWidget<UpdateProfileProvider> {
                   fillColor: Colors.grey.shade900,
                   prefixIcon: Icon(
                     size: 20.0,
-                    
+
                     Icons.location_city, // 👈 any Material icon
-                    color: Theme.of(context).primaryColor,   // icon color
+                    color: Theme.of(context).primaryColor, // icon color
                   ),
                   enabledBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12), // corner radius
                     borderSide: BorderSide(
                       color: Colors.grey, // border color when not focused
-                      width: 1,         // border width
+                      width: 1, // border width
                     ),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide(
-                      color: Colors.blueAccent, // border color when focused
+                      color:
+                          Theme.of(
+                            context,
+                          ).primaryColor, // border color when focused
                       width: 1,
                     ),
                   ),
-                  )
-                );
-              },
-              itemBuilder: (context, prediction) => ListTile(
-                tileColor: Colors.black87,
-
-                selectedColor: Colors.black45,
-                textColor: Colors.black12,
-                leading: const Icon(Icons.location_on, color: Colors.white),
-                title: Text(
-                  prediction.description,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.white)
                 ),
-              ),
+              );
+            },
+            itemBuilder:
+                (context, prediction) => ListTile(
+                  tileColor: Colors.black87,
+
+                  selectedColor: Colors.black45,
+                  textColor: Colors.black12,
+                  leading: const Icon(Icons.location_on, color: Colors.white),
+                  title: Text(
+                    prediction.description,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: Theme.of(
+                      context,
+                    ).textTheme.bodyMedium!.copyWith(color: Colors.white),
+                  ),
+                ),
           ),
           SizedBox(height: 12.0),
           AccountPrivateInfoCover(
             leading: Icons.web_asset,
             title: viewModel.account.website ?? 'Https://insoblok.io',
             hintText: "Your Website",
-            onChanged: updateWebsite
+            onChanged: updateWebsite,
           ),
           Container(
             height: 180.0,
@@ -549,7 +561,11 @@ class AccountPrivateInfoView extends ViewModelWidget<UpdateProfileProvider> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          AIImage(AIImages.icImage, height: 32.0),
+                          AIImage(
+                            AIImages.icImage,
+                            height: 32.0,
+                            color: Theme.of(context).primaryColor,
+                          ),
                           const SizedBox(height: 12.0),
                           Text(
                             'Discovery image',

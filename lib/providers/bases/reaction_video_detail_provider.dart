@@ -96,6 +96,7 @@ class ReactionVideoDetailProvider extends InSoBlokViewModel {
     this.url = url;
     this.storyID = storyID;
     this.videoPath = videoPath;
+    
     enableEdit = editable;
   }
 
@@ -314,7 +315,7 @@ class ReactionVideoDetailProvider extends InSoBlokViewModel {
                                   .textTheme
                                   .bodyMedium
                                   ?.copyWith(
-                                    color: Theme.of(context).colorScheme.onSecondary,
+                                    color: Colors.white,
                                   ),
                             ),
                           ),

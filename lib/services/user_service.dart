@@ -23,23 +23,29 @@ class UserService {
 
   Future<UserModel?> getUser(String id) async {
     try {
+      if (id.isEmpty) {
+        logger.w('getUser called with empty id');
+        return null;
+      }
       var doc = await _userCollection.doc(id).get();
-      // if (doc.exists) return null;
+      if (!doc.exists || doc.data() == null) {
+        logger.w('User document does not exist or has no data for id: $id');
+        return null;
+      }
       return _getUserFromDoc(doc);
     } on FirebaseException catch (e) {
-      logger.e(e.message);
+      logger.e('Firebase error getting user $id: ${e.message}');
     } catch (e) {
-      logger.e(e.toString());
+      logger.e('Error getting user $id: ${e.toString()}');
     }
     return null;
   }
 
   Future<UserModel?> getUserByWalletAddress(String address) async {
     try {
-      var doc =
-          await _userCollection
-              .queryBy(UserQuery.walletAddress, value: address)
-              .get(const GetOptions(source: Source.server));
+      var doc = await _userCollection
+          .queryBy(UserQuery.walletAddress, value: address)
+          .get(const GetOptions(source: Source.server));
       if (doc.docs.isEmpty) return null;
       return _getUserFromDoc(doc.docs.first);
     } on FirebaseException catch (e) {
@@ -91,7 +97,10 @@ class UserService {
     return _userCollection.doc(id).snapshots();
   }
 
-  Future<UserModel?> updateFollow(UserModel? follower, UserModel? followee) async {
+  Future<UserModel?> updateFollow(
+    UserModel? follower,
+    UserModel? followee,
+  ) async {
     UserModel? newUser;
     var follows = List<String>.from(followee?.follows ?? []);
     if (follows.contains(follower?.id)) {
@@ -151,8 +160,44 @@ class UserService {
   UserModel? _getUserFromDoc(DocumentSnapshot<Map<String, dynamic>> doc) {
     var json = doc.data();
     if (json != null) {
-      json['id'] = doc.id ?? -1;
-      return UserModel.fromJson(json);
+      json['id'] = doc.id;
+
+      // Sanitize complex fields that might have incorrect types
+      // Handle actions field - might contain strings instead of maps
+      if (json['actions'] != null && json['actions'] is List) {
+        List<dynamic> actions = json['actions'] as List;
+        json['actions'] =
+            actions.where((e) {
+              return e is Map<String, dynamic>;
+            }).toList();
+      }
+
+      // Handle galleries field - might contain strings instead of maps
+      if (json['galleries'] != null && json['galleries'] is List) {
+        List<dynamic> galleries = json['galleries'] as List;
+        json['galleries'] =
+            galleries.where((e) {
+              return e is Map<String, dynamic>;
+            }).toList();
+      }
+
+      // Handle socials field - might contain strings instead of maps
+      if (json['socials'] != null && json['socials'] is List) {
+        List<dynamic> socials = json['socials'] as List;
+        json['socials'] =
+            socials.where((e) {
+              return e is Map<String, dynamic>;
+            }).toList();
+      }
+
+      try {
+        return UserModel.fromJson(json);
+      } catch (e, stackTrace) {
+        logger.e('Error parsing UserModel from document ${doc.id}: $e');
+        logger.e('Document data: $json');
+        logger.e(stackTrace);
+        return null;
+      }
     }
     return null;
   }

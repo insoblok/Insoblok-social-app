@@ -1,7 +1,10 @@
+import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/services/services.dart';
-import 'package:intl/intl.dart';
+import 'package:insoblok/widgets/widgets.dart';
+
+
 
 class AITextField extends StatelessWidget {
   final String? initialValue;
@@ -41,7 +44,7 @@ class AITextField extends StatelessWidget {
     this.maxLines = 1,
     this.obscureText = false,
     this.borderColor = Colors.transparent,
-    this.focusedColor = Colors.blueAccent,
+    this.focusedColor = Colors.pink,
     this.fillColor = Colors.transparent,
   });
 
@@ -291,7 +294,7 @@ class AITextArea extends StatefulWidget {
     this.borderColor = Colors.transparent, 
     this.borderWidth = 2.0, 
     this.focusedBorderRadius = 12.0,
-    this.focusedBorderColor = Colors.blueAccent,
+    this.focusedBorderColor = Colors.pink,
     this.focusedBorderWidth = 2.0,
     this.hintText = "",
     this.initialText = "",
@@ -350,6 +353,7 @@ class DatePickerWidget extends StatefulWidget {
   final double? height;
   final bool? autofocus;
   final Color? fillColor;
+  final Color? iconColor;
   final FormFieldValidator<String>? validator;
   final ValueChanged<String>? onChanged;
   final VoidCallback? onEditingComplete;
@@ -367,6 +371,7 @@ class DatePickerWidget extends StatefulWidget {
     this.height = 44.0,
     this.autofocus = false,
     this.fillColor,
+    this.iconColor,
     this.validator,
     this.onChanged,
     this.onEditingComplete,
@@ -407,12 +412,12 @@ class DatePickerWidgetState extends State<DatePickerWidget> {
         return Theme(
           data: Theme.of(ctx).copyWith(
             colorScheme: const ColorScheme.dark(
-              primary: Colors.blue,
+              primary: Colors.pink,
               onPrimary: Colors.white,
               onSurface: Colors.grey,
             ),
             textButtonTheme: TextButtonThemeData(
-              style: TextButton.styleFrom(foregroundColor: Colors.blue),
+              style: TextButton.styleFrom(foregroundColor: Theme.of(context).primaryColor),
             ),
           ),
           child: child!,
@@ -466,7 +471,7 @@ class DatePickerWidgetState extends State<DatePickerWidget> {
           contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
           hintText: widget.hintText ?? '',
           labelStyle: Theme.of(context).textTheme.labelLarge,
-          prefixIcon: widget.prefixIcon ?? Icon(Icons.calendar_today, color: Colors.white),
+          prefixIcon: widget.prefixIcon ?? Icon(Icons.calendar_today, color: widget.iconColor ?? Colors.white),
           filled: true,
           fillColor: widget.fillColor ?? Colors.grey.shade900,
           border: OutlineInputBorder(

@@ -10,7 +10,6 @@ import 'package:insoblok/widgets/widgets.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/locator.dart';
 
-  
 class AccountWalletHomePage extends StatefulWidget {
   const AccountWalletHomePage({super.key});
 
@@ -19,512 +18,695 @@ class AccountWalletHomePage extends StatefulWidget {
 }
 
 class AccountWalletHomePageState extends State<AccountWalletHomePage> {
-
   final CryptoService cryptoService = locator<CryptoService>();
   String? selectedTopItem;
 
-  _handleQRResult(String address) {
-    
+  _handleQRResult(String address) {}
+
+  double? _getTokenBalance(
+    AccountWalletProvider viewModel,
+    Map<String, dynamic> token,
+  ) {
+    // For custom tokens, try to get balance using contract address
+    if (token["isCustom"] == true && token["token_address"] != null) {
+      // For now, return 0 for custom tokens as they need special balance fetching
+      // TODO: Implement custom token balance fetching using contract address
+      return 0.0;
+    }
+    // For regular tokens, use chain name
+    return viewModel.allBalances?[token["chain"]];
+  }
+
+  Widget _buildTokenPrice(
+    BuildContext context,
+    AccountWalletProvider viewModel,
+    Map<String, dynamic> token,
+  ) {
+    final chain = token["chain"]?.toString() ?? '';
+
+    // Try to get price from allPrices using chain key
+    double? price = viewModel.allPrices?[chain];
+
+    // For specific chains, use hardcoded lookups
+    if (price == null || price == 0) {
+      if (chain == "ethereum") {
+        price = viewModel.allPrices?["ethereum"];
+      } else if (chain == "usdt") {
+        price = viewModel.allPrices?["usdt"];
+      } else if (chain == "xrp") {
+        price = viewModel.allPrices?["xrp"];
+      }
+    }
+
+    // If still no price, try to get from tokenValues (which is calculated from balance * price)
+    if ((price == null || price == 0) &&
+        viewModel.tokenValues.containsKey(chain)) {
+      final balance = _getTokenBalance(viewModel, token) ?? 0;
+      if (balance > 0) {
+        price = viewModel.tokenValues[chain]! / balance;
+      }
+    }
+
+    // Format the price display
+    final priceText =
+        price != null && price > 0 ? '\$${price.toStringAsFixed(2)}' : '\$0.00';
+
+    // Use appropriate style based on whether it's a known chain
+    final isKnownChain =
+        chain == "ethereum" || chain == "usdt" || chain == "xrp";
+
+    return Text(
+      priceText,
+      style:
+          isKnownChain
+              ? TextStyle(fontSize: 16, color: Colors.grey.shade400)
+              : Theme.of(
+                context,
+              ).textTheme.labelLarge!.copyWith(color: Colors.white),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<AccountWalletProvider>.reactive(
-      viewModelBuilder: () => AccountWalletProvider(),
-      onViewModelReady: (viewModel) => viewModel.init(context),
+      viewModelBuilder: () {
+        // Use singleton instance if available and not disposed, otherwise create new one
+        final existingInstance = AccountWalletProvider.instance;
+        if (existingInstance != null) {
+          return existingInstance;
+        }
+        return AccountWalletProvider();
+      },
+      onViewModelReady: (viewModel) {
+        // Defer init to avoid calling during build phase
+        WidgetsBinding.instance.addPostFrameCallback((_) async {
+          // Check if we need to initialize or just refresh
+          try {
+            // If context is not set or different, initialize
+            if (viewModel.context != context) {
+              await viewModel.init(context);
+            } else {
+              // If already initialized, just refresh imported tokens
+              await viewModel.refreshImportedTokens();
+            }
+          } catch (e) {
+            // If there's an error, try to initialize
+            await viewModel.init(context);
+          }
+        });
+      },
       builder: (context, viewModel, _) {
-        return 
-          Container(
-            child: viewModel.isBusy ?
-            Center(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Loader(
-                    size: 60.0,
-                    color: Colors.pink
-                  ),
-                  Text(
-                    "",
-                    style: TextStyle(fontSize: 24)
+        return Container(
+          child:
+              viewModel.isBusy
+                  ? Center(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Loader(size: 60.0, color: Colors.pink),
+                        Text("", style: TextStyle(fontSize: 24)),
+                      ],
+                    ),
                   )
-                ]
-              )
-            ) :
-            Column(
-              children: [
-                // Header section
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 20.0,
-                    vertical: 16.0,
-                  ),
-                  child: Column(
+                  : Column(
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Flexible(
-                            child: GestureDetector(
-                              onTap: () async {
-                                // Open the modal and wait for the result
-                                
-                                final result = await showModalBottomSheet<
-                                  Map<String, dynamic>
-                                >(
-                                  context: context,
-                                  isScrollControlled: true,
-                                  builder:
-                                      (
-                                        context,
-                                      ) { 
-                                        return NetworkSelectionModal(
-                                        // Pass initial state to the modal
-                                          initialSelected:
-                                              viewModel.enabledNetworks,
+                      // Header section
+                      Padding(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 20.0,
+                          vertical: 16.0,
+                        ),
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Flexible(
+                                  child: GestureDetector(
+                                    onTap: () async {
+                                      // Open the modal and wait for the result
+
+                                      final result = await showModalBottomSheet<
+                                        Map<String, dynamic>
+                                      >(
+                                        context: context,
+                                        isScrollControlled: true,
+                                        builder: (context) {
+                                          return NetworkSelectionModal(
+                                            // Pass initial state to the modal
+                                            initialSelected:
+                                                viewModel.enabledNetworks,
+                                          );
+                                        },
+                                      );
+                                      if (result != null) {
+                                        viewModel.enabledNetworks =
+                                            result["enabledNetworks"];
+                                        viewModel.setEnabledNetworks(
+                                          result["enabledNetworks"],
                                         );
                                       }
-                                );
-                                if (result != null) {
-                                  viewModel.enabledNetworks =
-                                      result["enabledNetworks"];
-                                  viewModel.setEnabledNetworks(result["enabledNetworks"]);
-                                }
-                                
-                              },
-                              child: Row(
-                                children: [
-                                  viewModel.enabledNetworks.length == 1 ? 
-                                  AIImage(
-                                    viewModel.enabledNetworks[0]["icon"],
-                                    width: 24,
-                                    height: 24,
-                                  ) :
-                                  Text(
-                                    viewModel.networkString,
+                                    },
+                                    child: Row(
+                                      children: [
+                                        viewModel.enabledNetworks.length == 1
+                                            ? AIImage(
+                                              viewModel
+                                                  .enabledNetworks[0]["icon"],
+                                              width: 24,
+                                              height: 24,
+                                            )
+                                            : Text(viewModel.networkString),
+                                        Icon(Icons.arrow_drop_down),
+                                      ],
+                                    ),
                                   ),
-                                  Icon(Icons.arrow_drop_down)
-                                ],
-                              ),
-                            ),
-                          ),
-                          Row(
-                            children: [
-                              AccountWalletIconCover(
-                                child: AIImage(
-                                  AIImages.icRefresh,
-                                  color: Colors.white,
                                 ),
-                                onTap: () {
-                                  viewModel.init(context);
-
-                                }
-                              ),
-                              SizedBox(width: 12.0),
-                              AccountWalletIconCover(
-                                child: AIImage(
-                                  AIImages.icCamera,
-                                  color: Colors.white,
-                                  width: 23,
-                                  height: 23,
-                                ),
-                                onTap: () {
-                                  showDialog(
-                                    context: context,
-                                    builder: (ctx) => QRScanner(
-                                      onQRScanned: (result) {
-                                        logger.d('QR Code Scanned: $result');
-                                        _handleQRResult(result);
+                                Row(
+                                  children: [
+                                    AccountWalletIconCover(
+                                      child: AIImage(
+                                        Icons.add,
+                                        color: Colors.white,
+                                      ),
+                                      onTap: () {
+                                        viewModel.onClickActions(3);
                                       },
                                     ),
-
-                                  );
-                                },
-                              ),
-                              SizedBox(width: 12.0),
-                              AccountWalletIconCover(
-                                child: AIImage(
-                                  AIImages.icMenuQrCode,
-                                  color: Colors.white,
-                                ),
-                                onTap: () {
-                                  showDialog(
-                                    context: context,
-                                    builder: (BuildContext context) {
-                                      return Dialog(
-                                          backgroundColor: AIColors.darkBackground,
-                                          // title: Center(
-                                          //   child: Text(
-                                          //     'My Wallet Address',
-                                          //     style: Theme.of(context).textTheme.bodyLarge
-                                          //   )
-                                          // ),
-                                          child: Padding(
-                                            padding: const EdgeInsets.all(8.0),
-                                            child: Column(
-                                              mainAxisSize: MainAxisSize.min,
-                                              children: [
-                                                Row(
-                                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                    SizedBox(width: 12.0),
+                                    AccountWalletIconCover(
+                                      child: AIImage(
+                                        AIImages.icRefresh,
+                                        color: Colors.white,
+                                      ),
+                                      onTap: () {
+                                        viewModel.init(context);
+                                      },
+                                    ),
+                                    SizedBox(width: 12.0),
+                                    AccountWalletIconCover(
+                                      child: AIImage(
+                                        AIImages.icCamera,
+                                        color: Colors.white,
+                                        width: 23,
+                                        height: 23,
+                                      ),
+                                      onTap: () {
+                                        showDialog(
+                                          context: context,
+                                          builder:
+                                              (ctx) => QRScanner(
+                                                onQRScanned: (result) {
+                                                  logger.d(
+                                                    'QR Code Scanned: $result',
+                                                  );
+                                                  _handleQRResult(result);
+                                                },
+                                              ),
+                                        );
+                                      },
+                                    ),
+                                    SizedBox(width: 12.0),
+                                    AccountWalletIconCover(
+                                      child: AIImage(
+                                        AIImages.icMenuQrCode,
+                                        color: Colors.white,
+                                      ),
+                                      onTap: () {
+                                        showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) {
+                                            return Dialog(
+                                              backgroundColor:
+                                                  AIColors.darkBackground,
+                                              // title: Center(
+                                              //   child: Text(
+                                              //     'My Wallet Address',
+                                              //     style: Theme.of(context).textTheme.bodyLarge
+                                              //   )
+                                              // ),
+                                              child: Padding(
+                                                padding: const EdgeInsets.all(
+                                                  8.0,
+                                                ),
+                                                child: Column(
+                                                  mainAxisSize:
+                                                      MainAxisSize.min,
                                                   children: [
-                                                    // This will push both text and button to create centered effect
-                                                    Expanded(
-                                                      child: Container(
-                                                        // This container helps with proper text alignment
-                                                        child: Stack(
-                                                          children: [
-                                                            // Centered Text
-                                                            Align(
-                                                              alignment: Alignment.center,
-                                                              child: Padding(
-                                                                padding: const EdgeInsets.symmetric(vertical: 10.0),
-                                                                child: Text(
-                                                                  "Scan this address", 
-                                                                  style: Theme.of(context).textTheme.bodyLarge
+                                                    Row(
+                                                      crossAxisAlignment:
+                                                          CrossAxisAlignment
+                                                              .center,
+                                                      children: [
+                                                        // This will push both text and button to create centered effect
+                                                        Expanded(
+                                                          child: Container(
+                                                            // This container helps with proper text alignment
+                                                            child: Stack(
+                                                              children: [
+                                                                // Centered Text
+                                                                Align(
+                                                                  alignment:
+                                                                      Alignment
+                                                                          .center,
+                                                                  child: Padding(
+                                                                    padding: const EdgeInsets.symmetric(
+                                                                      vertical:
+                                                                          10.0,
+                                                                    ),
+                                                                    child: Text(
+                                                                      "Scan this address",
+                                                                      style:
+                                                                          Theme.of(
+                                                                            context,
+                                                                          ).textTheme.bodyLarge,
+                                                                    ),
+                                                                  ),
                                                                 ),
-                                                              ),
+                                                                // Close button on right
+                                                                Align(
+                                                                  alignment:
+                                                                      Alignment
+                                                                          .centerRight,
+                                                                  child: IconButton(
+                                                                    icon: Icon(
+                                                                      Icons
+                                                                          .close,
+                                                                    ),
+                                                                    onPressed: () {
+                                                                      Navigator.of(
+                                                                        context,
+                                                                      ).pop();
+                                                                    },
+                                                                  ),
+                                                                ),
+                                                              ],
                                                             ),
-                                                            // Close button on right
-                                                            Align(
-                                                              alignment: Alignment.centerRight,
-                                                              child: IconButton(
-                                                                icon: Icon(Icons.close),
-                                                                onPressed: () {
-                                                                  Navigator.of(context).pop();
-                                                                }
-                                                              ),
-                                                            ),
-                                                          ],
+                                                          ),
                                                         ),
+                                                      ],
+                                                    ),
+                                                    WalletQrDisplay(
+                                                      data:
+                                                          cryptoService
+                                                              .privateKey!
+                                                              .address
+                                                              .hex,
+                                                      title: "",
+                                                      subtitle: "",
+                                                      size:
+                                                          MediaQuery.of(
+                                                            context,
+                                                          ).size.width *
+                                                          0.5,
+                                                      backgroundColor:
+                                                          Colors.white,
+                                                    ),
+                                                    SizedBox(height: 12.0),
+                                                    Center(
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets.symmetric(
+                                                              horizontal: 32.0,
+                                                            ),
+                                                        child: Text(
+                                                          "${cryptoService.privateKey!.address.hex}",
+                                                          style: TextStyle(
+                                                            color: Colors.white,
+                                                            fontWeight:
+                                                                FontWeight.bold,
+                                                            fontSize: 20,
+                                                          ),
+                                                          textAlign:
+                                                              TextAlign.center,
+                                                        ),
+                                                      ),
+                                                    ),
+                                                    SizedBox(height: 24.0),
+                                                    Center(
+                                                      child: Row(
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          IconButton(
+                                                            icon: Icon(
+                                                              Icons.copy,
+                                                            ),
+                                                            onPressed: () {
+                                                              Clipboard.setData(
+                                                                ClipboardData(
+                                                                  text:
+                                                                      cryptoService
+                                                                          .privateKey!
+                                                                          .address
+                                                                          .hex,
+                                                                ),
+                                                              );
+                                                              AIHelpers.showToast(
+                                                                msg:
+                                                                    "Copied address to Clipboard",
+                                                              );
+                                                            },
+                                                          ),
+                                                          SizedBox(width: 12.0),
+                                                          Text(
+                                                            "Copy Address",
+                                                            style: TextStyle(
+                                                              fontSize: 18,
+                                                              color:
+                                                                  Colors
+                                                                      .blueAccent,
+                                                            ),
+                                                          ),
+                                                        ],
                                                       ),
                                                     ),
                                                   ],
                                                 ),
-                                                WalletQrDisplay(
-                                                  data: cryptoService.privateKey!.address.hex,
-                                                  title: "",
-                                                  subtitle: "",
-                                                  size: MediaQuery.of(context).size.width * 0.5,
-                                                  backgroundColor: Colors.white,
-                                                ),
-                                                SizedBox(height: 12.0),
-                                                Center(
-                                                  child: Padding(
-                                                    padding: const EdgeInsets.symmetric(horizontal: 32.0),
-                                                    child: Text(
-                                                      "${cryptoService.privateKey!.address.hex}",
-                                                      style: TextStyle(
-                                                        color: Colors.white,
-                                                        fontWeight: FontWeight.bold,
-                                                        fontSize: 20,
-                                                      ),
-                                                      textAlign: TextAlign.center,
-                                                    ),
-                                                  ),
-                                                ),
-                                                SizedBox(height: 24.0),
-                                                Center(
-                                                  child: Row(
-                                                    mainAxisAlignment: MainAxisAlignment.center,
-                                                    children: [
-                                                      IconButton(
-                                                        icon: Icon(Icons.copy),
-                                                        onPressed: () {
-                                                          Clipboard.setData(ClipboardData(text: cryptoService.privateKey!.address.hex));
-                                                          AIHelpers.showToast(msg: "Copied address to Clipboard");
-                                                        }
-                                                      ),
-                                                      SizedBox(width: 12.0),
-                                                      Text(
-                                                        "Copy Address",
-                                                        style: TextStyle(
-                                                          fontSize: 18,
-                                                          color: Colors.blueAccent
-                                                        ),
-                                                      ),
-                                                    ]
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          // actionsAlignment: MainAxisAlignment.center,
-                                          // actions: [
-                                          //   TextButton(
-                                          //     onPressed: () => Navigator.of(context).pop(),
-                                          //     child: Text('OK'),
-                                          //   ),
-                                          // ],
+                                              ),
+                                              // actionsAlignment: MainAxisAlignment.center,
+                                              // actions: [
+                                              //   TextButton(
+                                              //     onPressed: () => Navigator.of(context).pop(),
+                                              //     child: Text('OK'),
+                                              //   ),
+                                              // ],
+                                            );
+                                          },
                                         );
-                                    },
-                                  );
-                                },
-                              ),
-                            ]
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 24.0),
-                      SizedBox(
-                        height: 80,
-                        width: double.infinity,
-                        child: Container(
-                          padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                          decoration: BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [Colors.blue.shade700, Colors.red.shade700, Colors.blue.shade700],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              ],
                             ),
-                            borderRadius: BorderRadius.circular(18),
-                          ),
-                          child: Stack(
-                            children: [
-                              Align(
-                                alignment: Alignment.topRight,
-                                child: Row(
-                                  mainAxisAlignment: MainAxisAlignment.end,
+                            SizedBox(height: 24.0),
+                            SizedBox(
+                              height: 80,
+                              width: double.infinity,
+                              child: Container(
+                                padding: EdgeInsets.symmetric(
+                                  horizontal: 16.0,
+                                  vertical: 8.0,
+                                ),
+                                decoration: BoxDecoration(
+                                  gradient: LinearGradient(
+                                    colors: [
+                                      Colors.blue.shade700,
+                                      Colors.red.shade700,
+                                      Colors.blue.shade700,
+                                    ],
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                  ),
+                                  borderRadius: BorderRadius.circular(18),
+                                ),
+                                child: Stack(
                                   children: [
-                                    Text(
-                                      "Your balance"
-                                    )
+                                    Align(
+                                      alignment: Alignment.topRight,
+                                      child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.end,
+                                        children: [Text("Your balance")],
+                                      ),
+                                    ),
+                                    Center(
+                                      child: Text(
+                                        '\$${viewModel.totalBalance.toStringAsFixed(2)}',
+                                        style: TextStyle(
+                                          fontSize: 32,
+                                          fontWeight: FontWeight.w900,
+                                        ),
+                                      ),
+                                    ),
                                   ],
                                 ),
                               ),
-                              Center(
-                                child: Text(
-                                  '\$${viewModel.totalBalance.toStringAsFixed(2)}',
-                                  style: TextStyle(
-                                    fontSize: 32,
-                                    fontWeight: FontWeight.w900,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      SizedBox(height: 16.0),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children:[
-                          Container(
-                            padding: EdgeInsets.all(0),
-                            decoration: BoxDecoration(
-                              border: BoxBorder.all(color: Colors.white),
-                              borderRadius: BorderRadius.circular(24) 
                             ),
-                            child: ElevatedButton.icon(
-                              onPressed: () {
-                                viewModel.onClickActions(0);
-                              },
-                              icon: Container(
-                                decoration: const BoxDecoration(
-                                  color: Colors.white,
-                                  shape: BoxShape.circle,
-                                ),
-                                padding: const EdgeInsets.all(6), // space inside the circle
-                                child: const Icon(
-                                  Icons.call_made, // ↗ similar icon
-                                  size: 24,
-                                  color: Colors.black,
-                                ),
-                              ),
-                              label: Text(
-                                "Send",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                ),
-                              ),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.black,
-                                padding: EdgeInsets.only(left: 4, right: 18),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30), // pill shape
-                                ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(width: 8.0),
-                          Container(
-                            padding: EdgeInsets.all(0),
-                            decoration: BoxDecoration(
-                              border: BoxBorder.all(color: Colors.white),
-                              borderRadius: BorderRadius.circular(24) 
-                            ),
-                            child: ElevatedButton.icon(
-                              onPressed: () {
-                                viewModel.onClickActions(1);
-                              },
-                              icon: Container(
-                                decoration: const BoxDecoration(
-                                  color: Colors.white,
-                                  shape: BoxShape.circle,
-                                ),
-                                padding: const EdgeInsets.all(6), // space inside the circle
-                                child: const Icon(
-                                  Icons.call_received, // ↗ similar icon
-                                  size: 24,
-                                  color: Colors.black,
-                                ),
-                              ),
-                              label: Text(
-                                "Receive",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                ),
-                              ),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.black,
-                                padding: EdgeInsets.only(left: 4, right: 18),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30), // pill shape
-                                ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(width: 8.0),
-                          Container(
-                            padding: EdgeInsets.all(0),
-                            decoration: BoxDecoration(
-                              border: BoxBorder.all(color: Colors.white),
-                              borderRadius: BorderRadius.circular(24) 
-                            ),
-                            child: ElevatedButton.icon(
-                              onPressed: () {
-                                viewModel.onClickActions(2);
-                              },
-                              icon: Container(
-                                decoration: const BoxDecoration(
-                                  color: Colors.white,
-                                  shape: BoxShape.circle,
-                                ),
-                                padding: const EdgeInsets.all(6), // space inside the circle
-                                child: const Icon(
-                                  Icons.swap_horiz, // ↗ similar icon
-                                  size: 24,
-                                  color: Colors.black,
-                                ),
-                              ),
-                              label: Text(
-                                "Swap",
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 16,
-                                ),
-                              ),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Colors.black,
-                                padding: EdgeInsets.only(left: 4, right: 18),
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(30), // pill shape
-                                ),
-                              ),
-                            ),
-                          ),
-                        ]
-                      ),
-
-                    ],
-                  ),
-                ),
-
-                Expanded(
-                  child:  
-                      SingleChildScrollView(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 16.0,
-                          vertical: 4.0,
-                        ),
-                        child: Column(
-                          children: [
-                            const SizedBox(height: 0.0),
-                            for (var token
-                                in viewModel.enabledNetworks) ...[
-                              Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 12.0),
-                                decoration: BoxDecoration(
-                                  // color: Colors.grey.withAlpha(30),
-                                  borderRadius: BorderRadius.circular(18),
-                                ),
-                                child: GestureDetector(
-                                  onTap: () {
-                                    if (token["chain"] == 'xp') _showXpConvertSheet(context, viewModel);
-                                  },
-                                  child: Column(
-                                    children: [
-                                      Row(
-                                        children: [
-                                          ClipOval(
-                                            child: Container(
-                                              color: Colors.blueAccent,
-                                              child: AIImage(
-                                                token["icon"],
-                                                width: 42.0,
-                                                height: 42.0,
-                                              ),
-                                            ),
-                                          ),
-                                          SizedBox(width: 12.0),
-                                          Expanded(
-                                            // This Expanded is a direct child of Row
-                                            child: Column(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
-                                              children: [
-                                                Text(
-                                                  token["short_name"].toString(),
-                                                  style: Theme.of(context).textTheme.labelLarge!.copyWith(
-                                                    color: Colors.white)
-                                                ),
-                                                Text(
-                                                  '${AIHelpers.formatDouble(viewModel.allBalances?[token["chain"]] ?? 0, 10)} ${token["short_name"]}',
-                                                  style: Theme.of(context).textTheme.labelMedium!.copyWith(
-                                                    color: Colors.white
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          Text(
-                                            '\$${(viewModel.tokenValues[token["chain"]] ?? 0).toStringAsFixed(2)}',
-                                            style:
-                                                Theme.of(context).textTheme.labelLarge!.copyWith(
-                                                  color: Colors.white
-                                                ),
-                                          ),
-                                          // IconButton(
-                                          //   onPressed: () {
-                                          //     viewModel.toggleFavorite(token["chain"]);
-                                          //   },
-                                          //   icon: Icon(viewModel.checkFavorite(token["chain"]) == true ? Icons.star : Icons.star_border),
-                                          //   color: Colors.amberAccent
-                                          // )
-                                        ],
+                            SizedBox(height: 16.0),
+                            SingleChildScrollView(
+                              scrollDirection: Axis.horizontal,
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    padding: EdgeInsets.all(0),
+                                    decoration: BoxDecoration(
+                                      border: BoxBorder.all(
+                                        color: Colors.white,
                                       ),
-                                      Padding(
-                                        padding: const EdgeInsets.symmetric(vertical: 3.0),
-                                        child: Divider(
-                                          color: Colors.grey.shade800,
-                                          thickness: 0.5,
+                                      borderRadius: BorderRadius.circular(24),
+                                    ),
+                                    child: ElevatedButton.icon(
+                                      onPressed: () {
+                                        viewModel.onClickActions(0);
+                                      },
+                                      icon: Container(
+                                        decoration: const BoxDecoration(
+                                          color: Colors.white,
+                                          shape: BoxShape.circle,
                                         ),
-                                      )
-                                    ],
-                                  )
+                                        padding: const EdgeInsets.all(
+                                          6,
+                                        ), // space inside the circle
+                                        child: const Icon(
+                                          Icons.call_made, // ↗ similar icon
+                                          size: 24,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                      label: Text(
+                                        "Send",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.black,
+                                        padding: EdgeInsets.only(
+                                          left: 4,
+                                          right: 18,
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            30,
+                                          ), // pill shape
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(width: 8.0),
+                                  Container(
+                                    padding: EdgeInsets.all(0),
+                                    decoration: BoxDecoration(
+                                      border: BoxBorder.all(
+                                        color: Colors.white,
+                                      ),
+                                      borderRadius: BorderRadius.circular(24),
+                                    ),
+                                    child: ElevatedButton.icon(
+                                      onPressed: () {
+                                        viewModel.onClickActions(1);
+                                      },
+                                      icon: Container(
+                                        decoration: const BoxDecoration(
+                                          color: Colors.white,
+                                          shape: BoxShape.circle,
+                                        ),
+                                        padding: const EdgeInsets.all(
+                                          6,
+                                        ), // space inside the circle
+                                        child: const Icon(
+                                          Icons.call_received, // ↗ similar icon
+                                          size: 24,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                      label: Text(
+                                        "Receive",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.black,
+                                        padding: EdgeInsets.only(
+                                          left: 4,
+                                          right: 18,
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            30,
+                                          ), // pill shape
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  SizedBox(width: 8.0),
+                                  Container(
+                                    padding: EdgeInsets.all(0),
+                                    decoration: BoxDecoration(
+                                      border: BoxBorder.all(
+                                        color: Colors.white,
+                                      ),
+                                      borderRadius: BorderRadius.circular(24),
+                                    ),
+                                    child: ElevatedButton.icon(
+                                      onPressed: () {
+                                        viewModel.onClickActions(2);
+                                      },
+                                      icon: Container(
+                                        decoration: const BoxDecoration(
+                                          color: Colors.white,
+                                          shape: BoxShape.circle,
+                                        ),
+                                        padding: const EdgeInsets.all(
+                                          6,
+                                        ), // space inside the circle
+                                        child: const Icon(
+                                          Icons.swap_horiz, // ↗ similar icon
+                                          size: 24,
+                                          color: Colors.black,
+                                        ),
+                                      ),
+                                      label: Text(
+                                        "Swap",
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 16,
+                                        ),
+                                      ),
+                                      style: ElevatedButton.styleFrom(
+                                        backgroundColor: Colors.black,
+                                        padding: EdgeInsets.only(
+                                          left: 4,
+                                          right: 18,
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                          borderRadius: BorderRadius.circular(
+                                            30,
+                                          ), // pill shape
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
-                              ),
-                            ],
+                            ),
                           ],
                         ),
                       ),
-                      // Activities Tab
-                ),
-              ]     
-            ),
-          );
-      }
+
+                      Expanded(
+                        child: SingleChildScrollView(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16.0,
+                            vertical: 4.0,
+                          ),
+                          child: Column(
+                            children: [
+                              const SizedBox(height: 0.0),
+                              for (var token in viewModel.enabledNetworks) ...[
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 12.0,
+                                  ),
+                                  decoration: BoxDecoration(
+                                    // color: Colors.grey.withAlpha(30),
+                                    borderRadius: BorderRadius.circular(18),
+                                  ),
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      if (token["chain"] == 'xp')
+                                        _showXpConvertSheet(context, viewModel);
+                                    },
+                                    child: Column(
+                                      children: [
+                                        Row(
+                                          children: [
+                                            ClipOval(
+                                              child: Container(
+                                                color: Colors.blueAccent,
+                                                child: AIImage(
+                                                  token["icon"],
+                                                  width: 42.0,
+                                                  height: 42.0,
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(width: 12.0),
+                                            Expanded(
+                                              // This Expanded is a direct child of Row
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    token["short_name"]
+                                                        .toString(),
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .labelLarge!
+                                                        .copyWith(
+                                                          color: Colors.white,
+                                                        ),
+                                                  ),
+                                                  Text(
+                                                    '${AIHelpers.formatDouble(_getTokenBalance(viewModel, token) ?? 0, 10)} ${token["short_name"]}',
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .labelMedium!
+                                                        .copyWith(
+                                                          color: Colors.white,
+                                                        ),
+                                                  ),
+
+                                                  // Show ETH price and value specifically for Ethereum
+                                                ],
+                                              ),
+                                            ),
+
+                                            _buildTokenPrice(
+                                              context,
+                                              viewModel,
+                                              token,
+                                            ),
+                                            // IconButton(
+                                            //   onPressed: () {
+                                            //     viewModel.toggleFavorite(token["chain"]);
+                                            //   },
+                                            //   icon: Icon(viewModel.checkFavorite(token["chain"]) == true ? Icons.star : Icons.star_border),
+                                            //   color: Colors.amberAccent
+                                            // )
+                                          ],
+                                        ),
+                                        Padding(
+                                          padding: const EdgeInsets.symmetric(
+                                            vertical: 3.0,
+                                          ),
+                                          child: Divider(
+                                            color: Colors.grey.shade800,
+                                            thickness: 0.5,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ],
+                          ),
+                        ),
+                        // Activities Tab
+                      ),
+                    ],
+                  ),
+        );
+      },
     );
   }
 }
@@ -550,10 +732,7 @@ void _showXpConvertSheet(BuildContext context, AccountWalletProvider parentVm) {
         viewModelBuilder: () => AccountRewardProvider(),
         onViewModelReady: (vm) async {
           // If you have a real XP value on parentVm, pass that instead.
-          vm.init(
-            context,
-            null
-          );
+          vm.init(context, null);
         },
         builder: (context, vm, __) {
           return RewardTransferView(viewModel: vm);
@@ -577,139 +756,151 @@ class RewardTransferView extends StatelessWidget {
         color: Theme.of(context).scaffoldBackgroundColor,
         borderRadius: BorderRadius.circular(8.0),
       ),
-      child: viewModel.isBusy ?
-      Center(child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Loader(size: 60, color: Colors.pink),
-          Text("... Loading Data"),
-        ],
-      )) :
-      Column(
-        children: [
-          Text(
-            'Available : ${viewModel.availableXP} XP',
-            style: Theme.of(context).textTheme.bodyLarge,
-          ),
-          const SizedBox(height: 8),
-          Wrap(
-            spacing: 4,
-            runSpacing: 4.0,
-            alignment: WrapAlignment.center,
-            runAlignment: WrapAlignment.center,
-            children: [
-              for (XpInSoModel inSoModel
-                  in (AppSettingHelper.appSettingModel?.xpInso ?? [])) ...{
-                InkWell(
-                  onTap: () {
-                    viewModel.selectInSo(inSoModel);
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 16.0,
-                      vertical: 4.0,
-                    ),
-                    decoration: BoxDecoration(
-                      color:
-                          viewModel.selectXpInSo == inSoModel
-                              ? AIColors.pink
-                              : Theme.of(
-                                context,
-                              ).colorScheme.secondary.withAlpha(16),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    child: Text.rich(
-                      TextSpan(
+      child:
+          viewModel.isBusy
+              ? Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Loader(size: 60, color: Colors.pink),
+                    Text("... Loading Data"),
+                  ],
+                ),
+              )
+              : Column(
+                children: [
+                  Text(
+                    'Available : ${viewModel.availableXP} XP',
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
+                  const SizedBox(height: 8),
+                  Wrap(
+                    spacing: 4,
+                    runSpacing: 4.0,
+                    alignment: WrapAlignment.center,
+                    runAlignment: WrapAlignment.center,
+                    children: [
+                      for (XpInSoModel inSoModel
+                          in (AppSettingHelper.appSettingModel?.xpInso ??
+                              [])) ...{
+                        InkWell(
+                          onTap: () {
+                            viewModel.selectInSo(inSoModel);
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 16.0,
+                              vertical: 4.0,
+                            ),
+                            decoration: BoxDecoration(
+                              color:
+                                  viewModel.selectXpInSo == inSoModel
+                                      ? AIColors.pink
+                                      : Theme.of(
+                                        context,
+                                      ).colorScheme.secondary.withAlpha(16),
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            child: Text.rich(
+                              TextSpan(
+                                children: [
+                                  TextSpan(text: '${inSoModel.max}\n'),
+                                  TextSpan(
+                                    text:
+                                        '(${inSoModel.max! * inSoModel.rate! / 100})',
+                                    style: const TextStyle(
+                                      fontSize: 12,
+                                    ), // smaller second line
+                                  ),
+                                ],
+                              ),
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                color:
+                                    viewModel.selectXpInSo == inSoModel
+                                        ? AIColors.white
+                                        : Theme.of(
+                                          context,
+                                        ).colorScheme.onPrimary,
+                              ),
+                            ),
+                          ),
+                        ),
+                      },
+                    ],
+                  ),
+                  Column(
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                         children: [
-                          TextSpan(text: '${inSoModel.max}\n'),
-                          TextSpan(
-                            text: '(${inSoModel.max! * inSoModel.rate! / 100})',
-                            style: const TextStyle(
-                              fontSize: 12,
-                            ), // smaller second line
+                          Row(
+                            children: [
+                              SizedBox(
+                                width: 80,
+                                child: TextFormField(
+                                  decoration: InputDecoration(
+                                    hintText: '0',
+                                    hintTextDirection: TextDirection.rtl,
+                                    hintStyle: TextStyle(
+                                      color:
+                                          Theme.of(
+                                            context,
+                                          ).colorScheme.onPrimary,
+                                      fontSize: 24,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    border: InputBorder.none,
+                                  ),
+                                  keyboardType: TextInputType.number,
+                                  style: TextStyle(
+                                    fontSize: 24,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                  maxLines: 1,
+                                  textDirection: TextDirection.rtl,
+                                  controller: viewModel.textController,
+                                  onChanged: (value) {
+                                    viewModel.setXpValue(value);
+                                  },
+                                ),
+                              ),
+                              Text('  XP', style: TextStyle(fontSize: 16)),
+                            ],
+                          ),
+                          Text('to', style: TextStyle(fontSize: 16)),
+                          Row(
+                            children: [
+                              Text(
+                                '${viewModel.convertedInSo()}',
+                                style: TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text('  INSO', style: TextStyle(fontSize: 16)),
+                            ],
                           ),
                         ],
                       ),
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
+                      TextFillButton(
+                        onTap: () {
+                          viewModel.convertXPtoINSO();
+                        },
+                        height: 36,
+                        isBusy: viewModel.isBusy,
                         color:
-                            viewModel.selectXpInSo == inSoModel
-                                ? AIColors.white
-                                : Theme.of(context).colorScheme.onPrimary,
+                            viewModel.isPossibleConvert
+                                ? Theme.of(context).primaryColor
+                                : Theme.of(
+                                  context,
+                                ).colorScheme.secondary.withAlpha(64),
+                        text: 'Convert XP to INSO',
                       ),
-                    ),
-                  ),
-                ),
-              },
-            ],
-          ),
-          Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  Row(
-                    children: [
-                      SizedBox(
-                        width: 80,
-                        child: TextFormField(
-                          decoration: InputDecoration(
-                            hintText: '0',
-                            hintTextDirection: TextDirection.rtl,
-                            hintStyle: TextStyle(
-                              color: Theme.of(context).colorScheme.onPrimary,
-                              fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                            ),
-                            border: InputBorder.none,
-                          ),
-                          keyboardType: TextInputType.number,
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                          ),
-                          maxLines: 1,
-                          textDirection: TextDirection.rtl,
-                          controller: viewModel.textController,
-                          onChanged: (value) {
-                            viewModel.setXpValue(value);
-                          },
-                        ),
-                      ),
-                      Text('  XP', style: TextStyle(fontSize: 16)),
-                    ],
-                  ),
-                  Text('to', style: TextStyle(fontSize: 16)),
-                  Row(
-                    children: [
-                      Text(
-                        '${viewModel.convertedInSo()}',
-                        style: TextStyle(
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text('  INSO', style: TextStyle(fontSize: 16)),
                     ],
                   ),
                 ],
               ),
-              TextFillButton(
-                onTap: () {
-                  viewModel.convertXPtoINSO();
-                },
-                height: 36,
-                isBusy: viewModel.isBusy,
-                color:
-                    viewModel.isPossibleConvert
-                        ? Theme.of(context).primaryColor
-                        : Theme.of(context).colorScheme.secondary.withAlpha(64),
-                text: 'Convert XP to INSO',
-              ),
-            ],
-          ),
-        ],
-      ),
     );
   }
 }

@@ -500,7 +500,7 @@ class StoryContentProvider extends InSoBlokViewModel {
                           style: Theme.of(
                             context,
                           ).textTheme.bodyMedium?.copyWith(
-                            color: Theme.of(context).colorScheme.onSecondary,
+                            color: Colors.white,
                           ),
                         ),
                       ),

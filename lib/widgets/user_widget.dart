@@ -15,6 +15,7 @@ class UserAvatarView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    logger.d("avatar is ${AuthHelper.user?.avatar}");
     return SizedBox(
       width: 120.0,
       height: 120.0,
