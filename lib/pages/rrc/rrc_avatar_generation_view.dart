@@ -117,13 +117,13 @@ class _RRCAvatarGenerationViewState extends State<RRCAvatarGenerationView> with 
                   const SizedBox(height: 24),
                   // Glowing bubble
                   Center(
-                    child: RotationTransition(
-                      turns: _rotationController,
-                      child: Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          // Outer rotating glow ring (bigger)
-                          Container(
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        // Outer rotating glow ring (bigger)
+                        RotationTransition(
+                          turns: _rotationController,
+                          child: Container(
                             width: 340,
                             height: 340,
                             decoration: BoxDecoration(
@@ -141,50 +141,77 @@ class _RRCAvatarGenerationViewState extends State<RRCAvatarGenerationView> with 
                               ],
                             ),
                           ),
-                          // Inner bubble (bigger)
-                          Container(
-                            width: 300,
-                            height: 300,
-                            decoration: BoxDecoration(
-                              shape: BoxShape.circle,
-                              gradient: LinearGradient(
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
-                                colors: [
-                                  const Color(0xFF0F1735),
-                                  const Color(0xFF0B0F25),
-                                ],
-                              ),
-                              border: Border.all(
-                                width: 10,
-                                color: Colors.white.withOpacity(0.06),
-                              ),
-                            ),
-                            child: Container(
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                gradient: RadialGradient(
-                                  colors: [
-                                    glow[0].withOpacity(0.10),
-                                    Colors.transparent
+                        ),
+                        // Inner content: either bubble placeholder or generated video preview
+                        vm.generatedVideoUrl == null
+                            ? Container(
+                                width: 300,
+                                height: 300,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                    colors: [
+                                      const Color(0xFF0F1735),
+                                      const Color(0xFF0B0F25),
+                                    ],
+                                  ),
+                                  border: Border.all(
+                                    width: 10,
+                                    color: Colors.white.withOpacity(0.06),
+                                  ),
+                                ),
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
+                                    gradient: RadialGradient(
+                                      colors: [
+                                        glow[0].withOpacity(0.10),
+                                        Colors.transparent
+                                      ],
+                                      radius: 0.65,
+                                    ),
+                                  ),
+                                ),
+                              )
+                            : Container(
+                                width: 280,
+                                height: 280,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(16),
+                                  border: Border.all(
+                                    color: Colors.white24,
+                                    width: 2,
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.3),
+                                      blurRadius: 16,
+                                      spreadRadius: 2,
+                                    ),
                                   ],
-                                  radius: 0.65,
+                                ),
+                                clipBehavior: Clip.antiAlias,
+                                child: VideoPlayerWidget(
+                                  path: vm.generatedVideoUrl!,
+                                  border: Colors.transparent,
+                                  circular: false,
+                                  width: 280,
+                                  height: 280,
                                 ),
                               ),
+                        if (_isCountingDown)
+                          Text(
+                            '${_countdown ?? ''}',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 96,
+                              fontWeight: FontWeight.w900,
+                              height: 1.0,
                             ),
                           ),
-                          if (_isCountingDown)
-                            Text(
-                              '${_countdown ?? ''}',
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 96,
-                                fontWeight: FontWeight.w900,
-                                height: 1.0,
-                              ),
-                            ),
-                        ],
-                      ),
+                      ],
                     ),
                   ),
                   const Spacer(),

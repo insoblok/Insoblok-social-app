@@ -107,7 +107,17 @@ class AvatarService {
       NetworkUtil.kieGenerateMap(fileUrl: fileUrl, prompt: prompt, size: size),
     );
     logger.d(result);
-    return result?['data']['taskId'];
+    // Defensive parsing: KIE returns {code:int, msg:string, data:{taskId:...}}.
+    // When an error occurs, code may be 4xx and data is null.
+    if (result == null) return null;
+    final code = (result['code'] ?? 200) as int;
+    final data = result['data'];
+    if (code != 200 || data == null) {
+      final msg = (result['msg'] ?? 'KIE create error').toString();
+      throw Exception(msg);
+    }
+    final taskId = (data['taskId'] ?? data['taskUUID'])?.toString();
+    return taskId;
   }
 
   Future<Map<String, dynamic>> setOnProgressListener(
