@@ -15,7 +15,7 @@ class RRCAvatarProvider extends InSoBlokViewModel {
   }
 
   final AvatarService _avatarService = locator<AvatarService>();
-  final RunwareService _runwareService = RunwareService();
+  final RunwareService _runwareService = locator<RunwareService>();
 
   final RxValue<String?> _selfieLocalPath = RxValue<String?>(null);
   String? get selfieLocalPath => _selfieLocalPath.value;
@@ -42,9 +42,10 @@ class RRCAvatarProvider extends InSoBlokViewModel {
 
   // Available emotions (emoji and short prompt hint)
   final List<Map<String, String>> emotions = [
-    {'emoji': '⚡', 'prompt': 'energetic'},
-    {'emoji': '😂', 'prompt': 'laugh'},
-    {'emoji': '🔥', 'prompt': 'fire'},
+    // Mapping required order: laugh, LOL, HOT, surprised
+    {'emoji': '⚡', 'prompt': 'laugh'},
+    {'emoji': '😂', 'prompt': 'LOL'},
+    {'emoji': '🔥', 'prompt': 'HOT'},
     {'emoji': '😮', 'prompt': 'surprised'},
   ];
 
@@ -93,68 +94,59 @@ class RRCAvatarProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  Future<String> _maybeCreateAvatarFromSelfie() async {
-    await _ensureSelfieUploaded();
-    if (selectedAvatarIndex == 0) {
-      return _selfieCdnUrl.value!;
-    }
-    final prompt = avatars[selectedAvatarIndex]['prompt'] ?? '';
-    final taskId = await _avatarService.createTask(
-      fileUrl: _selfieCdnUrl.value!,
-      prompt: prompt,
-      size: '1024x1024',
-    );
-    if (taskId == null) throw Exception('Failed to create avatar task');
-    final task = await _avatarService.setOnProgressListener(
-      taskId,
-      onProgressListener: (p) {},
-    );
-    final imageUrl = await _avatarService.downloadAvatar(
-      taskId,
-      url: task['result'] ?? (task['url'] ?? ''),
-    );
-    if (imageUrl == null || imageUrl.isEmpty) {
-      throw Exception('Failed to download generated avatar');
-    }
-    final cdnUrl = await _avatarService.uploadResultAvatar(imageUrl);
-    if (cdnUrl == null || cdnUrl.isEmpty) {
-      throw Exception('Failed to upload avatar to CDN');
-    }
-    return cdnUrl;
-  }
-
   Future<String?> onApply() async {
     if (isBusy) return null;
     clearErrors();
     String? videoUrl;
     await runBusyFuture(() async {
       try {
-        // 1) Ensure we have a selfie URL (and optionally create avatar)
-        final imageForVideo = await _maybeCreateAvatarFromSelfie();
+        final prompt = emotions[selectedEmotionIndex]['prompt'] ?? 'laugh';
+        // Preferred dashboard settings
+        const width = 360; // 3:4 480p
+        const height = 480;
+        const fps = 24;
+        const duration = 3;
 
-        // 2) Trigger image-to-video
-        final emotionPrompt = emotions[selectedEmotionIndex]['prompt'] ?? '';
-        final task = await _runwareService.createImageToVideo(
-          imageUrl: imageForVideo,
-          prompt: 'emotion: $emotionPrompt, loopable dance animation',
-          durationSeconds: 5,
-        );
+        // Try to upload selfie for CDN URL, but fall back to local file if upload fails
+        if (_selfieLocalPath.value == null || _selfieLocalPath.value!.isEmpty) {
+          await pickSelfie();
+        }
+        try {
+          await _ensureSelfieUploaded();
+        } catch (_) {
+          // Ignore upload failure and proceed with local file
+        }
 
-        // 3) If task returns an id, poll it. Else if includes url, use directly.
-        if ((task['id'] ?? '').toString().isNotEmpty) {
-          final finalTask = await _runwareService.pollTask(task['id'].toString());
-          videoUrl = (finalTask['result'] ?? finalTask['url'] ?? '').toString();
+        String? url;
+        if (_selfieCdnUrl.value != null && _selfieCdnUrl.value!.isNotEmpty) {
+          url = await _runwareService.generateVideoFromImageUrl(
+            imageUrl: _selfieCdnUrl.value!,
+            prompt: prompt,
+            width: width,
+            height: height,
+            fps: fps,
+            durationSeconds: duration,
+            model: 'bytedance:2@2',
+          );
+        } else if (_selfieLocalPath.value != null && _selfieLocalPath.value!.isNotEmpty) {
+          url = await _runwareService.generateVideoFromFile(
+            fileBytes: await File(_selfieLocalPath.value!).readAsBytes(),
+            mimeType: 'image/jpeg',
+            prompt: prompt,
+            width: width,
+            height: height,
+            fps: fps,
+            durationSeconds: duration,
+            model: 'bytedance:2@2',
+          );
         } else {
-          videoUrl = (task['result'] ?? task['url'] ?? '').toString();
+          throw Exception('Selfie is required');
         }
-
-        if ((videoUrl ?? '').isEmpty) {
-          throw Exception('Video generation did not return a URL');
+        if (url == null || url.isEmpty) {
+          throw Exception('Runware returned empty result');
         }
-
-        _generatedVideoUrl.value = videoUrl;
-        AIHelpers.showToast(msg: 'Your Vybe Loop is generating!');
-        // In the future, navigate to a preview/detail page if needed.
+        _generatedVideoUrl.value = videoUrl = url;
+        AIHelpers.showToast(msg: 'Video ready!');
       } catch (e, s) {
         setError(e);
         logger.e(e, stackTrace: s);

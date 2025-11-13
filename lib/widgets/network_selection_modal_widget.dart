@@ -27,9 +27,9 @@ class _NetworkSelectionModalState extends State<NetworkSelectionModal>
 
   // Show only Ethereum Mainnet and Sepolia
   final List<Map<String, dynamic>> defaultNetworks =
-      kAvailableNetworks.where((token) => token["test"] == false).toList();
+      kWalletTokenList.where((token) => token["test"] == false).toList();
   final List<Map<String, dynamic>> customNetworks =
-      kAvailableNetworks.where((token) => token["test"] == true).toList();
+      kWalletTokenList.where((token) => token["test"] == true).toList();
 
   @override
   void initState() {
