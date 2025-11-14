@@ -9,11 +9,10 @@ import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/pages/auths/import_wallet_dialog.dart';
 
-
 class LoginProvider extends InSoBlokViewModel {
   late BuildContext _context;
   BuildContext get context => _context;
-  
+
   set context(BuildContext context) {
     _context = context;
     notifyListeners();
@@ -28,9 +27,10 @@ class LoginProvider extends InSoBlokViewModel {
   late Timer _timer;
   final _pageController = PageController(initialPage: 0);
   PageController get pageController => _pageController;
-  
+
   CryptoService cryptoService = locator<CryptoService>();
-  
+  LocalAuthService localAuthService = LocalAuthService();
+
   int _currentPage = 0;
   int get currentPage => _currentPage;
 
@@ -46,7 +46,8 @@ class LoginProvider extends InSoBlokViewModel {
   }
 
   final _existingPasswordController = TextEditingController();
-  TextEditingController get existingPasswordController => _existingPasswordController;
+  TextEditingController get existingPasswordController =>
+      _existingPasswordController;
 
   late ReownService _reownService;
   ReownService get reownService => _reownService;
@@ -80,10 +81,16 @@ class LoginProvider extends InSoBlokViewModel {
   }
 
   bool processing = false;
-  
+
+  bool _isNavigatingToMain = false;
+  bool get isNavigatingToMain => _isNavigatingToMain;
+  set isNavigatingToMain(bool value) {
+    _isNavigatingToMain = value;
+    notifyListeners();
+  }
+
   final globals = GlobalStore();
   bool get enabled => globals.isVybeCamEnabled;
-
 
   String _checkFaceStatus = "";
   String get checkFaceStatus => _checkFaceStatus;
@@ -110,14 +117,55 @@ class LoginProvider extends InSoBlokViewModel {
         duration: Duration(milliseconds: 300),
         curve: Curves.easeIn,
       );
-    }); 
+    });
 
     await checkWalletStatus();
-    if(!walletExists) return;
-    if (AuthHelper.user?.biometricEnabled ?? false) {
-      await checkFace(context);
+    if (!walletExists) return;
+
+    // Check for saved credentials and auto-login if enabled
+    final globalStore = GlobalStore();
+    final hasCredentials = await globalStore.hasSavedCredentials();
+    final autoLoginEnabled = await globalStore.isAutoLoginEnabled();
+
+    if (hasCredentials && autoLoginEnabled) {
+      // Auto-login with saved credentials
+      final savedPassword = await globalStore.getSavedPassword();
+      if (savedPassword != null && savedPassword.isNotEmpty) {
+        try {
+          UnlockedWallet unlockedWallet = await cryptoService.unlockFromStorage(
+            savedPassword,
+          );
+          if (unlockedWallet.address.isNotEmpty) {
+            var authUser = await AuthHelper.signIn(
+              unlockedWallet.address,
+              false,
+            );
+            if (authUser?.walletAddress?.isNotEmpty ?? false) {
+              isNavigatingToMain = true;
+              AuthHelper.updateStatus('Online');
+              // Add a small delay to show the loading indicator
+              await Future.delayed(const Duration(milliseconds: 500));
+              Routers.goToMainPage(context);
+              notifyListeners();
+              return;
+            }
+          }
+        } catch (e) {
+          logger.d("Auto-login failed: $e");
+          // Fall through to normal login flow
+        }
+      }
     }
-    else {
+
+    // Check if biometric is enabled for the user, or if device supports biometrics
+    // For first-time login, check device capability; for returning users, check user preference
+    final localAuthService = LocalAuthService();
+    final isBiometricAvailable = await localAuthService.isFaceIDAvailable();
+    final userBiometricEnabled = AuthHelper.user?.biometricEnabled ?? false;
+
+    if (isBiometricAvailable && userBiometricEnabled) {
+      await checkFace(context);
+    } else {
       Routers.goToPincodePage(context);
     }
     notifyListeners();
@@ -139,23 +187,23 @@ class LoginProvider extends InSoBlokViewModel {
     try {
       await reownService.connect();
       if (reownService.isConnected) {
-
         var authUser = await AuthHelper.signIn(
           reownService.walletAddress!,
           isCheckScan,
         );
 
-        
         if (authUser?.walletAddress?.isEmpty ?? true) {
           Routers.goToRegisterFirstPage(
             context,
             user: UserModel(walletAddress: reownService.walletAddress!),
           );
         } else {
-
           globals.isVybeCamEnabled = isCheckScan;
           await globals.save();
+          isNavigatingToMain = true;
           AuthHelper.updateStatus('Online');
+          // Add a small delay to show the loading indicator
+          await Future.delayed(const Duration(milliseconds: 500));
           Routers.goToMainPage(context);
         }
       } else {
@@ -192,7 +240,10 @@ class LoginProvider extends InSoBlokViewModel {
     if (hasError) {
       AIHelpers.showToast(msg: modelError.toString());
     } else {
+      isNavigatingToMain = true;
       AuthHelper.updateStatus('Online');
+      // Add a small delay to show the loading indicator
+      await Future.delayed(const Duration(milliseconds: 500));
       Routers.goToMainPage(context);
     }
   }
@@ -205,7 +256,9 @@ class LoginProvider extends InSoBlokViewModel {
     ).then((result) {
       if (result != null) {
         // Import was successful!
-        AIHelpers.showToast(msg: 'Wallet imported successfully! Address: ${result.address}');
+        AIHelpers.showToast(
+          msg: 'Wallet imported successfully! Address: ${result.address}',
+        );
         // Navigate to main app screen
         Routers.goToRegisterFirstPage(
           context,
@@ -221,7 +274,7 @@ class LoginProvider extends InSoBlokViewModel {
     isCheckingWallet = false;
     notifyListeners();
     // if (_walletExists) await checkFace();
-  } 
+  }
 
   void handleClickForgotPassword() {
     _walletExists = false;
@@ -234,7 +287,7 @@ class LoginProvider extends InSoBlokViewModel {
   }
 
   void handleChangeLoginMethod(String method) {
-    if(method.isEmpty) return;
+    if (method.isEmpty) return;
     loginMethod = method;
     if (method == loginMethods[0]) {
       Routers.goToPincodePage(context);
@@ -242,30 +295,38 @@ class LoginProvider extends InSoBlokViewModel {
   }
 
   Future<void> checkFace(BuildContext ctx) async {
-    
     UnlockedWallet wallet = await localAuthService.accessWalletWithFaceId();
     logger.d("Wallet is ${wallet.address}");
     if (wallet.address.isEmpty) {
       checkFaceStatus = "Biometric Unlock Failed. Try again with PinCode.";
-      apiService.logRequest({"result": "failed", "message": 'Face Unlock Failed: _checkFace ${await AIHelpers.getIPAddress()}'});
+      apiService.logRequest({
+        "result": "failed",
+        "message":
+            'Face Unlock Failed: _checkFace ${await AIHelpers.getIPAddress()}',
+      });
       Routers.goToPincodePage(ctx);
-    }
-    else {
+    } else {
       checkFaceStatus = "Biometric Auth success. Please wait ...";
-      apiService.logRequest({"result": "success", "message": 'Face Unlock Success: _checkFace ${await AIHelpers.getIPAddress()}'});
+      apiService.logRequest({
+        "result": "success",
+        "message":
+            'Face Unlock Success: _checkFace ${await AIHelpers.getIPAddress()}',
+      });
 
       var authUser = await AuthHelper.signIn(wallet.address, false);
 
-        if (authUser?.walletAddress?.isEmpty ?? true) {
-          Routers.goToRegisterFirstPage(
-            context,
-            user: UserModel(walletAddress: wallet.address),
-          );
-        } else {
-          AuthHelper.updateStatus('Online');
-          Routers.goToMainPage(context);
-        }
+      if (authUser?.walletAddress?.isEmpty ?? true) {
+        Routers.goToRegisterFirstPage(
+          context,
+          user: UserModel(walletAddress: wallet.address),
+        );
+      } else {
+        isNavigatingToMain = true;
+        AuthHelper.updateStatus('Online');
+        // Add a small delay to show the loading indicator
+        await Future.delayed(const Duration(milliseconds: 500));
+        Routers.goToMainPage(context);
+      }
     }
   }
-
 }

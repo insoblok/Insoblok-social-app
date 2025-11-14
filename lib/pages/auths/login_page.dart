@@ -20,14 +20,13 @@ final kLandingPageData = [
         'Yay/Nay chats with friends. Private. Encrypted. Untouchable.',
     'image': AIImages.imgSplash2,
   },
-  
+
   {
     'title': 'Unlock Your World.',
     'description':
         'No forms. Just you. Tap in, explore and own your vibe - your way.',
     'image': AIImages.imgSplash1,
   },
-  
 ];
 
 typedef MenuEntry = DropdownMenuEntry<String>;
@@ -37,8 +36,6 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
-
     // helper that hides but preserves space/position
     Widget keepSpace({required bool visible, required Widget child}) {
       return Visibility(
@@ -50,95 +47,98 @@ class LoginPage extends StatelessWidget {
       );
     }
 
-        return ViewModelBuilder<LoginProvider>.reactive(
-          viewModelBuilder: () => LoginProvider(),
-          onViewModelReady: (viewModel) => viewModel.init(context),
-          builder: (context, viewModel, _) {
-            final List<MenuEntry> menuEntries = UnmodifiableListView<MenuEntry>(
-              LoginProvider.loginMethods.map<MenuEntry>((String name) => MenuEntry(value: name, label: name)),
-            );
-            final cp = viewModel.currentPage; // 0 or 1
+    return ViewModelBuilder<LoginProvider>.reactive(
+      viewModelBuilder: () => LoginProvider(),
+      onViewModelReady: (viewModel) => viewModel.init(context),
+      builder: (context, viewModel, _) {
+        final List<MenuEntry> menuEntries = UnmodifiableListView<MenuEntry>(
+          LoginProvider.loginMethods.map<MenuEntry>(
+            (String name) => MenuEntry(value: name, label: name),
+          ),
+        );
+        final cp = viewModel.currentPage; // 0 or 1
 
-            // Corrected visibility rules based on your comments:
-            // Page 0: Show brand, show top subtitle, show bottom tagline
-            // Page 1: Hide brand, hide top subtitle, hide bottom tagline
-            
-            final hideBrand = (cp == 1);          // Hide brand on page 1
-            final hideTopSubtitle = (cp == 1);    // Hide top subtitle on page 1
-            final hideBottomTagline = (cp == 1);  // Hide bottom tagline on page 1
+        // Corrected visibility rules based on your comments:
+        // Page 0: Show brand, show top subtitle, show bottom tagline
+        // Page 1: Hide brand, hide top subtitle, hide bottom tagline
 
-            void _handleClickCreateNewWallet(BuildContext buildContext) {
-              
-              Routers.goToPincodeRegisterPage(buildContext, "");
-              // showDialog<String>(
-              //   context: buildContext,
-              //   builder: (bContext) {
-              //     final TextEditingController _passwordController = TextEditingController();
-              //     final TextEditingController _confirmController = TextEditingController();
+        final hideBrand = (cp == 1); // Hide brand on page 1
+        final hideTopSubtitle = (cp == 1); // Hide top subtitle on page 1
+        final hideBottomTagline = (cp == 1); // Hide bottom tagline on page 1
 
-              //     return _CreateWalletDialog(
-              //       passwordController: _passwordController,
-              //       confirmController: _confirmController,
-              //       onCancel: () {
-              //         viewModel.isClickCreateNewWallet = false;
-              //       },
-              //       onCreateWallet: (password) async {
-              //         try {
-              //           final newWalletResult = await viewModel.cryptoService.createAndStoreWallet(password);
+        void _handleClickCreateNewWallet(BuildContext buildContext) {
+          Routers.goToPincodeRegisterPage(buildContext, "");
+          // showDialog<String>(
+          //   context: buildContext,
+          //   builder: (bContext) {
+          //     final TextEditingController _passwordController = TextEditingController();
+          //     final TextEditingController _confirmController = TextEditingController();
 
-              //           Navigator.pop(bContext);
-              //           logger.d("Wallet creation result is ${newWalletResult.address}, ${newWalletResult.mnemonic}");
-              //           await showDialog(
-              //             context: context,
-              //             barrierDismissible: false,
-              //             builder: (context) => SeedPhraseConfirmationWidget(
-              //               seedWords: (newWalletResult.mnemonic ?? "").split(" ").toList(), 
-              //               onConfirmed: () {
-              //                 showDialog(
-              //                   context: context,
-              //                   barrierDismissible: false,
-              //                   builder: (context) => SeedPhraseConfirmationDialog(
-              //                     originalSeedPhrase: newWalletResult.mnemonic!.trim(),
-              //                     onConfirm: () {
-              //                       Routers.goToRegisterFirstPage(buildContext,
-              //                         user: UserModel(walletAddress: newWalletResult.address)
-              //                       );
-              //                     },
-              //                     onCancel: () {
-              //                       Navigator.pop(context); // Close confirmation dialog
-              //                     },
-              //                     showSeedPhrase: false,
-              //                   ),
-              //                 );
-              //               } 
-              //             )
-              //           );
-                        
-              //         } catch (e) {
-              //           logger.e(e);
-              //           rethrow; // Re-throw to handle in the dialog
-              //         }
-              //       },
-              //     );
-              //   },
-              // ).then((_) {
-              //   viewModel.isClickCreateNewWallet = false;
-              // });
-            }
+          //     return _CreateWalletDialog(
+          //       passwordController: _passwordController,
+          //       confirmController: _confirmController,
+          //       onCancel: () {
+          //         viewModel.isClickCreateNewWallet = false;
+          //       },
+          //       onCreateWallet: (password) async {
+          //         try {
+          //           final newWalletResult = await viewModel.cryptoService.createAndStoreWallet(password);
 
-            // Separate StatefulWidget for the dialog
-            
+          //           Navigator.pop(bContext);
+          //           logger.d("Wallet creation result is ${newWalletResult.address}, ${newWalletResult.mnemonic}");
+          //           await showDialog(
+          //             context: context,
+          //             barrierDismissible: false,
+          //             builder: (context) => SeedPhraseConfirmationWidget(
+          //               seedWords: (newWalletResult.mnemonic ?? "").split(" ").toList(),
+          //               onConfirmed: () {
+          //                 showDialog(
+          //                   context: context,
+          //                   barrierDismissible: false,
+          //                   builder: (context) => SeedPhraseConfirmationDialog(
+          //                     originalSeedPhrase: newWalletResult.mnemonic!.trim(),
+          //                     onConfirm: () {
+          //                       Routers.goToRegisterFirstPage(buildContext,
+          //                         user: UserModel(walletAddress: newWalletResult.address)
+          //                       );
+          //                     },
+          //                     onCancel: () {
+          //                       Navigator.pop(context); // Close confirmation dialog
+          //                     },
+          //                     showSeedPhrase: false,
+          //                   ),
+          //                 );
+          //               }
+          //             )
+          //           );
 
-            return Scaffold(
-              backgroundColor: AIColors.landingBackgroundColor,
-              body: SafeArea(
+          //         } catch (e) {
+          //           logger.e(e);
+          //           rethrow; // Re-throw to handle in the dialog
+          //         }
+          //       },
+          //     );
+          //   },
+          // ).then((_) {
+          //   viewModel.isClickCreateNewWallet = false;
+          // });
+        }
+
+        // Separate StatefulWidget for the dialog
+
+        return Scaffold(
+          backgroundColor: AIColors.landingBackgroundColor,
+          body: Stack(
+            children: [
+              SafeArea(
                 child: SingleChildScrollView(
                   padding: EdgeInsets.only(
                     bottom: MediaQuery.of(context).viewInsets.bottom,
                   ),
                   child: ConstrainedBox(
                     constraints: BoxConstraints(
-                      minHeight: MediaQuery.of(context).size.height -
+                      minHeight:
+                          MediaQuery.of(context).size.height -
                           MediaQuery.of(context).padding.top -
                           MediaQuery.of(context).padding.bottom,
                     ),
@@ -148,10 +148,7 @@ class LoginPage extends StatelessWidget {
                         // TOP: Brand + subtitle area
                         Container(
                           width: double.infinity,
-                          margin: EdgeInsets.only(
-                            top: 16,
-                            left: 16.0,
-                          ),
+                          margin: EdgeInsets.only(top: 16, left: 16.0),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -160,8 +157,7 @@ class LoginPage extends StatelessWidget {
                                 visible: !hideBrand,
                                 child: Row(
                                   crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                  ],
+                                  children: [],
                                 ),
                               ),
 
@@ -171,7 +167,10 @@ class LoginPage extends StatelessWidget {
                                 child: Text(
                                   'Swipe. React. Remix. Get Paid',
                                   textAlign: TextAlign.center,
-                                  style: TextStyle(fontSize: 25.0, color: AIColors.white),
+                                  style: TextStyle(
+                                    fontSize: 25.0,
+                                    color: AIColors.white,
+                                  ),
                                 ),
                               ),
                             ],
@@ -211,7 +210,10 @@ class LoginPage extends StatelessWidget {
                         Container(
                           width: double.infinity,
                           alignment: Alignment.center,
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 1),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 1,
+                          ),
                           child: Visibility(
                             visible: !hideBottomTagline, // Hide on page 1
                             maintainSize: true,
@@ -227,7 +229,9 @@ class LoginPage extends StatelessWidget {
                                   fontWeight: FontWeight.w600,
                                 ),
                                 children: [
-                                  const TextSpan(text: 'Connect, Vybe and build your\n'),
+                                  const TextSpan(
+                                    text: 'Connect, Vybe and build your\n',
+                                  ),
                                   const TextSpan(text: 'Tastescore'),
                                   WidgetSpan(
                                     alignment: PlaceholderAlignment.top,
@@ -250,15 +254,14 @@ class LoginPage extends StatelessWidget {
                         ),
 
                         // Conditional wallet buttons
-                        if(viewModel.isCheckingWallet)
+                        if (viewModel.isCheckingWallet)
                           Column(
                             children: [
                               CircularProgressIndicator(strokeWidth: 2),
-                              Text("Checking wallet status ...")
+                              Text("Checking wallet status ..."),
                             ],
                           )
-                        
-                        else if(viewModel.walletExists)
+                        else if (viewModel.walletExists)
                           Column(
                             children: [
                               Text(viewModel.checkFaceStatus),
@@ -269,38 +272,54 @@ class LoginPage extends StatelessWidget {
                                   child: Text(
                                     "Forgot Password",
                                     style: TextStyle(
-                                      color: Colors.blue,            // blue like a hyperlink
-                                      decoration: TextDecoration.underline, // underline
+                                      color:
+                                          Colors.blue, // blue like a hyperlink
+                                      decoration:
+                                          TextDecoration.underline, // underline
                                       fontSize: 16,
                                     ),
                                   ),
                                 ),
-                              )
-                            ]        
+                              ),
+                            ],
                           )
                         else
                           Column(
-                            children: [ 
+                            children: [
                               Container(
-                                color: AIColors.darkScaffoldBackground.withAlpha(48),
-                                margin: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 5.0),
+                                color: AIColors.darkScaffoldBackground
+                                    .withAlpha(48),
+                                margin: const EdgeInsets.symmetric(
+                                  horizontal: 40.0,
+                                  vertical: 5.0,
+                                ),
                                 child: GradientPillButton(
                                   text: 'Create a New Wallet',
                                   loadingText: 'Creating …',
-                                  onPressed: viewModel.isClickCreateNewWallet
-                                      ? null
-                                      : () => _handleClickCreateNewWallet(context),
+                                  onPressed:
+                                      viewModel.isClickCreateNewWallet
+                                          ? null
+                                          : () => _handleClickCreateNewWallet(
+                                            context,
+                                          ),
                                 ),
                               ),
                               Container(
-                                color: AIColors.darkScaffoldBackground.withAlpha(48),
-                                margin: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 5.0),
+                                color: AIColors.darkScaffoldBackground
+                                    .withAlpha(48),
+                                margin: const EdgeInsets.symmetric(
+                                  horizontal: 40.0,
+                                  vertical: 5.0,
+                                ),
                                 child: GradientPillButton(
                                   text: 'Import From an Existing Wallet',
                                   loadingText: 'Importing …',
-                                  onPressed: viewModel.isClickImportWallet
-                                      ? null
-                                      : () => viewModel.showImportDialog(viewModel.context),
+                                  onPressed:
+                                      viewModel.isClickImportWallet
+                                          ? null
+                                          : () => viewModel.showImportDialog(
+                                            viewModel.context,
+                                          ),
                                 ),
                               ),
                               Center(
@@ -309,24 +328,32 @@ class LoginPage extends StatelessWidget {
                                   child: Text(
                                     "Sign In",
                                     style: TextStyle(
-                                      color: Colors.blue,            // blue like a hyperlink
-                                      decoration: TextDecoration.underline, // underline
+                                      color:
+                                          Colors.blue, // blue like a hyperlink
+                                      decoration:
+                                          TextDecoration.underline, // underline
                                       fontSize: 16,
                                     ),
                                   ),
                                 ),
-                              )
-                            ]
+                              ),
+                            ],
                           ),
                         // checkbox
                         Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 40.0, vertical: 1),
+                          margin: const EdgeInsets.symmetric(
+                            horizontal: 40.0,
+                            vertical: 1,
+                          ),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: [
                               Text(
                                 'Enable Vybecam',
-                                style: TextStyle(color: AIColors.white, fontSize: 18.0), 
+                                style: TextStyle(
+                                  color: AIColors.white,
+                                  fontSize: 18.0,
+                                ),
                               ),
                               const SizedBox(width: 50),
                               Row(
@@ -334,18 +361,34 @@ class LoginPage extends StatelessWidget {
                                 children: [
                                   SwitchTheme(
                                     data: SwitchThemeData(
-                                      trackColor: MaterialStateProperty.resolveWith((states) =>
-                                          states.contains(MaterialState.selected)
-                                              ? Colors.indigo
-                                              : Colors.indigo.withOpacity(0.15)),
-                                      thumbColor: MaterialStateProperty.resolveWith((states) =>
-                                          states.contains(MaterialState.selected)
-                                              ? Colors.white
-                                              : Colors.indigo),
+                                      trackColor:
+                                          MaterialStateProperty.resolveWith(
+                                            (states) =>
+                                                states.contains(
+                                                      MaterialState.selected,
+                                                    )
+                                                    ? Colors.indigo
+                                                    : Colors.indigo.withOpacity(
+                                                      0.15,
+                                                    ),
+                                          ),
+                                      thumbColor:
+                                          MaterialStateProperty.resolveWith(
+                                            (states) =>
+                                                states.contains(
+                                                      MaterialState.selected,
+                                                    )
+                                                    ? Colors.white
+                                                    : Colors.indigo,
+                                          ),
                                       trackOutlineColor:
-                                          const MaterialStatePropertyAll<Color>(Colors.indigo),
+                                          const MaterialStatePropertyAll<Color>(
+                                            Colors.indigo,
+                                          ),
                                       trackOutlineWidth:
-                                          const MaterialStatePropertyAll<double>(2),
+                                          const MaterialStatePropertyAll<
+                                            double
+                                          >(2),
                                     ),
                                     child: Switch(
                                       value: viewModel.isCheckScan,
@@ -363,12 +406,18 @@ class LoginPage extends StatelessWidget {
 
                         // footer
                         Padding(
-                          padding: const EdgeInsets.only(bottom: 48.0, top: 10.0),
+                          padding: const EdgeInsets.only(
+                            bottom: 48.0,
+                            top: 10.0,
+                          ),
                           child: Column(
                             children: [
                               Text(
                                 'By proceeding you accept',
-                                style: TextStyle(color: AIColors.white, fontSize: 18.0),
+                                style: TextStyle(
+                                  color: AIColors.white,
+                                  fontSize: 18.0,
+                                ),
                               ),
                               const SizedBox(height: 8.0),
                               Row(
@@ -389,7 +438,10 @@ class LoginPage extends StatelessWidget {
                                   const SizedBox(width: 4),
                                   Text(
                                     'and',
-                                    style: TextStyle(color: AIColors.white, fontSize: 18.0),
+                                    style: TextStyle(
+                                      color: AIColors.white,
+                                      fontSize: 18.0,
+                                    ),
                                   ),
                                   const SizedBox(width: 4),
                                   InkWell(
@@ -413,10 +465,22 @@ class LoginPage extends StatelessWidget {
                   ),
                 ),
               ),
-            );
-          }
+              // Loading overlay when navigating to main page
+              if (viewModel.isNavigatingToMain)
+                Container(
+                  color: Colors.black.withOpacity(0.7),
+                  child: const Center(
+                    child: CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    ),
+                  ),
+                ),
+            ],
+          ),
         );
-    }
+      },
+    );
+  }
 }
 
 class _CreateWalletDialog extends StatefulWidget {
@@ -487,7 +551,10 @@ class _CreateWalletDialogState extends State<_CreateWalletDialog> {
               // 🔹 Header with title + close button
               SizedBox(height: 16),
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 16,
+                  vertical: 12,
+                ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -517,20 +584,23 @@ class _CreateWalletDialogState extends State<_CreateWalletDialog> {
 
               // 🔹 Content
               Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 24.0,
+                  vertical: 16.0,
+                ),
                 child: Column(
                   children: [
                     AIPasswordField(
                       hintText: "Password",
-                      controller: widget.passwordController
+                      controller: widget.passwordController,
                     ),
                     const SizedBox(height: 18),
                     AIPasswordField(
                       hintText: "Confirm Password",
-                      controller: widget.confirmController)
-                    ,
-                  ],
+                      controller: widget.confirmController,
                     ),
+                  ],
+                ),
               ),
               // 🔹 Footer actions
               Padding(
@@ -562,22 +632,30 @@ class _CreateWalletDialogState extends State<_CreateWalletDialog> {
                         ),
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
-                              horizontal: 24.0, vertical: 8.0),
+                            horizontal: 24.0,
+                            vertical: 8.0,
+                          ),
                           child: AnimatedSwitcher(
                             duration: const Duration(milliseconds: 180),
                             switchInCurve: Curves.easeOut,
                             switchOutCurve: Curves.easeIn,
                             transitionBuilder: (child, animation) {
                               return FadeTransition(
-                                  opacity: animation, child: child);
+                                opacity: animation,
+                                child: child,
+                              );
                             },
-                            child: _processing
-                                ? const SizedBox(
-                                    width: 20,
-                                    height: 20,
-                                    child: CircularProgressIndicator(strokeWidth: 2.0, color: Colors.white),
-                                  )
-                                : const Text("OK"),
+                            child:
+                                _processing
+                                    ? const SizedBox(
+                                      width: 20,
+                                      height: 20,
+                                      child: CircularProgressIndicator(
+                                        strokeWidth: 2.0,
+                                        color: Colors.white,
+                                      ),
+                                    )
+                                    : const Text("OK"),
                           ),
                         ),
                       ),
@@ -591,10 +669,7 @@ class _CreateWalletDialogState extends State<_CreateWalletDialog> {
       ),
     );
   }
-
 }
-
-
 
 class LoginPageView extends StatelessWidget {
   final dynamic data;
@@ -610,4 +685,3 @@ class LoginPageView extends StatelessWidget {
     );
   }
 }
-

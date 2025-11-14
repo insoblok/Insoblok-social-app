@@ -46,11 +46,17 @@ class SplashProvider extends ReactiveViewModel {
     _reownService = locator<ReownService>(); // ✅ assign to class field
     await _reownService.init(context);
 
-    // login();
-    // Routers.goToLoginPage(context);
-    Routers.goToEmailPage(context);
+    // Check if wallet exists to determine if user is signing up or logging in
+    final cryptoService = locator<CryptoService>();
+    final walletExists = await cryptoService.doesWalletExist();
 
-    // Routers.goToMainPage(context);
+    if (walletExists) {
+      // User has wallet - go to login page (existing user)
+      Routers.goToLoginPage(context);
+    } else {
+      // No wallet - go to email page (new user signup)
+      Routers.goToEmailPage(context);
+    }
   }
 
   Future<void> login() async {
@@ -60,7 +66,6 @@ class SplashProvider extends ReactiveViewModel {
       logger.d("reownService.isConnected : ${reownService.isConnected}");
 
       if (reownService.isConnected) {
-
         logger.d("reownService.walletAddress : ${reownService.walletAddress}");
 
         var authUser = await AuthHelper.signIn(

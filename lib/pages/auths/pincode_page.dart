@@ -9,15 +9,14 @@ import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart'; // Add this import
 
 class PinCodePage extends StatefulWidget {
-  
   const PinCodePage({super.key});
 
   @override
   State<PinCodePage> createState() => _PinCodePageState();
 }
 
-class _PinCodePageState extends State<PinCodePage> with SingleTickerProviderStateMixin {
-
+class _PinCodePageState extends State<PinCodePage>
+    with SingleTickerProviderStateMixin {
   final ApiService apiService = ApiService(baseUrl: "");
   String enteredPin = "";
   final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
@@ -32,6 +31,7 @@ class _PinCodePageState extends State<PinCodePage> with SingleTickerProviderStat
 
   LocalAuthService localAuthService = LocalAuthService();
   String checkFaceStatus = "";
+  final GlobalStore _globalStore = GlobalStore();
 
   @override
   void initState() {
@@ -41,10 +41,10 @@ class _PinCodePageState extends State<PinCodePage> with SingleTickerProviderStat
       duration: Duration(milliseconds: 1200),
     )..repeat(reverse: true);
 
-    _pulse = Tween<double>(begin: 0.9, end: 1.15).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeInOut,
-    ));
+    _pulse = Tween<double>(
+      begin: 0.9,
+      end: 1.15,
+    ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeInOut));
 
     _pageController = PageController(initialPage: 0);
     WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -53,6 +53,37 @@ class _PinCodePageState extends State<PinCodePage> with SingleTickerProviderStat
       });
     });
     _loadPinLength();
+    _tryAutoLogin();
+  }
+
+  Future<void> _tryAutoLogin() async {
+    // Check if auto-login is enabled and credentials exist
+    final hasCredentials = await _globalStore.hasSavedCredentials();
+    final autoLoginEnabled = await _globalStore.isAutoLoginEnabled();
+
+    if (hasCredentials && autoLoginEnabled) {
+      final savedPassword = await _globalStore.getSavedPassword();
+      if (savedPassword != null && savedPassword.isNotEmpty && mounted) {
+        // Auto-fill password
+        setState(() {
+          enteredPin = savedPassword;
+        });
+        // Auto-login after a short delay
+        Future.delayed(const Duration(milliseconds: 500), () {
+          if (mounted) {
+            signIn(context);
+          }
+        });
+      }
+    } else {
+      // Just auto-fill password if available (but don't auto-login)
+      final savedPassword = await _globalStore.getSavedPassword();
+      if (savedPassword != null && savedPassword.isNotEmpty && mounted) {
+        setState(() {
+          enteredPin = savedPassword;
+        });
+      }
+    }
   }
 
   @override
@@ -94,8 +125,27 @@ class _PinCodePageState extends State<PinCodePage> with SingleTickerProviderStat
       status = "... Signing In Now";
     });
     try {
-      UnlockedWallet unlockedWallet = await cryptoService.unlockFromStorage(enteredPin);
+      UnlockedWallet unlockedWallet = await cryptoService.unlockFromStorage(
+        enteredPin,
+      );
       if (unlockedWallet.address.isNotEmpty) {
+        // Save password for future use
+        final savedEmail = await _globalStore.getSavedEmail();
+        if (savedEmail != null && savedEmail.isNotEmpty) {
+          await _globalStore.saveCredentials(
+            email: savedEmail,
+            password: enteredPin,
+            enableAutoLogin: true,
+          );
+        } else {
+          // Save password even if email is not available yet
+          await _globalStore.saveCredentials(
+            email: '', // Will be updated when email is entered
+            password: enteredPin,
+            enableAutoLogin: true,
+          );
+        }
+
         var authUser = await AuthHelper.signIn(unlockedWallet.address, false);
         logger.d("authUser: ${authUser?.walletAddress}");
         if (authUser?.walletAddress?.isEmpty ?? true) {
@@ -104,7 +154,14 @@ class _PinCodePageState extends State<PinCodePage> with SingleTickerProviderStat
             user: UserModel(walletAddress: unlockedWallet.address),
           );
         } else {
+          // Show loading indicator before navigating
+          setState(() {
+            status = "Logging in...";
+            signing = true;
+          });
           AuthHelper.updateStatus('Online');
+          // Add a small delay to show the loading indicator
+          await Future.delayed(const Duration(milliseconds: 500));
           Routers.goToMainPage(context);
         }
       }
@@ -123,12 +180,16 @@ class _PinCodePageState extends State<PinCodePage> with SingleTickerProviderStat
   @override
   Widget build(BuildContext context) {
     final double buttonSize = (MediaQuery.of(context).size.width) * 0.18;
-    
+
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(
           gradient: LinearGradient(
-            colors: [Colors.blue.shade700, Colors.red.shade700, Colors.blue.shade700],
+            colors: [
+              Colors.blue.shade700,
+              Colors.red.shade700,
+              Colors.blue.shade700,
+            ],
             begin: Alignment.topLeft,
             end: Alignment.bottomRight,
           ),
@@ -138,7 +199,7 @@ class _PinCodePageState extends State<PinCodePage> with SingleTickerProviderStat
             controller: _pageController,
             scrollDirection: Axis.vertical,
             onPageChanged: (index) {
-              if (index == 0 ) {
+              if (index == 0) {
                 // _checkFace();
               }
             },
@@ -227,12 +288,15 @@ class _PinCodePageState extends State<PinCodePage> with SingleTickerProviderStat
                     Container(
                       child: Column(
                         children: [
-                          SizedBox(height: MediaQuery.of(context).size.height * 0.05),
-                          
+                          SizedBox(
+                            height: MediaQuery.of(context).size.height * 0.05,
+                          ),
+
                           PinCodeInputWidget(
                             enteredPin: enteredPin,
                             pinLength: pinCodeLength ?? 6,
-                            onKeyPressed: (value) => _onKeyPressed(value, context),
+                            onKeyPressed:
+                                (value) => _onKeyPressed(value, context),
                             status: status,
                             dotColor: Colors.white,
                             filledColor: Colors.white,
@@ -247,13 +311,22 @@ class _PinCodePageState extends State<PinCodePage> with SingleTickerProviderStat
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 2),
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 32,
+                        vertical: 2,
+                      ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           GestureDetector(
                             onTap: () => Navigator.pop(context),
-                            child: Text("Cancel", style: TextStyle(color: Colors.white70, fontSize: 16)),
+                            child: Text(
+                              "Cancel",
+                              style: TextStyle(
+                                color: Colors.white70,
+                                fontSize: 16,
+                              ),
+                            ),
                           ),
                         ],
                       ),
@@ -261,10 +334,10 @@ class _PinCodePageState extends State<PinCodePage> with SingleTickerProviderStat
                   ],
                 ),
               ),
-            ]
+            ],
           ),
-        )
-      )
+        ),
+      ),
     );
   }
 }
@@ -281,17 +354,17 @@ class _FaceIdIcon extends StatelessWidget {
       child: Stack(
         alignment: Alignment.center,
         children: [
-          Positioned.fill(
-            child: CustomPaint(
-              painter: _FramePainter(),
-            ),
-          ),
+          Positioned.fill(child: CustomPaint(painter: _FramePainter())),
           Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-              Icon(Icons.tag_faces, size: size * 0.5, color: Colors.white.withOpacity(0.95)),
+              Icon(
+                Icons.tag_faces,
+                size: size * 0.5,
+                color: Colors.white.withOpacity(0.95),
+              ),
             ],
-          )
+          ),
         ],
       ),
     );
@@ -301,22 +374,47 @@ class _FaceIdIcon extends StatelessWidget {
 class _FramePainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.white.withOpacity(0.95)
-      ..strokeWidth = 6
-      ..style = PaintingStyle.stroke
-      ..strokeCap = StrokeCap.round;
+    final paint =
+        Paint()
+          ..color = Colors.white.withOpacity(0.95)
+          ..strokeWidth = 6
+          ..style = PaintingStyle.stroke
+          ..strokeCap = StrokeCap.round;
 
     final cornerLength = size.width * 0.18;
 
     canvas.drawLine(Offset(0, cornerLength), Offset(0, 0), paint);
     canvas.drawLine(Offset(0, 0), Offset(cornerLength, 0), paint);
-    canvas.drawLine(Offset(size.width - cornerLength, 0), Offset(size.width, 0), paint);
-    canvas.drawLine(Offset(size.width, 0), Offset(size.width, cornerLength), paint);
-    canvas.drawLine(Offset(0, size.height - cornerLength), Offset(0, size.height), paint);
-    canvas.drawLine(Offset(0, size.height), Offset(cornerLength, size.height), paint);
-    canvas.drawLine(Offset(size.width - cornerLength, size.height), Offset(size.width, size.height), paint);
-    canvas.drawLine(Offset(size.width, size.height - cornerLength), Offset(size.width, size.height), paint);
+    canvas.drawLine(
+      Offset(size.width - cornerLength, 0),
+      Offset(size.width, 0),
+      paint,
+    );
+    canvas.drawLine(
+      Offset(size.width, 0),
+      Offset(size.width, cornerLength),
+      paint,
+    );
+    canvas.drawLine(
+      Offset(0, size.height - cornerLength),
+      Offset(0, size.height),
+      paint,
+    );
+    canvas.drawLine(
+      Offset(0, size.height),
+      Offset(cornerLength, size.height),
+      paint,
+    );
+    canvas.drawLine(
+      Offset(size.width - cornerLength, size.height),
+      Offset(size.width, size.height),
+      paint,
+    );
+    canvas.drawLine(
+      Offset(size.width, size.height - cornerLength),
+      Offset(size.width, size.height),
+      paint,
+    );
   }
 
   @override
