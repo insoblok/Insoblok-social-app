@@ -16,7 +16,6 @@ class WalletFavoritesPage extends StatelessWidget {
     WalletFavoritesProvider viewModel,
   ) async {
     Timer? _debounce;
-    // The most recent options received from the API. (not used for now)
 
     final result = await showGeneralDialog<UserModel?>(
       context: ctx,
@@ -222,300 +221,224 @@ class WalletFavoritesPage extends StatelessWidget {
                                       );
                                     }
 
-                            final tokens = snapshot.data!;
-                            return Column(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                spacing: 4.0,
-                                children: [
-                                  for (var token in tokens) ... [
+                                    final tokens = snapshot.data!;
+                                    return Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      spacing: 4.0,
+                                      children: [
+                                        for (var token in tokens) ...[
+                                          Container(
+                                            padding: EdgeInsets.symmetric(
+                                              vertical: 4.0,
+                                            ),
 
-                                   
-                                    
-                                    Container(
-                                      padding: EdgeInsets.symmetric(vertical: 4.0),
-                                      
-                                      decoration: BoxDecoration(
-                                        color: viewModel.isSelectMode && viewModel.selectedTokens.contains(token["id"]) ? Colors.blue.shade900 : Colors.transparent,
-                                        border: Border(
-                                          bottom: BorderSide(
-                                            color: Theme.of(context).colorScheme.secondary.withAlpha(32),
-                                            width: 1.0
-                                          )
-                                        )
-                                      ),
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          InkWell(
-                                            onTap: () => viewModel.handleTapFavoriteToken(token["id"]),
-                                            onLongPress: () => viewModel.handleLongPressFavoriteToken(token["id"]),
-                                            child: Stack(
-                                              fit: StackFit.loose,
+                                            decoration: BoxDecoration(
+                                              color:
+                                                  viewModel.isSelectMode &&
+                                                          viewModel
+                                                              .selectedTokens
+                                                              .contains(
+                                                                token["id"],
+                                                              )
+                                                      ? Colors.blue.shade900
+                                                      : Colors.transparent,
+                                              border: Border(
+                                                bottom: BorderSide(
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .secondary
+                                                      .withAlpha(32),
+                                                  width: 1.0,
+                                                ),
+                                              ),
+                                            ),
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
                                               children: [
-                                                Row(
-                                                  spacing: 8.0,
-                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                  children: [
-                                                    Expanded(
-                                                      flex: 35,
-                                                      child: Row(
-                                                          children: [
-                                                            ClipOval(
-                                                              child: Container(
-                                                                color: Colors.transparent,
-                                                                child: Image.network(
-                                                                  token["image"],
-                                                                  width: 36.0,
-                                                                  height: 36.0,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            SizedBox(width: 12),
-                                                            Expanded(
-                                                              child: Align(
-                                                                alignment: Alignment.centerLeft,
-                                                                child: FittedBox(
-                                                                  fit: BoxFit.scaleDown,
-                                                                  child: Text(
-                                                                    token['symbol'].toString().toUpperCase(),
-                                                                    textAlign: TextAlign.left,
-                                                                    // style: Theme.of(context).textTheme.bodyLarge,
+                                                InkWell(
+                                                  onTap:
+                                                      () => viewModel
+                                                          .handleTapFavoriteToken(
+                                                            token["id"],
+                                                          ),
+                                                  onLongPress:
+                                                      () => viewModel
+                                                          .handleLongPressFavoriteToken(
+                                                            token["id"],
+                                                          ),
+                                                  child: Stack(
+                                                    fit: StackFit.loose,
+                                                    children: [
+                                                      Row(
+                                                        spacing: 8.0,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Expanded(
+                                                            flex: 35,
+                                                            child: Row(
+                                                              children: [
+                                                                ClipOval(
+                                                                  child: Container(
+                                                                    color:
+                                                                        Colors
+                                                                            .transparent,
+                                                                    child: Image.network(
+                                                                      token["image"],
+                                                                      width:
+                                                                          36.0,
+                                                                      height:
+                                                                          36.0,
+                                                                    ),
                                                                   ),
                                                                 ),
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                    ),
-                                                    Expanded(
-                                                      flex: 30,
-                                                      child: GestureDetector(
-                                                        onTap: () {
-                                                          // viewModel.handleClickFavoriteToken(context, token);
-                                                        },
-                                                        child: Builder(
-                                                          builder: (context) {
-                                                            final List<double> prices = (token["sparkline_in_7d"]["price"] as List)
-                                                              .map((e) => (e as num).toDouble())
-                                                              .toList();
-                                                        
-                                                            final List<double> last24 = prices.length > 24
-                                                              ? prices.sublist(prices.length - 24)
-                                                              : prices;
-                                                            
-                                                            return CryptoSparklineWidget(
-                                                              symbol: token["symbol"].toString().toUpperCase(),
-                                                              width: MediaQuery.of(context).size.width * 0.2,
-                                                              height: 30.0,
-                                                              showYLabel: false,
-                                                              data: last24,
-                                                              increased: token["price_change_24h"] > 0
-                                                            );
-                                                          }
-                                                        ),
-                                                      )
-                                                    ),
-                                                    Expanded(
-                                                      flex: 25,
-                                                      child: ElevatedButton(
-                                                        onPressed: () {
-                                                          showModalBottomSheet<int>(
-                                                            context: context,
-                                                            builder: (context) {
-                                                              return StatefulBuilder(
-                                                                builder: (BuildContext modalContext, StateSetter setModalState) {
-                                                                  return Container(
-                                                                    padding: const EdgeInsets.all(8.0),
-                                                                    height: MediaQuery.of(context).size.height * 0.25,
-                                                                    decoration: BoxDecoration(
-                                                                      color: Theme.of(context).scaffoldBackgroundColor,
-                                                                      borderRadius: const BorderRadius.vertical(
-                                                                        top: Radius.circular(20.0),
+                                                                SizedBox(
+                                                                  width: 12,
+                                                                ),
+                                                                Expanded(
+                                                                  child: Align(
+                                                                    alignment:
+                                                                        Alignment
+                                                                            .centerLeft,
+                                                                    child: FittedBox(
+                                                                      fit:
+                                                                          BoxFit
+                                                                              .scaleDown,
+                                                                      child: Text(
+                                                                        token['symbol']
+                                                                            .toString()
+                                                                            .toUpperCase(),
+                                                                        textAlign:
+                                                                            TextAlign.left,
+                                                                        // style: Theme.of(context).textTheme.bodyLarge,
                                                                       ),
                                                                     ),
-                                                                    child: Column(
-                                                                      children: [
-                                                                        // Drag handle
-                                                                        Center(
-                                                                          child: Container(
-                                                                            width: 40,
-                                                                            height: 4,
-                                                                            margin: const EdgeInsets.only(bottom: 16),
-                                                                            decoration: BoxDecoration(
-                                                                              color: Colors.grey.shade400,
-                                                                              borderRadius: BorderRadius.circular(2),
-                                                                            ),
-                                                                          ),
-                                                                        ),
-                                                                        Text(
-                                                                          'Display Data',
-                                                                          style: Theme.of(context).textTheme.headlineLarge,
-                                                                        ),
-                                                                        const SizedBox(height: 16),
-                                                                        // Option 1
-                                                                        ListTile(
-                                                                          contentPadding: EdgeInsets.zero,
-                                                                          title: Text(
-                                                                            'Last Price',
-                                                                            style: Theme.of(context).textTheme.bodyMedium
-                                                                          ),
-                                                                          trailing: Radio<int>(
-                                                                            value: 1,
-                                                                            groupValue: viewModel.viewType, // Read from parent ViewModel
-                                                                            onChanged: (int? value) {
-                                                                              if (value != null) {
-                                                                                viewModel.viewType = value; // Update parent ViewModel
-                                                                                setModalState(() {}); // Update bottom sheet UI
-                                                                              }
-                                                                            },
-                                                                          ),
-                                                                          onTap: () {
-                                                                            viewModel.viewType = 1;
-                                                                            setModalState(() {});
-                                                                          },
-                                                                        ),
-                                                                        // Option 2
-                                                                        ListTile(
-                                                                          contentPadding: EdgeInsets.zero,
-                                                                          title: Text(
-                                                                            'Percent Change',
-                                                                            style: Theme.of(context).textTheme.bodyMedium
-                                                                          ),
-                                                                          trailing: Radio<int>(
-                                                                            value: 2,
-                                                                            groupValue: viewModel.viewType,
-                                                                            onChanged: (int? value) {
-                                                                              if (value != null) {
-                                                                                viewModel.viewType = value;
-                                                                                setModalState(() {});
-                                                                              }
-                                                                            },
-                                                                          ),
-                                                                          onTap: () {
-                                                                            viewModel.viewType = 2;
-                                                                            setModalState(() {});
-                                                                          },
-                                                                        ),
-                                                                      ],
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                          // Current Price
+                                                          Expanded(
+                                                            flex: 30,
+                                                            child: Align(
+                                                              alignment:
+                                                                  Alignment
+                                                                      .centerRight,
+                                                              child: Text(
+                                                                '\$${AIHelpers.formatDouble(token["current_price"].toDouble(), 2)}',
+                                                                style: Theme.of(
+                                                                      context,
+                                                                    )
+                                                                    .textTheme
+                                                                    .bodyLarge
+                                                                    ?.copyWith(
+                                                                      color:
+                                                                          Colors
+                                                                              .white,
                                                                     ),
-                                                                  );
-                                                                },
-                                                              );
-                                                            },
-                                                          );
-                                                        },
-                                                        style: ElevatedButton.styleFrom(
-                                                          backgroundColor: token["price_change_percentage_24h"] >= 0 ? Colors.green : Colors.red, // The background color
-                                                          foregroundColor: Colors.white,
-                                                          padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 0),
-                                                          shape: RoundedRectangleBorder(
-                                                            borderRadius: BorderRadius.circular(6.0), // Adjust the value as needed
+                                                                textAlign:
+                                                                    TextAlign
+                                                                        .right,
+                                                              ),
+                                                            ),
+                                                          ),
+                                                          // Price Difference
+                                                          Expanded(
+                                                            flex: 25,
+                                                            child: Align(
+                                                              alignment:
+                                                                  Alignment
+                                                                      .centerRight,
+                                                              child: Container(
+                                                                padding:
+                                                                    const EdgeInsets.symmetric(
+                                                                      horizontal:
+                                                                          8,
+                                                                      vertical:
+                                                                          4,
+                                                                    ),
+                                                                decoration: BoxDecoration(
+                                                                  color:
+                                                                      (token["price_change_24h"] ??
+                                                                                  0) >=
+                                                                              0
+                                                                          ? Colors
+                                                                              .green
+                                                                          : Colors
+                                                                              .red,
+                                                                  borderRadius:
+                                                                      BorderRadius.circular(
+                                                                        6.0,
+                                                                      ),
+                                                                ),
+                                                                child: Text(
+                                                                  '${(token["price_change_24h"] ?? 0) >= 0 ? "+" : ""}${AIHelpers.formatDouble((token["price_change_24h"] ?? 0).toDouble(), 2)}',
+                                                                  style: Theme.of(
+                                                                        context,
+                                                                      )
+                                                                      .textTheme
+                                                                      .bodyMedium
+                                                                      ?.copyWith(
+                                                                        color:
+                                                                            Colors.white,
+                                                                      ),
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                      if (viewModel
+                                                          .selectedTokens
+                                                          .contains(
+                                                            token["id"],
+                                                          ))
+                                                        Container(
+                                                          color: Colors.blue
+                                                              .withAlpha(50),
+                                                          child: InkWell(
+                                                            onTap:
+                                                                () => viewModel
+                                                                    .handleTapFavoriteToken(
+                                                                      token["id"],
+                                                                    ),
+                                                            child: Center(
+                                                              child: Icon(
+                                                                Icons
+                                                                    .check_circle,
+                                                                color:
+                                                                    Colors.blue,
+                                                                size: 40,
+                                                              ),
+                                                            ),
                                                           ),
                                                         ),
-                                                        child: 
-                                                          viewModel.viewType == 2 ? FittedBox(
-                                                            fit: BoxFit.scaleDown,
-                                                            child: Builder(
-                                                              builder: (context) {
-                                                                final sym = token["symbol"].toString().toUpperCase();
-                                                                final int dir = viewModel.priceDirections[sym] ?? 0;
-                                                                final int tick = viewModel.priceChangeTick[sym] ?? 0;
-                                                                final baseStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                                                  color: Colors.white,
-                                                                  fontWeight: FontWeight.w600
-                                                                );
-                                                                final Color startColor = dir > 0
-                                                                  ? Colors.greenAccent
-                                                                  : (dir < 0 ? Colors.redAccent : (baseStyle?.color ?? Colors.white));
-                                                                return KeyedSubtree(
-                                                                  key: ValueKey<String>('${sym}_pct_$tick'),
-                                                                  child: TweenAnimationBuilder<Color?>(
-                                                                    tween: ColorTween(
-                                                                      begin: startColor,
-                                                                      end: baseStyle?.color,
-                                                                    ),
-                                                                    duration: const Duration(milliseconds: 900),
-                                                                    builder: (context, color, _) {
-                                                                      return Text(
-                                                                        '${token["price_change_percentage_24h"] > 0 ? "+" : ""}${AIHelpers.formatDouble(token["price_change_percentage_24h"].toDouble(), 3)}%',
-                                                                        style: baseStyle?.copyWith(color: color),
-                                                                      );
-                                                                    },
-                                                                  ),
-                                                                );
-                                                              }
-                                                            ),
-                                                          ) : FittedBox(
-                                                            fit: BoxFit.scaleDown,
-                                                            child: Builder(
-                                                              builder: (context) {
-                                                                final sym = token["symbol"].toString().toUpperCase();
-                                                                final live = viewModel.livePrices[sym];
-                                                                final base = (token["current_price"] as num?)?.toDouble();
-                                                                final value = live ?? base ?? 0.0;
-                                                                final direction = viewModel.priceDirections[sym] ?? 0;
-                                                                final tick = viewModel.priceChangeTick[sym] ?? 0;
-                                                                final baseStyle = Theme.of(context).textTheme.bodyMedium;
-                                                                final Color? startColor = direction > 0
-                                                                  ? Colors.greenAccent
-                                                                  : (direction < 0 ? Colors.redAccent : baseStyle?.color);
-                                                                return KeyedSubtree(
-                                                                  key: ValueKey<String>('${sym}_$tick'),
-                                                                  child: TweenAnimationBuilder<Color?>(
-                                                                    tween: ColorTween(
-                                                                      begin: startColor,
-                                                                      end: baseStyle?.color,
-                                                                    ),
-                                                                    duration: const Duration(milliseconds: 900),
-                                                                    builder: (context, color, _) {
-                                                                      return Text(
-                                                                        '\$${AIHelpers.formatWithGroupingKeepDecimals(value)}',
-                                                                        style: baseStyle?.copyWith(color: color),
-                                                                      );
-                                                                    },
-                                                                  ),
-                                                                );
-                                                              }
-                                                            ),
-                                                        )
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                                if (viewModel.selectedTokens.contains(token["id"]))
-                                                  Container(
-                                                    color: Colors.blue.withAlpha(50),
-                                                    child: InkWell(
-                                                      onTap: () => viewModel.handleTapFavoriteToken(token["id"]),
-                                                      child: Center(
-                                                        child: Icon(
-                                                          Icons.check_circle,
-                                                          color: Colors.blue,
-                                                          size: 40,
-                                                        ),
-                                                      ),
-                                                    ) 
+                                                    ],
                                                   ),
+                                                ),
                                               ],
                                             ),
                                           ),
                                         ],
-                                      ),
-                                    ),
-                                  ],
-                                ],
-                              );
-                          }
-                        )
-                      ),
-                    ],
+                                      ],
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ),
         );
       },
     );

@@ -117,8 +117,7 @@ class AvatarProvider extends InSoBlokViewModel {
 
     // Handle the result from RRC avatar generation
     if (result != null && result is String) {
-      resultFirebaseUrl = result;
-      notifyListeners();
+      resultFirebaseUrl = result; // notifyListeners() is called in setter
     }
   }
 

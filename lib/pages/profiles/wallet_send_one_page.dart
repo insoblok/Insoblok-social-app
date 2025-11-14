@@ -509,423 +509,445 @@ class WalletSendOnePageState extends State<WalletSendOnePage> {
   Widget build(BuildContext context) {
     return ViewModelBuilder<WalletSendProvider>.reactive(
       viewModelBuilder: () => WalletSendProvider(),
-      onViewModelReady: (viewModel) => viewModel.init(context, "", "", "", 0),
+      onViewModelReady: (viewModel) {
+        // Initialize asynchronously without blocking UI
+        viewModel.init(context, "", "", "", 0).catchError((e) {
+          logger.e('Error initializing wallet: $e');
+        });
+      },
       builder: (context, viewModel, _) {
         return Scaffold(
           resizeToAvoidBottomInset: true,
-          appBar: AppBar(title: Text('My Wallet'), centerTitle: true),
-          body: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // --- Token Selection Section ---
-                  const Text(
-                    "Select Token",
-                    style: TextStyle(
-                      color: Colors.white70,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  const SizedBox(height: 12),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey[900],
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: Builder(
-                      builder: (context) {
-                        // Filter out XP and Inso tokens
-                        final filteredTokens =
-                            kWalletTokenList.asMap().entries.where((entry) {
-                              final token = entry.value;
-                              final name =
-                                  (token['name']?.toString() ?? '')
-                                      .toLowerCase();
-                              final shortName =
-                                  (token['short_name']?.toString() ?? '')
-                                      .toLowerCase();
-                              final chain =
-                                  (token['chain']?.toString() ?? '')
-                                      .toLowerCase();
-
-                              return !name.contains('xp') &&
-                                  !shortName.contains('xp') &&
-                                  !chain.contains('xp');
-                            }).toList();
-
-                        // Find the selected index in the filtered list
-                        int? selectedFilteredIndex;
-                        if (viewModel.selectedFromToken <
-                            kWalletTokenList.length) {
-                          final selectedToken =
-                              kWalletTokenList[viewModel.selectedFromToken];
-                          selectedFilteredIndex = filteredTokens.indexWhere(
-                            (entry) => entry.value == selectedToken,
-                          );
-                          if (selectedFilteredIndex == -1) {
-                            selectedFilteredIndex =
-                                0; // Default to first if selected token is filtered out
-                          }
-                        } else {
-                          selectedFilteredIndex = 0;
-                        }
-
-                        return DropdownButton<int>(
-                          isExpanded: true,
-                          value: selectedFilteredIndex,
-                          dropdownColor: Colors.grey[900],
-                          icon: const Icon(
-                            Icons.keyboard_arrow_down,
-                            color: Colors.white,
+          appBar: AppBar(title: const Text('My Wallet'), centerTitle: true),
+          body:
+              viewModel.isBusy && viewModel.allBalances.isEmpty
+                  ? const Center(child: CircularProgressIndicator())
+                  : SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // --- Token Selection Section ---
+                          const Text(
+                            "Select Token",
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
-                          underline: Container(),
-                          style: const TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
+                          const SizedBox(height: 12),
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.grey[900],
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            padding: const EdgeInsets.symmetric(horizontal: 16),
+                            child: Builder(
+                              builder: (context) {
+                                // Filter out XP and Inso tokens
+                                final filteredTokens =
+                                    kWalletTokenList.asMap().entries.where((
+                                      entry,
+                                    ) {
+                                      final token = entry.value;
+                                      final name =
+                                          (token['name']?.toString() ?? '')
+                                              .toLowerCase();
+                                      final shortName =
+                                          (token['short_name']?.toString() ??
+                                                  '')
+                                              .toLowerCase();
+                                      final chain =
+                                          (token['chain']?.toString() ?? '')
+                                              .toLowerCase();
+                                      return !name.contains('xp') &&
+                                          !shortName.contains('xp') &&
+                                          !chain.contains('xp');
+                                    }).toList();
+                                // Find the selected index in the filtered list
+                                int? selectedFilteredIndex;
+                                if (viewModel.selectedFromToken <
+                                    kWalletTokenList.length) {
+                                  final selectedToken =
+                                      kWalletTokenList[viewModel
+                                          .selectedFromToken];
+                                  selectedFilteredIndex = filteredTokens
+                                      .indexWhere(
+                                        (entry) => entry.value == selectedToken,
+                                      );
+                                  if (selectedFilteredIndex == -1) {
+                                    selectedFilteredIndex =
+                                        0; // Default to first if selected token is filtered out
+                                  }
+                                } else {
+                                  selectedFilteredIndex = 0;
+                                }
+
+                                return DropdownButton<int>(
+                                  isExpanded: true,
+                                  value: selectedFilteredIndex,
+                                  dropdownColor: Colors.grey[900],
+                                  icon: const Icon(
+                                    Icons.keyboard_arrow_down,
+                                    color: Colors.white,
+                                  ),
+                                  underline: Container(),
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 16,
+                                  ),
+                                  items:
+                                      filteredTokens.asMap().entries.map((
+                                        filteredEntry,
+                                      ) {
+                                        final filteredIndex = filteredEntry.key;
+                                        final originalEntry =
+                                            filteredEntry.value;
+                                        final token = originalEntry.value;
+                                        return DropdownMenuItem<int>(
+                                          value: filteredIndex,
+                                          child: Row(
+                                            children: [
+                                              if (token['icon'] != null) ...[
+                                                ClipOval(
+                                                  child: Container(
+                                                    color: Colors.grey.shade400,
+                                                    child: AIImage(
+                                                      token['icon'],
+                                                      width: 24.0,
+                                                      height: 24.0,
+                                                    ),
+                                                  ),
+                                                ),
+                                                const SizedBox(width: 12),
+                                              ],
+                                              Text(
+                                                token['short_name']
+                                                        ?.toString()
+                                                        .toUpperCase() ??
+                                                    token['name']?.toString() ??
+                                                    'Token',
+                                                style: const TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 16,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        );
+                                      }).toList(),
+                                  onChanged: (int? filteredIndex) {
+                                    if (filteredIndex != null &&
+                                        filteredIndex < filteredTokens.length) {
+                                      final originalIndex =
+                                          filteredTokens[filteredIndex].key;
+                                      viewModel.selectFromToken(originalIndex);
+                                    }
+                                  },
+                                );
+                              },
+                            ),
                           ),
-                          items:
-                              filteredTokens.asMap().entries.map((
-                                filteredEntry,
-                              ) {
-                                final filteredIndex = filteredEntry.key;
-                                final originalEntry = filteredEntry.value;
-                                final token = originalEntry.value;
-                                return DropdownMenuItem<int>(
-                                  value: filteredIndex,
-                                  child: Row(
+                          const SizedBox(height: 24),
+
+                          // --- Selected Token Info ---
+                          if (viewModel.selectedFromToken <
+                              kWalletTokenList.length) ...[
+                            Container(
+                              width: double.infinity,
+                              padding: const EdgeInsets.all(16),
+                              decoration: BoxDecoration(
+                                color: Colors.grey[900],
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
                                     children: [
-                                      if (token['icon'] != null) ...[
+                                      if (kWalletTokenList[viewModel
+                                              .selectedFromToken]['icon'] !=
+                                          null)
                                         ClipOval(
                                           child: Container(
                                             color: Colors.grey.shade400,
                                             child: AIImage(
-                                              token['icon'],
-                                              width: 24.0,
-                                              height: 24.0,
+                                              kWalletTokenList[viewModel
+                                                  .selectedFromToken]['icon'],
+                                              width: 32.0,
+                                              height: 32.0,
                                             ),
                                           ),
                                         ),
+                                      if (kWalletTokenList[viewModel
+                                              .selectedFromToken]['icon'] !=
+                                          null)
                                         const SizedBox(width: 12),
-                                      ],
-                                      Text(
-                                        token['short_name']
-                                                ?.toString()
-                                                .toUpperCase() ??
-                                            token['name']?.toString() ??
-                                            'Token',
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 16,
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            Text(
+                                              kWalletTokenList[viewModel
+                                                          .selectedFromToken]['short_name']
+                                                      ?.toString() ??
+                                                  'Token',
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            const SizedBox(height: 4),
+                                            Text(
+                                              'Balance: ${AIHelpers.formatDouble(viewModel.allBalances[kWalletTokenList[viewModel.selectedFromToken]["chain"]] ?? 0, 6)} ${kWalletTokenList[viewModel.selectedFromToken]['short_name']?.toString() ?? ''}',
+                                              style: const TextStyle(
+                                                color: Colors.white70,
+                                                fontSize: 14,
+                                              ),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ],
                                   ),
-                                );
-                              }).toList(),
-                          onChanged: (int? filteredIndex) {
-                            if (filteredIndex != null &&
-                                filteredIndex < filteredTokens.length) {
-                              final originalIndex =
-                                  filteredTokens[filteredIndex].key;
-                              viewModel.selectFromToken(originalIndex);
-                            }
-                          },
-                        );
-                      },
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-
-                  // --- Selected Token Info ---
-                  if (viewModel.selectedFromToken <
-                      kWalletTokenList.length) ...[
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.all(16),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[900],
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              if (kWalletTokenList[viewModel
-                                      .selectedFromToken]['icon'] !=
-                                  null)
-                                ClipOval(
-                                  child: Container(
-                                    color: Colors.grey.shade400,
-                                    child: AIImage(
-                                      kWalletTokenList[viewModel
-                                          .selectedFromToken]['icon'],
-                                      width: 32.0,
-                                      height: 32.0,
-                                    ),
+                                  const SizedBox(height: 12),
+                                  const Divider(color: Colors.white24),
+                                  const SizedBox(height: 8),
+                                  Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      const Text(
+                                        'Address: ',
+                                        style: TextStyle(
+                                          color: Colors.white70,
+                                          fontSize: 14,
+                                        ),
+                                      ),
+                                      Expanded(
+                                        child: SelectableText(
+                                          viewModel.address ?? 'N/A',
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                ),
-                              if (kWalletTokenList[viewModel
-                                      .selectedFromToken]['icon'] !=
-                                  null)
-                                const SizedBox(width: 12),
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      kWalletTokenList[viewModel
-                                                  .selectedFromToken]['short_name']
-                                              ?.toString() ??
-                                          'Token',
-                                      style: const TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      'Balance: ${AIHelpers.formatDouble(viewModel.allBalances[kWalletTokenList[viewModel.selectedFromToken]["chain"]] ?? 0, 6)} ${kWalletTokenList[viewModel.selectedFromToken]['short_name']?.toString() ?? ''}',
-                                      style: const TextStyle(
-                                        color: Colors.white70,
-                                        fontSize: 14,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                                ],
                               ),
-                            ],
+                            ),
+                            const SizedBox(height: 24),
+                          ],
+
+                          // --- Receiver Address Input ---
+                          const Text(
+                            "Receiver Address",
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
                           const SizedBox(height: 12),
-                          const Divider(color: Colors.white24),
-                          const SizedBox(height: 8),
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'Address: ',
-                                style: TextStyle(
-                                  color: Colors.white70,
-                                  fontSize: 14,
+                          Container(
+                            decoration: BoxDecoration(
+                              color: Colors.grey[900],
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: TextField(
+                              controller: viewModel.receiverController,
+                              style: const TextStyle(color: Colors.white),
+                              decoration: const InputDecoration(
+                                hintText: "Enter receiver address",
+                                hintStyle: TextStyle(color: Colors.white54),
+                                border: InputBorder.none,
+                                contentPadding: EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 16,
                                 ),
                               ),
-                              Expanded(
-                                child: SelectableText(
-                                  viewModel.address ?? 'N/A',
-                                  style: const TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 12,
-                                  ),
-                                ),
-                              ),
-                            ],
+                            ),
                           ),
+                          const SizedBox(height: 24),
+
+                          // --- Amount Display ---
+                          const Text(
+                            "Amount",
+                            style: TextStyle(
+                              color: Colors.white70,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                          const SizedBox(height: 8),
+                          Container(
+                            width: double.infinity,
+                            padding: const EdgeInsets.symmetric(
+                              vertical: 12,
+                              horizontal: 16,
+                            ),
+                            decoration: BoxDecoration(
+                              gradient: const LinearGradient(
+                                colors: [Color(0xFF5A2EFF), Color(0xFF7D2DFF)],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Text(
+                              "$amount",
+                              textAlign: TextAlign.center,
+                              style: const TextStyle(
+                                fontSize: 24,
+                                color: Colors.white,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 24),
+
+                          // --- Number Pad ---
+                          LayoutBuilder(
+                            builder: (context, constraints) {
+                              // Calculate height based on available width with reduced size
+                              final availableWidth =
+                                  constraints.maxWidth -
+                                  32; // account for padding
+                              final buttonWidth =
+                                  (availableWidth - 12) /
+                                  3; // 3 columns with reduced spacing
+                              final buttonHeight =
+                                  buttonWidth *
+                                  0.65; // Make buttons more compact (wider than tall)
+                              // Calculate total height needed for 4 rows
+                              // Formula: (buttonHeight * 4 rows) + (spacing * 3 gaps) + (vertical padding * 2)
+                              final calculatedHeight =
+                                  (buttonHeight * 4) +
+                                  (6.0 * 3) +
+                                  (12.0 *
+                                      2); // 4 rows + 3 spacings + top/bottom padding
+                              // Use a generous minimum height to ensure all buttons are visible
+                              final totalHeight =
+                                  calculatedHeight < 220.0
+                                      ? 220.0
+                                      : calculatedHeight;
+
+                              return SizedBox(
+                                height: totalHeight,
+                                child: GridView.builder(
+                                  shrinkWrap: false,
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 12,
+                                  ),
+                                  itemCount: 12,
+                                  gridDelegate:
+                                      SliverGridDelegateWithFixedCrossAxisCount(
+                                        crossAxisCount: 3,
+                                        mainAxisSpacing: 6,
+                                        crossAxisSpacing: 6,
+                                        mainAxisExtent:
+                                            buttonHeight, // Explicitly set button height
+                                      ),
+                                  itemBuilder: (context, index) {
+                                    final keys = [
+                                      "1",
+                                      "2",
+                                      "3",
+                                      "4",
+                                      "5",
+                                      "6",
+                                      "7",
+                                      "8",
+                                      "9",
+                                      ".",
+                                      "0",
+                                      "⌫",
+                                    ];
+                                    String key = keys[index];
+                                    return GestureDetector(
+                                      onTap: () => _onKeyTap(key),
+                                      child: Container(
+                                        decoration: BoxDecoration(
+                                          color: Colors.grey[900],
+                                          borderRadius: BorderRadius.circular(
+                                            8,
+                                          ),
+                                        ),
+                                        child: Center(
+                                          child: Text(
+                                            key,
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 16,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                ),
+                              );
+                            },
+                          ),
+                          const SizedBox(height: 24),
+
+                          // --- Transfer Button ---
+                          SizedBox(
+                            width: double.infinity,
+                            child: ElevatedButton.icon(
+                              onPressed: () async {
+                                final amountValue =
+                                    double.tryParse(amount) ?? 0.0;
+                                if (amountValue <= 0) {
+                                  AIHelpers.showToast(
+                                    msg: "Please enter a valid amount",
+                                  );
+                                  return;
+                                }
+                                if (viewModel.receiverController.text.isEmpty) {
+                                  AIHelpers.showToast(
+                                    msg: "Please enter receiver address",
+                                  );
+                                  return;
+                                }
+                                await _showTransactionConfirmDialog(
+                                  context,
+                                  viewModel,
+                                  amountValue,
+                                );
+                              },
+                              icon: const Icon(
+                                Icons.arrow_forward,
+                                color: Colors.white,
+                              ),
+                              label: const Text(
+                                "Transfer",
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              style: ElevatedButton.styleFrom(
+                                backgroundColor: Colors.blue,
+                                padding: const EdgeInsets.symmetric(
+                                  vertical: 16,
+                                ),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(30),
+                                ),
+                              ),
+                            ),
+                          ),
+                          const SizedBox(height: 16),
                         ],
                       ),
                     ),
-                    const SizedBox(height: 24),
-                  ],
-
-                  // --- Receiver Address Input ---
-                  const Text(
-                    "Receiver Address",
-                    style: TextStyle(
-                      color: Colors.white70,
-                      fontSize: 16,
-                      fontWeight: FontWeight.w500,
-                    ),
                   ),
-                  const SizedBox(height: 12),
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.grey[900],
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: TextField(
-                      controller: viewModel.receiverController,
-                      style: const TextStyle(color: Colors.white),
-                      decoration: const InputDecoration(
-                        hintText: "Enter receiver address",
-                        hintStyle: TextStyle(color: Colors.white54),
-                        border: InputBorder.none,
-                        contentPadding: EdgeInsets.symmetric(
-                          horizontal: 16,
-                          vertical: 16,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-
-                  // --- Amount Display ---
-                  const Text(
-                    "Amount",
-                    style: TextStyle(
-                      color: Colors.white70,
-                      fontSize: 14,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 12,
-                      horizontal: 16,
-                    ),
-                    decoration: BoxDecoration(
-                      gradient: const LinearGradient(
-                        colors: [Color(0xFF5A2EFF), Color(0xFF7D2DFF)],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
-                      ),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Text(
-                      "$amount",
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                        fontSize: 24,
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 24),
-
-                  // --- Number Pad ---
-                  LayoutBuilder(
-                    builder: (context, constraints) {
-                      // Calculate height based on available width with reduced size
-                      final availableWidth =
-                          constraints.maxWidth - 32; // account for padding
-                      final buttonWidth =
-                          (availableWidth - 12) /
-                          3; // 3 columns with reduced spacing
-                      final buttonHeight =
-                          buttonWidth *
-                          0.65; // Make buttons more compact (wider than tall)
-                      // Calculate total height needed for 4 rows
-                      // Formula: (buttonHeight * 4 rows) + (spacing * 3 gaps) + (vertical padding * 2)
-                      final calculatedHeight =
-                          (buttonHeight * 4) +
-                          (6.0 * 3) +
-                          (12.0 *
-                              2); // 4 rows + 3 spacings + top/bottom padding
-                      // Use a generous minimum height to ensure all buttons are visible
-                      final totalHeight =
-                          calculatedHeight < 220.0 ? 220.0 : calculatedHeight;
-
-                      return SizedBox(
-                        height: totalHeight,
-                        child: GridView.builder(
-                          shrinkWrap: false,
-                          physics: const NeverScrollableScrollPhysics(),
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 12,
-                            vertical: 12,
-                          ),
-                          itemCount: 12,
-                          gridDelegate:
-                              SliverGridDelegateWithFixedCrossAxisCount(
-                                crossAxisCount: 3,
-                                mainAxisSpacing: 6,
-                                crossAxisSpacing: 6,
-                                mainAxisExtent:
-                                    buttonHeight, // Explicitly set button height
-                              ),
-                          itemBuilder: (context, index) {
-                            final keys = [
-                              "1",
-                              "2",
-                              "3",
-                              "4",
-                              "5",
-                              "6",
-                              "7",
-                              "8",
-                              "9",
-                              ".",
-                              "0",
-                              "⌫",
-                            ];
-                            String key = keys[index];
-                            return GestureDetector(
-                              onTap: () => _onKeyTap(key),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.grey[900],
-                                  borderRadius: BorderRadius.circular(8),
-                                ),
-                                child: Center(
-                                  child: Text(
-                                    key,
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 16,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
-                        ),
-                      );
-                    },
-                  ),
-                  const SizedBox(height: 24),
-
-                  // --- Transfer Button ---
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton.icon(
-                      onPressed: () async {
-                        final amountValue = double.tryParse(amount) ?? 0.0;
-                        if (amountValue <= 0) {
-                          AIHelpers.showToast(
-                            msg: "Please enter a valid amount",
-                          );
-                          return;
-                        }
-                        if (viewModel.receiverController.text.isEmpty) {
-                          AIHelpers.showToast(
-                            msg: "Please enter receiver address",
-                          );
-                          return;
-                        }
-                        await _showTransactionConfirmDialog(
-                          context,
-                          viewModel,
-                          amountValue,
-                        );
-                      },
-                      icon: const Icon(
-                        Icons.arrow_forward,
-                        color: Colors.white,
-                      ),
-                      label: const Text(
-                        "Transfer",
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blue,
-                        padding: const EdgeInsets.symmetric(vertical: 16),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16),
-                ],
-              ),
-            ),
-          ),
         );
       },
     );
