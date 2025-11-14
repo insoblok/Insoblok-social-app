@@ -175,30 +175,39 @@ class _RRCAvatarGenerationViewState extends State<RRCAvatarGenerationView> with 
                                   ),
                                 ),
                               )
-                            : Container(
-                                width: 280,
-                                height: 280,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(16),
-                                  border: Border.all(
-                                    color: Colors.white24,
-                                    width: 2,
-                                  ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.3),
-                                      blurRadius: 16,
-                                      spreadRadius: 2,
+                            : SizedBox(
+                                width: 300,
+                                height: 300,
+                                child: Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    // keep same subtle inner ring styling behind the video
+                                    Container(
+                                      width: 300,
+                                      height: 300,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        gradient: RadialGradient(
+                                          colors: [
+                                            glow[0].withOpacity(0.10),
+                                            Colors.transparent
+                                          ],
+                                          radius: 0.65,
+                                        ),
+                                        border: Border.all(
+                                          width: 10,
+                                          color: Colors.white.withOpacity(0.06),
+                                        ),
+                                      ),
+                                    ),
+                                    // video clipped to a circle, slightly inset (280) to respect the 10px ring
+                                    VideoPlayerWidget(
+                                      path: vm.generatedVideoUrl!,
+                                      border: Colors.transparent,
+                                      circular: true,
+                                      radius: 280,
                                     ),
                                   ],
-                                ),
-                                clipBehavior: Clip.antiAlias,
-                                child: VideoPlayerWidget(
-                                  path: vm.generatedVideoUrl!,
-                                  border: Colors.transparent,
-                                  circular: false,
-                                  width: 280,
-                                  height: 280,
                                 ),
                               ),
                         if (_isCountingDown)

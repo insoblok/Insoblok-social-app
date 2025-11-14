@@ -4,7 +4,6 @@ import 'package:video_player/video_player.dart';
 import 'package:insoblok/services/services.dart';
 
 class VideoPlayerWidget extends StatefulWidget {
-  
   final String path;
   final Color border;
   final bool circular;
@@ -30,8 +29,7 @@ class _VideoPlayerState extends State<VideoPlayerWidget> {
   VideoPlayerController? _controller;
   bool _initialized = false;
   bool _isPlaying = false;
-  String _currentPath = "";
-  bool validate= false;
+  bool validate = false;
 
   int attempt = 0;
   // @override
@@ -66,20 +64,30 @@ class _VideoPlayerState extends State<VideoPlayerWidget> {
 
   Future<bool> validateVideoFile(String path) async {
     if (path.isEmpty) return false;
+
+    // Network URLs (http/https) are always valid - we can't check existence locally
+    if (path.startsWith('http://') || path.startsWith('https://')) {
+      logger.d("Network video URL detected: $path");
+      return true;
+    }
+
+    // Asset paths are always valid
     if (path.contains("assets")) return true;
+
+    // For local file paths, check if file exists
     try {
       final file = File(path);
       if (!await file.exists()) {
         logger.d("Video file does not exist: $path");
         return false;
       }
-      
+
       final fileSize = await file.length();
       if (fileSize == 0) {
         logger.d("Video file is empty: $path");
         return false;
       }
-      
+
       return true;
     } catch (e) {
       logger.e("Error validating video file $path: $e");
@@ -139,62 +147,58 @@ class _VideoPlayerState extends State<VideoPlayerWidget> {
 
   @override
   Widget build(BuildContext context) {
-
-    final size = (widget.circular)
-        ? widget.radius ?? 100
-        : widget.width ?? MediaQuery.of(context).size.width;
+    final size =
+        (widget.circular)
+            ? widget.radius ?? 100
+            : widget.width ?? MediaQuery.of(context).size.width;
 
     return ClipOval(
       clipBehavior:
           widget.circular ? Clip.antiAlias : Clip.none, // fix for non-circular
       child: Container(
-        width: widget.circular ? size: widget.width,
-        height: widget.circular ? size: widget.height,
+        width: widget.circular ? size : widget.width,
+        height: widget.circular ? size : widget.height,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(size / 2),
           color: Colors.transparent,
         ),
-        child: _initialized && validate && _controller != null
-            ? Stack(
-                alignment: Alignment.center,
-                children: [
-                  AspectRatio(
-                    aspectRatio: _controller!.value.aspectRatio,
-                    child: VideoPlayer(_controller!),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      if (_isPlaying) {
-                        _controller!.pause();
-                      } else {
-                        _controller!.play();
-                      }
-                      setState(() => _isPlaying = !_isPlaying);
-                    },
-                    child: Icon(
-                      _isPlaying ? Icons.pause : Icons.play_arrow,
-                      color: Colors.white.withOpacity(0.8),
-                      size: 24,
-                    ),
-                  ),
-                ],
-              )
-            : const Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+        child:
+            _initialized && validate && _controller != null
+                ? Stack(
+                  alignment: Alignment.center,
                   children: [
-                    CircularProgressIndicator(strokeWidth: 2),
-                    SizedBox(height: 8),
-                    Text(
-                      'Loading...',
-                      style: TextStyle(fontSize: 12),
+                    AspectRatio(
+                      aspectRatio: _controller!.value.aspectRatio,
+                      child: VideoPlayer(_controller!),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        if (_isPlaying) {
+                          _controller!.pause();
+                        } else {
+                          _controller!.play();
+                        }
+                        setState(() => _isPlaying = !_isPlaying);
+                      },
+                      child: Icon(
+                        _isPlaying ? Icons.pause : Icons.play_arrow,
+                        color: Colors.white.withOpacity(0.8),
+                        size: 24,
+                      ),
                     ),
                   ],
+                )
+                : const Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CircularProgressIndicator(strokeWidth: 2),
+                      SizedBox(height: 8),
+                      Text('Loading...', style: TextStyle(fontSize: 12)),
+                    ],
+                  ),
                 ),
-              ),
       ),
     );
   }
 }
-
-
