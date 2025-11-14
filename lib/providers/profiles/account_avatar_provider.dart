@@ -104,71 +104,73 @@ class AvatarProvider extends InSoBlokViewModel {
 
   bool get hasResult => resultFirebaseUrl?.isNotEmpty ?? false;
 
-  void onConvert() {
-    if (originPath == null) {
+  Future<void> onConvert() async {
+    if (originPath == null || originFile == null) {
       Fluttertoast.showToast(msg: 'Please choose an origin image first');
       return;
     }
-    Routers.goToRRCAvatarGenerationPage(context, originFile, "", "profile", "");
+    final result = await Routers.goToRRCAvatarGeneration(
+      context,
+      origin: "profile",
+      initialImage: originFile,
+    );
+
+    // Handle the result from RRC avatar generation
+    if (result != null && result is String) {
+      resultFirebaseUrl = result;
+      notifyListeners();
+    }
   }
 
   Future<void> handleTapSave() async {
     if (isSaving) return;
-
-    File? fileToUpload;
-
-    // If result is empty, use originFile (must be not empty)
-    if (result.isEmpty) {
-      if (originFile == null || originPath == null || originPath!.isEmpty) {
-        AIHelpers.showToast(msg: "Please select target avatar media.");
-        return;
-      }
-      fileToUpload = originFile;
-      result = originPath!; // Set result to originPath for consistency
-    } else {
-      fileToUpload = File(result);
-    }
 
     clearErrors();
 
     isSaving = true;
     runBusyFuture(() async {
       try {
-        originUrl = await _avatarService.uploadOriginAvatar(fileToUpload!);
-        logger.d("Result is $originUrl, $result");
-        if (originUrl == null) throw ('Server error!');
+        String? finalAvatarUrl;
 
-        /*
-        // pageStatus = 'Sending an origin image to ai service';
-        var taskId = await _avatarService.createTask(
-          fileUrl: originUrl!,
-          prompt: prompt,
-          size: kAvatarAspectRatio[ratioIndex!]['size'] as String,
-        );
-        if (taskId == null) throw ('AI service error!');
-        var aiResult = await _avatarService.setOnProgressListener(
-          taskId,
-          onProgressListener: (progress) {
-            // pageStatus =
-            //     'Generating... ${(double.parse(progress) * 100).toInt()}%...';
-          },
-        );
-        if (aiResult['status'] != 'SUCCESS') throw (aiResult['status']);
+        // If there's an AI image result, save that
+        if (resultFirebaseUrl != null && resultFirebaseUrl!.isNotEmpty) {
+          // Upload the AI-generated image URL to Cloudinary
+          finalAvatarUrl = await _avatarService.uploadResultAvatar(
+            resultFirebaseUrl!,
+          );
+          if (finalAvatarUrl == null)
+            throw ('Failed to upload AI image to Cloudinary');
+        } else {
+          // Otherwise, use the origin file
+          File? fileToUpload;
 
-        // pageStatus = 'Downloading a result image from ai service';
-        String aiUrl = (aiResult['response']['resultUrls'] as List).first;
-        var resultUrl = await _avatarService.downloadAvatar(taskId, url: aiUrl);
-        if (resultUrl == null) throw ('AI service error!');
+          // If result is empty, use originFile (must be not empty)
+          if (result.isEmpty) {
+            if (originFile == null ||
+                originPath == null ||
+                originPath!.isEmpty) {
+              AIHelpers.showToast(msg: "Please select target avatar media.");
+              return;
+            }
+            fileToUpload = originFile;
+            result = originPath!; // Set result to originPath for consistency
+          } else {
+            fileToUpload = File(result);
+          }
 
-        // pageStatus = 'Almost done!';
-        resultFirebaseUrl = await _avatarService.uploadResultAvatar(resultUrl);
-        */
-        await AuthHelper.updateUser(user!.copyWith(avatar: originUrl));
+          originUrl = await _avatarService.uploadOriginAvatar(fileToUpload!);
+          logger.d("Result is $originUrl, $result");
+          if (originUrl == null) throw ('Server error!');
+          finalAvatarUrl = originUrl;
+        }
+
+        await AuthHelper.updateUser(user!.copyWith(avatar: finalAvatarUrl));
         Fluttertoast.showToast(msg: 'Successfully updated avatar!');
       } catch (e, s) {
         setError(e);
         logger.e(e);
         logger.e(s);
+        Fluttertoast.showToast(msg: 'Failed to save avatar: ${e.toString()}');
       } finally {
         pageStatus = null;
         isSaving = false;
@@ -270,9 +272,7 @@ class AvatarProvider extends InSoBlokViewModel {
                           'Add',
                           style: Theme.of(
                             context,
-                          ).textTheme.bodyMedium?.copyWith(
-                            color: Colors.white,
-                          ),
+                          ).textTheme.bodyMedium?.copyWith(color: Colors.white),
                         ),
                       ),
                     ),

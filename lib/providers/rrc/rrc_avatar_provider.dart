@@ -40,6 +40,16 @@ class RRCAvatarProvider extends InSoBlokViewModel {
   final RxValue<String?> _generatedVideoUrl = RxValue<String?>(null);
   String? get generatedVideoUrl => _generatedVideoUrl.value;
 
+  final RxValue<String?> _generatedImageUrl = RxValue<String?>(null);
+  String? get generatedImageUrl => _generatedImageUrl.value;
+
+  String? _origin;
+  String? get origin => _origin;
+  set origin(String? s) {
+    _origin = s;
+    notifyListeners();
+  }
+
   // Available emotions (emoji and short prompt hint)
   final List<Map<String, String>> emotions = [
     // Mapping required order: laugh, LOL, HOT, surprised
@@ -54,14 +64,42 @@ class RRCAvatarProvider extends InSoBlokViewModel {
   final List<Map<String, String>> avatars = [
     {'label': 'My Face', 'prompt': ''},
     // Supplied avatar images (assets). Adjust prompts as needed.
-    {'label': 'A', 'prompt': 'anime character, neon outline portrait', 'image': 'assets/images/rrc/avatar1.jpg'},
-    {'label': 'B', 'prompt': '3d pixar style portrait, soft lighting', 'image': 'assets/images/rrc/avatar2.jpg'},
-    {'label': 'C', 'prompt': 'anime portrait, clean line art style', 'image': 'assets/images/rrc/avatar3.jpg'},
-    {'label': 'D', 'prompt': 'neon edge glow portrait, cyber look', 'image': 'assets/images/rrc/avatar4.jpg'},
+    {
+      'label': 'A',
+      'prompt': 'anime character, neon outline portrait',
+      'image': 'assets/images/rrc/avatar1.jpg',
+    },
+    {
+      'label': 'B',
+      'prompt': '3d pixar style portrait, soft lighting',
+      'image': 'assets/images/rrc/avatar2.jpg',
+    },
+    {
+      'label': 'C',
+      'prompt': 'anime portrait, clean line art style',
+      'image': 'assets/images/rrc/avatar3.jpg',
+    },
+    {
+      'label': 'D',
+      'prompt': 'neon edge glow portrait, cyber look',
+      'image': 'assets/images/rrc/avatar4.jpg',
+    },
   ];
 
-  Future<void> init(BuildContext context) async {
+  Future<void> init(
+    BuildContext context,
+    String origin, {
+    String? initialImagePath,
+  }) async {
     this.context = context;
+    this.origin = origin;
+    if (initialImagePath != null && initialImagePath.isNotEmpty) {
+      _selfieLocalPath.value = initialImagePath;
+      notifyListeners();
+    }
+    logger.d(
+      "RRCAvatarProvider initialized with origin: $origin, initialImagePath: $initialImagePath",
+    );
   }
 
   Future<void> pickSelfie() async {
@@ -97,59 +135,105 @@ class RRCAvatarProvider extends InSoBlokViewModel {
   Future<String?> onApply() async {
     if (isBusy) return null;
     clearErrors();
-    String? videoUrl;
+
+    if (_selfieLocalPath.value == null || _selfieLocalPath.value!.isEmpty) {
+      AIHelpers.showToast(msg: 'Please select a selfie first');
+      return null;
+    }
+
+    String? resultUrl;
     await runBusyFuture(() async {
       try {
-        final prompt = emotions[selectedEmotionIndex]['prompt'] ?? 'laugh';
-        // Preferred dashboard settings
-        const width = 360; // 3:4 480p
-        const height = 480;
-        const fps = 24;
-        const duration = 3;
-
-        // Try to upload selfie for CDN URL, but fall back to local file if upload fails
-        if (_selfieLocalPath.value == null || _selfieLocalPath.value!.isEmpty) {
-          await pickSelfie();
-        }
+        String? imageUrl;
         try {
           await _ensureSelfieUploaded();
-        } catch (_) {
-          // Ignore upload failure and proceed with local file
+          imageUrl = _selfieCdnUrl.value;
+        } catch (e) {
+          logger.e('Failed to upload selfie to Cloudinary: $e');
+          throw Exception('Failed to upload selfie. Please try again.');
         }
 
-        String? url;
-        if (_selfieCdnUrl.value != null && _selfieCdnUrl.value!.isNotEmpty) {
-          url = await _runwareService.generateVideoFromImageUrl(
-            imageUrl: _selfieCdnUrl.value!,
-            prompt: prompt,
-            width: width,
-            height: height,
-            fps: fps,
-            durationSeconds: duration,
-            model: 'bytedance:2@2',
+        if (imageUrl == null || imageUrl.isEmpty) {
+          throw Exception(
+            'Selfie URL is required. Please ensure your selfie is uploaded.',
           );
-        } else if (_selfieLocalPath.value != null && _selfieLocalPath.value!.isNotEmpty) {
-          url = await _runwareService.generateVideoFromFile(
-            fileBytes: await File(_selfieLocalPath.value!).readAsBytes(),
-            mimeType: 'image/jpeg',
-            prompt: prompt,
-            width: width,
-            height: height,
-            fps: fps,
-            durationSeconds: duration,
-            model: 'bytedance:2@2',
+        }
+
+        // Use different Runware methods based on origin
+        if (origin == "dashboard" || origin == null) {
+          // From story page - generate emotion video
+          final prompt = emotions[selectedEmotionIndex]['prompt'] ?? 'laugh';
+          logger.d(
+            'Generating video with Cloudinary image: $imageUrl, prompt: $prompt',
           );
-        } else {
-          throw Exception('Selfie is required');
+
+          final result = await _runwareService.generateAIEmotionVideoWithPrompt(
+            inputImage: imageUrl,
+            positivePrompt: prompt,
+          );
+
+          if (result['status'] == 'success' && result['success'] == true) {
+            final generatedVideoUrl = result['videoURL'] as String?;
+            if (generatedVideoUrl != null && generatedVideoUrl.isNotEmpty) {
+              _generatedVideoUrl.value = resultUrl = generatedVideoUrl;
+              AIHelpers.showToast(msg: 'Video ready!');
+            } else {
+              throw Exception('Video URL not found in response');
+            }
+          } else if (result['status'] == 'processing') {
+            logger.w(
+              'Video is still processing. Task UUID: ${result['taskUUID']}',
+            );
+            throw Exception(
+              'Video generation is still processing. Please wait and try again.',
+            );
+          } else {
+            final errorMsg = result['message'] ?? 'Unknown error occurred';
+            logger.e('Video generation failed: $errorMsg');
+            throw Exception('Video generation failed: $errorMsg');
+          }
+        } else if (origin == "profile") {
+          // From profile page - generate AI avatar image
+          final prompt =
+              selectedAvatarIndex > 0 && selectedAvatarIndex < avatars.length
+                  ? avatars[selectedAvatarIndex]['prompt'] ??
+                      'high quality portrait'
+                  : 'high quality portrait, professional photography';
+
+          logger.d(
+            'Generating avatar with Cloudinary image: $imageUrl, prompt: $prompt',
+          );
+
+          final result = await _runwareService
+              .generateAIAvatarWithPromptOption1(
+                inputImage: imageUrl,
+                positivePrompt: prompt,
+              );
+
+          if (result['status'] == 'success' && result['success'] == true) {
+            final generatedImageUrl = result['imageURL'] as String?;
+            if (generatedImageUrl != null && generatedImageUrl.isNotEmpty) {
+              _generatedImageUrl.value = resultUrl = generatedImageUrl;
+              AIHelpers.showToast(msg: 'Avatar ready!');
+            } else {
+              throw Exception('Image URL not found in response');
+            }
+          } else if (result['status'] == 'processing') {
+            logger.w(
+              'Avatar is still processing. Task UUID: ${result['taskUUID']}',
+            );
+            throw Exception(
+              'Avatar generation is still processing. Please wait and try again.',
+            );
+          } else {
+            final errorMsg = result['message'] ?? 'Unknown error occurred';
+            logger.e('Avatar generation failed: $errorMsg');
+            throw Exception('Avatar generation failed: $errorMsg');
+          }
         }
-        if (url == null || url.isEmpty) {
-          throw Exception('Runware returned empty result');
-        }
-        _generatedVideoUrl.value = videoUrl = url;
-        AIHelpers.showToast(msg: 'Video ready!');
-      } catch (e, s) {
+      } catch (e) {
         setError(e);
-        logger.e(e, stackTrace: s);
+        logger.e('Error generating content: $e');
       } finally {
         notifyListeners();
       }
@@ -158,8 +242,7 @@ class RRCAvatarProvider extends InSoBlokViewModel {
     if (hasError) {
       AIHelpers.showToast(msg: modelError.toString());
     }
-    return videoUrl;
+
+    return resultUrl;
   }
 }
-
-

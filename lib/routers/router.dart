@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/pages/pages.dart';
+import 'package:insoblok/pages/rrc/rrc_avatar_generation_view.dart' as rrc;
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
@@ -367,9 +368,9 @@ class Routers {
   }
 
   static dynamic goToLivePage(BuildContext context) {
-    return Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => const LivePage()),
-    );
+    return Navigator.of(
+      context,
+    ).push(MaterialPageRoute(builder: (_) => const LivePage()));
   }
 
   static dynamic goToLiveStreamPage(BuildContext context, [String? title]) {
@@ -382,11 +383,24 @@ class Routers {
   static dynamic goToCreatePostPage(BuildContext context) {
     return _pushToRoute(context, kRouterCreatePost, null);
   }
-  
-  static dynamic goToRRCAvatarGeneration(BuildContext context) {
+
+  static dynamic goToRRCAvatarGeneration(
+    BuildContext context, {
+    String? origin,
+    io.File? initialImage,
+  }) {
     // Use direct route push to avoid issues when router definitions aren't rebuilt after hot reload
+    // Import the rrc version directly to avoid naming conflict
     return Navigator.of(context).push(
-      MaterialPageRoute(builder: (_) => const RRCAvatarGenerationView()),
+      MaterialPageRoute(
+        builder:
+            (_) =>
+            // ignore: prefer_const_constructors
+            rrc.RRCAvatarGenerationView(
+              origin: origin,
+              initialImage: initialImage,
+            ),
+      ),
     );
   }
 
