@@ -237,8 +237,8 @@ class Routers {
     return _pushToRoute(context, kRouterFriend, null);
   }
 
-  static dynamic goToAddStoryPage(BuildContext context) {
-    return _pushToRoute(context, kRouterAddStory, null);
+  static dynamic goToAddStoryPage(BuildContext context, {String? videoPath}) {
+    return _pushToRoute(context, kRouterAddStory, videoPath);
   }
 
   static dynamic goToVideoEditorPage(BuildContext context, String path) {
@@ -388,6 +388,8 @@ class Routers {
     BuildContext context, {
     String? origin,
     io.File? initialImage,
+    String? storyID,
+    String? url,
   }) {
     // Use direct route push to avoid issues when router definitions aren't rebuilt after hot reload
     // Import the rrc version directly to avoid naming conflict
@@ -399,6 +401,8 @@ class Routers {
             rrc.RRCAvatarGenerationView(
               origin: origin,
               initialImage: initialImage,
+              storyID: storyID,
+              url: url,
             ),
       ),
     );

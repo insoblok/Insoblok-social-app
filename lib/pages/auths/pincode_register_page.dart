@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:insoblok/services/services.dart';
-import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/routers/routers.dart';
@@ -20,6 +19,7 @@ class _PinRegistrationPageState extends State<PinCodeRegistrationPage> {
   String _enteredPin = "";
   String _confirmedPin = "";
   bool _isConfirmStep = false;
+  bool _isLoading = false;
   String _status = "Create a new PIN";
   final int pinLength = 6;
   final CryptoService cryptoService = locator<CryptoService>();
@@ -85,10 +85,21 @@ class _PinRegistrationPageState extends State<PinCodeRegistrationPage> {
   }
 
   Future<void> _handleClickCreate(BuildContext bContext, String pin) async {
+    if (_isLoading) return; // Prevent multiple calls
+    
+    setState(() {
+      _isLoading = true;
+      _status = "Creating wallet...";
+    });
+    
     try {
       String mnemonic = "";
       String address = "";
       NewWalletResult? walletResult;
+
+      setState(() {
+        _status = "Generating wallet...";
+      });
 
       if (widget.mnemonic.isEmpty) {
         walletResult = await cryptoService.createAndStoreWallet(pin);
@@ -103,6 +114,24 @@ class _PinRegistrationPageState extends State<PinCodeRegistrationPage> {
         address = walletResult.address;
       }
 
+      setState(() {
+        _status = "Saving credentials...";
+      });
+
+      // Save password/PIN for future login
+      // This ensures credentials are saved for automatic login
+      final globalStore = GlobalStore();
+      final savedEmail = await globalStore.getSavedEmail();
+      logger.d(
+        "Saving credentials - Email: ${savedEmail ?? 'none'}, Password: ${pin.isNotEmpty ? '***' : 'empty'}",
+      );
+      await globalStore.saveCredentials(
+        email: savedEmail ?? '',
+        password: pin,
+        enableAutoLogin: true,
+      );
+      logger.d("Credentials saved successfully");
+
       logger.d("Wallet creation result is $address, $mnemonic");
 
       // Log all created addresses
@@ -110,6 +139,10 @@ class _PinRegistrationPageState extends State<PinCodeRegistrationPage> {
       logger.d("USDT address: ${walletResult.addresses['usdt']}");
       logger.d("XRP public key: ${walletResult.addresses['xrp']}");
       logger.d("All addresses: ${walletResult.addresses}");
+
+      setState(() {
+        _status = "Setting up account...";
+      });
 
       if (widget.mnemonic.isEmpty) {
         await showDialog(
@@ -179,7 +212,14 @@ class _PinRegistrationPageState extends State<PinCodeRegistrationPage> {
       }
     } catch (e) {
       logger.e(e);
+      setState(() {
+        _isLoading = false;
+        _status = "Error occurred. Please try again.";
+      });
       rethrow; // Re-throw to handle in the dialog
+    } finally {
+      // Don't set _isLoading to false here as we're navigating away
+      // The loading state will be reset when the page is disposed
     }
   }
 
@@ -202,51 +242,95 @@ class _PinRegistrationPageState extends State<PinCodeRegistrationPage> {
           ),
         ),
         child: SafeArea(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          child: Stack(
             children: [
               Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  const SizedBox(height: 40),
+                  Column(
+                    children: [
+                      const SizedBox(height: 40),
 
-                  // Using the reusable PinInputWidget
-                  PinCodeInputWidget(
-                    enteredPin: currentPin,
-                    pinLength: pinLength,
-                    onKeyPressed: _handleKeyInput,
-                    status: _status,
-                    dotColor: Colors.white,
-                    filledColor: Colors.white,
-                    buttonColor: Colors.red,
-                    textColor: Colors.white,
-                    buttonSize: buttonSize,
-                    dotSize: 18,
-                    dotSpacing: 8,
-                    showBackButton: true,
-                    showLockIcon: true,
+                      // Using the reusable PinInputWidget
+                      Opacity(
+                        opacity: _isLoading ? 0.5 : 1.0,
+                        child: PinCodeInputWidget(
+                          enteredPin: currentPin,
+                          pinLength: pinLength,
+                          onKeyPressed: _isLoading ? (_) {} : _handleKeyInput,
+                          status: _status,
+                          dotColor: Colors.white,
+                          filledColor: Colors.white,
+                          buttonColor: Colors.red,
+                          textColor: Colors.white,
+                          buttonSize: buttonSize,
+                          dotSize: 18,
+                          dotSpacing: 8,
+                          showBackButton: true,
+                          showLockIcon: true,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 32,
+                      vertical: 20,
+                    ),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: [
+                        GestureDetector(
+                          onTap: _isLoading
+                              ? null
+                              : () {
+                                  Navigator.pushReplacementNamed(
+                                    context,
+                                    '/login',
+                                  );
+                                },
+                          child: Opacity(
+                            opacity: _isLoading ? 0.5 : 1.0,
+                            child: const Text(
+                              "Cancel",
+                              style: TextStyle(
+                                color: Colors.white70,
+                                fontSize: 16,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
-              Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 32,
-                  vertical: 20,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    GestureDetector(
-                      onTap: () {
-                        Navigator.pushReplacementNamed(context, '/login');
-                      },
-                      child: const Text(
-                        "Cancel",
-                        style: TextStyle(color: Colors.white70, fontSize: 16),
-                      ),
+              // Loading overlay
+              if (_isLoading)
+                Container(
+                  color: Colors.black54,
+                  child: Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        const CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            Colors.white,
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        Text(
+                          _status,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
+                  ),
                 ),
-              ),
             ],
           ),
         ),

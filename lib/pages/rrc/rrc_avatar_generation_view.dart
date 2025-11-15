@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:stacked/stacked.dart';
-import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/services/services.dart';
 
 import 'package:insoblok/providers/rrc/rrc_avatar_provider.dart';
@@ -10,7 +9,15 @@ import 'package:insoblok/widgets/widgets.dart';
 class RRCAvatarGenerationView extends StatefulWidget {
   final String? origin;
   final File? initialImage;
-  const RRCAvatarGenerationView({super.key, this.origin, this.initialImage});
+  final String? storyID;
+  final String? url;
+  const RRCAvatarGenerationView({
+    super.key,
+    this.origin,
+    this.initialImage,
+    this.storyID,
+    this.url,
+  });
 
   @override
   State<RRCAvatarGenerationView> createState() =>
@@ -53,8 +60,8 @@ class _RRCAvatarGenerationViewState extends State<RRCAvatarGenerationView>
         setState(() {
           _countdown = null;
         });
-        // Take selfie automatically at the end
-        vm.pickSelfie();
+        // Capture face automatically at the end using camera
+        vm.captureReactionImage();
         return false;
       }
       setState(() {
@@ -78,7 +85,8 @@ class _RRCAvatarGenerationViewState extends State<RRCAvatarGenerationView>
         await vm.onApply();
         // button text will flip automatically via ViewModel rebuild
       } else {
-        AIHelpers.showToast(msg: 'Ready to post reaction.');
+        // Post the reaction video to the story
+        await vm.postAsReaction();
       }
     }
   }
@@ -92,8 +100,15 @@ class _RRCAvatarGenerationViewState extends State<RRCAvatarGenerationView>
             context,
             widget.origin ?? "dashboard",
             initialImagePath: widget.initialImage?.path,
+            storyID: widget.storyID,
+            url: widget.url,
           ),
       builder: (context, vm, _) {
+        // Debug logging for video URL
+        if (vm.generatedVideoUrl != null) {
+          logger.d('Video URL in view: ${vm.generatedVideoUrl}');
+        }
+
         if (!_didAutoStart) {
           _didAutoStart = true;
           // Auto start RRC countdown when page appears (only if no initial image)
@@ -191,12 +206,15 @@ class _RRCAvatarGenerationViewState extends State<RRCAvatarGenerationView>
                                 fit: BoxFit.cover,
                               ),
                             )
-                            : (vm.generatedVideoUrl != null)
+                            // For dashboard: prioritize video over avatar image
+                            // Show video if available, otherwise show avatar image if available
+                            : (vm.generatedVideoUrl != null &&
+                                vm.generatedVideoUrl!.isNotEmpty)
                             ? Container(
                               width: 280,
                               height: 280,
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(16),
+                                shape: BoxShape.circle,
                                 border: Border.all(
                                   color: Colors.white24,
                                   width: 2,
@@ -210,12 +228,87 @@ class _RRCAvatarGenerationViewState extends State<RRCAvatarGenerationView>
                                 ],
                               ),
                               clipBehavior: Clip.antiAlias,
-                              child: VideoPlayerWidget(
-                                path: vm.generatedVideoUrl!,
-                                border: Colors.transparent,
-                                circular: false,
-                                width: 280,
-                                height: 280,
+                              child: Stack(
+                                children: [
+                                  VideoPlayerWidget(
+                                    key: ValueKey(vm.generatedVideoUrl),
+                                    path: vm.generatedVideoUrl!,
+                                    border: Colors.transparent,
+                                    circular: true,
+                                    radius: 280,
+                                  ),
+                                  // Show loading indicator while video is initializing
+                                  if (vm.isBusy)
+                                    Container(
+                                      decoration: const BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: Colors.black54,
+                                      ),
+                                      child: const Center(
+                                        child: CircularProgressIndicator(
+                                          valueColor:
+                                              AlwaysStoppedAnimation<Color>(
+                                                Colors.white,
+                                              ),
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            )
+                            // Show placeholder with "Creating video..." if avatar is ready but video is being generated
+                            : (vm.origin == "dashboard" &&
+                                vm.generatedAvatarImageUrl != null &&
+                                vm.generatedAvatarImageUrl!.isNotEmpty &&
+                                vm.isBusy)
+                            ? Container(
+                              width: 300,
+                              height: 300,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                gradient: LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [
+                                    const Color(0xFF0F1735),
+                                    const Color(0xFF0B0F25),
+                                  ],
+                                ),
+                                border: Border.all(
+                                  width: 10,
+                                  color: Colors.white.withOpacity(0.06),
+                                ),
+                              ),
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  border: Border.all(
+                                    width: 2,
+                                    color: Colors.white.withOpacity(0.1),
+                                  ),
+                                ),
+                                child: const Center(
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      CircularProgressIndicator(
+                                        valueColor:
+                                            AlwaysStoppedAnimation<Color>(
+                                              Colors.white,
+                                            ),
+                                      ),
+                                      SizedBox(height: 16),
+                                      Text(
+                                        'Creating video...',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 16,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
                             )
                             : Container(
@@ -263,10 +356,8 @@ class _RRCAvatarGenerationViewState extends State<RRCAvatarGenerationView>
                     ),
                   ),
                   const Spacer(),
-                  if (vm.origin == "profile") ...[
-                    // Avatars pill row for profile page
-                  ] else ...[
-                    // Emojis for dashboard/story page
+                  // Emojis for dashboard/story page (always show for dashboard)
+                  if (vm.origin != "profile") ...[
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: List.generate(vm.emotions.length, (i) {
@@ -300,7 +391,7 @@ class _RRCAvatarGenerationViewState extends State<RRCAvatarGenerationView>
                     ),
                     const SizedBox(height: 18),
                   ],
-                  // Avatars pill row
+                  // Avatars pill row (show for both profile and dashboard)
                   Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 12),
                     child: Container(
@@ -334,17 +425,68 @@ class _RRCAvatarGenerationViewState extends State<RRCAvatarGenerationView>
                               ),
                               child: ClipOval(
                                 child:
-                                    vm.selfieLocalPath == null
-                                        ? IconButton(
+                                    vm.capturedFacePath != null &&
+                                            File(
+                                              vm.capturedFacePath!,
+                                            ).existsSync()
+                                        ? GestureDetector(
+                                          onTap: vm.pickSelfie,
+                                          child: Image.file(
+                                            File(vm.capturedFacePath!),
+                                            key: ValueKey(vm.capturedFacePath),
+                                            fit: BoxFit.cover,
+                                            errorBuilder: (
+                                              context,
+                                              error,
+                                              stackTrace,
+                                            ) {
+                                              logger.e(
+                                                'Error loading captured face: $error',
+                                              );
+                                              return IconButton(
+                                                icon: const Icon(
+                                                  Icons.add_a_photo,
+                                                  color: Colors.white70,
+                                                ),
+                                                onPressed: vm.pickSelfie,
+                                              );
+                                            },
+                                          ),
+                                        )
+                                        : vm.selfieLocalPath != null &&
+                                            File(
+                                              vm.selfieLocalPath!,
+                                            ).existsSync()
+                                        ? GestureDetector(
+                                          onTap: vm.pickSelfie,
+                                          child: Image.file(
+                                            File(vm.selfieLocalPath!),
+                                            key: ValueKey(vm.selfieLocalPath),
+                                            fit: BoxFit.cover,
+                                            errorBuilder: (
+                                              context,
+                                              error,
+                                              stackTrace,
+                                            ) {
+                                              logger.e(
+                                                'Error loading selfie: $error',
+                                              );
+                                              return IconButton(
+                                                icon: const Icon(
+                                                  Icons.add_a_photo,
+                                                  color: Colors.white70,
+                                                ),
+                                                onPressed: vm.pickSelfie,
+                                              );
+                                            },
+                                          ),
+                                        )
+                                        : IconButton(
                                           icon: const Icon(
                                             Icons.add_a_photo,
                                             color: Colors.white70,
                                           ),
                                           onPressed: vm.pickSelfie,
-                                        )
-                                        : Image.file(
-                                          File(vm.selfieLocalPath!),
-                                          fit: BoxFit.cover,
                                         ),
                               ),
                             ),

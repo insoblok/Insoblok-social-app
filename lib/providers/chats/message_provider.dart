@@ -21,11 +21,11 @@ class MessageProvider extends InSoBlokViewModel {
     _context = context;
     notifyListeners();
   }
-  
+
   CryptoService cryptoService = locator<CryptoService>();
 
   final _key = GlobalKey<ExpandableFabState>();
-    GlobalKey<ExpandableFabState> get key => _key;
+  GlobalKey<ExpandableFabState> get key => _key;
 
   late RoomModel _room;
   RoomModel get room => _room;
@@ -87,7 +87,6 @@ class MessageProvider extends InSoBlokViewModel {
     BuildContext context, {
     required MessagePageData data,
   }) async {
-
     logger.d("This is init of message provider");
     this.context = context;
     room = data.room;
@@ -113,16 +112,26 @@ class MessageProvider extends InSoBlokViewModel {
       notifyListeners();
     });
 
-    messageService.getMessages(room.id!).listen((messages) {
-      logger.d("Here are messages $messages");
-      this.messages = messages;
-    }, onError: (error) {
-        logger.e("Error in messages stream: $error");
-      },
-      onDone: () {
-        logger.d("Messages stream completed");
-      }
-    );
+    messageService
+        .getMessages(room.id!)
+        .listen(
+          (messages) {
+            logger.d("📨 MessageProvider received ${messages.length} messages");
+            logger.d(
+              "📨 Messages: ${messages.map((m) => '${m.senderId}: ${m.content}').join(', ')}",
+            );
+            this.messages = messages;
+            // Scroll to bottom when new messages arrive
+            scrollToBottom();
+          },
+          onError: (error) {
+            logger.e("❌ Error in messages stream: $error");
+            logger.e("❌ Stack trace: ${StackTrace.current}");
+          },
+          onDone: () {
+            logger.d("✅ Messages stream completed");
+          },
+        );
 
     messageService.getUsersStream().listen((queryRooms) {
       var userList = [];
@@ -148,7 +157,6 @@ class MessageProvider extends InSoBlokViewModel {
     _mediaPickerService = locator<MediaPickerService>();
 
     _web3Service.paymentToAddress = chatUser.walletAddress ?? "";
-
   }
 
   @override
@@ -172,9 +180,16 @@ class MessageProvider extends InSoBlokViewModel {
   void sendMessage() async {
     if (content?.isNotEmpty ?? false) {
       try {
+        logger.d("📤 Sending message: $content");
+        logger.d("📤 Room ID: ${room.id}");
+        logger.d("📤 Sender ID: ${AuthHelper.user?.id}");
         await messageService.sendMessage(chatRoomId: room.id!, text: content!);
         textController.text = '';
-      } catch (e) {
+        content = null; // Clear content after sending
+        logger.d("✅ Message sent successfully");
+      } catch (e, stackTrace) {
+        logger.e("❌ Failed to send message: $e");
+        logger.e("❌ Stack trace: $stackTrace");
         ScaffoldMessenger.of(
           context,
         ).showSnackBar(SnackBar(content: Text('Failed to send message: $e')));
@@ -215,12 +230,16 @@ class MessageProvider extends InSoBlokViewModel {
 
     isAddPop = false;
 
-    var image = await _mediaPickerService.onPickerSingleMedia(context, isImage: true);
+    var image = await _mediaPickerService.onPickerSingleMedia(
+      context,
+      isImage: true,
+    );
     if (image != null) {
       selectedFile = image;
       var isSend = await _showPreview(isImage: true);
       if (isSend) {
-        final MediaStoryModel model = await CloudinaryCDNService.uploadImageToCDN(XFile(image.path));
+        final MediaStoryModel model =
+            await CloudinaryCDNService.uploadImageToCDN(XFile(image.path));
         if (model.link != null) {
           await messageService.sendImageMessage(
             chatRoomId: room.id!,
@@ -238,12 +257,16 @@ class MessageProvider extends InSoBlokViewModel {
 
     isAddPop = false;
 
-    var video = await _mediaPickerService.onPickerSingleMedia(context, isImage: false);
+    var video = await _mediaPickerService.onPickerSingleMedia(
+      context,
+      isImage: false,
+    );
     if (video != null) {
       selectedFile = video;
       var isSend = await _showPreview(isImage: false);
       if (isSend) {
-        final MediaStoryModel model = await CloudinaryCDNService.uploadImageToCDN(XFile(video.path));
+        final MediaStoryModel model =
+            await CloudinaryCDNService.uploadImageToCDN(XFile(video.path));
         if (model.link != null) {
           await messageService.sendVideoMessage(
             chatRoomId: room.id!,
@@ -261,7 +284,9 @@ class MessageProvider extends InSoBlokViewModel {
 
     var gif = await _mediaPickerService.onGifPicker();
     if (gif.isNotEmpty) {
-      final MediaStoryModel model = await CloudinaryCDNService.uploadImageToCDN(XFile(gif.first));
+      final MediaStoryModel model = await CloudinaryCDNService.uploadImageToCDN(
+        XFile(gif.first),
+      );
       if (model.link != null) {
         await messageService.sendGifMessage(
           chatRoomId: room.id!,
@@ -273,10 +298,10 @@ class MessageProvider extends InSoBlokViewModel {
   }
 
   Future<void> handleClickSend(Map<String, dynamic> map) async {
-    if(isBusy) {
+    if (isBusy) {
       return;
     }
-    if(map["chain"] == null || map["amount"] == null) {
+    if (map["chain"] == null || map["amount"] == null) {
       AIHelpers.showToast(msg: "Need to both enter token type and amount.");
       return;
     }
@@ -285,8 +310,15 @@ class MessageProvider extends InSoBlokViewModel {
 
     await runBusyFuture(() async {
       try {
-        final network = kWalletTokenList.firstWhere((tk) => tk["chain"] == map["chain"]);
-        final newTransaction = await _web3Service.sendEvmToken(chatUser.walletAddress!, map["amount"].toDouble(), network, cryptoService.privateKey!);
+        final network = kWalletTokenList.firstWhere(
+          (tk) => tk["chain"] == map["chain"],
+        );
+        final newTransaction = await _web3Service.sendEvmToken(
+          chatUser.walletAddress!,
+          map["amount"].toDouble(),
+          network,
+          cryptoService.privateKey!,
+        );
         if (newTransaction.isEmpty) {
           setError("Failed to send token due to server error.");
         }
@@ -299,11 +331,12 @@ class MessageProvider extends InSoBlokViewModel {
 
     if (hasError) {
       AIHelpers.showToast(msg: modelError.toString());
-    }
-    else {
+    } else {
       AIHelpers.showToast(msg: "Sent token successfully.");
       try {
-        final network = kWalletTokenList.firstWhere((tk) => tk["chain"] == map["chain"]);
+        final network = kWalletTokenList.firstWhere(
+          (tk) => tk["chain"] == map["chain"],
+        );
         await messageService.sendPaidMessage(
           chatRoomId: room.id!,
           coin: CoinModel(
@@ -323,7 +356,6 @@ class MessageProvider extends InSoBlokViewModel {
         scrollToBottom();
       }
     }
-
   }
 
   Future<void> onPaidEth() async {
@@ -333,7 +365,7 @@ class MessageProvider extends InSoBlokViewModel {
     await reownService.onShowTransferModal(
       context,
       chatUser.walletAddress,
-      handleClickSend
+      handleClickSend,
     );
     /*
     if (req != null) {
@@ -398,10 +430,13 @@ class MessageProvider extends InSoBlokViewModel {
     */
   }
 
-    void handleClickDollarIcon(BuildContext ctx) {
-      Routers.goToChatPaymentPage(ctx, cryptoService.privateKey!.address.hex, chatUser.walletAddress!);
-    }
-
+  void handleClickDollarIcon(BuildContext ctx) {
+    Routers.goToChatPaymentPage(
+      ctx,
+      cryptoService.privateKey!.address.hex,
+      chatUser.walletAddress!,
+    );
+  }
 
   Future<bool> _showPreview({bool isImage = true}) async {
     return await showDialog<bool>(
@@ -554,7 +589,6 @@ class _VideoPreviewState extends State<VideoPreview> {
       ),
     );
   }
-
 
   @override
   void dispose() {

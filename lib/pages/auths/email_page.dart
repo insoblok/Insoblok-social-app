@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:insoblok/widgets/widgets.dart';
 import 'package:insoblok/utils/utils.dart';
@@ -24,14 +25,20 @@ class EmailPageState extends State<EmailPage> {
       return;
     }
 
-    // Save email for future use
+    // Always save email for future use (even if password doesn't exist yet)
     final savedPassword = await _globalStore.getSavedPassword();
     if (savedPassword != null && savedPassword.isNotEmpty) {
+      // If password exists, save both email and password
       await _globalStore.saveCredentials(
         email: email,
         password: savedPassword,
         enableAutoLogin: true,
       );
+    } else {
+      // If password doesn't exist yet (during signup), just save email
+      // Password will be saved later in pincode_register_page
+      final sp = await SharedPreferences.getInstance();
+      await sp.setString('saved_email', email);
     }
 
     if (await accessCodeService.checkAccessCodeByEmail(email)) {

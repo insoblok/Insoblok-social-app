@@ -96,43 +96,87 @@ class _VideoPlayerState extends State<VideoPlayerWidget> {
   }
 
   Future<void> _initializeVideo(String path) async {
-    await Future.delayed(const Duration(milliseconds: 1500));
-    try {
-      // Dispose previous controller safely
-      validate = await validateVideoFile(path);
-      if (path.startsWith('http')) {
-        _controller = VideoPlayerController.networkUrl(Uri.parse(path));
-      } else if (path.contains('asset')) {
-        _controller = VideoPlayerController.asset(path);
-      } else {
-        final file = File(path);
-        if (!await file.exists()) {
-          logger.e("❌ Video file not found: $path");
-          if (mounted) {
-            setState(() => _initialized = false);
+    // For network URLs, add a delay to allow video to be fully available
+    if (path.startsWith('http://') || path.startsWith('https://')) {
+      await Future.delayed(const Duration(seconds: 2));
+    } else {
+      await Future.delayed(const Duration(milliseconds: 1500));
+    }
+
+    int maxAttempts = 3;
+    int attempt = 0;
+
+    while (attempt < maxAttempts) {
+      attempt++;
+      try {
+        // Dispose previous controller safely
+        validate = await validateVideoFile(path);
+
+        VideoPlayerController? newController;
+        if (path.startsWith('http://') || path.startsWith('https://')) {
+          logger.d(
+            'Initializing network video: $path (attempt $attempt/$maxAttempts)',
+          );
+          newController = VideoPlayerController.networkUrl(Uri.parse(path));
+        } else if (path.contains('asset')) {
+          newController = VideoPlayerController.asset(path);
+        } else {
+          final file = File(path);
+          if (!await file.exists()) {
+            logger.e("❌ Video file not found: $path");
+            if (mounted) {
+              setState(() => _initialized = false);
+            }
+            return;
           }
-          return;
+          newController = VideoPlayerController.file(file);
         }
-        _controller = VideoPlayerController.file(file);
-      }
-      await _controller?.initialize();
-      setState(() {});
 
-      _controller?.setLooping(true);
+        // Dispose old controller if exists
+        await _controller?.dispose();
+        _controller = newController;
 
-      if (mounted) {
-        setState(() {
-          _initialized = true;
-          _isPlaying = false;
-        });
-      }
-    } catch (error) {
-      logger.e("⚠️ Video initialization error: $path, $error");
-      if (mounted) {
-        setState(() {
+        await _controller!.initialize();
+
+        _controller!.setLooping(true);
+
+        if (mounted) {
+          setState(() {
+            _initialized = true;
+            _isPlaying = false;
+          });
+        }
+
+        logger.d('✅ Video initialized successfully: $path');
+        return; // Success - exit retry loop
+      } catch (error) {
+        logger.e(
+          "⚠️ Video initialization error (attempt $attempt/$maxAttempts): $path, $error",
+        );
+
+        // Dispose failed controller
+        try {
+          await _controller?.dispose();
           _controller = null;
-          _initialized = false;
-        });
+        } catch (_) {}
+
+        if (attempt < maxAttempts) {
+          // Wait before retry with exponential backoff
+          final delay = Duration(milliseconds: 1000 * attempt);
+          logger.d(
+            'Retrying video initialization in ${delay.inMilliseconds}ms...',
+          );
+          await Future.delayed(delay);
+        } else {
+          // All attempts failed
+          if (mounted) {
+            setState(() {
+              _controller = null;
+              _initialized = false;
+            });
+          }
+          logger.e('❌ Failed to initialize video after $maxAttempts attempts');
+        }
       }
     }
   }
@@ -152,53 +196,70 @@ class _VideoPlayerState extends State<VideoPlayerWidget> {
             ? widget.radius ?? 100
             : widget.width ?? MediaQuery.of(context).size.width;
 
-    return ClipOval(
-      clipBehavior:
-          widget.circular ? Clip.antiAlias : Clip.none, // fix for non-circular
-      child: Container(
-        width: widget.circular ? size : widget.width,
-        height: widget.circular ? size : widget.height,
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(size / 2),
-          color: Colors.transparent,
-        ),
-        child:
-            _initialized && validate && _controller != null
-                ? Stack(
-                  alignment: Alignment.center,
-                  children: [
-                    AspectRatio(
-                      aspectRatio: _controller!.value.aspectRatio,
-                      child: VideoPlayer(_controller!),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        if (_isPlaying) {
-                          _controller!.pause();
-                        } else {
-                          _controller!.play();
-                        }
-                        setState(() => _isPlaying = !_isPlaying);
-                      },
-                      child: Icon(
-                        _isPlaying ? Icons.pause : Icons.play_arrow,
-                        color: Colors.white.withOpacity(0.8),
-                        size: 24,
+    Widget content = Container(
+      width: widget.circular ? size : widget.width,
+      height: widget.circular ? size : widget.height,
+      decoration: BoxDecoration(
+        borderRadius:
+            widget.circular
+                ? BorderRadius.circular(size / 2)
+                : BorderRadius.circular(0),
+        color: Colors.transparent,
+      ),
+      child:
+          _initialized && validate && _controller != null
+              ? Stack(
+                alignment: Alignment.center,
+                children: [
+                  SizedBox(
+                    width: widget.circular ? size : widget.width,
+                    height: widget.circular ? size : widget.height,
+                    child: FittedBox(
+                      fit: BoxFit.cover,
+                      child: SizedBox(
+                        width: _controller!.value.size.width,
+                        height: _controller!.value.size.height,
+                        child: VideoPlayer(_controller!),
                       ),
                     ),
-                  ],
-                )
-                : const Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      CircularProgressIndicator(strokeWidth: 2),
-                      SizedBox(height: 8),
-                      Text('Loading...', style: TextStyle(fontSize: 12)),
-                    ],
                   ),
+                  GestureDetector(
+                    onTap: () {
+                      if (_isPlaying) {
+                        _controller!.pause();
+                      } else {
+                        _controller!.play();
+                      }
+                      setState(() => _isPlaying = !_isPlaying);
+                    },
+                    child: Icon(
+                      _isPlaying ? Icons.pause : Icons.play_arrow,
+                      color: Colors.white.withOpacity(0.8),
+                      size: 24,
+                    ),
+                  ),
+                ],
+              )
+              : const Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    CircularProgressIndicator(strokeWidth: 2),
+                    SizedBox(height: 8),
+                    Text(
+                      'Loading video...',
+                      style: TextStyle(fontSize: 12, color: Colors.white),
+                    ),
+                  ],
                 ),
-      ),
+              ),
     );
+
+    // Apply ClipOval only for circular videos
+    if (widget.circular) {
+      return ClipOval(clipBehavior: Clip.antiAlias, child: content);
+    } else {
+      return ClipRRect(borderRadius: BorderRadius.circular(0), child: content);
+    }
   }
 }

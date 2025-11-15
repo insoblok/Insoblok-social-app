@@ -80,7 +80,7 @@ class ReactionVideoDetailProvider extends InSoBlokViewModel {
     _cdnUploadId = s;
     notifyListeners();
   }
-  
+
   int _pageIndex = 0;
   int get pageIndex => _pageIndex;
   set pageIndex(int i) {
@@ -90,13 +90,18 @@ class ReactionVideoDetailProvider extends InSoBlokViewModel {
 
   List<AIFaceAnnotation> annotations = [];
 
-
-  Future<void> init(BuildContext context, {required String storyID, required String url, required String videoPath, required bool editable}) async {
+  Future<void> init(
+    BuildContext context, {
+    required String storyID,
+    required String url,
+    required String videoPath,
+    required bool editable,
+  }) async {
     this.context = context;
     this.url = url;
     this.storyID = storyID;
     this.videoPath = videoPath;
-    
+
     enableEdit = editable;
   }
 
@@ -153,8 +158,10 @@ class ReactionVideoDetailProvider extends InSoBlokViewModel {
     notifyListeners();
     String link = "";
     try {
-      if(cdnUploadId == null){
-        MediaStoryModel model = await CloudinaryCDNService.uploadVideoToCDN(XFile(videoPath));
+      if (cdnUploadId == null) {
+        MediaStoryModel model = await CloudinaryCDNService.uploadVideoToCDN(
+          XFile(videoPath),
+        );
         cdnUploadId = model.publicId;
         link = model.link!;
       }
@@ -163,7 +170,7 @@ class ReactionVideoDetailProvider extends InSoBlokViewModel {
       await usersRef.doc(AuthHelper.user?.id).update({
         "galleries": FieldValue.arrayUnion([link]),
       });
-      
+
       AIHelpers.showToast(msg: 'Successfully saved to Gallery!');
     } catch (e) {
       setError(e);
@@ -178,12 +185,40 @@ class ReactionVideoDetailProvider extends InSoBlokViewModel {
     if (isBusy) return;
     clearErrors();
 
+    // Check if user is trying to react to their own story
+    if (storyID != null && storyID!.isNotEmpty) {
+      try {
+        final story = await storyService.getStory(storyID!);
+        logger.d(
+          'Fetched story - Story ID: ${story.id}, Story userId: ${story.userId}, Current user ID: ${AuthHelper.user?.id}',
+        );
+
+        if (story.userId != null &&
+            AuthHelper.user?.id != null &&
+            story.userId == AuthHelper.user?.id) {
+          logger.e(
+            'User trying to react to their own story - Blocking reaction',
+          );
+          AIHelpers.showToast(msg: "You can't react to your own story!");
+          return;
+        }
+        logger.d('Story ownership check passed - User can react');
+      } catch (e, stackTrace) {
+        logger.e('Error fetching story for validation: $e');
+        logger.e('Stack trace: $stackTrace');
+        // Continue anyway - better to allow reaction than block due to fetch error
+        logger.w('Allowing reaction despite validation error');
+      }
+    }
+
     setBusy(true);
     notifyListeners();
     String url = "";
     try {
-      if(cdnUploadId == null) {
-        MediaStoryModel model = await CloudinaryCDNService.uploadVideoToCDN(XFile(videoPath));
+      if (cdnUploadId == null) {
+        MediaStoryModel model = await CloudinaryCDNService.uploadVideoToCDN(
+          XFile(videoPath),
+        );
         cdnUploadId = model.publicId;
         url = model.link!;
       }
@@ -194,7 +229,6 @@ class ReactionVideoDetailProvider extends InSoBlokViewModel {
       });
 
       AIHelpers.showToast(msg: 'Successfully posted as Reaction!');
-
     } catch (e) {
       setError(e);
       logger.e(e);
@@ -227,12 +261,14 @@ class ReactionVideoDetailProvider extends InSoBlokViewModel {
         //   description: 'Uploaded from InSoBlokAI Story of $storyID',
         // );
 
-        if(cdnUploadId == null) {
-          MediaStoryModel model = await CloudinaryCDNService.uploadVideoToCDN(XFile(videoPath));
+        if (cdnUploadId == null) {
+          MediaStoryModel model = await CloudinaryCDNService.uploadVideoToCDN(
+            XFile(videoPath),
+          );
           cdnUploadId = model.publicId;
           url = model.link!;
         }
-        
+
         MediaStoryModel? media;
         media = MediaStoryModel(
           link: url,
@@ -273,86 +309,78 @@ class ReactionVideoDetailProvider extends InSoBlokViewModel {
   }
 
   Future<bool?> _showDescriptionDialog() => showDialog<bool>(
-        context: context,
-        builder: (context) {
-          return Center(
-            child: Container(
-              margin: const EdgeInsets.all(40.0),
-              padding:
-                  const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
-              decoration: BoxDecoration(
-                color: Theme.of(context).colorScheme.onSecondary,
-                borderRadius: BorderRadius.circular(20.0),
+    context: context,
+    builder: (context) {
+      return Center(
+        child: Container(
+          margin: const EdgeInsets.all(40.0),
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.onSecondary,
+            borderRadius: BorderRadius.circular(20.0),
+          ),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'Repost Story',
+                style: Theme.of(context).textTheme.titleSmall,
               ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
+              const SizedBox(height: 16.0),
+              Text(
+                'Do you want to post this reaction to your LOOKBOOK?',
+                style: Theme.of(context).textTheme.labelLarge,
+              ),
+              const SizedBox(height: 24.0),
+              Row(
                 children: [
-                  Text(
-                    'Repost Story',
-                    style: Theme.of(context).textTheme.titleSmall,
-                  ),
-                  const SizedBox(height: 16.0),
-                  Text(
-                    'Do you want to post this reaction to your LOOKBOOK?',
-                    style: Theme.of(context).textTheme.labelLarge,
-                  ),
-                  const SizedBox(height: 24.0),
-                  Row(
-                    children: [
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () => Navigator.of(context).pop(true),
-                          child: Container(
-                            height: 44.0,
-                            decoration: BoxDecoration(
-                              color: Theme.of(context).primaryColor,
-                              borderRadius: BorderRadius.circular(16.0),
-                            ),
-                            alignment: Alignment.center,
-                            child: Text(
-                              'Add',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium
-                                  ?.copyWith(
-                                    color: Colors.white,
-                                  ),
-                            ),
-                          ),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () => Navigator.of(context).pop(true),
+                      child: Container(
+                        height: 44.0,
+                        decoration: BoxDecoration(
+                          color: Theme.of(context).primaryColor,
+                          borderRadius: BorderRadius.circular(16.0),
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          'Add',
+                          style: Theme.of(
+                            context,
+                          ).textTheme.bodyMedium?.copyWith(color: Colors.white),
                         ),
                       ),
-                      const SizedBox(width: 16.0),
-                      Expanded(
-                        child: GestureDetector(
-                          onTap: () => Navigator.of(context).pop(false),
-                          child: Container(
-                            height: 44.0,
-                            decoration: BoxDecoration(
-                              border: Border.all(
-                                width: 2.0,
-                                color: Theme.of(context).primaryColor,
-                              ),
-                              borderRadius: BorderRadius.circular(16.0),
-                            ),
-                            alignment: Alignment.center,
-                            child: Text(
-                              'Skip',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium
-                                  ?.copyWith(
-                                    color: Theme.of(context).primaryColor,
-                                  ),
-                            ),
+                    ),
+                  ),
+                  const SizedBox(width: 16.0),
+                  Expanded(
+                    child: GestureDetector(
+                      onTap: () => Navigator.of(context).pop(false),
+                      child: Container(
+                        height: 44.0,
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            width: 2.0,
+                            color: Theme.of(context).primaryColor,
                           ),
+                          borderRadius: BorderRadius.circular(16.0),
+                        ),
+                        alignment: Alignment.center,
+                        child: Text(
+                          'Skip',
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(color: Theme.of(context).primaryColor),
                         ),
                       ),
-                    ],
+                    ),
                   ),
                 ],
               ),
-            ),
-          );
-        },
+            ],
+          ),
+        ),
       );
+    },
+  );
 }

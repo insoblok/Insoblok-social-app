@@ -93,11 +93,18 @@ class FaceDetailProvider extends InSoBlokViewModel {
 
   List<AIFaceAnnotation> annotations = [];
 
-  Future<void> init(BuildContext context, {required String storyID, required String url, required File face, required List<AIFaceAnnotation> annotations, required bool editable}) async {
+  Future<void> init(
+    BuildContext context, {
+    required String storyID,
+    required String url,
+    required File face,
+    required List<AIFaceAnnotation> annotations,
+    required bool editable,
+  }) async {
     this.context = context;
     this.url = url;
     this.storyID = storyID;
-    
+
     // final directory = await getApplicationDocumentsDirectory();
     // final filePath = '${directory.path}/face_mickle.png';
     // this.face = File(filePath);
@@ -105,104 +112,104 @@ class FaceDetailProvider extends InSoBlokViewModel {
     this.annotations = annotations;
     this.editable = editable;
 
-    this.face = face;  
-    if(this.editable){
+    this.face = face;
+    if (this.editable) {
       hypeFace = face;
-    }else{
+    } else {
       setHypeImage();
     }
-    
+
     logger.d("face annotations : $annotations");
     logger.d("face : $face");
   }
 
-  Future<void> setHypeImage() async{
+  Future<void> setHypeImage() async {
     // Pick the top annotation (largest %), get its icon string and % however you compute them:
     final top = bestAnnotationByPercent(annotations);
     final hypePct = _annotationPercent(top!); // 0..100
     final iconSrc = (top.icon is String) ? top.icon as String : null;
 
-    final userName =  AuthHelper.user?.nickId;
+    final userName = AuthHelper.user?.nickId;
     // Build hype bytes then save to a file and set hypeFace
     final bytes = await composeHypeImage(
-      backgroundUrl: face!.path,         // file path to the cropped face
-      userName: userName!,           // whatever name you want rendered
-      iconSource: iconSrc,               // asset/file/url for the annotation icon
+      backgroundUrl: face!.path, // file path to the cropped face
+      userName: userName!, // whatever name you want rendered
+      iconSource: iconSrc, // asset/file/url for the annotation icon
       hypePercent: hypePct,
     );
 
     if (bytes != null) {
       final dir = await getApplicationDocumentsDirectory();
-      final out = File('${dir.path}/hype_${DateTime.now().millisecondsSinceEpoch}.png');
+      final out = File(
+        '${dir.path}/hype_${DateTime.now().millisecondsSinceEpoch}.png',
+      );
       await out.writeAsBytes(bytes);
       hypeFace = out;
     }
-
   }
-  
+
   /// Returns the annotation whose `desc` contains the highest % value.
-/// If none contain a %, returns null.
-AIFaceAnnotation? bestAnnotationByPercent(List<AIFaceAnnotation> items) {
-  AIFaceAnnotation? best;
-  double bestPct = -1;
+  /// If none contain a %, returns null.
+  AIFaceAnnotation? bestAnnotationByPercent(List<AIFaceAnnotation> items) {
+    AIFaceAnnotation? best;
+    double bestPct = -1;
 
-  for (final a in items) {
-    final pct = _annotationPercent(a);
-    if (pct > bestPct) {
-      bestPct = pct;
-      best = a;
+    for (final a in items) {
+      final pct = _annotationPercent(a);
+      if (pct > bestPct) {
+        bestPct = pct;
+        best = a;
+      }
     }
+    return best;
   }
-  return best;
-}
 
-/// Pull a % out of the annotation. We look in `desc` first, then `title`.
-double _annotationPercent(AIFaceAnnotation a) {
-  // Safely coerce to string; your model likely has String? fields.
-  final desc = (a.desc ?? '').toString();
-  final title = (a.title ?? '').toString();
+  /// Pull a % out of the annotation. We look in `desc` first, then `title`.
+  double _annotationPercent(AIFaceAnnotation a) {
+    // Safely coerce to string; your model likely has String? fields.
+    final desc = (a.desc ?? '').toString();
+    final title = (a.title ?? '').toString();
 
-  // Try “85%” or “85.5%” first
-  final p1 = _extractPercent(desc);
-  if (p1 != null) return p1;
+    // Try “85%” or “85.5%” first
+    final p1 = _extractPercent(desc);
+    if (p1 != null) return p1;
 
-  // Fallback: maybe the number is present without the % symbol
-  final p2 = _extractPercentLoose(desc);
-  if (p2 != null) return p2;
+    // Fallback: maybe the number is present without the % symbol
+    final p2 = _extractPercentLoose(desc);
+    if (p2 != null) return p2;
 
-  // Last resort: check title
-  final p3 = _extractPercent(title) ?? _extractPercentLoose(title);
-  return p3 ?? 0.0;
-}
+    // Last resort: check title
+    final p3 = _extractPercent(title) ?? _extractPercentLoose(title);
+    return p3 ?? 0.0;
+  }
 
-/// Strict: finds numbers followed by % (e.g., "83%" or "83.5%")
-double? _extractPercent(String? text) {
-  if (text == null || text.isEmpty) return null;
-  final m = RegExp(r'(\d+(?:\.\d+)?)\s*%').firstMatch(text);
-  if (m == null) return null;
-  final v = double.tryParse(m.group(1)!);
-  if (v == null) return null;
-  return v.clamp(0, 100).toDouble();
-}
+  /// Strict: finds numbers followed by % (e.g., "83%" or "83.5%")
+  double? _extractPercent(String? text) {
+    if (text == null || text.isEmpty) return null;
+    final m = RegExp(r'(\d+(?:\.\d+)?)\s*%').firstMatch(text);
+    if (m == null) return null;
+    final v = double.tryParse(m.group(1)!);
+    if (v == null) return null;
+    return v.clamp(0, 100).toDouble();
+  }
 
   /// Loose: if there's a plain number, treat 0–1 as 0–100% and clamp to 0–100.
-double? _extractPercentLoose(String? text) {
-  if (text == null || text.isEmpty) return null;
-  final m = RegExp(r'(\d+(?:\.\d+)?)').firstMatch(text);
-  if (m == null) return null;
-  final v = double.tryParse(m.group(1)!);
-  if (v == null) return null;
-  final pct = v <= 1.0 ? v * 100.0 : v;
-  return pct.clamp(0, 100).toDouble();
-}
+  double? _extractPercentLoose(String? text) {
+    if (text == null || text.isEmpty) return null;
+    final m = RegExp(r'(\d+(?:\.\d+)?)').firstMatch(text);
+    if (m == null) return null;
+    final v = double.tryParse(m.group(1)!);
+    if (v == null) return null;
+    final pct = v <= 1.0 ? v * 100.0 : v;
+    return pct.clamp(0, 100).toDouble();
+  }
 
-
-Future<Uint8List?> composeHypeImage({
+  Future<Uint8List?> composeHypeImage({
     required String backgroundUrl,
     required String userName,
     String? iconSource,
     double hypePercent = 0.0,
-    Color bannerColor = const Color(0xB3000000),  // semi-transparent black
+    Color bannerColor = const Color(0xB3000000), // semi-transparent black
     Color userTextColor = Colors.white,
     Color hypeTextColor = const Color(0xFFFF69B4), // hot pink
   }) async {
@@ -236,7 +243,10 @@ Future<Uint8List?> composeHypeImage({
           final ui.Image iconImg = await _decodeImageFromList(iconBytes);
 
           final src = Rect.fromLTWH(
-            0, 0, iconImg.width.toDouble(), iconImg.height.toDouble(),
+            0,
+            0,
+            iconImg.width.toDouble(),
+            iconImg.height.toDouble(),
           );
           final dst = Rect.fromLTWH(pad, pad, iconSize, iconSize);
 
@@ -248,10 +258,11 @@ Future<Uint8List?> composeHypeImage({
           canvas.restore();
 
           // white border ring
-          final ring = Paint()
-            ..style = PaintingStyle.stroke
-            ..color = Colors.white
-            ..strokeWidth = iconSize * 0.06;
+          final ring =
+              Paint()
+                ..style = PaintingStyle.stroke
+                ..color = Colors.white
+                ..strokeWidth = iconSize * 0.06;
           canvas.drawOval(dst, ring);
         }
       }
@@ -278,24 +289,25 @@ Future<Uint8List?> composeHypeImage({
         FontWeight weight = FontWeight.w600,
         double maxWidth = double.infinity,
       }) async {
-        final pb = ui.ParagraphBuilder(ui.ParagraphStyle(
-          textAlign: TextAlign.left,
-          fontSize: size,
-          fontWeight: weight,
-          maxLines: 1,
-          ellipsis: '…',
-        ))
-          ..pushStyle(ui.TextStyle(color: color))
-          ..addText(text);
-        final p = pb.build()..layout(
-          ui.ParagraphConstraints(width: maxWidth),
-        );
+        final pb =
+            ui.ParagraphBuilder(
+                ui.ParagraphStyle(
+                  textAlign: TextAlign.left,
+                  fontSize: size,
+                  fontWeight: weight,
+                  maxLines: 1,
+                  ellipsis: '…',
+                ),
+              )
+              ..pushStyle(ui.TextStyle(color: color))
+              ..addText(text);
+        final p = pb.build()..layout(ui.ParagraphConstraints(width: maxWidth));
         canvas.drawParagraph(p, Offset(x, y));
       }
 
       final double textLeft = pad + 4;
-      final double line1Y = bannerTop + 14;     // username
-      final double line2Y = line1Y + 30;        // hype label
+      final double line1Y = bannerTop + 14; // username
+      final double line2Y = line1Y + 30; // hype label
       final double textWidth = bgWidth - textLeft - pad;
 
       await drawText(
@@ -321,7 +333,9 @@ Future<Uint8List?> composeHypeImage({
       // 6) Finalize
       final picture = recorder.endRecording();
       final ui.Image out = await picture.toImage(bgWidth, bgHeight);
-      final ByteData? png = await out.toByteData(format: ui.ImageByteFormat.png);
+      final ByteData? png = await out.toByteData(
+        format: ui.ImageByteFormat.png,
+      );
       return png?.buffer.asUint8List();
     } catch (e, st) {
       logger.e('composeHypeImage error: $e\n$st');
@@ -329,7 +343,6 @@ Future<Uint8List?> composeHypeImage({
     }
   }
 
-  
   Future<Uint8List?> _loadBytesAny(String src) async {
     try {
       // http/https URL
@@ -425,8 +438,10 @@ Future<Uint8List?> composeHypeImage({
     String link = "";
 
     try {
-      if(cdnUploadId == null){
-        MediaStoryModel model = await CloudinaryCDNService.uploadImageToCDN(XFile(hypeFace!.path));
+      if (cdnUploadId == null) {
+        MediaStoryModel model = await CloudinaryCDNService.uploadImageToCDN(
+          XFile(hypeFace!.path),
+        );
         cdnUploadId = model.publicId;
         link = model.link!;
       }
@@ -452,25 +467,51 @@ Future<Uint8List?> composeHypeImage({
     if (isBusy) return;
     clearErrors();
 
+    // Check if user is trying to react to their own story
+    if (storyID != null && storyID!.isNotEmpty) {
+      try {
+        final story = await storyService.getStory(storyID!);
+        logger.d(
+          'Fetched story - Story ID: ${story.id}, Story userId: ${story.userId}, Current user ID: ${AuthHelper.user?.id}',
+        );
+
+        if (story.userId != null &&
+            AuthHelper.user?.id != null &&
+            story.userId == AuthHelper.user?.id) {
+          logger.e(
+            'User trying to react to their own story - Blocking reaction',
+          );
+          AIHelpers.showToast(msg: "You can't react to your own story!");
+          return;
+        }
+        logger.d('Story ownership check passed - User can react');
+      } catch (e, stackTrace) {
+        logger.e('Error fetching story for validation: $e');
+        logger.e('Stack trace: $stackTrace');
+        // Continue anyway - better to allow reaction than block due to fetch error
+        logger.w('Allowing reaction despite validation error');
+      }
+    }
+
     setBusy(true);
     notifyListeners();
 
     String url = "";
     try {
-
-      if(cdnUploadId == null) {
-        MediaStoryModel model = await CloudinaryCDNService.uploadImageToCDN(XFile(hypeFace!.path));
+      if (cdnUploadId == null) {
+        MediaStoryModel model = await CloudinaryCDNService.uploadImageToCDN(
+          XFile(hypeFace!.path),
+        );
         cdnUploadId = model.publicId;
         url = model.link!;
       }
 
       final storiesRef = FirebaseFirestore.instance.collection("story");
-        await storiesRef.doc(storyID).update({
-          "reactions": FieldValue.arrayUnion([url]),
-        });
+      await storiesRef.doc(storyID).update({
+        "reactions": FieldValue.arrayUnion([url]),
+      });
 
       AIHelpers.showToast(msg: 'Successfully posted as Reaction!');
-
     } catch (e) {
       setError(e);
       logger.e(e);
@@ -496,12 +537,13 @@ Future<Uint8List?> composeHypeImage({
           throw ('empty description!');
         }
 
-        if(cdnUploadId == null){
-          MediaStoryModel model = await CloudinaryCDNService.uploadImageToCDN(XFile(hypeFace!.path));
+        if (cdnUploadId == null) {
+          MediaStoryModel model = await CloudinaryCDNService.uploadImageToCDN(
+            XFile(hypeFace!.path),
+          );
           cdnUploadId = model.publicId;
           link = model.link!;
         }
-        
 
         MediaStoryModel? media;
         var bytes = await File(hypeFace!.path).readAsBytes();
@@ -551,8 +593,7 @@ Future<Uint8List?> composeHypeImage({
       return Center(
         child: Container(
           margin: const EdgeInsets.all(40.0),
-          padding:
-              const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
+          padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 16.0),
           decoration: BoxDecoration(
             color: Theme.of(context).colorScheme.onSecondary,
             borderRadius: BorderRadius.circular(20.0),
@@ -584,12 +625,9 @@ Future<Uint8List?> composeHypeImage({
                         alignment: Alignment.center,
                         child: Text(
                           'Add',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium
-                              ?.copyWith(
-                                color: Colors.white,
-                              ),
+                          style: Theme.of(
+                            context,
+                          ).textTheme.bodyMedium?.copyWith(color: Colors.white),
                         ),
                       ),
                     ),
@@ -610,12 +648,8 @@ Future<Uint8List?> composeHypeImage({
                         alignment: Alignment.center,
                         child: Text(
                           'Skip',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyMedium
-                              ?.copyWith(
-                                color: Theme.of(context).primaryColor,
-                              ),
+                          style: Theme.of(context).textTheme.bodyMedium
+                              ?.copyWith(color: Theme.of(context).primaryColor),
                         ),
                       ),
                     ),

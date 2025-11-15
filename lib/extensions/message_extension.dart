@@ -15,24 +15,47 @@ import 'package:insoblok/enums/enums.dart';
 extension MessageModelExt on MessageModel {
   Widget item(BuildContext context, {required UserModel chatUser}) {
     final isMe = senderId == AuthHelper.user?.id;
+    logger.d(
+      "🎨 Rendering message - senderId: $senderId, currentUserId: ${AuthHelper.user?.id}, isMe: $isMe, type: $type, content: $content",
+    );
+
     Widget result = Container();
-    // var type = MessageModelTypeExt.fromString(this.type ?? 'text');
-    switch (type) {
+
+    // Parse type - it might be a string or enum
+    MessageType? messageType;
+    if (type is MessageType) {
+      messageType = type as MessageType;
+    } else if (type is String) {
+      messageType = MessageModelTypeExt.fromString(type as String);
+    }
+
+    logger.d("🎨 Parsed messageType: $messageType");
+
+    switch (messageType) {
       case MessageType.text:
         result = _textContent(context);
+        break;
       case MessageType.image:
         result = _imageContent();
+        break;
       case MessageType.video:
         result = VideoContent(videoUrl: medias?.first ?? 'https://');
+        break;
       case MessageType.gif:
         result = _gifContent();
+        break;
       case MessageType.audio:
         result = Container();
+        break;
       case MessageType.paid:
         result = _paidContent();
+        break;
       case MessageType.file:
+        result = Container();
         break;
       default:
+        logger.w("⚠️ Unknown message type: $type, defaulting to text");
+        result = _textContent(context);
         break;
     }
 
@@ -96,8 +119,7 @@ extension MessageModelExt on MessageModel {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    (type == MessageType.text ||
-                            type == MessageType.paid)
+                    (type == MessageType.text || type == MessageType.paid)
                         ? Container(
                           constraints: BoxConstraints(
                             maxWidth: MediaQuery.of(context).size.width - 120.0,
@@ -197,7 +219,7 @@ extension MessageModelExt on MessageModel {
               ? TextStyle(
                 fontSize: 14.0,
                 fontWeight: FontWeight.normal,
-                color: AIColors.black,
+                color: Colors.white,
               )
               : Theme.of(context).textTheme.bodyMedium,
     );
@@ -212,17 +234,18 @@ extension MessageModelExt on MessageModel {
 
   Widget _paidContent() {
     var coin = CoinModel.fromJson(jsonDecode(content ?? '{}'));
-    final network = kWalletTokenList.firstWhere((tk) => tk["short_name"] == coin.unit);
+    final network = kWalletTokenList.firstWhere(
+      (tk) => tk["short_name"] == coin.unit,
+    );
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text('Transaction', style: TextStyle(fontSize: 11.0)),
         const SizedBox(height: 8.0),
-        
+
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            
             AIImage(network["icon"], width: 36.0, height: 36.0),
             const SizedBox(width: 8.0),
             Column(
@@ -242,12 +265,16 @@ extension MessageModelExt on MessageModel {
         Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-          GifView.asset(AIImages.icSuccess, width: 36.0, height: 36.0, loop: false, autoPlay: true),
-          Text(
-            'Successfully Sent',
-          ),
-        ]),
-        
+            GifView.asset(
+              AIImages.icSuccess,
+              width: 36.0,
+              height: 36.0,
+              loop: false,
+              autoPlay: true,
+            ),
+            Text('Successfully Sent'),
+          ],
+        ),
       ],
     );
   }
@@ -270,7 +297,6 @@ extension MessageModelExt on MessageModel {
     return kDateHMFormatter.format(DateTime.now());
   }
 }
-
 
 extension MessageModelTypeExt on MessageType {
   static MessageType fromString(String data) {

@@ -99,6 +99,7 @@ class AIImages {
   static String icComment4 = 'assets/icons/ic_comment4.png';
   static String icShare = 'assets/icons/ic_share.png';
   static String icShareOutline = 'assets/icons/ic_share_outline.png';
+  static String icReaction = 'assets/icons/ic_reaction.png';
   static String icFollow = 'assets/icons/ic_follow.png';
   static String icNot = 'assets/icons/ic_not.png';
   static String icHot = 'assets/icons/ic_hot.png';

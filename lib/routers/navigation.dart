@@ -288,7 +288,10 @@ class Navigation {
     initRoute(kRouterVTOAddProduct, (props) => AddProductPage());
 
     // * AddStoryPage
-    initRoute(kRouterAddStory, (props) => AddStoryPage());
+    initRoute<String?>(
+      kRouterAddStory,
+      (props) => AddStoryPage(videoPath: props),
+    );
 
     // * StoryDetailPage
     initRoute<StoryModel>(

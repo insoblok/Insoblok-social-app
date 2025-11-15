@@ -87,39 +87,58 @@ class CreateRoomProvider extends InSoBlokViewModel {
   }
 
   Future<void> onCreateRoom(UserModel user) async {
-    if (isBusy) return;
-    clearErrors();
+    if (isBusy || isCreatingRoom) return;
 
+    // Validate user ID
+    if (user.id == null || user.id!.isEmpty) {
+      AIHelpers.showToast(msg: 'Invalid user selected.');
+      return;
+    }
+
+    clearErrors();
     isCreatingRoom = true;
-    await runBusyFuture(() async {
-      try {
-        var existedRoom = await roomService.getRoomByChatUser(
-          id: user.id ?? '',
-        );
-        if (existedRoom != null) {
-          AIHelpers.showToast(msg: 'You already created user\'s chat.');
-        } else {
+
+    try {
+      await runBusyFuture(() async {
+        try {
+          var existedRoom = await roomService.getRoomByChatUser(id: user.id!);
+          if (existedRoom != null) {
+            AIHelpers.showToast(msg: 'You already have a chat with this user.');
+            return;
+          }
+
+          var currentUser = AuthHelper.user;
+          if (currentUser?.id == null) {
+            throw Exception('Current user not found. Please log in again.');
+          }
+
+          final currentUserId = currentUser!.id!;
           var room = RoomModel(
-            userId: AuthHelper.user?.id,
-            userIds: [AuthHelper.user?.id, user.id],
-            content: '${AuthHelper.user?.firstName} have created a room',
+            userId: currentUserId,
+            userIds: [currentUserId, user.id!],
+            content: '${currentUser.firstName ?? 'User'} created a room',
             updatedAt: DateTime.now(),
             timestamp: DateTime.now(),
           );
-          await roomService.createRoom(room);
-          AIHelpers.showToast(msg: "Successfully Create Room!");
-        }
-        Navigator.of(context).pop();
-      } catch (e) {
-        logger.e(e);
-        setError(e);
-      } finally {
-        isCreatingRoom = false;
-      }
-    }());
 
-    if (hasError) {
-      AIHelpers.showToast(msg: modelError.toString());
+          await roomService.createRoom(room);
+          AIHelpers.showToast(msg: "Room created successfully!");
+
+          // Only navigate on successful creation
+          Navigator.of(context).pop();
+        } catch (e) {
+          logger.e(e);
+          setError(e);
+          // Show error toast
+          AIHelpers.showToast(
+            msg:
+                modelError?.toString() ??
+                'Failed to create room. Please try again.',
+          );
+        }
+      }());
+    } finally {
+      isCreatingRoom = false;
     }
   }
 }

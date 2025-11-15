@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:collection/collection.dart';
 import 'package:insoblok/widgets/text_widget.dart';
 
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -10,8 +9,6 @@ import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
 import 'package:insoblok/routers/routers.dart';
-import 'package:insoblok/models/models.dart';
-import 'package:insoblok/pages/pages.dart';
 
 final kLandingPageData = [
   {
@@ -51,11 +48,6 @@ class LoginPage extends StatelessWidget {
       viewModelBuilder: () => LoginProvider(),
       onViewModelReady: (viewModel) => viewModel.init(context),
       builder: (context, viewModel, _) {
-        final List<MenuEntry> menuEntries = UnmodifiableListView<MenuEntry>(
-          LoginProvider.loginMethods.map<MenuEntry>(
-            (String name) => MenuEntry(value: name, label: name),
-          ),
-        );
         final cp = viewModel.currentPage; // 0 or 1
 
         // Corrected visibility rules based on your comments:
@@ -253,15 +245,18 @@ class LoginPage extends StatelessWidget {
                           ),
                         ),
 
-                        // Conditional wallet buttons
-                        if (viewModel.isCheckingWallet)
-                          Column(
-                            children: [
-                              CircularProgressIndicator(strokeWidth: 2),
-                              Text("Checking wallet status ..."),
-                            ],
-                          )
-                        else if (viewModel.walletExists)
+                            // Conditional wallet buttons
+                            if (viewModel.isCheckingWallet)
+                              Column(
+                                children: [
+                                  CircularProgressIndicator(strokeWidth: 2),
+                                  Text("Checking wallet status ..."),
+                                ],
+                              )
+                            else if (viewModel.isNavigatingToMain)
+                              // Don't show content when navigating - overlay will show loader
+                              const SizedBox.shrink()
+                            else if (viewModel.walletExists)
                           Column(
                             children: [
                               Text(viewModel.checkFaceStatus),
@@ -465,13 +460,26 @@ class LoginPage extends StatelessWidget {
                   ),
                 ),
               ),
-              // Loading overlay when navigating to main page
+              // Single loading overlay when navigating to main page
               if (viewModel.isNavigatingToMain)
                 Container(
                   color: Colors.black.withOpacity(0.7),
                   child: const Center(
-                    child: CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        CircularProgressIndicator(
+                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                        ),
+                        SizedBox(height: 16),
+                        Text(
+                          "Logging in...",
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 16,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 ),

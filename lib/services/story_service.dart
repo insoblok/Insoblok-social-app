@@ -245,12 +245,17 @@ class StoryService with ListenableServiceMixin {
 
     // Always add userAction for vote category stories so they appear in lookbook
     // Also add for private stories
-    if (ref.id != null) {
-      if (story.category == 'vote' || (staus != null && staus == 'private')) {
-        await addUserAction(ref.id);
-      }
+    if (story.category == 'vote' || (staus != null && staus == 'private')) {
+      await addUserAction(ref.id);
     }
     return ref.id;
+  }
+
+  // Trigger story update notification
+  Future<void> updateStoryUpdated() async {
+    await storyCollection.doc('updated').set({
+      'created_at': DateTime.now().toUtc().toIso8601String(),
+    });
   }
 
   // Update a story

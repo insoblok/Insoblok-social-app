@@ -608,7 +608,7 @@ class RunwareService {
             "width": 864,
             "numberResults": 1,
             "includeCost": true,
-            "outputQuality": 85,
+            "outputQuality": 80, // Slightly lower quality for faster generation
             "providerSettings": {
               "bytedance": {"cameraFixed": false},
             },
@@ -639,14 +639,46 @@ class RunwareService {
 
   Future<Map<String, dynamic>> _pollForResult(
     String taskUUID, {
-    int maxRetries = 30,
-    int retryDelaySeconds = 5,
+    int maxRetries = 40,
+    int initialDelaySeconds = 2, // Start checking after 2 seconds
   }) async {
-    for (int attempt = 0; attempt < maxRetries; attempt++) {
-      print('Checking video status... (Attempt ${attempt + 1}/$maxRetries)');
+    // First check immediately (no delay) - sometimes video is ready quickly
+    try {
+      final response = await http.post(
+        Uri.parse(baseUrlRunware),
+        headers: {
+          'Authorization': 'Bearer $apiRunwareKey',
+          'Content-Type': 'application/json',
+        },
+        body: json.encode([
+          {"taskType": "getResponse", "taskUUID": taskUUID},
+        ]),
+      );
 
-      // Wait before checking
-      await Future.delayed(Duration(seconds: retryDelaySeconds));
+      if (response.statusCode == 200) {
+        final responseData = json.decode(response.body);
+        final result = _handleGetResponse(responseData, taskUUID);
+
+        if (result['status'] == 'success') {
+          return result;
+        } else if (result['status'] == 'error') {
+          throw Exception('Video generation failed: ${result['message']}');
+        }
+        // If processing, continue to polling loop
+      }
+    } catch (e) {
+      print('Initial status check error: $e');
+    }
+
+    // Polling with exponential backoff: 2s, 3s, 4s, 5s, then 5s intervals
+    for (int attempt = 0; attempt < maxRetries; attempt++) {
+      // Exponential backoff: start with initialDelaySeconds, increase gradually, cap at 5s
+      final delaySeconds = attempt < 3 ? initialDelaySeconds + attempt : 5;
+
+      print(
+        'Checking video status... (Attempt ${attempt + 1}/$maxRetries, waiting ${delaySeconds}s)',
+      );
+      await Future.delayed(Duration(seconds: delaySeconds));
 
       try {
         final response = await http.post(
@@ -676,6 +708,7 @@ class RunwareService {
         }
       } catch (e) {
         print('Error checking status: $e');
+        // Continue polling even on error (network issues, etc.)
       }
     }
 

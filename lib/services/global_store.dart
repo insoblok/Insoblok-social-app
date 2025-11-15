@@ -76,12 +76,10 @@ class GlobalStore {
   }
 
   // Check if credentials exist
+  // For login, we only need password (email is optional)
   Future<bool> hasSavedCredentials() async {
-    final email = await getSavedEmail();
     final password = await getSavedPassword();
-    return email != null &&
-        email.isNotEmpty &&
-        password != null &&
-        password.isNotEmpty;
+    // Password is required for login, email is optional
+    return password != null && password.isNotEmpty;
   }
 }

@@ -122,53 +122,73 @@ class LoginProvider extends InSoBlokViewModel {
     await checkWalletStatus();
     if (!walletExists) return;
 
-    // Check for saved credentials and auto-login if enabled
-    final globalStore = GlobalStore();
-    final hasCredentials = await globalStore.hasSavedCredentials();
-    final autoLoginEnabled = await globalStore.isAutoLoginEnabled();
+    // Immediately attempt authentication and go directly to main page
+    await _attemptDirectLogin();
+  }
 
-    if (hasCredentials && autoLoginEnabled) {
-      // Auto-login with saved credentials
-      final savedPassword = await globalStore.getSavedPassword();
-      if (savedPassword != null && savedPassword.isNotEmpty) {
-        try {
-          UnlockedWallet unlockedWallet = await cryptoService.unlockFromStorage(
-            savedPassword,
-          );
-          if (unlockedWallet.address.isNotEmpty) {
-            var authUser = await AuthHelper.signIn(
-              unlockedWallet.address,
-              false,
-            );
-            if (authUser?.walletAddress?.isNotEmpty ?? false) {
-              isNavigatingToMain = true;
-              AuthHelper.updateStatus('Online');
-              // Add a small delay to show the loading indicator
-              await Future.delayed(const Duration(milliseconds: 500));
+  Future<void> _attemptDirectLogin() async {
+    // Try to authenticate using saved credentials first
+    final globalStore = GlobalStore();
+    final savedPassword = await globalStore.getSavedPassword();
+
+    logger.d(
+      "Attempting direct login. Has saved password: ${savedPassword != null && savedPassword.isNotEmpty}",
+    );
+
+    if (savedPassword != null && savedPassword.isNotEmpty) {
+      // Try to authenticate with saved password
+      try {
+        logger.d("Unlocking wallet with saved password...");
+        UnlockedWallet unlockedWallet = await cryptoService.unlockFromStorage(
+          savedPassword,
+        );
+        logger.d("Wallet unlocked. Address: ${unlockedWallet.address}");
+
+        if (unlockedWallet.address.isNotEmpty) {
+          logger.d("Signing in with wallet address...");
+          var authUser = await AuthHelper.signIn(unlockedWallet.address, false);
+          logger.d("Auth user: ${authUser?.walletAddress}");
+
+          if (authUser?.walletAddress?.isNotEmpty ?? false) {
+            logger.d("Authentication successful! Navigating to main page...");
+            isNavigatingToMain = true;
+            notifyListeners();
+            AuthHelper.updateStatus('Online');
+            // Add a small delay to show the loading indicator
+            await Future.delayed(const Duration(milliseconds: 500));
+            if (context.mounted) {
               Routers.goToMainPage(context);
-              notifyListeners();
-              return;
             }
+            return;
+          } else {
+            logger.d("Auth user wallet address is empty");
           }
-        } catch (e) {
-          logger.d("Auto-login failed: $e");
-          // Fall through to normal login flow
+        } else {
+          logger.d("Unlocked wallet address is empty");
         }
+      } catch (e, stackTrace) {
+        logger.d("Auto-login failed: $e");
+        logger.d("Stack trace: $stackTrace");
+        // Fall through to try face authentication
       }
+    } else {
+      logger.d("No saved password found");
     }
 
     // Check if biometric is enabled for the user, or if device supports biometrics
-    // For first-time login, check device capability; for returning users, check user preference
-    final localAuthService = LocalAuthService();
     final isBiometricAvailable = await localAuthService.isFaceIDAvailable();
     final userBiometricEnabled = AuthHelper.user?.biometricEnabled ?? false;
 
+    // Try face authentication if available
     if (isBiometricAvailable && userBiometricEnabled) {
+      // Go directly to face authentication
       await checkFace(context);
     } else {
-      Routers.goToPincodePage(context);
+      // Don't navigate to pincode page - stay on login page
+      // The login page will show options for manual authentication
+      checkFaceStatus = "";
+      notifyListeners();
     }
-    notifyListeners();
   }
 
   @override
@@ -281,16 +301,63 @@ class LoginProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  void handleSignInWithPassword() {
+  Future<void> handleSignInWithPassword() async {
+    // Try to authenticate directly and go to main page
     _walletExists = true;
+    isNavigatingToMain = true;
     notifyListeners();
+
+    // Try saved credentials first
+    final globalStore = GlobalStore();
+    final savedPassword = await globalStore.getSavedPassword();
+
+    if (savedPassword != null && savedPassword.isNotEmpty) {
+      try {
+        UnlockedWallet unlockedWallet = await cryptoService.unlockFromStorage(
+          savedPassword,
+        );
+        if (unlockedWallet.address.isNotEmpty) {
+          var authUser = await AuthHelper.signIn(unlockedWallet.address, false);
+          if (authUser?.walletAddress?.isNotEmpty ?? false) {
+            AuthHelper.updateStatus('Online');
+            // Add a small delay to show the loading indicator
+            await Future.delayed(const Duration(milliseconds: 500));
+            if (context.mounted) {
+              Routers.goToMainPage(context);
+            }
+            return;
+          }
+        }
+      } catch (e) {
+        logger.d("Sign in with password failed: $e");
+        isNavigatingToMain = false;
+        checkFaceStatus = "Authentication failed. Please try again.";
+        notifyListeners();
+        return;
+      }
+    }
+
+    // No saved password - try face authentication
+    final isBiometricAvailable = await localAuthService.isFaceIDAvailable();
+    if (isBiometricAvailable) {
+      await checkFace(context);
+    } else {
+      isNavigatingToMain = false;
+      checkFaceStatus = "No saved credentials. Please set up authentication.";
+      notifyListeners();
+    }
   }
 
   void handleChangeLoginMethod(String method) {
     if (method.isEmpty) return;
     loginMethod = method;
+    // Don't navigate to pincode page - handle authentication on login page
     if (method == loginMethods[0]) {
-      Routers.goToPincodePage(context);
+      // Password login - try saved credentials or face auth
+      handleSignInWithPassword();
+    } else if (method == loginMethods[1]) {
+      // Face ID login
+      checkFace(context);
     }
   }
 
@@ -298,13 +365,15 @@ class LoginProvider extends InSoBlokViewModel {
     UnlockedWallet wallet = await localAuthService.accessWalletWithFaceId();
     logger.d("Wallet is ${wallet.address}");
     if (wallet.address.isEmpty) {
-      checkFaceStatus = "Biometric Unlock Failed. Try again with PinCode.";
+      checkFaceStatus =
+          "Biometric Unlock Failed. Please try again or use password.";
       apiService.logRequest({
         "result": "failed",
         "message":
             'Face Unlock Failed: _checkFace ${await AIHelpers.getIPAddress()}',
       });
-      Routers.goToPincodePage(ctx);
+      notifyListeners();
+      return;
     } else {
       checkFaceStatus = "Biometric Auth success. Please wait ...";
       apiService.logRequest({

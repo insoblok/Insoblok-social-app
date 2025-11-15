@@ -254,7 +254,7 @@ class StoryContentProvider extends InSoBlokViewModel {
     clearErrors();
 
     if (story.userId == user?.id) {
-      AIHelpers.showToast(msg: 'You can\'t vote to your feed!');
+      AIHelpers.showToast(msg: 'You can\'t vote to your own feed!');
       return;
     }
     var votes = List<StoryVoteModel>.from(story.votes ?? []);
@@ -499,9 +499,7 @@ class StoryContentProvider extends InSoBlokViewModel {
                           'Add',
                           style: Theme.of(
                             context,
-                          ).textTheme.bodyMedium?.copyWith(
-                            color: Colors.white,
-                          ),
+                          ).textTheme.bodyMedium?.copyWith(color: Colors.white),
                         ),
                       ),
                     ),
