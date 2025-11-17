@@ -14,9 +14,6 @@ import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
 import 'package:insoblok/locator.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:image/image.dart' as img;
 
 class StoryProvider extends InSoBlokViewModel {
   late BuildContext _context;
@@ -126,7 +123,33 @@ class StoryProvider extends InSoBlokViewModel {
     refreshCount = 0;
     _videoPath = null;
 
-    logger.d("this is the story");
+    // Show story details
+    logger.d("=== Story Details ===");
+    logger.d("Story ID: ${story.id}");
+    logger.d("User ID: ${story.userId}");
+    logger.d("Title: ${story.title}");
+    logger.d("Text: ${story.text}");
+    logger.d("Status: ${story.status}");
+    logger.d("Category: ${story.category}");
+    logger.d("Place ID: ${story.placeId}");
+    logger.d("Created At: ${story.createdAt}");
+    logger.d("Updated At: ${story.updatedAt}");
+    logger.d("Likes Count: ${(story.likes ?? []).length}");
+    logger.d("Follows Count: ${(story.follows ?? []).length}");
+    logger.d("Views Count: ${(story.views ?? []).length}");
+    logger.d("Comments Count: ${(story.comments ?? []).length}");
+    logger.d("Reactions Count: ${(story.reactions ?? []).length}");
+    logger.d("Votes Count: ${(story.votes ?? []).length}");
+    logger.d("Medias Count: ${(story.medias ?? []).length}");
+    if ((story.medias ?? []).isNotEmpty) {
+      logger.d(
+        "Media URLs: ${(story.medias ?? []).map((m) => m.link).toList()}",
+      );
+    }
+    if ((story.reactions ?? []).isNotEmpty) {
+      logger.d("Reaction URLs: ${story.reactions}");
+    }
+    logger.d("===================");
 
     final mediaPath = story.medias?[0].link;
     if (mediaPath!.contains('.mov') || mediaPath.contains('.mp4')) {
@@ -157,21 +180,25 @@ class StoryProvider extends InSoBlokViewModel {
 
   Future<void> startRRC() async {
     // Open the new RRC (Vybe Loop) screen when stage is tapped
-    Routers.goToRRCAvatarGeneration(context);
+    logger.d("start goToRRCAvatarGeneration");
+    showFaceDialog = true;
+    Routers.goToRRCAvatarGeneration(
+      context,
+      origin: "dashboard",
+      storyID: story.id,
+      url: (story.medias ?? [])[pageIndex].link,
+    );
   }
 
   Future<void> captureReactionImage() async {
+    // Face capture feature moved to rrc_avatar_provider.dart
+    // This method is kept for backward compatibility but does nothing
+    logger.d(
+      "captureReactionImage called - feature moved to RRC avatar provider",
+    );
     showFaceDialog = true;
-    isCapturingTimer = true;
-    camera.onFrame = (String? path) {
-      logger.d("Trying to detect user expressions");
-      if (path != null) {
-        detectFace(path);
-        notifyListeners();
-      }
-    };
-
-    await camera.initialize();
+    isCapturingTimer = false;
+    notifyListeners();
   }
 
   Future<void> completeTimer() async {
@@ -205,36 +232,9 @@ class StoryProvider extends InSoBlokViewModel {
   List<AIFaceAnnotation> annotations = [];
 
   Future<void> detectFace(String link) async {
-    // link = '/data/data/insoblok.social.app/cache/me.png';
-
-    logger.d("This is detect face function");
-    var faces = await GoogleVisionHelper.getFacesFromImage(link: link);
-    logger.d("These are faces $faces");
-    // var _annotations = await GoogleVisionHelper.analyzeLocalImage(link: link);
-    logger.d("This is after google vision function");
-    if (faces.isNotEmpty) {
-      final directory = await getApplicationDocumentsDirectory();
-      final filePath = '${directory.path}/face.png';
-      final file = io.File(filePath);
-      try {
-        if (await file.exists()) {
-          await file.delete();
-        }
-        final encoded = img.encodePng(faces[0]);
-        _face = await file.writeAsBytes(encoded, flush: true);
-        await FileImage(_face!).evict();
-        annotations.clear();
-        // annotations.addAll(_annotations);
-        logger.d('✅ face.png replaced at $filePath');
-      } catch (e) {
-        logger.e('❌ Failed to write new face.png: $e');
-        AIHelpers.showToast(msg: 'Failed to write new reaction image');
-      }
-      notifyListeners();
-    } else {
-      logger.e("No face detected!");
-      AIHelpers.showToast(msg: 'No face detected!');
-    }
+    // Face detection feature moved to rrc_avatar_provider.dart
+    // This method is kept for backward compatibility but does nothing
+    logger.d("detectFace called - feature moved to RRC avatar provider");
   }
 
   @override
@@ -464,7 +464,7 @@ class StoryProvider extends InSoBlokViewModel {
     clearErrors();
 
     if (story.userId == user?.id) {
-      AIHelpers.showToast(msg: 'You can\'t vote to your feed!');
+      AIHelpers.showToast(msg: "You can't vote to your own feed!");
       return;
     }
     var votes = List<StoryVoteModel>.from(story.votes ?? []);
@@ -639,6 +639,11 @@ class StoryProvider extends InSoBlokViewModel {
   }
 
   Future<void> showReactions() async {
+    // Refresh story to get latest reactions before navigating
+    logger.d("showReactions - Current story reactions: ${story.reactions}");
+    logger.d("showReactions - Story ID: ${story.id}");
+    await fetchStory();
+    logger.d("showReactions - Updated story reactions: ${story.reactions}");
     Routers.goToReactionPage(context, story);
   }
 
@@ -834,7 +839,7 @@ class StoryProvider extends InSoBlokViewModel {
     }
 
     if (AuthHelper.user?.id == followee?.id) {
-      AIHelpers.showToast(msg: "Can not follow yourself.");
+      AIHelpers.showToast(msg: "Can't follow yourself.");
       return;
     }
     following = true;

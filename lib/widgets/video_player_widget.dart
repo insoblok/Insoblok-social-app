@@ -96,43 +96,87 @@ class _VideoPlayerState extends State<VideoPlayerWidget> {
   }
 
   Future<void> _initializeVideo(String path) async {
-    await Future.delayed(const Duration(milliseconds: 1500));
-    try {
-      // Dispose previous controller safely
-      validate = await validateVideoFile(path);
-      if (path.startsWith('http')) {
-        _controller = VideoPlayerController.networkUrl(Uri.parse(path));
-      } else if (path.contains('asset')) {
-        _controller = VideoPlayerController.asset(path);
-      } else {
-        final file = File(path);
-        if (!await file.exists()) {
-          logger.e("❌ Video file not found: $path");
-          if (mounted) {
-            setState(() => _initialized = false);
+    // For network URLs, add a delay to allow video to be fully available
+    if (path.startsWith('http://') || path.startsWith('https://')) {
+      await Future.delayed(const Duration(seconds: 2));
+    } else {
+      await Future.delayed(const Duration(milliseconds: 1500));
+    }
+
+    int maxAttempts = 3;
+    int attempt = 0;
+
+    while (attempt < maxAttempts) {
+      attempt++;
+      try {
+        // Dispose previous controller safely
+        validate = await validateVideoFile(path);
+
+        VideoPlayerController? newController;
+        if (path.startsWith('http://') || path.startsWith('https://')) {
+          logger.d(
+            'Initializing network video: $path (attempt $attempt/$maxAttempts)',
+          );
+          newController = VideoPlayerController.networkUrl(Uri.parse(path));
+        } else if (path.contains('asset')) {
+          newController = VideoPlayerController.asset(path);
+        } else {
+          final file = File(path);
+          if (!await file.exists()) {
+            logger.e("❌ Video file not found: $path");
+            if (mounted) {
+              setState(() => _initialized = false);
+            }
+            return;
           }
-          return;
+          newController = VideoPlayerController.file(file);
         }
-        _controller = VideoPlayerController.file(file);
-      }
-      await _controller?.initialize();
-      setState(() {});
 
-      _controller?.setLooping(true);
+        // Dispose old controller if exists
+        await _controller?.dispose();
+        _controller = newController;
 
-      if (mounted) {
-        setState(() {
-          _initialized = true;
-          _isPlaying = false;
-        });
-      }
-    } catch (error) {
-      logger.e("⚠️ Video initialization error: $path, $error");
-      if (mounted) {
-        setState(() {
+        await _controller!.initialize();
+
+        _controller!.setLooping(true);
+
+        if (mounted) {
+          setState(() {
+            _initialized = true;
+            _isPlaying = false;
+          });
+        }
+
+        logger.d('✅ Video initialized successfully: $path');
+        return; // Success - exit retry loop
+      } catch (error) {
+        logger.e(
+          "⚠️ Video initialization error (attempt $attempt/$maxAttempts): $path, $error",
+        );
+
+        // Dispose failed controller
+        try {
+          await _controller?.dispose();
           _controller = null;
-          _initialized = false;
-        });
+        } catch (_) {}
+
+        if (attempt < maxAttempts) {
+          // Wait before retry with exponential backoff
+          final delay = Duration(milliseconds: 1000 * attempt);
+          logger.d(
+            'Retrying video initialization in ${delay.inMilliseconds}ms...',
+          );
+          await Future.delayed(delay);
+        } else {
+          // All attempts failed
+          if (mounted) {
+            setState(() {
+              _controller = null;
+              _initialized = false;
+            });
+          }
+          logger.e('❌ Failed to initialize video after $maxAttempts attempts');
+        }
       }
     }
   }
@@ -151,6 +195,7 @@ class _VideoPlayerState extends State<VideoPlayerWidget> {
         (widget.circular)
             ? widget.radius ?? 100
             : widget.width ?? MediaQuery.of(context).size.width;
+
 
     return ClipOval(
       clipBehavior:
@@ -200,5 +245,12 @@ class _VideoPlayerState extends State<VideoPlayerWidget> {
                 ),
       ),
     );
+
+    // Apply ClipOval only for circular videos
+    if (widget.circular) {
+      return ClipOval(clipBehavior: Clip.antiAlias, child: content);
+    } else {
+      return ClipRRect(borderRadius: BorderRadius.circular(0), child: content);
+    }
   }
 }

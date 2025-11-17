@@ -737,6 +737,20 @@ class RRCAvatarGenerationProvider extends InSoBlokViewModel {
     if (isBusy) return;
     clearErrors();
 
+    // Check if user is trying to react to their own story
+    if (storyID != null && storyID!.isNotEmpty) {
+      try {
+        final story = await storyService.getStory(storyID!);
+        if (story.userId == AuthHelper.user?.id) {
+          AIHelpers.showToast(msg: "You can't react to your own story!");
+          return;
+        }
+      } catch (e) {
+        logger.e('Error fetching story: $e');
+        // Continue anyway - better to allow reaction than block due to fetch error
+      }
+    }
+
     setBusy(true);
     notifyListeners();
 

@@ -1,6 +1,10 @@
 import 'dart:async';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as p;
 
 import 'package:insoblok/pages/vtos/deep_ar_plus_surface.dart';
 import 'package:insoblok/services/deep_ar_plus_service.dart';
@@ -23,22 +27,66 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
   // Local copy of DeepAR effect list (kept simple; same assets as integrated)
   static const List<Map<String, String>> kDeeparEffectData = [
-    {'title': 'Fire', 'assets': 'assets/effects/filters/fire_effect/Fire_Effect.deepar'},
-    {'title': 'Vendetta', 'assets': 'assets/effects/filters/vendetta_mask/Vendetta_Mask.deepar'},
-    {'title': 'Flower', 'assets': 'assets/effects/filters/flower_face/flower_face.deepar'},
-    {'title': 'Devil Neon Horns', 'assets': 'assets/effects/filters/devil_neon_horns/Neon_Devil_Horns.deepar'},
-    {'title': 'Elephant Trunk', 'assets': 'assets/effects/filters/elephant_trunk/Elephant_Trunk.deepar'},
-    {'title': 'Emotion Meter', 'assets': 'assets/effects/filters/emotion_meter/Emotion_Meter.deepar'},
-    {'title': 'Emotions Exaggerator', 'assets': 'assets/effects/filters/emotions_exaggerator/Emotions_Exaggerator.deepar'},
-    {'title': 'Heart', 'assets': 'assets/effects/filters/heart/8bitHearts.deepar'},
+    {
+      'title': 'Fire',
+      'assets': 'assets/effects/filters/fire_effect/Fire_Effect.deepar',
+    },
+    {
+      'title': 'Vendetta',
+      'assets': 'assets/effects/filters/vendetta_mask/Vendetta_Mask.deepar',
+    },
+    {
+      'title': 'Flower',
+      'assets': 'assets/effects/filters/flower_face/flower_face.deepar',
+    },
+    {
+      'title': 'Devil Neon Horns',
+      'assets':
+          'assets/effects/filters/devil_neon_horns/Neon_Devil_Horns.deepar',
+    },
+    {
+      'title': 'Elephant Trunk',
+      'assets': 'assets/effects/filters/elephant_trunk/Elephant_Trunk.deepar',
+    },
+    {
+      'title': 'Emotion Meter',
+      'assets': 'assets/effects/filters/emotion_meter/Emotion_Meter.deepar',
+    },
+    {
+      'title': 'Emotions Exaggerator',
+      'assets':
+          'assets/effects/filters/emotions_exaggerator/Emotions_Exaggerator.deepar',
+    },
+    {
+      'title': 'Heart',
+      'assets': 'assets/effects/filters/heart/8bitHearts.deepar',
+    },
     {'title': 'Hope', 'assets': 'assets/effects/filters/hope/Hope.deepar'},
-    {'title': 'Humanoid', 'assets': 'assets/effects/filters/humanoid/Humanoid.deepar'},
-    {'title': 'Ping Pong', 'assets': 'assets/effects/filters/ping_pong/Ping_Pong.deepar'},
-    {'title': 'Simple', 'assets': 'assets/effects/filters/simple/MakeupLook.deepar'},
-    {'title': 'Slipt', 'assets': 'assets/effects/filters/slipt/Split_View_Look.deepar'},
+    {
+      'title': 'Humanoid',
+      'assets': 'assets/effects/filters/humanoid/Humanoid.deepar',
+    },
+    {
+      'title': 'Ping Pong',
+      'assets': 'assets/effects/filters/ping_pong/Ping_Pong.deepar',
+    },
+    {
+      'title': 'Simple',
+      'assets': 'assets/effects/filters/simple/MakeupLook.deepar',
+    },
+    {
+      'title': 'Slipt',
+      'assets': 'assets/effects/filters/slipt/Split_View_Look.deepar',
+    },
     {'title': 'Snail', 'assets': 'assets/effects/filters/snail/Snail.deepar'},
-    {'title': 'Stallone', 'assets': 'assets/effects/filters/stallone/Stallone.deepar'},
-    {'title': 'Viking Helmet', 'assets': 'assets/effects/filters/viking_helmet/viking_helmet.deepar'},
+    {
+      'title': 'Stallone',
+      'assets': 'assets/effects/filters/stallone/Stallone.deepar',
+    },
+    {
+      'title': 'Viking Helmet',
+      'assets': 'assets/effects/filters/viking_helmet/viking_helmet.deepar',
+    },
   ];
 
   int _maxSeconds = 30; // requirement: maximum length 30s
@@ -61,9 +109,18 @@ class _CreatePostPageState extends State<CreatePostPage> {
   int _preCountdownRemaining = 0;
   Timer? _preTimer;
 
+  // Track currently selected effect (cached file path for DeepAR, asset path for UI)
+  String? _selectedEffectPath; // Cached file path
+  String? _selectedAssetPath; // Original asset path for UI comparison
+
+  // Cache for effect file paths (asset path -> cached file path)
+  final Map<String, String> _effectCache = {};
+
   @override
   void initState() {
     super.initState();
+    // Listen to DeepAR service changes
+    _deepAr.addListener(_onDeepArChanged);
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       await _deepAr.initialize(
         androidKey: DEEPAR_ANDROID_KEY,
@@ -74,9 +131,55 @@ class _CreatePostPageState extends State<CreatePostPage> {
     });
   }
 
+  void _onDeepArChanged() {
+    if (mounted) {
+      setState(() {});
+    }
+  }
+
+  /// Copies an effect asset file to cache and returns the file path
+  Future<String?> _copyEffectToCache(String assetPath) async {
+    try {
+      // Check if already cached
+      if (_effectCache.containsKey(assetPath)) {
+        final cachedPath = _effectCache[assetPath]!;
+        if (await File(cachedPath).exists()) {
+          return cachedPath;
+        }
+        // Remove from cache if file doesn't exist
+        _effectCache.remove(assetPath);
+      }
+
+      // Load asset from bundle
+      final bytes = await rootBundle.load(assetPath);
+
+      // Get temporary directory
+      final cache = await getTemporaryDirectory();
+
+      // Create unique filename
+      final fileName =
+          'effect_${assetPath.hashCode}_${DateTime.now().millisecondsSinceEpoch}.deepar';
+      final file = File(p.join(cache.path, fileName));
+
+      // Write bytes to file
+      await file.writeAsBytes(bytes.buffer.asUint8List());
+
+      // Cache the path
+      _effectCache[assetPath] = file.path;
+
+      debugPrint('Effect copied to cache: $assetPath -> ${file.path}');
+      return file.path;
+    } catch (e) {
+      debugPrint('Failed to copy effect to cache: $assetPath, error: $e');
+      return null;
+    }
+  }
+
   @override
   void dispose() {
     _ticker?.cancel();
+    _preTimer?.cancel();
+    _deepAr.removeListener(_onDeepArChanged);
     _deepAr.disposeEngine();
     super.dispose();
   }
@@ -85,6 +188,19 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
   Future<void> _startRecording() async {
     if (!_deepAr.isReady || _isRecording) return;
+
+    // Ensure the selected effect is applied before recording
+    if (_selectedEffectPath != null && _selectedEffectPath!.isNotEmpty) {
+      try {
+        // Use the cached file path (already a file path, not asset path)
+        await _deepAr.switchEffect(_selectedEffectPath!);
+        // Small delay to ensure effect is applied
+        await Future.delayed(const Duration(milliseconds: 100));
+      } catch (e) {
+        debugPrint('Failed to apply effect before recording: $e');
+      }
+    }
+
     await _deepAr.startRecording();
     if (!mounted) return;
     setState(() => _remaining = _maxSeconds);
@@ -139,13 +255,27 @@ class _CreatePostPageState extends State<CreatePostPage> {
     if (_beautyOn) {
       try {
         await _deepAr.switchEffect('');
+        setState(() {
+          _beautyOn = false;
+          _selectedEffectPath = null;
+          _selectedAssetPath = null;
+        });
       } catch (_) {}
-      setState(() => _beautyOn = false);
     } else {
       try {
-        await _deepAr.switchEffect(simplePath);
-        setState(() => _beautyOn = true);
-      } catch (_) {}
+        // Copy asset to cache first
+        final cachedPath = await _copyEffectToCache(simplePath);
+        if (cachedPath != null) {
+          await _deepAr.switchEffect(cachedPath);
+          setState(() {
+            _beautyOn = true;
+            _selectedEffectPath = cachedPath;
+            _selectedAssetPath = simplePath; // Store original asset path for UI
+          });
+        }
+      } catch (e) {
+        debugPrint('Failed to toggle beauty effect: $e');
+      }
     }
   }
 
@@ -161,13 +291,17 @@ class _CreatePostPageState extends State<CreatePostPage> {
         Widget speedItem(String label, double v) {
           final selected = _speedFactor == v;
           return ListTile(
-            title: Text(label, style: TextStyle(color: selected ? Colors.pink : Colors.white)),
+            title: Text(
+              label,
+              style: TextStyle(color: selected ? Colors.pink : Colors.white),
+            ),
             onTap: () {
               Navigator.pop(ctx);
               setState(() => _speedFactor = v);
             },
           );
         }
+
         return SafeArea(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -196,21 +330,21 @@ class _CreatePostPageState extends State<CreatePostPage> {
         Widget item(String label, int sec) {
           final selected = _preCountdownSeconds == sec;
           return ListTile(
-            title: Text(label, style: TextStyle(color: selected ? Colors.pink : Colors.white)),
+            title: Text(
+              label,
+              style: TextStyle(color: selected ? Colors.pink : Colors.white),
+            ),
             onTap: () {
               Navigator.pop(ctx);
               setState(() => _preCountdownSeconds = sec);
             },
           );
         }
+
         return SafeArea(
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            children: [
-              item('Off', 0),
-              item('3s', 3),
-              item('10s', 10),
-            ],
+            children: [item('Off', 0), item('3s', 3), item('10s', 10)],
           ),
         );
       },
@@ -270,11 +404,25 @@ class _CreatePostPageState extends State<CreatePostPage> {
           mainAxisSize: MainAxisSize.min,
           spacing: 14,
           children: [
-            circle(Icons.cameraswitch, _deepAr.isReady ? _deepAr.switchCamera : null),
+            circle(
+              Icons.cameraswitch,
+              _deepAr.isReady ? _deepAr.switchCamera : null,
+            ),
             circle(Icons.speed, _chooseSpeed),
-            circle(Icons.face_retouching_natural, _toggleBeauty, color: _beautyOn ? Colors.pink : null),
-            circle(Icons.filter_vintage, () => setState(() => _showFilters = !_showFilters)),
-            circle(Icons.timer, _chooseTimer, color: _preCountdownSeconds > 0 ? Colors.pink : null),
+            circle(
+              Icons.face_retouching_natural,
+              _toggleBeauty,
+              color: _beautyOn ? Colors.pink : null,
+            ),
+            circle(
+              Icons.filter_vintage,
+              () => setState(() => _showFilters = !_showFilters),
+            ),
+            circle(
+              Icons.timer,
+              _chooseTimer,
+              color: _preCountdownSeconds > 0 ? Colors.pink : null,
+            ),
             circle(_flashOn ? Icons.flash_on : Icons.flash_off, _toggleFlash),
           ],
         ),
@@ -320,7 +468,7 @@ class _CreatePostPageState extends State<CreatePostPage> {
       left: 0,
       right: 0,
       child: SizedBox(
-        height: 46,
+        height: 56,
         child: ListView.separated(
           padding: const EdgeInsets.symmetric(horizontal: 10),
           scrollDirection: Axis.horizontal,
@@ -330,13 +478,76 @@ class _CreatePostPageState extends State<CreatePostPage> {
             final item = kDeeparEffectData[i];
             final title = (item['title'] ?? '').toString();
             final path = (item['assets'] ?? '').toString();
-            final enabled = _deepAr.isReady && path.isNotEmpty && !_isLoading;
-            return FilterChip(
-              label: Text(title.isEmpty ? 'Effect ${i + 1}' : title),
-              onSelected: enabled
-                  ? (_) async => _deepAr.switchEffect(path)
-                  : null,
-              selected: false,
+            final enabled =
+                _deepAr.isReady &&
+                path.isNotEmpty &&
+                !_isLoading &&
+                !_isRecording;
+            final isSelected = _selectedAssetPath == path;
+
+            return GestureDetector(
+              onTap:
+                  enabled
+                      ? () async {
+                        try {
+                          // Copy asset to cache first
+                          final cachedPath = await _copyEffectToCache(path);
+                          if (cachedPath == null) {
+                            debugPrint('Failed to load effect: $path');
+                            return;
+                          }
+
+                          // Switch to the cached file path
+                          await _deepAr.switchEffect(cachedPath);
+                          setState(() {
+                            _selectedEffectPath = cachedPath;
+                            _selectedAssetPath =
+                                path; // Store original asset path for UI
+                          });
+                        } catch (e) {
+                          debugPrint('Failed to switch effect: $e');
+                        }
+                      }
+                      : null,
+              child: Container(
+                constraints: const BoxConstraints(minWidth: 60, minHeight: 36),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 14,
+                  vertical: 10,
+                ),
+                decoration: BoxDecoration(
+                  color:
+                      isSelected
+                          ? Colors.pink.withOpacity(0.8)
+                          : Colors.black.withOpacity(0.6),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(
+                    color:
+                        isSelected
+                            ? Colors.pink
+                            : Colors.white.withOpacity(0.3),
+                    width: isSelected ? 2 : 1,
+                  ),
+                ),
+                child: Center(
+                  child: Text(
+                    title.isEmpty ? 'Effect ${i + 1}' : title,
+                    textAlign: TextAlign.center,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight:
+                          isSelected ? FontWeight.w600 : FontWeight.normal,
+                      color:
+                          enabled
+                              ? Colors.white
+                              : Colors.white.withOpacity(0.5),
+                      height: 1.2,
+                    ),
+                  ),
+                ),
+              ),
             );
           },
         ),
@@ -350,10 +561,20 @@ class _CreatePostPageState extends State<CreatePostPage> {
       mainAxisAlignment: MainAxisAlignment.center,
       spacing: 24,
       children: [
-        Text('VIDEO', style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Colors.white)),
+        Text(
+          'VIDEO',
+          style: Theme.of(
+            context,
+          ).textTheme.labelLarge?.copyWith(color: Colors.white),
+        ),
         InkWell(
           onTap: () => Routers.goToAddStoryPage(context),
-          child: Text('TEXT', style: Theme.of(context).textTheme.labelLarge?.copyWith(color: Colors.white70)),
+          child: Text(
+            'TEXT',
+            style: Theme.of(
+              context,
+            ).textTheme.labelLarge?.copyWith(color: Colors.white70),
+          ),
         ),
       ],
     );
@@ -366,11 +587,12 @@ class _CreatePostPageState extends State<CreatePostPage> {
 
     Widget chip(int seconds, bool selected) {
       return GestureDetector(
-        onTap: _isRecording || _isLoading
-            ? null
-            : () {
-                setState(() => _maxSeconds = seconds);
-              },
+        onTap:
+            _isRecording || _isLoading
+                ? null
+                : () {
+                  setState(() => _maxSeconds = seconds);
+                },
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
           decoration: BoxDecoration(
@@ -379,7 +601,10 @@ class _CreatePostPageState extends State<CreatePostPage> {
           ),
           child: Text(
             '${seconds}s',
-            style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
       );
@@ -404,24 +629,25 @@ class _CreatePostPageState extends State<CreatePostPage> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            _buildModeSwitcher(),
-            const SizedBox(height: 8),
+            // _buildModeSwitcher(),
+            // const SizedBox(height: 8),
             _buildDurationSelector(),
             const SizedBox(height: 10),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 GestureDetector(
-                  onTap: !canCapture
-                      ? null
-                      : () async {
-                          if (_isRecording) {
-                            await _stopRecording(autoProceed: true);
-                          } else {
-                            await _startWithPreTimerOrRecord();
-                          }
-                          if (mounted) setState(() {});
-                        },
+                  onTap:
+                      !canCapture
+                          ? null
+                          : () async {
+                            if (_isRecording) {
+                              await _stopRecording(autoProceed: true);
+                            } else {
+                              await _startWithPreTimerOrRecord();
+                            }
+                            if (mounted) setState(() {});
+                          },
                   child: Container(
                     width: 74,
                     height: 74,
@@ -446,7 +672,10 @@ class _CreatePostPageState extends State<CreatePostPage> {
             ),
             const SizedBox(height: 6),
             if (_isRecording)
-              Text('$_remaining s', style: const TextStyle(color: Colors.white)),
+              Text(
+                '$_remaining s',
+                style: const TextStyle(color: Colors.white),
+              ),
           ],
         ),
       ),
@@ -488,7 +717,11 @@ class _CreatePostPageState extends State<CreatePostPage> {
                 child: Center(
                   child: Text(
                     '$_preCountdownRemaining',
-                    style: const TextStyle(color: Colors.white, fontSize: 72, fontWeight: FontWeight.bold),
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 72,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                 ),
               ),
@@ -508,5 +741,3 @@ class _CreatePostPageState extends State<CreatePostPage> {
     );
   }
 }
-
-

@@ -51,9 +51,11 @@ class AccessCodeConfirmPageState extends State<AccessCodeConfirmPage> {
       return;
     }
     if (accessCode.accessCode == enteredCode) {
-      // AIHelpers.showToast(msg: "Access Code verified. Redirecting to signin page...");
+      // Access code verified - proceed to PIN code registration for signup
       await accessCodeService.updateChecked(email);
-      Routers.goToLoginPage(ctx);
+      logger.d("Access code verified. Navigating to PIN code registration page...");
+      // Navigate to PIN code registration page with empty mnemonic (to create new wallet)
+      Routers.goToPincodeRegisterPage(ctx, "");
     } else {
       AIHelpers.showToast(msg: "Invalid Access Code.");
     }

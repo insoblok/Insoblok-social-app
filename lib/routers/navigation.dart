@@ -3,8 +3,8 @@ import 'package:fluro/fluro.dart' as fluro;
 
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/pages/pages.dart';
+import 'package:insoblok/pages/homes/rrc_avatar_generation_view.dart' as homes;
 import 'package:insoblok/providers/providers.dart';
-
 
 const kRouterBase = '/';
 const kRouterLogin = '/login';
@@ -288,7 +288,10 @@ class Navigation {
     initRoute(kRouterVTOAddProduct, (props) => AddProductPage());
 
     // * AddStoryPage
-    initRoute(kRouterAddStory, (props) => AddStoryPage());
+    initRoute<String?>(
+      kRouterAddStory,
+      (props) => AddStoryPage(videoPath: props),
+    );
 
     // * StoryDetailPage
     initRoute<StoryModel>(
@@ -430,8 +433,23 @@ class Navigation {
     // * Live pages
     initRoute(kRouterLiveStream, (props) => LiveStreamPage());
     initRoute(kRouterLive, (props) => LivePage());
-    
-    initRoute(kRouterRRCAvatarGeneration, (props) => const RRCAvatarGenerationView());
 
+    initRoute<Map<String, dynamic>>(kRouterRRCAvatarGeneration, (props) {
+      if (props == null) {
+        throw ArgumentError('Route parameters are null');
+      }
+      if (!props.containsKey('face') ||
+          !props.containsKey('url') ||
+          !props.containsKey('origin') ||
+          !props.containsKey('storyID')) {
+        throw ArgumentError('Missing required route parameters');
+      }
+      return homes.RRCAvatarGenerationView(
+        face: props['face'],
+        url: props['url'],
+        origin: props['origin'],
+        storyID: props['storyID'],
+      );
+    });
   }
 }

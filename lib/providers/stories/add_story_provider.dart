@@ -1,9 +1,11 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:insoblok/locator.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/providers/providers.dart';
+import 'package:insoblok/routers/navigation.dart';
 import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
@@ -21,7 +23,6 @@ class AddStoryProvider extends InSoBlokViewModel {
   var scrollController = ScrollController();
   final _mediaProvider = locator<UploadMediaProvider>();
   UploadMediaProvider get mediaProvider => _mediaProvider;
-
 
   String _title = '';
   String get title => _title;
@@ -69,7 +70,6 @@ class AddStoryProvider extends InSoBlokViewModel {
   List<UserModel> get selectedUserList => _selectedUserList;
 
   String placeId = "";
-
 
   Future<void> init(BuildContext context) async {
     this.context = context;
@@ -120,6 +120,30 @@ class AddStoryProvider extends InSoBlokViewModel {
     }
   }
 
+  /// Adds a video file from a file path to the media list
+  Future<void> addVideoFromPath(String videoPath) async {
+    if (isBusy) return;
+
+    try {
+      final file = File(videoPath);
+      if (await file.exists()) {
+        // Create an XFile from the file path for UploadMediaItem
+        final xFile = XFile(videoPath);
+        // Create an UploadMediaItem from the XFile
+        final mediaItem = UploadMediaItem(file: xFile);
+        mediaProvider.medias.add(mediaItem);
+        notifyListeners();
+        logger.d("Video added to media list: $videoPath");
+      } else {
+        logger.e("Video file does not exist: $videoPath");
+        AIHelpers.showToast(msg: 'Video file not found');
+      }
+    } catch (e) {
+      logger.e("Error adding video from path: $e");
+      AIHelpers.showToast(msg: 'Failed to add video');
+    }
+  }
+
   void onRemoveMedia(UploadMediaItem media) {
     mediaProvider.removeMedia(media);
     notifyListeners();
@@ -131,8 +155,7 @@ class AddStoryProvider extends InSoBlokViewModel {
 
     if (media.getFileType() == FileType.video) {
       result = await Routers.goToVideoEditorPage(context, media.file!.path);
-    }
-    else if (media.getFileType() == FileType.image) {
+    } else if (media.getFileType() == FileType.image) {
       logger.d("GOing to image editor ${media.file!.path}");
       await Routers.goToImageEditorPage(context, media.file!.path);
       result = mediaPickerService.editedImagePath;
@@ -170,34 +193,36 @@ class AddStoryProvider extends InSoBlokViewModel {
       AIHelpers.showToast(msg: 'You need to select one user at least');
       return;
     }
-    if(isPrivate){
+    if (isPrivate) {
       var id = AuthHelper.user?.id;
       allowUsers.add(id!);
     }
-    
+
     await runBusyFuture(() async {
       try {
         txtUploadButton = 'Uploading Media(s)...';
         var medias = await mediaProvider.uploadMedias();
-        var validMedias = medias.asMap().entries
-          .where((entry) {
-            final index = entry.key;
-            final media= entry.value;
-            bool result = media.link != "" || media.width! > 0 || media.height! > 0; 
-            if(!result) mediaProvider.removeMediaByIndex(index);
-            return result; 
-          })
-          .map((entry) => entry.value)
-          .toList();
+        var validMedias =
+            medias
+                .asMap()
+                .entries
+                .where((entry) {
+                  final index = entry.key;
+                  final media = entry.value;
+                  bool result =
+                      media.link != "" || media.width! > 0 || media.height! > 0;
+                  if (!result) mediaProvider.removeMediaByIndex(index);
+                  return result;
+                })
+                .map((entry) => entry.value)
+                .toList();
 
         logger.d("medias : $medias");
-        if(validMedias.isEmpty) {
+        if (validMedias.isEmpty) {
           setError("Failed to upload medias.");
           return;
-        }
-        else if(validMedias.length < medias.length) {
+        } else if (validMedias.length < medias.length) {
           setError("Failed to upload some medias.");
-
         }
         if (quillDescription == '' && medias.isEmpty) {
           throw ('Invalid story type');
@@ -217,7 +242,7 @@ class AddStoryProvider extends InSoBlokViewModel {
         logger.d("new story : $story");
         var result = await storyService.postStory(story: story);
         await tastScoreService.postScore();
-        
+
         logger.d("result : $result");
       } catch (e, s) {
         setError(e);
@@ -236,8 +261,13 @@ class AddStoryProvider extends InSoBlokViewModel {
         msg: 'Successfully your post! Your feed is in list now!',
       );
       mediaProvider.reset();
-      // Navigator.of(context).pop(true);
-      goToMainPage();
+      // Clear navigation stack and go to main page to see the new story
+      if (context.mounted) {
+        Navigator.of(context).pushNamedAndRemoveUntil(
+          kRouterMain,
+          (Route<dynamic> route) => false, // Remove all previous routes
+        );
+      }
     }
   }
 

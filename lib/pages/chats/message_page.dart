@@ -7,7 +7,6 @@ import 'package:insoblok/extensions/extensions.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/services/services.dart';
-import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
 
@@ -31,7 +30,6 @@ class MessagePage extends StatelessWidget {
       viewModelBuilder: () => MessageProvider(),
       onViewModelReady: (viewModel) => viewModel.init(context, data: data),
       builder: (context, viewModel, _) {
-
         var bottomInset = MediaQuery.of(context).viewInsets.bottom;
         WidgetsBinding.instance.addPostFrameCallback((_) {
           if (bottomInset > 0) {
@@ -114,29 +112,38 @@ class MessagePage extends StatelessWidget {
             child: Column(
               children: [
                 Expanded(
-                  child: viewModel.messages.length == 0 ? Center(child: Text("No messages yet")) : 
-                    ListView.separated(
-                      controller: viewModel.scrollController,
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12.0,
-                        vertical: 24.0,
-                      ),
-                      itemBuilder: (context, index) {
-                        var message = viewModel.messages[index];
-                        return message.item(
-                          context,
-                          chatUser: viewModel.chatUser,
-                        );
-                      },
-                      separatorBuilder:
-                          (context, index) => const SizedBox(height: 8.0),
-                      itemCount: viewModel.messages.length,
-                    ),
+                  child:
+                      viewModel.messages.isEmpty
+                          ? Center(
+                            child: Text(
+                              "No messages yet",
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                          )
+                          : ListView.separated(
+                            controller: viewModel.scrollController,
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12.0,
+                              vertical: 24.0,
+                            ),
+                            itemBuilder: (context, index) {
+                              var message = viewModel.messages[index];
+                              logger.d(
+                                "🎨 Rendering message $index: ${message.senderId} - ${message.content}",
+                              );
+                              return message.item(
+                                context,
+                                chatUser: viewModel.chatUser,
+                              );
+                            },
+                            separatorBuilder:
+                                (context, index) => const SizedBox(height: 8.0),
+                            itemCount: viewModel.messages.length,
+                          ),
                 ),
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    
                     Row(
                       children: [
                         Expanded(
@@ -146,7 +153,9 @@ class MessagePage extends StatelessWidget {
                               right: 12.0,
                               bottom: MediaQuery.of(context).viewPadding.bottom,
                             ),
-                            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8.0,
+                            ),
                             alignment: Alignment.center,
                             decoration: BoxDecoration(
                               color: Theme.of(
@@ -171,7 +180,10 @@ class MessagePage extends StatelessWidget {
                                       viewModel.isAddPop
                                           ? Icons.close
                                           : Icons.add_outlined,
-                                      color: Theme.of(context).colorScheme.onPrimary,
+                                      color:
+                                          Theme.of(
+                                            context,
+                                          ).colorScheme.onPrimary,
                                     ),
                                   ),
                                 ),
@@ -181,20 +193,29 @@ class MessagePage extends StatelessWidget {
                                       left: 12.0,
                                       right: 12.0,
                                     ),
-                                    constraints: BoxConstraints(maxHeight: 100.0),
+                                    constraints: BoxConstraints(
+                                      maxHeight: 100.0,
+                                    ),
                                     child: TextFormField(
                                       focusNode: viewModel.focusNode,
                                       decoration: InputDecoration(
                                         hintText: 'Type something',
                                         hintStyle:
-                                            Theme.of(context).textTheme.labelMedium,
+                                            Theme.of(
+                                              context,
+                                            ).textTheme.labelMedium,
                                         border: InputBorder.none,
                                       ),
                                       keyboardType: TextInputType.text,
-                                      style: Theme.of(context).textTheme.bodyLarge!.copyWith(fontWeight: FontWeight.normal),
+                                      style: Theme.of(
+                                        context,
+                                      ).textTheme.bodyLarge!.copyWith(
+                                        fontWeight: FontWeight.normal,
+                                      ),
                                       maxLines: null,
                                       controller: viewModel.textController,
-                                      onChanged: (value) => viewModel.content = value,
+                                      onChanged:
+                                          (value) => viewModel.content = value,
                                       onFieldSubmitted: (value) {
                                         if (viewModel.isShowButton) {
                                           viewModel.sendMessage();
@@ -213,10 +234,16 @@ class MessagePage extends StatelessWidget {
                                   onTap: () {
                                     viewModel.handleClickDollarIcon(context);
                                   },
-                                  child:  AIImage(AIImages.icDollar2, width: 32.0, height: 32.0, backgroundColor: Colors.transparent, color: Colors.grey),
+                                  child: AIImage(
+                                    AIImages.icDollar2,
+                                    width: 32.0,
+                                    height: 32.0,
+                                    backgroundColor: Colors.transparent,
+                                    color: Colors.grey,
+                                  ),
                                 ),
                                 SizedBox(width: 2.0),
-                                
+
                                 const SizedBox(width: 8.0),
                               ],
                             ),
@@ -266,7 +293,8 @@ class MessagePage extends StatelessWidget {
                                 onPressed: viewModel.onPickerImage,
                                 child: AIImage(
                                   AIImages.icImage,
-                                  color: Theme.of(context).colorScheme.onPrimary,
+                                  color:
+                                      Theme.of(context).colorScheme.onPrimary,
                                   width: 20,
                                   height: 20,
                                 ),
@@ -281,7 +309,8 @@ class MessagePage extends StatelessWidget {
                                 onPressed: viewModel.onPickerVideo,
                                 child: AIImage(
                                   AIImages.icCamera,
-                                  color: Theme.of(context).colorScheme.onPrimary,
+                                  color:
+                                      Theme.of(context).colorScheme.onPrimary,
                                   width: 20.0,
                                   height: 20.0,
                                 ),
@@ -296,16 +325,16 @@ class MessagePage extends StatelessWidget {
                                 onPressed: viewModel.onPickGif,
                                 child: AIImage(
                                   AIImages.icGif,
-                                  color: Theme.of(context).colorScheme.onPrimary,
+                                  color:
+                                      Theme.of(context).colorScheme.onPrimary,
                                   width: 20.0,
                                   height: 20.0,
                                 ),
                               ),
                             ),
-                            
                           ],
                         ),
-                      )
+                      ),
                       /*
                       Padding(
                         padding: const EdgeInsets.only(

@@ -1,187 +1,371 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
-import 'package:stacked/stacked.dart';
-import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
+import 'package:insoblok/locator.dart';
 
 class WalletReceivePage extends StatelessWidget {
   const WalletReceivePage({super.key});
-  
-  @override
-  Widget build(BuildContext context) {
 
-    return ViewModelBuilder<WalletSendProvider>.reactive(
-      viewModelBuilder: () => WalletSendProvider(),
-      onViewModelReady: (viewModel) => viewModel.init(context, "", "", "", 0),
-      builder: (context, viewModel, _) {
-        return Scaffold(
-          resizeToAvoidBottomInset: true,
-          appBar: AppBar(
-            title: Text('My Wallet'),
-            centerTitle: true,
-            flexibleSpace: AppBackgroundView(),
+  /// Shorten wallet address like 0xB8fc6...5854B
+  String _shortenAddress(String addr) {
+    if (addr.length <= 10) return addr;
+    return "${addr.substring(0, 6)}...${addr.substring(addr.length - 5)}";
+  }
+
+  /// Split address into two lines for display
+  List<String> _splitAddress(String address) {
+    if (address.length <= 20) {
+      return [address];
+    }
+    final midPoint = address.length ~/ 2;
+    // Try to split at a natural point (not in the middle of hex characters)
+    return [address.substring(0, midPoint), address.substring(midPoint)];
+  }
+
+  /// Get scan URL for address (not transaction)
+  String _getAddressScanUrl(String scanUrl) {
+    if (scanUrl.contains('/tx')) {
+      return scanUrl.replaceAll('/tx', '/address');
+    }
+    // Default to etherscan if no scanUrl provided
+    return 'https://etherscan.io/address';
+  }
+
+  void _showQRCodeDialog(
+    BuildContext context,
+    String address,
+    String tokenName,
+    Map<String, dynamic>? token,
+  ) {
+    final tokenIcon = token?['icon'];
+    final scanUrl = token?['scanUrl']?.toString() ?? '';
+    final addressScanUrl =
+        scanUrl.isNotEmpty
+            ? _getAddressScanUrl(scanUrl)
+            : 'https://etherscan.io/address';
+    final addressLines = _splitAddress(address);
+
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          backgroundColor: Colors.grey[900],
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(16),
           ),
-          body: AppBackgroundView(
-            child: viewModel.isBusy ? 
-            Center(
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisSize: MainAxisSize.min,
                 children: [
-                  Loader(
-                    color: Colors.pink,
-                    size: 60
-                  ),
-                  SizedBox(height: 18),
+                  // Title: "Account 2 / Ethereum" format
                   Text(
-                    "",
-                    style: TextStyle(
-                      fontSize: 20
-                    )
+                    tokenName,
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
                   ),
-                ],
-              ) 
-            ) :
-            ListView(
-              physics: BouncingScrollPhysics(),
-              padding: const EdgeInsets.symmetric(
-                horizontal: 20.0,
-                vertical: 24.0,
-              ),
-              children: [
-                Container(
-                  padding: const EdgeInsets.all(12.0),
-                  decoration: BoxDecoration(
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.secondary.withAlpha(16),
-                    borderRadius: BorderRadius.circular(12.0),
-                  ),
-                  alignment: Alignment.centerLeft,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    spacing: 4.0,
-                    children: [
-                      for (var token in kWalletTokenList) ... [
-                        Row(
-                        spacing: 12.0,
-                        children: [
-                          ClipOval(
-                            child: Container(
-                              color: Colors.grey.shade400,
+                  const SizedBox(height: 24),
+                  // QR Code with logo overlay
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Colors.grey.shade800,
+                      borderRadius: BorderRadius.circular(16),
+                    ),
+                    child: Stack(
+                      alignment: Alignment.center,
+                      children: [
+                        WalletQrDisplay(
+                          data: address,
+                          size: 240,
+                          backgroundColor: Colors.white,
+                        ),
+                        // Logo overlay in center
+                        if (tokenIcon != null)
+                          Container(
+                            width: 48,
+                            height: 48,
+                            decoration: BoxDecoration(
+                              color: Colors.blue.shade400,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
                               child: AIImage(
-                                token["icon"],
-                                width: 36.0,
-                                height: 36.0,
+                                tokenIcon,
+                                width: 48.0,
+                                height: 48.0,
                               ),
                             ),
                           ),
-                          Expanded(child: Text(token['short_name']!.toString())),
-                          Text(
-                                '${AIHelpers.formatDouble(viewModel.allBalances?[token["chain"]] ?? 0, 10)} ${token["short_name"]}',
-                                style: Theme.of(context).textTheme.labelSmall,
-                              ),
-                        ],
-                      ),
-                      const SizedBox(height: 8.0),
-                      
                       ],
-                    ],
+                    ),
                   ),
-                ),
-                /*
-                const SizedBox(height: 16.0),
-                Text(
-                  'Select from Token',
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                const SizedBox(height: 16.0),
-                SingleChildScrollView(
-                  scrollDirection: Axis.horizontal,
-                  child: Row(
-                    spacing: 12,
+                  const SizedBox(height: 24),
+                  // "Ethereum Address" heading
+                  Text(
+                    '$tokenName Address',
+                    style: const TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  // Description text
+                  Text(
+                    'Use this address to receive tokens and collectibles on $tokenName.',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 14, color: Colors.white70),
+                  ),
+                  const SizedBox(height: 16),
+                  // Full address in two lines
+                  SelectableText(
+                    addressLines.join('\n'),
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 14,
+                      color: Colors.white,
+                      fontFamily: 'monospace',
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  // Copy address button
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      for (var i = 0; i < kWalletTokenList.length; i++) ...{
-                        TagView(
-                          tag: kWalletTokenList[i]['name'].toString() ?? 'tag',
-                          height: 34,
-                          isSelected:
-                              viewModel.selectedFromToken == i ? true : false,
-                          textSize: 14.0,
-                          onTap: () {
-                            viewModel.selectFromToken(i);
-                          },
+                      TextButton.icon(
+                        onPressed: () {
+                          _copyAddress(context, address);
+                        },
+                        icon: const Icon(
+                          Icons.copy,
+                          size: 18,
+                          color: Colors.blue,
                         ),
-                      },
+                        label: const Text(
+                          'Copy address',
+                          style: TextStyle(color: Colors.blue, fontSize: 16),
+                        ),
+                      ),
                     ],
                   ),
-                ),
-                const SizedBox(height: 12.0),
-                Container(
-                  decoration: kCardDecoration,
-                  padding: EdgeInsets.only(left: 8.0, right: 8.0),
-                  child: TextFormField(
-                    decoration: InputDecoration(
-                      hintText: '0',
-                      hintTextDirection: TextDirection.rtl,
-                      hintStyle: TextStyle(
-                        color: Theme.of(context).colorScheme.onPrimary,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
+                  const SizedBox(height: 12),
+                  // View on Etherscan button
+                  SizedBox(
+                    width: double.infinity,
+                    child: OutlinedButton(
+                      onPressed: () {
+                        AIHelpers.launchExternalSource(
+                          '$addressScanUrl/$address',
+                        );
+                      },
+                      style: OutlinedButton.styleFrom(
+                        backgroundColor: Colors.grey.shade800,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        side: BorderSide(color: Colors.grey.shade700),
                       ),
-                      border: InputBorder.none,
-                    ),
-                    keyboardType: TextInputType.number,
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                    maxLines: 1,
-                    textDirection: TextDirection.rtl,
-                    controller: viewModel.sendTokenTextController,
-                  ),
-                ),
-                const SizedBox(height: 16.0),
-                Text(
-                  'Receiver',
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                const SizedBox(height: 15.0),
-                Container(
-                  decoration: kCardDecoration,
-                  padding: EdgeInsets.only(left: 8.0, right: 8.0),
-                  child: TextFormField(
-                    decoration: InputDecoration(
-                      hintText: '',
-                      hintTextDirection: TextDirection.rtl,
-                      hintStyle: TextStyle(
-                        color: Theme.of(context).colorScheme.onPrimary,
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
+                      child: const Text(
+                        'View on Etherscan',
+                        style: TextStyle(fontSize: 16),
                       ),
-                      border: InputBorder.none,
                     ),
-                    keyboardType: TextInputType.text,
-                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-                    maxLines: 1,
-                    textDirection: TextDirection.rtl,
-                    controller: viewModel.receiverTextController,
                   ),
-                ),
-                */
-                const SizedBox(height: 48.0),
-                GradientPillButton(
-                  text: "Next",
-                  onPressed: () {
-                    viewModel.handleClickNextOnReceivePage(context);
-                  },
-                  loading: viewModel.isBusy,
-                  loadingText: "... Loading ",
-                ),
-              ],
+                ],
+              ),
             ),
           ),
         );
       },
+    );
+  }
+
+  void _copyAddress(BuildContext context, String address) {
+    Clipboard.setData(ClipboardData(text: address));
+    AIHelpers.showToast(msg: "Address copied to clipboard");
+  }
+
+  /// Get address for a specific token based on its chain
+  String _getTokenAddress(
+    Map<String, dynamic> token,
+    String defaultAddress,
+    Map<String, String> storedAddresses,
+  ) {
+    final chain = token['chain']?.toString().toLowerCase() ?? '';
+
+    // For EVM-compatible chains (ethereum, sepolia, usdt, insoblok), use ETH address
+    if (chain == 'ethereum' ||
+        chain == 'sepolia' ||
+        chain == 'usdt' ||
+        chain == 'insoblok') {
+      return defaultAddress;
+    }
+
+    // For other chains, try to get stored address
+    final storedAddress = storedAddresses[chain];
+    if (storedAddress != null && storedAddress.isNotEmpty) {
+      return storedAddress;
+    }
+
+    return defaultAddress;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final cryptoService = locator<CryptoService>();
+    final defaultAddress = cryptoService.privateKey?.address.hex ?? "";
+
+    // Filter tokens - show all tokens except XP and Inso
+    final displayTokens =
+        kWalletTokenList.where((token) {
+          final chain = token['chain']?.toString().toLowerCase() ?? '';
+          final name = token['name']?.toString().toLowerCase() ?? '';
+          final shortName = token['short_name']?.toString().toLowerCase() ?? '';
+          return !chain.contains('xp') &&
+              !chain.contains('inso') &&
+              !name.contains('xp') &&
+              !name.contains('inso') &&
+              !shortName.contains('xp') &&
+              !shortName.contains('inso');
+        }).toList();
+
+    return Scaffold(
+      appBar: AppBar(title: const Text('Receiving address'), centerTitle: true),
+      body: FutureBuilder<Map<String, String>>(
+        future: cryptoService.getStoredAddresses(),
+        builder: (context, snapshot) {
+          final storedAddresses = snapshot.data ?? {};
+
+          return ListView(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 16.0,
+              vertical: 24.0,
+            ),
+            children: [
+              for (var token in displayTokens) ...[
+                Builder(
+                  builder: (context) {
+                    final tokenAddress = _getTokenAddress(
+                      token,
+                      defaultAddress,
+                      storedAddresses,
+                    );
+                    final tokenName =
+                        token['displayName']?.toString() ??
+                        token['short_name']?.toString() ??
+                        token['name']?.toString() ??
+                        'Token';
+
+                    return Container(
+                      margin: const EdgeInsets.only(bottom: 16.0),
+                      padding: const EdgeInsets.all(16.0),
+                      decoration: BoxDecoration(
+                        color: Colors.grey[900],
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Row(
+                        children: [
+                          // Token Icon
+                          Container(
+                            width: 48,
+                            height: 48,
+                            decoration: BoxDecoration(
+                              color: Colors.grey.shade400,
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                            child: ClipRRect(
+                              borderRadius: BorderRadius.circular(8),
+                              child:
+                                  token['icon'] != null
+                                      ? AIImage(
+                                        token['icon'],
+                                        width: 48.0,
+                                        height: 48.0,
+                                      )
+                                      : Container(
+                                        color: Colors.grey.shade400,
+                                        child: const Icon(
+                                          Icons.account_balance_wallet,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          // Token Name and Address
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  tokenName,
+                                  style: const TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
+                                ),
+                                const SizedBox(height: 4),
+                                Text(
+                                  _shortenAddress(tokenAddress),
+                                  style: const TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.white70,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          // Copy and QR Code Icons
+                          Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              IconButton(
+                                icon: const Icon(
+                                  Icons.copy,
+                                  color: Colors.white70,
+                                ),
+                                onPressed:
+                                    () => _copyAddress(context, tokenAddress),
+                                tooltip: 'Copy address',
+                              ),
+                              IconButton(
+                                icon: const Icon(
+                                  Icons.qr_code,
+                                  color: Colors.white70,
+                                ),
+                                onPressed:
+                                    () => _showQRCodeDialog(
+                                      context,
+                                      tokenAddress,
+                                      tokenName,
+                                      token,
+                                    ),
+                                tooltip: 'Show QR code',
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ],
+            ],
+          );
+        },
+      ),
     );
   }
 }

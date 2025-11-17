@@ -1,10 +1,19 @@
 import 'dart:io';
-
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:observable_ish/observable_ish.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/locator.dart';
+import 'package:insoblok/utils/background_camera_capture.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:image/image.dart' as img;
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:insoblok/services/cloudinary_cdn_service.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:dio/dio.dart';
+import 'package:path/path.dart' as p;
+import 'package:insoblok/routers/navigation.dart';
 
 class RRCAvatarProvider extends InSoBlokViewModel {
   late BuildContext _context;
@@ -16,9 +25,18 @@ class RRCAvatarProvider extends InSoBlokViewModel {
 
   final AvatarService _avatarService = locator<AvatarService>();
   final RunwareService _runwareService = locator<RunwareService>();
+  // storyService is already available from InSoBlokViewModel base class
+
+  final camera = BackgroundCameraCapture(maxCaptures: 1, stopStreamOnMax: true);
 
   final RxValue<String?> _selfieLocalPath = RxValue<String?>(null);
   String? get selfieLocalPath => _selfieLocalPath.value;
+
+  final RxValue<String?> _capturedFacePath = RxValue<String?>(null);
+  String? get capturedFacePath => _capturedFacePath.value;
+
+  bool _isCapturingFace = false;
+  bool get isCapturingFace => _isCapturingFace;
 
   final RxValue<String?> _selfieCdnUrl = RxValue<String?>(null);
   String? get selfieCdnUrl => _selfieCdnUrl.value;
@@ -39,6 +57,34 @@ class RRCAvatarProvider extends InSoBlokViewModel {
 
   final RxValue<String?> _generatedVideoUrl = RxValue<String?>(null);
   String? get generatedVideoUrl => _generatedVideoUrl.value;
+
+  final RxValue<String?> _generatedImageUrl = RxValue<String?>(null);
+  String? get generatedImageUrl => _generatedImageUrl.value;
+
+  // Store the generated avatar image URL when avatar is selected for dashboard flow
+  final RxValue<String?> _generatedAvatarImageUrl = RxValue<String?>(null);
+  String? get generatedAvatarImageUrl => _generatedAvatarImageUrl.value;
+
+  String? _origin;
+  String? get origin => _origin;
+  set origin(String? s) {
+    _origin = s;
+    notifyListeners();
+  }
+
+  String? _storyID;
+  String? get storyID => _storyID;
+  set storyID(String? s) {
+    _storyID = s;
+    notifyListeners();
+  }
+
+  String? _url;
+  String? get url => _url;
+  set url(String? s) {
+    _url = s;
+    notifyListeners();
+  }
 
   // Available emotions (emoji and short prompt hint)
   final List<Map<String, String>> emotions = [
@@ -76,8 +122,24 @@ class RRCAvatarProvider extends InSoBlokViewModel {
     },
   ];
 
-  Future<void> init(BuildContext context) async {
+  Future<void> init(
+    BuildContext context,
+    String origin, {
+    String? initialImagePath,
+    String? storyID,
+    String? url,
+  }) async {
     this.context = context;
+    this.origin = origin;
+    this.storyID = storyID;
+    this.url = url;
+    if (initialImagePath != null && initialImagePath.isNotEmpty) {
+      _selfieLocalPath.value = initialImagePath;
+      notifyListeners();
+    }
+    logger.d(
+      "RRCAvatarProvider initialized with origin: $origin, initialImagePath: $initialImagePath, storyID: $storyID",
+    );
   }
 
   Future<void> pickSelfie() async {
@@ -90,6 +152,85 @@ class RRCAvatarProvider extends InSoBlokViewModel {
     } catch (e, s) {
       logger.e('pickSelfie', error: e, stackTrace: s);
       AIHelpers.showToast(msg: 'Failed to capture selfie.');
+    }
+  }
+
+  Future<void> captureReactionImage() async {
+    if (_isCapturingFace) return;
+    _isCapturingFace = true;
+    notifyListeners();
+
+    camera.onFrame = (String? path) {
+      logger.d("Trying to detect user expressions");
+      if (path != null) {
+        detectFace(path);
+        notifyListeners();
+      }
+    };
+
+    try {
+      await camera.initialize();
+    } catch (e) {
+      logger.e('Failed to initialize camera: $e');
+      _isCapturingFace = false;
+      notifyListeners();
+      AIHelpers.showToast(msg: 'Failed to start camera.');
+    }
+  }
+
+  Future<void> detectFace(String link) async {
+    // Use the hardcoded path from story_provider for consistency
+    // link = '/data/data/insoblok.social.app/cache/me.jpg';
+
+    logger.d("This is detect face function");
+    try {
+      var faces = await GoogleVisionHelper.getFacesFromImage(link: link);
+      logger.d("These are faces $faces");
+      logger.d("This is after google vision function");
+
+      if (faces.isNotEmpty) {
+        final directory = await getApplicationDocumentsDirectory();
+        final filePath = '${directory.path}/face.png';
+        final file = File(filePath);
+        try {
+          if (await file.exists()) {
+            await file.delete();
+          }
+          final encoded = img.encodePng(faces[0]);
+          await file.writeAsBytes(encoded, flush: true);
+
+          // Verify file was created
+          if (await file.exists()) {
+            _capturedFacePath.value = filePath;
+            // Also set as selfie if no selfie is set
+            if (_selfieLocalPath.value == null ||
+                _selfieLocalPath.value!.isEmpty) {
+              _selfieLocalPath.value = filePath;
+            }
+            logger.d('✅ face.png saved at $filePath');
+            logger.d('✅ capturedFacePath set to: ${_capturedFacePath.value}');
+            logger.d('✅ selfieLocalPath set to: ${_selfieLocalPath.value}');
+            // Notify listeners immediately after setting the value
+            notifyListeners();
+            AIHelpers.showToast(msg: 'Face captured successfully!');
+          } else {
+            throw Exception('File was not created at $filePath');
+          }
+        } catch (e) {
+          logger.e('❌ Failed to write new face.png: $e');
+          AIHelpers.showToast(msg: 'Failed to save face image');
+        }
+      } else {
+        logger.e("No face detected!");
+        AIHelpers.showToast(msg: 'No face detected!');
+      }
+    } catch (e) {
+      logger.e('Error detecting face: $e');
+      AIHelpers.showToast(msg: 'Failed to detect face');
+    } finally {
+      _isCapturingFace = false;
+      await camera.stopAndDispose();
+      notifyListeners();
     }
   }
 
@@ -118,6 +259,7 @@ class RRCAvatarProvider extends InSoBlokViewModel {
       AIHelpers.showToast(msg: 'Please select a selfie first');
       return null;
     }
+
 
     String? videoUrl;
     await runBusyFuture(() async {
@@ -196,6 +338,7 @@ class RRCAvatarProvider extends InSoBlokViewModel {
       } catch (e, s) {
         setError(e);
         logger.e('Error generating video', error: e, stackTrace: s);
+
       } finally {
         notifyListeners();
       }
@@ -204,7 +347,6 @@ class RRCAvatarProvider extends InSoBlokViewModel {
     if (hasError) {
       AIHelpers.showToast(msg: modelError.toString());
     }
-
     return videoUrl;
   }
 }

@@ -49,7 +49,8 @@ class FirebaseService {
     );
     FirebaseAuth.instanceFor(app: _app);
     await FirebaseAppCheck.instance.activate(
-      androidProvider: kDebugMode ? AndroidProvider.debug : AndroidProvider.playIntegrity,
+      androidProvider:
+          kDebugMode ? AndroidProvider.debug : AndroidProvider.playIntegrity,
       appleProvider: AppleProvider.appAttest,
       webProvider: ReCaptchaV3Provider('recaptcha-v3-site-key'),
     );
@@ -123,7 +124,7 @@ class FirebaseService {
     String? id,
     String? folderName,
     String? postCategory,
-    String? storyID
+    String? storyID,
   }) async {
     try {
       File file;
@@ -159,9 +160,10 @@ class FirebaseService {
       final String fileName =
           "${AuthHelper.user?.id}_${kFullFormatter.format(DateTime.now())}.AVIF";
 
-      final String storagePath = folderName != null
-          ? 'users/${id ?? AuthHelper.user?.id}/$folderName/$fileName'
-          : 'users/${id ?? AuthHelper.user?.id}/$fileName';
+      final String storagePath =
+          folderName != null
+              ? 'users/${id ?? AuthHelper.user?.id}/$folderName/$fileName'
+              : 'users/${id ?? AuthHelper.user?.id}/$fileName';
 
       final Reference storageRef = _storage.ref().child(storagePath);
 
@@ -171,14 +173,14 @@ class FirebaseService {
 
       // Get download URL
       final String downloadUrl = await snapshot.ref.getDownloadURL();
-      
-      if (postCategory == "reaction" && storyID != null) {
-          final storiesRef = FirebaseFirestore.instance.collection("story");
-          await storiesRef.doc(storyID).update({
-            "reactions": FieldValue.arrayUnion([downloadUrl]),
-          });
 
-          logger.d("post category reaction");
+      if (postCategory == "reaction" && storyID != null) {
+        final storiesRef = FirebaseFirestore.instance.collection("story");
+        await storiesRef.doc(storyID).update({
+          "reactions": FieldValue.arrayUnion([downloadUrl]),
+        });
+
+        logger.d("post category reaction");
       }
 
       if (postCategory == "gallery") {
@@ -190,7 +192,7 @@ class FirebaseService {
 
         logger.d("post category gallery");
       }
-      
+
       return downloadUrl;
     } catch (e) {
       logger.e('Error uploading image: $e');
@@ -211,12 +213,15 @@ class FirebaseService {
       if (videoUrl.startsWith('http')) {
         // It's a remote video, download it first
         var tempDir = await getTemporaryDirectory();
-        String fileExtension = p.extension(videoUrl); // get extension (.mp4, .mov, etc.)
+        String fileExtension = p.extension(
+          videoUrl,
+        ); // get extension (.mp4, .mov, etc.)
         if (fileExtension.isEmpty) {
           fileExtension = ".mp4"; // default
         }
 
-        String fullPath = "${tempDir.path}/${AuthHelper.user?.id}$fileExtension";
+        String fullPath =
+            "${tempDir.path}/${AuthHelper.user?.id}$fileExtension";
         logger.d('full path $fullPath');
 
         var dio = Dio();
@@ -250,16 +255,19 @@ class FirebaseService {
       final String fileName =
           "${AuthHelper.user?.id}_${kFullFormatter.format(DateTime.now())}$ext";
 
-      final String storagePath = folderName != null
-          ? 'users/${id ?? AuthHelper.user?.id}/$folderName/$fileName'
-          : 'users/${id ?? AuthHelper.user?.id}/$fileName';
+      final String storagePath =
+          folderName != null
+              ? 'users/${id ?? AuthHelper.user?.id}/$folderName/$fileName'
+              : 'users/${id ?? AuthHelper.user?.id}/$fileName';
 
       final Reference storageRef = _storage.ref().child(storagePath);
 
       // Upload the video file
       final UploadTask uploadTask = storageRef.putFile(
         file,
-        SettableMetadata(contentType: "video/mp4"), // <-- ensures correct MIME type
+        SettableMetadata(
+          contentType: "video/mp4",
+        ), // <-- ensures correct MIME type
       );
       final TaskSnapshot snapshot = await uploadTask;
 
@@ -302,7 +310,7 @@ class FirebaseService {
     } catch (e) {
       print('Error creating folder: $e');
     }
-}
+  }
 
   Future<String?> uploadFile({
     required File file,
@@ -370,7 +378,6 @@ class FirebaseService {
   }
 
   Future<List<GalleryModel>> fetchGalleries(String id) async {
-    
     // AuthHelper.user?.id
     final currentUserId = FirebaseAuth.instance.currentUser?.uid;
     logger.d("currentUserId : $currentUserId");
@@ -383,22 +390,20 @@ class FirebaseService {
     }
     List<GalleryModel> galleries = [];
     try {
-      final docSnapshot = await FirebaseFirestore.instance
-          .collection("users2")
-          .doc(id)
-          .get();
+      final docSnapshot =
+          await FirebaseFirestore.instance.collection("users2").doc(id).get();
 
       if (docSnapshot.exists) {
         final data = docSnapshot.data();
         if (data != null && data['galleries'] != null) {
           logger.d("gallery json is ${data['galleries']}");
-          List<Map<String, dynamic>> lists = (data["galleries"] as List).cast<Map<String, dynamic>>();
+          List<Map<String, dynamic>> lists =
+              (data["galleries"] as List).cast<Map<String, dynamic>>();
           for (var l in lists) {
-            if(l["status"] == "active") {
+            if (l["status"] == "active") {
               galleries.add(GalleryModel.fromJson(l));
             }
           }
-          
         }
       }
 
@@ -411,16 +416,18 @@ class FirebaseService {
 
   Future<List<String>> fetchReactions(String id) async {
     try {
-      final docSnapshot = await FirebaseFirestore.instance
-          .collection("story")
-          .doc(id)
-          .get();
+      final docSnapshot =
+          await FirebaseFirestore.instance.collection("story").doc(id).get();
 
       if (docSnapshot.exists) {
         final data = docSnapshot.data();
         if (data != null && data['reactions'] != null) {
-          // Ensure it's a List<String>
-          return List<String>.from(data['reactions']);
+          // Ensure it's a List<String> and trim/clean any whitespace from URLs
+          final reactions = List<String>.from(data['reactions']);
+          // Remove any whitespace from reaction URLs
+          return reactions
+              .map((url) => url.trim().replaceAll(RegExp(r'\s+'), ''))
+              .toList();
         }
       }
 
@@ -434,7 +441,7 @@ class FirebaseService {
   String? extractMediaUrl(dynamic media) {
     if (media is String) return media;
     if (media is Map && media['link'] is String) return media['link'] as String;
-    if (media is Map && media['url']  is String) return media['url']  as String;
+    if (media is Map && media['url'] is String) return media['url'] as String;
     return null;
   }
 }
@@ -506,12 +513,13 @@ class FirebaseHelper {
       service.deleteImage(imageUrl);
 
   static Future<void> deleteGalleryImage(String imageUrl) async {
-    
     logger.d("delete imageUrl: $imageUrl");
 
     final usersRef = FirebaseFirestore.instance.collection("users2");
     await usersRef.doc(AuthHelper.user?.id).update({
-      "galleries": FieldValue.arrayRemove([imageUrl]), // removes all exact matches
+      "galleries": FieldValue.arrayRemove([
+        imageUrl,
+      ]), // removes all exact matches
     });
   }
 
@@ -521,26 +529,26 @@ class FirebaseHelper {
     // Run Firestore mutation and return both new length + removed URL
     final result = await FirebaseFirestore.instance
         .runTransaction<Map<String, dynamic>>((tx) async {
-      final snap = await tx.get(docRef);
-      if (!snap.exists) {
-        throw StateError('Story $storyId not found');
-      }
+          final snap = await tx.get(docRef);
+          if (!snap.exists) {
+            throw StateError('Story $storyId not found');
+          }
 
-      final data = (snap.data() as Map<String, dynamic>?) ?? {};
-      final List<dynamic> medias = List<dynamic>.from(data['medias'] ?? []);
+          final data = (snap.data() as Map<String, dynamic>?) ?? {};
+          final List<dynamic> medias = List<dynamic>.from(data['medias'] ?? []);
 
-      if (index < 0 || index >= medias.length) {
-        throw RangeError.index(index, medias, 'index', null, medias.length);
-      }
+          if (index < 0 || index >= medias.length) {
+            throw RangeError.index(index, medias, 'index', null, medias.length);
+          }
 
-      final removed = medias.removeAt(index);
-      tx.update(docRef, {'medias': medias});
+          final removed = medias.removeAt(index);
+          tx.update(docRef, {'medias': medias});
 
-      return {
-        'len': medias.length,
-        'url': service.extractMediaUrl(removed), // your existing helper
-      };
-    });
+          return {
+            'len': medias.length,
+            'url': service.extractMediaUrl(removed), // your existing helper
+          };
+        });
 
     // Best-effort Storage delete (outside the transaction)
     final String? url = result['url'] as String?;
@@ -557,10 +565,13 @@ class FirebaseHelper {
   }
 
   static Future<void> deleteStory(String storyId) async {
-
-    await removeStoryFromUserActions(userId: AuthHelper.user!.id!, storyId: storyId, alsoDeleteStoryDoc: false);
+    await removeStoryFromUserActions(
+      userId: AuthHelper.user!.id!,
+      storyId: storyId,
+      alsoDeleteStoryDoc: false,
+    );
     await FirebaseFirestore.instance
-        .collection('story')   // use your exact collection name
+        .collection('story') // use your exact collection name
         .doc(storyId)
         .delete();
   }
@@ -571,14 +582,15 @@ class FirebaseHelper {
     bool alsoDeleteStoryDoc = false,
   }) async {
     final db = FirebaseFirestore.instance;
-    final userRef  = db.collection('users2').doc(userId);
+    final userRef = db.collection('users2').doc(userId);
     final storyRef = db.collection('story').doc(storyId);
 
     await db.runTransaction((tx) async {
       final userSnap = await tx.get(userRef);
       final data = (userSnap.data() as Map<String, dynamic>?) ?? {};
-      final List<dynamic> actions =
-          List<dynamic>.from(data['user_actions'] ?? const []);
+      final List<dynamic> actions = List<dynamic>.from(
+        data['user_actions'] ?? const [],
+      );
 
       if (actions.isNotEmpty && actions.every((e) => e is String)) {
         // Fast path: array of strings
@@ -604,13 +616,20 @@ class FirebaseHelper {
       }
     });
   }
-  
+
   static Map<String, dynamic> fromConvertJson(
     Map<String, dynamic> firebaseJson,
   ) {
     Map<String, dynamic> newJson = {};
     for (var key in firebaseJson.keys) {
-      if (key == 'update_date' || key == 'timestamp' || key == 'created_at' || key == "updated_at" || key == 'birthday' || key == "archived_at" || key == "muted_at" || key == "deleted_at") {
+      if (key == 'update_date' ||
+          key == 'timestamp' ||
+          key == 'created_at' ||
+          key == "updated_at" ||
+          key == 'birthday' ||
+          key == "archived_at" ||
+          key == "muted_at" ||
+          key == "deleted_at") {
         var value = firebaseJson[key];
         if (value != null) {
           DateTime utcDateTime;
@@ -632,6 +651,4 @@ class FirebaseHelper {
     }
     return newJson;
   }
-
-  
 }

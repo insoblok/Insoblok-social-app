@@ -153,105 +153,6 @@ class StoryListCell extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
-                                if (viewModel.showFaceDialog)
-                                  Container(
-                                    child: Padding(
-                                      padding: EdgeInsets.only(
-                                        left: 0,
-                                        bottom: 0,
-                                      ),
-                                      child: ZoMultiColorBorder(
-                                        // the ring stays mounted; only its child swaps
-                                        colors: const [
-                                          Colors.orange,
-                                          Colors.white,
-                                          Colors.green,
-                                          Colors.indigo,
-                                          Colors.pink,
-                                        ],
-                                        strokeWidth: 3,
-                                        borderRadius:
-                                            75, // if your widget expects a double radius
-                                        child: Padding(
-                                          // 0.1 px is okay but effectively invisible; keep or set to 1.0
-                                          padding: const EdgeInsets.all(0.1),
-                                          child: Container(
-                                            width: 48,
-                                            height: 48,
-                                            alignment: Alignment.center,
-                                            decoration: const BoxDecoration(
-                                              color: Colors.transparent,
-                                              shape: BoxShape.circle,
-                                            ),
-                                            // Only the inside content animates
-                                            child: AnimatedSwitcher(
-                                              duration: const Duration(
-                                                milliseconds: 250,
-                                              ),
-                                              switchInCurve: Curves.easeOut,
-                                              switchOutCurve: Curves.easeIn,
-                                              layoutBuilder: (
-                                                currentChild,
-                                                previousChildren,
-                                              ) {
-                                                // keeps size stable while animating
-                                                return Stack(
-                                                  alignment: Alignment.center,
-                                                  children: <Widget>[
-                                                    ...previousChildren,
-                                                    if (currentChild != null)
-                                                      currentChild,
-                                                  ],
-                                                );
-                                              },
-                                              child:
-                                                  viewModel.isCapturingTimer
-                                                      ? _ReadyPreview(
-                                                        key: const ValueKey(
-                                                          'state-ready',
-                                                        ),
-                                                        isVideo:
-                                                            viewModel
-                                                                .isVideoReaction,
-                                                        videoPath:
-                                                            viewModel.videoPath,
-                                                        hasFace:
-                                                            viewModel.face !=
-                                                            null,
-                                                      )
-                                                      : _Counting(
-                                                        key: const ValueKey(
-                                                          'state-count',
-                                                        ),
-                                                        isVideo:
-                                                            viewModel
-                                                                .isVideoReaction,
-                                                        onStartVideo:
-                                                            viewModel
-                                                                .captureReactionVideo,
-                                                        onStartImage:
-                                                            viewModel
-                                                                .captureReactionImage,
-                                                        onComplete: () {
-                                                          // Flip provider flag AFTER this frame; avoids "notify during build"
-                                                          WidgetsBinding
-                                                              .instance
-                                                              .addPostFrameCallback((
-                                                                _,
-                                                              ) {
-                                                                viewModel
-                                                                    .completeTimer(); // sets isCapturingTimer = true + notifyListeners()
-                                                              });
-                                                        },
-                                                      ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-
-                                // if (viewModel.story.category == 'vote') const StoryYayNayWidget(),
                                 Container(
                                   margin: EdgeInsets.only(bottom: 0),
                                   child: Column(
@@ -551,7 +452,9 @@ class StoryListCell extends StatelessWidget {
                 child: Container(
                   height: min(
                     MediaQuery.of(context).size.height * 0.3,
-                    viewModel.pageIndex > 0 ? 262 : 210,
+                    // Increase height if reactions exist to accommodate reaction button
+                    (viewModel.pageIndex > 0 ? 262 : 210) +
+                        ((viewModel.story.reactions ?? []).isNotEmpty ? 25 : 0),
                   ),
                   margin: EdgeInsets.only(right: 8.0, bottom: 18.0),
                   padding: const EdgeInsets.symmetric(
@@ -620,6 +523,18 @@ class StoryListCell extends StatelessWidget {
                         spacing: 0.0,
                         onTap: () => viewModel.repost(),
                       ),
+                      // Show reaction icon if story has at least 1 reaction
+                      if ((viewModel.story.reactions ?? []).isNotEmpty)
+                        StoryActionButton(
+                          src: AIImage(
+                            AIImages.icReaction,
+                            color: Theme.of(context).colorScheme.onPrimary,
+                            width: kStoryAvatarSize * 0.5,
+                          ),
+                          label: '${(viewModel.story.reactions ?? []).length}',
+                          spacing: 0.0,
+                          onTap: () => viewModel.showReactions(),
+                        ),
                       // if (AuthHelper.user?.id == viewModel.story.userId)
                       //   StoryActionButton(
                       //     src: AIImage(

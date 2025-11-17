@@ -8,21 +8,20 @@ import 'package:path_provider/path_provider.dart';
 import 'package:pro_image_editor/pro_image_editor.dart';
 import 'package:pro_video_editor/pro_video_editor.dart';
 import 'package:video_player/video_player.dart';
+import 'package:insoblok/routers/router.dart';
 
 /// A sample page demonstrating how to use the video-editor.
 class VideoEditorPage extends StatefulWidget {
   final String path;
   const VideoEditorPage({super.key, required this.path});
   @override
-  State<VideoEditorPage> createState() =>
-      _VideoEditorPageState();
+  State<VideoEditorPage> createState() => _VideoEditorPageState();
 }
 
-class _VideoEditorPageState
-    extends State<VideoEditorPage> {
+class _VideoEditorPageState extends State<VideoEditorPage> {
   /// The target format for the exported video.
   final _outputFormat = VideoOutputFormat.mp4;
-  
+
   /// Video editor configuration settings.
   late final VideoEditorConfigs _videoConfigs = const VideoEditorConfigs(
     initialMuted: true,
@@ -81,21 +80,20 @@ class _VideoEditorPageState
   Future<void> _initializeEditor() async {
     try {
       setState(() => _initializationStatus = 'Loading video metadata...');
-      
+
       _video = EditorVideo.file(File(widget.path));
       await _setMetadata();
-      
+
       setState(() => _initializationStatus = 'Initializing video player...');
       await _initializeVideoPlayer();
-      
+
       setState(() => _initializationStatus = 'Generating thumbnails...');
       await _generateThumbnails();
-      
+
       setState(() => _initializationStatus = 'Setting up controller...');
       _setupProVideoController();
-      
+
       setState(() => _isInitializing = false);
-      
     } catch (e) {
       print('Initialization error: $e');
       setState(() {
@@ -114,25 +112,26 @@ class _VideoEditorPageState
   /// Initializes the video player controller
   Future<void> _initializeVideoPlayer() async {
     _videoController = VideoPlayerController.file(File(widget.path));
-    
+
     await _videoController.initialize();
     await _videoController.setLooping(false);
     await _videoController.setVolume(_videoConfigs.initialMuted ? 0 : 100);
-    
+
     if (_videoConfigs.initialPlay) {
       await _videoController.play();
     } else {
       await _videoController.pause();
     }
-    
+
     _videoController.addListener(_onDurationChange);
   }
 
   /// Generates thumbnails for the given [_video].
   Future<void> _generateThumbnails() async {
     if (!mounted) return;
-    
-    var imageWidth = MediaQuery.sizeOf(context).width /
+
+    var imageWidth =
+        MediaQuery.sizeOf(context).width /
         _thumbnailCount *
         MediaQuery.devicePixelRatioOf(context);
 
@@ -171,12 +170,12 @@ class _VideoEditorPageState
           thumbnailList.map(MemoryImage.new).toList();
 
       // Precache thumbnails
-      var cacheList =
-          temporaryThumbnails.map((item) => precacheImage(item, context));
+      var cacheList = temporaryThumbnails.map(
+        (item) => precacheImage(item, context),
+      );
       await Future.wait(cacheList);
-      
-      _thumbnails = temporaryThumbnails;
 
+      _thumbnails = temporaryThumbnails;
     } catch (e) {
       print('Thumbnail generation error: $e');
       // Continue without thumbnails rather than failing completely
@@ -196,7 +195,7 @@ class _VideoEditorPageState
 
   void _onDurationChange() {
     if (!mounted || _proVideoController == null) return;
-    
+
     var totalVideoDuration = _videoMetadata.duration;
     var duration = _videoController.value.position;
     _proVideoController!.setPlayTime(duration);
@@ -251,17 +250,18 @@ class _VideoEditorPageState
       colorMatrixList: parameters.colorFilters,
       startTime: parameters.startTime,
       endTime: parameters.endTime,
-      transform: parameters.isTransformed
-          ? ExportTransform(
-              width: parameters.cropWidth,
-              height: parameters.cropHeight,
-              rotateTurns: parameters.rotateTurns,
-              x: parameters.cropX,
-              y: parameters.cropY,
-              flipX: parameters.flipX,
-              flipY: parameters.flipY,
-            )
-          : null,
+      transform:
+          parameters.isTransformed
+              ? ExportTransform(
+                width: parameters.cropWidth,
+                height: parameters.cropHeight,
+                rotateTurns: parameters.rotateTurns,
+                x: parameters.cropX,
+                y: parameters.cropY,
+                flipX: parameters.flipX,
+                flipY: parameters.flipY,
+              )
+              : null,
     );
 
     final directory = await getTemporaryDirectory();
@@ -275,17 +275,23 @@ class _VideoEditorPageState
 
   /// Closes the video editor
   void onCloseEditor(EditorMode editorMode) async {
-    if (editorMode != EditorMode.main) return Navigator.pop(context);
-    if (/// The code you provided is a comment in Dart programming language. Comments are used to add
-    /// explanations or notes in the code for better understanding. In Dart, single-line comments
-    /// start with `//` and multi-line comments start with `/*` and end with `*/`. The text
-    /// `_outputPath` is not executable code, but rather a comment that may indicate the purpose or
-    /// intention of a variable or code block.
-    _outputPath != null) {
-      // Handle preview navigation if needed
-      Navigator.pop(context, _outputPath);
+    if (editorMode != EditorMode.main) {
+      if (mounted && Navigator.canPop(context)) {
+        Navigator.pop(context);
+      }
+      return;
+    }
+    if (_outputPath != null) {
+      // Navigate to Add Story page with the edited video
+      // Don't pop here - AddStoryPage will handle navigation after posting
+      if (mounted) {
+        await Routers.goToAddStoryPage(context, videoPath: _outputPath!);
+      }
     } else {
-      Navigator.pop(context);
+      // No output path, just go back
+      if (mounted && Navigator.canPop(context)) {
+        Navigator.pop(context);
+      }
     }
   }
 
@@ -364,9 +370,7 @@ class _VideoEditorPageState
             // ),
           ),
         ),
-        mainEditor: const MainEditorConfigs(
-          widgets: MainEditorWidgets(),
-        ),
+        mainEditor: const MainEditorConfigs(widgets: MainEditorWidgets()),
         paintEditor: const PaintEditorConfigs(
           enableModePixelate: false,
           enableModeBlur: false,

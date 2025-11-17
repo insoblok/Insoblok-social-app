@@ -59,6 +59,19 @@ class RegisterProvider extends InSoBlokViewModel {
       try {
         await AuthHelper.signUp(_user);
         if (xpScore > 0) await tastScoreService.registerScore(xpScore);
+
+        // Ensure credentials are saved after successful registration
+        final globalStore = GlobalStore();
+        final savedEmail = await globalStore.getSavedEmail();
+        final savedPassword = await globalStore.getSavedPassword();
+        if (savedPassword != null && savedPassword.isNotEmpty) {
+          await globalStore.saveCredentials(
+            email: savedEmail ?? '',
+            password: savedPassword,
+            enableAutoLogin: true,
+          );
+        }
+
         Routers.goToMainPage(context);
       } catch (e) {
         setError(e);

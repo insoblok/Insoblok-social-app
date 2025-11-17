@@ -241,6 +241,20 @@ class RunwareService {
     // 1) Minimal body per docs
     final bodyMinimal = <String, dynamic>{
       'taskUUID': taskUUID,
+
+      'model': model,
+      'frameImages': [
+        {'inputImage': dataUri, 'frame': 'first'},
+      ],
+      'positivePrompt': 'expression edit: $prompt',
+      'duration': durationSeconds.toDouble(),
+      'width': apiWidth,
+      'height': apiHeight,
+    };
+
+    // 2) SDK-style body (some deployments accept these additional fields)
+    final bodySdk = <String, dynamic>{
+      'taskUUID': taskUUID,
       'model': model,
       'frameImages': [
         {'inputImage': dataUri, 'frame': 'first'},

@@ -10,7 +10,9 @@ import 'package:insoblok/widgets/widgets.dart';
 import 'package:insoblok/services/services.dart';
 
 class AddStoryPage extends StatelessWidget {
-  AddStoryPage({super.key});
+  final String? videoPath;
+
+  AddStoryPage({super.key, this.videoPath});
 
   TextEditingController autoCompleteController = TextEditingController();
 
@@ -18,7 +20,13 @@ class AddStoryPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewModelBuilder<AddStoryProvider>.reactive(
       viewModelBuilder: () => AddStoryProvider(),
-      onViewModelReady: (viewModel) => viewModel.init(context),
+      onViewModelReady: (viewModel) async {
+        await viewModel.init(context);
+        // If video path is provided, add it to media list
+        if (videoPath != null && videoPath!.isNotEmpty) {
+          await viewModel.addVideoFromPath(videoPath!);
+        }
+      },
       builder: (context, viewModel, _) {
         return Scaffold(
           body: AppBackgroundView(
@@ -96,7 +104,7 @@ class AddStoryPage extends StatelessWidget {
                       const SizedBox(height: 24.0),
                       Text(
                         "Place",
-                        style: Theme.of(context).textTheme.labelMedium
+                        style: Theme.of(context).textTheme.labelMedium,
                       ),
                       const SizedBox(height: 12.0),
                       PlaceSearchField(
@@ -104,7 +112,8 @@ class AddStoryPage extends StatelessWidget {
                         /// code in the `PlaceSearchField` widget initialization.
                         controller: autoCompleteController,
                         apiKey: GOOGLE_API_KEY,
-                        isLatLongRequired: true,        // Fetch lat/long with place details
+                        isLatLongRequired:
+                            true, // Fetch lat/long with place details
                         onPlaceSelected: (placeId, latLng) {
                           logger.d('Place ID: $placeId');
                           viewModel.placeId = placeId.place_id;
@@ -128,56 +137,70 @@ class AddStoryPage extends StatelessWidget {
                             decoration: InputDecoration(
                               prefixIcon: Icon(
                                 Icons.location_city, // 👈 any Material icon
-                                color: Colors.white,   // icon color
+                                color: Colors.white, // icon color
                               ),
                               enabledBorder: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(12), // corner radius
+                                borderRadius: BorderRadius.circular(
+                                  12,
+                                ), // corner radius
                                 borderSide: BorderSide(
-                                  color: Colors.grey, // border color when not focused
-                                  width: 1,         // border width
+                                  color:
+                                      Colors
+                                          .grey, // border color when not focused
+                                  width: 1, // border width
                                 ),
                               ),
                               focusedBorder: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(12),
                                 borderSide: BorderSide(
-                                  color: Colors.blueAccent, // border color when focused
+                                  color:
+                                      Colors
+                                          .blueAccent, // border color when focused
                                   width: 1,
                                 ),
                               ),
-                              )
-                            );
-                          },
-                          itemBuilder: (context, prediction) => ListTile(
-                            tileColor: Colors.black87,
-
-                            selectedColor: Colors.black45,
-                            textColor: Colors.black12,
-                            leading: const Icon(Icons.location_on, color: Colors.white),
-                            title: Text(
-                              prediction.description,
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                              style: Theme.of(context).textTheme.bodyMedium!.copyWith(color: Colors.white)
                             ),
-                          ),
+                          );
+                        },
+                        itemBuilder:
+                            (context, prediction) => ListTile(
+                              tileColor: Colors.black87,
+
+                              selectedColor: Colors.black45,
+                              textColor: Colors.black12,
+                              leading: const Icon(
+                                Icons.location_on,
+                                color: Colors.white,
+                              ),
+                              title: Text(
+                                prediction.description,
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                                style: Theme.of(context).textTheme.bodyMedium!
+                                    .copyWith(color: Colors.white),
+                              ),
+                            ),
                       ),
-                      
+
                       SizedBox(height: 24.0),
                       Container(
-                          decoration: const BoxDecoration(
-                            gradient: LinearGradient(
-                              begin: Alignment.centerLeft,
-                              end: Alignment.centerRight,
-                              colors: [Color(0xFFF30C6C), Color(0xFFC739EB)],
-                            ),
-                            borderRadius: BorderRadius.all(Radius.circular(12)),
+                        decoration: const BoxDecoration(
+                          gradient: LinearGradient(
+                            begin: Alignment.centerLeft,
+                            end: Alignment.centerRight,
+                            colors: [Color(0xFFF30C6C), Color(0xFFC739EB)],
                           ),
-                          child: TextFillButton(
-                            text: viewModel.txtUploadButton,
-                            color: viewModel.isBusy ? AIColors.grey : Colors.transparent,
-                            onTap: viewModel.onClickUploadButton,
-                          ),
+                          borderRadius: BorderRadius.all(Radius.circular(12)),
                         ),
+                        child: TextFillButton(
+                          text: viewModel.txtUploadButton,
+                          color:
+                              viewModel.isBusy
+                                  ? AIColors.grey
+                                  : Colors.transparent,
+                          onTap: viewModel.onClickUploadButton,
+                        ),
+                      ),
                       const SizedBox(height: 16.0),
                       Row(
                         mainAxisSize: MainAxisSize.min,

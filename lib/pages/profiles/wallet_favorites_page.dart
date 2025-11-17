@@ -17,7 +17,6 @@ class WalletFavoritesPage extends StatelessWidget {
     WalletFavoritesProvider viewModel,
   ) async {
     Timer? _debounce;
-    // The most recent options received from the API. (not used for now)
 
     final result = await showGeneralDialog<UserModel?>(
       context: ctx,
@@ -223,66 +222,82 @@ class WalletFavoritesPage extends StatelessWidget {
                                       );
                                     }
 
-                            final tokens = snapshot.data!;
-                            return Column(
-                                mainAxisSize: MainAxisSize.min,
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                spacing: 4.0,
-                                children: [
-                                  for (var token in tokens) ... [
+                                    final tokens = snapshot.data!;
+                                    return Column(
+                                      mainAxisSize: MainAxisSize.min,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      spacing: 4.0,
+                                      children: [
+                                        for (var token in tokens) ...[
+                                          Container(
+                                            padding: EdgeInsets.symmetric(
+                                              vertical: 4.0,
+                                            ),
 
-                                   
-                                    
-                                    Container(
-                                      padding: EdgeInsets.symmetric(vertical: 4.0),
-                                      
-                                      decoration: BoxDecoration(
-                                        color: viewModel.isSelectMode && viewModel.selectedTokens.contains(token["id"]) ? Colors.blue.shade900 : Colors.transparent,
-                                        border: Border(
-                                          bottom: BorderSide(
-                                            color: Theme.of(context).colorScheme.secondary.withAlpha(32),
-                                            width: 1.0
-                                          )
-                                        )
-                                      ),
-                                      child: Column(
-                                        mainAxisAlignment: MainAxisAlignment.center,
-                                        children: [
-                                          InkWell(
-                                            onTap: () => viewModel.handleTapFavoriteToken(token["id"]),
-                                            onLongPress: () => viewModel.handleLongPressFavoriteToken(token["id"]),
-                                            child: Stack(
-                                              fit: StackFit.loose,
+                                            decoration: BoxDecoration(
+                                              color:
+                                                  viewModel.isSelectMode &&
+                                                          viewModel
+                                                              .selectedTokens
+                                                              .contains(
+                                                                token["id"],
+                                                              )
+                                                      ? Colors.blue.shade900
+                                                      : Colors.transparent,
+                                              border: Border(
+                                                bottom: BorderSide(
+                                                  color: Theme.of(context)
+                                                      .colorScheme
+                                                      .secondary
+                                                      .withAlpha(32),
+                                                  width: 1.0,
+                                                ),
+                                              ),
+                                            ),
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
                                               children: [
-                                                Row(
-                                                  spacing: 8.0,
-                                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                  crossAxisAlignment: CrossAxisAlignment.center,
-                                                  children: [
-                                                    Expanded(
-                                                      flex: 35,
-                                                      child: Row(
-                                                          children: [
-                                                            ClipOval(
-                                                              child: Container(
-                                                                color: Colors.transparent,
-                                                                child: Image.network(
-                                                                  token["image"],
-                                                                  width: 36.0,
-                                                                  height: 36.0,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            SizedBox(width: 12),
-                                                            Expanded(
-                                                              child: Align(
-                                                                alignment: Alignment.centerLeft,
-                                                                child: FittedBox(
-                                                                  fit: BoxFit.scaleDown,
-                                                                  child: Text(
-                                                                    token['symbol'].toString().toUpperCase(),
-                                                                    textAlign: TextAlign.left,
-                                                                    // style: Theme.of(context).textTheme.bodyLarge,
+                                                InkWell(
+                                                  onTap:
+                                                      () => viewModel
+                                                          .handleTapFavoriteToken(
+                                                            token["id"],
+                                                          ),
+                                                  onLongPress:
+                                                      () => viewModel
+                                                          .handleLongPressFavoriteToken(
+                                                            token["id"],
+                                                          ),
+                                                  child: Stack(
+                                                    fit: StackFit.loose,
+                                                    children: [
+                                                      Row(
+                                                        spacing: 8.0,
+                                                        mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                        crossAxisAlignment:
+                                                            CrossAxisAlignment
+                                                                .center,
+                                                        children: [
+                                                          Expanded(
+                                                            flex: 35,
+                                                            child: Row(
+                                                              children: [
+                                                                ClipOval(
+                                                                  child: Container(
+                                                                    color:
+                                                                        Colors
+                                                                            .transparent,
+                                                                    child: Image.network(
+                                                                      token["image"],
+                                                                      width:
+                                                                          36.0,
+                                                                      height:
+                                                                          36.0,
+                                                                    ),
                                                                   ),
                                                                 ),
                                                               ),
@@ -353,42 +368,51 @@ class WalletFavoritesPage extends StatelessWidget {
                                                             ),
                                                           );
                                                         },
+
                                                       ),
-                                                    ),
-                                                  ],
-                                                ),
-                                                if (viewModel.selectedTokens.contains(token["id"]))
-                                                  Container(
-                                                    color: Colors.blue.withAlpha(50),
-                                                    child: InkWell(
-                                                      onTap: () => viewModel.handleTapFavoriteToken(token["id"]),
-                                                      child: Center(
-                                                        child: Icon(
-                                                          Icons.check_circle,
-                                                          color: Colors.blue,
-                                                          size: 40,
+                                                      if (viewModel
+                                                          .selectedTokens
+                                                          .contains(
+                                                            token["id"],
+                                                          ))
+                                                        Container(
+                                                          color: Colors.blue
+                                                              .withAlpha(50),
+                                                          child: InkWell(
+                                                            onTap:
+                                                                () => viewModel
+                                                                    .handleTapFavoriteToken(
+                                                                      token["id"],
+                                                                    ),
+                                                            child: Center(
+                                                              child: Icon(
+                                                                Icons
+                                                                    .check_circle,
+                                                                color:
+                                                                    Colors.blue,
+                                                                size: 40,
+                                                              ),
+                                                            ),
+                                                          ),
                                                         ),
-                                                      ),
-                                                    ) 
+                                                    ],
                                                   ),
+                                                ),
                                               ],
                                             ),
                                           ),
                                         ],
-                                      ),
-                                    ),
-                                  ],
-                                ],
-                              );
-                          }
-                        )
-                      ),
-                    ],
+                                      ],
+                                    );
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-              ],
-            ),
-          ),
         );
       },
     );

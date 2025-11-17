@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 
-
 import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/locator.dart';
-
 
 class InSoBlokProvider extends InSoBlokViewModel {
   late BuildContext _context;
@@ -61,36 +59,38 @@ class InSoBlokProvider extends InSoBlokViewModel {
   }
 
   Future<void> goToAddPost() async {
-    await showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.black87,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (ctx) {
-        return SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.only(bottom: 8),
-            child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                leading: const Icon(Icons.videocam_outlined, color: Colors.white),
-                title: const Text(
-                  'Create Post',
-                  style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
-                ),
-                onTap: () {
-                  Navigator.pop(ctx);
-                  Routers.goToCreatePostPage(context);
-                },
-              ),
-            ],
-          ),
-        ),
-        );
-      },
-    );
+    await Routers.goToCreatePostPage(context);
+
+    // await showModalBottomSheet(
+    //   context: context,
+    //   backgroundColor: Colors.black87,
+    //   shape: const RoundedRectangleBorder(
+    //     borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+    //   ),
+    //   builder: (ctx) {
+    //     return SafeArea(
+    //       child: Padding(
+    //         padding: const EdgeInsets.only(bottom: 8),
+    //         child: Column(
+    //         mainAxisSize: MainAxisSize.min,
+    //         children: [
+    //           ListTile(
+    //             leading: const Icon(Icons.videocam_outlined, color: Colors.white),
+    //             title: const Text(
+    //               'Create Post',
+    //               style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
+    //             ),
+    //             onTap: () {
+    //               Navigator.pop(ctx);
+    //               Routers.goToCreatePostPage(context);
+    //             },
+    //           ),
+    //         ],
+    //       ),
+    //     ),
+    //     );
+    //   },
+    // );
   }
 
   Future<void> onClickMenuItem(int index) async {
@@ -136,12 +136,14 @@ class InSoBlokProvider extends InSoBlokViewModel {
       // Fetch latest products and pick the first supported one
       final products = await productService.getProducts();
       if (products.isNotEmpty) {
-        final supported = products.where((p) {
-          final c = p.category ?? '';
-          return p.avatarImage != null &&
-              (c == 'Clothing' || c == 'Shoes' || c == 'Jewelry');
-        }).toList();
-        final product = (supported.isNotEmpty) ? supported.first : products.first;
+        final supported =
+            products.where((p) {
+              final c = p.category ?? '';
+              return p.avatarImage != null &&
+                  (c == 'Clothing' || c == 'Shoes' || c == 'Jewelry');
+            }).toList();
+        final product =
+            (supported.isNotEmpty) ? supported.first : products.first;
         Routers.goToVTOImagePage(context, product);
       } else {
         // Fallback to marketplace if no product available

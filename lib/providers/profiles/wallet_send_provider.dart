@@ -38,8 +38,6 @@ class WalletSendProvider extends InSoBlokViewModel {
   double? amount;
   Map<String, dynamic> selectedNetwork = {};
 
-  Future<void> _empty() async {}
-
   Future<void> init(
     BuildContext context,
     String s,
@@ -58,23 +56,43 @@ class WalletSendProvider extends InSoBlokViewModel {
     amount = amt;
     senderController.text = s;
     receiverController.text = r;
+
+    // Set XP balance immediately (no async needed)
+    allBalances["xp"] = (accountService.availableXP).toDouble();
+    notifyListeners();
+
+    // Load critical data first (balances and prices) - these are needed for UI
     setBusy(true);
-    await Future.wait([
-      web3Service.getBalances(address!),
-      web3Service.getPrices(),
-      web3Service.getTransactions(address!),
-      s.isNotEmpty && r.isNotEmpty && n.isNotEmpty && amt > 0
-          ? web3Service.getTransactionFee(
+    try {
+      await Future.wait([
+        web3Service.getBalances(address!),
+        web3Service.getPrices(),
+      ]);
+      notifyListeners();
+    } catch (e) {
+      logger.e('Error loading balances/prices: $e');
+    } finally {
+      setBusy(false);
+    }
+
+    // Load non-critical data in background (transactions and fees)
+    // These don't block the UI from showing
+    Future.microtask(() async {
+      try {
+        await web3Service.getTransactions(address!);
+        if (s.isNotEmpty && r.isNotEmpty && n.isNotEmpty && amt > 0) {
+          await web3Service.getTransactionFee(
             cryptoService.privateKey!,
             n,
             EthereumAddress.fromHex(r),
             amt,
-          )
-          : _empty(),
-    ]);
-    allBalances["xp"] = (accountService.availableXP).toDouble();
-    notifyListeners();
-    setBusy(false);
+          );
+        }
+        notifyListeners();
+      } catch (e) {
+        logger.e('Error loading transactions/fees: $e');
+      }
+    });
   }
 
   final List<TransferModel> _transfers = [];

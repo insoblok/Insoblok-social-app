@@ -9,33 +9,35 @@ import 'package:insoblok/models/models.dart';
 import 'package:video_compress/video_compress.dart';
 
 class CloudinaryCDNService {
-
   static Future<MediaStoryModel> uploadImageToCDN(XFile file) async {
     debugPrint("Image size is ${await file.length()}");
-    if(await file.length() < CDN_IMG_UPLOAD_MAX_LIMIT) {
+    if (await file.length() < CDN_IMG_UPLOAD_MAX_LIMIT) {
       try {
         final url = Uri.parse(
-          'https://api.cloudinary.com/v1_1/${CDN_CLOUD_NAME}/image/upload');
-      
-      final request = http.MultipartRequest('POST', url)
-        ..fields['upload_preset'] = CDN_UPLOAD_PRESET // Create this in Cloudinary
-        ..files.add(await http.MultipartFile.fromPath('file', file.path));
-
-      final response = await request.send();
-      if (response.statusCode == 200) {
-        final responseData = await response.stream.toBytes();
-        final responseString = String.fromCharCodes(responseData);
-        final Map<String, dynamic> result = jsonDecode(responseString);
-
-        // Parse response to get public_id
-        return MediaStoryModel(
-          link: result["url"],
-          thumb: "",
-          width: result["width"].toDouble(),
-          height: result["height"].toDouble(),
-          type: 'image'
+          'https://api.cloudinary.com/v1_1/${CDN_CLOUD_NAME}/image/upload',
         );
-      }
+
+        final request =
+            http.MultipartRequest('POST', url)
+              ..fields['upload_preset'] =
+                  CDN_UPLOAD_PRESET // Create this in Cloudinary
+              ..files.add(await http.MultipartFile.fromPath('file', file.path));
+
+        final response = await request.send();
+        if (response.statusCode == 200) {
+          final responseData = await response.stream.toBytes();
+          final responseString = String.fromCharCodes(responseData);
+          final Map<String, dynamic> result = jsonDecode(responseString);
+
+          // Parse response to get public_id
+          return MediaStoryModel(
+            link: result["url"],
+            thumb: "",
+            width: result["width"].toDouble(),
+            height: result["height"].toDouble(),
+            type: 'image',
+          );
+        }
       } catch (e) {
         debugPrint('Upload failed due to $e');
       }
@@ -45,73 +47,111 @@ class CloudinaryCDNService {
       thumb: "",
       width: 0,
       height: 0,
-      type: 'image'
+      type: 'image',
     );
   }
 
   static Future<MediaStoryModel> uploadVideoToCDN(XFile file) async {
     try {
-          MediaInfo? mediaInfo = await VideoCompress.compressVideo(
-            file.path,
-            quality: VideoQuality.Res640x480Quality, 
-            deleteOrigin: false,
-          );
-      debugPrint("Compressed size is ${await file.length()} ====> ${mediaInfo!.filesize}");
-      // Check if the operation was successful and the file was created
-      if (await mediaInfo.file!.exists() && mediaInfo.filesize! < CDN_VIDEO_UPLOAD_MAX_LIMIT) {
-        final url = Uri.parse(
-          'https://api.cloudinary.com/v1_1/${CDN_CLOUD_NAME}/video/upload');
-      
-        final request = http.MultipartRequest('POST', url)
-          ..fields['upload_preset'] = CDN_UPLOAD_PRESET
-          ..fields['resource_type'] = 'video' // Specify video type
-          ..files.add(await http.MultipartFile.fromPath('file', mediaInfo.file!.path));
+      // Check if file exists
+      if (!await File(file.path).exists()) {
+        throw Exception('Video file does not exist: ${file.path}');
+      }
 
-        final response = await request.send();
-        if (response.statusCode == 200) {
-          final responseData = await response.stream.toBytes();
-          final responseString = String.fromCharCodes(responseData);
-          final Map<String, dynamic> result = jsonDecode(responseString);
-
-          // Generate thumbnail URL (grabs frame at 2 seconds)
-          final String publicId = result["public_id"];
-          final String thumbnailUrl = 
-              'https://res.cloudinary.com/${CDN_CLOUD_NAME}/video/upload/'
-              'w_${result["width"]},h_${result["height"]},c_fill,so_2/'
-              '$publicId.jpg';
-
-          return MediaStoryModel(
-            link: result["url"], // Use secure_url if available
-            thumb: thumbnailUrl,
-            width: result["width"].toDouble(),
-            height: result["height"].toDouble(),
-            type: 'video',
-          ); // Return the path to the compressed video
-        } 
-      } 
-    } catch (e) {
-        debugPrint("FFmpeg compression error: $e");
-    }
-      return MediaStoryModel(
-        link: "",
-        thumb: "",
-        width: 0,
-        height: 0,
-        type: "video"
+      MediaInfo? mediaInfo = await VideoCompress.compressVideo(
+        file.path,
+        quality: VideoQuality.Res640x480Quality,
+        deleteOrigin: false,
       );
-    
+
+      if (mediaInfo == null || mediaInfo.file == null) {
+        throw Exception('Video compression failed: mediaInfo is null');
+      }
+
+      debugPrint(
+        "Compressed size is ${await file.length()} ====> ${mediaInfo.filesize}",
+      );
+
+      // Check if the operation was successful and the file was created
+      if (!await mediaInfo.file!.exists()) {
+        throw Exception(
+          'Compressed video file does not exist: ${mediaInfo.file!.path}',
+        );
+      }
+
+      if (mediaInfo.filesize != null &&
+          mediaInfo.filesize! >= CDN_VIDEO_UPLOAD_MAX_LIMIT) {
+        throw Exception(
+          'Video file too large: ${mediaInfo.filesize} bytes (max: $CDN_VIDEO_UPLOAD_MAX_LIMIT)',
+        );
+      }
+
+      final url = Uri.parse(
+        'https://api.cloudinary.com/v1_1/${CDN_CLOUD_NAME}/video/upload',
+      );
+
+      final request =
+          http.MultipartRequest('POST', url)
+            ..fields['upload_preset'] = CDN_UPLOAD_PRESET
+            ..fields['resource_type'] =
+                'video' // Specify video type
+            ..files.add(
+              await http.MultipartFile.fromPath('file', mediaInfo.file!.path),
+            );
+
+      final response = await request.send();
+      final responseData = await response.stream.toBytes();
+      final responseString = String.fromCharCodes(responseData);
+
+      if (response.statusCode != 200) {
+        debugPrint('Cloudinary upload failed: HTTP ${response.statusCode}');
+        debugPrint('Response: $responseString');
+        throw Exception(
+          'Cloudinary upload failed: HTTP ${response.statusCode} - $responseString',
+        );
+      }
+
+      final Map<String, dynamic> result = jsonDecode(responseString);
+
+      // Generate thumbnail URL (grabs frame at 2 seconds)
+      final String publicId = result["public_id"];
+      final String thumbnailUrl =
+          'https://res.cloudinary.com/${CDN_CLOUD_NAME}/video/upload/'
+          'w_${result["width"]},h_${result["height"]},c_fill,so_2/'
+          '$publicId.jpg';
+
+      // Use secure_url if available, otherwise use url
+      final videoUrl = result["secure_url"] ?? result["url"];
+
+      if (videoUrl == null || videoUrl.isEmpty) {
+        throw Exception(
+          'Cloudinary upload succeeded but no video URL returned',
+        );
+      }
+
+      return MediaStoryModel(
+        link: videoUrl, // Use secure_url (HTTPS) if available
+        thumb: thumbnailUrl,
+        width: result["width"].toDouble(),
+        height: result["height"].toDouble(),
+        type: 'video',
+      );
+    } catch (e, stackTrace) {
+      debugPrint("Video upload error: $e");
+      debugPrint("Stack trace: $stackTrace");
+      rethrow; // Re-throw to let caller handle the error
+    }
   }
 
   static Future<MediaStoryModel> uploadImageFromUrl(String imageUrl) async {
     final tempFile = await _downloadImage(imageUrl);
     return uploadImageToCDN(XFile(tempFile.path));
-
   }
 
   static Future<File> _downloadImage(String imageUrl) async {
     try {
       final response = await http.get(Uri.parse(imageUrl));
-      
+
       if (response.statusCode != 200) {
         throw Exception('Failed to download image: ${response.statusCode}');
       }
@@ -119,15 +159,14 @@ class CloudinaryCDNService {
       // Create temporary file
       final tempDir = await Directory.systemTemp.createTemp();
       final tempFile = File('${tempDir.path}/temp_image.jpg');
-      
+
       // Write downloaded data to file
       await tempFile.writeAsBytes(response.bodyBytes);
-      
+
       return tempFile;
     } catch (e) {
       print('Error downloading image: $e');
       throw Exception('Failed to download image from URL');
     }
   }
-
 }
