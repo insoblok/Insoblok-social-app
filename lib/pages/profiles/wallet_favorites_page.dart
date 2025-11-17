@@ -7,6 +7,7 @@ import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
 import 'package:insoblok/models/models.dart';
+import 'package:intl/intl.dart';
 
 class WalletFavoritesPage extends StatelessWidget {
   const WalletFavoritesPage({super.key});
@@ -299,102 +300,75 @@ class WalletFavoritesPage extends StatelessWidget {
                                                                     ),
                                                                   ),
                                                                 ),
-                                                                SizedBox(
-                                                                  width: 12,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                    ),
+                                                    // Removed sparkline to match pill-only layout
+                                                    Expanded(
+                                                      flex: 25,
+                                                      child: Builder(
+                                                        builder: (context) {
+                                                          final sym = token["symbol"].toString().toUpperCase();
+                                                          final live = viewModel.livePrices[sym];
+                                                          final basePrice = (token["current_price"] as num?)?.toDouble() ?? 0.0;
+                                                          final price = live ?? basePrice;
+                                                          final priceChangeAbs = (token["price_change_24h"] as num?)?.toDouble() ??
+                                                            ((token["price_change_percentage_24h"] as num?)?.toDouble() ?? 0.0) * basePrice / 100.0;
+                                                          final bool up = priceChangeAbs >= 0;
+                                                          final int tick = viewModel.priceChangeTick[sym] ?? 0;
+
+                                                          final TextStyle priceStyle = Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                                            color: Colors.white,
+                                                            fontWeight: FontWeight.w600,
+                                                          );
+                                                          final TextStyle deltaStyle = Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                                            color: Colors.white,
+                                                            fontWeight: FontWeight.w700,
+                                                          );
+
+                                                          return KeyedSubtree(
+                                                            key: ValueKey<String>('${sym}_row_$tick'),
+                                                            child: Row(
+                                                              mainAxisAlignment: MainAxisAlignment.end,
+                                                              mainAxisSize: MainAxisSize.max,
+                                                              children: [
+                                                                // Price text (no background)
+                                                                FittedBox(
+                                                                  fit: BoxFit.scaleDown,
+                                                                  child: Builder(
+                                                                    builder: (context) {
+                                                                      final bool big = price >= 1.0;
+                                                                      final numFmt = NumberFormat('#,##0.${big ? '00' : '00000'}');
+                                                                      return Text('\$ ${numFmt.format(price)}', style: priceStyle);
+                                                                    }
+                                                                  ),
                                                                 ),
-                                                                Expanded(
-                                                                  child: Align(
-                                                                    alignment:
-                                                                        Alignment
-                                                                            .centerLeft,
-                                                                    child: FittedBox(
-                                                                      fit:
-                                                                          BoxFit
-                                                                              .scaleDown,
-                                                                      child: Text(
-                                                                        token['symbol']
-                                                                            .toString()
-                                                                            .toUpperCase(),
-                                                                        textAlign:
-                                                                            TextAlign.left,
-                                                                        // style: Theme.of(context).textTheme.bodyLarge,
-                                                                      ),
+                                                                const SizedBox(width: 12),
+                                                                // Change pill
+                                                                Container(
+                                                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                                                                  decoration: BoxDecoration(
+                                                                    color: up ? Colors.green : Colors.red,
+                                                                    borderRadius: BorderRadius.circular(6.0),
+                                                                  ),
+                                                                  child: FittedBox(
+                                                                    fit: BoxFit.scaleDown,
+                                                                    child: Builder(
+                                                                      builder: (context) {
+                                                                        final changeFmt = NumberFormat('#,##0.00');
+                                                                        final text = '${up ? '+' : '-'}${changeFmt.format(priceChangeAbs.abs())}';
+                                                                        return Text(text, style: deltaStyle);
+                                                                      }
                                                                     ),
                                                                   ),
                                                                 ),
                                                               ],
                                                             ),
-                                                          ),
-                                                          // Current Price
-                                                          Expanded(
-                                                            flex: 30,
-                                                            child: Align(
-                                                              alignment:
-                                                                  Alignment
-                                                                      .centerRight,
-                                                              child: Text(
-                                                                '\$${AIHelpers.formatDouble(token["current_price"].toDouble(), 2)}',
-                                                                style: Theme.of(
-                                                                      context,
-                                                                    )
-                                                                    .textTheme
-                                                                    .bodyLarge
-                                                                    ?.copyWith(
-                                                                      color:
-                                                                          Colors
-                                                                              .white,
-                                                                    ),
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .right,
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          // Price Difference
-                                                          Expanded(
-                                                            flex: 25,
-                                                            child: Align(
-                                                              alignment:
-                                                                  Alignment
-                                                                      .centerRight,
-                                                              child: Container(
-                                                                padding:
-                                                                    const EdgeInsets.symmetric(
-                                                                      horizontal:
-                                                                          8,
-                                                                      vertical:
-                                                                          4,
-                                                                    ),
-                                                                decoration: BoxDecoration(
-                                                                  color:
-                                                                      (token["price_change_24h"] ??
-                                                                                  0) >=
-                                                                              0
-                                                                          ? Colors
-                                                                              .green
-                                                                          : Colors
-                                                                              .red,
-                                                                  borderRadius:
-                                                                      BorderRadius.circular(
-                                                                        6.0,
-                                                                      ),
-                                                                ),
-                                                                child: Text(
-                                                                  '${(token["price_change_24h"] ?? 0) >= 0 ? "+" : ""}${AIHelpers.formatDouble((token["price_change_24h"] ?? 0).toDouble(), 2)}',
-                                                                  style: Theme.of(
-                                                                        context,
-                                                                      )
-                                                                      .textTheme
-                                                                      .bodyMedium
-                                                                      ?.copyWith(
-                                                                        color:
-                                                                            Colors.white,
-                                                                      ),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
+                                                          );
+                                                        },
+
                                                       ),
                                                       if (viewModel
                                                           .selectedTokens

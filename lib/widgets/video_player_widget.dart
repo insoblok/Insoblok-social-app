@@ -196,63 +196,54 @@ class _VideoPlayerState extends State<VideoPlayerWidget> {
             ? widget.radius ?? 100
             : widget.width ?? MediaQuery.of(context).size.width;
 
-    Widget content = Container(
-      width: widget.circular ? size : widget.width,
-      height: widget.circular ? size : widget.height,
-      decoration: BoxDecoration(
-        borderRadius:
-            widget.circular
-                ? BorderRadius.circular(size / 2)
-                : BorderRadius.circular(0),
-        color: Colors.transparent,
-      ),
-      child:
-          _initialized && validate && _controller != null
-              ? Stack(
-                alignment: Alignment.center,
-                children: [
-                  SizedBox(
-                    width: widget.circular ? size : widget.width,
-                    height: widget.circular ? size : widget.height,
-                    child: FittedBox(
-                      fit: BoxFit.cover,
-                      child: SizedBox(
-                        width: _controller!.value.size.width,
-                        height: _controller!.value.size.height,
-                        child: VideoPlayer(_controller!),
+
+    return ClipOval(
+      clipBehavior:
+          widget.circular ? Clip.antiAlias : Clip.none, // fix for non-circular
+      child: Container(
+        width: widget.circular ? size : widget.width,
+        height: widget.circular ? size : widget.height,
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(size / 2),
+          color: Colors.transparent,
+        ),
+        child:
+            _initialized && validate && _controller != null
+                ? Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    AspectRatio(
+                      aspectRatio: _controller!.value.aspectRatio,
+                      child: VideoPlayer(_controller!),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        if (_isPlaying) {
+                          _controller!.pause();
+                        } else {
+                          _controller!.play();
+                        }
+                        setState(() => _isPlaying = !_isPlaying);
+                      },
+                      child: Icon(
+                        _isPlaying ? Icons.pause : Icons.play_arrow,
+                        color: Colors.white.withOpacity(0.8),
+                        size: 24,
                       ),
                     ),
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      if (_isPlaying) {
-                        _controller!.pause();
-                      } else {
-                        _controller!.play();
-                      }
-                      setState(() => _isPlaying = !_isPlaying);
-                    },
-                    child: Icon(
-                      _isPlaying ? Icons.pause : Icons.play_arrow,
-                      color: Colors.white.withOpacity(0.8),
-                      size: 24,
-                    ),
-                  ),
-                ],
-              )
-              : const Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    CircularProgressIndicator(strokeWidth: 2),
-                    SizedBox(height: 8),
-                    Text(
-                      'Loading video...',
-                      style: TextStyle(fontSize: 12, color: Colors.white),
-                    ),
                   ],
+                )
+                : const Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CircularProgressIndicator(strokeWidth: 2),
+                      SizedBox(height: 8),
+                      Text('Loading...', style: TextStyle(fontSize: 12)),
+                    ],
+                  ),
                 ),
-              ),
+      ),
     );
 
     // Apply ClipOval only for circular videos

@@ -260,169 +260,85 @@ class RRCAvatarProvider extends InSoBlokViewModel {
       return null;
     }
 
-    String? resultUrl;
+
+    String? videoUrl;
     await runBusyFuture(() async {
       try {
+        final prompt = emotions[selectedEmotionIndex]['prompt'] ?? 'laugh';
+
+        // Ensure selfie uploaded once; avatar generation uses it as reference.
         String? imageUrl;
-        try {
-          await _ensureSelfieUploaded();
-          imageUrl = _selfieCdnUrl.value;
-        } catch (e) {
-          logger.e('Failed to upload selfie to Cloudinary: $e');
-          throw Exception('Failed to upload selfie. Please try again.');
-        }
-
+        await _ensureSelfieUploaded();
+        imageUrl = _selfieCdnUrl.value;
         if (imageUrl == null || imageUrl.isEmpty) {
-          throw Exception(
-            'Selfie URL is required. Please ensure your selfie is uploaded.',
-          );
+          throw Exception('Selfie URL is required. Please upload again.');
         }
 
-        // Use different Runware methods based on origin
-        if (origin == "dashboard" || origin == null) {
-          // From story page - generate emotion video
-          String? imageToUseForVideo = imageUrl;
+        Map<String, dynamic> result;
 
-          // If avatar style is selected, first generate the avatar image
-          if (selectedAvatarIndex > 0 && selectedAvatarIndex < avatars.length) {
-            logger.d(
-              'Avatar style selected (index: $selectedAvatarIndex). Generating avatar first...',
-            );
-
-            final avatarPrompt =
-                avatars[selectedAvatarIndex]['prompt'] ??
-                'high quality portrait';
-
-            logger.d(
-              'Generating avatar with user face: $imageUrl, prompt: $avatarPrompt',
-            );
-
-            // Step 1: Generate AI avatar from user face
-            final avatarResult = await _runwareService
-                .generateAIAvatarWithPromptOption1(
-                  inputImage: imageUrl,
-                  positivePrompt: avatarPrompt,
-                );
-
-            if (avatarResult['status'] == 'success' &&
-                avatarResult['success'] == true) {
-              final generatedAvatarUrl = avatarResult['imageURL'] as String?;
-              if (generatedAvatarUrl != null && generatedAvatarUrl.isNotEmpty) {
-                // Store the generated avatar image URL
-                _generatedAvatarImageUrl.value = generatedAvatarUrl;
-                // Use the generated avatar image for video generation
-                imageToUseForVideo = generatedAvatarUrl;
-                logger.d(
-                  '✅ Avatar generated successfully: $generatedAvatarUrl',
-                );
-                logger.d('✅ Using avatar image for emotion video generation');
-                notifyListeners();
-                AIHelpers.showToast(msg: 'Avatar generated! Creating video...');
-              } else {
-                throw Exception('Avatar image URL not found in response');
-              }
-            } else if (avatarResult['status'] == 'processing') {
-              logger.w(
-                'Avatar is still processing. Task UUID: ${avatarResult['taskUUID']}',
-              );
-              throw Exception(
-                'Avatar generation is still processing. Please wait and try again.',
-              );
-            } else {
-              final errorMsg =
-                  avatarResult['message'] ?? 'Unknown error occurred';
-              logger.e('Avatar generation failed: $errorMsg');
-              throw Exception('Avatar generation failed: $errorMsg');
-            }
-          }
-
-          // Step 2: Generate emotion video (using avatar image if avatar was selected, otherwise original face)
-          final prompt = emotions[selectedEmotionIndex]['prompt'] ?? 'laugh';
+        // If user picked "My Face" (index 0) -> direct video from selfie.
+        // Else -> generate avatar then video based on selected avatar style.
+        if (selectedAvatarIndex == 0) {
           logger.d(
-            'Generating emotion video with image: $imageToUseForVideo, prompt: $prompt',
+            'Generating video with Cloudinary image: $imageUrl, prompt: $prompt',
           );
-
-          final result = await _runwareService.generateAIEmotionVideoWithPrompt(
-            inputImage: imageToUseForVideo,
+          result = await _runwareService.generateAIEmotionVideoWithPrompt(
+            inputImage: imageUrl,
             positivePrompt: prompt,
           );
-
-          if (result['status'] == 'success' && result['success'] == true) {
-            final generatedVideoUrl = result['videoURL'] as String?;
-            if (generatedVideoUrl != null && generatedVideoUrl.isNotEmpty) {
-              // Validate URL format
-              if (!generatedVideoUrl.startsWith('http://') &&
-                  !generatedVideoUrl.startsWith('https://')) {
-                throw Exception('Invalid video URL format: $generatedVideoUrl');
-              }
-
-              // Skip URL validation to save time - video player will handle invalid URLs
-              // URL validation is async and adds unnecessary delay
-              logger.d('✅ Video URL received: $generatedVideoUrl');
-
-              _generatedVideoUrl.value = resultUrl = generatedVideoUrl;
-              logger.d('✅ Video URL set: ${_generatedVideoUrl.value}');
-              logger.d('✅ Generated video URL: $generatedVideoUrl');
-              // Notify listeners immediately to update UI
-              notifyListeners();
-              AIHelpers.showToast(msg: 'Video ready!');
-            } else {
-              throw Exception('Video URL not found in response');
-            }
-          } else if (result['status'] == 'processing') {
-            logger.w(
-              'Video is still processing. Task UUID: ${result['taskUUID']}',
-            );
-            throw Exception(
-              'Video generation is still processing. Please wait and try again.',
-            );
-          } else {
-            final errorMsg = result['message'] ?? 'Unknown error occurred';
-            logger.e('Video generation failed: $errorMsg');
-            throw Exception('Video generation failed: $errorMsg');
+        } else {
+          // Map selected avatar index to AvatarStyle
+          late final AvatarStyle style;
+          switch (selectedAvatarIndex) {
+            case 1:
+              style = AvatarStyle.seededit3d; // 3D via SeedEdit 3.0
+              break;
+            case 2:
+              style = AvatarStyle.seedream3d; // 3D via Seedream 4.0
+              break;
+            case 3:
+              style = AvatarStyle.seedreamAnime; // anime via Seedream 4.0
+              break;
+            case 4:
+            default:
+              style = AvatarStyle.seedreamNeonGlow; // neon glow via Seedream 4.0
           }
-        } else if (origin == "profile") {
-          // From profile page - generate AI avatar image
-          final prompt =
-              selectedAvatarIndex > 0 && selectedAvatarIndex < avatars.length
-                  ? avatars[selectedAvatarIndex]['prompt'] ??
-                      'high quality portrait'
-                  : 'high quality portrait, professional photography';
 
           logger.d(
-            'Generating avatar with Cloudinary image: $imageUrl, prompt: $prompt',
+            'Generating avatar ($style) then video. Prompt: $prompt',
           );
-
-          final result = await _runwareService
-              .generateAIAvatarWithPromptOption1(
-                inputImage: imageUrl,
-                positivePrompt: prompt,
-              );
-
-          if (result['status'] == 'success' && result['success'] == true) {
-            final generatedImageUrl = result['imageURL'] as String?;
-            if (generatedImageUrl != null && generatedImageUrl.isNotEmpty) {
-              _generatedImageUrl.value = resultUrl = generatedImageUrl;
-              AIHelpers.showToast(msg: 'Avatar ready!');
-            } else {
-              throw Exception('Image URL not found in response');
-            }
-          } else if (result['status'] == 'processing') {
-            logger.w(
-              'Avatar is still processing. Task UUID: ${result['taskUUID']}',
-            );
-            throw Exception(
-              'Avatar generation is still processing. Please wait and try again.',
-            );
-          } else {
-            final errorMsg = result['message'] ?? 'Unknown error occurred';
-            logger.e('Avatar generation failed: $errorMsg');
-            throw Exception('Avatar generation failed: $errorMsg');
-          }
+          result = await _runwareService.generateAvatarThenVideo(
+            selfieImage: imageUrl,
+            style: style,
+            videoPrompt: prompt,
+          );
         }
-      } catch (e) {
+
+        if (result['status'] == 'success' && result['success'] == true) {
+          final generatedVideoUrl = result['videoURL'] as String?;
+          if (generatedVideoUrl != null && generatedVideoUrl.isNotEmpty) {
+            _generatedVideoUrl.value = videoUrl = generatedVideoUrl;
+            
+            AIHelpers.showToast(msg: 'Video ready!');
+          } else {
+            throw Exception('Video URL not found in response');
+          }
+        } else if (result['status'] == 'processing') {
+          logger.w(
+            'Video is still processing. Task UUID: ${result['taskUUID']}',
+          );
+          throw Exception(
+            'Video generation is still processing. Please wait and try again.',
+          );
+        } else {
+          final errorMsg = result['message'] ?? 'Unknown error occurred';
+          logger.e('Video generation failed: $errorMsg');
+          throw Exception('Video generation failed: $errorMsg');
+        }
+      } catch (e, s) {
         setError(e);
-        logger.e('Error generating content: $e');
+        logger.e('Error generating video', error: e, stackTrace: s);
+
       } finally {
         notifyListeners();
       }
@@ -431,176 +347,6 @@ class RRCAvatarProvider extends InSoBlokViewModel {
     if (hasError) {
       AIHelpers.showToast(msg: modelError.toString());
     }
-
-    return resultUrl;
-  }
-
-  Future<void> postAsReaction() async {
-    if (isBusy) return;
-
-    final generatedVideoUrl = _generatedVideoUrl.value;
-    logger.d(
-      'postAsReaction called - Video URL: $generatedVideoUrl, Story ID: $_storyID',
-    );
-
-    if (generatedVideoUrl == null || generatedVideoUrl.isEmpty) {
-      logger.e('No video generated yet');
-      AIHelpers.showToast(
-        msg: 'No video generated yet. Please generate a video first.',
-      );
-      return;
-    }
-    if (_storyID == null || _storyID!.isEmpty) {
-      logger.e('Story ID is missing');
-      AIHelpers.showToast(msg: 'Story ID is missing. Cannot post reaction.');
-      return;
-    }
-
-    // Check if user is trying to react to their own story
-    try {
-      final story = await storyService.getStory(_storyID!);
-      logger.d(
-        'Fetched story - Story ID: ${story.id}, Story userId: ${story.userId}, Current user ID: ${AuthHelper.user?.id}',
-      );
-
-      if (story.userId != null &&
-          AuthHelper.user?.id != null &&
-          story.userId == AuthHelper.user?.id) {
-        logger.e('User trying to react to their own story - Blocking reaction');
-        AIHelpers.showToast(msg: "You can't react to your own story!");
-        return;
-      }
-      logger.d('Story ownership check passed - User can react');
-    } catch (e, stackTrace) {
-      logger.e('Error fetching story for validation: $e');
-      logger.e('Stack trace: $stackTrace');
-      // Continue anyway - better to allow reaction than block due to fetch error
-      logger.w('Allowing reaction despite validation error');
-    }
-
-    clearErrors();
-    setBusy(true);
-    notifyListeners();
-
-    try {
-      String videoUrl = generatedVideoUrl;
-      File? videoFile;
-
-      // If video URL is a network URL, download it first
-      if (videoUrl.startsWith('http://') || videoUrl.startsWith('https://')) {
-        logger.d('Downloading video from URL: $videoUrl');
-
-        final tempDir = await getTemporaryDirectory();
-        final fileExtension = p.extension(videoUrl);
-        final extension = fileExtension.isEmpty ? '.mp4' : fileExtension;
-        final fullPath =
-            '${tempDir.path}/${AuthHelper.user?.id}_reaction_${DateTime.now().millisecondsSinceEpoch}$extension';
-
-        try {
-          final dio = Dio();
-          final response = await dio.get(
-            videoUrl,
-            options: Options(
-              responseType: ResponseType.bytes,
-              followRedirects: true,
-              validateStatus: (status) => (status ?? 600) < 500,
-            ),
-          );
-
-          if (response.statusCode != 200) {
-            throw Exception(
-              'Failed to download video: HTTP ${response.statusCode}',
-            );
-          }
-
-          if (response.data == null || (response.data as List<int>).isEmpty) {
-            throw Exception('Downloaded video data is empty');
-          }
-
-          videoFile = File(fullPath);
-          final raf = videoFile.openSync(mode: FileMode.write);
-          raf.writeFromSync(response.data);
-          await raf.close();
-
-          logger.d('Video downloaded successfully to: ${videoFile.path}');
-        } catch (e) {
-          logger.e('Error downloading video: $e');
-          throw Exception('Failed to download video from URL: $e');
-        }
-      } else {
-        // It's a local file path
-        videoFile = File(videoUrl);
-        if (!await videoFile.exists()) {
-          throw Exception('Video file not found: $videoUrl');
-        }
-        logger.d('Using local video file: ${videoFile.path}');
-      }
-
-      // Verify video file exists and is readable
-      if (!await videoFile.exists()) {
-        throw Exception('Video file does not exist: ${videoFile.path}');
-      }
-
-      final fileSize = await videoFile.length();
-      logger.d('Video file size: $fileSize bytes');
-
-      if (fileSize == 0) {
-        throw Exception('Video file is empty: ${videoFile.path}');
-      }
-
-      // Upload video to Cloudinary CDN
-      logger.d('Uploading video to Cloudinary: ${videoFile.path}');
-      final model = await CloudinaryCDNService.uploadVideoToCDN(
-        XFile(videoFile.path),
-      );
-
-      final cdnUrl = model.link;
-      if (cdnUrl == null || cdnUrl.isEmpty) {
-        throw Exception(
-          'Failed to upload video to Cloudinary: No URL returned',
-        );
-      }
-
-      logger.d('Video uploaded to Cloudinary successfully: $cdnUrl');
-
-      // Update Firestore story document with reaction
-      final storiesRef = FirebaseFirestore.instance.collection("story");
-      await storiesRef.doc(_storyID).update({
-        "reactions": FieldValue.arrayUnion([cdnUrl]),
-      });
-
-      logger.d('Reaction posted successfully to story: $_storyID');
-      AIHelpers.showToast(msg: 'Successfully posted as Reaction!');
-
-      // Trigger story update notification to refresh main page
-      try {
-        await storyService.updateStoryUpdated();
-        logger.d('Story update notification triggered');
-      } catch (e) {
-        logger.e('Failed to trigger story update: $e');
-      }
-
-      // Navigate to main page and clear navigation stack
-      if (context.mounted) {
-        Navigator.of(context).pushNamedAndRemoveUntil(
-          kRouterMain,
-          (Route<dynamic> route) => false, // Remove all previous routes
-        );
-      }
-    } catch (e, stackTrace) {
-      setError(e);
-      logger.e('Error posting reaction: $e');
-      logger.e(stackTrace);
-      AIHelpers.showToast(msg: 'Failed to post reaction: ${e.toString()}');
-    } finally {
-      setBusy(false);
-      notifyListeners();
-    }
-  }
-
-  @override
-  void dispose() {
-    camera.dispose();
-    super.dispose();
+    return videoUrl;
   }
 }

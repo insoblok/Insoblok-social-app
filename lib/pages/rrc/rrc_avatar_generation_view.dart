@@ -196,138 +196,43 @@ class _RRCAvatarGenerationViewState extends State<RRCAvatarGenerationView>
                                     blurRadius: 16,
                                     spreadRadius: 2,
                                   ),
-                                ],
-                              ),
-                              clipBehavior: Clip.antiAlias,
-                              child: AIImage(
-                                vm.generatedImageUrl!,
-                                width: 280,
-                                height: 280,
-                                fit: BoxFit.cover,
-                              ),
-                            )
-                            // For dashboard: prioritize video over avatar image
-                            // Show video if available, otherwise show avatar image if available
-                            : (vm.generatedVideoUrl != null &&
-                                vm.generatedVideoUrl!.isNotEmpty)
-                            ? Container(
-                              width: 280,
-                              height: 280,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                border: Border.all(
-                                  color: Colors.white24,
-                                  width: 2,
                                 ),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withOpacity(0.3),
-                                    blurRadius: 16,
-                                    spreadRadius: 2,
-                                  ),
-                                ],
-                              ),
-                              clipBehavior: Clip.antiAlias,
-                              child: Stack(
-                                children: [
-                                  VideoPlayerWidget(
-                                    key: ValueKey(vm.generatedVideoUrl),
-                                    path: vm.generatedVideoUrl!,
-                                    border: Colors.transparent,
-                                    circular: true,
-                                    radius: 280,
-                                  ),
-                                  // Show loading indicator while video is initializing
-                                  if (vm.isBusy)
+                              )
+                            : SizedBox(
+                                width: 300,
+                                height: 300,
+                                child: Stack(
+                                  alignment: Alignment.center,
+                                  children: [
+                                    // keep same subtle inner ring styling behind the video
                                     Container(
-                                      decoration: const BoxDecoration(
+                                      width: 300,
+                                      height: 300,
+                                      decoration: BoxDecoration(
                                         shape: BoxShape.circle,
-                                        color: Colors.black54,
-                                      ),
-                                      child: const Center(
-                                        child: CircularProgressIndicator(
-                                          valueColor:
-                                              AlwaysStoppedAnimation<Color>(
-                                                Colors.white,
-                                              ),
+                                        gradient: RadialGradient(
+                                          colors: [
+                                            glow[0].withOpacity(0.10),
+                                            Colors.transparent
+                                          ],
+                                          radius: 0.65,
+                                        ),
+                                        border: Border.all(
+                                          width: 10,
+                                          color: Colors.white.withOpacity(0.06),
                                         ),
                                       ),
                                     ),
-                                ],
-                              ),
-                            )
-                            // Show placeholder with "Creating video..." if avatar is ready but video is being generated
-                            : (vm.origin == "dashboard" &&
-                                vm.generatedAvatarImageUrl != null &&
-                                vm.generatedAvatarImageUrl!.isNotEmpty &&
-                                vm.isBusy)
-                            ? Container(
-                              width: 300,
-                              height: 300,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                gradient: LinearGradient(
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                  colors: [
-                                    const Color(0xFF0F1735),
-                                    const Color(0xFF0B0F25),
+                                    // video clipped to a circle, slightly inset (280) to respect the 10px ring
+                                    VideoPlayerWidget(
+                                      path: vm.generatedVideoUrl!,
+                                      border: Colors.transparent,
+                                      circular: true,
+                                      radius: 280,
+                                    ),
                                   ],
                                 ),
-                                border: Border.all(
-                                  width: 10,
-                                  color: Colors.white.withOpacity(0.06),
-                                ),
-                              ),
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  border: Border.all(
-                                    width: 2,
-                                    color: Colors.white.withOpacity(0.1),
-                                  ),
-                                ),
-                                child: const Center(
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      CircularProgressIndicator(
-                                        valueColor:
-                                            AlwaysStoppedAnimation<Color>(
-                                              Colors.white,
-                                            ),
-                                      ),
-                                      SizedBox(height: 16),
-                                      Text(
-                                        'Creating video...',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 16,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            )
-                            : Container(
-                              width: 300,
-                              height: 300,
-                              decoration: BoxDecoration(
-                                shape: BoxShape.circle,
-                                gradient: LinearGradient(
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                  colors: [
-                                    const Color(0xFF0F1735),
-                                    const Color(0xFF0B0F25),
-                                  ],
-                                ),
-                                border: Border.all(
-                                  width: 10,
-                                  color: Colors.white.withOpacity(0.06),
-                                ),
+
                               ),
                               child: Container(
                                 decoration: BoxDecoration(
