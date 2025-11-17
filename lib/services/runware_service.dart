@@ -6,6 +6,14 @@ import 'package:http/http.dart' as http;
 import 'package:insoblok/utils/utils.dart';
 import 'package:uuid/uuid.dart';
 
+/// Supported avatar styles mapped to ByteDance models/prompts.
+enum AvatarStyle {
+	seededit3d,
+	seedream3d,
+	seedreamAnime,
+	seedreamNeonGlow,
+}
+
 class RunwareService {
   final String baseUrl;
   final String apiKey;
@@ -655,6 +663,51 @@ class RunwareService {
     throw Exception('Video generation timeout after $maxRetries attempts');
   }
 
+  /// Generic poller that works for both image and video tasks, returning an `assetURL`
+  /// which may be an `imageURL`, `videoURL`, or plain `url` depending on task type.
+  Future<Map<String, dynamic>> _pollForResultGeneric(
+    String taskUUID, {
+    int maxRetries = 30,
+    int retryDelaySeconds = 5,
+  }) async {
+    for (int attempt = 0; attempt < maxRetries; attempt++) {
+      print('Checking task status... (Attempt ${attempt + 1}/$maxRetries)');
+
+      await Future.delayed(Duration(seconds: retryDelaySeconds));
+
+      try {
+        final response = await http.post(
+          Uri.parse(baseUrlRunware),
+          headers: {
+            'Authorization': 'Bearer $apiRunwareKey',
+            'Content-Type': 'application/json',
+          },
+          body: json.encode([
+            {"taskType": "getResponse", "taskUUID": taskUUID},
+          ]),
+        );
+
+        if (response.statusCode == 200) {
+          final responseData = json.decode(response.body);
+          final result = _handleGetResponseGeneric(responseData, taskUUID);
+          if (result['status'] == 'success') {
+            return result;
+          } else if (result['status'] == 'processing') {
+            continue;
+          } else if (result['status'] == 'error') {
+            throw Exception('Task failed: ${result['message']}');
+          }
+        } else {
+          print('GetResponse failed with status: ${response.statusCode}');
+        }
+      } catch (e) {
+        print('Error checking status: $e');
+      }
+    }
+
+    throw Exception('Task timeout after $maxRetries attempts');
+  }
+
   Map<String, dynamic> _handleGetResponse(
     Map<String, dynamic> response,
     String expectedTaskUUID,
@@ -721,5 +774,204 @@ class RunwareService {
       'taskUUID': expectedTaskUUID,
       'message': 'Task not found in response',
     };
+  }
+
+  /// Generic handler for both images and videos.
+  Map<String, dynamic> _handleGetResponseGeneric(
+    Map<String, dynamic> response,
+    String expectedTaskUUID,
+  ) {
+    if (response.containsKey('errors') && response['errors'] is List) {
+      final errors = response['errors'] as List;
+      if (errors.isNotEmpty) {
+        final taskError = errors.firstWhere(
+          (error) => error['taskUUID'] == expectedTaskUUID,
+          orElse: () => null,
+        );
+        if (taskError != null) {
+          return {
+            'status': 'error',
+            'message': '${taskError['message']} (Code: ${taskError['code']})',
+            'taskUUID': expectedTaskUUID,
+          };
+        }
+      }
+    }
+
+    if (response.containsKey('data') && response['data'] is List) {
+      final data = response['data'] as List;
+      final ourTask = data.firstWhere(
+        (task) => task['taskUUID'] == expectedTaskUUID,
+        orElse: () => null,
+      );
+      if (ourTask != null) {
+        final status = ourTask['status'];
+        if (status == 'success') {
+          final assetURL =
+              ourTask['videoURL'] ?? ourTask['imageURL'] ?? ourTask['url'];
+          return {
+            'status': 'success',
+            'success': true,
+            'taskUUID': ourTask['taskUUID'],
+            'videoURL': ourTask['videoURL'],
+            'imageURL': ourTask['imageURL'] ?? ourTask['url'],
+            'assetURL': assetURL,
+            'cost': ourTask['cost'],
+            'rawResponse': response,
+          };
+        } else if (status == 'processing') {
+          return {
+            'status': 'processing',
+            'taskUUID': ourTask['taskUUID'],
+            'message': 'Task is still being processed',
+          };
+        } else if (status == 'error') {
+          return {
+            'status': 'error',
+            'taskUUID': ourTask['taskUUID'],
+            'message': 'Task failed with status: error',
+          };
+        }
+      }
+    }
+
+    return {
+      'status': 'error',
+      'taskUUID': expectedTaskUUID,
+      'message': 'Task not found in response',
+    };
+  }
+
+  // ----- Avatar generation (SeedEdit 3.0 / Seedream 4.0) -----
+
+  ({String model, String prompt, bool isSeedEdit}) _styleToModelPrompt(
+    AvatarStyle style,
+  ) {
+    switch (style) {
+      case AvatarStyle.seededit3d:
+        return (model: 'bytedance:4@1', prompt: '3D', isSeedEdit: true);
+      case AvatarStyle.seedream3d:
+        return (model: 'bytedance:5@0', prompt: '3D', isSeedEdit: false);
+      case AvatarStyle.seedreamAnime:
+        return (model: 'bytedance:5@0', prompt: 'anime', isSeedEdit: false);
+      case AvatarStyle.seedreamNeonGlow:
+        return (model: 'bytedance:5@0', prompt: 'neon glow', isSeedEdit: false);
+    }
+  }
+
+  /// Creates an avatar image from a selfie using Runware/ByteDance models.
+  /// Provide `inputImage` as an HTTPS URL or data URI.
+  Future<Map<String, dynamic>> generateAvatarFromImage({
+    required String inputImage,
+    required AvatarStyle style,
+    int? width,
+    int? height,
+  }) async {
+    final String taskUUID = const Uuid().v4();
+    final cfg = _styleToModelPrompt(style);
+
+    // Ensure reference image is a data URI (some providers don't fetch remote URLs).
+    String referenceImage = inputImage;
+    if (inputImage.startsWith('http')) {
+      final bytes = await _downloadBytes(_forceHttps(inputImage));
+      final mime = _guessMime(bytes, fallback: 'image/jpeg');
+      referenceImage = 'data:$mime;base64,${base64Encode(bytes)}';
+    }
+
+    final Map<String, dynamic> body = {
+      "taskType": "imageInference",
+      "numberResults": 1,
+      "outputFormat": "PNG",
+      "includeCost": true,
+      "outputType": ["URL"],
+      "referenceImages": [
+        referenceImage,
+      ],
+      "model": cfg.model,
+      "positivePrompt": cfg.prompt,
+      "taskUUID": taskUUID,
+    };
+
+    // SeedEdit 3.0 supports CFGScale and inherits aspect ratio from reference
+    if (cfg.isSeedEdit) {
+      body["CFGScale"] = 5.5;
+    } else {
+      // Seedream 4.0 supports explicit dimensions; default to 1024 if not set
+      if (width != null && height != null) {
+        body["width"] = width;
+        body["height"] = height;
+      } else {
+        body["width"] = 1024;
+        body["height"] = 1024;
+      }
+      body["providerSettings"] = {
+        "bytedance": {"maxSequentialImages": 1}
+      };
+    }
+
+    try {
+      final response = await http.post(
+        Uri.parse(baseUrlRunware),
+        headers: {
+          'Authorization': 'Bearer $apiRunwareKey',
+          'Content-Type': 'application/json',
+        },
+        body: json.encode([body]),
+      );
+
+      if (response.statusCode == 200) {
+        // Try to return immediately if the API already provided a URL
+        final decoded = json.decode(response.body);
+        if (decoded is Map && decoded['data'] is List) {
+          final data = decoded['data'] as List;
+          if (data.isNotEmpty) {
+            final task = data.first;
+            if (task is Map) {
+              final url = task['imageURL'] ?? task['url'];
+              if (url is String && url.isNotEmpty) {
+                return {
+                  'status': 'success',
+                  'success': true,
+                  'taskUUID': taskUUID,
+                  'imageURL': url,
+                  'assetURL': url,
+                  'rawResponse': decoded,
+                };
+              }
+            }
+          }
+        }
+        // Otherwise poll until the image URL is ready
+        return await _pollForResultGeneric(taskUUID);
+      } else {
+        throw Exception(
+          'API request failed with status: ${response.statusCode}',
+        );
+      }
+    } catch (e) {
+      throw Exception('Failed to call Runware API (avatar): $e');
+    }
+  }
+
+  /// Convenience flow: create avatar first, then generate video using that avatar
+  /// as the input image for Seedance video.
+  Future<Map<String, dynamic>> generateAvatarThenVideo({
+    required String selfieImage,
+    required AvatarStyle style,
+    required String videoPrompt,
+  }) async {
+    final avatarResult =
+        await generateAvatarFromImage(inputImage: selfieImage, style: style);
+    final avatarUrl =
+        avatarResult['assetURL'] ?? avatarResult['imageURL'] ?? avatarResult['url'];
+    if (avatarUrl == null || (avatarUrl is String && avatarUrl.isEmpty)) {
+      throw Exception('Avatar generation did not return an image URL');
+    }
+
+    // Reuse existing video function
+    return await generateAIEmotionVideoWithPrompt(
+      inputImage: avatarUrl as String,
+      positivePrompt: videoPrompt,
+    );
   }
 }

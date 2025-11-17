@@ -2,13 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 import 'package:flutter/services.dart';
 
-import 'package:dropdown_button2/dropdown_button2.dart';
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/locator.dart';
+import 'package:intl/intl.dart';
 
 class AccountWalletHomePage extends StatefulWidget {
   const AccountWalletHomePage({super.key});
@@ -23,68 +23,9 @@ class AccountWalletHomePageState extends State<AccountWalletHomePage> {
 
   _handleQRResult(String address) {}
 
-  double? _getTokenBalance(
-    AccountWalletProvider viewModel,
-    Map<String, dynamic> token,
-  ) {
-    // For custom tokens, try to get balance using contract address
-    if (token["isCustom"] == true && token["token_address"] != null) {
-      // For now, return 0 for custom tokens as they need special balance fetching
-      // TODO: Implement custom token balance fetching using contract address
-      return 0.0;
-    }
-    // For regular tokens, use chain name
-    return viewModel.allBalances?[token["chain"]];
-  }
+  // Removed unused _getTokenBalance helper
 
-  Widget _buildTokenPrice(
-    BuildContext context,
-    AccountWalletProvider viewModel,
-    Map<String, dynamic> token,
-  ) {
-    final chain = token["chain"]?.toString() ?? '';
-
-    // Try to get price from allPrices using chain key
-    double? price = viewModel.allPrices?[chain];
-
-    // For specific chains, use hardcoded lookups
-    if (price == null || price == 0) {
-      if (chain == "ethereum") {
-        price = viewModel.allPrices?["ethereum"];
-      } else if (chain == "usdt") {
-        price = viewModel.allPrices?["usdt"];
-      } else if (chain == "xrp") {
-        price = viewModel.allPrices?["xrp"];
-      }
-    }
-
-    // If still no price, try to get from tokenValues (which is calculated from balance * price)
-    if ((price == null || price == 0) &&
-        viewModel.tokenValues.containsKey(chain)) {
-      final balance = _getTokenBalance(viewModel, token) ?? 0;
-      if (balance > 0) {
-        price = viewModel.tokenValues[chain]! / balance;
-      }
-    }
-
-    // Format the price display
-    final priceText =
-        price != null && price > 0 ? '\$${price.toStringAsFixed(2)}' : '\$0.00';
-
-    // Use appropriate style based on whether it's a known chain
-    final isKnownChain =
-        chain == "ethereum" || chain == "usdt" || chain == "xrp";
-
-    return Text(
-      priceText,
-      style:
-          isKnownChain
-              ? TextStyle(fontSize: 16, color: Colors.grey.shade400)
-              : Theme.of(
-                context,
-              ).textTheme.labelLarge!.copyWith(color: Colors.white),
-    );
-  }
+  // Removed old _buildTokenPrice in favor of inline, screenshot-matching UI
 
   @override
   Widget build(BuildContext context) {
@@ -637,22 +578,30 @@ class AccountWalletHomePageState extends State<AccountWalletHomePage> {
                                                     CrossAxisAlignment.start,
                                                 children: [
                                                   Text(
-                                                    token["short_name"]
+                                                    (token["displayName"] ??
+                                                            token["name"] ??
+                                                            token["short_name"])
                                                         .toString(),
                                                     style: Theme.of(context)
                                                         .textTheme
                                                         .labelLarge!
                                                         .copyWith(
                                                           color: Colors.white,
+                                                          fontWeight:
+                                                              FontWeight.w800,
                                                         ),
                                                   ),
+                                                  const SizedBox(height: 2),
                                                   Text(
-                                                    '${AIHelpers.formatDouble(_getTokenBalance(viewModel, token) ?? 0, 10)} ${token["short_name"]}',
+                                                    token["short_name"]
+                                                            ?.toString()
+                                                            .toUpperCase() ??
+                                                        '',
                                                     style: Theme.of(context)
                                                         .textTheme
                                                         .labelMedium!
                                                         .copyWith(
-                                                          color: Colors.white,
+                                                          color: Colors.white70,
                                                         ),
                                                   ),
 
@@ -661,10 +610,62 @@ class AccountWalletHomePageState extends State<AccountWalletHomePage> {
                                               ),
                                             ),
 
-                                            _buildTokenPrice(
-                                              context,
-                                              viewModel,
-                                              token,
+                                            // Right-aligned price and meta (matches screenshot)
+                                            Column(
+                                              crossAxisAlignment: CrossAxisAlignment.end,
+                                              children: [
+                                                // Price as plain text
+                                                Builder(
+                                                  builder: (context) {
+                                                    final chain = token["chain"]?.toString() ?? '';
+                                                    final price = viewModel.allPrices?[chain] ?? 0.0;
+                                                    final bool big = price >= 1.0;
+                                                    final priceFmt = big
+                                                        ? NumberFormat.currency(symbol: '\$', decimalDigits: 2)
+                                                        : NumberFormat.currency(symbol: '\$', decimalDigits: 5);
+                                                    return Text(
+                                                      priceFmt.format(price),
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .labelLarge!
+                                                          .copyWith(
+                                                            color: Colors.white,
+                                                            fontWeight: FontWeight.w900,
+                                                          ),
+                                                    );
+                                                  },
+                                                ),
+                                                const SizedBox(height: 2),
+                                                // Change meta line
+                                                Builder(
+                                                  builder: (context) {
+                                                    final chain = token["chain"]?.toString() ?? '';
+                                                    final price = viewModel.allPrices?[chain] ?? 0.0;
+                                                    final pct = viewModel.allChanges?[chain] ?? 0.0; // percent
+                                                    final absChange = price * (pct / 100.0);
+                                                    final isUp = absChange >= 0.0;
+                                                    final changeFmt = NumberFormat('#,##0.00');
+                                                    final text = '→ ${isUp ? '+' : '-'}${changeFmt.format(absChange.abs())}';
+                                                    return Text(
+                                                      text,
+                                                      style: Theme.of(context)
+                                                          .textTheme
+                                                          .labelSmall!
+                                                          .copyWith(
+                                                            color: Colors.grey.shade400,
+                                                            fontWeight: FontWeight.w600,
+                                                          ),
+                                                    );
+                                                  },
+                                                ),
+                                                // Timestamp
+                                                Text(
+                                                  'Just now',
+                                                  style: Theme.of(context).textTheme.labelSmall!.copyWith(
+                                                        color: Colors.grey.shade400,
+                                                      ),
+                                                ),
+                                              ],
                                             ),
                                             // IconButton(
                                             //   onPressed: () {
@@ -832,7 +833,6 @@ class RewardTransferView extends StatelessWidget {
                                 child: TextFormField(
                                   decoration: InputDecoration(
                                     hintText: '0',
-                                    hintTextDirection: TextDirection.rtl,
                                     hintStyle: TextStyle(
                                       color:
                                           Theme.of(
@@ -844,12 +844,12 @@ class RewardTransferView extends StatelessWidget {
                                     border: InputBorder.none,
                                   ),
                                   keyboardType: TextInputType.number,
+                                  textAlign: TextAlign.right,
                                   style: TextStyle(
                                     fontSize: 24,
                                     fontWeight: FontWeight.bold,
                                   ),
                                   maxLines: 1,
-                                  textDirection: TextDirection.rtl,
                                   controller: viewModel.textController,
                                   onChanged: (value) {
                                     viewModel.setXpValue(value);

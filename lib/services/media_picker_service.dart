@@ -9,6 +9,9 @@ import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/models/models.dart';
 
+// Feature flag: show/hide DeepAR option in the media source sheet.
+const bool kShowDeepARButton = false;
+
 
 enum PickerAction { gallery, camera, deepAr }
 
@@ -40,6 +43,12 @@ class MediaPickerService with ListenableServiceMixin {
 
       // DeepAR
       if (action == PickerAction.deepAr) {
+        // Ensure camera permission before opening DeepAR
+        final allow = await PermissionService.requestCameraPermission();
+        if (allow != true) {
+          AIHelpers.showToast(msg: 'Camera permission is required');
+          return <XFile>[];
+        }
         final result = await Navigator.of(context).push<Map<String, String?>>(
           MaterialPageRoute(builder: (_) => const DeepARPlusPage()),
         );
@@ -107,6 +116,12 @@ class MediaPickerService with ListenableServiceMixin {
       if (action == null) return null;
 
       if (action == PickerAction.deepAr) {
+        // Ensure camera permission before opening DeepAR
+        final allow = await PermissionService.requestCameraPermission();
+        if (allow != true) {
+          AIHelpers.showToast(msg: 'Camera permission is required');
+          return null;
+        }
         final result = await Navigator.of(context).push<Map<String, String?>>(
           MaterialPageRoute(builder: (_) => const DeepARPlusPage()),
         );
@@ -179,34 +194,35 @@ class MediaPickerService with ListenableServiceMixin {
                   ),
                 ),
                 const SizedBox(height: 24.0),
-                // If you still want stock camera separate from DeepAR, uncomment this block
-                // InkWell(
-                //   onTap: () => Navigator.of(sheetCtx).pop(PickerAction.camera),
-                //   child: Row(
-                //     mainAxisSize: MainAxisSize.min,
-                //     children: [
-                //       AIImage(Icons.camera_alt, color: AIColors.pink),
-                //       const SizedBox(width: 12.0),
-                //       Text('From Camera',
-                //           style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: AIColors.pink)),
-                //     ],
-                //   ),
-                // ),
-                // const SizedBox(height: 24.0),
+                // Stock device camera
                 InkWell(
-                  onTap: () => Navigator.of(sheetCtx).pop(PickerAction.deepAr),
+                  onTap: () => Navigator.of(sheetCtx).pop(PickerAction.camera),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      AIImage(Icons.camera_enhance, color: AIColors.pink),
+                      AIImage(Icons.camera_alt, color: AIColors.pink),
                       const SizedBox(width: 12.0),
-                      Text(
-                        'From Camera',
-                        style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: AIColors.pink),
-                      ),
+                      Text('From Camera',
+                          style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: AIColors.pink)),
                     ],
                   ),
                 ),
+                if (kShowDeepARButton) const SizedBox(height: 24.0),
+                if (kShowDeepARButton)
+                  InkWell(
+                    onTap: () => Navigator.of(sheetCtx).pop(PickerAction.deepAr),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        AIImage(Icons.camera_enhance, color: AIColors.pink),
+                        const SizedBox(width: 12.0),
+                        Text(
+                          'AR Camera (DeepAR)',
+                          style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: AIColors.pink),
+                        ),
+                      ],
+                    ),
+                  ),
               ],
             ),
           ),

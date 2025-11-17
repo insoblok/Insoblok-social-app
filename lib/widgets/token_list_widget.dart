@@ -132,84 +132,52 @@ class TokenListWidget extends StatelessWidget {
             ),
           ),
           
-          // Price
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Builder(
-                builder: (context) {
-                  final baseStyle = const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  );
-                  final String sym = token.symbol.toUpperCase();
-                  final int tick = provider.changeTicks[sym] ?? 0;
-                  final int dir = provider.directions[sym] ?? 0;
-                  final Color startColor = dir > 0
-                      ? Colors.greenAccent
-                      : (dir < 0 ? Colors.redAccent : (Theme.of(context).textTheme.bodyMedium?.color ?? Colors.white));
-                  final Color endColor = Theme.of(context).textTheme.bodyMedium?.color ?? Colors.white;
-                  final double startScale = dir > 0 ? 1.06 : (dir < 0 ? 0.94 : 1.0);
-                  return KeyedSubtree(
-                    key: ValueKey<String>('${sym}_$tick'),
-                    child: TweenAnimationBuilder<double>(
-                      tween: Tween(begin: startScale, end: 1.0),
-                      duration: const Duration(milliseconds: 500),
-                      curve: Curves.easeOut,
-                      builder: (context, scale, child) {
-                        return Transform.scale(
-                          scale: scale,
-                          alignment: Alignment.centerRight,
-                          child: TweenAnimationBuilder<Color?>(
-                            tween: ColorTween(begin: startColor, end: endColor),
-                            duration: const Duration(milliseconds: 900),
-                            builder: (context, color, _) {
-                              return Text(
-                                '\$${_formatWithGroupingKeepDecimals(token.price)}',
-                                style: baseStyle.copyWith(color: color),
-                              );
-                            },
-                          ),
-                        );
-                      },
-                    ),
-                  );
-                },
-              ),
-              const SizedBox(height: 2),
-              Builder(
-                builder: (context) {
-                  final String sym = token.symbol.toUpperCase();
-                  final int tick = provider.changeTicks[sym] ?? 0;
-                  final int dir = provider.directions[sym] ?? 0;
-                  final double? diff = _computeAndStoreDiff(sym, token.price);
-                  if (diff == null) return const SizedBox.shrink();
-                  final bool up = dir > 0;
-                  final Color color = up ? Colors.greenAccent : (dir < 0 ? Colors.redAccent : Colors.grey);
-                  final String arrow = up ? '▲' : (dir < 0 ? '▼' : '→');
-                  final String text = '$arrow ${diff >= 0 ? '+' : ''}${_formatWithGroupingKeepDecimals(diff)}';
-                  return KeyedSubtree(
-                    key: ValueKey<String>('${sym}_diff_$tick'),
-                    child: AnimatedDefaultTextStyle(
-                      duration: const Duration(milliseconds: 600),
-                      style: TextStyle(
-                        color: color.withOpacity(0.9),
-                        fontSize: 10,
-                        fontWeight: FontWeight.w600,
+          // Price + Change pills (Favorites style)
+          Builder(
+            builder: (context) {
+              final String sym = token.symbol.toUpperCase();
+              final int tick = provider.changeTicks[sym] ?? 0;
+              final int dir = provider.directions[sym] ?? 0;
+              final double diff = _computeAndStoreDiff(sym, token.price) ?? 0.0;
+              final bool up = dir > 0 || (diff >= 0.0);
+              final TextStyle pillText = Theme.of(context).textTheme.bodyMedium!.copyWith(
+                color: Colors.white,
+                fontWeight: FontWeight.w700,
+              );
+              // Adaptive price decimals
+              final bool big = token.price >= 1.0;
+              final numFmt = NumberFormat('#,##0.${big ? '00' : '00000'}');
+              final changeFmt = NumberFormat('#,##0.00');
+              return KeyedSubtree(
+                key: ValueKey<String>('${sym}_pill_$tick'),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    // Price text (no background)
+                    FittedBox(
+                      fit: BoxFit.scaleDown,
+                      child: Text(
+                        '\$ ${numFmt.format(token.price)}',
+                        style: pillText,
                       ),
-                      child: Text(text),
                     ),
-                  );
-                },
-              ),
-              Text(
-                _formatTimeAgo(token.lastUpdated),
-                style: TextStyle(
-                  color: Colors.grey[500],
-                  fontSize: 10,
+                    const SizedBox(width: 12),
+                    // Change pill
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                      decoration: BoxDecoration(
+                        color: up ? Colors.green : Colors.red,
+                        borderRadius: BorderRadius.circular(6.0),
+                      ),
+                      child: FittedBox(
+                        fit: BoxFit.scaleDown,
+                        child: Text('${up ? '+' : '-'}${changeFmt.format(diff.abs())}', style: pillText),
+                      ),
+                    ),
+                  ],
                 ),
-              ),
-            ],
+              );
+            },
           ),
         ],
       ),

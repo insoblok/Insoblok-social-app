@@ -124,29 +124,53 @@ class RRCAvatarProvider extends InSoBlokViewModel {
       try {
         final prompt = emotions[selectedEmotionIndex]['prompt'] ?? 'laugh';
 
+        // Ensure selfie uploaded once; avatar generation uses it as reference.
         String? imageUrl;
-        try {
-          await _ensureSelfieUploaded();
-          imageUrl = _selfieCdnUrl.value;
-        } catch (e) {
-          logger.e('Failed to upload selfie to Cloudinary: $e');
-          throw Exception('Failed to upload selfie. Please try again.');
+        await _ensureSelfieUploaded();
+        imageUrl = _selfieCdnUrl.value;
+        if (imageUrl == null || imageUrl.isEmpty) {
+          throw Exception('Selfie URL is required. Please upload again.');
         }
 
-        if (imageUrl == null || imageUrl.isEmpty) {
-          throw Exception(
-            'Selfie URL is required. Please ensure your selfie is uploaded.',
+        Map<String, dynamic> result;
+
+        // If user picked "My Face" (index 0) -> direct video from selfie.
+        // Else -> generate avatar then video based on selected avatar style.
+        if (selectedAvatarIndex == 0) {
+          logger.d(
+            'Generating video with Cloudinary image: $imageUrl, prompt: $prompt',
+          );
+          result = await _runwareService.generateAIEmotionVideoWithPrompt(
+            inputImage: imageUrl,
+            positivePrompt: prompt,
+          );
+        } else {
+          // Map selected avatar index to AvatarStyle
+          late final AvatarStyle style;
+          switch (selectedAvatarIndex) {
+            case 1:
+              style = AvatarStyle.seededit3d; // 3D via SeedEdit 3.0
+              break;
+            case 2:
+              style = AvatarStyle.seedream3d; // 3D via Seedream 4.0
+              break;
+            case 3:
+              style = AvatarStyle.seedreamAnime; // anime via Seedream 4.0
+              break;
+            case 4:
+            default:
+              style = AvatarStyle.seedreamNeonGlow; // neon glow via Seedream 4.0
+          }
+
+          logger.d(
+            'Generating avatar ($style) then video. Prompt: $prompt',
+          );
+          result = await _runwareService.generateAvatarThenVideo(
+            selfieImage: imageUrl,
+            style: style,
+            videoPrompt: prompt,
           );
         }
-
-        logger.d(
-          'Generating video with Cloudinary image: $imageUrl, prompt: $prompt',
-        );
-
-        final result = await _runwareService.generateAIEmotionVideoWithPrompt(
-          inputImage: imageUrl,
-          positivePrompt: prompt,
-        );
 
         if (result['status'] == 'success' && result['success'] == true) {
           final generatedVideoUrl = result['videoURL'] as String?;

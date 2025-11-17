@@ -7,6 +7,7 @@ import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
 import 'package:insoblok/models/models.dart';
+import 'package:intl/intl.dart';
 
 class WalletFavoritesPage extends StatelessWidget {
   const WalletFavoritesPage({super.key});
@@ -289,197 +290,69 @@ class WalletFavoritesPage extends StatelessWidget {
                                                           ],
                                                         ),
                                                     ),
-                                                    Expanded(
-                                                      flex: 30,
-                                                      child: GestureDetector(
-                                                        onTap: () {
-                                                          // viewModel.handleClickFavoriteToken(context, token);
-                                                        },
-                                                        child: Builder(
-                                                          builder: (context) {
-                                                            final List<double> prices = (token["sparkline_in_7d"]["price"] as List)
-                                                              .map((e) => (e as num).toDouble())
-                                                              .toList();
-                                                        
-                                                            final List<double> last24 = prices.length > 24
-                                                              ? prices.sublist(prices.length - 24)
-                                                              : prices;
-                                                            
-                                                            return CryptoSparklineWidget(
-                                                              symbol: token["symbol"].toString().toUpperCase(),
-                                                              width: MediaQuery.of(context).size.width * 0.2,
-                                                              height: 30.0,
-                                                              showYLabel: false,
-                                                              data: last24,
-                                                              increased: token["price_change_24h"] > 0
-                                                            );
-                                                          }
-                                                        ),
-                                                      )
-                                                    ),
+                                                    // Removed sparkline to match pill-only layout
                                                     Expanded(
                                                       flex: 25,
-                                                      child: ElevatedButton(
-                                                        onPressed: () {
-                                                          showModalBottomSheet<int>(
-                                                            context: context,
-                                                            builder: (context) {
-                                                              return StatefulBuilder(
-                                                                builder: (BuildContext modalContext, StateSetter setModalState) {
-                                                                  return Container(
-                                                                    padding: const EdgeInsets.all(8.0),
-                                                                    height: MediaQuery.of(context).size.height * 0.25,
-                                                                    decoration: BoxDecoration(
-                                                                      color: Theme.of(context).scaffoldBackgroundColor,
-                                                                      borderRadius: const BorderRadius.vertical(
-                                                                        top: Radius.circular(20.0),
-                                                                      ),
+                                                      child: Builder(
+                                                        builder: (context) {
+                                                          final sym = token["symbol"].toString().toUpperCase();
+                                                          final live = viewModel.livePrices[sym];
+                                                          final basePrice = (token["current_price"] as num?)?.toDouble() ?? 0.0;
+                                                          final price = live ?? basePrice;
+                                                          final priceChangeAbs = (token["price_change_24h"] as num?)?.toDouble() ??
+                                                            ((token["price_change_percentage_24h"] as num?)?.toDouble() ?? 0.0) * basePrice / 100.0;
+                                                          final bool up = priceChangeAbs >= 0;
+                                                          final int tick = viewModel.priceChangeTick[sym] ?? 0;
+
+                                                          final TextStyle priceStyle = Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                                            color: Colors.white,
+                                                            fontWeight: FontWeight.w600,
+                                                          );
+                                                          final TextStyle deltaStyle = Theme.of(context).textTheme.bodyMedium!.copyWith(
+                                                            color: Colors.white,
+                                                            fontWeight: FontWeight.w700,
+                                                          );
+
+                                                          return KeyedSubtree(
+                                                            key: ValueKey<String>('${sym}_row_$tick'),
+                                                            child: Row(
+                                                              mainAxisAlignment: MainAxisAlignment.end,
+                                                              mainAxisSize: MainAxisSize.max,
+                                                              children: [
+                                                                // Price text (no background)
+                                                                FittedBox(
+                                                                  fit: BoxFit.scaleDown,
+                                                                  child: Builder(
+                                                                    builder: (context) {
+                                                                      final bool big = price >= 1.0;
+                                                                      final numFmt = NumberFormat('#,##0.${big ? '00' : '00000'}');
+                                                                      return Text('\$ ${numFmt.format(price)}', style: priceStyle);
+                                                                    }
+                                                                  ),
+                                                                ),
+                                                                const SizedBox(width: 12),
+                                                                // Change pill
+                                                                Container(
+                                                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 6),
+                                                                  decoration: BoxDecoration(
+                                                                    color: up ? Colors.green : Colors.red,
+                                                                    borderRadius: BorderRadius.circular(6.0),
+                                                                  ),
+                                                                  child: FittedBox(
+                                                                    fit: BoxFit.scaleDown,
+                                                                    child: Builder(
+                                                                      builder: (context) {
+                                                                        final changeFmt = NumberFormat('#,##0.00');
+                                                                        final text = '${up ? '+' : '-'}${changeFmt.format(priceChangeAbs.abs())}';
+                                                                        return Text(text, style: deltaStyle);
+                                                                      }
                                                                     ),
-                                                                    child: Column(
-                                                                      children: [
-                                                                        // Drag handle
-                                                                        Center(
-                                                                          child: Container(
-                                                                            width: 40,
-                                                                            height: 4,
-                                                                            margin: const EdgeInsets.only(bottom: 16),
-                                                                            decoration: BoxDecoration(
-                                                                              color: Colors.grey.shade400,
-                                                                              borderRadius: BorderRadius.circular(2),
-                                                                            ),
-                                                                          ),
-                                                                        ),
-                                                                        Text(
-                                                                          'Display Data',
-                                                                          style: Theme.of(context).textTheme.headlineLarge,
-                                                                        ),
-                                                                        const SizedBox(height: 16),
-                                                                        // Option 1
-                                                                        ListTile(
-                                                                          contentPadding: EdgeInsets.zero,
-                                                                          title: Text(
-                                                                            'Last Price',
-                                                                            style: Theme.of(context).textTheme.bodyMedium
-                                                                          ),
-                                                                          trailing: Radio<int>(
-                                                                            value: 1,
-                                                                            groupValue: viewModel.viewType, // Read from parent ViewModel
-                                                                            onChanged: (int? value) {
-                                                                              if (value != null) {
-                                                                                viewModel.viewType = value; // Update parent ViewModel
-                                                                                setModalState(() {}); // Update bottom sheet UI
-                                                                              }
-                                                                            },
-                                                                          ),
-                                                                          onTap: () {
-                                                                            viewModel.viewType = 1;
-                                                                            setModalState(() {});
-                                                                          },
-                                                                        ),
-                                                                        // Option 2
-                                                                        ListTile(
-                                                                          contentPadding: EdgeInsets.zero,
-                                                                          title: Text(
-                                                                            'Percent Change',
-                                                                            style: Theme.of(context).textTheme.bodyMedium
-                                                                          ),
-                                                                          trailing: Radio<int>(
-                                                                            value: 2,
-                                                                            groupValue: viewModel.viewType,
-                                                                            onChanged: (int? value) {
-                                                                              if (value != null) {
-                                                                                viewModel.viewType = value;
-                                                                                setModalState(() {});
-                                                                              }
-                                                                            },
-                                                                          ),
-                                                                          onTap: () {
-                                                                            viewModel.viewType = 2;
-                                                                            setModalState(() {});
-                                                                          },
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  );
-                                                                },
-                                                              );
-                                                            },
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
                                                           );
                                                         },
-                                                        style: ElevatedButton.styleFrom(
-                                                          backgroundColor: token["price_change_percentage_24h"] >= 0 ? Colors.green : Colors.red, // The background color
-                                                          foregroundColor: Colors.white,
-                                                          padding: const EdgeInsets.symmetric(horizontal: 3, vertical: 0),
-                                                          shape: RoundedRectangleBorder(
-                                                            borderRadius: BorderRadius.circular(6.0), // Adjust the value as needed
-                                                          ),
-                                                        ),
-                                                        child: 
-                                                          viewModel.viewType == 2 ? FittedBox(
-                                                            fit: BoxFit.scaleDown,
-                                                            child: Builder(
-                                                              builder: (context) {
-                                                                final sym = token["symbol"].toString().toUpperCase();
-                                                                final int dir = viewModel.priceDirections[sym] ?? 0;
-                                                                final int tick = viewModel.priceChangeTick[sym] ?? 0;
-                                                                final baseStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
-                                                                  color: Colors.white,
-                                                                  fontWeight: FontWeight.w600
-                                                                );
-                                                                final Color startColor = dir > 0
-                                                                  ? Colors.greenAccent
-                                                                  : (dir < 0 ? Colors.redAccent : (baseStyle?.color ?? Colors.white));
-                                                                return KeyedSubtree(
-                                                                  key: ValueKey<String>('${sym}_pct_$tick'),
-                                                                  child: TweenAnimationBuilder<Color?>(
-                                                                    tween: ColorTween(
-                                                                      begin: startColor,
-                                                                      end: baseStyle?.color,
-                                                                    ),
-                                                                    duration: const Duration(milliseconds: 900),
-                                                                    builder: (context, color, _) {
-                                                                      return Text(
-                                                                        '${token["price_change_percentage_24h"] > 0 ? "+" : ""}${AIHelpers.formatDouble(token["price_change_percentage_24h"].toDouble(), 3)}%',
-                                                                        style: baseStyle?.copyWith(color: color),
-                                                                      );
-                                                                    },
-                                                                  ),
-                                                                );
-                                                              }
-                                                            ),
-                                                          ) : FittedBox(
-                                                            fit: BoxFit.scaleDown,
-                                                            child: Builder(
-                                                              builder: (context) {
-                                                                final sym = token["symbol"].toString().toUpperCase();
-                                                                final live = viewModel.livePrices[sym];
-                                                                final base = (token["current_price"] as num?)?.toDouble();
-                                                                final value = live ?? base ?? 0.0;
-                                                                final direction = viewModel.priceDirections[sym] ?? 0;
-                                                                final tick = viewModel.priceChangeTick[sym] ?? 0;
-                                                                final baseStyle = Theme.of(context).textTheme.bodyMedium;
-                                                                final Color? startColor = direction > 0
-                                                                  ? Colors.greenAccent
-                                                                  : (direction < 0 ? Colors.redAccent : baseStyle?.color);
-                                                                return KeyedSubtree(
-                                                                  key: ValueKey<String>('${sym}_$tick'),
-                                                                  child: TweenAnimationBuilder<Color?>(
-                                                                    tween: ColorTween(
-                                                                      begin: startColor,
-                                                                      end: baseStyle?.color,
-                                                                    ),
-                                                                    duration: const Duration(milliseconds: 900),
-                                                                    builder: (context, color, _) {
-                                                                      return Text(
-                                                                        '\$${AIHelpers.formatWithGroupingKeepDecimals(value)}',
-                                                                        style: baseStyle?.copyWith(color: color),
-                                                                      );
-                                                                    },
-                                                                  ),
-                                                                );
-                                                              }
-                                                            ),
-                                                        )
                                                       ),
                                                     ),
                                                   ],
