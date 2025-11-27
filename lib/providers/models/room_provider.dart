@@ -53,14 +53,34 @@ class RoomProvider extends InSoBlokViewModel {
 
     fetchUser();
 
-    if (room.id != null) {
+    final roomId = room.id;
+    if (roomId.isNotEmpty) {
       getUnreadMessageCount();
-      messageService.getTypingStatus(room.chatroom.id!).listen((data) {
-        var chatUserId = room.chatroom.userId;
-        if (room.chatroom.userId == user?.id) {
-          chatUserId = (room.chatroom.userIds ?? [])[1];
+      messageService.getTypingStatus(roomId).listen((data) {
+        // Find the other user's ID (not the current user)
+        String? chatUserId;
+        final currentUserId = user?.id;
+        final userIds = room.chatroom.userIds ?? [];
+        
+        if (userIds.isNotEmpty) {
+          for (var id in userIds) {
+            if (id != null && id != currentUserId && id.isNotEmpty) {
+              chatUserId = id;
+              break;
+            }
+          }
         }
-        isTyping = data[chatUserId] ?? false;
+        
+        if (chatUserId == null || chatUserId.isEmpty) {
+          if (room.chatroom.userId != null && 
+              room.chatroom.userId != currentUserId) {
+            chatUserId = room.chatroom.userId;
+          }
+        }
+        
+        if (chatUserId != null) {
+          isTyping = data[chatUserId] ?? false;
+        }
       });
     }
   }
@@ -71,11 +91,45 @@ class RoomProvider extends InSoBlokViewModel {
 
     await runBusyFuture(() async {
       try {
-        var chatUserId = room.chatroom.userId;
-        if (room.chatroom.userId == user?.id) {
-          chatUserId = (room.chatroom.userIds ?? [])[1];
+        // Find the other user's ID (not the current user)
+        String? chatUserId;
+        final currentUserId = user?.id;
+        final userIds = room.chatroom.userIds ?? [];
+        
+        // First, try to find the other user in userIds array
+        if (userIds.isNotEmpty) {
+          for (var id in userIds) {
+            if (id != null && id != currentUserId && id.isNotEmpty) {
+              chatUserId = id;
+              break;
+            }
+          }
         }
-        chatUser = await userService.getUser(chatUserId!);
+        
+        // Fallback: if not found in userIds, use room.userId if it's different from current user
+        if (chatUserId == null || chatUserId.isEmpty) {
+          if (room.chatroom.userId != null && 
+              room.chatroom.userId != currentUserId) {
+            chatUserId = room.chatroom.userId;
+          }
+        }
+        
+        // Final fallback: if still null, try userIds[0] or userIds[1]
+        if (chatUserId == null || chatUserId.isEmpty) {
+          if (userIds.isNotEmpty) {
+            chatUserId = userIds.firstWhere(
+              (id) => id != null && id != currentUserId && id.isNotEmpty,
+              orElse: () => userIds.first,
+            );
+          }
+        }
+        
+        if (chatUserId == null || chatUserId.isEmpty) {
+          setError('Unable to determine chat user.');
+          return;
+        }
+        
+        chatUser = await userService.getUser(chatUserId);
         if (chatUser == null) {
           setError('Firebase Error! Please try again later.');
         } else {
@@ -102,7 +156,10 @@ class RoomProvider extends InSoBlokViewModel {
 
   Future<void> getUnreadMessageCount() async {
     try {
-      unreadMsgCnt = await messageService.getUnreadMessageCount(room.id!);
+      final roomId = room.id;
+      if (roomId.isNotEmpty) {
+        unreadMsgCnt = await messageService.getUnreadMessageCount(roomId);
+      }
     } catch (e) {
       logger.e(e);
     } finally {

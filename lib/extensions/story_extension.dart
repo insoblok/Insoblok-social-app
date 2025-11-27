@@ -77,6 +77,7 @@ extension StoryModelExt on StoryModel {
       'connects': ((connects ?? []).map((e) => e.toMap()).toList()),
       'comments': (comments),
       'allow_users': (allowUsers),
+      'reactions': (reactions),
       'votes': ((votes ?? []).map((e) => e.toMap()).toList()),
       'medias': ((medias ?? []).map((e) => e.toMap()).toList()),
     };

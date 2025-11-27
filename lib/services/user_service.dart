@@ -86,6 +86,7 @@ class UserService {
   }
 
   Future<void> updateUser(UserModel user) async {
+    logger.d("Updating user: ${user.toJson()}");
     await _userCollection.doc(user.id).update({...user.toMap()});
   }
 

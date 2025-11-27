@@ -60,6 +60,7 @@ class InSoBlokProvider extends InSoBlokViewModel {
 
   Future<void> goToAddPost() async {
     await Routers.goToCreatePostPage(context);
+    // Routers.goToAddStoryPage(context);
 
     // await showModalBottomSheet(
     //   context: context,

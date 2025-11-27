@@ -72,17 +72,10 @@ extension UserModelExt on UserModel {
 
   // Avatar templates list
   static List<String> get avatarTemplates => [
-    AIImages.avatarAnimeEyes,
-    AIImages.avatarLiquidChromeFace,
-    AIImages.avatarPixelStorm,
-    AIImages.avatarCyberPunk,
-    AIImages.avatarNeonGlow,
-    AIImages.avatarTasteScore,
-    AIImages.avatarEGirlBoy,
-    AIImages.avatarExtraAF,
-    AIImages.avatarGlowUp,
-    AIImages.avatarGrungeWave,
-    AIImages.avatarAnime,
+    AIImages.avatarA,
+    AIImages.avatarB,
+    AIImages.avatarC,
+    AIImages.avatarD,
   ];
 
   // Get a deterministic avatar template based on user identifier
@@ -225,6 +218,8 @@ extension UserModelExt on UserModel {
       'views': (views),
       'user_actions': (userActions),
       'actions': ((actions ?? []).map((e) => e.toMap()).toList()),
+      'galleries': ((galleries ?? []).map((e) => e.toJson()).toList()),
+      'socials': ((socials ?? []).map((e) => e.toJson()).toList()),
       'update_date': updateDate?.toUtc().toIso8601String(),
       'timestamp': timestamp?.toUtc().toIso8601String(),
     };

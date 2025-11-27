@@ -24,7 +24,6 @@ import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
-import 'package:zo_animated_border/zo_animated_border.dart';
 
 const kStoryAvatarSize = 50.0;
 
@@ -33,6 +32,10 @@ class StoryListCell extends StatelessWidget {
   final bool? enableDetail;
   final bool? enableReaction;
   final double? marginBottom;
+  final bool?
+  showEmotionVideos; // Show emotion videos around story (for LookBook/reactions pages)
+  final PageController?
+  externalMediaPageController; // Optional external controller for media navigation
 
   StoryListCell({
     super.key,
@@ -40,9 +43,31 @@ class StoryListCell extends StatelessWidget {
     this.enableDetail,
     this.enableReaction,
     this.marginBottom,
+    this.showEmotionVideos,
+    this.externalMediaPageController,
   });
 
   final PageController _pageController = PageController();
+
+  PageController get _mediaPageController =>
+      externalMediaPageController ?? _pageController;
+
+  // Helper method to sort medias with videos first
+  List<MediaStoryModel> _getSortedMedias(List<MediaStoryModel> medias) {
+    final List<MediaStoryModel> videos = [];
+    final List<MediaStoryModel> images = [];
+
+    for (var media in medias) {
+      if (media.type == 'video') {
+        videos.add(media);
+      } else {
+        images.add(media);
+      }
+    }
+
+    // Return videos first, then images
+    return [...videos, ...images];
+  }
 
   Future<String?> _makeRemixImage() async {
     var globalkey = GlobalKey();
@@ -62,52 +87,69 @@ class StoryListCell extends StatelessWidget {
     return null;
   }
 
-  int _currentPage = 0;
-
   @override
   Widget build(BuildContext context) {
     return ViewModelBuilder<StoryProvider>.reactive(
       viewModelBuilder: () => StoryProvider(),
       onViewModelReady: (viewModel) => viewModel.init(context, model: story),
       builder: (context, viewModel, _) {
-        return InkWell(
-          onTap: () => {viewModel.startRRC()},
+        // Sort medias with videos first
+        final sortedMedias = _getSortedMedias(viewModel.story.medias ?? []);
+
+        return _Bottom30PercentRRCWrapper(
+          onRRCTriggered: () => viewModel.startRRC(),
           child: Stack(
             children: [
               // ======== MEDIA ========
-              if ((story.medias ?? []).isNotEmpty)
-                PageView.builder(
-                  controller: _pageController,
-                  onPageChanged: (page) {
-                    viewModel.pageIndex = page;
-                    _currentPage = page;
-                  },
-                  itemCount: (viewModel.story.medias ?? []).length,
-                  itemBuilder: (context, index) {
-                    if (viewModel.videoStoryPath == null) {
-                      return StoryMediaView(
-                        media:
-                            ((viewModel.resultFaceUrl?.isNotEmpty ?? false) &&
-                                    viewModel.showFaceDialog)
-                                ? MediaStoryModel(
-                                  link: viewModel.resultFaceUrl,
-                                  type: 'image',
-                                  width:
-                                      (story.medias ?? [])[viewModel.pageIndex]
-                                          .width,
-                                  height:
-                                      (story.medias ?? [])[viewModel.pageIndex]
-                                          .height,
-                                )
-                                : (story.medias ?? [])[index],
-                      );
-                    } else {
-                      return _CircularVideoPlayer(
-                        videoPath: viewModel.videoStoryPath!,
-                      );
-                    }
-                  },
-                )
+              if (sortedMedias.isNotEmpty)
+                // Show emotion videos only in LookBook/reactions pages when enabled
+                (showEmotionVideos == true &&
+                        story.category == 'vote' &&
+                        (story.reactions ?? []).isNotEmpty)
+                    ? _LookBookStoryWithEmotionsView(
+                      story: story,
+                      viewModel: viewModel,
+                      pageController: _mediaPageController,
+                      onPageChanged: (page) {
+                        viewModel.pageIndex = page;
+                      },
+                      sortedMedias: sortedMedias,
+                    )
+                    : PageView.builder(
+                      controller: _mediaPageController,
+                      scrollDirection: Axis.horizontal,
+                      onPageChanged: (page) {
+                        viewModel.pageIndex = page;
+                      },
+                      itemCount: sortedMedias.length,
+                      itemBuilder: (context, index) {
+                        if (viewModel.videoStoryPath == null) {
+                          return StoryMediaView(
+                            key: ValueKey('media-${story.id}-$index'),
+                            media:
+                                ((viewModel.resultFaceUrl?.isNotEmpty ??
+                                            false) &&
+                                        viewModel.showFaceDialog)
+                                    ? MediaStoryModel(
+                                      link: viewModel.resultFaceUrl,
+                                      type: 'image',
+                                      width:
+                                          sortedMedias[viewModel.pageIndex]
+                                              .width,
+                                      height:
+                                          sortedMedias[viewModel.pageIndex]
+                                              .height,
+                                    )
+                                    : sortedMedias[index],
+                            isCurrentPage: viewModel.pageIndex == index,
+                          );
+                        } else {
+                          return _CircularVideoPlayer(
+                            videoPath: viewModel.videoStoryPath!,
+                          );
+                        }
+                      },
+                    )
               else
                 Align(
                   alignment: Alignment.center,
@@ -157,14 +199,6 @@ class StoryListCell extends StatelessWidget {
                                   margin: EdgeInsets.only(bottom: 0),
                                   child: Column(
                                     children: [
-                                      Row(
-                                        children: [
-                                          RankLabelWidget(
-                                            userId:
-                                                viewModel.story.userId ?? "",
-                                          ),
-                                        ],
-                                      ),
                                       SizedBox(height: 6.0),
                                       Row(
                                         crossAxisAlignment:
@@ -199,22 +233,69 @@ class StoryListCell extends StatelessWidget {
                                                         kStoryAvatarSize / 2,
                                                   ),
                                                 ),
-                                                // Align(
-                                                //   alignment: Alignment.bottomCenter,
-                                                //   child: Container(
-                                                //     width: 16,
-                                                //     height: 16,
-                                                //     decoration: BoxDecoration(
-                                                //       gradient: const LinearGradient(
-                                                //         begin: Alignment.topLeft,
-                                                //         end: Alignment.bottomRight,
-                                                //         colors: [Colors.white, Colors.grey],
-                                                //       ),
-                                                //       borderRadius: BorderRadius.circular(8.0),
-                                                //     ),
-                                                //     child: Icon(Icons.add, size: 12, color: AIColors.white),
-                                                //   ),
-                                                // ),
+                                                Align(
+                                                  alignment: Alignment.topRight,
+                                                  child: GestureDetector(
+                                                    onTap: () async {
+                                                      if (viewModel.following)
+                                                        return;
+                                                      if (viewModel.owner ==
+                                                          null) {
+                                                        // Try to fetch owner if still null
+                                                        await viewModel
+                                                            .fetchUser();
+                                                        if (viewModel.owner ==
+                                                            null)
+                                                          return;
+                                                      }
+                                                      viewModel
+                                                          .handleClickFollow(
+                                                            viewModel.owner,
+                                                          );
+                                                    },
+                                                    child: Container(
+                                                      width: 20,
+                                                      height: 20,
+                                                      decoration: BoxDecoration(
+                                                        color:
+                                                            const Color.fromARGB(
+                                                              255,
+                                                              14,
+                                                              13,
+                                                              13,
+                                                            ),
+                                                        borderRadius:
+                                                            BorderRadius.circular(
+                                                              10.0,
+                                                            ),
+                                                      ),
+                                                      child:
+                                                          viewModel.following
+                                                              ? Loader(
+                                                                size: 14,
+                                                                color:
+                                                                    Colors
+                                                                        .white,
+                                                              )
+                                                              : Icon(
+                                                                (viewModel.owner?.follows ??
+                                                                            [])
+                                                                        .contains(
+                                                                          AuthHelper
+                                                                              .user
+                                                                              ?.id,
+                                                                        )
+                                                                    ? Icons
+                                                                        .check
+                                                                    : Icons.add,
+                                                                size: 14,
+                                                                color:
+                                                                    AIColors
+                                                                        .white,
+                                                              ),
+                                                    ),
+                                                  ),
+                                                ),
                                               ],
                                             ),
                                           ),
@@ -228,25 +309,29 @@ class StoryListCell extends StatelessWidget {
                                                   CrossAxisAlignment.start,
                                               mainAxisSize: MainAxisSize.min,
                                               children: [
-                                                // First row: Name + (optional "Following" pill) + time
-                                                Wrap(
+                                                // Single row: Rank, Name, Time, Follow button
+                                                Row(
                                                   crossAxisAlignment:
-                                                      WrapCrossAlignment.center,
-                                                  alignment:
-                                                      WrapAlignment.start,
-                                                  spacing: 8,
-                                                  runSpacing: 4,
+                                                      CrossAxisAlignment.center,
                                                   children: [
-                                                    Text(
-                                                      viewModel
-                                                              .owner
-                                                              ?.fullName ??
-                                                          '---',
-                                                      style:
-                                                          Theme.of(context)
-                                                              .textTheme
-                                                              .headlineSmall,
+                                                    // Name
+                                                    Flexible(
+                                                      child: Text(
+                                                        viewModel
+                                                                .owner
+                                                                ?.fullName ??
+                                                            '---',
+                                                        style:
+                                                            Theme.of(context)
+                                                                .textTheme
+                                                                .headlineSmall,
+                                                        overflow:
+                                                            TextOverflow
+                                                                .ellipsis,
+                                                      ),
                                                     ),
+                                                    const SizedBox(width: 4),
+                                                    // Time
                                                     Text(
                                                       '· ${(viewModel.story.createdAt)?.timeago}',
                                                       style:
@@ -254,98 +339,17 @@ class StoryListCell extends StatelessWidget {
                                                               .textTheme
                                                               .headlineSmall,
                                                     ),
+                                                    const SizedBox(width: 8),
+                                                    // Rank
+                                                    RankLabelWidget(
+                                                      userId:
+                                                          viewModel
+                                                              .story
+                                                              .userId ??
+                                                          "",
+                                                    ),
                                                   ],
                                                 ),
-
-                                                const SizedBox(height: 6),
-                                                viewModel.following
-                                                    ? Loader(
-                                                      size: 20,
-                                                      color: Colors.blueAccent,
-                                                    )
-                                                    : Wrap(
-                                                      crossAxisAlignment:
-                                                          WrapCrossAlignment
-                                                              .center,
-                                                      alignment:
-                                                          WrapAlignment.start,
-                                                      spacing: 8,
-                                                      runSpacing: 4,
-                                                      children: [
-                                                        if (viewModel.owner !=
-                                                            null)
-                                                          GestureDetector(
-                                                            onTap: () async {
-                                                              if (viewModel
-                                                                  .following)
-                                                                return;
-                                                              if (viewModel
-                                                                      .owner ==
-                                                                  null) {
-                                                                // Try to fetch owner if still null
-                                                                await viewModel
-                                                                    .fetchUser();
-                                                                if (viewModel
-                                                                        .owner ==
-                                                                    null)
-                                                                  return;
-                                                              }
-                                                              viewModel
-                                                                  .handleClickFollow(
-                                                                    viewModel
-                                                                        .owner,
-                                                                  );
-                                                            },
-                                                            child: Container(
-                                                              padding:
-                                                                  EdgeInsets.symmetric(
-                                                                    horizontal:
-                                                                        8.0,
-                                                                    vertical:
-                                                                        2.0,
-                                                                  ),
-                                                              decoration: BoxDecoration(
-                                                                color:
-                                                                    Colors
-                                                                        .black,
-                                                                borderRadius:
-                                                                    BorderRadius.all(
-                                                                      Radius.circular(
-                                                                        12.0,
-                                                                      ),
-                                                                    ),
-                                                              ),
-                                                              child: Text(
-                                                                (viewModel.owner?.follows ??
-                                                                            [])
-                                                                        .contains(
-                                                                          AuthHelper
-                                                                              .user
-                                                                              ?.id,
-                                                                        )
-                                                                    ? "Following"
-                                                                    : 'Follow',
-                                                                style: Theme.of(
-                                                                      context,
-                                                                    )
-                                                                    .textTheme
-                                                                    .bodySmall!
-                                                                    .copyWith(
-                                                                      // color: Colors.blueAccent.withAlpha(200)
-                                                                    ),
-                                                              ),
-                                                            ),
-                                                          )
-                                                        else if (viewModel
-                                                            .isFetchingUser)
-                                                          Loader(
-                                                            size: 16,
-                                                            color: Colors.grey,
-                                                          )
-                                                        else
-                                                          SizedBox.shrink(),
-                                                      ],
-                                                    ),
 
                                                 // Second line: Progress (with a small avatar dot like the screenshot)
                                                 // if (viewModel.story.category == 'vote')
@@ -450,192 +454,138 @@ class StoryListCell extends StatelessWidget {
               Align(
                 alignment: Alignment.bottomRight,
                 child: Container(
-                  height: min(
-                    MediaQuery.of(context).size.height * 0.3,
-                    // Increase height if reactions exist to accommodate reaction button
-                    (viewModel.pageIndex > 0 ? 262 : 210) +
-                        ((viewModel.story.reactions ?? []).isNotEmpty ? 25 : 0),
-                  ),
-                  margin: EdgeInsets.only(right: 8.0, bottom: 18.0),
+                  // Calculate required height based on content
+                  // When icBottomLook is shown (pageIndex > 0), we need more space
+                  // Use the calculated height directly, but cap it at 80% of screen height to prevent overflow
+                  margin: EdgeInsets.only(right: 8.0, bottom: 16.0),
                   padding: const EdgeInsets.symmetric(
                     horizontal: 4.0,
                     vertical: 0.0,
                   ),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      if (viewModel.pageIndex > 0)
+                  child: SingleChildScrollView(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        if (viewModel.pageIndex > 0) ...[
+                          StoryActionButton(
+                            src: AIImage(
+                              AIImages.icBottomLook,
+                              color: Theme.of(context).colorScheme.onPrimary,
+                              width: (kStoryAvatarSize * 0.6),
+                            ),
+                            onTap: () async {
+                              List<String> mediaString =
+                                  sortedMedias
+                                      .map((m) => m.link ?? "")
+                                      .toList();
+                              await AIHelpers.goToDetailView(
+                                context,
+                                medias: mediaString,
+                              );
+                            },
+                          ),
+                          const SizedBox(height: 13),
+                        ],
                         StoryActionButton(
                           src: AIImage(
-                            AIImages.icBottomLook,
-                            color: Theme.of(context).colorScheme.onPrimary,
-                            width: kStoryAvatarSize * 0.46,
+                            AIImages.icFireHot,
+                            // color: Theme.of(context).colorScheme.onPrimary,
+                            width: (kStoryAvatarSize * 0.6),
                           ),
-                          onTap: () async {
-                            List<String> mediaString =
-                                (viewModel.story.medias ?? [])
-                                    .map((m) => m.link ?? "")
-                                    .toList();
-                            await AIHelpers.goToDetailView(
-                              context,
-                              medias: mediaString,
-                            );
+                          label: '${viewModel.story.cntYay}',
+                          onTap: () {
+                            if (viewModel.story.isVote() != true) {
+                              viewModel.updateVote(true);
+                            }
                           },
                         ),
-                      StoryActionButton(
-                        src: AIImage(
-                          AIImages.icFireHot,
-                          // color: Theme.of(context).colorScheme.onPrimary,
-                          width: kStoryAvatarSize * 0.4,
-                        ),
-                        label: '${viewModel.story.cntYay}',
-                        onTap: () {
-                          if (viewModel.story.isVote() != true) {
-                            viewModel.updateVote(true);
-                          }
-                        },
-                      ),
-                      StoryActionButton(
-                        src: Icon(
-                          Icons.remove_red_eye_outlined,
-                          color: Theme.of(context).colorScheme.onPrimary,
-                          size: kStoryAvatarSize * 0.5,
-                        ),
-                        label: '${(viewModel.story.views ?? []).length}',
-                      ),
-                      StoryActionButton(
-                        src: AIImage(
-                          AIImages.icComment3,
-                          color: Theme.of(context).colorScheme.onPrimary,
-                          width: kStoryAvatarSize * 0.5,
-                        ),
-                        label: '${(viewModel.story.comments ?? []).length}',
-                        onTap: () => viewModel.showCommentDialog(),
-                      ),
-                      StoryActionButton(
-                        src: AIImage(
-                          AIImages.icShareOutline,
-                          color: Theme.of(context).colorScheme.onPrimary,
-                          width: kStoryAvatarSize * 0.5,
-                        ),
-                        label: '',
-                        spacing: 0.0,
-                        onTap: () => viewModel.repost(),
-                      ),
-                      // Show reaction icon if story has at least 1 reaction
-                      if ((viewModel.story.reactions ?? []).isNotEmpty)
+                        const SizedBox(height: 17),
                         StoryActionButton(
                           src: AIImage(
-                            AIImages.icReaction,
+                            AIImages.icComment3,
                             color: Theme.of(context).colorScheme.onPrimary,
-                            width: kStoryAvatarSize * 0.5,
+                            width: (kStoryAvatarSize * 0.6),
                           ),
-                          label: '${(viewModel.story.reactions ?? []).length}',
-                          spacing: 0.0,
-                          onTap: () => viewModel.showReactions(),
+                          label: '${(viewModel.story.comments ?? []).length}',
+                          onTap: () => viewModel.showCommentDialog(),
                         ),
-                      // if (AuthHelper.user?.id == viewModel.story.userId)
-                      //   StoryActionButton(
-                      //     src: AIImage(
-                      //       AIImages.icGallery,
-                      //       color: Theme.of(context).colorScheme.onPrimary,
-                      //       width: kStoryAvatarSize * 0.5,
-                      //     ),
-                      //     onTap: () => viewModel.showReactions(),
-                      //   ),
-                      // if (AuthHelper.user?.id == viewModel.story.userId)
-                      // StoryActionButton(
-                      //   src: AIImage(
-                      //     AIImages.icVoteUp2,
-                      //     color: Theme.of(context).colorScheme.onPrimary,
-                      //     width: kStoryAvatarSize * 0.45,
-                      //     height: kStoryAvatarSize * 0.45,
-                      //   ),
-                      //   spacing: 3.0,
-                      //   label: '${(viewModel.story.cntYay)}',
-                      // ),
-                      // StoryActionButton(
-                      //   src: AIImage(
-                      //     AIImages.icVoteDown2,
-                      //     color: Theme.of(context).colorScheme.onPrimary,
-                      //     width: kStoryAvatarSize * 0.45,
-                      //     height: kStoryAvatarSize * 0.45,
-                      //   ),
-                      //   spacing: 3.0,
-                      //   label: '${(viewModel.story.cntNay)}',
-                      // ),
-                    ],
+                        const SizedBox(height: 15),
+                        StoryActionButton(
+                          src: AIImage(
+                            AIImages.icShareOutline,
+                            color: Theme.of(context).colorScheme.onPrimary,
+                            width: (kStoryAvatarSize * 0.6),
+                          ),
+                          label: '',
+                          spacing: 0.0,
+                          onTap: () => viewModel.repost(),
+                        ),
+                        // Show reaction icon if story has at least 1 reaction
+                        if ((viewModel.story.reactions ?? []).isNotEmpty) ...[
+                          StoryActionButton(
+                            src: AIImage(
+                              AIImages.icReaction,
+                              color: Theme.of(context).colorScheme.onPrimary,
+                              width: (kStoryAvatarSize * 0.6),
+                            ),
+                            label:
+                                '${(viewModel.story.reactions ?? []).length}',
+                            spacing: 0.0,
+                            onTap: () => viewModel.showReactions(),
+                          ),
+                        ],
+                        // if (AuthHelper.user?.id == viewModel.story.userId)
+                        //   StoryActionButton(
+                        //     src: AIImage(
+                        //       AIImages.icGallery,
+                        //       color: Theme.of(context).colorScheme.onPrimary,
+                        //       width: kStoryAvatarSize * 0.6,
+                        //     ),
+                        //     onTap: () => viewModel.showReactions(),
+                        //   ),
+                        // if (AuthHelper.user?.id == viewModel.story.userId)
+                        // StoryActionButton(
+                        //   src: AIImage(
+                        //     AIImages.icVoteUp2,
+                        //     color: Theme.of(context).colorScheme.onPrimary,
+                        //     width: kStoryAvatarSize * 0.45,
+                        //     height: kStoryAvatarSize * 0.45,
+                        //   ),
+                        //   spacing: 3.0,
+                        //   label: '${(viewModel.story.cntYay)}',
+                        // ),
+                        // StoryActionButton(
+                        //   src: AIImage(
+                        //     AIImages.icVoteDown2,
+                        //     color: Theme.of(context).colorScheme.onPrimary,
+                        //     width: kStoryAvatarSize * 0.45,
+                        //     height: kStoryAvatarSize * 0.45,
+                        //   ),
+                        //   spacing: 3.0,
+                        //   label: '${(viewModel.story.cntNay)}',
+                        // ),
+                      ],
+                    ),
                   ),
                 ),
               ),
-              if ((story.medias ?? []).length > 1)
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: InkWell(
-                      onTap: () {
-                        if (_pageController.hasClients) {
-                          final prevPage = _pageController.page!.toInt() - 1;
-                          if (prevPage > -1) {
-                            _pageController.animateToPage(
-                              prevPage,
-                              duration: Duration(milliseconds: 300),
-                              curve: Curves.easeInOut,
-                            );
-                          }
-                        }
-                      },
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          AIImage(
-                            AIImages.icArrowLeft,
-                            height: 36.0,
-                            color: Colors.grey,
-                          ),
-                        ],
-                      ),
-                    ),
+              // ======== EMOTION VIDEOS (on top layer, above action buttons) ========
+              // Show emotion videos for any story with reaction videos (both main page and lookbook)
+              if (story.category == 'vote' &&
+                  (story.reactions ?? []).isNotEmpty)
+                ..._EmotionVideoHelper.buildEmotionVideos(
+                  context: context,
+                  story: story,
+                  actionButtonsHeight: min(
+                    MediaQuery.of(context).size.height * 0.8,
+                    (viewModel.pageIndex > 0 ? 382 : 330) +
+                        ((story.reactions ?? []).isNotEmpty ? 45 : 0),
                   ),
                 ),
-              if ((story.medias ?? []).length > 1)
-                Align(
-                  alignment: Alignment.centerRight,
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: InkWell(
-                      onTap: () {
-                        if (_pageController.hasClients) {
-                          final nextPage = _pageController.page!.toInt() + 1;
-                          if (nextPage <
-                              (viewModel.story.medias ?? []).length) {
-                            _pageController.animateToPage(
-                              nextPage,
-                              duration: Duration(milliseconds: 300),
-                              curve: Curves.easeInOut,
-                            );
-                          }
-                        }
-                      },
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          AIImage(
-                            AIImages.icArrowRight,
-                            color: Colors.grey,
-                            height: 36.0,
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              // ======== BOTTOM-LEFT: SLIDER ========
 
               // ======== PAGE INDICATOR ========
-              if ((viewModel.story.medias ?? []).length > 1)
+              if (sortedMedias.length > 1)
                 Positioned(
                   left: 20.0,
                   top: MediaQuery.of(context).padding.top + 90.0,
@@ -651,7 +601,7 @@ class StoryListCell extends StatelessWidget {
                       borderRadius: BorderRadius.circular(24.0),
                     ),
                     child: Text(
-                      '${viewModel.pageIndex + 1} / ${(viewModel.story.medias ?? []).length}',
+                      '${viewModel.pageIndex + 1} / ${sortedMedias.length}',
                       style: Theme.of(context).textTheme.titleSmall,
                     ),
                   ),
@@ -662,6 +612,79 @@ class StoryListCell extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+}
+
+/// Wrapper widget that only allows RRC trigger in the bottom 30% of the screen
+class _Bottom30PercentRRCWrapper extends StatefulWidget {
+  final VoidCallback onRRCTriggered;
+  final Widget child;
+
+  const _Bottom30PercentRRCWrapper({
+    required this.onRRCTriggered,
+    required this.child,
+  });
+
+  @override
+  State<_Bottom30PercentRRCWrapper> createState() =>
+      _Bottom30PercentRRCWrapperState();
+}
+
+class _Bottom30PercentRRCWrapperState
+    extends State<_Bottom30PercentRRCWrapper> {
+  Timer? _longPressTimer;
+
+  bool _isInBottom30Percent(Offset position, Size screenSize) {
+    // Calculate if the tap is in the bottom 30% of the screen
+    final bottom30PercentStart = screenSize.height * 0.7;
+    return position.dy >= bottom30PercentStart;
+  }
+
+  void _startLongPress(TapDownDetails details) {
+    final screenSize = MediaQuery.of(context).size;
+    final tapPosition = details.globalPosition;
+
+    // Only proceed if tap is in bottom 30% of screen
+    if (!_isInBottom30Percent(tapPosition, screenSize)) {
+      debugPrint(
+        '🚫 RRC trigger blocked: tap at ${tapPosition.dy}px is not in bottom 30% (${screenSize.height * 0.7}px+)',
+      );
+      return;
+    }
+
+    debugPrint(
+      '✅ RRC trigger allowed: tap at ${tapPosition.dy}px is in bottom 30%',
+    );
+
+    _longPressTimer?.cancel();
+    _longPressTimer = Timer(const Duration(seconds: 2), () {
+      if (mounted) {
+        widget.onRRCTriggered();
+      }
+    });
+  }
+
+  void _cancelLongPress() {
+    _longPressTimer?.cancel();
+    _longPressTimer = null;
+  }
+
+  @override
+  void dispose() {
+    _cancelLongPress();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTapDown: _startLongPress,
+      onTapUp: (_) => _cancelLongPress(),
+      onTapCancel: () => _cancelLongPress(),
+      // Allow other gestures to pass through
+      behavior: HitTestBehavior.translucent,
+      child: widget.child,
     );
   }
 }
@@ -903,12 +926,46 @@ class StorySendCommentWidget extends StatelessWidget {
 
 class StoryMediaView extends StatefulWidget {
   final MediaStoryModel media;
-  const StoryMediaView({super.key, required this.media});
+  final bool isCurrentPage;
+  const StoryMediaView({
+    super.key,
+    required this.media,
+    this.isCurrentPage = true,
+  });
   @override
   State<StoryMediaView> createState() => _StoryMediaViewState();
 }
 
 class _StoryMediaViewState extends State<StoryMediaView> {
+  @override
+  void initState() {
+    super.initState();
+    // Ensure video autoplays if it's the current page when widget is first created
+    if (widget.media.type == 'video' && widget.isCurrentPage) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && widget.isCurrentPage) {
+          // The CloudinaryVideoPlayerWidget will handle autoplay via its autoplay parameter
+          // This ensures the widget knows it should autoplay
+        }
+      });
+    }
+  }
+
+  @override
+  void didUpdateWidget(StoryMediaView oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // If the page changed and this video is now current, ensure it autoplays
+    if (widget.media.type == 'video' &&
+        !oldWidget.isCurrentPage &&
+        widget.isCurrentPage) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (mounted && widget.isCurrentPage) {
+          // Trigger rebuild to ensure autoplay is applied
+        }
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     if (widget.media.type == 'image') {
@@ -922,7 +979,13 @@ class _StoryMediaViewState extends State<StoryMediaView> {
                 : BoxFit.fitWidth,
       );
     }
-    return CloudinaryVideoPlayerWidget(videoUrl: widget.media.link!);
+    return CloudinaryVideoPlayerWidget(
+      key: ValueKey(
+        'video-${widget.media.link}',
+      ), // Use stable key based on URL only
+      videoUrl: widget.media.link!,
+      autoplay: widget.isCurrentPage,
+    );
   }
 }
 
@@ -1069,7 +1132,7 @@ class StoryActionButton extends StatelessWidget {
           Text(
             label!,
             style: TextStyle(
-              fontSize: 13.0,
+              fontSize: 15.0,
               color: Colors.white.withOpacity(0.7),
               fontWeight: FontWeight.w700,
             ),
@@ -2420,6 +2483,437 @@ class _ReadyPreview extends StatelessWidget {
             hasFace
                 ? const CommentFaceModalView(marginBottom: 0)
                 : const Center(child: Loader(size: 40.0)),
+      ),
+    );
+  }
+}
+
+/// Helper class for building emotion videos
+class _EmotionVideoHelper {
+  static bool _isVideo(String url) {
+    if (url.isEmpty) return false;
+    final u = url.toLowerCase();
+    if (u.contains('cloudinary.com')) {
+      return u.contains('/video/') || u.contains('video/upload');
+    }
+    if (u.contains('vimeo.com')) return true;
+    return RegExp(
+      r'\.(mp4|mov|m3u8|webm|avi|flv|wmv)(\?|$|/)',
+      caseSensitive: false,
+    ).hasMatch(u);
+  }
+
+  /// Get color for emotion video based on index
+  static Color _getEmotionColor(int index) {
+    final colors = [
+      Color(0xFF00E5FF), // Cyan
+      Color(0xFF7C4DFF), // Purple
+      Color(0xFFFF6B9D), // Pink
+      Color(0xFFFFC107), // Amber
+      Color(0xFF4CAF50), // Green
+      Color(0xFFFF5722), // Deep Orange
+    ];
+    return colors[index % colors.length];
+  }
+
+  /// Build emotion video widgets positioned above action buttons
+  static List<Widget> buildEmotionVideos({
+    required BuildContext context,
+    required StoryModel story,
+    required double actionButtonsHeight,
+  }) {
+    final emotionVideos =
+        (story.reactions ?? []).where((url) => _isVideo(url)).toList();
+    if (emotionVideos.isEmpty) return [];
+
+    final screenSize = MediaQuery.of(context).size;
+    final emotionSize = 70.0;
+    final rightMargin = 8.0; // Same as action buttons right margin
+    final bottomMargin = 18.0; // Same as action buttons bottom margin
+    final spacingBetweenVideos = 20.0; // Space between emotion videos
+
+    final List<Offset> positions = [];
+    final rightPosition = screenSize.width - emotionSize - rightMargin;
+
+    // Position videos higher above the action buttons area
+    // Add extra spacing (100px) to ensure they're well above the action buttons
+    final extraSpacing = 50.0;
+
+    if (emotionVideos.length == 1) {
+      positions.add(
+        Offset(
+          rightPosition,
+          screenSize.height -
+              bottomMargin -
+              actionButtonsHeight -
+              emotionSize -
+              spacingBetweenVideos -
+              extraSpacing,
+        ),
+      );
+    } else if (emotionVideos.length == 2) {
+      positions.add(
+        Offset(
+          rightPosition,
+          screenSize.height -
+              bottomMargin -
+              actionButtonsHeight -
+              (emotionSize * 2) -
+              (spacingBetweenVideos * 2) -
+              extraSpacing,
+        ),
+      );
+      positions.add(
+        Offset(
+          rightPosition,
+          screenSize.height -
+              bottomMargin -
+              actionButtonsHeight -
+              emotionSize -
+              spacingBetweenVideos -
+              extraSpacing,
+        ),
+      );
+    } else if (emotionVideos.length >= 3) {
+      positions.add(
+        Offset(
+          rightPosition,
+          screenSize.height -
+              bottomMargin -
+              actionButtonsHeight -
+              (emotionSize * 3) -
+              (spacingBetweenVideos * 3) -
+              extraSpacing,
+        ),
+      );
+      positions.add(
+        Offset(
+          rightPosition,
+          screenSize.height -
+              bottomMargin -
+              actionButtonsHeight -
+              (emotionSize * 2) -
+              (spacingBetweenVideos * 2) -
+              extraSpacing,
+        ),
+      );
+      positions.add(
+        Offset(
+          rightPosition,
+          screenSize.height -
+              bottomMargin -
+              actionButtonsHeight -
+              emotionSize -
+              spacingBetweenVideos -
+              extraSpacing,
+        ),
+      );
+    }
+
+    return List.generate(emotionVideos.length, (index) {
+      if (index >= positions.length) return SizedBox.shrink();
+      return Positioned(
+        left: positions[index].dx,
+        top: positions[index].dy,
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            customBorder: CircleBorder(),
+            onTap: () {
+              // Navigate to reaction page when emotion video is clicked
+              logger.d(
+                'Emotion video tapped, navigating to reaction page for story: ${story.id}',
+              );
+              Routers.goToReactionPage(context, story);
+            },
+            child: Container(
+              width: emotionSize,
+              height: emotionSize,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                gradient: RadialGradient(
+                  colors: [
+                    _getEmotionColor(index).withOpacity(0.3),
+                    _getEmotionColor(index).withOpacity(0.1),
+                  ],
+                  stops: [0.0, 1.0],
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    color: _getEmotionColor(index).withOpacity(0.2),
+                    blurRadius: 10,
+                    spreadRadius: 2,
+                  ),
+                  BoxShadow(
+                    color: Colors.black.withOpacity(0.2),
+                    blurRadius: 6,
+                    spreadRadius: 1,
+                  ),
+                ],
+              ),
+              padding: EdgeInsets.zero,
+              child: ClipOval(
+                clipBehavior: Clip.hardEdge,
+                child: IgnorePointer(
+                  child:
+                      _isVideo(emotionVideos[index])
+                          ? SizedBox.expand(
+                            child: _EmotionVideoPlayer(
+                              url: emotionVideos[index],
+                              autoplay: true,
+                              loop: true,
+                            ),
+                          )
+                          : AIImage(
+                            emotionVideos[index],
+                            width: emotionSize,
+                            height: emotionSize,
+                            fit: BoxFit.cover,
+                          ),
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    });
+  }
+}
+
+/// Widget to display story with emotion videos around it for LookBook
+class _LookBookStoryWithEmotionsView extends StatelessWidget {
+  final StoryModel story;
+  final StoryProvider viewModel;
+  final PageController pageController;
+  final void Function(int) onPageChanged;
+  final List<MediaStoryModel> sortedMedias;
+
+  const _LookBookStoryWithEmotionsView({
+    required this.story,
+    required this.viewModel,
+    required this.pageController,
+    required this.onPageChanged,
+    required this.sortedMedias,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
+    final padding = 20.0;
+
+    // Return only the media content - emotion videos will be added to parent Stack
+    return Center(
+      child: Container(
+        width: screenSize.width - (padding * 2),
+        height: screenSize.height - (padding * 2),
+        child: PageView.builder(
+          controller: pageController,
+          onPageChanged: onPageChanged,
+          itemCount: sortedMedias.length,
+          itemBuilder: (context, index) {
+            if (viewModel.videoStoryPath == null) {
+              return StoryMediaView(
+                media: sortedMedias[index],
+                isCurrentPage: viewModel.pageIndex == index,
+              );
+            } else {
+              return _CircularVideoPlayer(videoPath: viewModel.videoStoryPath!);
+            }
+          },
+        ),
+      ),
+    );
+  }
+}
+
+/// Simple video player for emotion videos
+class _EmotionVideoPlayer extends StatefulWidget {
+  final String url;
+  final bool autoplay;
+  final bool loop;
+
+  const _EmotionVideoPlayer({
+    required this.url,
+    this.autoplay = true,
+    this.loop = true,
+  });
+
+  @override
+  State<_EmotionVideoPlayer> createState() => _EmotionVideoPlayerState();
+}
+
+class _EmotionVideoPlayerState extends State<_EmotionVideoPlayer> {
+  VideoPlayerController? _controller;
+  bool _isInitialized = false;
+  VoidCallback? _videoListener;
+
+  @override
+  void initState() {
+    super.initState();
+    _initVideo();
+  }
+
+  Future<void> _initVideo() async {
+    int maxAttempts = 3;
+    int attempt = 0;
+
+    while (attempt < maxAttempts) {
+      attempt++;
+      try {
+        String cleanUrl = widget.url.trim().replaceAll(RegExp(r'\s+'), '');
+
+        // Use same URL resolution as GridVideoPlayer for high quality
+        final resolvedUri = await _resolvePlayableUri(cleanUrl);
+
+        // For network URLs, add a delay to allow video to be fully available (same as GridVideoPlayer)
+        if (resolvedUri.scheme.startsWith('http')) {
+          await Future.delayed(Duration(milliseconds: 500 * attempt));
+        }
+
+        // Dispose previous controller if exists
+        await _controller?.dispose();
+        _controller = null;
+
+        _controller =
+            resolvedUri.scheme.startsWith('http')
+                ? VideoPlayerController.networkUrl(resolvedUri)
+                : VideoPlayerController.file(File(resolvedUri.toFilePath()));
+
+        await _controller!.initialize();
+        await _controller!.setLooping(widget.loop);
+        await _controller!.setVolume(0.0);
+
+        // Seek to first frame to show thumbnail (same as GridVideoPlayer)
+        await _controller!.seekTo(Duration.zero);
+
+        // Add listener to ensure video keeps playing if it stops
+        _videoListener = () {
+          if (_controller != null && mounted) {
+            // If video ended and looping is enabled, restart it
+            if (!_controller!.value.isPlaying &&
+                _controller!.value.position >= _controller!.value.duration &&
+                widget.loop) {
+              _controller!.seekTo(Duration.zero);
+              _controller!.play();
+            }
+            // If video stopped playing for any reason and autoplay is enabled, restart it
+            else if (!_controller!.value.isPlaying &&
+                widget.autoplay &&
+                _controller!.value.position < _controller!.value.duration) {
+              _controller!.play();
+            }
+          }
+        };
+        _controller!.addListener(_videoListener!);
+
+        if (widget.autoplay) {
+          await _controller!.play();
+        }
+
+        if (mounted) {
+          setState(() {
+            _isInitialized = true;
+          });
+        }
+        return; // Success - exit retry loop
+      } catch (e, stackTrace) {
+        logger.e(
+          'Error initializing emotion video (attempt $attempt/$maxAttempts): $e',
+        );
+        logger.e('Stack trace: $stackTrace');
+
+        // Dispose failed controller
+        try {
+          await _controller?.dispose();
+          _controller = null;
+        } catch (_) {}
+
+        if (attempt == maxAttempts) {
+          // All attempts failed
+          if (mounted) {
+            setState(() {
+              _isInitialized = false;
+            });
+          }
+        }
+      }
+    }
+  }
+
+  // Use same URL resolution as GridVideoPlayer to ensure high quality videos
+  Future<Uri> _resolvePlayableUri(String input) async {
+    if (!input.startsWith('http')) return Uri.file(input);
+
+    // Handle Cloudinary video URLs - ensure they're playable and high quality
+    if (input.contains('cloudinary.com')) {
+      String processedUrl = input.trim().replaceAll(RegExp(r'\s+'), '');
+
+      // Convert HTTP to HTTPS (required for video playback on Android)
+      if (processedUrl.startsWith('http://')) {
+        processedUrl = processedUrl.replaceFirst('http://', 'https://');
+      }
+
+      final lowerInput = processedUrl.toLowerCase();
+      final isVideoUrl =
+          lowerInput.contains('/video/') || lowerInput.contains('video/upload');
+
+      if (isVideoUrl) {
+        // If URL already has a video extension, use it as-is
+        if (RegExp(
+          r'\.(mp4|mov|webm|avi)(\?|$|/)',
+          caseSensitive: false,
+        ).hasMatch(lowerInput)) {
+          return Uri.parse(processedUrl);
+        }
+
+        // If no extension and no format parameter, add .mp4 extension for high quality
+        if (!processedUrl.contains('f_') && !processedUrl.contains('/f_')) {
+          final playableUrl =
+              processedUrl.endsWith('/')
+                  ? '${processedUrl}mp4'
+                  : '$processedUrl.mp4';
+          return Uri.parse(playableUrl);
+        }
+      }
+
+      return Uri.parse(processedUrl);
+    }
+
+    // Handle other URLs
+    if (input.startsWith('http://')) {
+      return Uri.parse(input.replaceFirst('http://', 'https://'));
+    }
+    return Uri.parse(input);
+  }
+
+  @override
+  void dispose() {
+    if (_controller != null && _videoListener != null) {
+      _controller!.removeListener(_videoListener!);
+    }
+    _controller?.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    if (!_isInitialized || _controller == null) {
+      return Container(
+        color: Colors.black12,
+        child: Center(child: CircularProgressIndicator(strokeWidth: 2)),
+      );
+    }
+
+    // Use exact same rendering as GridVideoPlayer in reactions page for sharp quality
+    final size = _controller!.value.size;
+    return FittedBox(
+      fit: BoxFit.cover,
+      clipBehavior:
+          Clip.hardEdge, // Critical: prevents blurriness from anti-aliasing
+      child: SizedBox(
+        width: size.width,
+        height: size.height,
+        child: VideoPlayer(_controller!),
       ),
     );
   }

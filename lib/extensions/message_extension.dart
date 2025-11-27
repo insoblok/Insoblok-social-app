@@ -105,7 +105,30 @@ extension MessageModelExt on MessageModel {
                           ),
                         ],
                       ),
-                      result,
+                      Container(
+                        constraints: BoxConstraints(
+                          maxWidth: MediaQuery.of(context).size.width - 120.0,
+                        ),
+                        padding: EdgeInsets.all(8.0),
+                        decoration: BoxDecoration(
+                          color: AIColors.darkGreyBackground,
+                          borderRadius: BorderRadius.circular(12),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Theme.of(
+                                context,
+                              ).colorScheme.onPrimary.withAlpha(96),
+                              spreadRadius: 1,
+                              blurRadius: 2,
+                              offset: Offset(
+                                0,
+                                1,
+                              ), // changes position of shadow
+                            ),
+                          ],
+                        ),
+                        child: result,
+                      ),
                     ],
                   ),
                 ),
@@ -119,32 +142,27 @@ extension MessageModelExt on MessageModel {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    (type == MessageType.text || type == MessageType.paid)
-                        ? Container(
-                          constraints: BoxConstraints(
-                            maxWidth: MediaQuery.of(context).size.width - 120.0,
+                    Container(
+                      constraints: BoxConstraints(
+                        maxWidth: MediaQuery.of(context).size.width - 120.0,
+                      ),
+                      padding: EdgeInsets.all(8.0),
+                      decoration: BoxDecoration(
+                        color: AIColors.green,
+                        borderRadius: BorderRadius.circular(12),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Theme.of(
+                              context,
+                            ).colorScheme.onPrimary.withAlpha(96),
+                            spreadRadius: 1,
+                            blurRadius: 2,
+                            offset: Offset(0, 1), // changes position of shadow
                           ),
-                          padding: EdgeInsets.all(8.0),
-                          decoration: BoxDecoration(
-                            color: AIColors.lightBlue,
-                            borderRadius: BorderRadius.circular(12),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Theme.of(
-                                  context,
-                                ).colorScheme.onPrimary.withAlpha(96),
-                                spreadRadius: 1,
-                                blurRadius: 2,
-                                offset: Offset(
-                                  0,
-                                  1,
-                                ), // changes position of shadow
-                              ),
-                            ],
-                          ),
-                          child: result,
-                        )
-                        : result,
+                        ],
+                      ),
+                      child: result,
+                    ),
                     const SizedBox(height: 4),
                     Text(
                       messageTime,
@@ -221,7 +239,11 @@ extension MessageModelExt on MessageModel {
                 fontWeight: FontWeight.normal,
                 color: Colors.white,
               )
-              : Theme.of(context).textTheme.bodyMedium,
+              : TextStyle(
+                fontSize: 14.0,
+                fontWeight: FontWeight.normal,
+                color: Colors.white,
+              ),
     );
   }
 

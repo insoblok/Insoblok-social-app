@@ -66,7 +66,8 @@ class Routers {
     BuildContext context,
     Map<String, dynamic> props,
   ) {
-    _pushToRoute(context, kRouterAccessCodeConfirm, props);
+    // Use pushReplacement to replace the current route (registration page)
+    _pushReplacement(context, kRouterAccessCodeConfirm, props);
   }
 
   static dynamic goToAccountPage(BuildContext context, {UserModel? user}) {

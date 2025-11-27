@@ -25,15 +25,57 @@ class VTOImageProvider extends InSoBlokViewModel {
 
   late MediaPickerService _mediaPickerService;
   late ProductModel product;
+  late RunwareService _runwareService;
 
   final List<UserCountryModel> _countries = [];
   List<UserCountryModel> get countries => _countries;
+
+  final List<ProductModel> _marketplaceProducts = [];
+  List<ProductModel> get marketplaceProducts => _marketplaceProducts;
+
+  int? _selectedMarketplaceModelIndex;
+  int? get selectedMarketplaceModelIndex => _selectedMarketplaceModelIndex;
+  set selectedMarketplaceModelIndex(int? index) {
+    if (index != null && index >= 0 && index < _marketplaceProducts.length) {
+      // If selecting a different model after video is generated, reset the workflow
+      final wasDifferentModel =
+          _selectedMarketplaceModelIndex != null &&
+          _selectedMarketplaceModelIndex != index;
+      final hadVideo =
+          generatedVideoUrl != null && generatedVideoUrl!.isNotEmpty;
+
+      if (wasDifferentModel && hadVideo) {
+        // Reset video and result to restart workflow
+        generatedVideoUrl = null;
+        serverUrl = null;
+        logger.d('Model changed - resetting VTO workflow');
+      }
+
+      _selectedMarketplaceModelIndex = index;
+      // Update the product to the selected marketplace product
+      product = _marketplaceProducts[index];
+      notifyListeners();
+    } else if (index == null) {
+      _selectedMarketplaceModelIndex = null;
+      notifyListeners();
+    }
+  }
+
+  ProductModel? get selectedMarketplaceProduct {
+    if (_selectedMarketplaceModelIndex != null &&
+        _selectedMarketplaceModelIndex! >= 0 &&
+        _selectedMarketplaceModelIndex! < _marketplaceProducts.length) {
+      return _marketplaceProducts[_selectedMarketplaceModelIndex!];
+    }
+    return null;
+  }
 
   void init(BuildContext context, {required ProductModel p}) async {
     this.context = context;
 
     product = p;
     _mediaPickerService = locator<MediaPickerService>();
+    _runwareService = locator<RunwareService>();
 
     final String response = await rootBundle.loadString(
       'assets/data/country.json',
@@ -41,7 +83,99 @@ class VTOImageProvider extends InSoBlokViewModel {
     final data = await json.decode(response);
     _countries.addAll((data as List).map((d) => UserCountryModel.fromJson(d)));
 
+    // Fetch marketplace products
+    await fetchMarketplaceProducts();
+
     notifyListeners();
+  }
+
+  Future<void> fetchMarketplaceProducts() async {
+    if (isBusy) return;
+    clearErrors();
+
+    await runBusyFuture(() async {
+      try {
+        var products = await productService.getProducts();
+        if (products.isNotEmpty) {
+          _marketplaceProducts.clear();
+          // Filter products that have modelImage
+          _marketplaceProducts.addAll(
+            products.where(
+              (p) => p.modelImage != null && p.modelImage!.isNotEmpty,
+            ),
+          );
+        }
+      } catch (e) {
+        setError(e);
+        logger.e(e);
+      } finally {
+        notifyListeners();
+      }
+    }());
+  }
+
+  /// Get the video generation prompt based on product category and type
+  ///
+  /// Mapping:
+  /// - Shirt -> "pose"
+  /// - Pants -> "ramp walk"
+  /// - Hat/Cap -> "head move and smile"
+  /// - Cowboy Boots/Shoes -> "ramp walk"
+  /// - Sunglasses -> "head move and smile"
+  /// - Skirt -> "pose"
+  /// - Lady Top -> "pose"
+  /// - Bikini -> "pose"
+  String _getVideoPromptForProduct(ProductModel product) {
+    final categoryName = product.categoryName?.toLowerCase() ?? '';
+    final type = product.type?.toLowerCase() ?? '';
+
+    // Hat/Cap - head move and smile (check first as it's most specific)
+    if (categoryName.contains('hat') || categoryName.contains('cap')) {
+      return 'head move and smile';
+    }
+
+    // Sunglasses - head move and smile
+    if (categoryName.contains('sunglass')) {
+      return 'head move and smile';
+    }
+
+    // Bikini - pose
+    if (categoryName.contains('bikini') || type == 'one-pieces') {
+      return 'pose';
+    }
+
+    // Skirt - pose
+    if (categoryName.contains('skirt')) {
+      return 'pose';
+    }
+
+    // Shirt/Shirts - pose
+    if (categoryName.contains('shirt') ||
+        (type == 'tops' && !categoryName.contains('dress'))) {
+      return 'pose';
+    }
+
+    // Lady Top - pose (tops type)
+    if (type == 'tops' && categoryName.contains('top')) {
+      return 'pose';
+    }
+
+    // Pants/Trousers - ramp walk
+    if (categoryName.contains('trouser') ||
+        categoryName.contains('pant') ||
+        (type == 'bottoms' && !categoryName.contains('skirt'))) {
+      return 'ramp walk';
+    }
+
+    // Boots/Shoes - ramp walk
+    if (categoryName.contains('boot') ||
+        categoryName.contains('shoes') ||
+        type == 'shoes') {
+      return 'ramp walk';
+    }
+
+    // Default to pose if no match
+    return 'pose';
   }
 
   UserCountryModel? _selectedCountry;
@@ -133,6 +267,57 @@ class VTOImageProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  Future<void> postVideoToLookbook() async {
+    if (isBusy) return;
+    if (generatedVideoUrl == null || generatedVideoUrl!.isEmpty) {
+      AIHelpers.showToast(msg: 'No video available to post');
+      return;
+    }
+    clearErrors();
+
+    await runBusyFuture(() async {
+      try {
+        var hasDescription = await AIHelpers.showDescriptionDialog(context);
+        String? description;
+        if (hasDescription == true) {
+          description = await AIHelpers.goToDescriptionView(context);
+        }
+
+        var story = StoryModel(
+          title: 'VTO',
+          text: description ?? 'Vote to Earn – Vybe Virtual Try-On',
+          category: 'vote',
+          status: 'public',
+          medias: [
+            if (originUrl != null && originUrl!.isNotEmpty)
+              MediaStoryModel(link: originUrl!, type: 'image'),
+            if (serverUrl != null && serverUrl!.isNotEmpty)
+              MediaStoryModel(link: serverUrl!, type: 'image'),
+            MediaStoryModel(link: generatedVideoUrl!, type: 'video'),
+          ],
+          updatedAt: DateTime.now(),
+          createdAt: DateTime.now(),
+        );
+
+        final storyId = await storyService.postStory(story: story);
+        AIHelpers.showToast(msg: 'Successfully posted VTO video to LOOKBOOK!');
+
+        // Fetch the posted story and navigate to lookbook detail page
+        final postedStory = await storyService.getStory(storyId);
+        await Routers.goToLookbookDetailPage(context, postedStory);
+      } catch (e) {
+        setError(e);
+        logger.e(e);
+      } finally {
+        notifyListeners();
+      }
+    }());
+
+    if (hasError) {
+      AIHelpers.showToast(msg: modelError.toString());
+    }
+  }
+
   Future<void> onClickConvert() async {
     logger.d("product : $product");
 
@@ -171,6 +356,13 @@ class VTOImageProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
+  String? _generatedVideoUrl;
+  String? get generatedVideoUrl => _generatedVideoUrl;
+  set generatedVideoUrl(String? url) {
+    _generatedVideoUrl = url;
+    notifyListeners();
+  }
+
   Future<void> _clothingConvert() async {
     if (selectedFile == null) {
       AIHelpers.showToast(msg: 'Please select a origin photo!');
@@ -184,10 +376,45 @@ class VTOImageProvider extends InSoBlokViewModel {
       try {
         isConverting = true;
         if (originUrl?.isEmpty ?? true) {
-          MediaStoryModel model = await CloudinaryCDNService.uploadImageToCDN(
-            XFile(selectedFile!.path),
+          // Check if file exists before uploading
+          final file = File(selectedFile!.path);
+          if (!await file.exists()) {
+            throw Exception('Selected file does not exist!');
+          }
+
+          // Check file size
+          final fileSize = await file.length();
+          logger.e(
+            '📤 Uploading image, size: $fileSize bytes, path: ${selectedFile!.path}',
           );
-          originUrl = model.link;
+
+          try {
+            MediaStoryModel model = await CloudinaryCDNService.uploadImageToCDN(
+              XFile(selectedFile!.path),
+            );
+
+            // Log the model response for debugging
+            logger.e(
+              '✅ Upload response - link: ${model.link}, width: ${model.width}, height: ${model.height}',
+            );
+
+            // Check if upload was successful by verifying the link
+            if (model.link == null || model.link!.isEmpty) {
+              logger.e('❌ Upload failed: model.link is null or empty');
+              throw Exception(
+                'Failed to upload origin image to CDN. The upload completed but no URL was returned.',
+              );
+            }
+
+            originUrl = model.link;
+            logger.e('✅ Origin image uploaded successfully: $originUrl');
+          } catch (uploadError) {
+            logger.e('❌ Upload error caught: $uploadError');
+            // Re-throw with a user-friendly message
+            throw Exception(
+              'Failed to upload origin image to CDN: ${uploadError.toString()}. Please check your internet connection and try again.',
+            );
+          }
         }
 
         if (originUrl?.isEmpty ?? true) {
@@ -226,6 +453,65 @@ class VTOImageProvider extends InSoBlokViewModel {
           if (!medias.map((m) => m.link).toList().contains(serverUrl)) {
             medias.insert(0, MediaStoryModel(link: serverUrl, type: 'image'));
             logger.d(medias.length);
+
+            // Generate video from the VTO image
+            try {
+              logger.e('🎬 Starting video generation from VTO image...');
+              final videoPrompt = _getVideoPromptForProduct(product);
+              logger.e(
+                '📝 Using prompt: "$videoPrompt" for product: ${product.categoryName} / ${product.type}',
+              );
+
+              final videoResult = await _runwareService
+                  .generateAIEmotionVideoWithPrompt(
+                    inputImage: serverUrl!,
+                    positivePrompt: videoPrompt,
+                  );
+
+              if (videoResult['status'] == 'success' &&
+                  videoResult['videoURL'] != null &&
+                  videoResult['videoURL'].toString().isNotEmpty) {
+                final originalVideoUrl = videoResult['videoURL'] as String;
+                logger.e('✅ Video generated successfully: $originalVideoUrl');
+
+                // Upload the generated video to bunny.net
+                try {
+                  logger.d('📤 Uploading generated video to bunny.net...');
+                  final uploadResult =
+                      await BunnyNetCDNService.uploadVideoFromUrl(
+                        originalVideoUrl,
+                      );
+
+                  if (uploadResult.link != null &&
+                      uploadResult.link!.isNotEmpty) {
+                    generatedVideoUrl = uploadResult.link!;
+                    logger.e(
+                      '✅ Video uploaded to bunny.net: $generatedVideoUrl',
+                    );
+                  } else {
+                    // If upload fails, use original URL as fallback
+                    logger.w(
+                      '⚠️ Failed to upload video to bunny.net, using original URL',
+                    );
+                    generatedVideoUrl = originalVideoUrl;
+                  }
+                } catch (uploadError) {
+                  logger.e(
+                    '❌ Error uploading video to bunny.net: $uploadError',
+                  );
+                  // Use original URL as fallback if upload fails
+                  generatedVideoUrl = originalVideoUrl;
+                }
+              } else {
+                logger.e(
+                  '⚠️ Video generation failed: ${videoResult['message'] ?? 'Unknown error'}',
+                );
+              }
+            } catch (videoError) {
+              logger.e('❌ Error generating video: $videoError');
+              // Continue even if video generation fails - image is still available
+            }
+
             product = product.copyWith(
               medias: medias,
               updateDate: DateTime.now(),
@@ -235,7 +521,8 @@ class VTOImageProvider extends InSoBlokViewModel {
               product: product,
             );
 
-            var originImgbytes = await File(_selectedFile!.path).readAsBytes();
+            // Navigate to detail page with video if generated, otherwise with image
+            var originImgbytes = await File(selectedFile!.path).readAsBytes();
             var originDecodedImage = img.decodeImage(originImgbytes);
 
             var resultImgbytes = await File(_resultFile!.path).readAsBytes();
@@ -251,6 +538,7 @@ class VTOImageProvider extends InSoBlokViewModel {
                 resultImage: serverUrl!,
                 resultImgWidth: resultDecodedImage?.width.toDouble(),
                 resultImgHeight: resultDecodedImage?.height.toDouble(),
+                resultVideo: generatedVideoUrl, // Pass the generated video URL
               ),
             );
           }
@@ -498,6 +786,65 @@ class VTOImageProvider extends InSoBlokViewModel {
           if (!medias.map((m) => m.link).toList().contains(serverUrl)) {
             medias.insert(0, MediaStoryModel(link: serverUrl, type: 'image'));
             logger.d(medias.length);
+
+            // Generate video from the VTO image (for glasses, hats, shoes, etc.)
+            try {
+              logger.e('🎬 Starting video generation from VTO image...');
+              final videoPrompt = _getVideoPromptForProduct(product);
+              logger.e(
+                '📝 Using prompt: "$videoPrompt" for product: ${product.categoryName} / ${product.type}',
+              );
+
+              final videoResult = await _runwareService
+                  .generateAIEmotionVideoWithPrompt(
+                    inputImage: serverUrl!,
+                    positivePrompt: videoPrompt,
+                  );
+
+              if (videoResult['status'] == 'success' &&
+                  videoResult['videoURL'] != null &&
+                  videoResult['videoURL'].toString().isNotEmpty) {
+                final originalVideoUrl = videoResult['videoURL'] as String;
+                logger.e('✅ Video generated successfully: $originalVideoUrl');
+
+                // Upload the generated video to bunny.net
+                try {
+                  logger.d('📤 Uploading generated video to bunny.net...');
+                  final uploadResult =
+                      await BunnyNetCDNService.uploadVideoFromUrl(
+                        originalVideoUrl,
+                      );
+
+                  if (uploadResult.link != null &&
+                      uploadResult.link!.isNotEmpty) {
+                    generatedVideoUrl = uploadResult.link!;
+                    logger.e(
+                      '✅ Video uploaded to bunny.net: $generatedVideoUrl',
+                    );
+                  } else {
+                    // If upload fails, use original URL as fallback
+                    logger.w(
+                      '⚠️ Failed to upload video to bunny.net, using original URL',
+                    );
+                    generatedVideoUrl = originalVideoUrl;
+                  }
+                } catch (uploadError) {
+                  logger.e(
+                    '❌ Error uploading video to bunny.net: $uploadError',
+                  );
+                  // Use original URL as fallback if upload fails
+                  generatedVideoUrl = originalVideoUrl;
+                }
+              } else {
+                logger.e(
+                  '⚠️ Video generation failed: ${videoResult['message'] ?? 'Unknown error'}',
+                );
+              }
+            } catch (videoError) {
+              logger.e('❌ Error generating video: $videoError');
+              // Continue even if video generation fails - image is still available
+            }
+
             product = product.copyWith(
               medias: medias,
               updateDate: DateTime.now(),
@@ -526,6 +873,7 @@ class VTOImageProvider extends InSoBlokViewModel {
                 resultImage: serverUrl!,
                 resultImgWidth: resultDecodedImage?.width.toDouble(),
                 resultImgHeight: resultDecodedImage?.height.toDouble(),
+                resultVideo: generatedVideoUrl, // Pass the generated video URL
               ),
             );
           }

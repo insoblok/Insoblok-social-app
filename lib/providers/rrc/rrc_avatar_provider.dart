@@ -88,11 +88,11 @@ class RRCAvatarProvider extends InSoBlokViewModel {
 
   // Available emotions (emoji and short prompt hint)
   final List<Map<String, String>> emotions = [
-    // Mapping required order: laugh, LOL, HOT, surprised
-    {'emoji': '⚡', 'prompt': 'laugh'},
-    {'emoji': '😂', 'prompt': 'LOL'},
-    {'emoji': '🔥', 'prompt': 'HOT'},
-    {'emoji': '😮', 'prompt': 'surprised'},
+    // Order: Shock, Laugh, Slay, Awe
+    {'emoji': '⚡', 'prompt': 'shock'},
+    {'emoji': '😂', 'prompt': 'laugh'},
+    {'emoji': '👄', 'prompt': 'slay'},
+    {'emoji': '😮', 'prompt': 'awe'},
   ];
 
   // Fake avatar defs — index 0 is "My Face" (no avatar)
@@ -102,7 +102,7 @@ class RRCAvatarProvider extends InSoBlokViewModel {
     // Supplied avatar images (assets). Adjust prompts as needed.
     {
       'label': 'A',
-      'prompt': 'anime character, neon outline portrait',
+      'prompt': 'neon outline portrait',
       'image': 'assets/images/rrc/avatar1.jpg',
     },
     {
@@ -117,7 +117,7 @@ class RRCAvatarProvider extends InSoBlokViewModel {
     },
     {
       'label': 'D',
-      'prompt': 'neon edge glow portrait, cyber look',
+      'prompt': '3d avatar with  cyber look',
       'image': 'assets/images/rrc/avatar4.jpg',
     },
   ];
@@ -180,7 +180,7 @@ class RRCAvatarProvider extends InSoBlokViewModel {
 
   Future<void> detectFace(String link) async {
     // Use the hardcoded path from story_provider for consistency
-    // link = '/data/data/insoblok.social.app/cache/me.jpg';
+    link = '/data/data/insoblok.social.app/cache/me.jpg';
 
     logger.d("This is detect face function");
     try {
@@ -212,7 +212,7 @@ class RRCAvatarProvider extends InSoBlokViewModel {
             logger.d('✅ selfieLocalPath set to: ${_selfieLocalPath.value}');
             // Notify listeners immediately after setting the value
             notifyListeners();
-            AIHelpers.showToast(msg: 'Face captured successfully!');
+            AIHelpers.showToast(msg: 'Successfully locked your Vybe!');
           } else {
             throw Exception('File was not created at $filePath');
           }
@@ -308,16 +308,49 @@ class RRCAvatarProvider extends InSoBlokViewModel {
                 avatarResult['success'] == true) {
               final generatedAvatarUrl = avatarResult['imageURL'] as String?;
               if (generatedAvatarUrl != null && generatedAvatarUrl.isNotEmpty) {
-                // Store the generated avatar image URL
-                _generatedAvatarImageUrl.value = generatedAvatarUrl;
-                // Use the generated avatar image for video generation
-                imageToUseForVideo = generatedAvatarUrl;
                 logger.d(
                   '✅ Avatar generated successfully: $generatedAvatarUrl',
                 );
+
+                // Upload the generated avatar image to bunny.net
+                try {
+                  logger.d(
+                    '📤 Uploading generated avatar image to bunny.net...',
+                  );
+                  final uploadResult =
+                      await BunnyNetCDNService.uploadImageFromUrl(
+                        generatedAvatarUrl,
+                      );
+
+                  if (uploadResult.link != null &&
+                      uploadResult.link!.isNotEmpty) {
+                    _generatedAvatarImageUrl.value = uploadResult.link!;
+                    imageToUseForVideo = uploadResult.link!;
+                    logger.d(
+                      '✅ Avatar image uploaded to bunny.net: ${uploadResult.link}',
+                    );
+                  } else {
+                    // If upload fails, use original URL as fallback
+                    logger.w(
+                      '⚠️ Failed to upload avatar image to bunny.net, using original URL',
+                    );
+                    _generatedAvatarImageUrl.value = generatedAvatarUrl;
+                    imageToUseForVideo = generatedAvatarUrl;
+                  }
+                } catch (uploadError) {
+                  logger.e(
+                    '❌ Error uploading avatar image to bunny.net: $uploadError',
+                  );
+                  // Use original URL as fallback if upload fails
+                  _generatedAvatarImageUrl.value = generatedAvatarUrl;
+                  imageToUseForVideo = generatedAvatarUrl;
+                }
+
                 logger.d('✅ Using avatar image for emotion video generation');
                 notifyListeners();
-                AIHelpers.showToast(msg: 'Avatar generated! Creating video...');
+                AIHelpers.showToast(
+                  msg: 'Avatar generated! Creating emotion gif...',
+                );
               } else {
                 throw Exception('Avatar image URL not found in response');
               }
@@ -356,16 +389,41 @@ class RRCAvatarProvider extends InSoBlokViewModel {
                 throw Exception('Invalid video URL format: $generatedVideoUrl');
               }
 
-              // Skip URL validation to save time - video player will handle invalid URLs
-              // URL validation is async and adds unnecessary delay
               logger.d('✅ Video URL received: $generatedVideoUrl');
 
-              _generatedVideoUrl.value = resultUrl = generatedVideoUrl;
+              // Upload the generated video to bunny.net
+              try {
+                logger.d(
+                  '📤 Uploading generated emotion video to bunny.net...',
+                );
+                final uploadResult =
+                    await BunnyNetCDNService.uploadVideoFromUrl(
+                      generatedVideoUrl,
+                    );
+
+                if (uploadResult.link != null &&
+                    uploadResult.link!.isNotEmpty) {
+                  _generatedVideoUrl.value = resultUrl = uploadResult.link!;
+                  logger.d(
+                    '✅ Video uploaded to bunny.net: ${uploadResult.link}',
+                  );
+                } else {
+                  // If upload fails, use original URL as fallback
+                  logger.w(
+                    '⚠️ Failed to upload video to bunny.net, using original URL',
+                  );
+                  _generatedVideoUrl.value = resultUrl = generatedVideoUrl;
+                }
+              } catch (uploadError) {
+                logger.e('❌ Error uploading video to bunny.net: $uploadError');
+                // Use original URL as fallback if upload fails
+                _generatedVideoUrl.value = resultUrl = generatedVideoUrl;
+              }
+
               logger.d('✅ Video URL set: ${_generatedVideoUrl.value}');
-              logger.d('✅ Generated video URL: $generatedVideoUrl');
               // Notify listeners immediately to update UI
               notifyListeners();
-              AIHelpers.showToast(msg: 'Video ready!');
+              AIHelpers.showToast(msg: 'gif ready!');
             } else {
               throw Exception('Video URL not found in response');
             }
@@ -402,7 +460,37 @@ class RRCAvatarProvider extends InSoBlokViewModel {
           if (result['status'] == 'success' && result['success'] == true) {
             final generatedImageUrl = result['imageURL'] as String?;
             if (generatedImageUrl != null && generatedImageUrl.isNotEmpty) {
-              _generatedImageUrl.value = resultUrl = generatedImageUrl;
+              logger.d('✅ Avatar image URL received: $generatedImageUrl');
+
+              // Upload the generated avatar image to bunny.net
+              try {
+                logger.d('📤 Uploading generated avatar image to bunny.net...');
+                final uploadResult =
+                    await BunnyNetCDNService.uploadImageFromUrl(
+                      generatedImageUrl,
+                    );
+
+                if (uploadResult.link != null &&
+                    uploadResult.link!.isNotEmpty) {
+                  _generatedImageUrl.value = resultUrl = uploadResult.link!;
+                  logger.d(
+                    '✅ Avatar image uploaded to bunny.net: ${uploadResult.link}',
+                  );
+                } else {
+                  // If upload fails, use original URL as fallback
+                  logger.w(
+                    '⚠️ Failed to upload avatar image to bunny.net, using original URL',
+                  );
+                  _generatedImageUrl.value = resultUrl = generatedImageUrl;
+                }
+              } catch (uploadError) {
+                logger.e(
+                  '❌ Error uploading avatar image to bunny.net: $uploadError',
+                );
+                // Use original URL as fallback if upload fails
+                _generatedImageUrl.value = resultUrl = generatedImageUrl;
+              }
+
               AIHelpers.showToast(msg: 'Avatar ready!');
             } else {
               throw Exception('Image URL not found in response');
@@ -467,7 +555,7 @@ class RRCAvatarProvider extends InSoBlokViewModel {
           AuthHelper.user?.id != null &&
           story.userId == AuthHelper.user?.id) {
         logger.e('User trying to react to their own story - Blocking reaction');
-        AIHelpers.showToast(msg: "You can't react to your own story!");
+        AIHelpers.showToast(msg: "You can't react on your post!");
         return;
       }
       logger.d('Story ownership check passed - User can react');
@@ -563,10 +651,20 @@ class RRCAvatarProvider extends InSoBlokViewModel {
 
       logger.d('Video uploaded to Cloudinary successfully: $cdnUrl');
 
-      // Update Firestore story document with reaction
+      // Get the selected emotion prompt
+      final selectedEmotion = emotions[selectedEmotionIndex];
+      final emotionPrompt = selectedEmotion['prompt'] ?? 'unknown';
+      logger.d('Selected emotion prompt: $emotionPrompt');
+
+      // Update Firestore story document with reaction (save as map with url and prompt)
       final storiesRef = FirebaseFirestore.instance.collection("story");
+      final reactionData = {
+        'url': cdnUrl,
+        'prompt': emotionPrompt,
+        'type': emotionPrompt, // Store prompt as type as well
+      };
       await storiesRef.doc(_storyID).update({
-        "reactions": FieldValue.arrayUnion([cdnUrl]),
+        "reactions": FieldValue.arrayUnion([reactionData]),
       });
 
       logger.d('Reaction posted successfully to story: $_storyID');

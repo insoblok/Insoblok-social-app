@@ -4,7 +4,6 @@ import 'package:insoblok/extensions/extensions.dart';
 import 'package:stacked/stacked.dart';
 
 import 'package:insoblok/providers/providers.dart';
-import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/widgets/widgets.dart';
 import 'package:insoblok/utils/utils.dart';
@@ -40,27 +39,27 @@ class LeaderboardPage extends StatelessWidget {
             ),
             const SizedBox(height: 6),
             userData == null
-            ? ShimmerContainer(
-              child: Container(
-                width: size,
-                height: size,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  shape: BoxShape.circle,
+                ? ShimmerContainer(
+                  child: Container(
+                    width: size,
+                    height: size,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                    ),
+                  ),
+                )
+                : Stack(
+                  children: [
+                    userData.avatarStatusView(
+                      width: size,
+                      height: size,
+                      borderWidth: 3.0,
+                      textSize: 18.0,
+                      showStatus: false,
+                    ),
+                  ],
                 ),
-              ),
-            )
-            : Stack(
-              children: [
-                userData.avatarStatusView(
-                  width: size,
-                  height: size,
-                  borderWidth: 3.0,
-                  textSize: 18.0,
-                  showStatus: false,
-                ),
-              ],
-            ),
             const SizedBox(height: 6),
             Text(
               userData?.fullName ?? "",
@@ -82,78 +81,99 @@ class LeaderboardPage extends StatelessWidget {
             ),
           ],
         );
-      }
-    );    
+      },
+    );
   }
 
-  Widget _buildPodium(BuildContext ctx, List<UserScoreModel> users, bool isWeekly) {
-  if (users.length < 3) {
-    return Center(child: Text("Not enough data yet"));
-  }
+  Widget _buildPodium(
+    BuildContext ctx,
+    List<UserScoreModel> users,
+    bool isWeekly,
+  ) {
+    if (users.length < 3) {
+      return Center(child: Text("Not enough data yet"));
+    }
 
-  return Container(
-    padding: const EdgeInsets.all(16),
-    decoration: BoxDecoration(
-      gradient: const LinearGradient(
-        begin: Alignment.topCenter,
-        end: Alignment.bottomCenter,
-        colors: [Color(0xFF123267), Color(0xFF1C2025)],
-      ),
-      borderRadius: BorderRadius.all(Radius.circular(20)),
-    ),
-    child: Row(
-      mainAxisAlignment: MainAxisAlignment.spaceAround,
-      crossAxisAlignment: CrossAxisAlignment.end,
-      children: [
-        _buildRankCard(ctx: ctx, user: users[1], rank: "2nd",
-          score: isWeekly ? users[1].xpWeek : users[1].xpTotal,
-          xpColor: Colors.greenAccent, size: 90),
-        _buildRankCard(ctx: ctx, user: users[0], rank: "1st",
-          score: isWeekly ? users[0].xpWeek : users[0].xpTotal,
-          xpColor: Colors.yellowAccent, size: 120),
-        _buildRankCard(ctx: ctx, user: users[2], rank: "3rd",
-          score: isWeekly ? users[2].xpWeek : users[2].xpTotal,
-          xpColor: Colors.cyanAccent, size: 90),
-      ],
-    ),
-  );
-}
-
-
-  Widget _buildLeaderboardList(BuildContext context, List<UserScoreModel> data, bool isWeekly) {
-  if (data.length < 3) {
-    return Center(child: Text("Not enough players yet"));
-  }
-
-  return Padding(
-    padding: const EdgeInsets.all(8.0),
-    child: Column(
-      children: [
-        _buildPodium(context, data, isWeekly),
-        const SizedBox(height: 16),
-        Expanded(
-          child: ListView.separated(
-            itemCount: data.length,
-            itemBuilder: (context, i) {
-              final user = data[i];
-              final value = isWeekly ? user.xpWeek : user.xpTotal;
-    
-              return LeaderboardUserView(
-                key: ValueKey('${user.id}-${isWeekly ? "week" : "total"}'),
-                user: user,
-                score: value,
-                cellIndex: i,
-                displayProgress: !isWeekly
-              );
-            },
-            separatorBuilder: (_, __) => const SizedBox.shrink(),
-          ),
+    return Container(
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        gradient: const LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [Color(0xFF123267), Color(0xFF1C2025)],
         ),
-      ],
-    ),
-  );
-}
+        borderRadius: BorderRadius.all(Radius.circular(20)),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceAround,
+        crossAxisAlignment: CrossAxisAlignment.end,
+        children: [
+          _buildRankCard(
+            ctx: ctx,
+            user: users[1],
+            rank: "2nd",
+            score: isWeekly ? users[1].xpWeek : users[1].xpTotal,
+            xpColor: Colors.greenAccent,
+            size: 90,
+          ),
+          _buildRankCard(
+            ctx: ctx,
+            user: users[0],
+            rank: "1st",
+            score: isWeekly ? users[0].xpWeek : users[0].xpTotal,
+            xpColor: Colors.yellowAccent,
+            size: 120,
+          ),
+          _buildRankCard(
+            ctx: ctx,
+            user: users[2],
+            rank: "3rd",
+            score: isWeekly ? users[2].xpWeek : users[2].xpTotal,
+            xpColor: Colors.cyanAccent,
+            size: 90,
+          ),
+        ],
+      ),
+    );
+  }
 
+  Widget _buildLeaderboardList(
+    BuildContext context,
+    List<UserScoreModel> data,
+    bool isWeekly,
+  ) {
+    if (data.length < 3) {
+      return Center(child: Text("Not enough players yet"));
+    }
+
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          _buildPodium(context, data, isWeekly),
+          const SizedBox(height: 16),
+          Expanded(
+            child: ListView.separated(
+              itemCount: data.length,
+              itemBuilder: (context, i) {
+                final user = data[i];
+                final value = isWeekly ? user.xpWeek : user.xpTotal;
+
+                return LeaderboardUserView(
+                  key: ValueKey('${user.id}-${isWeekly ? "week" : "total"}'),
+                  user: user,
+                  score: value,
+                  cellIndex: i,
+                  displayProgress: !isWeekly,
+                );
+              },
+              separatorBuilder: (_, __) => const SizedBox.shrink(),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -169,7 +189,9 @@ class LeaderboardPage extends StatelessWidget {
               title: Text('Leaderboard'),
               leading: IconButton(
                 icon: const Icon(Icons.arrow_back),
-                onPressed: () => Navigator.pushNamed(context, '/main', arguments: null),
+                onPressed:
+                    () =>
+                        Navigator.pushNamed(context, '/main', arguments: null),
               ),
               centerTitle: true,
               flexibleSpace: AppBackgroundView(),
@@ -194,12 +216,38 @@ class LeaderboardPage extends StatelessWidget {
                 ],
               ),
             ),
-            body: TabBarView(
-              children: [
-                _buildLeaderboardList(context, viewModel.weeklyLeaderboard, true),
-                _buildLeaderboardList(context, viewModel.totalLeaderboard, false),
-              ],
-            ),
+            body:
+                viewModel.isBusy
+                    ? Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Loader(
+                            color: Theme.of(context).primaryColor,
+                            size: 60,
+                          ),
+                          const SizedBox(height: 18),
+                          Text(
+                            "Loading leaderboard...",
+                            style: Theme.of(context).textTheme.bodyMedium,
+                          ),
+                        ],
+                      ),
+                    )
+                    : TabBarView(
+                      children: [
+                        _buildLeaderboardList(
+                          context,
+                          viewModel.weeklyLeaderboard,
+                          true,
+                        ),
+                        _buildLeaderboardList(
+                          context,
+                          viewModel.totalLeaderboard,
+                          false,
+                        ),
+                      ],
+                    ),
           ),
         );
       },

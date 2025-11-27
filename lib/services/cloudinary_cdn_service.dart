@@ -1,151 +1,39 @@
 import 'dart:io';
-import 'dart:convert';
-import 'package:flutter/material.dart';
-
 import 'package:http/http.dart' as http;
-import 'package:flutter_image_compress/flutter_image_compress.dart';
-import 'package:insoblok/utils/const.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:insoblok/models/models.dart';
-import 'package:video_compress/video_compress.dart';
+import 'package:insoblok/services/services.dart';
+import 'package:insoblok/services/bunnynet_cdn_service.dart';
 
 class CloudinaryCDNService {
+  /// Uploads image to bunny.net
+  /// All new uploads are routed to bunny.net
   static Future<MediaStoryModel> uploadImageToCDN(XFile file) async {
-    debugPrint("Image size is ${await file.length()}");
-    if (await file.length() < CDN_IMG_UPLOAD_MAX_LIMIT) {
-      try {
-        final url = Uri.parse(
-          'https://api.cloudinary.com/v1_1/${CDN_CLOUD_NAME}/image/upload',
-        );
-
-        final request =
-            http.MultipartRequest('POST', url)
-              ..fields['upload_preset'] =
-                  CDN_UPLOAD_PRESET // Create this in Cloudinary
-              ..files.add(await http.MultipartFile.fromPath('file', file.path));
-
-        final response = await request.send();
-        if (response.statusCode == 200) {
-          final responseData = await response.stream.toBytes();
-          final responseString = String.fromCharCodes(responseData);
-          final Map<String, dynamic> result = jsonDecode(responseString);
-
-          // Parse response to get public_id
-          return MediaStoryModel(
-            link: result["url"],
-            thumb: "",
-            width: result["width"].toDouble(),
-            height: result["height"].toDouble(),
-            type: 'image',
-          );
-        }
-      } catch (e) {
-        debugPrint('Upload failed due to $e');
-      }
-    }
-    return MediaStoryModel(
-      link: "",
-      thumb: "",
-      width: 0,
-      height: 0,
-      type: 'image',
-    );
+    logger.d('📤 Routing image upload to bunny.net');
+    return BunnyNetCDNService.uploadImageToCDN(file);
   }
 
+  /// Uploads video to bunny.net
+  /// All new uploads are routed to bunny.net
   static Future<MediaStoryModel> uploadVideoToCDN(XFile file) async {
-    try {
-      // Check if file exists
-      if (!await File(file.path).exists()) {
-        throw Exception('Video file does not exist: ${file.path}');
-      }
-
-      MediaInfo? mediaInfo = await VideoCompress.compressVideo(
-        file.path,
-        quality: VideoQuality.Res640x480Quality,
-        deleteOrigin: false,
-      );
-
-      if (mediaInfo == null || mediaInfo.file == null) {
-        throw Exception('Video compression failed: mediaInfo is null');
-      }
-
-      debugPrint(
-        "Compressed size is ${await file.length()} ====> ${mediaInfo.filesize}",
-      );
-
-      // Check if the operation was successful and the file was created
-      if (!await mediaInfo.file!.exists()) {
-        throw Exception(
-          'Compressed video file does not exist: ${mediaInfo.file!.path}',
-        );
-      }
-
-      if (mediaInfo.filesize != null &&
-          mediaInfo.filesize! >= CDN_VIDEO_UPLOAD_MAX_LIMIT) {
-        throw Exception(
-          'Video file too large: ${mediaInfo.filesize} bytes (max: $CDN_VIDEO_UPLOAD_MAX_LIMIT)',
-        );
-      }
-
-      final url = Uri.parse(
-        'https://api.cloudinary.com/v1_1/${CDN_CLOUD_NAME}/video/upload',
-      );
-
-      final request =
-          http.MultipartRequest('POST', url)
-            ..fields['upload_preset'] = CDN_UPLOAD_PRESET
-            ..fields['resource_type'] =
-                'video' // Specify video type
-            ..files.add(
-              await http.MultipartFile.fromPath('file', mediaInfo.file!.path),
-            );
-
-      final response = await request.send();
-      final responseData = await response.stream.toBytes();
-      final responseString = String.fromCharCodes(responseData);
-
-      if (response.statusCode != 200) {
-        debugPrint('Cloudinary upload failed: HTTP ${response.statusCode}');
-        debugPrint('Response: $responseString');
-        throw Exception(
-          'Cloudinary upload failed: HTTP ${response.statusCode} - $responseString',
-        );
-      }
-
-      final Map<String, dynamic> result = jsonDecode(responseString);
-
-      // Generate thumbnail URL (grabs frame at 2 seconds)
-      final String publicId = result["public_id"];
-      final String thumbnailUrl =
-          'https://res.cloudinary.com/${CDN_CLOUD_NAME}/video/upload/'
-          'w_${result["width"]},h_${result["height"]},c_fill,so_2/'
-          '$publicId.jpg';
-
-      // Use secure_url if available, otherwise use url
-      final videoUrl = result["secure_url"] ?? result["url"];
-
-      if (videoUrl == null || videoUrl.isEmpty) {
-        throw Exception(
-          'Cloudinary upload succeeded but no video URL returned',
-        );
-      }
-
-      return MediaStoryModel(
-        link: videoUrl, // Use secure_url (HTTPS) if available
-        thumb: thumbnailUrl,
-        width: result["width"].toDouble(),
-        height: result["height"].toDouble(),
-        type: 'video',
-      );
-    } catch (e, stackTrace) {
-      debugPrint("Video upload error: $e");
-      debugPrint("Stack trace: $stackTrace");
-      rethrow; // Re-throw to let caller handle the error
-    }
+    logger.d('📤 Routing video upload to bunny.net');
+    return BunnyNetCDNService.uploadVideoToCDN(file);
   }
 
   static Future<MediaStoryModel> uploadImageFromUrl(String imageUrl) async {
     final tempFile = await _downloadImage(imageUrl);
+    // Route to bunny.net for new uploads
     return uploadImageToCDN(XFile(tempFile.path));
+  }
+
+  /// Checks if a URL is from Cloudinary (for backward compatibility)
+  static bool isCloudinaryUrl(String url) {
+    return url.contains('cloudinary.com') || url.contains('res.cloudinary.com');
+  }
+
+  /// Checks if a URL is from bunny.net
+  static bool isBunnyNetUrl(String url) {
+    return BunnyNetCDNService.isBunnyNetUrl(url);
   }
 
   static Future<File> _downloadImage(String imageUrl) async {

@@ -4,86 +4,91 @@ import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/models/models.dart';
 
-
 final socialConfigs = {
   "instagram": {
     "icon": AIImages.icInstagram2,
     "media": "instagram",
-    "placeholder": "instagram.com/"
+    "placeholder": "instagram.com/",
   },
   "telegram": {
     "icon": AIImages.icTelegram2,
     "media": "telegram",
-    "placeholder": "t.me/"
+    "placeholder": "t.me/",
   },
   "whatsapp": {
     "icon": AIImages.icWhatsapp2,
     "media": "whatsapp",
-    "placeholder": "wa.me/"
+    "placeholder": "wa.me/",
   },
   "linkedin": {
     "icon": AIImages.icLinkedin2,
     "media": "linkedin",
-    "placeholder": "linkedin.com/in/"
+    "placeholder": "linkedin.com/in/",
   },
   "twitter": {
     "icon": AIImages.icTwitter2,
     "media": "twitter",
-    "placeholder": "x.com/"
+    "placeholder": "x.com/",
   },
   "tiktok": {
     "icon": AIImages.icTiktok2,
     "media": "tiktok",
-    "placeholder": "tiktok.com/@"
+    "placeholder": "tiktok.com/@",
   },
   "snapchat": {
     "icon": AIImages.icSnapchat2,
     "media": "snapchat",
-    "placeholder": "snapchat.com/add/"
+    "placeholder": "snapchat.com/add/",
   },
   "youtube": {
     "icon": AIImages.icYoutube2,
     "media": "youtube",
-    "placeholder": "youtube.com/"
+    "placeholder": "youtube.com/",
   },
   "reddit": {
     "icon": AIImages.icReddit2,
     "media": "reddit",
-    "placeholder": "reddit.com/user/"
+    "placeholder": "reddit.com/user/",
   },
   "spotify": {
     "icon": AIImages.icSpotify2,
     "media": "spotify",
-    "placeholder": "spotify.com/user/"
+    "placeholder": "spotify.com/user/",
   },
   "soundcloud": {
     "icon": AIImages.icSoundCloud2,
     "media": "soundcloud",
-    "placeholder": "soundcloud.com/"
+    "placeholder": "soundcloud.com/",
   },
   "facebook": {
     "icon": AIImages.icFacebook2,
     "media": "facebook",
-    "placeholder": "facebook.com/"
-  }
+    "placeholder": "facebook.com/",
+  },
 };
 
 typedef UpdateAccount = void Function(String f, String v);
 
 int MAX_SOCIALS_CNT = 6;
+
 // ignore: must_be_immutable
 class SocialMediaInputView extends StatefulWidget {
-  
   final UpdateAccount updateSocials;
   final String? field;
   bool? edit = false;
   List<SocialMediaModel>? initialValue;
   final UserModel? account;
-  SocialMediaInputView({super.key, required this.updateSocials, this.field, this.edit, this.initialValue, this.account });
-  
+  SocialMediaInputView({
+    super.key,
+    required this.updateSocials,
+    this.field,
+    this.edit,
+    this.initialValue,
+    this.account,
+  });
+
   @override
   SocialMediaInputViewState createState() => SocialMediaInputViewState();
-
 }
 
 class SocialMediaInputViewState extends State<SocialMediaInputView> {
@@ -93,7 +98,10 @@ class SocialMediaInputViewState extends State<SocialMediaInputView> {
   @override
   void initState() {
     super.initState();
-    final items = (widget.initialValue ?? []).map((one) => (socialConfigs[one.media] ?? {})["icon"].toString()).toList();
+    final items =
+        (widget.initialValue ?? [])
+            .map((one) => (socialConfigs[one.media] ?? {})["icon"].toString())
+            .toList();
     controller.initializeItems(items, MAX_SOCIALS_CNT);
   }
 
@@ -104,7 +112,7 @@ class SocialMediaInputViewState extends State<SocialMediaInputView> {
       return;
     }
     widget.updateSocials(field, value);
-    if(socials.contains(field)) {
+    if (socials.contains(field)) {
       controller.removeItem((socialConfigs[field] ?? {})["icon"] ?? "");
     } else {
       controller.addItem((socialConfigs[field] ?? {})["icon"] ?? "");
@@ -113,7 +121,8 @@ class SocialMediaInputViewState extends State<SocialMediaInputView> {
 
   @override
   Widget build(BuildContext context) {
-    socials = (widget.account?.socials ?? []).map((one) => one.media ?? "").toList();
+    socials =
+        (widget.account?.socials ?? []).map((one) => one.media ?? "").toList();
     logger.d("THis is socials $socials");
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 6.0),
@@ -121,10 +130,7 @@ class SocialMediaInputViewState extends State<SocialMediaInputView> {
         children: [
           Row(
             children: [
-              Text(
-                "Socials",
-                style: Theme.of(context).textTheme.bodyLarge
-              )
+              Text("Socials", style: Theme.of(context).textTheme.bodyLarge),
             ],
           ),
           SizedBox(height: 18.0),
@@ -133,7 +139,7 @@ class SocialMediaInputViewState extends State<SocialMediaInputView> {
             child: MultipleInputWidget(
               controller: controller,
               maxItems: MAX_SOCIALS_CNT,
-            )
+            ),
           ),
           SizedBox(height: 12.0),
           Row(
@@ -142,7 +148,7 @@ class SocialMediaInputViewState extends State<SocialMediaInputView> {
               Text(
                 "Select 6 to Add",
                 textAlign: TextAlign.start,
-                style: Theme.of(context).textTheme.bodyLarge
+                style: Theme.of(context).textTheme.bodyLarge,
               ),
             ],
           ),
@@ -154,9 +160,12 @@ class SocialMediaInputViewState extends State<SocialMediaInputView> {
               itemBuilder: (context, index) {
                 final key = socialConfigs.keys.elementAt(index);
                 final config = socialConfigs[key];
-                final filtered = (widget.account?.socials ?? []).where((one) => one.media == key).toList();
+                final filtered =
+                    (widget.account?.socials ?? [])
+                        .where((one) => one.media == key)
+                        .toList();
                 String initialAccount = "";
-                if (filtered.isNotEmpty)  {
+                if (filtered.isNotEmpty) {
                   initialAccount = filtered[0].account ?? "";
                 }
                 return SocialMediaIndividualInput(
@@ -166,13 +175,13 @@ class SocialMediaInputViewState extends State<SocialMediaInputView> {
                   placeholder: config?["placeholder"] ?? "",
                   added: socials.contains(key),
                   maxItems: MAX_SOCIALS_CNT,
-                  initialAccount: initialAccount
-                ); 
-              }
-            )
-          )
+                  initialAccount: initialAccount,
+                );
+              },
+            ),
+          ),
         ],
-      )
+      ),
     );
   }
 }

@@ -6,6 +6,7 @@ import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
 import 'package:insoblok/services/services.dart';
+
 class UpdateProfilePage extends StatelessWidget {
   const UpdateProfilePage({super.key});
 
@@ -18,9 +19,7 @@ class UpdateProfilePage extends StatelessWidget {
         return Scaffold(
           backgroundColor: Colors.black,
           appBar: AppBar(
-            title: Text(
-              'Update Profile',
-            ),
+            title: Text('Update Profile'),
             centerTitle: true,
             flexibleSpace: AppBackgroundView(),
             leading: IconButton(
@@ -47,16 +46,18 @@ class UpdateProfilePage extends StatelessWidget {
                             backgroundColor: Colors.grey,
                             content: Text(
                               "Are you sure want to save?",
-                              style: Theme.of(context).textTheme.bodyLarge
+                              style: Theme.of(context).textTheme.bodyLarge,
                             ),
                             title: Text(""),
                             actions: <Widget>[
                               TextButton(
-                                onPressed: () => Navigator.of(context).pop(false),
+                                onPressed:
+                                    () => Navigator.of(context).pop(false),
                                 child: Text("Cancel"),
                               ),
                               TextButton(
-                                onPressed: () => Navigator.of(context).pop(true),
+                                onPressed:
+                                    () => Navigator.of(context).pop(true),
                                 child: Text("OK"),
                               ),
                             ],
@@ -66,62 +67,56 @@ class UpdateProfilePage extends StatelessWidget {
                       if (result ?? false) {
                         logger.d("This is save.");
                         viewModel.onClickUpdated();
-                      }
-                      else {
+                      } else {
                         logger.d("cancel save.");
                       }
-
                     },
                     padding: EdgeInsets.all(0),
                     icon: Icon(Icons.save),
                     iconSize: 24,
-                    color: Theme.of(context).colorScheme.primary
+                    color: Theme.of(context).colorScheme.primary,
                   ),
                 ),
               ),
-              SizedBox(width: 16.0)
+              SizedBox(width: 16.0),
             ],
           ),
           body: ListView(
-              physics: BouncingScrollPhysics(),
-              children: [
-                AccountPublicInfoView(),
-                SizedBox(height: 12.0),
-                Divider(
-                  height: 1,
-                  color: AIColors.greyTextColor,
-                  thickness: 0.5,
+            physics: BouncingScrollPhysics(),
+            children: [
+              AccountPublicInfoView(),
+              SizedBox(height: 12.0),
+              Divider(height: 1, color: AIColors.greyTextColor, thickness: 0.5),
+              AccountPrivateInfoView(
+                updateFirstName: viewModel.updateFirstName,
+                updateLastName: viewModel.updateLastName,
+                updateLocation: viewModel.updateLocation,
+                updateWebsite: viewModel.updateWebsite,
+              ),
+              Divider(color: AIColors.greyTextColor, thickness: 0.5),
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20.0,
+                  vertical: 8.0,
                 ),
-                AccountPrivateInfoView(
-                  updateFirstName: viewModel.updateFirstName, 
-                  updateLastName: viewModel.updateLastName,
-                  updateLocation: viewModel.updateLocation,
-                  updateWebsite: viewModel.updateWebsite,
+                child: SocialMediaInputView(
+                  edit: true,
+                  initialValue: viewModel.account.socials,
+                  updateSocials: viewModel.updateSocials,
+                  account: viewModel.account,
                 ),
-                Divider(
-                  color: AIColors.greyTextColor,
-                  thickness: 0.5 
+              ),
+              Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: TextFillButton(
+                  onTap: viewModel.onClickUpdated,
+                  isBusy: viewModel.isBusy,
+                  text: 'Update Profile',
+                  color: Theme.of(context).primaryColor,
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
-                  child: SocialMediaInputView(
-                    edit: true,
-                    initialValue: viewModel.account.socials,
-                    updateSocials: viewModel.updateSocials,
-                    account: viewModel.account,
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.all(24.0),
-                  child: TextFillButton(
-                    onTap: viewModel.onClickUpdated,
-                    isBusy: viewModel.isBusy,
-                    text: 'Update Profile',
-                    color: Theme.of(context).primaryColor,
-                  ),
-                ),
-              ],
-            ),
+              ),
+            ],
+          ),
         );
       },
     );

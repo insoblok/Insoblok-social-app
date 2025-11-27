@@ -38,7 +38,12 @@ class _VideoPlayerState extends State<VideoPlayerWidget> {
   @override
   void initState() {
     super.initState();
-    _initializeVideo(widget.path);
+    // Use post-frame callback to ensure widget is fully built before initializing video
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _initializeVideo(widget.path);
+      }
+    });
   }
 
   @override
@@ -58,8 +63,12 @@ class _VideoPlayerState extends State<VideoPlayerWidget> {
   Future<void> _initController(String path) async {
     _controller = VideoPlayerController.file(File(path));
     await _controller!.initialize();
+
+    // Enable audio playback (volume 1.0 = 100%)
+    await _controller!.setVolume(1.0);
+
     setState(() {});
-    _controller!.play();
+    await _controller!.play();
   }
 
   Future<bool> validateVideoFile(String path) async {
@@ -99,6 +108,9 @@ class _VideoPlayerState extends State<VideoPlayerWidget> {
     // For network URLs, add a delay to allow video to be fully available
     if (path.startsWith('http://') || path.startsWith('https://')) {
       await Future.delayed(const Duration(seconds: 2));
+    } else if (path.contains('asset')) {
+      // For asset videos, use a shorter delay
+      await Future.delayed(const Duration(milliseconds: 100));
     } else {
       await Future.delayed(const Duration(milliseconds: 1500));
     }
@@ -119,6 +131,9 @@ class _VideoPlayerState extends State<VideoPlayerWidget> {
           );
           newController = VideoPlayerController.networkUrl(Uri.parse(path));
         } else if (path.contains('asset')) {
+          logger.d(
+            'Initializing asset video: $path (attempt $attempt/$maxAttempts)',
+          );
           newController = VideoPlayerController.asset(path);
         } else {
           final file = File(path);
@@ -140,14 +155,25 @@ class _VideoPlayerState extends State<VideoPlayerWidget> {
 
         _controller!.setLooping(true);
 
+        // Enable audio playback (volume 1.0 = 100%)
+        await _controller!.setVolume(1.0);
+
         if (mounted) {
           setState(() {
             _initialized = true;
-            _isPlaying = false;
           });
         }
 
-        logger.d('✅ Video initialized successfully: $path');
+        // Auto-play the video when initialized (after setState to ensure widget is ready)
+        await _controller!.play();
+
+        if (mounted) {
+          setState(() {
+            _isPlaying = true;
+          });
+        }
+
+        logger.d('✅ Video initialized and playing: $path');
         return; // Success - exit retry loop
       } catch (error) {
         logger.e(
@@ -228,6 +254,8 @@ class _VideoPlayerState extends State<VideoPlayerWidget> {
                       if (_isPlaying) {
                         _controller!.pause();
                       } else {
+                        // Ensure volume is enabled when playing
+                        _controller!.setVolume(1.0);
                         _controller!.play();
                       }
                       setState(() => _isPlaying = !_isPlaying);
@@ -247,7 +275,7 @@ class _VideoPlayerState extends State<VideoPlayerWidget> {
                     CircularProgressIndicator(strokeWidth: 2),
                     SizedBox(height: 8),
                     Text(
-                      'Loading video...',
+                      '',
                       style: TextStyle(fontSize: 12, color: Colors.white),
                     ),
                   ],

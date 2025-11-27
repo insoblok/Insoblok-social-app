@@ -121,11 +121,16 @@ class CreateRoomProvider extends InSoBlokViewModel {
             timestamp: DateTime.now(),
           );
 
-          await roomService.createRoom(room);
-          AIHelpers.showToast(msg: "Room created successfully!");
+          final roomId = await roomService.createRoom(room);
+          if (roomId.isNotEmpty) {
+            AIHelpers.showToast(msg: "Room created successfully!");
 
-          // Only navigate on successful creation
-          Navigator.of(context).pop();
+            // Wait a moment for Firestore to propagate the changes
+            await Future.delayed(const Duration(milliseconds: 300));
+          }
+
+          // Pop with result to indicate room was created successfully
+          Navigator.of(context).pop(roomId.isNotEmpty);
         } catch (e) {
           logger.e(e);
           setError(e);

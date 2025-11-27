@@ -66,8 +66,8 @@ class _StoryCarouselViewState extends State<StoryCarouselView> {
               context,
               medias: medias.map((media) => media.link!).toList(),
               index: 0,
-              storyID:'',
-              storyUser:''
+              storyID: '',
+              storyUser: '',
             ),
         child: SizedBox(
           width: double.infinity,
@@ -115,8 +115,8 @@ class _StoryCarouselViewState extends State<StoryCarouselView> {
                           context,
                           medias: medias.map((media) => media.link!).toList(),
                           index: index,
-                          storyID:'',
-                          storyUser:''
+                          storyID: '',
+                          storyUser: '',
                         ),
                     child: SizedBox(
                       width: double.infinity,
@@ -268,7 +268,9 @@ class _MediaCarouselCellState extends State<MediaCarouselCell> {
                     height: constraints.maxHeight,
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(12.0),
-                      child: CloudinaryVideoPlayerWidget(videoUrl: widget.media.link!)
+                      child: CloudinaryVideoPlayerWidget(
+                        videoUrl: widget.media.link!,
+                      ),
                     ),
                   );
                 },
@@ -383,14 +385,21 @@ class StoryMediaCellView extends StatelessWidget {
 
 class CloudinaryVideoPlayerWidget extends StatefulWidget {
   final String videoUrl;
+  final bool autoplay;
 
-  const CloudinaryVideoPlayerWidget({Key? key, required this.videoUrl}) : super(key: key);
+  const CloudinaryVideoPlayerWidget({
+    Key? key,
+    required this.videoUrl,
+    this.autoplay = true,
+  }) : super(key: key);
 
   @override
-  _CloudinaryVideoPlayerWidgetState createState() => _CloudinaryVideoPlayerWidgetState();
+  _CloudinaryVideoPlayerWidgetState createState() =>
+      _CloudinaryVideoPlayerWidgetState();
 }
 
-class _CloudinaryVideoPlayerWidgetState extends State<CloudinaryVideoPlayerWidget> {
+class _CloudinaryVideoPlayerWidgetState
+    extends State<CloudinaryVideoPlayerWidget> {
   late VideoPlayerController _videoPlayerController;
   late Future<void> _initializeVideoPlayerFuture;
   ChewieController? _chewieController;
@@ -403,7 +412,9 @@ class _CloudinaryVideoPlayerWidgetState extends State<CloudinaryVideoPlayerWidge
     // Create and store the VideoPlayerController.
     final url = Uri.parse(widget.videoUrl);
     _videoPlayerController = VideoPlayerController.networkUrl(url);
-    _initializeVideoPlayerFuture = _videoPlayerController.initialize().then((_) {
+    _initializeVideoPlayerFuture = _videoPlayerController.initialize().then((
+      _,
+    ) {
       // Ensure the first frame is shown and the player is initialized.
       if (mounted) {
         setState(() {
@@ -417,18 +428,97 @@ class _CloudinaryVideoPlayerWidgetState extends State<CloudinaryVideoPlayerWidge
 
   Future<void> _initializePlayer() async {
     try {
-      debugPrint('Loading original video from:');
-      await _videoPlayerController.initialize();
+      debugPrint('Loading original video from: ${widget.videoUrl}');
+      debugPrint('Autoplay enabled: ${widget.autoplay}');
+      // Wait for the initialization that was started in initState()
+      await _initializeVideoPlayerFuture;
+      // Auto-play video when initialized if autoplay is enabled
+      await _videoPlayerController.setLooping(true);
+      if (widget.autoplay) {
+        await _videoPlayerController.play();
+        debugPrint('✅ Video autoplay started after initialization');
+      } else {
+        debugPrint('⏸️ Video autoplay is disabled');
+      }
     } catch (error) {
-      print("Error initializing video player: $error");
+      print("❌ Error initializing video player: $error");
     } finally {
       if (mounted) {
         setState(() {
           _isLoading = false;
         });
+        // Double-check: If autoplay is enabled but video wasn't playing, try to play now
+        if (widget.autoplay &&
+            _videoPlayerController.value.isInitialized &&
+            !_videoPlayerController.value.isPlaying) {
+          debugPrint('🔄 Retrying video autoplay in finally block');
+          _videoPlayerController.play();
+        }
       }
     }
   }
+
+  @override
+  void didUpdateWidget(CloudinaryVideoPlayerWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Handle autoplay changes when widget is updated (e.g., when page changes)
+    if (oldWidget.autoplay != widget.autoplay) {
+      debugPrint(
+        '🔄 Autoplay changed: ${oldWidget.autoplay} -> ${widget.autoplay}',
+      );
+      if (_videoPlayerController.value.isInitialized) {
+        if (widget.autoplay) {
+          _videoPlayerController.play();
+          debugPrint(
+            '✅ Video autoplay started via didUpdateWidget (initialized)',
+          );
+        } else {
+          _videoPlayerController.pause();
+          _videoPlayerController.seekTo(Duration.zero);
+          debugPrint('⏸️ Video paused via didUpdateWidget');
+        }
+      } else {
+        // If not initialized yet, wait for the existing initialization to complete
+        debugPrint('⏳ Video not initialized yet, waiting...');
+        _initializeVideoPlayerFuture.then((_) {
+          if (mounted &&
+              widget.autoplay &&
+              _videoPlayerController.value.isInitialized) {
+            _videoPlayerController.setLooping(true);
+            _videoPlayerController.play();
+            debugPrint('✅ Video autoplay started after delayed initialization');
+          }
+        });
+      }
+    }
+    // Also check if autoplay is true but video is not playing (in case it was missed)
+    if (widget.autoplay &&
+        _videoPlayerController.value.isInitialized &&
+        !_videoPlayerController.value.isPlaying) {
+      debugPrint(
+        '🔄 Autoplay is true but video not playing, starting playback...',
+      );
+      _videoPlayerController.play();
+    }
+    // Handle video URL changes
+    if (oldWidget.videoUrl != widget.videoUrl) {
+      _videoPlayerController.dispose();
+      final url = Uri.parse(widget.videoUrl);
+      _videoPlayerController = VideoPlayerController.networkUrl(url);
+      _initializeVideoPlayerFuture = _videoPlayerController.initialize().then((
+        _,
+      ) {
+        if (mounted) {
+          setState(() {
+            _aspectRatio = _videoPlayerController.value.aspectRatio;
+            debugPrint('Original video aspect ratio: $_aspectRatio');
+          });
+        }
+      });
+      _initializePlayer();
+    }
+  }
+
   @override
   void dispose() {
     _videoPlayerController.dispose();
@@ -454,10 +544,7 @@ class _CloudinaryVideoPlayerWidgetState extends State<CloudinaryVideoPlayerWidge
       height: MediaQuery.of(context).size.width / aspectRatio,
       width: 200,
       decoration: BoxDecoration(
-        border: Border.all(
-          color: Colors.transparent,
-          width: 2.0,
-        ),
+        border: Border.all(color: Colors.transparent, width: 2.0),
         borderRadius: BorderRadius.circular(12.0),
       ),
       child: FractionallySizedBox(
@@ -471,19 +558,22 @@ class _CloudinaryVideoPlayerWidgetState extends State<CloudinaryVideoPlayerWidge
               ),
             ),
             // Controls
-            VideoProgressIndicator(_videoPlayerController, allowScrubbing: true),
+            VideoProgressIndicator(
+              _videoPlayerController,
+              allowScrubbing: true,
+            ),
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 IconButton(
-                  icon: Icon(_videoPlayerController.value.isPlaying 
-                      ? Icons.pause : Icons.play_arrow),
+                  icon: Icon(
+                    _videoPlayerController.value.isPlaying
+                        ? Icons.pause
+                        : Icons.play_arrow,
+                  ),
                   onPressed: _togglePlayPause,
                 ),
-                IconButton(
-                  icon: const Icon(Icons.stop),
-                  onPressed: _stopVideo,
-                ),
+                IconButton(icon: const Icon(Icons.stop), onPressed: _stopVideo),
               ],
             ),
           ],
@@ -491,7 +581,7 @@ class _CloudinaryVideoPlayerWidgetState extends State<CloudinaryVideoPlayerWidge
       ),
     );
   }
-  
+
   void _togglePlayPause() {
     setState(() {
       if (_videoPlayerController.value.isPlaying) {

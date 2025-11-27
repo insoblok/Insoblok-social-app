@@ -179,6 +179,12 @@ class StoryProvider extends InSoBlokViewModel {
   }
 
   Future<void> startRRC() async {
+    // Prevent users from reacting to their own story
+    if (story.userId == user?.id) {
+      AIHelpers.showToast(msg: "You can't react on your post!");
+      return;
+    }
+
     // Open the new RRC (Vybe Loop) screen when stage is tapped
     logger.d("start goToRRCAvatarGeneration");
     showFaceDialog = true;
@@ -464,7 +470,7 @@ class StoryProvider extends InSoBlokViewModel {
     clearErrors();
 
     if (story.userId == user?.id) {
-      AIHelpers.showToast(msg: "You can't vote to your own feed!");
+      AIHelpers.showToast(msg: "You can't vote to your post");
       return;
     }
     var votes = List<StoryVoteModel>.from(story.votes ?? []);

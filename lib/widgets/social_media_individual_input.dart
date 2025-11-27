@@ -3,11 +3,7 @@ import 'package:insoblok/widgets/widgets.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 
-
-
-
 class SocialMediaIndividualInput extends StatefulWidget {
-
   final String icon;
   final UpdateAccount updateAccount;
   final String field;
@@ -15,13 +11,23 @@ class SocialMediaIndividualInput extends StatefulWidget {
   final bool added;
   final int? maxItems;
   final String? initialAccount;
-  const SocialMediaIndividualInput({ super.key, required this.icon, required this.updateAccount, required this.field, required this.placeholder, required this.added, this.maxItems = 6, this.initialAccount });
+  const SocialMediaIndividualInput({
+    super.key,
+    required this.icon,
+    required this.updateAccount,
+    required this.field,
+    required this.placeholder,
+    required this.added,
+    this.maxItems = 6,
+    this.initialAccount,
+  });
 
-  SocialMediaIndividualInputState createState() => SocialMediaIndividualInputState();
-
+  SocialMediaIndividualInputState createState() =>
+      SocialMediaIndividualInputState();
 }
 
-class SocialMediaIndividualInputState extends State<SocialMediaIndividualInput> {
+class SocialMediaIndividualInputState
+    extends State<SocialMediaIndividualInput> {
   TextEditingController controller = TextEditingController();
 
   @override
@@ -31,8 +37,26 @@ class SocialMediaIndividualInputState extends State<SocialMediaIndividualInput> 
   }
 
   @override
+  void didUpdateWidget(SocialMediaIndividualInput oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Update controller text when initialAccount changes
+    if (oldWidget.initialAccount != widget.initialAccount) {
+      controller.text = widget.initialAccount ?? "";
+    }
+    // Clear text field if social was removed (added changed from true to false)
+    if (oldWidget.added == true && widget.added == false) {
+      controller.text = "";
+    }
+  }
+
+  @override
+  void dispose() {
+    controller.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    
     return Container(
       padding: EdgeInsets.all(6.0),
       child: Row(
@@ -55,24 +79,35 @@ class SocialMediaIndividualInputState extends State<SocialMediaIndividualInput> 
           SizedBox(width: 12.0),
           GestureDetector(
             onTap: () {
-              String account = controller.text.trim();
-              if (account.isEmpty || !account.contains(widget.placeholder)) {
-                AIHelpers.showToast(msg: "Please enter valid account.");
-                return;
-              }              
-              widget.updateAccount(widget.field, account);
+              if (widget.added) {
+                // Cancel/Remove: Remove the social without validation
+                widget.updateAccount(widget.field, "");
+              } else {
+                // Add: Validate and add the social
+                String account = controller.text.trim();
+                if (account.isEmpty) {
+                  AIHelpers.showToast(msg: "Please enter valid account.");
+                  return;
+                }
+                widget.updateAccount(widget.field, account);
+              }
             },
             child: SizedBox(
               width: 36,
-              child: widget.added ? Align(alignment: Alignment.centerLeft, child: Icon(Icons.cancel)) :Text(
-                 "Add",
-                style: Theme.of(context).textTheme.bodyMedium
-              )
+              child:
+                  widget.added
+                      ? Align(
+                        alignment: Alignment.centerLeft,
+                        child: Icon(Icons.cancel),
+                      )
+                      : Text(
+                        "Add",
+                        style: Theme.of(context).textTheme.bodyMedium,
+                      ),
             ),
-          )
-        ]
+          ),
+        ],
       ),
     );
-            
   }
 }

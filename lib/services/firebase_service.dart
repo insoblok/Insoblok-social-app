@@ -21,7 +21,7 @@ import 'package:path/path.dart' as p;
 
 class FirebaseService {
   static const FirebaseOptions android = FirebaseOptions(
-    apiKey: 'AIzaSyAN4xG1SxbgazfmqjxG84yX4Il1DV01Jxc',
+    apiKey: 'AIzaSyCsHq6nW30klLFbcfuHxYEOV8UinGE6n-0',
     appId: '1:811299369538:android:d5d8fed2c82d1f8114f3db',
     messagingSenderId: '811299369538',
     projectId: 'insoblokai',
@@ -44,9 +44,15 @@ class FirebaseService {
   late final FirebaseStorage _storage;
 
   Future<void> init() async {
-    _app = await Firebase.initializeApp(
-      options: Platform.isAndroid ? android : ios,
-    );
+    // Check if Firebase is already initialized to avoid duplicate initialization
+    try {
+      _app = Firebase.app();
+    } catch (e) {
+      // Firebase not initialized yet, initialize it now
+      _app = await Firebase.initializeApp(
+        options: Platform.isAndroid ? android : ios,
+      );
+    }
     FirebaseAuth.instanceFor(app: _app);
     await FirebaseAppCheck.instance.activate(
       androidProvider:
@@ -422,11 +428,21 @@ class FirebaseService {
       if (docSnapshot.exists) {
         final data = docSnapshot.data();
         if (data != null && data['reactions'] != null) {
-          // Ensure it's a List<String> and trim/clean any whitespace from URLs
-          final reactions = List<String>.from(data['reactions']);
-          // Remove any whitespace from reaction URLs
+          final reactions = data['reactions'] as List;
+          // Handle both old format (List<String>) and new format (List<Map>)
           return reactions
-              .map((url) => url.trim().replaceAll(RegExp(r'\s+'), ''))
+              .map((item) {
+                if (item is String) {
+                  // Old format: just URL string
+                  return item.trim().replaceAll(RegExp(r'\s+'), '');
+                } else if (item is Map) {
+                  // New format: map with url and prompt - extract URL
+                  final url = item['url'] ?? item['link'] ?? '';
+                  return url.toString().trim().replaceAll(RegExp(r'\s+'), '');
+                }
+                return '';
+              })
+              .where((url) => url.isNotEmpty)
               .toList();
         }
       }
@@ -434,6 +450,54 @@ class FirebaseService {
       return []; // If no reactions or doc doesn't exist
     } catch (e) {
       logger.e("Error fetching reactions: $e");
+      return [];
+    }
+  }
+
+  /// Fetch reactions with prompt/type information
+  Future<List<Map<String, dynamic>>> fetchReactionsWithPrompt(String id) async {
+    try {
+      final docSnapshot =
+          await FirebaseFirestore.instance.collection("story").doc(id).get();
+
+      if (docSnapshot.exists) {
+        final data = docSnapshot.data();
+        if (data != null && data['reactions'] != null) {
+          final reactions = data['reactions'] as List;
+          // Handle both old format (List<String>) and new format (List<Map>)
+          return reactions
+              .map((item) {
+                if (item is String) {
+                  // Old format: just URL string, no prompt
+                  return {
+                    'url': item.trim().replaceAll(RegExp(r'\s+'), ''),
+                    'prompt': null,
+                    'type': null,
+                  };
+                } else if (item is Map) {
+                  // New format: map with url and prompt
+                  final url = (item['url'] ?? item['link'] ?? '')
+                      .toString()
+                      .trim()
+                      .replaceAll(RegExp(r'\s+'), '');
+                  final prompt =
+                      item['prompt']?.toString() ?? item['type']?.toString();
+                  return {'url': url, 'prompt': prompt, 'type': prompt};
+                }
+                return <String, dynamic>{};
+              })
+              .where(
+                (reaction) =>
+                    reaction['url'] != null &&
+                    (reaction['url'] as String).isNotEmpty,
+              )
+              .toList();
+        }
+      }
+
+      return []; // If no reactions or doc doesn't exist
+    } catch (e) {
+      logger.e("Error fetching reactions with prompt: $e");
       return [];
     }
   }
@@ -645,6 +709,24 @@ class FirebaseHelper {
             (firebaseJson[key] is String)
                 ? firebaseJson[key]
                 : jsonEncode(firebaseJson[key]);
+      } else if (key == 'reactions') {
+        // Handle reactions: convert maps to strings (extract URL) for backward compatibility
+        var reactions = firebaseJson[key];
+        if (reactions != null && reactions is List) {
+          newJson[key] =
+              reactions.map((item) {
+                if (item is String) {
+                  // Old format: already a string
+                  return item;
+                } else if (item is Map) {
+                  // New format: map with url and prompt - extract URL
+                  return (item['url'] ?? item['link'] ?? '').toString();
+                }
+                return item.toString();
+              }).toList();
+        } else {
+          newJson[key] = firebaseJson[key];
+        }
       } else {
         newJson[key] = firebaseJson[key];
       }

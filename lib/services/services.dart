@@ -24,6 +24,7 @@ export 'comment_service.dart';
 export 'face_detection_service.dart';
 export 'deep_ar_plus_service.dart';
 export 'cloudinary_cdn_service.dart';
+export 'bunnynet_cdn_service.dart';
 export 'crypto_service.dart';
 export 'web3_service.dart';
 export 'api_service.dart';

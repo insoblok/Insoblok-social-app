@@ -163,6 +163,10 @@ class MessageService {
     await _firestore.collection('chatRooms').doc(chatRoomId).update({
       'last_message': msg,
       'update_date': DateTime.now().toUtc().toIso8601String(),
+      'updated_at':
+          DateTime.now()
+              .toUtc()
+              .toIso8601String(), // Update this field so RoomModel.updatedAt gets updated
     });
   }
 

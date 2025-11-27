@@ -2,9 +2,6 @@ import 'package:intl/intl.dart';
 import 'package:flutter/material.dart';
 import 'package:insoblok/utils/utils.dart';
 
-
-
-
 class AITextField extends StatelessWidget {
   final String? initialValue;
   final String? hintText;
@@ -173,6 +170,7 @@ class AINoBorderTextField extends StatelessWidget {
     );
   }
 }
+
 class AIPasswordField extends StatefulWidget {
   final String? initialValue;
   final String? hintText;
@@ -234,7 +232,9 @@ class _AIPasswordFieldState extends State<AIPasswordField> {
           suffixIcon: IconButton(
             icon: Icon(
               _obscureText ? Icons.visibility_off : Icons.visibility,
-              color: Theme.of(context).textTheme.labelLarge?.color?.withOpacity(0.6),
+              color: Theme.of(
+                context,
+              ).textTheme.labelLarge?.color?.withOpacity(0.6),
               size: 20,
             ),
             onPressed: _toggleObscureText,
@@ -248,10 +248,7 @@ class _AIPasswordFieldState extends State<AIPasswordField> {
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(32.0),
-            borderSide: BorderSide(
-              width: 0.66,
-              color: AIColors.borderColor,
-            ),
+            borderSide: BorderSide(width: 0.66, color: AIColors.borderColor),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(32.0),
@@ -272,7 +269,6 @@ class _AIPasswordFieldState extends State<AIPasswordField> {
   }
 }
 
-
 class AITextArea extends StatefulWidget {
   final int? minLines;
   final int? maxLines;
@@ -291,11 +287,11 @@ class AITextArea extends StatefulWidget {
   final TextEditingController controller;
 
   AITextArea({
-    this.minLines = 3, 
-    this.maxLines = 5, 
-    this.borderRadius = 12.0, 
-    this.borderColor = Colors.transparent, 
-    this.borderWidth = 2.0, 
+    this.minLines = 3,
+    this.maxLines = 5,
+    this.borderRadius = 12.0,
+    this.borderColor = Colors.transparent,
+    this.borderWidth = 2.0,
     this.focusedBorderRadius = 12.0,
     this.focusedBorderColor = Colors.pink,
     this.focusedBorderWidth = 2.0,
@@ -313,11 +309,19 @@ class AITextArea extends StatefulWidget {
 }
 
 class AITextAreaState extends State<AITextArea> {
-
   @override
   void initState() {
     super.initState();
-    widget.controller.text = widget.initialText ?? "";
+    // Only set initial text if controller is empty (first time only)
+    if (widget.controller.text.isEmpty) {
+      widget.controller.text = widget.initialText ?? "";
+    }
+  }
+
+  @override
+  void didUpdateWidget(AITextArea oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // NEVER update controller text here - let user typing control it
   }
 
   @override
@@ -334,11 +338,17 @@ class AITextAreaState extends State<AITextArea> {
         border: InputBorder.none,
         enabledBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(widget.borderRadius!),
-          borderSide: BorderSide(color: widget.borderColor!, width: widget.borderWidth!)
+          borderSide: BorderSide(
+            color: widget.borderColor!,
+            width: widget.borderWidth!,
+          ),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(widget.focusedBorderRadius!),
-          borderSide: BorderSide(color: widget.focusedBorderColor!, width: widget.focusedBorderWidth!),
+          borderSide: BorderSide(
+            color: widget.focusedBorderColor!,
+            width: widget.focusedBorderWidth!,
+          ),
         ),
       ),
       onChanged: widget.onChanged,
@@ -407,10 +417,11 @@ class DatePickerWidgetState extends State<DatePickerWidget> {
   Future<void> _selectDate(BuildContext ctx) async {
     final DateTime? picked = await showDatePicker(
       context: ctx,
-      initialDate: _selectedDate ??
-          DateTime.now(), // default 18 years ago
+      initialDate: _selectedDate ?? DateTime.now(), // default 18 years ago
       firstDate: DateTime(1900),
-      lastDate: DateTime.now().add(const Duration(days: 365 * 100)), // must be ≥ 13 years old
+      lastDate: DateTime.now().add(
+        const Duration(days: 365 * 100),
+      ), // must be ≥ 13 years old
       builder: (ctx, child) {
         return Theme(
           data: Theme.of(ctx).copyWith(
@@ -420,7 +431,9 @@ class DatePickerWidgetState extends State<DatePickerWidget> {
               onSurface: Colors.grey,
             ),
             textButtonTheme: TextButtonThemeData(
-              style: TextButton.styleFrom(foregroundColor: Theme.of(context).primaryColor),
+              style: TextButton.styleFrom(
+                foregroundColor: Theme.of(context).primaryColor,
+              ),
             ),
           ),
           child: child!,
@@ -469,12 +482,17 @@ class DatePickerWidgetState extends State<DatePickerWidget> {
         readOnly: true, // prevent manual typing
         autofocus: widget.autofocus ?? false,
         style: Theme.of(context).textTheme.bodyMedium,
-        
+
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.symmetric(horizontal: 16.0),
           hintText: widget.hintText ?? '',
           labelStyle: Theme.of(context).textTheme.labelLarge,
-          prefixIcon: widget.prefixIcon ?? Icon(Icons.calendar_today, color: widget.iconColor ?? Colors.white),
+          prefixIcon:
+              widget.prefixIcon ??
+              Icon(
+                Icons.calendar_today,
+                color: widget.iconColor ?? Colors.white,
+              ),
           filled: true,
           fillColor: widget.fillColor ?? Colors.grey.shade900,
           border: OutlineInputBorder(
@@ -483,11 +501,17 @@ class DatePickerWidgetState extends State<DatePickerWidget> {
           ),
           enabledBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12.0),
-            borderSide: const BorderSide(width: 0.66, color: Colors.transparent),
+            borderSide: const BorderSide(
+              width: 0.66,
+              color: Colors.transparent,
+            ),
           ),
           focusedBorder: OutlineInputBorder(
             borderRadius: BorderRadius.circular(12.0),
-            borderSide: BorderSide(width: 0.9, color: Theme.of(context).primaryColor),
+            borderSide: BorderSide(
+              width: 0.9,
+              color: Theme.of(context).primaryColor,
+            ),
           ),
         ),
         validator: widget.validator ?? _validateDate,

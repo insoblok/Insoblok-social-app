@@ -100,6 +100,17 @@ class AccountPrivateProvider extends InSoBlokViewModel {
   void updateWallet(String s) {}
 
   void onClickUpdateProfile() async {
+    // Validate that first name and last name are provided
+    if (account.firstName == null || account.firstName!.trim().isEmpty) {
+      AIHelpers.showToast(msg: 'First name must not be empty');
+      return;
+    }
+
+    if (account.lastName == null || account.lastName!.trim().isEmpty) {
+      AIHelpers.showToast(msg: 'Last name must not be empty');
+      return;
+    }
+
     if (account.email?.isEmpty ?? true) {
       if (!(email.isEmailValid)) {
         AIHelpers.showToast(msg: 'No matched email!');

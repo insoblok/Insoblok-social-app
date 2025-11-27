@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:stacked/stacked.dart';
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/utils/utils.dart';
-import 'package:insoblok/widgets/widgets.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/locator.dart';
 
@@ -167,11 +166,30 @@ class AccountWalletPage extends StatelessWidget {
                   )
               )
               */
-          bottomNavigationBar: AppBackgroundView(
+          bottomNavigationBar: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  AIColors.lightPurple.withAlpha(32),
+                  AIColors.lightBlue.withAlpha(32),
+                  AIColors.lightPurple.withAlpha(32),
+                  AIColors.lightTeal.withAlpha(32),
+                ],
+                stops: [0.0, 0.4, 0.7, 1.0],
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
             child: BottomNavigationBar(
+              currentIndex: viewModel.pageIndex,
               onTap: (page) {
                 viewModel.pageIndex = page;
               },
+              type: BottomNavigationBarType.fixed,
+              backgroundColor: Colors.transparent,
+              elevation: 0,
+              selectedItemColor: AIColors.pink,
+              unselectedItemColor: Colors.white,
               items: [
                 BottomNavigationBarItem(
                   icon: AIImage(
@@ -180,7 +198,8 @@ class AccountWalletPage extends StatelessWidget {
                         : AIImages.icBottomWallet,
                     width: 21.0,
                     height: 21.0,
-                    color: Colors.white,
+                    color:
+                        viewModel.pageIndex == 0 ? AIColors.pink : Colors.white,
                   ),
                   label: "",
                 ),
@@ -191,7 +210,8 @@ class AccountWalletPage extends StatelessWidget {
                         : AIImages.icBottomFavorite,
                     width: 21.0,
                     height: 21.0,
-                    color: Colors.white,
+                    color:
+                        viewModel.pageIndex == 1 ? AIColors.pink : Colors.white,
                   ),
                   label: "",
                 ),
@@ -202,7 +222,8 @@ class AccountWalletPage extends StatelessWidget {
                         : AIImages.icHistoryStroke,
                     width: 21.0,
                     height: 21.0,
-                    color: Colors.white,
+                    color:
+                        viewModel.pageIndex == 2 ? AIColors.pink : Colors.white,
                   ),
                   label: "",
                 ),
@@ -213,7 +234,8 @@ class AccountWalletPage extends StatelessWidget {
                         : AIImages.icBottomNoti,
                     width: 21.0,
                     height: 21.0,
-                    color: Colors.white,
+                    color:
+                        viewModel.pageIndex == 3 ? AIColors.pink : Colors.white,
                   ),
                   label: "",
                 ),

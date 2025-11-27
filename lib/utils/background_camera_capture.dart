@@ -10,19 +10,21 @@ import 'package:permission_handler/permission_handler.dart';
 
 class BackgroundCameraCapture {
   BackgroundCameraCapture({
-    this.maxCaptures = 3,          // ✨ default: capture 3 frames
-    this.stopStreamOnMax = true,   // stop stream when max reached (set false to just pause)
+    this.maxCaptures = 3, // default: capture 3 frames
+    this.stopStreamOnMax = true, // stop stream when max reached
   });
 
   CameraController? _controller;
   bool _initialized = false;
 
-  // Soft pause and interval
   bool _paused = false;
   Duration captureInterval = const Duration(seconds: 10);
 
   Completer<void>? _processingLock;
   DateTime _lastCaptureTime = DateTime.fromMillisecondsSinceEpoch(0);
+  int _frameSkipCount = 0;
+  static const int _framesToSkip =
+      5; // Skip 5 frames for every 1 processed to reduce buffer pressure
 
   /// Callback when a PNG was written (path can be null on failure).
   void Function(String? path)? onFrame;
@@ -30,7 +32,6 @@ class BackgroundCameraCapture {
   /// Callback when maxCaptures is reached.
   VoidCallback? onMaxReached;
 
-  /// ✨ Capture limit
   int maxCaptures;
   bool stopStreamOnMax;
 
@@ -41,12 +42,14 @@ class BackgroundCameraCapture {
   bool get isCapturing => !_paused && isStreaming;
 
   int get capturesDone => _capturesDone;
-  int get capturesRemaining => (maxCaptures - _capturesDone).clamp(0, maxCaptures);
+  int get capturesRemaining =>
+      (maxCaptures - _capturesDone).clamp(0, maxCaptures);
+
+  // ---------- INIT / DISPOSE ----------
 
   Future<void> initialize() async {
     if (_initialized && _controller != null) return;
 
-    // reset counters on new init
     _capturesDone = 0;
 
     final permission = await Permission.camera.request();
@@ -60,11 +63,15 @@ class BackgroundCameraCapture {
       orElse: () => cameras.first,
     );
 
+    // IMPORTANT: use YUV on Android, BGRA on iOS
+    final formatGroup =
+        Platform.isIOS ? ImageFormatGroup.bgra8888 : ImageFormatGroup.yuv420;
+
     final controller = CameraController(
       frontCam,
       ResolutionPreset.low, // lower res reduces pressure
       enableAudio: false,
-      imageFormatGroup: ImageFormatGroup.yuv420,
+      imageFormatGroup: formatGroup,
     );
 
     controller.addListener(() {
@@ -84,7 +91,25 @@ class BackgroundCameraCapture {
     print("Camera initialized (image stream).");
   }
 
-  // ---------- Control APIs ----------
+  Future<void> dispose() async {
+    await stopAndDispose();
+  }
+
+  Future<void> stopAndDispose() async {
+    try {
+      await stopStream();
+    } catch (_) {}
+    final c = _controller;
+    if (c != null) {
+      try {
+        await c.dispose();
+      } catch (_) {}
+    }
+    _controller = null;
+    _initialized = false;
+  }
+
+  // ---------- CONTROL APIs ----------
 
   void pauseCapturing() {
     _paused = true;
@@ -98,7 +123,9 @@ class BackgroundCameraCapture {
     _paused = true;
     final lock = _processingLock;
     if (lock != null) {
-      try { await lock.future; } catch (_) {}
+      try {
+        await lock.future;
+      } catch (_) {}
     }
     final c = _controller;
     if (c != null && c.value.isStreamingImages) {
@@ -107,7 +134,6 @@ class BackgroundCameraCapture {
   }
 
   Future<void> restartStream() async {
-    // If we already reached max, don't restart unless user resets.
     if (_capturesDone >= maxCaptures) {
       // ignore: avoid_print
       print("Max captures reached; call resetCaptures() to start again.");
@@ -120,48 +146,42 @@ class BackgroundCameraCapture {
     _paused = false;
   }
 
-  Future<void> stopAndDispose() async {
-    try { await stopStream(); } catch (_) {}
-    final c = _controller;
-    if (c != null) {
-      try { await c.dispose(); } catch (_) {}
-    }
-    _controller = null;
-    _initialized = false;
-  }
-
   void setCaptureInterval(Duration interval) {
     captureInterval = interval;
   }
 
-  /// ✨ Change the limit at runtime (does NOT reset current count)
   void setMaxCaptures(int n) {
     maxCaptures = n;
   }
 
-  /// ✨ Reset the counter (optionally change max) so capturing can start again
   void resetCaptures({int? newMax}) {
     if (newMax != null) maxCaptures = newMax;
     _capturesDone = 0;
     _paused = false;
   }
 
-  // ---------- Frame Pipeline ----------
+  // ---------- FRAME PIPELINE ----------
 
   void _processFrame(CameraImage image) {
     final c = _controller;
     if (c == null) return;
 
     if (_paused) return;
+
+    // Skip frames to reduce buffer pressure and prevent ImageReader warnings
+    _frameSkipCount++;
+    if (_frameSkipCount < _framesToSkip) {
+      return; // Skip this frame
+    }
+    _frameSkipCount = 0;
+
     if (_processingLock != null) return;
 
-    // ✨ stop/pause when max reached
+    // stop/pause when max reached
     if (_capturesDone >= maxCaptures) {
       if (stopStreamOnMax) {
-        // hard stop
         stopStream(); // fire and forget
       } else {
-        // soft pause
         _paused = true;
       }
       onMaxReached?.call();
@@ -173,7 +193,7 @@ class BackgroundCameraCapture {
     _lastCaptureTime = now;
 
     if (!c.value.isInitialized || !c.value.isStreamingImages) return;
-    if (image.planes.length < 3) {
+    if (image.planes.isEmpty) {
       // ignore: avoid_print
       print("Invalid image plane data");
       return;
@@ -190,14 +210,13 @@ class BackgroundCameraCapture {
     try {
       final c = _controller;
       if (c == null) return;
+
       final pngFile = await capturePngFromCameraImage(image);
 
-      // Only count successful saves
       if (pngFile != null) {
         onFrame?.call(pngFile.path);
         _capturesDone++;
 
-        // ✨ reached limit? stop/pause and notify
         if (_capturesDone >= maxCaptures) {
           if (stopStreamOnMax) {
             await stopStream();
@@ -215,6 +234,8 @@ class BackgroundCameraCapture {
     }
   }
 
+  // ---------- PUBLIC CAPTURE HELPERS ----------
+
   Future<File?> capturePngFromCameraImage(CameraImage image) async {
     if (!isInitialized) {
       await initialize();
@@ -224,7 +245,7 @@ class BackgroundCameraCapture {
       // ignore: avoid_print
       print("Capturing image from camera feed...");
       final c = _controller!;
-      final pngBytes = await _convertToRgbPng(image, c.description);
+      final pngBytes = await _convertToColorPng(image, c.description);
       final tempDir = await getTemporaryDirectory();
       final file = File('${tempDir.path}/captured_face.png');
 
@@ -234,6 +255,7 @@ class BackgroundCameraCapture {
 
       return file;
     } catch (e) {
+      // ignore: avoid_print
       print("Error capturing PNG: $e");
       return null;
     }
@@ -258,18 +280,18 @@ class BackgroundCameraCapture {
       await c.stopImageStream();
 
       try {
-        final pngBytes = await _convertToPng(image);
+        final pngBytes = await _convertToColorPng(image, c.description);
         final tempDir = await getTemporaryDirectory();
         final file = File('${tempDir.path}/captured_face.png');
-      
+
         if (file.existsSync()) await file.delete();
         await file.create();
         await file.writeAsBytes(pngBytes);
 
         completer.complete(file);
       } catch (e) {
+        // ignore: avoid_print
         print("Error capturing PNG from stream: $e");
-        
         completer.complete(null);
       }
     });
@@ -277,49 +299,88 @@ class BackgroundCameraCapture {
     return completer.future;
   }
 
-  Future<Uint8List> _convertToPng(CameraImage image) async {
+  // ---------- COLOR CONVERSION (FIXED) ----------
+
+  /// Convert CameraImage → **color** PNG, handling:
+  /// - Android: YUV420 (3 planes)
+  /// - iOS: BGRA8888 (1 plane)
+  Future<Uint8List> _convertToColorPng(
+    CameraImage image,
+    CameraDescription cameraDescription,
+  ) async {
     final int width = image.width;
     final int height = image.height;
-    final plane = image.planes[0];
 
-    final img.Image imgData =
-        img.Image(width: width, height: height, numChannels: 1);
+    img.Image rgbImage = img.Image(width: width, height: height);
 
-    for (int y = 0; y < height; y++) {
-      for (int x = 0; x < width; x++) {
-        final pixel = plane.bytes[y * plane.bytesPerRow + x];
-        imgData.setPixel(x, y, img.ColorUint8.rgb(pixel, pixel, pixel));
+    if (Platform.isIOS && image.planes.length == 1) {
+      // iOS BGRA8888
+      final Plane plane = image.planes[0];
+      final bytes = plane.bytes;
+      final bytesPerRow = plane.bytesPerRow; // stride
+
+      for (int y = 0; y < height; y++) {
+        final rowStart = y * bytesPerRow;
+        for (int x = 0; x < width; x++) {
+          final pixelOffset = rowStart + x * 4;
+          if (pixelOffset + 3 >= bytes.length) continue;
+
+          final int b = bytes[pixelOffset + 0];
+          final int g = bytes[pixelOffset + 1];
+          final int r = bytes[pixelOffset + 2];
+          // final int a = bytes[pixelOffset + 3]; // alpha, unused
+
+          rgbImage.setPixelRgb(x, y, r, g, b);
+        }
       }
-    }
+    } else if (image.planes.length >= 3) {
+      // Android YUV420
+      final Plane yPlane = image.planes[0];
+      final Plane uPlane = image.planes[1];
+      final Plane vPlane = image.planes[2];
 
-    return Uint8List.fromList(img.encodePng(imgData));
-  }
+      final int yRowStride = yPlane.bytesPerRow;
+      final int uvRowStride = uPlane.bytesPerRow;
 
-  Future<Uint8List> _convertToRgbPng(
-      CameraImage image, CameraDescription cameraDescription) async {
-    final int width = image.width;
-    final int height = image.height;
+      for (int y = 0; y < height; y++) {
+        final int yRowOffset = y * yRowStride;
+        final int uvRowOffset = (y ~/ 2) * uvRowStride;
+        for (int x = 0; x < width; x++) {
+          final int yIndex = yRowOffset + x;
+          final int uvIndex = uvRowOffset + (x ~/ 2);
 
-    final Plane yPlane = image.planes[0];
-    final Plane uPlane = image.planes[1];
-    final Plane vPlane = image.planes[2];
+          if (yIndex >= yPlane.bytes.length ||
+              uvIndex >= uPlane.bytes.length ||
+              uvIndex >= vPlane.bytes.length) {
+            continue;
+          }
 
-    final img.Image rgbImage = img.Image(width: width, height: height);
+          final int Y = yPlane.bytes[yIndex];
+          final int U = uPlane.bytes[uvIndex];
+          final int V = vPlane.bytes[uvIndex];
 
-    for (int y = 0; y < height; y++) {
-      for (int x = 0; x < width; x++) {
-        final int uvIndex = (y ~/ 2) * uPlane.bytesPerRow + (x ~/ 2);
-        final int yIndex = y * yPlane.bytesPerRow + x;
+          // YUV -> RGB (BT.601-ish)
+          int r = (Y + 1.370705 * (V - 128)).round();
+          int g = (Y - 0.337633 * (U - 128) - 0.698001 * (V - 128)).round();
+          int b = (Y + 1.732446 * (U - 128)).round();
 
-        final int Y = yPlane.bytes[yIndex];
-        final int U = uPlane.bytes[uvIndex];
-        final int V = vPlane.bytes[uvIndex];
+          r = r.clamp(0, 255);
+          g = g.clamp(0, 255);
+          b = b.clamp(0, 255);
 
-        final int R = (Y + 1.370705 * (V - 128)).clamp(0, 255).toInt();
-        final int G = (Y - 0.337633 * (U - 128) - 0.698001 * (V - 128)).clamp(0, 255).toInt();
-        final int B = (Y + 1.732446 * (U - 128)).clamp(0, 255).toInt();
-
-        rgbImage.setPixelRgb(x, y, R, G, B);
+          rgbImage.setPixelRgb(x, y, r, g, b);
+        }
+      }
+    } else {
+      // Fallback: treat first plane as grayscale → color
+      final Plane plane = image.planes[0];
+      for (int y = 0; y < height; y++) {
+        for (int x = 0; x < width; x++) {
+          final idx = y * plane.bytesPerRow + x;
+          if (idx >= plane.bytes.length) continue;
+          final int v = plane.bytes[idx];
+          rgbImage.setPixelRgb(x, y, v, v, v);
+        }
       }
     }
 
@@ -345,9 +406,5 @@ class BackgroundCameraCapture {
     }
 
     return Uint8List.fromList(img.encodePng(rotatedImage));
-  }
-
-  Future<void> dispose() async {
-    await stopAndDispose();
   }
 }

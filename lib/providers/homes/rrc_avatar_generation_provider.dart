@@ -32,18 +32,10 @@ class RRCAvatarGenerationProvider extends InSoBlokViewModel {
   final TIMER_LENGTH = 3;
 
   final avatarTemplates = [
-    "",
-    AIImages.avatarAnimeEyes,
-    AIImages.avatarLiquidChromeFace,
-    AIImages.avatarPixelStorm,
-    AIImages.avatarCyberPunk,
-    AIImages.avatarNeonGlow,
-    AIImages.avatarTasteScore,
-    AIImages.avatarEGirlBoy,
-    AIImages.avatarExtraAF,
-    AIImages.avatarGlowUp,
-    AIImages.avatarGrungeWave,
-    AIImages.avatarAnime,
+    AIImages.avatarA,
+    AIImages.avatarB,
+    AIImages.avatarC,
+    AIImages.avatarD,
   ];
 
   final prompts = [
@@ -742,7 +734,7 @@ class RRCAvatarGenerationProvider extends InSoBlokViewModel {
       try {
         final story = await storyService.getStory(storyID!);
         if (story.userId == AuthHelper.user?.id) {
-          AIHelpers.showToast(msg: "You can't react to your own story!");
+          AIHelpers.showToast(msg: "You can't react on your post!");
           return;
         }
       } catch (e) {

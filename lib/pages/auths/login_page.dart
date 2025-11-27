@@ -11,13 +11,12 @@ import 'package:insoblok/widgets/widgets.dart';
 import 'package:insoblok/routers/routers.dart';
 
 final kLandingPageData = [
-  {
-    'title': 'Speak Your Vibe. Stay on Lock.',
-    'description':
-        'Yay/Nay chats with friends. Private. Encrypted. Untouchable.',
-    'image': AIImages.imgSplash2,
-  },
-
+  // {
+  //   'title': 'Speak Your Vibe. Stay on Lock.',
+  //   'description':
+  //       'Yay/Nay chats with friends. Private. Encrypted. Untouchable.',
+  //   'image': AIImages.imgSplash2,
+  // },
   {
     'title': 'Unlock Your World.',
     'description':
@@ -245,18 +244,18 @@ class LoginPage extends StatelessWidget {
                           ),
                         ),
 
-                            // Conditional wallet buttons
-                            if (viewModel.isCheckingWallet)
-                              Column(
-                                children: [
-                                  CircularProgressIndicator(strokeWidth: 2),
-                                  Text("Checking wallet status ..."),
-                                ],
-                              )
-                            else if (viewModel.isNavigatingToMain)
-                              // Don't show content when navigating - overlay will show loader
-                              const SizedBox.shrink()
-                            else if (viewModel.walletExists)
+                        // Conditional wallet buttons
+                        if (viewModel.isCheckingWallet)
+                          Column(
+                            children: [
+                              CircularProgressIndicator(strokeWidth: 2),
+                              Text("Checking wallet status ..."),
+                            ],
+                          )
+                        else if (viewModel.isNavigatingToMain)
+                          // Don't show content when navigating - overlay will show loader
+                          const SizedBox.shrink()
+                        else if (viewModel.walletExists)
                           Column(
                             children: [
                               Text(viewModel.checkFaceStatus),
@@ -469,15 +468,14 @@ class LoginPage extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         CircularProgressIndicator(
-                          valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                          valueColor: AlwaysStoppedAnimation<Color>(
+                            Colors.white,
+                          ),
                         ),
                         SizedBox(height: 16),
                         Text(
                           "Logging in...",
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 16,
-                          ),
+                          style: TextStyle(color: Colors.white, fontSize: 16),
                         ),
                       ],
                     ),

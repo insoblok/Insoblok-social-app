@@ -16,7 +16,7 @@ class DashboardProvider extends InSoBlokViewModel {
     notifyListeners();
   }
 
-  int _tabIndex = 0;
+  int _tabIndex = -1; // -1 means no tab selected initially
   int get tabIndex => _tabIndex;
   set tabIndex(int d) {
     _tabIndex = d;
@@ -48,7 +48,7 @@ class DashboardProvider extends InSoBlokViewModel {
   PageController get pageController => _pageController;
   int _currentPage = 0;
 
-  final MediaPickerService mediaPickerService = locator<MediaPickerService>(); 
+  final MediaPickerService mediaPickerService = locator<MediaPickerService>();
 
   void init(BuildContext context) async {
     this.context = context;
@@ -56,6 +56,11 @@ class DashboardProvider extends InSoBlokViewModel {
       var currentPage = _pageController.page?.round();
       if (currentPage != null && currentPage != _currentPage) {
         _currentPage = currentPage;
+        // Log the current story ID when page changes
+        if (_currentPage >= 0 && _currentPage < stories.length) {
+          final currentStory = stories[_currentPage];
+          logger.d('📰 PageView - Current feed/story ID: ${currentStory.id}');
+        }
         notifyListeners();
       }
     });
@@ -73,7 +78,11 @@ class DashboardProvider extends InSoBlokViewModel {
   }
 
   void handleChangeStory(index) {
-    mediaPickerService.currentStory = stories[index];
+    if (index >= 0 && index < stories.length) {
+      final currentStory = stories[index];
+      logger.d('📰 Current feed/story ID: ${currentStory.id}');
+      mediaPickerService.currentStory = currentStory;
+    }
   }
 
   final List<NewsModel> _allNewses = [];
@@ -114,7 +123,8 @@ class DashboardProvider extends InSoBlokViewModel {
     }
   }
 
-  final ReactiveValue<List<StoryModel>> _stories = ReactiveValue<List<StoryModel>>([]);
+  final ReactiveValue<List<StoryModel>> _stories =
+      ReactiveValue<List<StoryModel>>([]);
   List<StoryModel> get stories => _stories.value;
   set stories(List<StoryModel> s) {
     _stories.value = s;
@@ -172,22 +182,29 @@ class DashboardProvider extends InSoBlokViewModel {
           child: Padding(
             padding: const EdgeInsets.only(bottom: 8),
             child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              ListTile(
-                leading: const Icon(Icons.videocam_outlined, color: Colors.white),
-                title: const Text(
-                  'Create Post',
-                  style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.w600),
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                ListTile(
+                  leading: const Icon(
+                    Icons.videocam_outlined,
+                    color: Colors.white,
+                  ),
+                  title: const Text(
+                    'Create Post',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  onTap: () {
+                    Navigator.pop(ctx);
+                    Routers.goToCreatePostPage(context);
+                  },
                 ),
-                onTap: () {
-                  Navigator.pop(ctx);
-                  Routers.goToCreatePostPage(context);
-                },
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
         );
       },
     );
@@ -209,7 +226,6 @@ class DashboardProvider extends InSoBlokViewModel {
   }
 
   Future<void> onClickMenuItem(int index) async {
-    
     switch (index) {
       case 0:
         Routers.goToLookbookPage(context);
@@ -228,7 +244,7 @@ class DashboardProvider extends InSoBlokViewModel {
         break;
     }
   }
-  
+
   @override
   void dispose() {
     _pageController.dispose();
@@ -236,5 +252,4 @@ class DashboardProvider extends InSoBlokViewModel {
     searchFocusNode.dispose();
     super.dispose();
   }
-
 }

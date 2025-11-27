@@ -127,15 +127,29 @@ class RoomService {
       DocumentReference docRef = await _firestore
           .collection('chatRooms')
           .add(room.toJson());
-      await _firestore.collection('userChatRooms').add({
-        "user_id": AuthHelper.user?.id,
-        "room_id": docRef.id,
-        'is_archived': false,
-        'is_muted': false,
-        'is_deleted': false,
-        'unread_count': 0,
-      });
-      return docRef.id;
+
+      final roomId = docRef.id;
+      final userIds = room.userIds ?? [];
+
+      // Create userChatRooms entries for all users in the room
+      final batch = _firestore.batch();
+
+      for (var userId in userIds) {
+        if (userId != null && userId.isNotEmpty) {
+          final userChatRoomRef = _firestore.collection('userChatRooms').doc();
+          batch.set(userChatRoomRef, {
+            "user_id": userId,
+            "room_id": roomId,
+            'is_archived': false,
+            'is_muted': false,
+            'is_deleted': false,
+            'unread_count': 0,
+          });
+        }
+      }
+
+      await batch.commit();
+      return roomId;
     } on FirebaseException catch (e) {
       logger.e(e.message);
     } catch (e) {
@@ -355,6 +369,19 @@ class RoomService {
               data['id'] = doc.id;
               return RoomModel.fromJson(data);
             }).toList();
+
+        // Sort rooms by most recent activity (updatedAt) first, then by creation time (timestamp)
+        // This ensures rooms with recent messages appear at the top
+        rooms.sort((a, b) {
+          // Prioritize updatedAt (last activity) over timestamp (creation time)
+          final aTime = a.updatedAt ?? a.timestamp;
+          final bTime = b.updatedAt ?? b.timestamp;
+
+          if (aTime == null && bTime == null) return 0;
+          if (aTime == null) return 1; // null times go to end
+          if (bTime == null) return -1;
+          return bTime.compareTo(aTime); // descending order (most recent first)
+        });
 
         final userSettings = <String, UserChatRoomModel>{};
         for (final doc in settingsSnapshot.docs) {

@@ -6,7 +6,6 @@ import 'package:stacked/stacked.dart';
 
 import 'package:insoblok/providers/providers.dart';
 
-
 class RegisterFirstPage extends StatelessWidget {
   final UserModel user;
 
@@ -41,13 +40,13 @@ class RegisterFirstPage extends StatelessWidget {
                   ),
                   const SizedBox(height: 8.0),
                   AITextField(
-                    hintText: "First Name",
+                    hintText: "First Name *",
                     prefixIcon: Icon(Icons.account_circle_outlined),
                     borderColor: Colors.grey,
                     onChanged: viewModel.updateFirstName,
                   ),
                   AITextField(
-                    hintText: "Last Name",
+                    hintText: "Last Name *",
                     prefixIcon: Icon(Icons.account_circle_outlined),
                     borderColor: Colors.grey,
                     onChanged: viewModel.updateLastName,
@@ -59,16 +58,22 @@ class RegisterFirstPage extends StatelessWidget {
                         scale: 0.85,
                         child: SwitchTheme(
                           data: SwitchThemeData(
-                            trackColor: MaterialStateProperty.resolveWith((states) =>
-                                states.contains(MaterialState.selected)
-                                    ? Colors.indigo
-                                    : Colors.indigo.withOpacity(0.15)),
-                            thumbColor: MaterialStateProperty.resolveWith((states) =>
-                                states.contains(MaterialState.selected)
-                                    ? Colors.white
-                                    : Colors.indigo),
+                            trackColor: MaterialStateProperty.resolveWith(
+                              (states) =>
+                                  states.contains(MaterialState.selected)
+                                      ? Colors.indigo
+                                      : Colors.indigo.withOpacity(0.15),
+                            ),
+                            thumbColor: MaterialStateProperty.resolveWith(
+                              (states) =>
+                                  states.contains(MaterialState.selected)
+                                      ? Colors.white
+                                      : Colors.indigo,
+                            ),
                             trackOutlineColor:
-                                const MaterialStatePropertyAll<Color>(Colors.indigo),
+                                const MaterialStatePropertyAll<Color>(
+                                  Colors.indigo,
+                                ),
                             trackOutlineWidth:
                                 const MaterialStatePropertyAll<double>(2),
                           ),
@@ -84,7 +89,7 @@ class RegisterFirstPage extends StatelessWidget {
                       Text(
                         "Enable Face ID Authentication",
                         style: const TextStyle(fontSize: 12),
-                      )
+                      ),
                     ],
                   ),
                   const Spacer(),

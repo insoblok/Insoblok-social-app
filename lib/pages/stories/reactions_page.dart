@@ -38,12 +38,35 @@ class ReactionsPage extends StatelessWidget {
   String _ensurePlayableUrl(String url) {
     if (url.isEmpty) return url;
 
-    // Remove any whitespace from the URL (fixes issues with spaces in path)
-    String processedUrl = url.trim().replaceAll(RegExp(r'\s+'), '');
+    // Trim the URL first
+    String processedUrl = url.trim();
 
     // Convert HTTP to HTTPS first
     if (processedUrl.startsWith('http://')) {
       processedUrl = processedUrl.replaceFirst('http://', 'https://');
+    }
+
+    // Handle bunny.net URLs - properly encode path segments
+    if (processedUrl.contains('b-cdn.net') ||
+        processedUrl.contains('bunnycdn.com')) {
+      try {
+        final uri = Uri.parse(processedUrl);
+        // Reconstruct URL with properly encoded path segments
+        final pathSegments = uri.pathSegments;
+        final encodedPath = pathSegments
+            .map((segment) => Uri.encodeComponent(segment))
+            .join('/');
+        processedUrl =
+            '${uri.scheme}://${uri.host}${encodedPath.startsWith('/') ? '' : '/'}$encodedPath${uri.hasQuery ? '?${uri.query}' : ''}${uri.hasFragment ? '#${uri.fragment}' : ''}';
+        logger.d("🔗 Encoded bunny.net URL: $processedUrl");
+      } catch (e) {
+        logger.w("⚠️ Failed to parse/encode bunny.net URL: $e");
+        // Fallback: encode spaces manually
+        processedUrl = processedUrl.replaceAll(' ', '%20');
+      }
+    } else {
+      // For other URLs, remove whitespace (legacy behavior for Cloudinary)
+      processedUrl = processedUrl.replaceAll(RegExp(r'\s+'), '');
     }
 
     final u = processedUrl.toLowerCase();
@@ -139,9 +162,14 @@ class ReactionsPage extends StatelessWidget {
                                     mediaUrl,
                                   );
 
+                                  // Get prompt/type for this reaction
+                                  final prompt = viewModel.getPromptForUrl(
+                                    mediaUrl,
+                                  );
+
                                   // Debug logging for each item
                                   logger.d(
-                                    "Reaction $index: $mediaUrl, isVideo: $isVideo, playableUrl: $playableUrl",
+                                    "Reaction $index: $mediaUrl, isVideo: $isVideo, playableUrl: $playableUrl, prompt: $prompt",
                                   );
 
                                   return GestureDetector(
@@ -180,6 +208,34 @@ class ReactionsPage extends StatelessWidget {
                                                         ),
                                                   ),
                                         ),
+                                        // Show prompt/type label if available
+                                        // if (prompt != null && prompt.isNotEmpty)
+                                        //   Positioned(
+                                        //     top: 4,
+                                        //     left: 4,
+                                        //     child: Container(
+                                        //       padding:
+                                        //           const EdgeInsets.symmetric(
+                                        //             horizontal: 6,
+                                        //             vertical: 2,
+                                        //           ),
+                                        //       decoration: BoxDecoration(
+                                        //         color: Colors.black.withOpacity(
+                                        //           0.7,
+                                        //         ),
+                                        //         borderRadius:
+                                        //             BorderRadius.circular(4),
+                                        //       ),
+                                        //       child: Text(
+                                        //         prompt.toUpperCase(),
+                                        //         style: const TextStyle(
+                                        //           color: Colors.white,
+                                        //           fontSize: 10,
+                                        //           fontWeight: FontWeight.bold,
+                                        //         ),
+                                        //       ),
+                                        //     ),
+                                        //   ),
                                         if (isSelected)
                                           Positioned(
                                             bottom: 4,
@@ -217,30 +273,65 @@ class ReactionsPage extends StatelessWidget {
                           ),
                         ),
               ),
-              // Post to Lookbook button is hidden
-              // if (hasReactions && viewModel.isStoryOwner)
-              //   Positioned(
-              //     bottom: 16,
-              //     left: 16,
-              //     right: 16,
-              //     child: ElevatedButton(
-              //       style: ElevatedButton.styleFrom(
-              //         backgroundColor: Colors.pink,
-              //         padding: const EdgeInsets.symmetric(vertical: 14),
-              //         shape: RoundedRectangleBorder(
-              //           borderRadius: BorderRadius.circular(8),
-              //         ),
-              //       ),
-              //       onPressed:
-              //           viewModel.isBusyPosting
-              //               ? null
-              //               : () => viewModel.postToLookBook(),
-              //       child: const Text(
-              //         "Post to LookBook",
-              //         style: TextStyle(fontSize: 16, color: Colors.white),
-              //       ),
-              //     ),
-              //   ),
+              // Post to Lookbook button
+              if (hasReactions)
+                Positioned(
+                  bottom: 16,
+                  left: 16,
+                  right: 16,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Show requirement message
+                      if (!viewModel.hasValidVideoSelection)
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 8,
+                          ),
+                          margin: const EdgeInsets.only(bottom: 8),
+                          decoration: BoxDecoration(
+                            color: Colors.black.withOpacity(0.7),
+                            borderRadius: BorderRadius.circular(8),
+                          ),
+                          child: Text(
+                            viewModel.selectedVideosCount == 0
+                                ? 'Select 1-3 emotion videos (${viewModel.selectedVideosCount}/3)'
+                                : 'Maximum 3 videos allowed (${viewModel.selectedVideosCount}/3)',
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      SizedBox(
+                        width: double.infinity,
+                        child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor:
+                                viewModel.hasValidVideoSelection
+                                    ? Colors.pink
+                                    : Colors.pink.withOpacity(0.5),
+                            padding: const EdgeInsets.symmetric(vertical: 14),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                            ),
+                          ),
+                          onPressed:
+                              viewModel.isBusyPosting ||
+                                      !viewModel.hasValidVideoSelection
+                                  ? null
+                                  : () => viewModel.postToLookBook(),
+                          child: const Text(
+                            "Post to LookBook",
+                            style: TextStyle(fontSize: 16, color: Colors.white),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
               if (viewModel.isBusyPosting)
                 Container(
                   color: Colors.black54,
@@ -393,6 +484,31 @@ class _GridVideoPlayerState extends State<GridVideoPlayer>
   // Cloudinary URLs are already playable, so return as-is
   Future<Uri> _resolvePlayableUri(String input) async {
     if (!input.startsWith('http')) return Uri.file(input);
+
+    // Handle bunny.net URLs - properly encode path segments
+    if (input.contains('b-cdn.net') || input.contains('bunnycdn.com')) {
+      logger.d("🐰 bunny.net video URL detected: $input");
+
+      try {
+        final uri = Uri.parse(input.trim());
+        // Reconstruct URL with properly encoded path segments
+        final pathSegments = uri.pathSegments;
+        final encodedPath = pathSegments
+            .map((segment) => Uri.encodeComponent(segment))
+            .join('/');
+        final encodedUrl =
+            '${uri.scheme}://${uri.host}${encodedPath.startsWith('/') ? '' : '/'}$encodedPath${uri.hasQuery ? '?${uri.query}' : ''}${uri.hasFragment ? '#${uri.fragment}' : ''}';
+        logger.d("🐰 Encoded bunny.net URL: $encodedUrl");
+        return Uri.parse(encodedUrl);
+      } catch (e) {
+        logger.w(
+          "⚠️ Failed to parse/encode bunny.net URL: $e, trying manual encoding",
+        );
+        // Fallback: encode spaces manually
+        final processedUrl = input.trim().replaceAll(' ', '%20');
+        return Uri.parse(processedUrl);
+      }
+    }
 
     // Handle Cloudinary video URLs - they're already playable
     if (input.contains('cloudinary.com')) {

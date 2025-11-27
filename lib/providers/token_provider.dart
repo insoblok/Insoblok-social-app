@@ -5,7 +5,7 @@ import '../models/token_model.dart' as tm;
 
 class TokenProvider with ChangeNotifier {
   TokenProvider({PriceSocketService? socketService})
-      : _socketService = socketService ?? PriceSocketService();
+    : _socketService = socketService ?? PriceSocketService();
 
   final PriceSocketService _socketService;
 
@@ -39,10 +39,9 @@ class TokenProvider with ChangeNotifier {
   }
 
   Future<void> initializeTokens() async {
-
-     if (_initialized) return;
+    if (_initialized) return;
     _initialized = true;
-    
+
     _socketService.enableLogs = true;
     _isLoading = true;
     _error = '';
@@ -50,12 +49,54 @@ class TokenProvider with ChangeNotifier {
 
     try {
       _tokens = [
-        tm.Token(symbol: 'BTC', name: 'Bitcoin',      price: 0.0, lastUpdated: DateTime.now(), image :'https://assets.coingecko.com/coins/images/1/small/bitcoin.png'),
-        tm.Token(symbol: 'ETH', name: 'Ethereum',     price: 0.0, lastUpdated: DateTime.now(), image :'https://assets.coingecko.com/coins/images/279/small/ethereum.png'),
-        tm.Token(symbol: 'SOL', name: 'Solana',       price: 0.0, lastUpdated: DateTime.now(), image :'https://assets.coingecko.com/coins/images/4128/small/solana.png'),
-        tm.Token(symbol: 'BNB', name: 'Binance Coin', price: 0.0, lastUpdated: DateTime.now(), image :'https://assets.coingecko.com/coins/images/825/small/bnb-icon2_2x.png'),
-        tm.Token(symbol: 'XRP', name: 'Ripple',      price: 0.0, lastUpdated: DateTime.now(), image :'https://assets.coingecko.com/coins/images/44/small/xrp-symbol-white-128.png'),
-        tm.Token(symbol: 'DOGE', name: 'Dogecoin',      price: 0.0, lastUpdated: DateTime.now(), image :'https://assets.coingecko.com/coins/images/5/small/dogecoin.png'),
+        tm.Token(
+          symbol: 'BTC',
+          name: 'Bitcoin',
+          price: 0.0,
+          lastUpdated: DateTime.now(),
+          image:
+              'https://assets.coingecko.com/coins/images/1/small/bitcoin.png',
+        ),
+        tm.Token(
+          symbol: 'ETH',
+          name: 'Ethereum',
+          price: 0.0,
+          lastUpdated: DateTime.now(),
+          image:
+              'https://assets.coingecko.com/coins/images/279/small/ethereum.png',
+        ),
+        tm.Token(
+          symbol: 'SOL',
+          name: 'Solana',
+          price: 0.0,
+          lastUpdated: DateTime.now(),
+          image:
+              'https://assets.coingecko.com/coins/images/4128/small/solana.png',
+        ),
+        tm.Token(
+          symbol: 'BNB',
+          name: 'Binance Coin',
+          price: 0.0,
+          lastUpdated: DateTime.now(),
+          image:
+              'https://assets.coingecko.com/coins/images/825/small/bnb-icon2_2x.png',
+        ),
+        tm.Token(
+          symbol: 'XRP',
+          name: 'Ripple',
+          price: 0.0,
+          lastUpdated: DateTime.now(),
+          image:
+              'https://assets.coingecko.com/coins/images/44/small/xrp-symbol-white-128.png',
+        ),
+        tm.Token(
+          symbol: 'DOGE',
+          name: 'Dogecoin',
+          price: 0.0,
+          lastUpdated: DateTime.now(),
+          image:
+              'https://assets.coingecko.com/coins/images/5/small/dogecoin.png',
+        ),
       ];
 
       // start live socket (Binance → fallback to CoinCap internally)
@@ -68,7 +109,9 @@ class TokenProvider with ChangeNotifier {
           // ignore: avoid_print
           print('[TokenProvider] tick ${tick.symbol} ${tick.price}');
         }
-        final idx = _tokens.indexWhere((t) => t.symbol.toUpperCase() == tick.symbol.toUpperCase());
+        final idx = _tokens.indexWhere(
+          (t) => t.symbol.toUpperCase() == tick.symbol.toUpperCase(),
+        );
         if (idx != -1) {
           final token = _tokens[idx];
           final double prev = token.price;
@@ -81,14 +124,21 @@ class TokenProvider with ChangeNotifier {
               dir = -1;
             }
           }
+          final sym = token.symbol.toUpperCase();
+          // Calculate diff using the previous price before updating
+          // Use _previousPrices if available (from previous socket update), otherwise use current token.price
+          if (_previousPrices.containsKey(sym)) {
+            // We have a stored previous price, use it for accurate diff
+            _diffs[sym] = next - _previousPrices[sym]!;
+          } else if (prev != 0.0) {
+            // First update: use current token.price as previous (if not zero)
+            _diffs[sym] = next - prev;
+          }
+
+          // Update token price and store current price as previous for next update
           token
             ..price = next
             ..lastUpdated = DateTime.now();
-          final sym = token.symbol.toUpperCase();
-          // diff ticker
-          if (_previousPrices.containsKey(sym)) {
-            _diffs[sym] = next - (_previousPrices[sym] ?? next);
-          }
           _previousPrices[sym] = next;
           _directions[sym] = dir;
           if (dir != 0) {
@@ -118,13 +168,53 @@ class TokenProvider with ChangeNotifier {
 
   void _initializeWithMockData() {
     _tokens = [
-        tm.Token(symbol: 'BTC', name: 'Bitcoin',      price: 0.0, lastUpdated: DateTime.now(), image :'https://assets.coingecko.com/coins/images/1/small/bitcoin.png'),
-        tm.Token(symbol: 'ETH', name: 'Ethereum',     price: 0.0, lastUpdated: DateTime.now(), image :'https://assets.coingecko.com/coins/images/279/small/ethereum.png'),
-        tm.Token(symbol: 'SOL', name: 'Solana',       price: 0.0, lastUpdated: DateTime.now(), image :'https://assets.coingecko.com/coins/images/4128/small/solana.png'),
-        tm.Token(symbol: 'BNB', name: 'Binance Coin', price: 0.0, lastUpdated: DateTime.now(), image :'https://assets.coingecko.com/coins/images/825/small/bnb-icon2_2x.png'),
-        tm.Token(symbol: 'XRP', name: 'Ripple',      price: 0.0, lastUpdated: DateTime.now(), image :'https://assets.coingecko.com/coins/images/44/small/xrp-symbol-white-128.png'),
-        tm.Token(symbol: 'DOGE', name: 'Dogecoin',      price: 0.0, lastUpdated: DateTime.now(), image :'https://assets.coingecko.com/coins/images/5/small/dogecoin.png'),
-      ];
+      tm.Token(
+        symbol: 'BTC',
+        name: 'Bitcoin',
+        price: 0.0,
+        lastUpdated: DateTime.now(),
+        image: 'https://assets.coingecko.com/coins/images/1/small/bitcoin.png',
+      ),
+      tm.Token(
+        symbol: 'ETH',
+        name: 'Ethereum',
+        price: 0.0,
+        lastUpdated: DateTime.now(),
+        image:
+            'https://assets.coingecko.com/coins/images/279/small/ethereum.png',
+      ),
+      tm.Token(
+        symbol: 'SOL',
+        name: 'Solana',
+        price: 0.0,
+        lastUpdated: DateTime.now(),
+        image:
+            'https://assets.coingecko.com/coins/images/4128/small/solana.png',
+      ),
+      tm.Token(
+        symbol: 'BNB',
+        name: 'Binance Coin',
+        price: 0.0,
+        lastUpdated: DateTime.now(),
+        image:
+            'https://assets.coingecko.com/coins/images/825/small/bnb-icon2_2x.png',
+      ),
+      tm.Token(
+        symbol: 'XRP',
+        name: 'Ripple',
+        price: 0.0,
+        lastUpdated: DateTime.now(),
+        image:
+            'https://assets.coingecko.com/coins/images/44/small/xrp-symbol-white-128.png',
+      ),
+      tm.Token(
+        symbol: 'DOGE',
+        name: 'Dogecoin',
+        price: 0.0,
+        lastUpdated: DateTime.now(),
+        image: 'https://assets.coingecko.com/coins/images/5/small/dogecoin.png',
+      ),
+    ];
     _dataSource = 'Demo Data (Offline)';
     _usingTatumApi = false;
   }

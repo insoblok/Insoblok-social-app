@@ -251,25 +251,43 @@ class AccountFloatingView extends ViewModelWidget<AccountProvider> {
                           width: 124,
                           decoration: BoxDecoration(
                             gradient: viewModel.isFollowing ? gradient : null,
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: TextFillButton(
-                            onTap: viewModel.updateFollow,
-                            height: 36,
-                            width: 124,
-                            isBusy: viewModel.isBusy,
                             color:
                                 viewModel.isFollowing
-                                    ? Colors.transparent
+                                    ? null
                                     : Theme.of(
                                       context,
                                     ).colorScheme.secondary.withAlpha(64),
-                            text:
-                                viewModel.isFollowing
-                                    ? 'Follow back'
-                                    : 'Follow',
-                            fontWeight: FontWeight.normal,
-                            fontSize: 14.0,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: InkWell(
+                            onTap:
+                                viewModel.isBusy
+                                    ? null
+                                    : viewModel.updateFollow,
+                            borderRadius: BorderRadius.circular(12),
+                            child: Container(
+                              height: 36,
+                              width: 124,
+                              alignment: Alignment.center,
+                              child:
+                                  viewModel.isBusy
+                                      ? Center(
+                                        child: Loader(
+                                          color: Colors.white,
+                                          size: 20.0,
+                                        ),
+                                      )
+                                      : Text(
+                                        viewModel.isFollowing
+                                            ? 'Follow back'
+                                            : 'Follow',
+                                        style: TextStyle(
+                                          fontSize: 14.0,
+                                          fontWeight: FontWeight.normal,
+                                          color: Colors.white,
+                                        ),
+                                      ),
+                            ),
                           ),
                         ),
                         TextFillButton(
@@ -335,6 +353,9 @@ class AccountPublicInfoView extends ViewModelWidget<UpdateProfileProvider> {
   @override
   Widget build(BuildContext context, viewModel) {
     final _displayFullName = viewModel.account.fullName;
+
+    // Register bioController with viewModel so it can be synced on save
+    viewModel.bioController = bioController;
 
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0),
@@ -407,6 +428,9 @@ class AccountPublicInfoView extends ViewModelWidget<UpdateProfileProvider> {
             hintText: "Enter your Bio here",
             controller: bioController,
             initialText: viewModel.account.desc ?? "",
+            onChanged: (value) {
+              viewModel.updateBio(value);
+            },
           ),
         ],
       ),
@@ -437,6 +461,22 @@ class AccountPrivateInfoView extends ViewModelWidget<UpdateProfileProvider> {
           Row(
             children: [
               Expanded(child: Text('Private Information')),
+              // Test API Key button (temporary for debugging)
+              InkWell(
+                onTap: () => viewModel.testGooglePlacesApiKey(),
+                child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: Colors.blue,
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Text(
+                    'Test API',
+                    style: TextStyle(color: Colors.white, fontSize: 10),
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8),
               // InkWell(
               //   onTap: viewModel.onUpdatedPrivate,
               //   child: Container(
@@ -468,16 +508,18 @@ class AccountPrivateInfoView extends ViewModelWidget<UpdateProfileProvider> {
           ),
           SizedBox(height: 12.0),
           PlaceSearchField(
-            /// The line `// controller: autoCompleteController,` is a commented-out line of
-            /// code in the `PlaceSearchField` widget initialization.
             controller: viewModel.autoCompleteController,
             apiKey: GOOGLE_API_KEY,
             isLatLongRequired: true, // Fetch lat/long with place details
             webCorsProxyUrl:
-                "https://cors-anywhere.herokuapp.com", // Optional for web
+                "https://cors-anywhere.herokuapp.com", // Required for API calls
             onPlaceSelected: (placeId, latLng) {
               logger.d('Place ID: ${placeId.place_id}');
               logger.d('Latitude and Longitude: $latLng');
+              // Update location directly in viewModel
+              viewModel.updateLocation(placeId.place_id);
+              // Also update the controller text with the selected place
+              viewModel.autoCompleteController.text = placeId.description;
             },
             decorationBuilder: (context, child) {
               return Material(
@@ -489,10 +531,10 @@ class AccountPrivateInfoView extends ViewModelWidget<UpdateProfileProvider> {
               );
             },
             builder: (context, controller, focusNode) {
+              // Use viewModel's controller directly (same as controller parameter)
               return TextField(
                 controller: viewModel.autoCompleteController,
                 focusNode: focusNode,
-                // autofocus: true,
                 style: Theme.of(context).textTheme.bodyMedium,
                 decoration: InputDecoration(
                   contentPadding: EdgeInsets.symmetric(vertical: 0.0),
@@ -500,24 +542,17 @@ class AccountPrivateInfoView extends ViewModelWidget<UpdateProfileProvider> {
                   fillColor: Colors.grey.shade900,
                   prefixIcon: Icon(
                     size: 20.0,
-
-                    Icons.location_city, // 👈 any Material icon
-                    color: Theme.of(context).primaryColor, // icon color
+                    Icons.location_city,
+                    color: Theme.of(context).primaryColor,
                   ),
                   enabledBorder: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12), // corner radius
-                    borderSide: BorderSide(
-                      color: Colors.grey, // border color when not focused
-                      width: 1, // border width
-                    ),
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide(color: Colors.grey, width: 1),
                   ),
                   focusedBorder: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(12),
                     borderSide: BorderSide(
-                      color:
-                          Theme.of(
-                            context,
-                          ).primaryColor, // border color when focused
+                      color: Theme.of(context).primaryColor,
                       width: 1,
                     ),
                   ),
@@ -548,41 +583,44 @@ class AccountPrivateInfoView extends ViewModelWidget<UpdateProfileProvider> {
             hintText: "Your Website",
             onChanged: updateWebsite,
           ),
-          Container(
-            height: 180.0,
-            margin: const EdgeInsets.only(top: 24.0),
-            decoration: BoxDecoration(
-              color: Colors.grey.shade900,
-              borderRadius: BorderRadius.circular(24.0),
+          InkWell(
+            onTap: viewModel.onUpdatedDiscovery,
+            child: Container(
+              height: 180.0,
+              margin: const EdgeInsets.only(top: 24.0),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade900,
+                borderRadius: BorderRadius.circular(24.0),
+              ),
+              child:
+                  (viewModel.account.discovery == null)
+                      ? Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            AIImage(
+                              AIImages.icImage,
+                              height: 32.0,
+                              color: Theme.of(context).primaryColor,
+                            ),
+                            const SizedBox(height: 12.0),
+                            Text(
+                              'Discovery image',
+                              style: Theme.of(context).textTheme.labelLarge,
+                            ),
+                          ],
+                        ),
+                      )
+                      : ClipRRect(
+                        borderRadius: BorderRadius.circular(24.0),
+                        child: AIImage(
+                          viewModel.account.discovery,
+                          width: double.infinity,
+                          height: double.infinity,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
             ),
-            child:
-                (viewModel.account.discovery == null)
-                    ? Center(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          AIImage(
-                            AIImages.icImage,
-                            height: 32.0,
-                            color: Theme.of(context).primaryColor,
-                          ),
-                          const SizedBox(height: 12.0),
-                          Text(
-                            'Discovery image',
-                            style: Theme.of(context).textTheme.labelLarge,
-                          ),
-                        ],
-                      ),
-                    )
-                    : ClipRRect(
-                      borderRadius: BorderRadius.circular(24.0),
-                      child: AIImage(
-                        viewModel.account.discovery,
-                        width: double.infinity,
-                        height: double.infinity,
-                        fit: BoxFit.cover,
-                      ),
-                    ),
           ),
         ],
       ),

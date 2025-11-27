@@ -481,7 +481,7 @@ class FaceDetailProvider extends InSoBlokViewModel {
           logger.e(
             'User trying to react to their own story - Blocking reaction',
           );
-          AIHelpers.showToast(msg: "You can't react to your own story!");
+          AIHelpers.showToast(msg: "You can't react on your post!");
           return;
         }
         logger.d('Story ownership check passed - User can react');

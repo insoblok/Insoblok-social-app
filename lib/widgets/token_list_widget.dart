@@ -4,9 +4,6 @@ import '../providers/token_provider.dart';
 import 'package:intl/intl.dart';
 import '../models/token_model.dart';
 
-// Keep last seen price per symbol locally to compute simple diffs for the ticker
-final Map<String, double> _lastSeenPrices = {};
-
 class TokenListWidget extends StatelessWidget {
   const TokenListWidget({Key? key}) : super(key: key);
 
@@ -19,9 +16,7 @@ class TokenListWidget extends StatelessWidget {
             // Status bar
             _buildStatusBar(tokenProvider),
             // Token list
-            Expanded(
-              child: _buildTokenContent(tokenProvider),
-            ),
+            Expanded(child: _buildTokenContent(tokenProvider)),
           ],
         );
       },
@@ -45,25 +40,10 @@ class TokenListWidget extends StatelessWidget {
               SizedBox(width: 8),
               Text(
                 tokenProvider.dataSource,
-                style: TextStyle(
-                  fontSize: 12,
-                  color: Colors.grey[600],
-                ),
+                style: TextStyle(fontSize: 12, color: Colors.grey[600]),
               ),
             ],
           ),
-          
-          // Refresh button
-          // IconButton(
-          //   icon: tokenProvider.isLoading 
-          //       ? SizedBox(
-          //           width: 16,
-          //           height: 16,
-          //           child: CircularProgressIndicator(strokeWidth: 2),
-          //         )
-          //       : Icon(Icons.refresh, size: 20),
-          //   onPressed: tokenProvider.manualRefresh,
-          // ),
         ],
       ),
     );
@@ -91,65 +71,42 @@ class TokenListWidget extends StatelessWidget {
     return Container(
       margin: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       padding: EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      decoration: BoxDecoration(borderRadius: BorderRadius.circular(12)),
       child: Row(
         children: [
-          // Token icon
-          ClipOval(
-            child: Container(
-              color: Colors.transparent,
-              child: Image.network(
-                token.image,
-                width: 36.0,
-                height: 36.0,
+          // Token ticker only (name and image removed)
+          Expanded(
+            child: Text(
+              token.symbol.toUpperCase(),
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 24,
+                color: Colors.white,
               ),
             ),
           ),
-          SizedBox(width: 16),
-          
-          // Token info
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  token.name,
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16,
-                  ),
-                ),
-                Text(
-                  token.symbol,
-                  style: TextStyle(
-                    color: Colors.grey[600],
-                    fontSize: 12,
-                  ),
-                ),
-              ],
-            ),
-          ),
-          
-          // Price
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
+
+          // Price - Horizontal layout
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              // Current Price
               Builder(
                 builder: (context) {
                   final baseStyle = const TextStyle(
                     fontWeight: FontWeight.bold,
-                    fontSize: 16,
+                    fontSize: 20,
                   );
                   final String sym = token.symbol.toUpperCase();
                   final int tick = provider.changeTicks[sym] ?? 0;
                   final int dir = provider.directions[sym] ?? 0;
-                  final Color startColor = dir > 0
-                      ? Colors.greenAccent
-                      : (dir < 0 ? Colors.redAccent : (Theme.of(context).textTheme.bodyMedium?.color ?? Colors.white));
-                  final Color endColor = Theme.of(context).textTheme.bodyMedium?.color ?? Colors.white;
-                  final double startScale = dir > 0 ? 1.06 : (dir < 0 ? 0.94 : 1.0);
+                  final Color startColor = Colors.white;
+                  final Color endColor =
+                      Theme.of(context).textTheme.bodyMedium?.color ??
+                      Colors.white;
+                  final double startScale =
+                      dir > 0 ? 1.06 : (dir < 0 ? 0.94 : 1.0);
                   return KeyedSubtree(
                     key: ValueKey<String>('${sym}_$tick'),
                     child: TweenAnimationBuilder<double>(
@@ -176,53 +133,59 @@ class TokenListWidget extends StatelessWidget {
                   );
                 },
               ),
-              const SizedBox(height: 2),
+              const SizedBox(width: 12),
+              // Price Difference in colored box
               Builder(
                 builder: (context) {
                   final String sym = token.symbol.toUpperCase();
                   final int tick = provider.changeTicks[sym] ?? 0;
-                  final int dir = provider.directions[sym] ?? 0;
-                  final double? diff = _computeAndStoreDiff(sym, token.price);
-                  if (diff == null) return const SizedBox.shrink();
-                  final bool up = dir > 0;
-                  final Color color = up ? Colors.greenAccent : (dir < 0 ? Colors.redAccent : Colors.grey);
-                  final String arrow = up ? '▲' : (dir < 0 ? '▼' : '→');
-                  final String text = '$arrow ${diff >= 0 ? '+' : ''}${_formatWithGroupingKeepDecimals(diff)}';
+                  // Use the diff from provider which is already calculated correctly
+                  final double? diff = provider.diffs[sym];
+
+                  // Always show the price difference, even if it's 0 or null
+                  final double displayDiff = diff ?? 0.0;
+                  final bool isPriceUp = displayDiff > 0;
+                  final bool isPriceDown = displayDiff < 0;
+
+                  // Background color for price difference box
+                  Color diffBackgroundColor = Colors.grey;
+                  if (isPriceUp) {
+                    diffBackgroundColor = Colors.green;
+                  } else if (isPriceDown) {
+                    diffBackgroundColor = Colors.red;
+                  }
+
                   return KeyedSubtree(
                     key: ValueKey<String>('${sym}_diff_$tick'),
-                    child: AnimatedDefaultTextStyle(
-                      duration: const Duration(milliseconds: 600),
-                      style: TextStyle(
-                        color: color.withOpacity(0.9),
-                        fontSize: 10,
-                        fontWeight: FontWeight.w600,
+                    child: Container(
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 4,
                       ),
-                      child: Text(text),
+                      decoration: BoxDecoration(
+                        color: diffBackgroundColor,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: AnimatedDefaultTextStyle(
+                        duration: const Duration(milliseconds: 600),
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.w700,
+                        ),
+                        child: Text(
+                          '${displayDiff >= 0 ? "+" : ""}${_formatPriceDifference(displayDiff)}',
+                        ),
+                      ),
                     ),
                   );
                 },
-              ),
-              Text(
-                _formatTimeAgo(token.lastUpdated),
-                style: TextStyle(
-                  color: Colors.grey[500],
-                  fontSize: 10,
-                ),
               ),
             ],
           ),
         ],
       ),
     );
-  }
-
-
-  String _formatTimeAgo(DateTime time) {
-    final difference = DateTime.now().difference(time);
-    if (difference.inSeconds < 60) return 'Just now';
-    if (difference.inMinutes < 60) return '${difference.inMinutes}m ago';
-    if (difference.inHours < 24) return '${difference.inHours}h ago';
-    return '${difference.inDays}d ago';
   }
 
   String _formatWithGroupingKeepDecimals(num value) {
@@ -233,15 +196,18 @@ class TokenListWidget extends StatelessWidget {
     final String decPart = parts.length > 1 ? parts[1] : '';
     final bool negative = intPart.startsWith('-');
     final String absInt = negative ? intPart.substring(1) : intPart;
-    final String grouped = NumberFormat.decimalPattern('en_US').format(int.parse(absInt));
+    final String grouped = NumberFormat.decimalPattern(
+      'en_US',
+    ).format(int.parse(absInt));
     final String withSign = negative ? '-$grouped' : grouped;
     return decPart.isNotEmpty ? '$withSign.$decPart' : withSign;
   }
 
-  double? _computeAndStoreDiff(String symbol, double price) {
-    final prev = _lastSeenPrices[symbol];
-    _lastSeenPrices[symbol] = price;
-    if (prev == null) return null;
-    return price - prev;
+  String _formatPriceDifference(num value) {
+    // Format price difference to 2 decimal places
+    if (value.isNaN || value.isInfinite) {
+      return value.toString();
+    }
+    return NumberFormat('#,##0.00', 'en_US').format(value);
   }
 }

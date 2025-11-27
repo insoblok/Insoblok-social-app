@@ -5,10 +5,11 @@ import 'package:image_picker/image_picker.dart';
 import 'package:stacked/stacked.dart';
 
 import 'package:insoblok/pages/vtos/deep_ar_plus_page.dart';
+import 'package:insoblok/pages/camera_page.dart';
+import 'package:insoblok/pages/stories/image_edit_designer.dart';
 import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/models/models.dart';
-
 
 enum PickerAction { gallery, camera, deepAr }
 
@@ -38,6 +39,24 @@ class MediaPickerService with ListenableServiceMixin {
 
       if (action == null) return <XFile>[];
 
+      // Camera
+      if (action == PickerAction.camera) {
+        final photoPath = await Navigator.of(
+          context,
+        ).push<String>(MaterialPageRoute(builder: (_) => const CameraPage()));
+
+        final medias = <XFile>[];
+        if (photoPath != null && photoPath.isNotEmpty) {
+          medias.add(XFile(photoPath));
+        }
+
+        if (medias.isEmpty) {
+          AIHelpers.showToast(msg: 'No photo captured!');
+        }
+        logger.d('Camera photo: $medias');
+        return medias;
+      }
+
       // DeepAR
       if (action == PickerAction.deepAr) {
         final result = await Navigator.of(context).push<Map<String, String?>>(
@@ -60,9 +79,10 @@ class MediaPickerService with ListenableServiceMixin {
       }
 
       // Gallery/Camera permissions
-      final isAllowed = action == PickerAction.gallery
-          ? ((await PermissionService.requestGalleryPermission()) ?? false)
-          : ((await PermissionService.requestCameraPermission()) ?? false);
+      final isAllowed =
+          action == PickerAction.gallery
+              ? ((await PermissionService.requestGalleryPermission()) ?? false)
+              : ((await PermissionService.requestCameraPermission()) ?? false);
 
       if (!isAllowed) {
         AIHelpers.showToast(msg: 'Permission denied!');
@@ -81,7 +101,37 @@ class MediaPickerService with ListenableServiceMixin {
       } else {
         // Gallery multi-picker (images + videos)
         final selects = await onMultiMediaPicker(limit: limit);
-        medias.addAll(selects);
+        
+        // Process each selected media - edit images with VSStoryDesigner
+        for (var select in selects) {
+          final originalPath = select.path;
+          final pathLower = originalPath.toLowerCase();
+          final isImage = !pathLower.endsWith('.mp4') && 
+                          !pathLower.endsWith('.mov') && 
+                          !pathLower.endsWith('.webm') &&
+                          !pathLower.endsWith('.avi') &&
+                          !pathLower.endsWith('.mkv') &&
+                          !pathLower.endsWith('.flv');
+          
+          if (isImage) {
+            // Navigate to image editor for images
+            final editedPath = await Navigator.of(context).push<String>(
+              MaterialPageRoute(
+                builder: (_) => ImageEditorDesignerPage(path: originalPath),
+              ),
+            );
+            
+            // Use edited path if available, otherwise use original
+            if (editedPath != null && editedPath.isNotEmpty) {
+              medias.add(XFile(editedPath));
+            } else {
+              medias.add(select); // Use original if user cancelled
+            }
+          } else {
+            // Keep videos as-is (no editing for videos from gallery)
+            medias.add(select);
+          }
+        }
       }
 
       if (medias.isEmpty) {
@@ -106,6 +156,19 @@ class MediaPickerService with ListenableServiceMixin {
       logger.d('single media source = $action');
       if (action == null) return null;
 
+      // Camera (only for images)
+      if (action == PickerAction.camera && isImage) {
+        final photoPath = await Navigator.of(
+          context,
+        ).push<String>(MaterialPageRoute(builder: (_) => const CameraPage()));
+        if (photoPath != null && photoPath.isNotEmpty) {
+          return XFile(photoPath);
+        }
+        AIHelpers.showToast(msg: 'No photo captured!');
+        return null;
+      }
+
+      // DeepAR
       if (action == PickerAction.deepAr) {
         final result = await Navigator.of(context).push<Map<String, String?>>(
           MaterialPageRoute(builder: (_) => const DeepARPlusPage()),
@@ -118,9 +181,10 @@ class MediaPickerService with ListenableServiceMixin {
         return null;
       }
 
-      final isAllowed = action == PickerAction.gallery
-          ? ((await PermissionService.requestGalleryPermission()) ?? false)
-          : ((await PermissionService.requestCameraPermission()) ?? false);
+      final isAllowed =
+          action == PickerAction.gallery
+              ? ((await PermissionService.requestGalleryPermission()) ?? false)
+              : ((await PermissionService.requestCameraPermission()) ?? false);
 
       if (!isAllowed) {
         AIHelpers.showToast(msg: 'Permission denied!');
@@ -129,12 +193,31 @@ class MediaPickerService with ListenableServiceMixin {
 
       XFile? media;
       if (isImage) {
-        media = action == PickerAction.gallery
-            ? await _picker.pickImage(source: ImageSource.gallery)
-            : await _picker.pickImage(source: ImageSource.camera);
+        media =
+            action == PickerAction.gallery
+                ? await _picker.pickImage(source: ImageSource.gallery)
+                : await _picker.pickImage(source: ImageSource.camera);
+        
+        // If image was picked from gallery, navigate to image editor
+        if (media != null && action == PickerAction.gallery) {
+          final editedPath = await Navigator.of(context).push<String>(
+            MaterialPageRoute(
+              builder: (_) => ImageEditorDesignerPage(path: media!.path),
+            ),
+          );
+          
+          // Use edited path if available, otherwise use original
+          if (editedPath != null && editedPath.isNotEmpty) {
+            media = XFile(editedPath);
+          }
+          // If user cancelled, media stays as original
+        }
       } else {
         media = await _picker.pickVideo(
-          source: action == PickerAction.gallery ? ImageSource.gallery : ImageSource.camera,
+          source:
+              action == PickerAction.gallery
+                  ? ImageSource.gallery
+                  : ImageSource.camera,
           maxDuration: maxDuration,
         );
       }
@@ -160,7 +243,10 @@ class MediaPickerService with ListenableServiceMixin {
           child: Container(
             width: double.infinity,
             color: AIColors.darkScaffoldBackground,
-            padding: const EdgeInsets.symmetric(horizontal: 18.0, vertical: 24.0),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 18.0,
+              vertical: 24.0,
+            ),
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -173,40 +259,53 @@ class MediaPickerService with ListenableServiceMixin {
                       const SizedBox(width: 12.0),
                       Text(
                         'From Photos',
-                        style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: AIColors.pink),
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold,
+                          color: AIColors.pink,
+                        ),
                       ),
                     ],
                   ),
                 ),
                 const SizedBox(height: 24.0),
-                // If you still want stock camera separate from DeepAR, uncomment this block
-                // InkWell(
-                //   onTap: () => Navigator.of(sheetCtx).pop(PickerAction.camera),
-                //   child: Row(
-                //     mainAxisSize: MainAxisSize.min,
-                //     children: [
-                //       AIImage(Icons.camera_alt, color: AIColors.pink),
-                //       const SizedBox(width: 12.0),
-                //       Text('From Camera',
-                //           style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: AIColors.pink)),
-                //     ],
-                //   ),
-                // ),
-                // const SizedBox(height: 24.0),
                 InkWell(
-                  onTap: () => Navigator.of(sheetCtx).pop(PickerAction.deepAr),
+                  onTap: () => Navigator.of(sheetCtx).pop(PickerAction.camera),
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      AIImage(Icons.camera_enhance, color: AIColors.pink),
+                      AIImage(Icons.camera_alt, color: AIColors.pink),
                       const SizedBox(width: 12.0),
                       Text(
                         'From Camera',
-                        style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.bold, color: AIColors.pink),
+                        style: TextStyle(
+                          fontSize: 16.0,
+                          fontWeight: FontWeight.bold,
+                          color: AIColors.pink,
+                        ),
                       ),
                     ],
                   ),
                 ),
+                // const SizedBox(height: 24.0),
+                // InkWell(
+                //   onTap: () => Navigator.of(sheetCtx).pop(PickerAction.deepAr),
+                //   child: Row(
+                //     mainAxisSize: MainAxisSize.min,
+                //     children: [
+                //       AIImage(Icons.camera_enhance, color: AIColors.pink),
+                //       const SizedBox(width: 12.0),
+                //       Text(
+                //         'DeepAR Filter',
+                //         style: TextStyle(
+                //           fontSize: 16.0,
+                //           fontWeight: FontWeight.bold,
+                //           color: AIColors.pink,
+                //         ),
+                //       ),
+                //     ],
+                //   ),
+                // ),
               ],
             ),
           ),
@@ -256,7 +355,10 @@ class MediaPickerService with ListenableServiceMixin {
           allowedExtensions: const ['gif'],
         );
         if (pickerResult == null) return <String>[];
-        return pickerResult.files.map((f) => f.path).whereType<String>().toList();
+        return pickerResult.files
+            .map((f) => f.path)
+            .whereType<String>()
+            .toList();
       } else {
         AIHelpers.showToast(msg: 'Permission denied!');
         return <String>[];
@@ -266,5 +368,4 @@ class MediaPickerService with ListenableServiceMixin {
       return <String>[];
     }
   }
-
 }

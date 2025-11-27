@@ -50,12 +50,13 @@ class LookbookDetailPage extends StatelessWidget {
                       itemBuilder: (_, index) {
                         return StoryListCell(
                           key: GlobalKey(
-                            debugLabel:
-                                'story-${viewModel.stories[index].id}',
+                            debugLabel: 'story-${viewModel.stories[index].id}',
                           ),
                           story: viewModel.stories[index],
                           enableDetail: false,
                           enableReaction: false,
+                          showEmotionVideos:
+                              true, // Show emotion videos in LookBook detail
                         );
                       },
                     ),

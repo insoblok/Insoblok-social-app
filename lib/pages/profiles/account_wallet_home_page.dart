@@ -453,7 +453,7 @@ class AccountWalletHomePageState extends State<AccountWalletHomePage> {
                                   padding: EdgeInsets.all(0),
                                   decoration: BoxDecoration(
                                     border: BoxBorder.all(color: Colors.white),
-                                    borderRadius: BorderRadius.circular(24),
+                                    borderRadius: BorderRadius.circular(20),
                                   ),
                                   child: ElevatedButton.icon(
                                     onPressed: () {
@@ -465,11 +465,11 @@ class AccountWalletHomePageState extends State<AccountWalletHomePage> {
                                         shape: BoxShape.circle,
                                       ),
                                       padding: const EdgeInsets.all(
-                                        6,
+                                        4,
                                       ), // space inside the circle
                                       child: const Icon(
                                         Icons.call_made, // ↗ similar icon
-                                        size: 24,
+                                        size: 18,
                                         color: Colors.black,
                                       ),
                                     ),
@@ -477,29 +477,29 @@ class AccountWalletHomePageState extends State<AccountWalletHomePage> {
                                       "Send",
                                       style: TextStyle(
                                         color: Colors.white,
-                                        fontSize: 16,
+                                        fontSize: 14,
                                       ),
                                     ),
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.black,
                                       padding: EdgeInsets.only(
                                         left: 4,
-                                        right: 18,
+                                        right: 12,
                                       ),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(
-                                          30,
+                                          25,
                                         ), // pill shape
                                       ),
                                     ),
                                   ),
                                 ),
-                                SizedBox(width: 8.0),
+                                SizedBox(width: 6.0),
                                 Container(
                                   padding: EdgeInsets.all(0),
                                   decoration: BoxDecoration(
                                     border: BoxBorder.all(color: Colors.white),
-                                    borderRadius: BorderRadius.circular(24),
+                                    borderRadius: BorderRadius.circular(20),
                                   ),
                                   child: ElevatedButton.icon(
                                     onPressed: () {
@@ -511,11 +511,11 @@ class AccountWalletHomePageState extends State<AccountWalletHomePage> {
                                         shape: BoxShape.circle,
                                       ),
                                       padding: const EdgeInsets.all(
-                                        6,
+                                        4,
                                       ), // space inside the circle
                                       child: const Icon(
                                         Icons.call_received, // ↗ similar icon
-                                        size: 24,
+                                        size: 18,
                                         color: Colors.black,
                                       ),
                                     ),
@@ -523,29 +523,29 @@ class AccountWalletHomePageState extends State<AccountWalletHomePage> {
                                       "Receive",
                                       style: TextStyle(
                                         color: Colors.white,
-                                        fontSize: 16,
+                                        fontSize: 14,
                                       ),
                                     ),
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.black,
                                       padding: EdgeInsets.only(
                                         left: 4,
-                                        right: 18,
+                                        right: 12,
                                       ),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(
-                                          30,
+                                          25,
                                         ), // pill shape
                                       ),
                                     ),
                                   ),
                                 ),
-                                SizedBox(width: 8.0),
+                                SizedBox(width: 6.0),
                                 Container(
                                   padding: EdgeInsets.all(0),
                                   decoration: BoxDecoration(
                                     border: BoxBorder.all(color: Colors.white),
-                                    borderRadius: BorderRadius.circular(24),
+                                    borderRadius: BorderRadius.circular(20),
                                   ),
                                   child: ElevatedButton.icon(
                                     onPressed: () {
@@ -557,11 +557,11 @@ class AccountWalletHomePageState extends State<AccountWalletHomePage> {
                                         shape: BoxShape.circle,
                                       ),
                                       padding: const EdgeInsets.all(
-                                        6,
+                                        4,
                                       ), // space inside the circle
                                       child: const Icon(
                                         Icons.swap_horiz, // ↗ similar icon
-                                        size: 24,
+                                        size: 18,
                                         color: Colors.black,
                                       ),
                                     ),
@@ -569,18 +569,18 @@ class AccountWalletHomePageState extends State<AccountWalletHomePage> {
                                       "Swap",
                                       style: TextStyle(
                                         color: Colors.white,
-                                        fontSize: 16,
+                                        fontSize: 14,
                                       ),
                                     ),
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.black,
                                       padding: EdgeInsets.only(
                                         left: 4,
-                                        right: 18,
+                                        right: 12,
                                       ),
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(
-                                          30,
+                                          25,
                                         ), // pill shape
                                       ),
                                     ),

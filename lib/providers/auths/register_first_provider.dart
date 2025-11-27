@@ -34,6 +34,18 @@ class RegisterFirstProvider extends InSoBlokViewModel {
   }
 
   Future<void> onClickNext() async {
+    // Validate that first name and last name are provided
+    if (_user.firstName == null || _user.firstName!.trim().isEmpty) {
+      AIHelpers.showToast(msg: 'Please enter your first name');
+      return;
+    }
+
+    if (_user.lastName == null || _user.lastName!.trim().isEmpty) {
+      AIHelpers.showToast(msg: 'Please enter your last name');
+      return;
+    }
+
+    // Both fields are filled, proceed to next page
     Routers.goToRegisterSecondPage(context, user: _user);
   }
 

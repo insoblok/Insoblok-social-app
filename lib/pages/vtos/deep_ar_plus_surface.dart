@@ -11,16 +11,18 @@ class DeepArPlusSurface extends StatelessWidget {
   });
 
   final DeepArPlusService service;
-  final double? scale;    // e.g., service.aspectRatio * 1.3 (like your sample)
-  final bool offstage;    // set true to keep engine running but hide the view
+  final double? scale; // e.g., service.aspectRatio * 1.3 (like your sample)
+  final bool offstage; // set true to keep engine running but hide the view
 
   @override
   Widget build(BuildContext context) {
-    if (!service.isReady) {
-      return const Center(child: CircularProgressIndicator());
+    // Don't show loading indicator here - let parent handle it
+    // This prevents duplicate loading indicators
+    if (!service.isReady || service.controller == null) {
+      return const SizedBox.shrink();
     }
 
-    Widget preview = DeepArPreviewPlus(service.controller);
+    Widget preview = DeepArPreviewPlus(service.controller!);
     if (scale != null) {
       preview = Transform.scale(scale: scale!, child: preview);
     }

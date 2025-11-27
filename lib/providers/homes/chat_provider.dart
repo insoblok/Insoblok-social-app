@@ -17,7 +17,7 @@ class ChatProvider extends InSoBlokViewModel {
   }
 
   final RoomService roomService = RoomService(AuthHelper.user?.id ?? "");
-  
+
   final List<RoomModel> _rooms = [];
   List<RoomModel> get rooms => _rooms;
 
@@ -74,7 +74,6 @@ class ChatProvider extends InSoBlokViewModel {
     }());
     logger.d("init called");
     setupStreams();
-    
 
     // roomService.getRoomsStream().listen((queryRooms) {
     //   for (var doc in queryRooms.docs) {
@@ -91,9 +90,8 @@ class ChatProvider extends InSoBlokViewModel {
     //     }
     //   }
     //   fetchData();
-    
-    // });
 
+    // });
   }
 
   Future<void> fetchData() async {
@@ -124,7 +122,8 @@ class ChatProvider extends InSoBlokViewModel {
           final json = doc.data();
           json['id'] = doc.id;
           final room = RoomModel.fromJson(json);
-          if (room.userId != null && (room.userIds?.contains(AuthHelper.user?.id) ?? false)) {
+          if (room.userId != null &&
+              (room.userIds?.contains(AuthHelper.user?.id) ?? false)) {
             _rooms.add(room);
           }
         } catch (_) {}
@@ -148,7 +147,6 @@ class ChatProvider extends InSoBlokViewModel {
   }
 
   Future<void> geChatList() async {
-
     try {
       var keyUsers = await userService.getAllUsers();
 
@@ -161,20 +159,24 @@ class ChatProvider extends InSoBlokViewModel {
         if (user == null) continue;
         if (user.id == AuthHelper.user?.id) continue;
         if (userIds.contains(user.id)) continue;
+        // Skip users where both firstName and lastName are empty
+        final firstName = user.firstName?.trim() ?? '';
+        final lastName = user.lastName?.trim() ?? '';
+        if (firstName.isEmpty && lastName.isEmpty) continue;
         _suggestedUsers.add(user);
       }
 
       // Initialize suggested users pagination
-      _usersVisibleCount = (_suggestedUsers.length < _usersPageSize)
-          ? _suggestedUsers.length
-          : _usersPageSize;
+      _usersVisibleCount =
+          (_suggestedUsers.length < _usersPageSize)
+              ? _suggestedUsers.length
+              : _usersPageSize;
     } catch (e) {
       logger.e(e);
       setError(e);
     } finally {
       notifyListeners();
     }
-
   }
 
   // Pagination: increment visible windows
@@ -185,15 +187,19 @@ class ChatProvider extends InSoBlokViewModel {
       return;
     }
     // Otherwise expand visible window locally
-    _roomsVisibleCount = (_roomsVisibleCount + _roomsPageSize)
-        .clamp(0, _rooms.length);
+    _roomsVisibleCount = (_roomsVisibleCount + _roomsPageSize).clamp(
+      0,
+      _rooms.length,
+    );
     notifyListeners();
   }
 
   void loadMoreSuggestedUsers() {
     if (_usersVisibleCount >= _suggestedUsers.length) return;
-    _usersVisibleCount = (_usersVisibleCount + _usersPageSize)
-        .clamp(0, _suggestedUsers.length);
+    _usersVisibleCount = (_usersVisibleCount + _usersPageSize).clamp(
+      0,
+      _suggestedUsers.length,
+    );
     notifyListeners();
   }
 
@@ -201,19 +207,43 @@ class ChatProvider extends InSoBlokViewModel {
     if (isBusy || chatUser == null) return;
     clearErrors();
 
-    var room = RoomModel(
-      userId: user?.id,
-      userIds: [user?.id, chatUser.id],
-      updatedAt: DateTime.now(),
-      timestamp: DateTime.now(),
+    // Check if a room already exists between current user and chatUser
+    final existingRoom = await roomService.getRoomByChatUser(
+      id: chatUser.id ?? '',
     );
-    String roomId = await roomService.createRoom(room);
-    room = room.copyWith(id: roomId);
-    Routers.goToMessagePage(ctx, MessagePageData(room: room, chatUser: chatUser));
+
+    RoomModel room;
+    if (existingRoom != null &&
+        existingRoom.id != null &&
+        existingRoom.id!.isNotEmpty) {
+      // Use existing room
+      logger.d('Using existing room: ${existingRoom.id}');
+      room = existingRoom;
+    } else {
+      // Create new room only if one doesn't exist
+      logger.d('No existing room found, creating new room');
+      room = RoomModel(
+        userId: user?.id,
+        userIds: [user?.id, chatUser.id],
+        updatedAt: DateTime.now(),
+        timestamp: DateTime.now(),
+      );
+      String roomId = await roomService.createRoom(room);
+      if (roomId.isEmpty) {
+        AIHelpers.showToast(
+          msg: 'Failed to create chat room. Please try again.',
+        );
+        return;
+      }
+      room = room.copyWith(id: roomId);
+    }
+
+    Routers.goToMessagePage(
+      ctx,
+      MessagePageData(room: room, chatUser: chatUser),
+    );
     // messageService.setInitialTypeStatus(roomId, chatUser.id!);
   }
-
-
 
   void toggleRoomSelection(RoomModel room) {
     if (_selectedRoomIds.contains(room.id)) {
@@ -232,26 +262,28 @@ class ChatProvider extends InSoBlokViewModel {
   bool get isFirstSelectedRoomMuted {
     if (_selectedRoomIds.isEmpty) return false;
     final firstSelectedId = _selectedRoomIds.first;
-    
+
     // Check in active rooms
     final activeRoom = _activeRooms.firstWhere(
       (room) => room.chatroom.id == firstSelectedId,
-      orElse: () => ChatRoomWithSettings(
-        chatroom: RoomModel(),
-        userSettings: UserChatRoomModel(),
-      ),
+      orElse:
+          () => ChatRoomWithSettings(
+            chatroom: RoomModel(),
+            userSettings: UserChatRoomModel(),
+          ),
     );
     if (activeRoom.chatroom.id != null) {
       return activeRoom.userSettings.isMuted ?? false;
     }
-    
+
     // Check in archived rooms
     final archivedRoom = archivedRooms.firstWhere(
       (room) => room.chatroom.id == firstSelectedId,
-      orElse: () => ChatRoomWithSettings(
-        chatroom: RoomModel(),
-        userSettings: UserChatRoomModel(),
-      ),
+      orElse:
+          () => ChatRoomWithSettings(
+            chatroom: RoomModel(),
+            userSettings: UserChatRoomModel(),
+          ),
     );
     if (archivedRoom.chatroom.id != null) {
       return archivedRoom.userSettings.isMuted ?? false;
@@ -282,7 +314,9 @@ class ChatProvider extends InSoBlokViewModel {
     _updateLocalMuteStatus(_selectedRoomIds, false);
     notifyListeners();
     for (int i = 0; i < _activeRooms.length; i++) {
-      logger.d("active rooms mute state is : ${_activeRooms[i].userSettings.isMuted}");
+      logger.d(
+        "active rooms mute state is : ${_activeRooms[i].userSettings.isMuted}",
+      );
     }
     await roomService.unMuteRooms(AuthHelper.user?.id ?? '', _selectedRoomIds);
     _isOptimisticUpdate = false;
@@ -300,13 +334,15 @@ class ChatProvider extends InSoBlokViewModel {
         );
       }
     }
-    
+
     // Update archived rooms
     for (int i = 0; i < archivedRooms.length; i++) {
       if (roomIds.contains(archivedRooms[i].chatroom.id)) {
         archivedRooms[i] = ChatRoomWithSettings(
           chatroom: archivedRooms[i].chatroom,
-          userSettings: archivedRooms[i].userSettings.copyWith(isMuted: isMuted),
+          userSettings: archivedRooms[i].userSettings.copyWith(
+            isMuted: isMuted,
+          ),
         );
       }
     }
@@ -354,5 +390,10 @@ class ChatProvider extends InSoBlokViewModel {
       deletedRooms = chatrooms;
       notifyListeners();
     });
+  }
+
+  /// Refresh the chat list data
+  Future<void> refreshChatList() async {
+    await fetchData();
   }
 }

@@ -21,6 +21,8 @@ class StoryContentProvider extends InSoBlokViewModel {
   StoryModel get story => _story;
   set story(StoryModel model) {
     _story = model;
+    // Log the current feed/story ID when story is set/updated
+    logger.d('📰 Feed/story ID updated: ${model.id}');
     notifyListeners();
   }
 
@@ -68,6 +70,9 @@ class StoryContentProvider extends InSoBlokViewModel {
   void init(BuildContext context, {required StoryModel model}) async {
     this.context = context;
     story = model;
+
+    // Log the current feed/story ID
+    logger.d('📰 Current feed/story ID: ${story.id}');
 
     if (story.category != null && story.category == 'vote') {
       actionType('vote');

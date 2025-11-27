@@ -46,6 +46,15 @@ class LookbookPage extends StatelessWidget {
                       controller: viewModel.pageController,
                       padEnds: false,
                       itemCount: viewModel.stories.length,
+                      onPageChanged: (index) {
+                        // Log the story ID when page changes
+                        if (index >= 0 && index < viewModel.stories.length) {
+                          final story = viewModel.stories[index];
+                          logger.d(
+                            '📖 Lookbook PageView - Current story ID: ${story.id}',
+                          );
+                        }
+                      },
                       itemBuilder: (_, index) {
                         return StoryListCell(
                           key: GlobalKey(
@@ -54,6 +63,8 @@ class LookbookPage extends StatelessWidget {
                           story: viewModel.stories[index],
                           enableDetail: true,
                           enableReaction: false,
+                          showEmotionVideos:
+                              true, // Show emotion videos in LookBook
                         );
                       },
                     ),

@@ -4,7 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:deepar_flutter_plus/deepar_flutter_plus.dart';
 
 class DeepArPlusService with ChangeNotifier {
-  DeepArControllerPlus? _controller;      
+  DeepArControllerPlus? _controller;
   bool _engineReady = false;
   bool _viewReady = false;
   bool _recording = false;
@@ -18,7 +18,7 @@ class DeepArPlusService with ChangeNotifier {
   bool get isReady => _engineReady && (_viewReady || !Platform.isIOS);
   bool get isRecording => _recording;
   double get aspectRatio => _controller?.aspectRatio ?? 1.0;
-  DeepArControllerPlus get controller => _controller!;
+  DeepArControllerPlus? get controller => _controller;
 
   Future<void> initialize({
     required String androidKey,
@@ -27,39 +27,93 @@ class DeepArPlusService with ChangeNotifier {
     String? initialEffect,
     Duration iosViewTimeout = const Duration(seconds: 10),
   }) async {
-    if (_engineReady || _initInProgress) return;   
+    // If already initialized and ready, don't reinitialize
+    if (_engineReady && _viewReady && _controller != null) {
+      debugPrint('⚠️ DeepAR already initialized, skipping...');
+      return;
+    }
+
+    // If initialization is in progress, wait for it to complete (with timeout)
+    if (_initInProgress) {
+      debugPrint('⚠️ DeepAR initialization already in progress, waiting...');
+      final sw = Stopwatch()..start();
+      while (_initInProgress && sw.elapsed < const Duration(seconds: 30)) {
+        await Future.delayed(const Duration(milliseconds: 200));
+        await Future(() {}); // Yield to UI thread
+      }
+      if (_initInProgress) {
+        throw StateError(
+          'DeepAR initialization timeout - previous initialization did not complete',
+        );
+      }
+      return;
+    }
+
     _initInProgress = true;
 
-    _androidKey = androidKey;
-    _iosKey = iosKey;
-    _resolution = resolution;
-    _initialEffect = initialEffect;
-
-    _controller ??= DeepArControllerPlus();       
     try {
+      // If controller exists but engine is not ready, dispose it first
+      // This is critical on real devices where stale controllers cause issues
+      if (_controller != null && !_engineReady) {
+        debugPrint('🧹 Disposing existing controller before reinitializing...');
+        try {
+          _controller?.destroy();
+        } catch (e) {
+          debugPrint('⚠️ Error disposing controller: $e');
+        }
+        _controller = null;
+        // Wait for disposal to complete on real devices
+        await Future.delayed(const Duration(milliseconds: 500));
+        await Future(() {}); // Yield to UI thread
+      }
+
+      _androidKey = androidKey;
+      _iosKey = iosKey;
+      _resolution = resolution;
+      _initialEffect = initialEffect;
+
+      // Create new controller
+      _controller ??= DeepArControllerPlus();
+
+      debugPrint('🚀 Initializing DeepAR controller...');
       final res = await _controller!.initialize(
         androidLicenseKey: androidKey,
         iosLicenseKey: iosKey,
         resolution: resolution,
       );
+
       if (!res.success) {
         throw StateError('DeepAR init failed: ${res.message}');
       }
+
       _engineReady = true;
+      debugPrint('✅ DeepAR engine ready');
 
       if (Platform.isIOS) {
         final sw = Stopwatch()..start();
         while (!_controller!.isInitialized && sw.elapsed < iosViewTimeout) {
           await Future.delayed(const Duration(milliseconds: 100));
+          await Future(() {}); // Yield to UI thread
         }
         _viewReady = _controller!.isInitialized;
+        debugPrint('✅ DeepAR view ready (iOS): $_viewReady');
       } else {
+        // On Android, wait a bit for the view to be ready
+        await Future.delayed(const Duration(milliseconds: 300));
+        await Future(() {}); // Yield to UI thread
         _viewReady = true;
+        debugPrint('✅ DeepAR view ready (Android)');
       }
 
       if (initialEffect?.isNotEmpty == true) {
         await _controller!.switchEffect(initialEffect!);
       }
+    } catch (e) {
+      // Reset state on error
+      _engineReady = false;
+      _viewReady = false;
+      _controller = null;
+      rethrow;
     } finally {
       _initInProgress = false;
       notifyListeners();
@@ -84,11 +138,11 @@ class DeepArPlusService with ChangeNotifier {
   }
 
   Future<File?> stopRecording() async {
-    if (!isReady || !_recording) return null;
+    if (!isReady || !_recording || _controller == null) return null;
     final out = await _controller!.stopVideoRecording();
     _recording = false;
     notifyListeners();
-    return out is File ? out : null;
+    return out;
   }
 
   Future<File?> toggleRecording() async {
@@ -158,7 +212,7 @@ class DeepArPlusService with ChangeNotifier {
     try {
       _controller?.destroy();
     } finally {
-      _controller = null;                
+      _controller = null;
       _engineReady = false;
       _viewReady = false;
       _recording = false;

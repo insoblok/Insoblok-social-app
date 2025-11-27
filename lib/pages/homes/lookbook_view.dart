@@ -98,6 +98,8 @@ class LookbookView extends StatelessWidget {
                                   story: viewModel.stories[index],
                                   enableDetail: true,
                                   enableReaction: false,
+                                  showEmotionVideos:
+                                      true, // Show emotion videos in LookBook
                                 );
                               },
                             ),

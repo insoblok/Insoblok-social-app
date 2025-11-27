@@ -53,7 +53,9 @@ class AccessCodeConfirmPageState extends State<AccessCodeConfirmPage> {
     if (accessCode.accessCode == enteredCode) {
       // Access code verified - proceed to PIN code registration for signup
       await accessCodeService.updateChecked(email);
-      logger.d("Access code verified. Navigating to PIN code registration page...");
+      logger.d(
+        "Access code verified. Navigating to PIN code registration page...",
+      );
       // Navigate to PIN code registration page with empty mnemonic (to create new wallet)
       Routers.goToPincodeRegisterPage(ctx, "");
     } else {
@@ -116,7 +118,7 @@ class AccessCodeConfirmPageState extends State<AccessCodeConfirmPage> {
                     ),
                     TextSpan(
                       text:
-                          " The app is launching in just a few weeks. We'll notify you when you can enter!",
+                          " InSoblok is launching in just a few weeks. We'll notify you when you can enter!",
                       style: Theme.of(context).textTheme.bodyMedium,
                     ),
                   ],
@@ -124,13 +126,13 @@ class AccessCodeConfirmPageState extends State<AccessCodeConfirmPage> {
               ),
             ),
             SizedBox(height: 16.0),
-            if ((created?.accessCode ?? "").isNotEmpty) ...{
-              Text(
-                "Your access code is ${created?.accessCode}",
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-              SizedBox(height: 12.0),
-            },
+            // if ((created?.accessCode ?? "").isNotEmpty) ...{
+            //   Text(
+            //     "Your access code is ${created?.accessCode}",
+            //     style: Theme.of(context).textTheme.bodyMedium,
+            //   ),
+            //   SizedBox(height: 12.0),
+            // },
             Padding(
               padding: const EdgeInsets.symmetric(
                 horizontal: 24.0,

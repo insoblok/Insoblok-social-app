@@ -337,8 +337,10 @@ class TastescoreXpNextView extends ViewModelWidget<AccountRewardProvider> {
                     ),
                   ),
                   Switch(
-                    value: true,
-                    onChanged: (value) {},
+                    value: viewModel.isScoreNotificationEnabled,
+                    onChanged: (value) {
+                      viewModel.toggleScoreNotification(value);
+                    },
                     activeColor: Theme.of(context).colorScheme.onSecondary,
                     activeTrackColor: Theme.of(context).primaryColor,
                   ),
@@ -419,10 +421,10 @@ class TastescoreRankView extends ViewModelWidget<AccountRewardProvider> {
                       style: Theme.of(context).textTheme.titleMedium,
                     ),
                   ),
-                  Text(
-                    '#monochrome',
-                    style: Theme.of(context).textTheme.labelMedium,
-                  ),
+                  // Text(
+                  //   '#monochrome',
+                  //   style: Theme.of(context).textTheme.labelMedium,
+                  // ),
                 ],
               ),
               if ((viewModel.userLevel.level ?? 0) < 5) ...{

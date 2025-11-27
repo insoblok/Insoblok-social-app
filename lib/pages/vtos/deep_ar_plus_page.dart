@@ -9,22 +9,65 @@ import 'package:insoblok/services/deep_ar_plus_service.dart';
 import 'deep_ar_plus_surface.dart';
 
 final kDeeparEffectData = [
-  {'title': 'Fire', 'assets': "assets/effects/filters/fire_effect/Fire_Effect.deepar"},
-  {'title': 'Vendetta', 'assets': "assets/effects/filters/vendetta_mask/Vendetta_Mask.deepar"},
-  {'title': 'Flower', 'assets': "assets/effects/filters/flower_face/flower_face.deepar"},
-  {'title': 'Devil Neon Horns', 'assets': "assets/effects/filters/devil_neon_horns/Neon_Devil_Horns.deepar"},
-  {'title': 'Elephant Trunk', 'assets': "assets/effects/filters/elephant_trunk/Elephant_Trunk.deepar"},
-  {'title': 'Emotion Meter', 'assets': "assets/effects/filters/emotion_meter/Emotion_Meter.deepar"},
-  {'title': 'Emotions Exaggerator', 'assets': "assets/effects/filters/emotions_exaggerator/Emotions_Exaggerator.deepar"},
-  {'title': 'Heart', 'assets': "assets/effects/filters/heart/8bitHearts.deepar"},
+  {
+    'title': 'Fire',
+    'assets': "assets/effects/filters/fire_effect/Fire_Effect.deepar",
+  },
+  {
+    'title': 'Vendetta',
+    'assets': "assets/effects/filters/vendetta_mask/Vendetta_Mask.deepar",
+  },
+  {
+    'title': 'Flower',
+    'assets': "assets/effects/filters/flower_face/flower_face.deepar",
+  },
+  {
+    'title': 'Devil Neon Horns',
+    'assets': "assets/effects/filters/devil_neon_horns/Neon_Devil_Horns.deepar",
+  },
+  {
+    'title': 'Elephant Trunk',
+    'assets': "assets/effects/filters/elephant_trunk/Elephant_Trunk.deepar",
+  },
+  {
+    'title': 'Emotion Meter',
+    'assets': "assets/effects/filters/emotion_meter/Emotion_Meter.deepar",
+  },
+  {
+    'title': 'Emotions Exaggerator',
+    'assets':
+        "assets/effects/filters/emotions_exaggerator/Emotions_Exaggerator.deepar",
+  },
+  {
+    'title': 'Heart',
+    'assets': "assets/effects/filters/heart/8bitHearts.deepar",
+  },
   {'title': 'Hope', 'assets': "assets/effects/filters/hope/Hope.deepar"},
-  {'title': 'Humanoid', 'assets': "assets/effects/filters/humanoid/Humanoid.deepar"},
-  {'title': 'Ping Pong', 'assets': "assets/effects/filters/ping_pong/Ping_Pong.deepar"},
-  {'title': 'Simple', 'assets': "assets/effects/filters/simple/MakeupLook.deepar"},
-  {'title': 'Slipt', 'assets': "assets/effects/filters/slipt/Split_View_Look.deepar"},
+  {
+    'title': 'Humanoid',
+    'assets': "assets/effects/filters/humanoid/Humanoid.deepar",
+  },
+  {
+    'title': 'Ping Pong',
+    'assets': "assets/effects/filters/ping_pong/Ping_Pong.deepar",
+  },
+  {
+    'title': 'Simple',
+    'assets': "assets/effects/filters/simple/MakeupLook.deepar",
+  },
+  {
+    'title': 'Slipt',
+    'assets': "assets/effects/filters/slipt/Split_View_Look.deepar",
+  },
   {'title': 'Snail', 'assets': "assets/effects/filters/snail/Snail.deepar"},
-  {'title': 'Stallone', 'assets': "assets/effects/filters/stallone/Stallone.deepar"},
-  {'title': 'Viking Helmet', 'assets': "assets/effects/filters/viking_helmet/viking_helmet.deepar"},
+  {
+    'title': 'Stallone',
+    'assets': "assets/effects/filters/stallone/Stallone.deepar",
+  },
+  {
+    'title': 'Viking Helmet',
+    'assets': "assets/effects/filters/viking_helmet/viking_helmet.deepar",
+  },
 ];
 
 final deepAr = DeepArPlusService();
@@ -39,7 +82,7 @@ class _DeepARPlusPageState extends State<DeepARPlusPage> {
   File? lastPhoto;
   File? lastVideo;
 
-  final int _maxSeconds = 10;   
+  final int _maxSeconds = 10;
   int _remaining = 0;
   bool _isFiltering = false;
   bool _isVideoLoading = false;
@@ -49,9 +92,9 @@ class _DeepARPlusPageState extends State<DeepARPlusPage> {
 
   static const double _minZoom = 1.0;
   static const double _maxZoom = 4.0;
-  double _zoom = 1.0;                    // current zoom factor
-  double _zoomStart = 1.0;               // base for pinch gesture
-  bool _showZoomBadge = false;           // fades out after interaction
+  double _zoom = 1.0; // current zoom factor
+  double _zoomStart = 1.0; // base for pinch gesture
+  bool _showZoomBadge = false; // fades out after interaction
   Timer? _zoomBadgeTimer;
 
   @override
@@ -92,12 +135,10 @@ class _DeepARPlusPageState extends State<DeepARPlusPage> {
     }
   }
 
-
   Future<void> _applyHardwareZoom(double z) async {
     try {
       await (deepAr.controller as dynamic).setZoom(z);
-    } catch (_) {
-    }
+    } catch (_) {}
   }
 
   void _setZoom(double next) {
@@ -155,8 +196,8 @@ class _DeepARPlusPageState extends State<DeepARPlusPage> {
     _ticker = null;
 
     setState(() {
-      _isVideoLoading = true;  
-      _isFiltering = false;    
+      _isVideoLoading = true;
+      _isFiltering = false;
     });
 
     File? result;
@@ -183,9 +224,10 @@ class _DeepARPlusPageState extends State<DeepARPlusPage> {
   Widget _recordTimerOverlay() {
     if (!_isFiltering) return const SizedBox.shrink();
 
-    final progress = _maxSeconds == 0
-        ? null
-        : (1 - (_remaining / _maxSeconds).clamp(0.0, 1.0));
+    final progress =
+        _maxSeconds == 0
+            ? null
+            : (1 - (_remaining / _maxSeconds).clamp(0.0, 1.0));
 
     return SafeArea(
       child: Align(
@@ -196,7 +238,10 @@ class _DeepARPlusPageState extends State<DeepARPlusPage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               Container(
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 12,
+                  vertical: 6,
+                ),
                 decoration: BoxDecoration(
                   color: Colors.black.withOpacity(0.65),
                   borderRadius: BorderRadius.circular(24),
@@ -204,7 +249,11 @@ class _DeepARPlusPageState extends State<DeepARPlusPage> {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Icon(Icons.fiber_manual_record, size: 16, color: Colors.redAccent),
+                    const Icon(
+                      Icons.fiber_manual_record,
+                      size: 16,
+                      color: Colors.redAccent,
+                    ),
                     const SizedBox(width: 8),
                     Text(
                       _maxSeconds == 0 ? 'REC' : '$_remaining s',
@@ -271,7 +320,10 @@ class _DeepARPlusPageState extends State<DeepARPlusPage> {
                 opacity: _showZoomBadge ? 1 : 0,
                 duration: const Duration(milliseconds: 150),
                 child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   margin: const EdgeInsets.only(bottom: 8),
                   decoration: BoxDecoration(
                     color: Colors.black54,
@@ -328,10 +380,7 @@ class _DeepARPlusPageState extends State<DeepARPlusPage> {
             onPressed: _onSwitchCameraPressed,
             icon: const Icon(Icons.cameraswitch_outlined, color: Colors.pink),
           ),
-          TextButton(
-            onPressed: _finishAndReturn,
-            child: const Text('Done'),
-          ),
+          TextButton(onPressed: _finishAndReturn, child: const Text('Done')),
         ],
       ),
       body: Stack(
@@ -364,20 +413,25 @@ class _DeepARPlusPageState extends State<DeepARPlusPage> {
                   itemCount: kDeeparEffectData.length,
                   separatorBuilder: (_, __) => const SizedBox(width: 8),
                   itemBuilder: (context, i) {
-                    final item  = kDeeparEffectData[i];
+                    final item = kDeeparEffectData[i];
                     final title = (item['title'] ?? '').toString();
-                    final path  = (item['assets'] ?? '').toString();
+                    final path = (item['assets'] ?? '').toString();
 
                     return FilledButton(
                       style: FilledButton.styleFrom(
-                        backgroundColor: Colors.pink,   // item color (button background)
-                        foregroundColor: Colors.white, 
-                        minimumSize: const Size(90, 36), // button size in the bar
+                        backgroundColor:
+                            Colors.pink, // item color (button background)
+                        foregroundColor: Colors.white,
+                        minimumSize: const Size(
+                          90,
+                          36,
+                        ), // button size in the bar
                         padding: const EdgeInsets.symmetric(horizontal: 10),
                       ),
-                      onPressed: (!canCapture || path.isEmpty)
-                          ? null
-                          : () async => await deepAr.switchEffect(path),
+                      onPressed:
+                          (!canCapture || path.isEmpty)
+                              ? null
+                              : () async => await deepAr.switchEffect(path),
                       child: Text(title.isEmpty ? 'Effect ${i + 1}' : title),
                     );
                   },
@@ -404,32 +458,37 @@ class _DeepARPlusPageState extends State<DeepARPlusPage> {
                         backgroundColor: Colors.green,
                         foregroundColor: Colors.white,
                       ),
-                      onPressed: !canCapture || _isVideoLoading
-                          ? null
-                          : () async {
-                              final f = await deepAr.takePhoto();
-                              if (f == null) return;
-                              setState(() => lastPhoto = f);
-                              Navigator.pop(context, {'photo': f.path});
-                            },
+                      onPressed:
+                          !canCapture || _isVideoLoading
+                              ? null
+                              : () async {
+                                final f = await deepAr.takePhoto();
+                                if (f == null) return;
+                                setState(() => lastPhoto = f);
+                                Navigator.pop(context, {'photo': f.path});
+                              },
                       child: const Text('Snap Photo'),
                     ),
                     FilledButton.tonal(
                       style: FilledButton.styleFrom(
-                        backgroundColor: _isRecording ? Colors.red : Colors.green,
+                        backgroundColor:
+                            _isRecording ? Colors.red : Colors.green,
                         foregroundColor: Colors.white,
                       ),
-                      onPressed: !canCapture || _isVideoLoading
-                          ? null
-                          : () async {
-                              if (_isRecording) {
-                                await _stopRecordingAndClearTimer(autoReturn: true);
-                              } else {
-                                await _startRecordingWithTimer();
-                              }
-                              if (!mounted) return;
-                              setState(() {}); // refresh label/color
-                            },
+                      onPressed:
+                          !canCapture || _isVideoLoading
+                              ? null
+                              : () async {
+                                if (_isRecording) {
+                                  await _stopRecordingAndClearTimer(
+                                    autoReturn: true,
+                                  );
+                                } else {
+                                  await _startRecordingWithTimer();
+                                }
+                                if (!mounted) return;
+                                setState(() {}); // refresh label/color
+                              },
                       child: Text(_isRecording ? 'Stop Rec' : 'Start Rec'),
                     ),
                   ],
@@ -442,32 +501,33 @@ class _DeepARPlusPageState extends State<DeepARPlusPage> {
         ],
       ),
 
-      bottomNavigationBar: (lastPhoto == null && lastVideo == null)
-      ? null
-      : Container(
-          color: Colors.black54,
-          padding: const EdgeInsets.all(12),
-          child: Row(
-            children: [
-              if (lastPhoto != null)
-                Expanded(
-                  child: Text(
-                    'Photo: ${lastPhoto!.path}',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
+      bottomNavigationBar:
+          (lastPhoto == null && lastVideo == null)
+              ? null
+              : Container(
+                color: Colors.black54,
+                padding: const EdgeInsets.all(12),
+                child: Row(
+                  children: [
+                    if (lastPhoto != null)
+                      Expanded(
+                        child: Text(
+                          'Photo: ${lastPhoto!.path}',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                    if (lastVideo != null)
+                      Expanded(
+                        child: Text(
+                          'Video: ${lastVideo!.path}',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                  ],
                 ),
-              if (lastVideo != null)
-                Expanded(
-                  child: Text(
-                    'Video: ${lastVideo!.path}',
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                ),
-            ],
-          ),
-        ),
+              ),
     );
   }
 }

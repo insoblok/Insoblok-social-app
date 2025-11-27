@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import 'package:collection/collection.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/providers/providers.dart';
@@ -8,7 +9,7 @@ import 'package:insoblok/services/services.dart';
 import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/locator.dart';
 
-class AccountRewardProvider extends InSoBlokViewModel { 
+class AccountRewardProvider extends InSoBlokViewModel {
   late BuildContext _context;
   BuildContext get context => _context;
   set context(BuildContext context) {
@@ -31,6 +32,7 @@ class AccountRewardProvider extends InSoBlokViewModel {
     this.context = context;
     _owner = user ?? AuthHelper.user;
 
+    await loadScoreNotificationPreference();
     fetchData();
   }
 
@@ -237,7 +239,11 @@ class AccountRewardProvider extends InSoBlokViewModel {
             );
             await transferService.addTransfer(transfer: model);
             // String txHash = await _web3service.transfer("insoblok", cryptoService.privateKey!.address, inSoValue);
-            final result = await _web3service.getINSOByXP(xpValue ?? 0, inSoValue, cryptoService.privateKey!.address.hex);
+            final result = await _web3service.getINSOByXP(
+              xpValue ?? 0,
+              inSoValue,
+              cryptoService.privateKey!.address.hex,
+            );
 
             logger.d("Transaction has is $result");
             // if(txHash.isEmpty) {
@@ -331,5 +337,43 @@ class AccountRewardProvider extends InSoBlokViewModel {
       double insoValue = selectXpInSo!.max! * selectXpInSo!.rate! / 100;
       return insoValue;
     }
+  }
+
+  bool _isScoreNotificationEnabled = false;
+  bool get isScoreNotificationEnabled => _isScoreNotificationEnabled;
+  set isScoreNotificationEnabled(bool value) {
+    _isScoreNotificationEnabled = value;
+    notifyListeners();
+  }
+
+  String get _scoreNotificationKey {
+    final userId = owner?.id ?? AuthHelper.user?.id ?? 'default';
+    return 'score_notification_enabled_$userId';
+  }
+
+  Future<void> loadScoreNotificationPreference() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      _isScoreNotificationEnabled =
+          prefs.getBool(_scoreNotificationKey) ?? false;
+      notifyListeners();
+    } catch (e) {
+      logger.e('Error loading score notification preference: $e');
+      _isScoreNotificationEnabled = false;
+    }
+  }
+
+  Future<void> saveScoreNotificationPreference() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setBool(_scoreNotificationKey, _isScoreNotificationEnabled);
+    } catch (e) {
+      logger.e('Error saving score notification preference: $e');
+    }
+  }
+
+  void toggleScoreNotification(bool value) {
+    isScoreNotificationEnabled = value;
+    saveScoreNotificationPreference();
   }
 }

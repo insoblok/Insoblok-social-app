@@ -7,6 +7,7 @@ import 'package:stacked/stacked.dart';
 
 import 'package:insoblok/providers/providers.dart';
 import 'package:insoblok/services/services.dart';
+import 'package:insoblok/widgets/widgets.dart';
 
 class VTODetailPage extends StatelessWidget {
   final VTODetailPageModel model;
@@ -22,11 +23,19 @@ class VTODetailPage extends StatelessWidget {
         return Scaffold(
           body: Stack(
             children: [
-              AIImage(
-                model.resultImage,
-                width: double.infinity,
-                height: double.infinity,
-              ),
+              // Show video if available, otherwise show image
+              model.resultVideo != null && model.resultVideo!.isNotEmpty
+                  ? VideoPlayerWidget(
+                    path: model.resultVideo!,
+                    border: Colors.transparent,
+                    width: double.infinity,
+                    height: double.infinity,
+                  )
+                  : AIImage(
+                    model.resultImage,
+                    width: double.infinity,
+                    height: double.infinity,
+                  ),
               BackdropFilter(
                 filter: ImageFilter.blur(
                   sigmaX: viewModel.isShownText ? 5.0 : 0.0,
@@ -128,23 +137,32 @@ class VTODetailPage extends StatelessWidget {
               viewModel.isShownText = false;
             },
             children: [
-              FloatingActionButton(
-                shape: const CircleBorder(),
-                heroTag: null,
-                child: const Icon(Icons.book_rounded),
-                onPressed: () => viewModel.onTapActionButton(0),
+              Tooltip(
+                message: 'Post to Lookbook',
+                child: FloatingActionButton(
+                  shape: const CircleBorder(),
+                  heroTag: null,
+                  child: const Icon(Icons.book_rounded),
+                  onPressed: () => viewModel.onTapActionButton(0),
+                ),
               ),
-              FloatingActionButton(
-                shape: const CircleBorder(),
-                heroTag: null,
-                child: const Icon(Icons.share),
-                onPressed: () => viewModel.onTapActionButton(1),
+              Tooltip(
+                message: 'Share',
+                child: FloatingActionButton(
+                  shape: const CircleBorder(),
+                  heroTag: null,
+                  child: const Icon(Icons.share),
+                  onPressed: () => viewModel.onTapActionButton(1),
+                ),
               ),
-              FloatingActionButton(
-                shape: const CircleBorder(),
-                heroTag: null,
-                child: const Icon(Icons.post_add),
-                onPressed: () => viewModel.onTapActionButton(2),
+              Tooltip(
+                message: 'Post',
+                child: FloatingActionButton(
+                  shape: const CircleBorder(),
+                  heroTag: null,
+                  child: const Icon(Icons.post_add),
+                  onPressed: () => viewModel.onTapActionButton(2),
+                ),
               ),
             ],
           ),

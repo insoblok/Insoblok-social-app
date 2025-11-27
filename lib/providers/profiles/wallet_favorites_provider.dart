@@ -21,8 +21,8 @@ class WalletFavoritesProvider extends InSoBlokViewModel {
   set viewType(int v) {
     _viewType.value = v;
     notifyListeners();
-  } 
-  
+  }
+
   // ------- live price streaming -------
   final Map<String, double> livePrices = {};
   // -1: down, 0: no change/unknown, 1: up
@@ -41,7 +41,7 @@ class WalletFavoritesProvider extends InSoBlokViewModel {
 
   String _query = "";
   String get query => _query;
-  
+
   bool isSelectMode = false;
   List<String> selectedTokens = [];
 
@@ -51,7 +51,9 @@ class WalletFavoritesProvider extends InSoBlokViewModel {
   }
 
   Future<List<Map<String, dynamic>>> get favoriteTokens async {
-    return await web3service.getFavoriteTokensByIds(AuthHelper.user?.favoriteTokens ?? []);
+    return await web3service.getFavoriteTokensByIds(
+      AuthHelper.user?.favoriteTokens ?? [],
+    );
   }
 
   Future<void> init(BuildContext context) async {
@@ -61,6 +63,7 @@ class WalletFavoritesProvider extends InSoBlokViewModel {
     _priceSocket.enableLogs = true;
     await _startFavoritesPriceStream();
   }
+
   final Web3Service web3service = Web3Service();
 
   Future<void> handleUpdateQuery(String value) async {
@@ -69,24 +72,23 @@ class WalletFavoritesProvider extends InSoBlokViewModel {
   }
 
   Future<void> toggleFavorite(String network) async {
-    
     String message = "";
     var tokens = (AuthHelper.user?.favoriteTokens ?? []).toList();
-    
+
     try {
       if (tokens.contains(network)) {
         tokens.remove(network);
         message = "successfully removed $network from favorites";
-      }
-      else {
+      } else {
         tokens.add(network);
         message = "successfully added $network to favorites";
       }
-      
+
       UserModel newUser = user!.copyWith(favoriteTokens: tokens);
       await AuthHelper.updateUser(newUser);
     } catch (e) {
-      message = "Failed to ${tokens.contains(network) ? 'remove' : 'add' } $network to favorites.";
+      message =
+          "Failed to ${tokens.contains(network) ? 'remove' : 'add'} $network to favorites.";
       logger.d("Exception raised while toggle favorites ${e.toString()}");
     }
     AIHelpers.showToast(msg: message);
@@ -104,13 +106,11 @@ class WalletFavoritesProvider extends InSoBlokViewModel {
         if (selectedTokens.isEmpty) {
           isSelectMode = false;
         }
-      }
-      else {
+      } else {
         selectedTokens.add(token);
       }
     }
     notifyListeners();
-
   }
 
   void handleLongPressFavoriteToken(String token) {
@@ -121,20 +121,30 @@ class WalletFavoritesProvider extends InSoBlokViewModel {
   }
 
   Future<void> handleTapRemoveFavoriteTokens(BuildContext ctx) async {
-    await AIHelpers.confirmRequest(ctx, () async {
-      bool result = await web3service.removeFavoriteTokens(AuthHelper.user?.id ?? "", selectedTokens);
+    await AIHelpers.confirmRequest(
+      ctx,
+      () async {
+        bool result = await web3service.removeFavoriteTokens(
+          AuthHelper.user?.id ?? "",
+          selectedTokens,
+        );
         if (result) {
-          (await favoriteTokens).removeWhere((element) => selectedTokens.contains(element["id"]));
+          (await favoriteTokens).removeWhere(
+            (element) => selectedTokens.contains(element["id"]),
+          );
           selectedTokens.clear();
           isSelectMode = false;
           notifyListeners();
-          AIHelpers.showToast(msg: "Successfully removed tokens from favorites");     
-        }   
-        else {
+          AIHelpers.showToast(
+            msg: "Successfully removed tokens from favorites",
+          );
+        } else {
           AIHelpers.showToast(msg: "Failed to remove tokens from favorites");
         }
-    }, confirmText: "Delete", content: "Really want to remove these tokens from favorites");
-    
+      },
+      confirmText: "Delete",
+      content: "Really want to remove these tokens from favorites",
+    );
   }
 
   void clearSelection() {

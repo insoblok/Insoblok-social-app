@@ -26,6 +26,10 @@ class ReactionsProvider extends InSoBlokViewModel {
   List<String> _reactions = [];
   List<String> get reactions => _reactions;
 
+  // Store reactions with prompt information
+  List<Map<String, dynamic>> _reactionsWithPrompt = [];
+  List<Map<String, dynamic>> get reactionsWithPrompt => _reactionsWithPrompt;
+
   bool isCombineImages = false;
   bool isBusyPosting = false;
 
@@ -93,6 +97,15 @@ class ReactionsProvider extends InSoBlokViewModel {
       setBusy(true);
 
       logger.d("🔄 Fetching reactions from Firestore for story: $storyId");
+
+      // Fetch reactions with prompt information
+      final fetchedReactionsWithPrompt = await FirebaseHelper.service
+          .fetchReactionsWithPrompt(storyId);
+      logger.d(
+        "📥 Fetched reactions with prompt from Firestore: $fetchedReactionsWithPrompt",
+      );
+
+      // Also fetch as URLs for backward compatibility
       final fetchedReactions = await FirebaseHelper.service.fetchReactions(
         storyId,
       );
@@ -102,12 +115,15 @@ class ReactionsProvider extends InSoBlokViewModel {
       // Always use Firestore data if available, otherwise keep story model data
       if (fetchedReactions.isNotEmpty) {
         _reactions = fetchedReactions;
+        _reactionsWithPrompt = fetchedReactionsWithPrompt;
         logger.d("✅ Updated reactions from Firestore: $_reactions");
+        logger.d("✅ Updated reactions with prompt: $_reactionsWithPrompt");
       } else {
         // If Firestore returns empty but we had reactions from story model, keep them
         if (_reactions.isEmpty) {
           logger.w("⚠️ No reactions found in Firestore and story model");
           _reactions = [];
+          _reactionsWithPrompt = [];
         } else {
           logger.d(
             "ℹ️ Firestore returned empty, keeping story model reactions: $_reactions",
@@ -121,6 +137,7 @@ class ReactionsProvider extends InSoBlokViewModel {
       if (_reactions.isEmpty) {
         logger.w("⚠️ No reactions available after error");
         _reactions = [];
+        _reactionsWithPrompt = [];
       } else {
         logger.d("ℹ️ Keeping existing reactions after error: $_reactions");
       }
@@ -133,6 +150,38 @@ class ReactionsProvider extends InSoBlokViewModel {
     }
   }
 
+  /// Get prompt/type for a reaction URL
+  String? getPromptForUrl(String url) {
+    final reaction = _reactionsWithPrompt.firstWhere(
+      (r) => r['url'] == url,
+      orElse: () => <String, dynamic>{},
+    );
+    return reaction['prompt']?.toString() ?? reaction['type']?.toString();
+  }
+
+  /// Check if URL is a video
+  bool _isVideo(String url) {
+    final lowerUrl = url.toLowerCase();
+    return lowerUrl.contains('.mp4') ||
+        lowerUrl.contains('.mov') ||
+        lowerUrl.contains('cloudinary.com/video/') ||
+        lowerUrl.contains('video/upload');
+  }
+
+  /// Get count of selected videos
+  int get selectedVideosCount {
+    return _selectedImages.where((url) => _isVideo(url)).length;
+  }
+
+  /// Check if 1-3 videos are selected (valid selection)
+  bool get hasValidVideoSelection {
+    final count = selectedVideosCount;
+    return count >= 1 && count <= 3;
+  }
+
+  /// Check if maximum videos (3) are selected
+  bool get hasMaximumVideos => selectedVideosCount >= 3;
+
   /// Toggle image selection
   void toggleSelection(String imageUrl) {
     // Allow videos to be selected for playback control
@@ -140,19 +189,15 @@ class ReactionsProvider extends InSoBlokViewModel {
     if (_selectedImages.contains(imageUrl)) {
       _selectedImages.remove(imageUrl);
     } else {
-      // For videos, allow single selection for playback
+      // For videos, allow 1-3 selections
       // For images, allow up to 2 selections for combining
-      final lowerUrl = imageUrl.toLowerCase();
-      final isVideo =
-          lowerUrl.contains('.mp4') ||
-          lowerUrl.contains('.mov') ||
-          lowerUrl.contains('cloudinary.com/video/') ||
-          lowerUrl.contains('video/upload');
+      final isVideo = _isVideo(imageUrl);
 
       if (isVideo) {
-        // For videos, allow single selection (deselect others if needed)
-        _selectedImages.clear();
-        _selectedImages.add(imageUrl);
+        // For videos, allow up to 3 selections
+        if (selectedVideosCount < 3) {
+          _selectedImages.add(imageUrl);
+        }
       } else {
         // For images, allow up to 2 selections
         if (_selectedImages.length < 2) {
@@ -172,121 +217,81 @@ class ReactionsProvider extends InSoBlokViewModel {
       isBusyPosting = true;
       notifyListeners();
 
-      // Check if any items are selected
-      if (_selectedImages.isEmpty) {
-        AIHelpers.showToast(msg: 'Please select at least one reaction to post to LookBook');
+      // Check if 1-3 videos are selected
+      final videoCount = selectedVideosCount;
+      if (videoCount < 1 || videoCount > 3) {
+        AIHelpers.showToast(
+          msg: 'Please select 1 to 3 emotion videos to post to LookBook',
+        );
         return;
       }
 
-      // Filter out videos and only use images, or generate thumbnails for videos
-      final List<String> imageUrls = [];
-      for (final url in _selectedImages) {
-        final lowerUrl = url.toLowerCase();
-        final isVideo = lowerUrl.contains('.mp4') ||
-            lowerUrl.contains('.mov') ||
-            lowerUrl.contains('cloudinary.com/video/') ||
-            lowerUrl.contains('video/upload');
+      // Get story media URL
+      final storyMedia =
+          (story.medias != null && story.medias!.isNotEmpty)
+              ? story.medias![0]
+              : null;
+      if (storyMedia == null ||
+          storyMedia.link == null ||
+          storyMedia.link!.isEmpty) {
+        AIHelpers.showToast(msg: 'No media in story');
+        return;
+      }
 
-        if (isVideo) {
-          // Generate thumbnail from video
-          try {
-            final thumbnailBytes = await _getVideoThumbnail(url);
-            if (thumbnailBytes != null) {
-              // Save thumbnail to temp file and upload to get URL
-              final tempDir = await getTemporaryDirectory();
-              final thumbnailFile = File(
-                '${tempDir.path}/thumbnail_${DateTime.now().millisecondsSinceEpoch}.jpg',
-              );
-              await thumbnailFile.writeAsBytes(thumbnailBytes);
-              
-              // Upload thumbnail to Cloudinary to get URL
-              final thumbnailModel = await CloudinaryCDNService.uploadImageToCDN(
-                XFile(thumbnailFile.path),
-              );
-              if (thumbnailModel.link != null && thumbnailModel.link!.isNotEmpty) {
-                imageUrls.add(thumbnailModel.link!);
-              }
-            }
-          } catch (e) {
-            logger.e('Failed to generate thumbnail for video $url: $e');
-            // Skip this video if thumbnail generation fails
-          }
-        } else {
-          // It's an image, use it directly
-          imageUrls.add(url);
+      // Get selected emotion video URLs
+      final List<String> emotionVideoUrls = [];
+      for (final url in _selectedImages) {
+        if (_isVideo(url)) {
+          emotionVideoUrls.add(url);
         }
       }
 
-      if (imageUrls.isEmpty) {
-        AIHelpers.showToast(msg: 'No valid images to post. Please select image reactions.');
+      if (emotionVideoUrls.isEmpty) {
+        AIHelpers.showToast(msg: 'No emotion videos selected');
         return;
       }
 
-      isCombineImages = true;
-      final bgUrl =
-          (story.medias != null && story.medias!.isNotEmpty)
-              ? (story.medias?[0].link)
-              : '';
-      if (bgUrl == null || bgUrl.isEmpty) {
-        AIHelpers.showToast(msg: 'No background image in story');
-        return;
-      }
-
-      final Uint8List? pngBytes = await _composeImageWithOverlays(
-        backgroundUrl: bgUrl,
-        overlayUrls: imageUrls.take(2).toList(), // up to 2 expected
+      logger.d(
+        'Posting story to LookBook with ${emotionVideoUrls.length} emotion videos',
       );
+      logger.d('Emotion video URLs: $emotionVideoUrls');
 
-      if (pngBytes == null) {
-        AIHelpers.showToast(msg: 'Failed to compose image');
-        return;
-      }
-
-      var tempDir = await getTemporaryDirectory();
-
-      var file = File(
-        '${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}.png',
-      );
-      await file.writeAsBytes(pngBytes);
-      MediaStoryModel model = await CloudinaryCDNService.uploadImageToCDN(
-        XFile(file.path),
-      );
-      String? thumbUrl = model.link;
-      if (thumbUrl == null || thumbUrl.isEmpty) {
-        AIHelpers.showToast(msg: 'Failed to upload composed image');
-        return;
-      }
-
-      isCombineImages = false;
-
+      // Create and post story with emotion videos saved in reactions field
+      // The story will be displayed with emotion videos around it in LookBook
       var newStory = StoryModel(
         title: 'Repost',
         text: story.text ?? '',
         status: 'private',
         category: 'vote',
-        medias: [
-          MediaStoryModel(
-            link: thumbUrl,
-            type: 'image',
-            width: (story.medias ?? []).isNotEmpty
-                ? (story.medias?[0].width ?? 0)
-                : 0,
-            height: (story.medias ?? []).isNotEmpty
-                ? (story.medias?[0].height ?? 0)
-                : 0,
-          ),
-        ],
+        medias: story.medias, // Keep original story media
+        reactions: emotionVideoUrls, // Save selected emotion videos
         updatedAt: DateTime.now(),
         createdAt: DateTime.now(),
         connects: [...(story.connects ?? [])],
       );
 
-      await storyService.postStory(story: newStory);
+      logger.d('New story reactions before posting: ${newStory.reactions}');
+      logger.d('New story reactions count: ${newStory.reactions?.length ?? 0}');
+
+      final storyId = await storyService.postStory(story: newStory);
+      logger.d('Story posted with ID: $storyId');
+
+      // Verify the story was saved with reactions
+      try {
+        final savedStory = await storyService.getStory(storyId);
+        logger.d('Saved story reactions: ${savedStory.reactions}');
+        logger.d(
+          'Saved story reactions count: ${savedStory.reactions?.length ?? 0}',
+        );
+      } catch (e) {
+        logger.e('Error fetching saved story: $e');
+      }
+
       await tastScoreService.repostScore(story);
 
       AIHelpers.showToast(msg: 'Successfully reposted to LOOKBOOK!');
 
-      logger.d("thumbUrl: $thumbUrl");
+      logger.d("Story posted with ${emotionVideoUrls.length} emotion videos");
     } catch (e, stackTrace) {
       logger.e("Error in postToLookBook: $e");
       logger.e("Stack trace: $stackTrace");
@@ -329,8 +334,8 @@ class ReactionsProvider extends InSoBlokViewModel {
       // Draw background image full size
       canvas.drawImage(bgImage, Offset.zero, paint);
 
-      // Limit overlays to max 2
-      final overlaysToUse = overlayUrls.take(2).toList();
+      // Use all provided overlays (1-3 videos)
+      final overlaysToUse = overlayUrls;
 
       if (overlaysToUse.isEmpty) {
         // No overlays, just return background as PNG bytes
@@ -435,6 +440,124 @@ class ReactionsProvider extends InSoBlokViewModel {
     return completer.future;
   }
 
+  /// Compose videos: story in center, emotion videos around it
+  Future<String?> _composeVideos({
+    required String storyMediaUrl,
+    required String storyMediaType,
+    required List<String> emotionVideoUrls,
+  }) async {
+    try {
+      final tempDir = await getTemporaryDirectory();
+      final timestamp = DateTime.now().millisecondsSinceEpoch;
+
+      // Download story media
+      logger.d('Downloading story media: $storyMediaUrl');
+      final storyMediaFile = File(
+        '${tempDir.path}/story_$timestamp${storyMediaType == 'image' ? '.jpg' : '.mp4'}',
+      );
+      final storyBytes = await _downloadBytes(storyMediaUrl);
+      if (storyBytes == null) {
+        logger.e('Failed to download story media');
+        return null;
+      }
+      await storyMediaFile.writeAsBytes(storyBytes);
+
+      // Download emotion videos
+      final List<File> emotionVideoFiles = [];
+      for (int i = 0; i < emotionVideoUrls.length; i++) {
+        logger.d('Downloading emotion video ${i + 1}: ${emotionVideoUrls[i]}');
+        final emotionFile = File('${tempDir.path}/emotion_${i}_$timestamp.mp4');
+        final emotionBytes = await _downloadBytes(emotionVideoUrls[i]);
+        if (emotionBytes == null) {
+          logger.e('Failed to download emotion video ${i + 1}');
+          continue;
+        }
+        await emotionFile.writeAsBytes(emotionBytes);
+        emotionVideoFiles.add(emotionFile);
+      }
+
+      if (emotionVideoFiles.isEmpty) {
+        logger.e('No emotion videos downloaded');
+        return null;
+      }
+
+      // Use image composition as fallback (create static image with video thumbnails)
+      // This is a simpler approach that works without FFmpeg
+      logger.d('Creating image composition from video thumbnails');
+
+      // Generate thumbnails from videos
+      final List<String> thumbnailUrls = [];
+
+      // Get story thumbnail
+      if (storyMediaType == 'image') {
+        thumbnailUrls.add(storyMediaUrl);
+      } else {
+        final storyThumbnail = await _getVideoThumbnail(storyMediaUrl);
+        if (storyThumbnail != null) {
+          final thumbFile = File('${tempDir.path}/story_thumb_$timestamp.jpg');
+          await thumbFile.writeAsBytes(storyThumbnail);
+          final uploaded = await CloudinaryCDNService.uploadImageToCDN(
+            XFile(thumbFile.path),
+          );
+          if (uploaded.link != null && uploaded.link!.isNotEmpty) {
+            thumbnailUrls.add(uploaded.link!);
+          } else {
+            thumbnailUrls.add(storyMediaUrl); // Fallback to original URL
+          }
+        } else {
+          thumbnailUrls.add(storyMediaUrl); // Fallback to original URL
+        }
+      }
+
+      // Get emotion video thumbnails
+      for (int i = 0; i < emotionVideoFiles.length; i++) {
+        final thumbnail = await _getVideoThumbnail(emotionVideoUrls[i]);
+        if (thumbnail != null) {
+          final thumbFile = File(
+            '${tempDir.path}/emotion_thumb_${i}_$timestamp.jpg',
+          );
+          await thumbFile.writeAsBytes(thumbnail);
+          final uploaded = await CloudinaryCDNService.uploadImageToCDN(
+            XFile(thumbFile.path),
+          );
+          if (uploaded.link != null && uploaded.link!.isNotEmpty) {
+            thumbnailUrls.add(uploaded.link!);
+          }
+        }
+      }
+
+      if (thumbnailUrls.length < 2) {
+        logger.e('Failed to generate enough thumbnails');
+        return null;
+      }
+
+      // Create image composition
+      final bgUrl = thumbnailUrls[0];
+      final overlayUrls = thumbnailUrls.sublist(1);
+
+      final pngBytes = await _composeImageWithOverlays(
+        backgroundUrl: bgUrl,
+        overlayUrls: overlayUrls,
+      );
+
+      if (pngBytes == null) {
+        logger.e('Failed to create image composition');
+        return null;
+      }
+
+      // Save composition as image (will be uploaded as image)
+      final outputFile = File('${tempDir.path}/composed_$timestamp.png');
+      await outputFile.writeAsBytes(pngBytes);
+
+      logger.d('Image composition created: ${outputFile.path}');
+      return outputFile.path;
+    } catch (e, stackTrace) {
+      logger.e('Error composing videos: $e');
+      logger.e('Stack trace: $stackTrace');
+      return null;
+    }
+  }
+
   // Generate thumbnail from video URL
   Future<Uint8List?> _getVideoThumbnail(String videoUrl) async {
     try {
@@ -453,10 +576,13 @@ class ReactionsProvider extends InSoBlokViewModel {
           final uri = Uri.parse(cleanUrl);
           final pathSegments = uri.pathSegments;
           if (pathSegments.isNotEmpty) {
-            final publicId = pathSegments.last.replaceAll('.mp4', '').replaceAll('.mov', '');
+            final publicId = pathSegments.last
+                .replaceAll('.mp4', '')
+                .replaceAll('.mov', '');
             final cloudName = uri.host.split('.').first;
-            final thumbnailUrl = 'https://res.cloudinary.com/$cloudName/video/upload/w_200,h_200,c_fill,so_2/$publicId.jpg';
-            
+            final thumbnailUrl =
+                'https://res.cloudinary.com/$cloudName/video/upload/w_200,h_200,c_fill,so_2/$publicId.jpg';
+
             // Try to download the thumbnail
             final thumbnailBytes = await _downloadBytes(thumbnailUrl);
             if (thumbnailBytes != null) {

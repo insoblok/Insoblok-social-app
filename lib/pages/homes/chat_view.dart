@@ -10,97 +10,145 @@ import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
 import 'package:insoblok/pages/pages.dart';
 
-class ChatView extends StatelessWidget {
+class ChatView extends StatefulWidget {
   const ChatView({super.key});
+
+  @override
+  State<ChatView> createState() => _ChatViewState();
+}
+
+class _ChatViewState extends State<ChatView> with WidgetsBindingObserver {
+  ChatProvider? _viewModel;
+  bool _hasRefreshed = false;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _viewModel = null; // Clear reference to prevent access after disposal
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (!mounted) return;
+    if (state == AppLifecycleState.resumed && _viewModel != null) {
+      // Refresh when app comes back to foreground
+      _refreshChatList();
+    }
+  }
+
+  void _refreshChatList() {
+    if (mounted && _viewModel != null) {
+      _viewModel!.refreshChatList();
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     logger.d("This is build of chat view");
     return ViewModelBuilder<ChatProvider>.reactive(
       viewModelBuilder: () => ChatProvider(),
-      onViewModelReady: (viewModel) => viewModel.init(context),
+      onViewModelReady: (viewModel) {
+        viewModel.init(context);
+        _viewModel = viewModel;
+      },
       builder: (context, viewModel, _) {
         return Scaffold(
           appBar: AppBar(
-            leading: viewModel.isSelectionMode 
-              ? IconButton(
-                  icon: Icon(Icons.close),
-                  onPressed: () => viewModel.clearSelection(),
-                )
-              : AppLeadingView(),
-            title: viewModel.isSelectionMode
-              ? Text('${viewModel.selectedRoomIds.length} selected')
-              : AITextField(
-                  prefixIcon: Icon(Icons.search),
-                  hintText: "Search people, rooms, etc ...",
-                  focusedColor: Colors.grey,
-                ),
-            actions: viewModel.isSelectionMode
-              ? [
-                viewModel.isFirstSelectedRoomMuted ? IconButton(
-                  icon: Icon(Icons.volume_up),
-                  onPressed: () => viewModel.unMuteSelectedRooms()
-                ) :
-                  IconButton(
-                    icon: Icon(Icons.volume_off),
-                    onPressed: () => viewModel.muteSelectedRooms(),
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.delete),
-                    onPressed: () => viewModel.deleteSelectedRooms(),
-                  ),
-                  IconButton(
-                    icon: Icon(Icons.archive),
-                    onPressed: () => viewModel.archiveSelectedRooms(),
-                  ),
-                ]
-              : [
-                  IconButton(
-                    onPressed: () => Routers.goToMessageSettingPage(context),
-                    icon: AIImage(
-                      AIImages.icSetting,
-                      width: 24.0,
-                      height: 24.0,
-                      color: Colors.white,
+            leading:
+                viewModel.isSelectionMode
+                    ? IconButton(
+                      icon: Icon(Icons.close),
+                      onPressed: () => viewModel.clearSelection(),
+                    )
+                    : AppLeadingView(),
+            title:
+                viewModel.isSelectionMode
+                    ? Text('${viewModel.selectedRoomIds.length} selected')
+                    : AITextField(
+                      prefixIcon: Icon(Icons.search),
+                      hintText: "Search people, rooms, etc ...",
+                      focusedColor: Colors.grey,
                     ),
-                  ),
-                ],
+            actions:
+                viewModel.isSelectionMode
+                    ? [
+                      viewModel.isFirstSelectedRoomMuted
+                          ? IconButton(
+                            icon: Icon(Icons.volume_up),
+                            onPressed: () => viewModel.unMuteSelectedRooms(),
+                          )
+                          : IconButton(
+                            icon: Icon(Icons.volume_off),
+                            onPressed: () => viewModel.muteSelectedRooms(),
+                          ),
+                      IconButton(
+                        icon: Icon(Icons.delete),
+                        onPressed: () => viewModel.deleteSelectedRooms(),
+                      ),
+                      IconButton(
+                        icon: Icon(Icons.archive),
+                        onPressed: () => viewModel.archiveSelectedRooms(),
+                      ),
+                    ]
+                    : [
+                      IconButton(
+                        onPressed:
+                            () => Routers.goToMessageSettingPage(context),
+                        icon: AIImage(
+                          AIImages.icSetting,
+                          width: 24.0,
+                          height: 24.0,
+                          color: Colors.white,
+                        ),
+                      ),
+                    ],
           ),
           body: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 0.0),
-            child: viewModel.isBusy
-                ? Center(child: Loader(size: 60))
-                : (viewModel.activeRooms.isEmpty && viewModel.suggestedUsers.isEmpty)
+            child:
+                viewModel.isBusy
+                    ? Center(child: Loader(size: 60))
+                    : (viewModel.activeRooms.isEmpty &&
+                        viewModel.suggestedUsers.isEmpty)
                     ? Center(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            ClipOval(
-                              child: AIImage(
-                                AIImages.placehold,
-                                width: 160.0,
-                                height: 160.0,
-                              ),
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          ClipOval(
+                            child: AIImage(
+                              AIImages.placehold,
+                              width: 160.0,
+                              height: 160.0,
                             ),
-                            const SizedBox(height: 40.0),
-                            Text(
-                              "Create Room",
-                              style: TextStyle(
-                                fontSize: 18.0,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          ),
+                          const SizedBox(height: 40.0),
+                          Text(
+                            "Create Room",
+                            style: TextStyle(
+                              fontSize: 18.0,
+                              fontWeight: FontWeight.bold,
                             ),
-                            const SizedBox(height: 8.0),
-                            Padding(
-                              padding: const EdgeInsets.symmetric(horizontal: 60.0),
-                              child: Text(
-                                "You have not any chatting user yet! Please try to create a new room first by clicking + button.",
-                                textAlign: TextAlign.center,
-                              ),
+                          ),
+                          const SizedBox(height: 8.0),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 60.0,
                             ),
-                          ],
-                        ),
-                      )
+                            child: Text(
+                              "You have not any chatting user yet! Please try to create a new room first by clicking + button.",
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ],
+                      ),
+                    )
                     : Column(
                       children: [
                         // Text(
@@ -110,28 +158,39 @@ class ChatView extends StatelessWidget {
                         //   viewModel.activeRooms.map((room) => room.userSettings.isMuted ?? "").toList().toString()
                         // ),
                         if (viewModel.archivedRooms.isNotEmpty)
-                          _ArchivedChatsHeader(archivedRooms: viewModel.archivedRooms),
+                          _ArchivedChatsHeader(
+                            archivedRooms: viewModel.archivedRooms,
+                          ),
                         Expanded(
                           child: NotificationListener<ScrollNotification>(
-                              onNotification: (ScrollNotification n) {
-                                if (n is ScrollUpdateNotification) {
-                                  final position = n.metrics;
-                                  if (position.pixels > position.maxScrollExtent - 200) {
-                                    viewModel.loadMoreRooms();
-                                    viewModel.loadMoreSuggestedUsers();
-                                  }
+                            onNotification: (ScrollNotification n) {
+                              if (n is ScrollUpdateNotification) {
+                                final position = n.metrics;
+                                if (position.pixels >
+                                    position.maxScrollExtent - 200) {
+                                  viewModel.loadMoreRooms();
+                                  viewModel.loadMoreSuggestedUsers();
                                 }
-                                return false;
+                              }
+                              return false;
+                            },
+                            child: LayoutBuilder(
+                              builder: (context, constraints) {
+                                return ListView.builder(
+                                  // Prebuild ~1.5 screen heights for smoother scrolling
+                                  cacheExtent: constraints.maxHeight * 1.5,
+                                  itemCount: _totalItems(viewModel),
+                                  itemBuilder: (context, index) {
+                                    return _buildSectionedItem(
+                                      context,
+                                      viewModel,
+                                      index,
+                                    );
+                                  },
+                                );
                               },
-                              child: ListView.builder(
-                                // Prebuild ~1.5 screen heights for smoother scrolling
-                                cacheExtent: MediaQuery.of(context).size.height * 1.5,
-                                itemCount: _totalItems(viewModel),
-                                itemBuilder: (context, index) {
-                                  return _buildSectionedItem(context, viewModel, index);
-                                },
-                              ),
                             ),
+                          ),
                         ),
                       ],
                     ),
@@ -140,6 +199,31 @@ class ChatView extends StatelessWidget {
       },
     );
   }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    // Refresh when returning to this page (e.g., from create room page)
+    // Only refresh once per route change to avoid excessive refreshes
+    if (!_hasRefreshed && _viewModel != null && mounted) {
+      _hasRefreshed = true;
+      // Use SchedulerBinding to safely schedule the refresh
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        Future.delayed(const Duration(milliseconds: 500), () {
+          if (mounted && _viewModel != null) {
+            _refreshChatList();
+            // Reset flag after a delay to allow future refreshes
+            Future.delayed(const Duration(seconds: 2), () {
+              if (mounted) {
+                _hasRefreshed = false;
+              }
+            });
+          }
+        });
+      });
+    }
+  }
 }
 
 int _totalItems(ChatProvider vm) {
@@ -147,7 +231,12 @@ int _totalItems(ChatProvider vm) {
   final usersCount = vm.usersVisibleCount;
   final hasRooms = roomsCount > 0;
   final hasUsers = usersCount > 0;
-  final headers = (hasRooms && hasUsers) ? 2 : (hasRooms || hasUsers) ? 1 : 0;
+  final headers =
+      (hasRooms && hasUsers)
+          ? 2
+          : (hasRooms || hasUsers)
+          ? 1
+          : 0;
   return roomsCount + usersCount + headers;
 }
 
@@ -202,7 +291,11 @@ class _SectionHeader extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(16, 8, 16, 4),
       child: Text(
         title,
-        style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: Colors.grey),
+        style: const TextStyle(
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
+          color: Colors.grey,
+        ),
       ),
     );
   }
@@ -225,11 +318,9 @@ class _ArchivedChatsHeader extends StatelessWidget {
               height: 60,
               decoration: BoxDecoration(
                 color: Colors.blue.withAlpha(100),
-                borderRadius: BorderRadius.circular( 60 / 2),
+                borderRadius: BorderRadius.circular(60 / 2),
               ),
-              child: ClipOval(
-                child: Icon(Icons.archive, color: Colors.white),
-              ),
+              child: ClipOval(child: Icon(Icons.archive, color: Colors.white)),
             ),
             const SizedBox(width: 12.0),
             Expanded(
@@ -238,7 +329,10 @@ class _ArchivedChatsHeader extends StatelessWidget {
                 children: [
                   Text(
                     'Archived Chats',
-                    style: TextStyle(fontSize: 16.0, fontWeight: FontWeight.w500),
+                    style: TextStyle(
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
                   Text(
                     '${archivedRooms.length} chat${archivedRooms.length > 1 ? 's' : ''}',
@@ -278,9 +372,18 @@ class _SuggestedUserTile extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(user.fullName ?? '---', style: const TextStyle(fontSize: 16.0, fontWeight: FontWeight.w500)),
+                  Text(
+                    user.fullName ?? '---',
+                    style: const TextStyle(
+                      fontSize: 16.0,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
                   const SizedBox(height: 4.0),
-                  const Text('Start a conversation', style: TextStyle(fontSize: 14.0, color: Colors.grey)),
+                  const Text(
+                    'Start a conversation',
+                    style: TextStyle(fontSize: 14.0, color: Colors.grey),
+                  ),
                 ],
               ),
             ),

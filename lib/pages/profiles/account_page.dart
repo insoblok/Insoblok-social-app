@@ -50,36 +50,37 @@ class AccountPage extends StatelessWidget {
                       ),
                       const SliverToBoxAdapter(child: AccountFloatingView()),
 
-                      // Tabs: Stories / Galleries
-                      SliverToBoxAdapter(
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(vertical: 8.0),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              _buildTabButton(
-                                context,
-                                label: "Stories",
-                                isSelected: viewModel.pageIndex == 0,
-                                onTap: () {
-                                  viewModel.setPageIndex(0);
-                                  viewModel.resetSelection();
-                                },
-                              ),
-                              const SizedBox(width: 16),
-                              _buildTabButton(
-                                context,
-                                label: "Galleries",
-                                isSelected: viewModel.pageIndex == 3,
-                                onTap: () {
-                                  viewModel.setPageIndex(3);
-                                  viewModel.resetSelection();
-                                },
-                              ),
-                            ],
+                      // Tabs: Stories / Galleries - Only show after AccountFloatingView has loaded
+                      if (viewModel.accountUser != null)
+                        SliverToBoxAdapter(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(vertical: 8.0),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                _buildTabButton(
+                                  context,
+                                  label: "Stories",
+                                  isSelected: viewModel.pageIndex == 0,
+                                  onTap: () {
+                                    viewModel.setPageIndex(0);
+                                    viewModel.resetSelection();
+                                  },
+                                ),
+                                const SizedBox(width: 16),
+                                _buildTabButton(
+                                  context,
+                                  label: "Galleries",
+                                  isSelected: viewModel.pageIndex == 3,
+                                  onTap: () {
+                                    viewModel.setPageIndex(3);
+                                    viewModel.resetSelection();
+                                  },
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
 
                       SliverList(
                         delegate: SliverChildListDelegate([
@@ -378,22 +379,25 @@ class AccountPage extends StatelessWidget {
       colors: [Color(0xFFF30C6C), Color(0xFFC739EB)],
     );
 
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(20),
-      child: Ink(
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        decoration: BoxDecoration(
-          gradient: isSelected ? gradient : null,
-          color: isSelected ? null : Colors.transparent,
-          border: Border.all(color: Theme.of(context).primaryColor),
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Text(
-          label,
-          style: TextStyle(
-            color: isSelected ? Colors.white : Theme.of(context).primaryColor,
-            fontWeight: FontWeight.bold,
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(20),
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          decoration: BoxDecoration(
+            gradient: isSelected ? gradient : null,
+            color: isSelected ? null : Colors.transparent,
+            border: Border.all(color: Theme.of(context).primaryColor),
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Text(
+            label,
+            style: TextStyle(
+              color: isSelected ? Colors.white : Theme.of(context).primaryColor,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
       ),
@@ -488,28 +492,48 @@ class _StoryTile extends StatelessWidget {
                   _SmallCircleButton(
                     icon: Icons.edit,
                     onPressed: () async {
-                      final controller = TextEditingController(text: story.title ?? '');
+                      final controller = TextEditingController(
+                        text: story.title ?? '',
+                      );
                       final newTitle = await showDialog<String>(
                         context: context,
-                        builder: (ctx) => AlertDialog(
-                          backgroundColor: Colors.black87,
-                          title: const Text('Edit title', style: TextStyle(color: Colors.white)),
-                          content: TextField(
-                            controller: controller,
-                            style: const TextStyle(color: Colors.white),
-                            decoration: const InputDecoration(
-                              hintText: 'Enter a title',
-                              hintStyle: TextStyle(color: Colors.white54),
+                        builder:
+                            (ctx) => AlertDialog(
+                              backgroundColor: Colors.black87,
+                              title: const Text(
+                                'Edit title',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              content: TextField(
+                                controller: controller,
+                                style: const TextStyle(color: Colors.white),
+                                decoration: const InputDecoration(
+                                  hintText: 'Enter a title',
+                                  hintStyle: TextStyle(color: Colors.white54),
+                                ),
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.of(ctx).pop(null),
+                                  child: const Text('Cancel'),
+                                ),
+                                TextButton(
+                                  onPressed:
+                                      () => Navigator.of(
+                                        ctx,
+                                      ).pop(controller.text.trim()),
+                                  child: const Text('Save'),
+                                ),
+                              ],
                             ),
-                          ),
-                          actions: [
-                            TextButton(onPressed: () => Navigator.of(ctx).pop(null), child: const Text('Cancel')),
-                            TextButton(onPressed: () => Navigator.of(ctx).pop(controller.text.trim()), child: const Text('Save')),
-                          ],
-                        ),
                       );
-                      if (newTitle != null && newTitle.isNotEmpty && (story.id?.isNotEmpty ?? false)) {
-                        await vm.storyService.updateStoryById(id: story.id!, data: {'title': newTitle});
+                      if (newTitle != null &&
+                          newTitle.isNotEmpty &&
+                          (story.id?.isNotEmpty ?? false)) {
+                        await vm.storyService.updateStoryById(
+                          id: story.id!,
+                          data: {'title': newTitle},
+                        );
                         await vm.fetchStories();
                       }
                     },
@@ -521,15 +545,27 @@ class _StoryTile extends StatelessWidget {
                     onPressed: () async {
                       final ok = await showDialog<bool>(
                         context: context,
-                        builder: (ctx) => AlertDialog(
-                          backgroundColor: Colors.black87,
-                          title: const Text('Delete recording', style: TextStyle(color: Colors.white)),
-                          content: const Text('Are you sure you want to delete this recording?'),
-                          actions: [
-                            TextButton(onPressed: () => Navigator.of(ctx).pop(false), child: const Text('Cancel')),
-                            TextButton(onPressed: () => Navigator.of(ctx).pop(true), child: const Text('Delete')),
-                          ],
-                        ),
+                        builder:
+                            (ctx) => AlertDialog(
+                              backgroundColor: Colors.black87,
+                              title: const Text(
+                                'Delete recording',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                              content: const Text(
+                                'Are you sure you want to delete this recording?',
+                              ),
+                              actions: [
+                                TextButton(
+                                  onPressed: () => Navigator.of(ctx).pop(false),
+                                  child: const Text('Cancel'),
+                                ),
+                                TextButton(
+                                  onPressed: () => Navigator.of(ctx).pop(true),
+                                  child: const Text('Delete'),
+                                ),
+                              ],
+                            ),
                       );
                       if (ok == true && (story.id?.isNotEmpty ?? false)) {
                         await FirebaseHelper.deleteStory(story.id!);

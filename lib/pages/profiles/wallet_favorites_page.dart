@@ -226,39 +226,73 @@ class WalletFavoritesPage extends StatelessWidget {
                                       mainAxisSize: MainAxisSize.min,
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
-                                      spacing: 4.0,
+                                      spacing: 0.0,
                                       children: [
                                         for (var token in tokens) ...[
-                                          Container(
-                                            padding: EdgeInsets.symmetric(
-                                              vertical: 4.0,
-                                            ),
+                                          Builder(
+                                            builder: (context) {
+                                              // Get live price or fallback to current_price
+                                              final symbol =
+                                                  token['symbol']
+                                                      .toString()
+                                                      .toUpperCase();
+                                              final livePrice =
+                                                  viewModel.livePrices[symbol];
+                                              final currentPrice =
+                                                  livePrice ??
+                                                  token["current_price"]
+                                                      .toDouble();
 
-                                            decoration: BoxDecoration(
-                                              color:
-                                                  viewModel.isSelectMode &&
-                                                          viewModel
-                                                              .selectedTokens
-                                                              .contains(
-                                                                token["id"],
-                                                              )
-                                                      ? Colors.blue.shade900
-                                                      : Colors.transparent,
-                                              border: Border(
-                                                bottom: BorderSide(
-                                                  color: Theme.of(context)
-                                                      .colorScheme
-                                                      .secondary
-                                                      .withAlpha(32),
-                                                  width: 1.0,
+                                              // Calculate previous price and difference
+                                              final priceChange24h =
+                                                  (token["price_change_24h"] ??
+                                                          0)
+                                                      .toDouble();
+                                              final previousPrice =
+                                                  currentPrice - priceChange24h;
+                                              final priceDifference =
+                                                  currentPrice - previousPrice;
+
+                                              // Determine if price went up (green) or down (red)
+                                              final isPriceUp =
+                                                  priceDifference > 0;
+                                              final isPriceDown =
+                                                  priceDifference < 0;
+
+                                              // Background color: green if up, red if down, transparent if no change
+                                              Color backgroundColor =
+                                                  Colors.transparent;
+                                              if (viewModel.isSelectMode &&
+                                                  viewModel.selectedTokens
+                                                      .contains(token["id"])) {
+                                                backgroundColor =
+                                                    Colors.blue.shade900;
+                                              } else if (isPriceUp) {
+                                                backgroundColor = Colors.green
+                                                    .withOpacity(0.2);
+                                              } else if (isPriceDown) {
+                                                backgroundColor = Colors.red
+                                                    .withOpacity(0.2);
+                                              }
+
+                                              return Container(
+                                                padding: EdgeInsets.symmetric(
+                                                  vertical: 12.0,
+                                                  horizontal: 16.0,
                                                 ),
-                                              ),
-                                            ),
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                InkWell(
+                                                decoration: BoxDecoration(
+                                                  color: backgroundColor,
+                                                  border: Border(
+                                                    bottom: BorderSide(
+                                                      color: Theme.of(context)
+                                                          .colorScheme
+                                                          .secondary
+                                                          .withAlpha(32),
+                                                      width: 1.0,
+                                                    ),
+                                                  ),
+                                                ),
+                                                child: InkWell(
                                                   onTap:
                                                       () => viewModel
                                                           .handleTapFavoriteToken(
@@ -269,163 +303,143 @@ class WalletFavoritesPage extends StatelessWidget {
                                                           .handleLongPressFavoriteToken(
                                                             token["id"],
                                                           ),
-                                                  child: Stack(
-                                                    fit: StackFit.loose,
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .center,
                                                     children: [
-                                                      Row(
-                                                        spacing: 8.0,
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
-                                                        crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .center,
-                                                        children: [
-                                                          Expanded(
-                                                            flex: 35,
-                                                            child: Row(
-                                                              children: [
-                                                                ClipOval(
-                                                                  child: Container(
-                                                                    color:
-                                                                        Colors
-                                                                            .transparent,
-                                                                    child: Image.network(
-                                                                      token["image"],
+                                                      // Token Name and Icon
+                                                      Expanded(
+                                                        flex: 2,
+                                                        child: Row(
+                                                          children: [
+                                                            ClipOval(
+                                                              child: Container(
+                                                                color:
+                                                                    Colors
+                                                                        .transparent,
+                                                                child: Image.network(
+                                                                  token["image"],
+                                                                  width: 40.0,
+                                                                  height: 40.0,
+                                                                  errorBuilder: (
+                                                                    context,
+                                                                    error,
+                                                                    stackTrace,
+                                                                  ) {
+                                                                    return Container(
                                                                       width:
-                                                                          36.0,
+                                                                          40.0,
                                                                       height:
-                                                                          36.0,
-                                                                    ),
-                                                                  ),
+                                                                          40.0,
+                                                                      color:
+                                                                          Colors
+                                                                              .grey,
+                                                                    );
+                                                                  },
                                                                 ),
-                                                                SizedBox(
-                                                                  width: 12,
-                                                                ),
-                                                                Expanded(
-                                                                  child: Align(
-                                                                    alignment:
-                                                                        Alignment
-                                                                            .centerLeft,
-                                                                    child: FittedBox(
-                                                                      fit:
-                                                                          BoxFit
-                                                                              .scaleDown,
-                                                                      child: Text(
-                                                                        token['symbol']
-                                                                            .toString()
-                                                                            .toUpperCase(),
-                                                                        textAlign:
-                                                                            TextAlign.left,
-                                                                        // style: Theme.of(context).textTheme.bodyLarge,
-                                                                      ),
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ],
+                                                              ),
                                                             ),
-                                                          ),
-                                                          // Current Price
-                                                          Expanded(
-                                                            flex: 30,
-                                                            child: Align(
-                                                              alignment:
-                                                                  Alignment
-                                                                      .centerRight,
+                                                            SizedBox(width: 12),
+                                                            Expanded(
                                                               child: Text(
-                                                                '\$${AIHelpers.formatDouble(token["current_price"].toDouble(), 2)}',
+                                                                symbol,
                                                                 style: Theme.of(
                                                                       context,
                                                                     )
                                                                     .textTheme
-                                                                    .bodyLarge
+                                                                    .titleMedium
                                                                     ?.copyWith(
                                                                       color:
                                                                           Colors
                                                                               .white,
+                                                                      fontWeight:
+                                                                          FontWeight
+                                                                              .w600,
                                                                     ),
-                                                                textAlign:
-                                                                    TextAlign
-                                                                        .right,
+                                                                overflow:
+                                                                    TextOverflow
+                                                                        .ellipsis,
                                                               ),
                                                             ),
-                                                          ),
-                                                          // Price Difference
-                                                          Expanded(
-                                                            flex: 25,
-                                                            child: Align(
-                                                              alignment:
-                                                                  Alignment
-                                                                      .centerRight,
-                                                              child: Container(
-                                                                padding:
-                                                                    const EdgeInsets.symmetric(
-                                                                      horizontal:
-                                                                          8,
-                                                                      vertical:
-                                                                          4,
-                                                                    ),
-                                                                decoration: BoxDecoration(
-                                                                  color:
-                                                                      (token["price_change_24h"] ??
-                                                                                  0) >=
-                                                                              0
-                                                                          ? Colors
-                                                                              .green
-                                                                          : Colors
-                                                                              .red,
-                                                                  borderRadius:
-                                                                      BorderRadius.circular(
-                                                                        6.0,
-                                                                      ),
-                                                                ),
-                                                                child: Text(
-                                                                  '${(token["price_change_24h"] ?? 0) >= 0 ? "+" : ""}${AIHelpers.formatDouble((token["price_change_24h"] ?? 0).toDouble(), 2)}',
-                                                                  style: Theme.of(
-                                                                        context,
-                                                                      )
-                                                                      .textTheme
-                                                                      .bodyMedium
-                                                                      ?.copyWith(
-                                                                        color:
-                                                                            Colors.white,
-                                                                      ),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
+                                                          ],
+                                                        ),
                                                       ),
+                                                      SizedBox(width: 16),
+                                                      // Current Price
+                                                      Expanded(
+                                                        flex: 2,
+                                                        child: Text(
+                                                          '\$${AIHelpers.formatDouble(currentPrice, 2)}',
+                                                          style: Theme.of(
+                                                                context,
+                                                              )
+                                                              .textTheme
+                                                              .titleMedium
+                                                              ?.copyWith(
+                                                                color:
+                                                                    Colors
+                                                                        .white,
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .w600,
+                                                              ),
+                                                          textAlign:
+                                                              TextAlign.right,
+                                                        ),
+                                                      ),
+                                                      SizedBox(width: 16),
+                                                      // Price Difference
+                                                      Expanded(
+                                                        flex: 2,
+                                                        child: Text(
+                                                          '${priceDifference >= 0 ? "+" : ""}\$${AIHelpers.formatDouble(priceDifference, 2)}',
+                                                          style: Theme.of(
+                                                            context,
+                                                          ).textTheme.titleMedium?.copyWith(
+                                                            color:
+                                                                isPriceUp
+                                                                    ? Colors
+                                                                        .green
+                                                                        .shade300
+                                                                    : isPriceDown
+                                                                    ? Colors
+                                                                        .red
+                                                                        .shade300
+                                                                    : Colors
+                                                                        .white,
+                                                            fontWeight:
+                                                                FontWeight.w600,
+                                                          ),
+                                                          textAlign:
+                                                              TextAlign.right,
+                                                        ),
+                                                      ),
+                                                      // Selection indicator
                                                       if (viewModel
                                                           .selectedTokens
                                                           .contains(
                                                             token["id"],
                                                           ))
-                                                        Container(
-                                                          color: Colors.blue
-                                                              .withAlpha(50),
-                                                          child: InkWell(
-                                                            onTap:
-                                                                () => viewModel
-                                                                    .handleTapFavoriteToken(
-                                                                      token["id"],
-                                                                    ),
-                                                            child: Center(
-                                                              child: Icon(
-                                                                Icons
-                                                                    .check_circle,
-                                                                color:
-                                                                    Colors.blue,
-                                                                size: 40,
+                                                        Padding(
+                                                          padding:
+                                                              EdgeInsets.only(
+                                                                left: 8,
                                                               ),
-                                                            ),
+                                                          child: Icon(
+                                                            Icons.check_circle,
+                                                            color: Colors.blue,
+                                                            size: 24,
                                                           ),
                                                         ),
                                                     ],
                                                   ),
                                                 ),
-                                              ],
-                                            ),
+                                              );
+                                            },
                                           ),
                                         ],
                                       ],

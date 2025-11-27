@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:insoblok/models/models.dart';
 import 'package:insoblok/routers/routers.dart';
 import 'package:insoblok/services/services.dart';
+import 'package:insoblok/services/access_code_service.dart';
 import 'package:insoblok/utils/utils.dart';
 
 class RegisterProvider extends InSoBlokViewModel {
@@ -72,7 +73,40 @@ class RegisterProvider extends InSoBlokViewModel {
           );
         }
 
-        Routers.goToMainPage(context);
+        // Check if email is already confirmed before navigating
+        final email = _user.email ?? savedEmail ?? '';
+        logger.d('Sign up completed. Email: $email, UserId: ${_user.nickId}');
+
+        if (context.mounted) {
+          if (email.isNotEmpty) {
+            // Check if email access code is already confirmed
+            final accessCodeService = AccessCodeService();
+            final isEmailConfirmed = await accessCodeService
+                .checkAccessCodeByEmail(email);
+
+            if (isEmailConfirmed) {
+              // Email already confirmed - skip access code confirm page
+              logger.d(
+                'Email $email is already confirmed. Skipping access code confirm page.',
+              );
+              Routers.goToMainPage(context);
+            } else {
+              // Email not confirmed - navigate to access code confirm page
+              Map<String, dynamic> props = {
+                'email': email,
+                'userId': _user.nickId ?? '',
+                'birthday': DateTime.now(), // Default birthday if not available
+              };
+              logger.d(
+                'Navigating to access code confirm page with props: $props',
+              );
+              Routers.goToAccessCodeConfirmPage(context, props);
+            }
+          } else {
+            logger.w('Email is empty. Navigating to main page.');
+            Routers.goToMainPage(context);
+          }
+        }
       } catch (e) {
         setError(e);
       } finally {

@@ -9,8 +9,6 @@ import 'package:insoblok/utils/utils.dart';
 import 'package:insoblok/widgets/widgets.dart';
 import 'package:insoblok/models/models.dart';
 
-
-
 class LeaderboardUserView extends StatelessWidget {
   final UserScoreModel user;
   final int score;
@@ -35,7 +33,7 @@ class LeaderboardUserView extends StatelessWidget {
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.all(Radius.circular(12))
+            borderRadius: BorderRadius.all(Radius.circular(12)),
           ),
           child: InkWell(
             onTap: viewModel.goToTastescorePage,
@@ -50,8 +48,8 @@ class LeaderboardUserView extends StatelessWidget {
                 border: Border(
                   bottom: BorderSide(
                     color: Colors.white.withAlpha(40),
-                    width: 2.0
-                  )
+                    width: 2.0,
+                  ),
                 ),
                 boxShadow: [
                   BoxShadow(
@@ -65,9 +63,7 @@ class LeaderboardUserView extends StatelessWidget {
                 ],
               ),
               child: Container(
-                decoration: BoxDecoration(
-                  
-                ),
+                decoration: BoxDecoration(),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
@@ -76,7 +72,7 @@ class LeaderboardUserView extends StatelessWidget {
                       style: TextStyle(
                         fontSize: 24,
                         color: viewModel.getRankColor(cellIndex),
-                      )
+                      ),
                     ),
                     SizedBox(width: 13),
                     userData == null
@@ -101,25 +97,25 @@ class LeaderboardUserView extends StatelessWidget {
                             ),
                             if (cellIndex == 0)
                               Positioned(
-                              bottom: 0.0,
-                              right: 0.0,
-                              child: Container(
-                                width: 24.0,
-                                height: 24.0,
-                                padding: EdgeInsets.all(1),
-                                decoration: BoxDecoration(
-                                  border: Border.all(
-                                    color: Theme.of(context).primaryColor,
+                                bottom: 0.0,
+                                right: 0.0,
+                                child: Container(
+                                  width: 24.0,
+                                  height: 24.0,
+                                  padding: EdgeInsets.all(1),
+                                  decoration: BoxDecoration(
+                                    border: Border.all(
+                                      color: Theme.of(context).primaryColor,
+                                    ),
+                                    color:
+                                        Theme.of(
+                                          context,
+                                        ).scaffoldBackgroundColor,
+                                    shape: BoxShape.circle,
                                   ),
-                                  color:
-                                      Theme.of(context).scaffoldBackgroundColor,
-                                  shape: BoxShape.circle,
-                                ),
-                                child: AIImage(
-                                  AIImages.imgLevel(5),
+                                  child: AIImage(AIImages.imgLevel(5)),
                                 ),
                               ),
-                            ),
                           ],
                         ),
                     const SizedBox(width: 12.0),
@@ -129,21 +125,23 @@ class LeaderboardUserView extends StatelessWidget {
                         spacing: 4.0,
                         children: [
                           Text(
-                                userData?.fullName ?? "___",
-                                style: Theme.of(context).textTheme.bodyMedium,
-                              ),
-                          Text(
-                                userData?.timestamp?.timeago ?? 'Unknown time',
-                                style: Theme.of(context).textTheme.labelSmall,
-                              ),
-                              if(displayProgress == true)
-                          AnimatiedLinearProgressIndicator(
-                            value:user.indicatorValue,
-                            minHeight: 6,
-                            borderRadius: 12,
-                            backgroundColor: AIColors.leaderBoardScoreProgressBackground,
-                            color: AIColors.leaderBoardScoreProgressForeground,
+                            userData?.fullName ?? "___",
+                            style: Theme.of(context).textTheme.bodyMedium,
                           ),
+                          Text(
+                            userData?.timestamp?.timeago ?? 'Unknown time',
+                            style: Theme.of(context).textTheme.labelSmall,
+                          ),
+                          if (displayProgress == true)
+                            AnimatiedLinearProgressIndicator(
+                              value: user.indicatorValue,
+                              minHeight: 6,
+                              borderRadius: 12,
+                              backgroundColor:
+                                  AIColors.leaderBoardScoreProgressBackground,
+                              color:
+                                  AIColors.leaderBoardScoreProgressForeground,
+                            ),
                         ],
                       ),
                     ),
@@ -156,13 +154,15 @@ class LeaderboardUserView extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 12.0,
                             fontWeight: FontWeight.bold,
-                            color: viewModel.getRankColor(cellIndex)
+                            color: viewModel.getRankColor(cellIndex),
                           ),
                         ),
                         Text(
                           ' XP',
-                          style: TextStyle(fontSize: 12.0, color: viewModel.getRankColor(cellIndex)),
-                          
+                          style: TextStyle(
+                            fontSize: 12.0,
+                            color: viewModel.getRankColor(cellIndex),
+                          ),
                         ),
                       ],
                     ),

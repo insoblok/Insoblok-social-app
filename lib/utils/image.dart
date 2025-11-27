@@ -79,7 +79,7 @@ class AIImages {
   static String icFire = 'assets/icons/ic_fire.png';
   static String icDelete = 'assets/icons/ic_delete.png';
   static String icRefresh = 'assets/icons/ic_refresh.svg';
-
+  static String icMarketplace = 'assets/icons/ic_marketplace.png';
   static String icMenuProfile = 'assets/icons/ic_user.svg';
   static String icMenuLists = 'assets/icons/ic_list.svg';
   static String icMenuTopics = 'assets/icons/ic_retweet.svg';
@@ -97,8 +97,8 @@ class AIImages {
   static String icComment2 = 'assets/icons/ic_comment2.png';
   static String icComment3 = 'assets/icons/ic_comment3.png';
   static String icComment4 = 'assets/icons/ic_comment4.png';
-  static String icShare = 'assets/icons/ic_share.png';
-  static String icShareOutline = 'assets/icons/ic_share_outline.png';
+  static String icShare = 'assets/icons/ic_share.svg';
+  static String icShareOutline = 'assets/icons/ic_share.svg';
   static String icReaction = 'assets/icons/ic_reaction.png';
   static String icFollow = 'assets/icons/ic_follow.png';
   static String icNot = 'assets/icons/ic_not.png';
@@ -180,17 +180,8 @@ class AIImages {
 
   static String imgVybe = 'assets/images/img_vybe.png';
 
-  // static String avatarAnimeEyes = 'assets/images/avatars/AnimeEyes-L0.png';
-  static String avatarAnimeEyes = 'assets/images/AnimeEyes-L0.png';
-  static String avatarLiquidChromeFace =
-      'assets/images/Liquid Chome Face - L0.png';
-  static String avatarPixelStorm = 'assets/images/Pixel Storm -M0.png';
-  static String avatarCyberPunk = 'assets/images/CyberPunk - M0.png';
-  static String avatarNeonGlow = 'assets/images/Neon Glow - M0.png';
-  static String avatarTasteScore = 'assets/images/TasteScore Face - C0.png';
-  static String avatarEGirlBoy = 'assets/images/E-Girl - E-Boy - M0.png';
-  static String avatarExtraAF = 'assets/images/Extra AF - M0.png';
-  static String avatarGlowUp = 'assets/images/Glow Up - M0.png';
-  static String avatarGrungeWave = 'assets/images/Grungewave - M0.png';
-  static String avatarAnime = 'assets/images/anime-getimg.ai.jpeg';
+  static String avatarA = 'assets/images/rrc/avatar1.jpg';
+  static String avatarB = 'assets/images/rrc/avatar2.jpg';
+  static String avatarC = 'assets/images/rrc/avatar3.jpg';
+  static String avatarD = 'assets/images/rrc/avatar4.jpg';
 }
